@@ -1,0 +1,295 @@
+ID=E0622
+URL=http://www.bcbdev.com/faqs/faq74.htm
+SIZE=14464
+DATE=12/07/02
+TIME=19:22:48
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+
+<H3>
+Q: Prevent multiple instances of the program from running
+</H3>
+<BR>
+<H3>Answer</H3>
+<P>
+There are a couple of different ways to create a program that prevents multiple instances from running. One simple
+technique is to use the <TT>FindWindow</TT> API function. A more robust technique is to use mutexes or semaphores.
+This FAQ demonstrates several ways to ensure that only once instance of the program runs at a time. All of the methods
+share a common premise: detect another instances of the program from the <TT>WinMain</TT> function, and if you find one,
+return from <TT>WinMain</TT> without calling the <TT>Run</TT> method of <TT>TApplication</TT>.
+</P>
+<HR>
+<P>
+<B>Using FindWindow: </B> The API <TT>FindWindow</TT> function searches for a window handle based on a caption string
+or a registered <TT>WndClass</TT>. To prevent multiple instances from running, call <TT>FindWindow</TT> from the
+<TT>WinMain</TT> function to search for another program with the same window caption. If you find one, abort the
+program.
+</P>
+
+<P>
+<TABLE WIDTH="75%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Note" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Note:</b>
+<hr size = 1>
+This example assumes that you have set the application's title to "single" from the project options dialog.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+<pre>
+WINAPI WinMain<b>(</b>HINSTANCE<b>,</b> HINSTANCE<b>,</b> LPSTR<b>,</b> <b>int</b><b>)</b>
+<b>{</b>
+    <font color="navy">// Search for a previous instances using the caption of the</font>
+    <font color="navy">// the hidden application window. In order to do this, we</font>
+    <font color="navy">// must temporarily change our caption so that FindWindow</font>
+    <font color="navy">// doesn't find us (the hidden application window has</font>
+    <font color="navy">// already been created before WinMain runs)</font>
+    Application<b>-></b>Title <b>=</b> <font color="blue">""</font><b>;</b>
+    HWND hPrevApp <b>=</b> <b>:</b><b>:</b>FindWindow<b>(</b>NULL<b>,</b> <font color="blue">"single"</font><b>)</b><b>;</b>
+
+    <font color="navy">// FindWindow returns a non-zero HWND if it finds the window</font>
+    <font color="navy">// If the window was found, restore it and return without running</font>
+    <b>if</b><b>(</b>hPrevApp<b>)</b>
+    <b>{</b>
+        PostMessage<b>(</b>hPrevApp<b>,</b> WM_SYSCOMMAND<b>,</b> SC_RESTORE<b>,</b> <font color="blue">0</font><b>)</b><b>;</b>
+        <b>return</b> <font color="blue">0</font><b>;</b>
+    <b>}</b>
+    <font color="navy">// else: other instance not found, restore the title and continue</font>
+    <b>else</b>
+        Application<b>-></b>Title <b>=</b> <font color="blue">"single"</font><b>;</b>
+
+    <b>try</b>
+    <b>{</b>
+         Application<b>-></b>Initialize<b>(</b><b>)</b><b>;</b>
+         Application<b>-></b>Title <b>=</b> <font color="blue">"single"</font><b>;</b>
+         Application<b>-></b>CreateForm<b>(</b><b>__classid</b><b>(</b>TForm1<b>)</b><b>,</b> <b>&</b>Form1<b>)</b><b>;</b>
+         Application<b>-></b>Run<b>(</b><b>)</b><b>;</b>
+    <b>}</b>
+    <b>catch</b> <b>(</b>Exception <b>&</b>exception<b>)</b>
+    <b>{</b>
+         Application<b>-></b>ShowException<b>(</b><b>&</b>exception<b>)</b><b>;</b>
+    <b>}</b>
+    <b>return</b> <font color="blue">0</font><b>;</b>
+<b>}</b>
+</pre>
+<HR>
+<P>
+<B>Using CreateMutex: </B>The <TT>FindWindow</TT> approach is nice because it is simple and easy to understand.
+Unfortunately, it has some drawbacks. For starters, it assumes that the caption of the application never changes.
+Secondly, if the user clicks an icon several times to start your app, the first app could be pre-empted by the second
+app just after the <TT>FindWindow</TT> call executes, and both programs might sneak through the <TT>if</TT> test.
+</P>
+<P>
+<TT>CreateMutex</TT> provides a more robust way of testing to see if a previous instance of a program has been
+created. Mutexes are system wide objects that multiple processes can see. If program A creates a mutex, program B can
+see that mutex. Mutex'es have names, and only one mutex of a given name can exist on a machine at a time. If I create a
+mutex called "Bob's Special Mutex", no other program can create a mutex with that name.
+</P>
+<P>
+To use <TT>CreateMutex</TT> to prevent mutliple instances, you attempt to create a mutex when WinMain starts. If the
+mutex cannot be created, then you know another instance of the program must already be running because somebody had
+to create the mutex. Here is sample code that demonstrates how to use <TT>CreateMutex</TT> to prevent multiple
+instances.
+</P>
+<pre>
+WINAPI WinMain<b>(</b>HINSTANCE<b>,</b> HINSTANCE<b>,</b> LPSTR<b>,</b> <b>int</b><b>)</b>
+<b>{</b>
+    <font color="navy">// Attempt to create a mutex. If the mutex already existed,</font>
+    <font color="navy">// GetLastError will return ERROR_ALREADY_EXISTS</font>
+    HANDLE hInstanceMutex <b>=</b> <b>:</b><b>:</b>CreateMutex<b>(</b>NULL<b>,</b>TRUE<b>,</b> <font color="blue">"PROJECT1"</font><b>)</b><b>;</b>
+    <b>if</b><b>(</b>GetLastError<b>(</b><b>)</b> <b>==</b> ERROR_ALREADY_EXISTS<b>)</b>
+    <b>{</b>
+        <b>if</b><b>(</b>hInstanceMutex<b>)</b>
+            CloseHandle<b>(</b>hInstanceMutex<b>)</b><b>;</b>
+        <b>return</b> <font color="blue">0</font><b>;</b>
+    <b>}</b>
+
+    <b>try</b>
+    <b>{</b>
+         Application<b>-></b>Initialize<b>(</b><b>)</b><b>;</b>
+         Application<b>-></b>CreateForm<b>(</b><b>__classid</b><b>(</b>TForm1<b>)</b><b>,</b> <b>&</b>Form1<b>)</b><b>;</b>
+         Application<b>-></b>Run<b>(</b><b>)</b><b>;</b>
+    <b>}</b>
+    <b>catch</b> <b>(</b>Exception <b>&</b>exception<b>)</b>
+    <b>{</b>
+         Application<b>-></b>ShowException<b>(</b><b>&</b>exception<b>)</b><b>;</b>
+    <b>}</b>
+
+    ReleaseMutex<b>(</b>hInstanceMutex<b>)</b><b>;</b>
+    CloseHandle<b>(</b>hInstanceMutex<b>)</b><b>;</b>
+    <b>return</b> <font color="blue">0</font><b>;</b>
+<b>}</b>
+</pre>
+<P>
+The OS serializes calls made to <TT>CreateMutex</TT>, so two instances of a program can't sneak through the <TT>
+CreateMutex</TT> function the same way they sneak past the <TT>FindWindow</TT> code. The OS also takes care of
+releasing the mutex if your application crashes.
+</P>
+<P>
+There are times when you may want to restore the original instance of a program when the user launches a second
+instance. The following code demonstrates how you can do that using <TT>CreateMutex</TT> and <TT>FindWindow</TT>.
+<TT>CreateMutex</TT> handles the task of blocking mutliple instances of a program from running, while
+<TT>FindWindow</TT> gives us a window handle that we can send the restore message to.
+</P>
+
+<P>
+<TABLE WIDTH="75%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Note" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Note:</b>
+<hr size = 1>
+This example assumes that you have set the application's title to "single" from the project options dialog.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+<pre>
+WINAPI WinMain<b>(</b>HINSTANCE<b>,</b> HINSTANCE<b>,</b> LPSTR<b>,</b> <b>int</b><b>)</b>
+<b>{</b>
+    HANDLE hInstanceMutex <b>=</b> <b>:</b><b>:</b>CreateMutex<b>(</b>NULL<b>,</b>TRUE<b>,</b> <font color="blue">"SINGLE.MUTEX"</font><b>)</b><b>;</b>
+    <b>if</b><b>(</b>GetLastError<b>(</b><b>)</b> <b>==</b> ERROR_ALREADY_EXISTS<b>)</b>
+    <b>{</b>
+        <b>if</b><b>(</b>hInstanceMutex<b>)</b>
+            CloseHandle<b>(</b>hInstanceMutex<b>)</b><b>;</b>
+
+        <font color="navy">// Find the HWND of the hidden application window of the previous</font>
+        <font color="navy">// instance. Note that we are not looking for the HWND of the main</font>
+        <font color="navy">// form. This code fails miserably if you pass it the main form</font>
+        <font color="navy">// HWND instead of the Application's HWND</font>
+        Application<b>-></b>Title <b>=</b> <font color="blue">""</font><b>;</b>
+        HWND hPrevApp <b>=</b> <b>:</b><b>:</b>FindWindow<b>(</b>NULL<b>,</b> <font color="blue">"single"</font><b>)</b><b>;</b>
+        <b>if</b><b>(</b>hPrevApp<b>)</b>
+            PostMessage<b>(</b>hPrevApp<b>,</b> WM_SYSCOMMAND<b>,</b> SC_RESTORE<b>,</b> <font color="blue">0</font><b>)</b><b>;</b>
+
+        <b>return</b> <font color="blue">0</font><b>;</b>
+    <b>}</b>
+
+    <b>try</b>
+    <b>{</b>
+         Application<b>-></b>Initialize<b>(</b><b>)</b><b>;</b>
+         Application<b>-></b>Title <b>=</b> <font color="blue">"single"</font><b>;</b>
+         Application<b>-></b>CreateForm<b>(</b><b>__classid</b><b>(</b>TForm1<b>)</b><b>,</b> <b>&</b>Form1<b>)</b><b>;</b>
+         Application<b>-></b>Run<b>(</b><b>)</b><b>;</b>
+    <b>}</b>
+    <b>catch</b> <b>(</b>Exception <b>&</b>exception<b>)</b>
+    <b>{</b>
+         Application<b>-></b>ShowException<b>(</b><b>&</b>exception<b>)</b><b>;</b>
+    <b>}</b>
+
+    ReleaseMutex<b>(</b>hInstanceMutex<b>)</b><b>;</b>
+    CloseHandle<b>(</b>hInstanceMutex<b>)</b><b>;</b>
+    <b>return</b> <font color="blue">0</font><b>;</b>
+<b>}</b>
+</pre>
+<HR>
+<P>
+<B>Using CreateSemaphore: </B>The code example below demonstrates how you can use semaphores to limit the number of
+instances of a program that can run at any one time. This code puts the limit at 5. You can run 5 instances of the
+program, but you will not be allowed to execute a sixth instance.
+</P>
+<pre>
+WINAPI WinMain<b>(</b>HINSTANCE<b>,</b> HINSTANCE<b>,</b> LPSTR<b>,</b> <b>int</b><b>)</b>
+<b>{</b>
+    <font color="navy">// Try to create a semaphore object. If the object already existed, the</font>
+    <font color="navy">// OS will return the previous semaphore without creating a new one</font>
+    <font color="navy">// Note: The semaphore count will decrease each time WaitForSingeObject</font>
+    <font color="navy">//       is called. The third argument to CreateSemaphore determines</font>
+    <font color="navy">//       the max number of instances. The second argument is the</font>
+    <font color="navy">//       initial semaphore count.</font>
+    HANDLE hSemaphore <b>=</b> <b>:</b><b>:</b>CreateSemaphore<b>(</b>NULL<b>,</b><font color="blue">5</font><b>,</b><font color="blue">5</font><b>,</b> <font color="blue">"SINGLE.SEMAPHORE"</font><b>)</b><b>;</b>
+
+    <font color="navy">// When WaitForSingleObject returns WAIT_OBJECT_O, the semaphore</font>
+    <font color="navy">// count has ran out.</font>
+    <b>if</b><b>(</b>hSemaphore <b>&&</b> WaitForSingleObject<b>(</b>hSemaphore<b>,</b> <font color="blue">0</font><b>)</b> <b>!=</b> WAIT_OBJECT_0<b>)</b>
+    <b>{</b>
+        CloseHandle<b>(</b>hSemaphore<b>)</b><b>;</b>
+        ShowMessage<b>(</b><font color="blue">"Boss says we can only run 5 instances at a time"</font><b>)</b><b>;</b>
+        <b>return</b> <font color="blue">0</font><b>;</b>
+    <b>}</b>
+
+    <b>try</b>
+    <b>{</b>
+         Application<b>-></b>Initialize<b>(</b><b>)</b><b>;</b>
+         Application<b>-></b>CreateForm<b>(</b><b>__classid</b><b>(</b>TForm1<b>)</b><b>,</b> <b>&</b>Form1<b>)</b><b>;</b>
+         Application<b>-></b>Run<b>(</b><b>)</b><b>;</b>
+    <b>}</b>
+    <b>catch</b> <b>(</b>Exception <b>&</b>exception<b>)</b>
+    <b>{</b>
+         Application<b>-></b>ShowException<b>(</b><b>&</b>exception<b>)</b><b>;</b>
+    <b>}</b>
+
+    ReleaseSemaphore<b>(</b>hSemaphore<b>,</b><font color="blue">1</font><b>,</b>NULL<b>)</b><b>;</b>
+    CloseHandle<b>(</b>hSemaphore<b>)</b><b>;</b>
+    <b>return</b> <font color="blue">0</font><b>;</b>
+<b>}</b>
+</pre>
+
+
+<TABLE  BORDER=1 CELLPADDING=10 CELLSPACING=0 WIDTH="100%">
+<TR> <TD colspan = 2><B>Downloads for this FAQ</B> </TD> </TR>
+<TR> <TD><TT><A HREF="http://www.bcbdev.com/ftp/source/single1src.zip">single1src.zip</A></TT></TD> <TD>Preventing multiple instances with <TT>CreateMutex</TT>. Source code only.   </TD> </TR>
+<TR> <TD><TT><A HREF="http://www.bcbdev.com/ftp/source/single1exe.zip">single1exe.zip</A></TT></TD> <TD>Preventing multiple instances with <TT>CreateMutex</TT>. Includes EXE.       </TD> </TR>
+<TR> <TD><TT><A HREF="http://www.bcbdev.com/ftp/source/single2src.zip">single2src.zip</A></TT></TD> <TD>Preventing multiple instances with <TT>CreateSemaphore</TT>. Source code only.</TD> </TR>
+<TR> <TD><TT><A HREF="http://www.bcbdev.com/ftp/source/single2exe.zip">single2exe.zip</A></TT></TD> <TD>Preventing multiple instances with <TT>CreateSemaphore</TT>. Includes EXE.    </TD> </TR>
+</TABLE>
+
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

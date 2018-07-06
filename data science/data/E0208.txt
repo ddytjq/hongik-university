@@ -1,0 +1,392 @@
+ID=E0208
+URL=http://www.troubleshooters.com/codecorn/littperl/perloop.htm
+SIZE=16665
+DATE=12/07/02
+TIME=19:18:39
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="description" CONTENT="Debugging and Troubleshooting Source Code including MS Access, C++, Delphi, FoxPro, MFC, SQL, Visual Basic">
+   <META NAME="keywords" CONTENT="debugging, troubleshooting, Source Code, Access, C++, Delphi, FoxPro, MFC, Microsoft Foundation Classes, SQL, Visual Basic">
+   <META NAME="FORMATTER" CONTENT="Microsoft FrontPage 1.1">
+   <META NAME="Author" CONTENT="Steve Litt">
+   <META NAME="Description" CONTENT="Regular Expressions in PERL">
+   <META NAME="KeyWords" CONTENT="PERL, perl, OOP, Object Oriented Programming">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.06 [en] (Win95; U) [Netscape]">
+   <TITLE>PERL OOP</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFF0" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000" BACKGROUND="../../tcbk.gif">
+
+<CENTER>
+<H2>
+<A NAME="top"></A><A HREF="../../troubleshooters.htm">Troubleshooters.Com</A>
+and <A HREF="../index.htm">Code Corner</A> Present</H2></CENTER>
+
+<CENTER>
+<H1>
+<A HREF="index.htm">Steve Litt's PERLs of Wisdom</A>:<BR>
+<FONT SIZE=+4>PERL OOP<BR>
+</FONT>(With Snippets)</H1></CENTER>
+
+<CENTER><A HREF="../../cpyright.htm">Copyright (C) 1998 by Steve Litt</A></CENTER>
+
+<P>
+<HR>
+<H1>
+Contents</H1>
+
+<UL>
+<LI>
+<A HREF="#Introduction">Introduction</A></LI>
+</UL>
+
+<H1>
+<A NAME="Introduction"></A>Introduction</H1>
+Perl 5 can be used in OOP programming. It's not as encapsulated as I'd
+like, but it's not bad if both the class design programmer and the application
+programmer are cool about what they do.
+<P>This document is NOT a detailed description of OOP in Perl. It simply
+discusses a few very basic techniques, the 10% of Perl OOP you'll use 90%
+of the time.
+<BR>&nbsp;
+<H1>
+<A NAME="PerlOOPGotchas"></A>Perl OOP Gotchas</H1>
+Watch out!
+<P>Perl OOP can really nail you if you don't watch out. Here are some things
+to look for:
+<BR>&nbsp;
+<H2>
+Always call methods with an object</H2>
+Always do this:
+<BR>&nbsp;
+<PRE>$myobj->mymethod(arg1, arg2);</PRE>
+Never:
+<PRE>&amp;mymethod(arg1, arg2);</PRE>
+That's because the object becomes arg0 ($_[0]) inside the methods, and
+most good methods self-reference by arg0 as follows:
+<PRE>sub mymethod
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; my($self) = shift;&nbsp;&nbsp;&nbsp; # shift returns $_[0] on its first call
+&nbsp;&nbsp;&nbsp; ...
+&nbsp;&nbsp;&nbsp; }</PRE>
+This may not be so obvious to C++ programmers (like me), who call one method
+from another simply by mentioning the function name. Note in PERL. Instead,
+explicitly do this:
+<PRE>sub myfunction1
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; $self->myfunction2($whatever);
+&nbsp;&nbsp;&nbsp; }</PRE>
+
+<H1>
+<A NAME="Tutorial"></A>Tutorial: Build a Tree Traversing Class</H1>
+
+<H2>
+Make a Dummy Class</H2>
+Start with a file in the current directory called Tree.pm. Remember that
+Perl Classes are contained in Module files, and Perl Modules have .pm extensions.
+At the top line, declare it to be a package with the following:
+<BR>&nbsp;
+<TABLE BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<TR>
+<TD>
+<PRE>#File Tree.pm, module for class Tree
+#The "package Tree" syntax declares it as a package (class)
+package Tree;
+
+#The constructor is always called new(). It can take as many args
+#as required.
+sub new
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp; #Arg0 is the type because the constructor will look like
+&nbsp;&nbsp;&nbsp;&nbsp; #&nbsp; my($instance) = Tree->new(arg1,arg2,whatever)
+&nbsp;&nbsp;&nbsp;&nbsp; #so arg0 will be Tree.
+&nbsp;&nbsp;&nbsp;&nbsp; my($type) = $_[0];
+
+&nbsp;&nbsp;&nbsp;&nbsp; #Make subroutine-local var $self, and make it a reference.
+&nbsp;&nbsp;&nbsp;&nbsp; #Specifically, make it a reference to a (right now) empty hash.
+&nbsp;&nbsp;&nbsp;&nbsp; #Later on, that hash will contain object properties.
+&nbsp;&nbsp;&nbsp;&nbsp; my($self) = {};
+
+&nbsp;&nbsp;&nbsp;&nbsp; #For now, we'll have one instance variable (property, whatever)
+&nbsp;&nbsp;&nbsp;&nbsp; #It will be in the hash referenced by $self, and will have
+&nbsp;&nbsp;&nbsp;&nbsp; #the index 'root'. This will be the first arg (inside the parentheses)
+&nbsp;&nbsp;&nbsp;&nbsp; #of the call to the constructor in the main program.
+&nbsp;&nbsp;&nbsp;&nbsp; $self->{'root'} = $_[1];&nbsp;&nbsp;&nbsp; #remember $_[0] was the Tree before the ->
+
+&nbsp;&nbsp;&nbsp;&nbsp; #There's nothing reserved about the word $self. It could have been
+&nbsp;&nbsp;&nbsp;&nbsp; #called $oodolaboodola. To link the object with both the hash pointed
+&nbsp;&nbsp;&nbsp;&nbsp; #to by $self and the type (Tree), we use the 2 argument version
+&nbsp;&nbsp;&nbsp;&nbsp; #of the keyword bless:
+&nbsp;&nbsp;&nbsp;&nbsp; bless($self, $type);
+
+&nbsp;&nbsp;&nbsp;&nbsp; #Now finally, return the hash as a reference to be used as an "object"
+&nbsp;&nbsp;&nbsp;&nbsp; return($self);
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+#Now make diagnostic routine tellroot to make sure everything's OK.
+sub tellroot
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp; #first "find yourself". Once again, there's nothing reserved
+&nbsp;&nbsp;&nbsp;&nbsp; #about the word $self. We simply assume that whoever called tellroot
+&nbsp;&nbsp;&nbsp;&nbsp; #was smart enough to call it like $myinstance->tellroot().
+&nbsp;&nbsp;&nbsp;&nbsp; my($self)=$_[0];
+
+&nbsp;&nbsp;&nbsp;&nbsp; #Now that we have $self, we can get the root from the hash after
+&nbsp;&nbsp;&nbsp;&nbsp; #dereferencing.
+&nbsp;&nbsp;&nbsp;&nbsp; print "Root is $self->{'root'}.\n";
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+return(1);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #package files must always return 1.</PRE>
+</TD>
+</TR>
+</TABLE>
+
+<P>Now make the main program
+<BR>&nbsp;
+<BR>&nbsp;
+<TABLE BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<TR>
+<TD>
+<PRE>#main.pl
+
+use Tree;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #include the tree class file.
+
+my($TreeObj) = Tree->new("c:\\"); #instantiate. Note that arg0 is Tree.
+
+$TreeObj->tellroot();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Note that arg0 is $TreeObj.
+
+#This code should print out "C:\".</PRE>
+</TD>
+</TR>
+</TABLE>
+
+<P>Run it. It should print out "c:\", just like you expect. When you understand
+everything that happened, go on to the next step, where we flush it out
+(and drop some of the comments).
+<P>In the next step, we'll make the Tree class a dedicated tree browser,
+a sort of dir /s if you will. Don't worry, the final version will actually
+be useful and reusable.
+<H2>
+Make it into a tree browser</H2>
+This is the Tree class does the same as a DOS dir /s. Don't worry, the
+final version will actually be useful and reusable.
+<BR>&nbsp;
+<TABLE BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<TR>
+<TD>
+<PRE>#File Tree.pm, module for class Tree
+package Tree;
+
+sub new
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp; my($type) = $_[0];
+&nbsp;&nbsp;&nbsp;&nbsp; my($self) = {};
+&nbsp;&nbsp;&nbsp;&nbsp; $self->{'root'} = $_[1];&nbsp;&nbsp;&nbsp; #remember $_[0] was the Tree before the ->
+&nbsp;&nbsp;&nbsp;&nbsp; bless($self, $type);
+&nbsp;&nbsp;&nbsp;&nbsp; return($self);
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+sub tellroot
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp; my($self)=$_[0];
+&nbsp;&nbsp;&nbsp;&nbsp; print "Root is $self->{'root'}.\n";
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+sub cruisetree
+&nbsp;&nbsp; {
+&nbsp;&nbsp; my($self) = $_[0];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Find yourself
+
+&nbsp;&nbsp; #*** Now call method onedir with self->onedir, NEVER &amp;onedir ***
+&nbsp;&nbsp; $self->onedir($self->{'root'});&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #note called with instance
+&nbsp;&nbsp; }
+
+sub onedir
+&nbsp;&nbsp; {
+&nbsp;&nbsp; my($self) = $_[0];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Find yourself
+&nbsp;&nbsp; my($dirname) = $_[1];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Directory passed in
+
+&nbsp;&nbsp; #*** Below this point there's nothing OOP, EXCEPT ***
+&nbsp;&nbsp; #*** EXCEPT for the line commented %%%% O O P %%%% ***
+&nbsp;&nbsp; opendir(DIR, $dirname);
+&nbsp;&nbsp; my(@Names) = readdir(DIR);
+&nbsp;&nbsp; closedir(DIR);
+
+&nbsp;&nbsp; # Blow off possible trailing backslash before appending one.
+&nbsp;&nbsp; # Don't want 2 consecutive backslashes.
+&nbsp;&nbsp; if($dirname =~ /(.*)\\$/)&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {$dirname = $1;}
+
+&nbsp;&nbsp; # Loop thru directory, handle files and directories&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; my($Name);
+&nbsp;&nbsp; foreach $Name (@Names)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp; chomp($Name);
+&nbsp;&nbsp;&nbsp;&nbsp; my($Path) = "$dirname\\$Name";
+&nbsp;&nbsp;&nbsp;&nbsp; if( -d $Path )&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # if path represents a directory
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(($Name ne "..") &amp;&amp; ($Name ne "."))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print "Directory $Path...\n";
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $self->onedir($Path);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #%%%% O O P %%%%
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp; else&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # if path represents a file
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; File $Path\n"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; return;
+&nbsp;&nbsp; }
+
+return(1);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #package files must always return 1.</PRE>
+</TD>
+</TR>
+</TABLE>
+
+<P>And here is the main.pl which calls it:
+<TABLE BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<TR>
+<TD>
+<PRE>#main.pl
+
+use Tree;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #include the tree class file.
+
+my($TreeObj) = Tree->new("c:\\"); #instantiate. Note that arg0 is Tree.
+
+$TreeObj->cruisetree();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Note that arg0 is $TreeObj.
+
+#This code should print out the entire c:\ tree.</PRE>
+</TD>
+</TR>
+</TABLE>
+
+<H2>
+Now make it a reusable tool</H2>
+We'll now make the Tree class an encapsulated object which is instantiated
+with the root of the tree and references to two external subroutines. One
+external subroutine performs on directories found, the other on files found.
+The Tree object passes each two arguments, the path and the bare filename.
+From that the external directories can deduce file dates and a lot more.
+<P>You'll note that the entire functionality of the program can be changed
+just by changing subroutines showfile() and showdir() in the main routine.
+The Tree.pm code requires no changes. It's truly reusable.
+<BR>&nbsp;
+<TABLE BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<TR>
+<TD>
+<PRE>#File Tree.pm, module for class Tree
+package Tree;
+
+sub new
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp; my($type) = $_[0];
+&nbsp;&nbsp;&nbsp;&nbsp; my($self) = {};
+&nbsp;&nbsp;&nbsp;&nbsp; $self->{'root'}&nbsp;&nbsp;&nbsp; = $_[1]; #remember $_[0] was the Tree before the ->
+&nbsp;&nbsp;&nbsp;&nbsp; $self->{'dirfcn'}&nbsp; = $_[2];
+&nbsp;&nbsp;&nbsp;&nbsp; $self->{'filefcn'} = $_[3];
+&nbsp;&nbsp;&nbsp;&nbsp; bless($self, $type);
+&nbsp;&nbsp;&nbsp;&nbsp; return($self);
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+sub tellroot
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp; my($self)=$_[0];
+&nbsp;&nbsp;&nbsp;&nbsp; print "Root is $self->{'root'}.\n";
+&nbsp;&nbsp;&nbsp;&nbsp; }
+
+sub cruisetree
+&nbsp;&nbsp; {
+&nbsp;&nbsp; my($self) = $_[0];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Find yourself
+
+&nbsp;&nbsp; #*** Now call method onedir with self->onedir, NEVER &amp;onedir ***
+&nbsp;&nbsp; #*** Note that dirfcn and filefcn aren't passed ***
+&nbsp;&nbsp; #*** Because they're contained in $self and don't change ***
+&nbsp;&nbsp; $self->onedir($self->{'root'});&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #note called with instance
+&nbsp;&nbsp; }
+
+sub onedir
+&nbsp;&nbsp; {
+&nbsp;&nbsp; my($self) = $_[0];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Find yourself
+&nbsp;&nbsp; my($dirname) = $_[1];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Directory passed in
+
+&nbsp;&nbsp; #*** Below this point there's nothing OOP, EXCEPT ***
+&nbsp;&nbsp; #*** EXCEPT for the line commented %%%% O O P %%%% ***
+&nbsp;&nbsp; opendir(DIR, $dirname);
+&nbsp;&nbsp; my(@Names) = readdir(DIR);
+&nbsp;&nbsp; closedir(DIR);
+
+&nbsp;&nbsp; # Blow off possible trailing backslash before appending one.
+&nbsp;&nbsp; # Don't want 2 consecutive backslashes.
+&nbsp;&nbsp; if($dirname =~ /(.*)\\$/)&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {$dirname = $1;}
+
+&nbsp;&nbsp; # Loop thru directory, handle files and directories&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; my($Name);
+&nbsp;&nbsp; foreach $Name (@Names)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp; chomp($Name);
+&nbsp;&nbsp;&nbsp;&nbsp; my($Path) = "$dirname\\$Name";
+&nbsp;&nbsp;&nbsp;&nbsp; if( -d $Path )&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # if path represents a directory
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(($Name ne "..") &amp;&amp; ($Name ne "."))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &amp;{$self->{'dirfcn'}}($Path, $Name);&nbsp; #%%%% O O P %%%%
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $self->onedir($Path);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #%%%% O O P %%%%
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp; else&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # if path represents a file
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &amp;{$self->{'filefcn'}}($Path, $Name)&nbsp; #%%%% O O P %%%%
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; return;
+&nbsp;&nbsp; }
+
+return(1);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #package files must always return 1.
+</PRE>
+</TD>
+</TR>
+</TABLE>
+
+<TABLE BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<TR>
+<TD>
+<PRE>#main.pl
+
+use Tree;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #include the tree class file.
+
+my($TreeObj) = Tree->new("c:\\windows", \&amp;showdir, \&amp;showfile);
+
+$TreeObj->cruisetree();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Note that arg0 is $TreeObj.
+
+sub showdir
+&nbsp;&nbsp; {
+&nbsp;&nbsp; print "Directory: $_[0] ...\n";
+&nbsp;&nbsp; }
+
+sub showfile
+&nbsp;&nbsp; {
+&nbsp;&nbsp; print "&nbsp;&nbsp;&nbsp;&nbsp; File: $_[0] ...\n";
+&nbsp;&nbsp; }
+#This code should print out "C:\".
+</PRE>
+</TD>
+</TR>
+</TABLE>
+
+<P>
+<HR>
+<P>&nbsp;[ <A HREF="../../troubleshooters.htm">Troubleshooters.com</A>
+| <A HREF="../index.htm">Code Corner</A> | <A HREF="mailto:slitt@troubleshooters.com">Email
+Steve Litt</A> ]
+<P><A HREF="../../cpyright.htm#top"><IMG SRC="../../images/biglcpyr.gif" BORDER=0 HEIGHT=30 WIDTH=30></A>
+<A HREF="../../cpyright.htm#top">Copyright
+(C)1998 by Steve Litt</A> --
+<A HREF="../../cpyright.htm#top">Legal</A>
+<BR>&nbsp;
+<BR>&nbsp;
+</BODY>
+</HTML>
+

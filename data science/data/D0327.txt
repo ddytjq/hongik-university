@@ -1,0 +1,106 @@
+ID=D0327
+URL=http://www-2.cs.cmu.edu/~jch/java/linpack.html
+SIZE=4487
+DATE=16/07/02
+TIME=14:43:16
+DATASET=Java
+HTML=<html>
+<head>
+<title>Optimizing Java Linpack</title>
+<base href="http://www.cs.cmu.edu/~jch/java/linpack.html">
+<meta name="author" content="Jonathan Hardwick">
+<meta name="description" content="Optimizing the Java Linpack benchmark.  Includes optimized and unoptimized applets.">
+<meta name="keywords" content="speed, performance, optimization, optimisation">
+</head>
+
+<body>
+<h1 align=center>Optimizing Java Linpack</h1>
+<p align=center><font face="Helvetica" size=-1>
+[ <a href="optimization.html">index</a>
+ | <a href="benchmarks.html">benchmarks</a>
+ | <a href="speed.html">speed</a>
+ | <a href="size.html">size</a>
+ | <a href="maintainability.html">maintainability</a>
+ | <a href="rules.html">rules</a>
+ | <a href="tools.html">tools</a>
+ | <a href="compilers.html">compilers</a> ]
+</font></p>
+<hr size=1 noshade>
+
+<blockquote>
+I took the original
+<a href="http://www.netlib.org/benchmark/linpackjava/">Java Linpack
+benchmark</a>, by Jack Dongarra and Reed Wade, and applied some of the
+optimizations from my <a href="optimization.html">Java
+Optimization</a> page: 
+<ul>
+<li>Added the <tt>final</tt> modifier to performance-critical methods.
+<li>Used compound assignment operators such as <tt>+=</tt> wherever 
+    possible, changing code of the form  <tt>a[i] = a[i] + x</tt> to 
+    <tt>a[i] += x</tt> (strength reduction).
+<li>Used temporary scalars to hold frequently-used elements of 1D arrays
+    (common subexpression elimination).
+<li>Used temporary 1D arrays to hold frequently-used columns of 2D arrays
+    (ditto).
+<li>Eliminated unused variables (dead code elimination).
+<li>Undid an unrolled loop.
+<li>Supplied my own <tt>abs()</tt> method.
+</ul>
+
+The optimized code is typically 10-20% faster when run on the JDK interpreter,
+depending on the architecture, but may not show any improvement at all when
+run under a just-in-time compiler.  Here are some sample MFlops ratings
+(higher is better), running the <a href="LinpackLoop.java">original</a> and <a
+href="LinpackLoopOpt.java">optimized</a> code.  The first three results are
+for the JDK on different machines, while the last four results compare
+different just-in-time compilers on the same machine.
+
+<p>
+<center><table border cellpadding=2>
+  <tr align=right><th align=left>Machine</th><th>Original</th><th>Optimized</th></tr>
+  <tr align=right><td align=left>Sparc5/85, JDK 1.0.2</td><td>0.25</td><td>0.30</td></tr>
+  <tr align=right><td align=left>HP 712/60, JDK 1.0.2</td><td>0.15</td><td>0.16</td></tr>
+  <tr align=right><td align=left>DX4-120, JDK 1.0.2</td><td>0.22</td><td>0.26</td></tr>
+  <tr align=right><td align=left>DX4-120, Cafe 1.51</td><td>1.24</td><td>1.32</td></tr>
+  <tr align=right><td align=left>DX4-120, Visual Cafe PR 2</td><td>2.78</td><td>2.84</td></tr>
+  <tr align=right><td align=left>DX4-120, Netscape Navigator 3.0</td><td>1.87</td><td>1.92</td></tr>
+  <tr align=right><td align=left>DX4-120, Internet Explorer 3.0</td><td>3.21</td><td>3.21</td></tr>
+</table></center>
+<p>
+Note that the benchmark is run 10 times to reduce clock granularity problems.
+<p>
+To try it for yourself, use the applet below.  Depending on 
+machine load, you may need to take the best of several runs.
+<p>
+<center>
+<applet code="LinpackApplet.class" width=600 height=100>
+[Your browser doesn't run Java]
+</applet>
+</center>
+<p>
+
+Note: with more modern JITs, the optimized version is actually <b>slower</b>
+than the original (thanks to everyone who pointed this out :->).  I suspect
+that putting the unrolled loop back and/or using JIT <tt>abs</tt> methods
+would restore its performance advantage.  Consider this a salutory reminder of
+the dangers of optimization!
+    <img alt="[NEW]" width=31 height=12 src="new.gif">
+
+</blockquote>
+
+<img alt="[Counter]" align=right width=40 height=16 src="http://web.scandal.cs.cmu.edu/cgi-bin/count-linpack.xbm">
+<hr size=1 noshade>
+<center><table width="100%" cellspacing=0 cellpadding=0 border=0>
+  <tr>
+    <td align=left><font size=-1>http://www.cs.cmu.edu/~jch/java/linpack.html</font></td>
+    <td align=right><font size=-1>Optimizing Java Linpack</font></td>
+  </tr>
+  <tr>
+    <td align=left><font size=-1><!-- hhmts start -->Last modified: Wed 18 Mar 1998<!-- hhmts end --></font></td>
+    <td align=right><font size=-1>Copyright &#169 1996, 1997 <a
+    href="http://www.cs.cmu.edu/~jch/">Jonathan Hardwick</a></font></td>
+  </tr>
+</table></center>
+</body>
+</html>
+

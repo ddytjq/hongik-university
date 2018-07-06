@@ -1,0 +1,558 @@
+ID=E0104
+URL=http://www.troubleshooters.com/codecorn/littperl/perlreg.htm
+SIZE=25379
+DATE=12/07/02
+TIME=19:17:30
+DATASET=C
+HTML=<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="description" content="Debugging and Troubleshooting Source Code including MS Access, C++, Delphi, FoxPro, MFC, SQL, Visual Basic">
+   <meta name="keywords" content="debugging, troubleshooting, Source Code, Access, C++, Delphi, FoxPro, MFC, Microsoft Foundation Classes, SQL, Visual Basic">
+   <meta name="FORMATTER" content="Microsoft FrontPage 1.1">
+   <meta name="Author" content="Steve Litt">
+   <meta name="Description" content="Regular Expressions in PERL">
+   <meta name="KeyWords" content="PERL, perl, regular expressions,parsing">
+   <meta name="GENERATOR" content="Mozilla/4.77 [en] (X11; U; Linux 2.4.3-20mdksmp i686) [Netscape]">
+   <title>PERL Regular Expressions</title>
+</head>
+<body text="#000000" bgcolor="#FFFFF0" link="#0000EE" vlink="#551A8B" alink="#FF0000" background="../../tcbk.gif" nosave>
+
+<center>
+<h2>
+<a NAME="top"></a><a href="../../troubleshooters.htm">Troubleshooters.Com</a>
+and <a href="../index.htm">Code Corner</a> Present</h2></center>
+
+<center>
+<h1>
+<a href="index.htm">Steve Litt's PERLs of Wisdom</a>:<br>
+<font size=+4>PERL Regular Expressions<br>
+</font>(With Snippets)</h1></center>
+
+<center><a href="../../cpyright.htm">Copyright (C) 1998-2001 by Steve Litt</a></center>
+
+<table CELLSPACING=0 CELLPADDING=0 HEIGHT="4%" NOSAVE >
+<tr NOSAVE>
+<td NOSAVE></td>
+</tr>
+</table>
+
+<center><table BORDER CELLSPACING=0 CELLPADDING=5 WIDTH="90%" BGCOLOR="#F0FFE7" NOSAVE >
+<tr NOSAVE>
+<td NOSAVE><b><i><font size=-1>Steve Litt is the author of <a href="../../bookstore/ttech.htm">Troubleshooting
+Techniques of the Successful Technologist</a>,&nbsp; <a href="../../bookstore/rl.htm">Rapid
+Learning: Secret Weapon of the Successful Technologist</a>, and <a href="../../bookstore/su.htm">Samba
+Unleashed</a>.</font></i></b></td>
+</tr>
+</table></center>
+
+<table CELLSPACING=0 CELLPADDING=0 HEIGHT="5%" NOSAVE >
+<tr NOSAVE>
+<td NOSAVE></td>
+</tr>
+</table>
+
+<h1>
+Contents</h1>
+
+<ul>
+<li>
+<a href="#Introduction">Introduction</a></li>
+
+<li>
+<a href="#WhatTheyAre">What They Are</a></li>
+
+<li>
+<a href="#DoingStringComparisons">Doing String Comparisons</a></li>
+
+<ul>
+<li>
+<a href="#SimpleStringComparisons">Simple String Comparisons</a></li>
+
+<li>
+<a href="#UsingSimpleWildcards">Using Simple "Wildcards" and "Repetitions"</a></li>
+
+<li>
+<a href="#Groups">Using Groups () in Matching</a></li>
+
+<li>
+<a href="#CharacterClassesBug">Using Character Classes []</a></li>
+
+<li>
+<a href="#PuttingItAllTogether">Matching: Putting it All Together</a></li>
+</ul>
+
+<li>
+<a href="#StringSelections">Doing String Selections (parsing)</a></li>
+
+<li>
+<a href="#DoingSubstitutions">Doing Substitutions</a></li>
+
+<li>
+<a href="#DoingTranslations">Doing Translations</a></li>
+
+<li>
+<a href="#Greedy">Greedy and Ungreedy Matching</a></li>
+
+<li>
+<a href="#Doubledots">Resolving Doubledots in A Filepath</a></li>
+
+<li>
+<a href="#Oneliner">Kewl Splitpath One Liner Regex</a></li>
+
+<li>
+<a href="#SymbolExplanations">Symbol Explanations:</a></li>
+
+<ul>
+<li>
+<font size=+0><a href="#op_=~">=~</a></font></li>
+
+<li>
+<font size=+0><a href="#op_!~">!~</a></font></li>
+
+<li>
+<font size=+0><a href="#op_/">/</a></font></li>
+
+<li>
+<font size=+0><a href="#op_m">m</a></font></li>
+
+<li>
+<font size=+0><a href="#op_^">^</a></font></li>
+
+<li>
+<font size=+0><a href="#op_$">$</a></font></li>
+
+<li>
+<font size=+0><a href="#op_i">i</a></font></li>
+</ul>
+</ul>
+
+<h1>
+<a NAME="Introduction"></a>Introduction</h1>
+Without regular expressions, PERL would be a fast development environment.
+Probably a little faster than VB for console apps. With the addition of
+regular expressions, PERL exceeds other RAD environments five to twenty-fold
+in the hands of an experienced practitioner, on console apps whose problem
+domains include parsing (and that's a heck of a lot of them).
+<p>Regular expressions is a HUGE area of knowledge, bordering on an art.
+Rather than regurgitate the contents of the PERL documentation or the plethora
+of PERL books at your local bookstore, this page will attempt to give you
+the 10% of regular expressions you'll use 90% of the time. Note that for
+this reason we assume all strings to be single-line strings containing
+no newline chars.
+<h1>
+<a NAME="WhatTheyAre"></a>What They Are</h1>
+Regular expressions are a syntax, implemented in PERL and certain other
+environments, making it not only possible but easy to do some of the following:
+<ul>
+<li>
+Complex string comparisons</li>
+
+<ul>
+<li>
+$string =~ m/sought_text/;&nbsp;&nbsp;&nbsp; # m before the first slash
+is the "match" operator.</li>
+</ul>
+
+<li>
+Complex string selections</li>
+
+<ul>
+<li>
+$string =~ m/whatever(sought_text)whatever2/;</li>
+
+<li>
+$soughtText = $1;</li>
+</ul>
+
+<li>
+Complex string replacements</li>
+
+<ul>
+<li>
+$string =~ tr/originaltext/newtext/;&nbsp;&nbsp;&nbsp; # tr before first
+slash is "translate" operator.</li>
+</ul>
+
+<li>
+Parsing based on the above abilities</li>
+</ul>
+
+<h1>
+<a NAME="DoingStringComparisons"></a>Doing String Comparisons</h1>
+We start with string comparisons because they're the easiest, and yet most
+of what's contained here is applicable in selecting and replacing text.
+<h2>
+<a NAME="SimpleStringComparisons"></a>Simple String Comparisons</h2>
+The most basic string comparison is
+<pre>$string <a href="#op_=~">=~</a> <a href="#op_m">m</a><a href="#op_/">/</a>sought_text<a href="#op_/">/</a>;</pre>
+The above returns true if string $string contains substring "sought_text",
+false otherwise. If you want only those strings where the sought text appears
+at the very beginning, you could write the following:
+<pre>$string <a href="#op_=~">=~</a> <a href="#op_m">m</a>/<a href="#op_^">^</a>sought_text/;</pre>
+Similarly, the $ operator indicates "end of string". If you wanted to find
+out if the sought text was the very last text in the string, you could
+write this:
+<pre>$string <a href="#op_=~">=~</a> <a href="#op_m">m</a>/sought_text<a href="#op_$">$</a>/;</pre>
+Now, if you want the comparison to be true only if $string contains the
+sought text and nothing but the sought text, simply do this:
+<pre>$string <a href="#op_=~">=~</a> <a href="#op_m">m</a>/<a href="#op_^">^</a>sought_text<a href="#op_$">$</a>/;</pre>
+Now what if you want the comparison to be case insensitive? All you do
+is add the letter i after the ending delimiter:
+<pre>$string <a href="#op_=~">=~</a> <a href="#op_m">m</a>/<a href="#op_^">^</a>sought_text<a href="#op_$">$</a>/<a href="#op_i">i</a>;</pre>
+
+<h2>
+<a NAME="UsingSimpleWildcards"></a>Using Simple "Wildcards" and "Repetitions"</h2>
+Calling these "wildcards" may actually conflict with the theoretical grammer
+and syntax of PERL, but in fact is the most intuitive way to think of it,
+and will not lead to any coding mistakes.
+<pre>.&nbsp;&nbsp; Match any character
+\w&nbsp; Match "word" character (alphanumeric plus "_")
+\W&nbsp; Match non-word character
+\s&nbsp; Match whitespace character
+\S&nbsp; Match non-whitespace character
+\d&nbsp; Match digit character
+\D&nbsp; Match non-digit character
+\t&nbsp; Match tab
+\n&nbsp; Match newline
+\r&nbsp; Match return
+\f&nbsp; Match formfeed
+\a&nbsp; Match alarm (bell, beep, etc)
+\e&nbsp; Match escape
+\021&nbsp; Match octal char ( in this case 21 octal)
+\xf0&nbsp; Match hex char ( in this case f0 hexidecimal)</pre>
+You can follow any character, wildcard, or series of characters and/or
+wildcard with a repetiton. Here's where you start getting some power:
+<pre>*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Match 0 or more times
++&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Match 1 or more times
+?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Match 1 or 0 times
+{n}&nbsp;&nbsp;&nbsp; Match exactly n times
+{n,}&nbsp;&nbsp; Match at least n times
+{n,m}&nbsp; Match at least n but not more than m times</pre>
+Now for some examples:
+<pre>$string =~ m/\s*rem/i;&nbsp;&nbsp; #true if the first printable text is rem or REM</pre>
+
+<pre>$string =~ m/^\S{1,8}\.\S{0,3}/;&nbsp;&nbsp; # check for DOS 8.3 filename&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #&nbsp; (note a few illegals can sneak thru)</pre>
+
+<h2>
+<a NAME="Groups"></a>Using Groups ( ) in Matching</h2>
+
+<h5>
+
+<hr WIDTH="100%">Note: Many situations can be done either with groups (
+) or character classes [ ]. Groups are less quirky and they more often
+yield the results you were looking for.&nbsp;
+<hr WIDTH="100%"></h5>
+Groups are regular expression characters surrounded by parentheses. They
+have two major uses:
+<ol>
+<li>
+To allow alternative phrases as in /(Clinton|Bush|Reagan)/i. Note that
+for single character alternatives, you can also use <a href="#UsingCharacterClasses">character
+classes</a>.</li>
+
+<li>
+As a means of retrieving selected text in selection, translation and substitution,
+used with the $1, $2, etc scalers.</li>
+</ol>
+This section will discuss only the first use. To see more about the second
+use, <a href="#StringSelections">click here</a>.
+<p>Powerful regular expressions can be made with groups At its simplest,
+you can match either all lowercase or name case like this:
+<pre>if($string =~ m/(B|b)ill (C|c)linton/)
+&nbsp; {print "It is Clinton, all right!\n"}</pre>
+Detect all strings containing vowels
+<pre>if($string =~ m/(A|E|I|O|U|Y|a|e|i|o|u|y)/)
+&nbsp; {print "String contains a vowel!\n"}</pre>
+Detect if the line starts with any of the last three presidents:
+<pre>if($string =~ m/^(Clinton|Bush|Reagan)/i)
+&nbsp; {print "$string\n"};</pre>
+Note that the parenthesized element will appear as $1 statements that follow
+the regular expression. That's OK. If you don't want to use $1, just ignore
+it. The use of $1, etc, will be explained in the section on <a href="#StringSelections">Doing
+String Selections</a>.
+<h2>
+<a NAME="UsingCharacterClasses"></a>Using Character Classes [ ]</h2>
+Character classes are alternative single characters within square brackets,
+and are not to be confused with OOP classes, which are blueprints for objects.
+If not used carefully, they can yield unexpected results. Remember that
+<a href="#Groups">groups</a>
+are an alternative.
+<p>Character classes have three main advantages:
+<ol>
+<li>
+Shorthand notation, as [AEIOUY] instead of (A|E|I|O|U|Y). This advantage
+is minor at best.</li>
+
+<li>
+Character Ranges, such as [A-Z].</li>
+
+<li>
+One to one mapping from on class to another, as in tr/[a-z]/[A-Z]. This
+is essential! It will be discussed in the section on <a href="#DoingTranslations">translations</a>.</li>
+</ol>
+
+<h3>
+THE WHOLE THING IN THE SQUARE BRACKETS REPRESENTS EXACTLY ONE CHARACTER!!!</h3>
+Did I shout loud enough? It may be tempting to do something like this:
+<pre>if($string =~ /[Clinton|Bush|Reagan]/){$office = "President"}</pre>
+The above may even appear to work upon casual testing. Don't do it. Remember
+that everything inside the brackets represents ONE character, simply listing
+all it's alternative possibilities.
+<h3>
+Other Quirks</h3>
+I haven't fully investigated this yet, but character classes seem to sometimes
+do goofy things in regular expressions where the case is ignored (i after
+the trailing delimiter).
+<h3>
+Special Characters Inside the Square Brackets</h3>
+As we've already seen, a hyphen is used to indicate all characters in the
+colating sequence between the character on the hyphen's left and the character
+on its right.
+<p>An uparrow (^) at immediately following the opening square bracket means
+"Anything but these characters", and effectively negates the character
+class. For instance, to match anything that is not a vowel, do this:
+<pre>if($string =~ /[^AEIOUYaeiouy]/){print "This string contains a non-vowel"}</pre>
+Contrast to this:
+<pre>if($string !~ /[AEIOUYaeiouy]/){print "This string contains no vowels at all"}</pre>
+
+<h3>
+Best Uses of Character Classes</h3>
+Print all people whose name begins with A through E
+<pre>if($string =~ m/^[A-E]/)
+&nbsp; {print "$string\n"}</pre>
+If character classes are giving you quirky results, consider using <a href="#Groups">groups</a>!
+<h2>
+<a NAME="PuttingItAllTogether"></a>Matching: Putting it All Together</h2>
+Print everyone whose last name is Clinton, Bush or Reagan. Each element
+of list is first name, blank, last name, and possibly more blanks and more
+info after the last name. Study this til you understand it.
+<pre>if($string =~ m/^\S+\s+(Clinton|Bush|Reagan)/i)
+&nbsp; {print "$string\n"};</pre>
+Print every line with a valid phone number.
+<pre>if($string =~ m/[\)\s\-]\d{3}-\d{4}[\s\.\,\?]/)
+&nbsp; {print "Phone line: $string\n"};</pre>
+
+<h1>
+<a NAME="StringSelections"></a>Doing String Selections (Parsing)</h1>
+If regular expressions' only benefit was looking for a (albeit complex)
+string within a string, it wouldn't be worth learningl. Regular expressions
+(and PERL itself, for that matter) really start earning their keep by allowing
+you to select and process substrings based on what they contain, and the
+context in which they appear.
+<p>For instance, create a program whose input is a piped in directory command
+and whose output is stdout, and whose output represents a batch file which
+copies every file (not directory) older than 12/22/97 to a directory called
+\oldie. This would be pretty nasty in C or C++. The directory output would
+look something like this:
+<pre>&nbsp;Volume in drive D has no label
+&nbsp;Volume Serial Number is 4547-15E0
+&nbsp;Directory of D:\polo\marco
+
+.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;DIR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 12-18-97 11:14a .
+..&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;DIR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 12-18-97 11:14a ..
+INDEX&nbsp;&nbsp;&nbsp; HTM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3,237&nbsp; 02-06-98&nbsp; 3:12p index.htm
+APPDEV&nbsp;&nbsp; HTM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 6,388&nbsp; 12-24-97&nbsp; 5:13p appdev.htm
+NORM&nbsp;&nbsp;&nbsp;&nbsp; HTM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5,297&nbsp; 12-24-97&nbsp; 5:13p norm.htm
+IMAGES&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;DIR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 12-18-97 11:14a images
+TCBK&nbsp;&nbsp;&nbsp;&nbsp; GIF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 532&nbsp; 06-02-97&nbsp; 3:14p tcbk.gif
+LSQL&nbsp;&nbsp;&nbsp;&nbsp; HTM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5,027&nbsp; 12-24-97&nbsp; 5:13p lsql.htm
+CRASHPRF HTM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 11,403&nbsp; 12-24-97&nbsp; 5:13p crashprf.htm
+WS_FTP&nbsp;&nbsp; LOG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5,416&nbsp; 12-24-97&nbsp; 5:24p WS_FTP.LOG
+FIBB&nbsp;&nbsp;&nbsp;&nbsp; HTM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10,234&nbsp; 12-24-97&nbsp; 5:13p fibb.htm
+MEMLEAK&nbsp; HTM&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 19,736&nbsp; 12-24-97&nbsp; 5:13p memleak.htm
+LITTPERL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;DIR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 02-06-98&nbsp; 1:58p littperl
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 9 file(s)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 67,270 bytes
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4 dir(s)&nbsp;&nbsp;&nbsp;&nbsp; 132,464,640 bytes free</pre>
+UUUUgly! I'd hate to do this in C or C++. But wait. It's 18 lines in Perl?
+<pre>while(&lt;STDIN>)
+&nbsp; {
+&nbsp; my($line) = $_;
+&nbsp; chomp($line);
+&nbsp; if($line !~ /&lt;DIR>/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #directories don't count
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; #** only lines with dates at position 28 and (long) filename at pos 44 **
+&nbsp;&nbsp;&nbsp; if ($line =~ /.{28}(\d\d)-(\d\d)-(\d\d).{8}(.+)$/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; my($filename) = $4;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; my($yymmdd) = "$3$1$2";
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if($yymmdd lt "971222")
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; print "copy $filename \\oldie\n";&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; }
+&nbsp; }</pre>
+Not bad for 18 lines of code. It could have been shorter, but I wanted
+to keep it readable. In the snippet above, $1, $2, $3 and $4 are the scalers
+inside the first, second, third and fourth parenthesis sets. The first
+three are re-assembled into a yymmdd date string which can be compared
+with the constant "971222". The fourth holds the filename which will be
+copied to the \oldie directory if it's not a directory, it's a line with
+a date, and the date is before 971222. This is the true power of regular
+expressions and PERL.
+<p>Now count the bytes in the directory:
+<pre>my($totalBytes) = 0;
+while(&lt;STDIN>)
+&nbsp; {
+&nbsp; my($line) = $_;
+&nbsp; chomp($line);
+&nbsp; if($line !~ /&lt;DIR>/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #directories don't count
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; #*** only lines with dates at position 28 ****
+&nbsp;&nbsp;&nbsp; if ($line =~ /.{12}((\d| |,){14})&nbsp; \d\d-\d\d-\d\d/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; my($bytes) = $1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $bytes =~ s/,//;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #substitute nothing for comma -- delete commas
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $totalBytes += $bytes;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; }
+&nbsp; }
+print "$totalBytes bytes in directory.\n";</pre>
+Note the group within a group, where the inner one is used for character
+alternation, and the outer is used as a selection.
+<h1>
+<a NAME="DoingSubstitutions"></a>Doing Substitutions</h1>
+Replace every "Bill Clinton" with an "Al Gore"
+<pre>$string =~ s/Bill Clinton/Al Gore/;</pre>
+Now do it ignoring the case of bIlL ClInToN.
+<pre>$string =~ s/Bill Clinton/Al Gore/i;</pre>
+
+<h1>
+<a NAME="DoingTranslations"></a>Doing Translations</h1>
+Translations are like substitutions, except they happen on a letter by
+letter basis instead of substituting a single phrase for another single
+phrase. For instance, what if you wanted to make all vowels upper case:
+<pre>$string =~ tr/[a,e,i,o,u,y]/[A,E,I,O,U,Y]/;</pre>
+Change everything to upper case:
+<pre>$string =~ tr/[a-z]/[A-Z]/;</pre>
+Change everything to lower case
+<pre>$string =~ tr/[A-Z]/[a-z]/;</pre>
+Change all vowels to numbers to avoid "4 letter words" in a serial number.
+<pre>$string =~ tr/[A,E,I,O,U,Y]/[1,2,3,4,5]/;</pre>
+
+<h1>
+<a NAME="Greedy"></a>Greedy and Ungreedy Matching</h1>
+Perl regular expressions normally match the longest string possible. For
+instance:
+<pre>my($text) = "mississippi";
+$text =~ m/(i.*s)/;
+print $1 . "\n";</pre>
+Run the preceding code, and here's what you get:
+<pre>ississ</pre>
+It matches the first i, the last s, and everything in between them. But
+what if you want to match the first i to the s most closely following it?
+Use this code:
+<pre>my($text) = "mississippi";
+$text =~ m/(i.*?s)/;
+print $1 . "\n";</pre>
+Now look what the code produces:
+<pre>is</pre>
+Clearly, the use of the question mark makes the match ungreedy. But theres
+another problem in that regular expressions always try to match as early
+as possible. Read on...
+<h1>
+<a NAME="Doubledots"></a>Resolving Doubledots in A Filepath</h1>
+Doubledots are placefillers for "go up one directory" in a file path. Typically,
+when you desire to create an absolute path, you want to resolve them by
+deleting them and the level of directory above them. For instance, <tt>/a/b/../whatever</tt>
+becomes <tt>/a/whatever</tt>.
+<p>This is MUCH trickier than it might seem. It's likely that all your
+ideas about greedy matching, replacement strings and the like won't work.
+Here's the regular expression to resolve A SINGLE double dot:
+<pre>$text =~ s/\/[^\/]*\/\.\.//;</pre>
+In English, this says "find a slash, followed by any number of nonslashes,
+followed by a slash, followed by two dots, and replace them with nothing.
+This technique will resolve doubledots in a string as long as that string
+has only one doubledot. But the plot thickens...
+<p>Doubledots can occur alternatively with directories (<tt>/a/b/../c/../d</tt>)
+or nested (<tt>/a/b/c/../../d</tt>). The best way I've found to reliably
+resolve all doubledots is to make a function that loops through the preceding
+regular expression until there are no more doubledots. Here's the function:
+<pre>sub deleteDoubleDots($)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while($_[0] =~ m/\.\./)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $_[0] =~ s/\/[^\/]*\/\.\.//;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</pre>
+The preceding function will resolve all doubledots, be they alternating
+or nested, or combinations thereof.
+<h1>
+<a NAME="Oneliner"></a>Kewl Splitpath One Liner Regex</h1>
+Check out this splitpath command:
+<pre>my($text) = "/etc/sysconfig/network-scripts/ifcfg-eth0";
+my($directory, $filename) = $text =~ m/(.*\/)(.*)$/;
+print "D=$directory, F=$filename\n";</pre>
+Is that cool or what?
+<h1>
+<a NAME="SymbolExplanations"></a>Symbol Explanations:</h1>
+
+<h2>
+<a NAME="op_=~"></a>=~</h2>
+This operator appears between the string var you are comparing, and the
+regular expression you're looking for (note that in selection or substitution
+a regular expression operates on the string var rather than comparing).
+Here's a simple example:
+<p>$string =~ m/Bill Clinton/;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#return true if var $string contains the name of the president
+<br>$string =~ tr/Bill Clinton/Al Gore/;&nbsp; #replace the president with
+the vice president
+<h2>
+<a NAME="op_!~"></a>!~</h2>
+Just like =~, except negated. With matching, returns true if it DOESN'T
+match. I can't imagine what it would do in translates, etc.
+<h2>
+<a NAME="op_/"></a>/</h2>
+This is the usual delimiter for the text part of a regular expression.
+If the sought-after text contains slashes, it's sometimes easier to use
+pipe symbols (|) for delimiters, but this is rare. Here are simple examples:
+<p>$string =~ m/Bill Clinton/;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#return true if var $string contains the name of the president
+<br>$string =~ tr/Bill Clinton/Al Gore/;&nbsp; #replace the president with
+the vice president
+<h2>
+<a NAME="op_m"></a>m</h2>
+The match operator. Coming before the opening delimiter, this is the "match"
+operator. It means read the string expression on the left of the =~, and
+see if any part of it matches the expression within the delimiters following
+the m. Note that if the delimiters are slashes (which is the normal state
+of affairs), the m is optional and often not included. Whether it's there
+or not, it's still a match operation. Here are some examples:
+<p>$string =~ m/Bill Clinton/;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#return true if var $string contains the name of the president
+<br>$string =~ /Bill Clinton/;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#same result as previous statement
+<h2>
+<a NAME="op_^"></a>^</h2>
+This is the "beginning of line" symbol. When used immediately after the
+starting delimiter, it signifies "at the beginning of the line". For instance:
+<p>$string =~ m/^Bill Clinton/;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#true only when "Bill Clinton" is the first text in the string
+<h2>
+<a NAME="op_$"></a>$</h2>
+This is the "end of line" symbol. When used immediately before the ending
+delimiter, it signifies "at the end of the line". For instance:
+<p>$string =~ m/Bill Clinton$/;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#true only when "Bill Clinton" is the last text in the string
+<h2>
+<a NAME="op_i"></a>i</h2>
+This is the "case insensitivity" operator when used immediately after the
+closing delimiter. For instance:
+<p>$string =~ m/Bill Clinton/i;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+#true when $string contains "Bill Clinton" or BilL ClInToN"
+<p>
+<hr>
+<p>&nbsp;[ <a href="../../troubleshooters.htm">Troubleshooters.com</a>
+| <a href="../index.htm">Code Corner</a> | <a href="mailto:slitt@troubleshooters.com">Email
+Steve Litt</a> ]
+<p><a href="../../cpyright.htm#top"><img SRC="../../images/biglcpyr.gif" NOSAVE BORDER=0 height=30 width=30></a><a href="../../cpyright.htm#top">Copyright
+(C)1998-2001 by Steve Litt</a> --
+<a href="../../cpyright.htm#top">Legal</a>
+<br>&nbsp;
+<br>&nbsp;
+</body>
+</html>
+

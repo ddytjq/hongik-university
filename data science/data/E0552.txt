@@ -1,0 +1,96 @@
+ID=E0552
+URL=http://www.hh.se/stud/d98rolb/ansi/setjmp().html
+SIZE=3450
+DATE=12/07/02
+TIME=19:22:10
+DATASET=C
+HTML=<html>
+<head>
+  <title>setjmp()</title>
+  <meta name="Generator" content="GuideML V1.6">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+<body>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="setbuf().html"><img src="prev.gif" alt="PREV" border=0></a><a href="setlocale().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+<hr>
+<pre>
+setjmp-Set long jump parameters
+
+Synopsis
+
+        #include &#060;setjmp.h&#062;
+
+        ret = setjmp(save);
+
+        int ret;          /* return code */
+        jmp_buf save;          /* address of save area */
+
+Description
+
+        The setjmp function saves the current stack mark in a specified
+        save area and returns a code of 0.  A subsequent call to the
+        <a href="longjmp().html"> longjmp </a> function with the same save area causes control to return
+        to the next statement after the original setjmp call.  In other
+        words, the statement immediately after the setjmp call will be
+        executed twice, once after you call the setjmp function and once
+        after you call the <a href="longjmp().html"> longjmp </a> function.
+
+        Do not use the <a href="longjmp().html"> longjmp </a> function after the function calling setjmp
+        has returned to its caller.  This cannot possibly succeed, because
+        the stack frame for that function no longer exists.
+
+        This mechanism is useful for quickly popping up through multiple
+        layers of function calls under exceptional circumstances.
+
+        From within a shared library, you must not call any library
+        functions that terminate your program.        For example, you cannot
+        call <a href="exit().html"> exit </a>  or <a href="abort().html"> abort </a> from a shared library.  You also
+        cannot use setjmp and <a href="longjmp().html"> longjmp </a> to jump across a call from the
+        program into the library.
+
+
+Returns
+
+        A return code of 0 from the setjmp function indicates that this is
+        the initial call to save the stack.  A nonzero return code
+        indicates that the <a href="longjmp().html"> longjmp </a> function has been executed.
+
+Example
+
+        #include &#060;stdio.h&#062;
+        #include &#060;setjmp.h&#062;
+
+        jmp_buf save;
+
+        void foo(void)
+        {
+            longjmp(save, 1);
+        }
+
+        void main(void)
+        {
+            int ret;
+
+            ret=setjmp(save);
+
+            if (ret==0)
+            {
+                /* setjmp has been called, but not longjmp */
+                foo();
+            }
+            else
+            {
+                /* longjmp has been called */
+                printf(&quot;all donen&quot;);
+            }
+        }
+
+See Also
+
+        <a href="longjmp().html"> longjmp </a>
+</pre>
+<hr>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="setbuf().html"><img src="prev.gif" alt="PREV" border=0></a><a href="setlocale().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+</body>
+</html>
+

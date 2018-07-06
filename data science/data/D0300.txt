@@ -1,0 +1,111 @@
+ID=D0300
+URL=http://www.jsptut.com/Email.jsp
+SIZE=4704
+DATE=16/07/02
+TIME=14:42:28
+DATASET=Java
+HTML=<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.75 [en] (Win98; U) [Netscape]">
+   <meta name="Description" content="JSP Tutorial">
+   <meta name="Keywords" content="JSP Tutorial">
+   <title>JSP Tutorial</title>
+</head>
+<body>
+&nbsp;
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0 COLS=1 WIDTH="100%" >
+<tr>
+<td>
+<center><b><font size=+3>JSP Tutorial</font></b>
+<br>
+
+<a href="http://www.qksrv.net/click-827755-1925257" target="_top" >
+<img src="http://www.qksrv.net/image-827755-1925257" width="468" height="60" alt="Check out eBay for electronics" border="0"></a>
+		</center>
+</td>
+</tr>
+
+<tr>
+<td>
+<h2>
+Sending e-mail from JSP</h2>
+To be able to send e-mail, you need access to an "SMTP server". SMTP stands
+for "Simple Mail Transfer Protocol". Most of the email on the internet
+is sent using SMTP servers.
+<p>If your email address is "<tt>you@yourhost.com</tt>", then there is
+a good chance your SMTP server is either "<tt>yourhost.com</tt>" or something
+like "<tt>mail.yourhost.com</tt>" or "<tt>smtp.yourhost.com</tt>". You
+need to find out exactly what it is. Your email program should have a "Settings"
+page which shows you the name of your SMTP server (perhaps shown as "mail
+server" or "outgoing mail server".)
+<p>(If you have web-based email, you probably won't be able to send email
+out directly.)
+<p>Once you have the SMTP server information, you are ready to send email
+out from your JSP pages. Following is a small sample that uses the Blazix
+Tag library to send an email with an attachment.
+<p>First of all, let us write an HTML page to start things off.
+<p><tt>&lt;HTML></tt>
+<br><tt>&lt;BODY></tt>
+<br><tt>&lt;FORM METHOD=POST ACTION="SendMail.jsp"></tt>
+<br><tt>Please enter name: &lt;INPUT TYPE=TEXT NAME=username SIZE=20>&lt;BR></tt>
+<br><tt>Please enter email address: &lt;INPUT TYPE=TEXT NAME=email SIZE=20>&lt;BR></tt>
+<br><tt>&lt;P>&lt;INPUT TYPE=SUBMIT></tt>
+<br><tt>&lt;/FORM></tt>
+<br><tt>&lt;/BODY></tt>
+<br><tt>&lt;/HTML></tt>
+<p>Now let us write the target JSP, SendMail.jsp.&nbsp; Replace "yoursmtphost.com"
+by your SMTP server, and "you@youremail.com" by your email address.&nbsp;
+Before testing it, also create a file "C:\contents.txt" which will be sent
+as an attachment.
+<p><tt>&lt;%@ taglib prefix="blx" uri="/blx.tld" %></tt>
+<br><tt>&lt;HTML></tt>
+<br><tt>&lt;BODY></tt>
+<br><tt>&lt;%</tt>
+<br><tt>&nbsp; // Get username.</tt>
+<br><tt>&nbsp; String email = request.getParameter( "email" );</tt>
+<br><tt>%></tt>
+<br><tt>&lt;% if ( email == null || email.equals( "" )) { %></tt>
+<br><tt>Please enter an email address.</tt>
+<br><tt>&lt;% } else { %></tt>
+<br><tt>&lt;blx:email host="yoursmtphost.com" from="you@youremail.com">&nbsp;</tt>
+<br><tt>&lt;blx:emailTo>&lt;%= email %>&lt;/blx:emailTo>&nbsp;</tt>
+<br><tt>Thank you for registering with us.&nbsp; You registered the</tt>
+<br><tt>following name: &lt;%= request.getParameter( "username" ) %></tt><tt></tt>
+<p><tt>Your registration was received at &lt;%= new java.util.Date() %></tt><tt></tt>
+<p><tt>Attached, please find a contents file.</tt>
+<br><tt>&lt;blx:emailAttach file="C:\\contents.txt"&nbsp;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contentType="text/plain" name="contents.txt/>&nbsp;</tt>
+<br><tt>&lt;/blx:email>&nbsp;</tt>
+<br><tt>&lt;!--&nbsp; Also write out some HTML --></tt>
+<br><tt>Thank you.&nbsp; A confirmation email has been sent to &lt;%= email
+%></tt>
+<br><tt>&lt;% } %></tt>
+<br><tt>&lt;/BODY></tt>
+<br><tt>&lt;/HTML></tt>
+<p><i>Exercise:</i>&nbsp; 1)&nbsp; Send an HTML file as an attachment,
+changing the contentType to "text/html" instead of "text/plain".
+<br>2) Send the HTML file as an attachment, without using any other text.&nbsp;
+In the "blx:email" tag, also set "noText=true".
+<br>&nbsp;
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%" >
+<tr>
+<td><a href="Further.jsp">Conclusion: Material for further learning</a></td>
+
+<td>
+<div align=right><font size=-1><a href="Index.html#contents">Contents</a></font></div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+</table>
+
+</body>
+</html>
+

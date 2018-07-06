@@ -1,0 +1,518 @@
+ID=E0154
+URL=http://www.bcbdev.com/faqs/faq94.htm
+SIZE=31417
+DATE=12/07/02
+TIME=19:18:05
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+<H3>
+Q: Store bitmap and JPEG images in a SQL database
+</H3>
+
+<BR>
+<H3>Answer</H3>
+<P>
+This FAQ explains how to save images to a database and read those images back into your program. The VCL field and
+parameter classes provide all of the support that you need.
+
+<P>
+<TABLE WIDTH="100%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Note:</b>
+<hr size = 1>
+This FAQ assumes that your database is a SQL database that can actually store image files in a blob field of some kind.
+For example, MS SQL Server 7.0 provides an image field type. When you create a table in SQL Server 7.0, you can use
+the <TT>image</TT> field type for columns that contain images. I don't want to (nor am I capable of) explaining how to
+configure the tables in your database so they can store images. Consult the documentation for your database system if you need help creating
+your tables.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+<H4>
+Saving images to a database
+</H4>
+<P>
+Saving images to a database is a three step process. First, you load the contents of the image into a VCL stream object
+of some kind. An excellent stream class to use is <TT>TMemoryStream</TT>. If you are storing an image from the file
+system, you can use the <TT>LoadFromStream</TT> method of <TT>TMemoryStream</TT> to get the contents of the image into
+the stream. If you already have the image loaded, in a <TT>TImage</TT> for example, you can copy the image into the memory stream
+by using the <TT>SaveToStream</TT> method of <TT>TBitmap</TT>. Wherever your image resides, you have the tools needed to get
+that image into a <TT>TMemoryStream</TT>.
+</P>
+<P>
+The second step is to copy the image from the stream into a parameter of an insert SQL query. The syntax of this step is
+a little different based on whether you are using ADO or BDE queries. Note that if you are using table controls or
+<TT>TClientDataset</TT> controls instead of query controls, then you should copy from the stream into a <TT>TField</TT> instead of
+into a parameter. The code examples that follow demonstrate each method.
+</P>
+<P>
+The last step is to execute your SQL insert query, or to call the <TT>Post</TT> method of your table.
+</P>
+<P>
+Here are some examples.
+These examples assume that the target table is named <TT>image_test</TT>, and that it contains two columns. The first column is a string field called
+<TT>string_field</TT>. The second column is a blob column called <TT>image_field</TT>. The image goes into the blob
+column.
+</P>
+
+<PRE>
+<font color="navy">//-------------------------------------------------------------</font>
+<font color="navy">// Example 1: Inserting a bitmap using a BDE query component</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button2Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// load a bitmap into a memory stream object</font>
+    std<b>:</b><b>:</b>auto_ptr&lt;TMemoryStream<b>></b> stream <b>(</b><b>new</b> TMemoryStream<b>)</b><b>;</b>
+    stream<b>-></b>LoadFromFile<b>(</b><font color="blue">"androm.bmp"</font><b>)</b><b>;</b>
+    stream<b>-></b>Position <b>=</b> <font color="blue">0</font><b>;</b>
+
+    <font color="navy">// Assign the parameters of the query. The SQL property of the query</font>
+    <font color="navy">// is set to:</font>
+    <font color="navy">//</font>
+    <font color="navy">//    insert image_test</font>
+    <font color="navy">//    (</font>
+    <font color="navy">//        string_field,</font>
+    <font color="navy">//        image_field</font>
+    <font color="navy">//    )</font>
+    <font color="navy">//    values</font>
+    <font color="navy">//    (</font>
+    <font color="navy">//        :string_field,</font>
+    <font color="navy">//        :image_field</font>
+    <font color="navy">//    )</font>
+    <font color="navy">//</font>
+    <font color="navy">// Note that the image_field param should have its DataType set to ftBlob</font>
+    <font color="navy">//</font>
+    Query1<b>-></b>Params<b>-></b>ParamByName<b>(</b><font color="blue">"string_field"</font><b>)</b><b>-></b>AsString <b>=</b> <font color="blue">"androm.bmp"</font><b>;</b>
+    Query1<b>-></b>Params<b>-></b>ParamByName<b>(</b><font color="blue">"image_field"</font><b>)</b> <b>-></b>SetBlobData<b>(</b>stream<b>-></b>Memory<b>,</b>
+                                                             stream<b>-></b>Size<b>)</b><b>;</b>
+
+    <font color="navy">// execute the query to perform the insert</font>
+    Query1<b>-></b>ExecSQL<b>(</b><b>)</b><b>;</b>
+<b>}</b>
+
+<font color="navy">//-------------------------------------------------------------</font>
+<font color="navy">// Example 2: Inserting a bitmap using a ADO query component</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button2Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+  <font color="navy">// load a bitmap into a memory stream object</font>
+  std<b>:</b><b>:</b>auto_ptr&lt;TMemoryStream<b>></b> stream <b>(</b><b>new</b> TMemoryStream<b>)</b><b>;</b>
+  stream<b>-></b>LoadFromFile<b>(</b><font color="blue">"androm.bmp"</font><b>)</b><b>;</b>
+  stream<b>-></b>Position <b>=</b> <font color="blue">0</font><b>;</b>
+
+  <font color="navy">// Assign the parameters of the query. The SQL property of the query</font>
+  <font color="navy">// is the same SQL from the BDE example. The image_field param should</font>
+  <font color="navy">// have its DataType set to ftVarBytes, ftBlob or ftGraphic</font>
+  ADOQuery<b>-></b>Parameters<b>-></b>ParamByName<b>(</b><font color="blue">"string_field"</font><b>)</b><b>-></b>Value<b>=</b> <font color="blue">"androm.bmp"</font><b>;</b>
+  ADOQuery<b>-></b>Parameters<b>-></b>ParamByName<b>(</b><font color="blue">"image_field"</font><b>)</b><b>-></b>LoadFromStream<b>(</b>stream<b>.</b>get<b>(</b><b>)</b><b>,</b>
+                                                                   ftGraphic<b>)</b><b>;</b>
+
+  <font color="navy">// execute the query to perform the insert</font>
+  ADOQuery<b>-></b>ExecSQL<b>(</b><b>)</b><b>;</b>
+<b>}</b>
+
+<font color="navy">//-------------------------------------------------------------</font>
+<font color="navy">// Example 3: Inserting a bitmap using a table component (BDE or ADO)</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button2Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// load a bitmap into a memory stream object</font>
+    std<b>:</b><b>:</b>auto_ptr&lt;TMemoryStream<b>></b> stream <b>(</b><b>new</b> TMemoryStream<b>)</b><b>;</b>
+    stream<b>-></b>LoadFromFile<b>(</b><font color="blue">"androm.bmp"</font><b>)</b><b>;</b>
+    stream<b>-></b>Position <b>=</b> <font color="blue">0</font><b>;</b>
+
+    <font color="navy">// Add a record to the table, fill in the fields, and then post the record.</font>
+    <font color="navy">// Note that Table1string_field and Table1image_field are persistent TField</font>
+    <font color="navy">// objects. The image field must be a TBlobField, or a TBlobField</font>
+    <font color="navy">// descendent or this code won't compile. TBlobField is the only field type</font>
+    <font color="navy">// that provides a LoadFromStream method. Also note that if you use</font>
+    <font color="navy">// FieldByName to reference the field, you will need to cast the result to</font>
+    <font color="navy">// TBlobField before you call LoadFromStream because FieldByName returns a</font>
+    <font color="navy">// TField pointer, not a TBlobField pointer.</font>
+    <font color="navy">//</font>
+    the image_field property should a TBlobField<b>.</b>
+    Table1<b>-></b>Append<b>(</b><b>)</b><b>;</b>
+    Table1string_field<b>-></b>AsString <b>=</b> <font color="blue">"androm.bmp"</font><b>;</b>
+    Table1image_field <b>-></b>LoadFromStream<b>(</b>stream<b>.</b>get<b>(</b><b>)</b><b>,</b>
+                                                        ftGraphic<b>)</b><b>;</b>
+    Table1<b>-></b>Post<b>(</b><b>)</b><b>;</b>
+<b>}</b></PRE>
+
+<H4>
+Loading images from a database
+</H4>
+<P>
+Loading images from a database is also a three step process. In fact, loading the image is just like saving the image,
+but in reverse.
+</p>
+<P>
+The first step is to perform a SQL query or open a table component. The result set should include the graphical object.
+When the VCL opens a dataset with graphical blobs in it, it creates a <TT>TBlobField</TT> or a <TT>TBlobField</TT> descendant
+to store the image.
+</P>
+<P>
+The second step is to extract the contents of the blob field into a memory stream. Once you get the image into a
+memory stream, you can perform the final step of saving the image to its final destination. If you want to save the
+image to the file system, you can call the <TT>SaveToFile</TT> method of <TT>TMemoryStream</TT>. If you would rather
+put the image into a <TT>TImage</TT> control, you can use <TT>TBitmap::LoadFromStream</TT>.
+</P>
+<P>
+Here are some examples of how to load the image from the database. The first the example employs a SQL query (BDE
+or ADO). The second uses a <TT>TTable</TT>.
+</P>
+
+<PRE>
+<font color="navy">//-------------------------------------------------------------</font>
+<font color="navy">// Example 4: Loading a bitmap from a database with a</font>
+<font color="navy">//            query component (BDE or ADO)</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button3Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// query the image table</font>
+    Query<b>-></b>Active <b>=</b> <b>false</b><b>;</b>
+    Query<b>-></b>SQL<b>-></b>Text <b>=</b> <font color="blue">"select * from image_test\n"</font>
+                       <font color="blue">"where string_field = 'androm.bmp'"</font><b>;</b>
+    Query<b>-></b>Active <b>=</b> <b>true</b><b>;</b>
+
+    <font color="navy">// Create a memory stream and copy the image from the blob</font>
+    <font color="navy">// field into the stream. Note that Queryimage_field is a</font>
+    <font color="navy">// a persistent TBlobField created from the fields editor</font>
+    std<b>:</b><b>:</b>auto_ptr&lt;TMemoryStream<b>></b> stream <b>(</b><b>new</b> TMemoryStream<b>)</b><b>;</b>
+    Queryimage_field<b>-></b>SaveToStream<b>(</b>stream<b>.</b>get<b>(</b><b>)</b><b>)</b><b>;</b>
+
+    <font color="navy">// save the stream to a BMP file</font>
+    stream<b>-></b>Position <b>=</b> <font color="blue">0</font><b>;</b>
+    stream<b>-></b>SaveToFile<b>(</b><font color="blue">"androm.bmp"</font><b>)</b><b>;</b>
+
+    <font color="navy">// load the stream into the a TImage</font>
+    stream<b>-></b>Position <b>=</b> <font color="blue">0</font><b>;</b>
+    Image1<b>-></b>Picture<b>-></b>Bitmap<b>-></b>LoadFromStream<b>(</b>stream<b>.</b>get<b>(</b><b>)</b><b>)</b><b>;</b>
+
+    Query<b>-></b>Active <b>=</b> <b>false</b><b>;</b>
+<b>}</b>
+
+
+<font color="navy">//-------------------------------------------------------------</font>
+<font color="navy">// Example 5: Loading a bitmap from a database with a</font>
+<font color="navy">//            table component (BDE or ADO)</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button3Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// query the image table</font>
+    Table<b>-></b>Open<b>(</b><b>)</b><b>;</b>
+
+    <font color="navy">// Create a memory stream and copy the image from the blob</font>
+    <font color="navy">// field into the stream. Note that Tableimage_field is a</font>
+    <font color="navy">// a persistent TBlobField created from the fields editor</font>
+    std<b>:</b><b>:</b>auto_ptr&lt;TMemoryStream<b>></b> stream <b>(</b><b>new</b> TMemoryStream<b>)</b><b>;</b>
+    Tableimage_field<b>-></b>SaveToStream<b>(</b>stream<b>.</b>get<b>(</b><b>)</b><b>)</b><b>;</b>
+
+    <font color="navy">// save the stream to a BMP file</font>
+    stream<b>-></b>Position <b>=</b> <font color="blue">0</font><b>;</b>
+    stream<b>-></b>SaveToFile<b>(</b><font color="blue">"androm.bmp"</font><b>)</b><b>;</b>
+
+    <font color="navy">// load the stream into the a TImage</font>
+    stream<b>-></b>Position <b>=</b> <font color="blue">0</font><b>;</b>
+    Image1<b>-></b>Picture<b>-></b>Bitmap<b>-></b>LoadFromStream<b>(</b>stream<b>.</b>get<b>(</b><b>)</b><b>)</b><b>;</b>
+
+    Table<b>-></b>Close<b>(</b><b>)</b><b>;</b>
+<b>}</b></PRE>
+
+<P>
+<TABLE WIDTH="100%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Note:</b>
+<hr size = 1>
+<P>
+The examples above utilize the <TT>SaveToStream</TT> method of <TT>TBlobField</TT>. This is a new member function
+introduced in <TT>TBlobField</TT> that is not present in the base class <TT>TField</TT>. Since <TT>TField</TT> does
+not contain a <TT>SaveToStream</TT> member function, you cannot write code like this:
+</P>
+<PRE>
+Table<b>-></b>FieldByName<b>(</b><font color="blue">"image_field"</font><b>)</b><b>-></b>SaveToStream<b>(</b>stream<b>)</b><b>;</b></PRE>
+<P>
+If you do, you will get a compiler error stating that <TT>SaveToStream</TT> is not a member of <TT>TField</TT>.
+The error is caused because <TT>FieldByName</TT> returns a <TT>TField *</TT>. Although the field in this case
+is a <TT>TBlobField</TT> instance, the compiler must use the static return type of the function to verify the
+syntax of the statement. There is no way the compiler can know that <TT>FieldByName</TT> will return a <TT>TBlobField</TT>
+in this case. All the compiler knows is that the return type is a <TT>TField</TT> of some kind, and <TT>TField</TT> does
+not have a <TT>SaveToStream</TT> method.
+</p>
+<p>
+There are a couple of ways to get around this problem. The first is to use persistent fields. When the Fields Editor creates
+persistent fields, it uses a field class that corresponds to the field type from the dataset. String fields are declared
+as <TT>TStringField</TT> objects, and blob fields are declared as <TT>TBlobField</TT> objects. Since blob fields are declared
+as <TT>TBlobField</TT>s, you can use the persistent field to call the <TT>SaveToStream</TT> method.
+</p>
+<p>
+Another way to deal with this issue is to downcast the result of <TT>FieldByName</TT> to a <TT>TBlobField</TT>. If you choose
+this method, I encourage you to use <TT>dynamic_cast</TT> to perform the cast.
+</P>
+<PRE>
+TBlobField field <b>=</b>
+  <b>dynamic_cast</b>&lt;TBlobField <b>*</b><b>></b><b>(</b>query<b>-></b>FieldByName<b>(</b><font color="blue">"image_field"</font><b>)</b><b>)</b><b>;</b>
+<b>if</b><b>(</b>field<b>)</b>
+    field<b>-></b>SaveToStream<b>(</b>stream<b>)</b><b>;</b></PRE>
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+
+<H4>
+Working with JPEG images
+</H4>
+<p>
+The previous code examples also work for reading and writing JPEG files. In fact, if you only need to move images from the file system to the database,
+then you can use the previous examples without any modifications (other than changing a few file names). However, if you need to read a JPEG image from
+a database and display it in your program, then you have to add a little bit of code. You must perform a JPEG decompression step after you read
+the JPEG image from the database and load it into the memory stream. Fortunately, the VCL <TT>TJPEGImage</TT> class can handle this for you in only a few
+lines of code.
+</p>
+<p>
+The next code example demonstrates how to read a JPEG image from a database and display it in an image control. The code combines the previous examples
+with the code from the <A HREF="faq89.htm">FAQ on how to read JPEG images</A>. In fact, this code example employs the same stream technique as the
+<A HREF="faq90.htm">FAQ on JPEG resources</A>. The only difference is where the JPEG image comes from (ie a database instead of the program's
+binary resources).
+</p>
+<PRE>
+<font color="navy">//-------------------------------------------------------------</font>
+<font color="navy">// Example 6: Loading a JPEG from a database</font>
+
+<font color="green">#include &lt;jpeg.hpp></font>
+
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button3Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// query the image table</font>
+    Query<b>-></b>SQL<b>-></b>Text <b>=</b> <font color="blue">"select * from image_test\n"</font>
+                       <font color="blue">"where string_field = 'space.jpg'"</font><b>;</b>
+    Query<b>-></b>Active <b>=</b> <b>true</b><b>;</b>
+
+    <font color="navy">// Create a memory stream and copy the image from the blob</font>
+    <font color="navy">// field into the stream. Note that Queryimage_field is a</font>
+    <font color="navy">// a persistent TBlobField created from the fields editor</font>
+    std<b>:</b><b>:</b>auto_ptr&lt;TMemoryStream<b>></b> stream <b>(</b><b>new</b> TMemoryStream<b>)</b><b>;</b>
+    Queryimage_field<b>-></b>SaveToStream<b>(</b>stream<b>.</b>get<b>(</b><b>)</b><b>)</b><b>;</b>
+
+    <font color="navy">// create a jpeg image object, and tell it to load the jpeg</font>
+    <font color="navy">// from the memory stream</font>
+    stream<b>-></b>Position <b>=</b> <font color="blue">0</font><b>;</b>
+    std<b>:</b><b>:</b>auto_ptr&lt;TJPEGImage<b>></b> jpeg<b>(</b><b>new</b> TJPEGImage<b>)</b><b>;</b>
+    jpeg<b>-></b>LoadFromStream<b>(</b>stream<b>.</b>get<b>(</b><b>)</b><b>)</b><b>;</b>
+
+    <font color="navy">// Now load the jpeg into the image. This step</font>
+    <font color="navy">// decompresses the JPEG to a bitmap</font>
+    Image1<b>-></b>Picture<b>-></b>Bitmap<b>-></b>Assign<b>(</b>jpeg<b>.</b>get<b>(</b><b>)</b><b>)</b><b>;</b>
+
+    Query<b>-></b>Active <b>=</b> <b>false</b><b>;</b>
+<b>}</b></PRE>
+
+<P>
+So how do you save a JPEG image to a database? Well, that depends on whether you just need to save an existing JPEG file on your file system, or whether
+you need to compress a bitmap into a JPEG before saving it. If you only need to save a JPEG file from the file system, then use the code from Examples
+1-3. You can write a JPEG file directly to the database, just like you would for a <TT>BMP</TT> file.
+</P>
+<P>
+If you need to compress an image before saving it to the database, then you will once again need to employ the <TT>TJPEGImage</TT> class. The next two
+code examples demonstrate how you can do this. The first example assumes that the source image is a <TT>.BMP</TT> file on your file system. The second example
+saves an image that has already been loaded into a <TT>TImage</TT> component. Note that for these two examples, I assume that you are use BDE query
+components. If you are using ADO controls or table controls, then substitute code as neede. See Examples 1-3 for more details.
+</P>
+<PRE>
+<font color="navy">//-------------------------------------------------------------</font>
+<font color="navy">// Example 7: Saving a BMP file as a JPEG image to a database.</font>
+
+<font color="green">#include &lt;jpeg.hpp></font>
+
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button2Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// load a bitmap into a TBitmap object</font>
+    std<b>:</b><b>:</b>auto_ptr&lt;TBitmap<b>></b> bitmap<b>(</b><b>new</b> TBitmap<b>;</b>
+    bitmap<b>-></b><b>-></b>LoadFromFile<b>(</b><font color="blue">"androm.bmp"</font><b>)</b><b>;</b>
+
+    <font color="navy">// create a jpeg object and assign the bitmap</font>
+    <font color="navy">// to the jpeg. This performs the JPEG compression step.</font>
+    std<b>:</b><b>:</b>auto_ptr&lt;TJPEGImage<b>></b> jpeg<b>(</b><b>new</b> TJPEGImage<b>)</b><b>;</b>
+    jpeg<b>-></b>Assign<b>(</b>bitmap<b>.</b>get<b>(</b><b>)</b><b>)</b><b>;</b>
+
+    <font color="navy">// Now create a stream object and write the compressed JPEG</font>
+    <font color="navy">// image to the stream. Once we have the JPEG data in the</font>
+    <font color="navy">// stream, we can get it into the database.</font>
+    std<b>:</b><b>:</b>auto_ptr&lt;TMemoryStream<b>></b> stream <b>(</b><b>new</b> TMemoryStream<b>)</b><b>;</b>
+    jpeg<b>-></b>SaveToStream<b>(</b>stream<b>.</b>get<b>(</b><b>)</b><b>)</b><b>;</b>
+    stream<b>-></b>Position <b>=</b> <font color="blue">0</font><b>;</b>
+
+    <font color="navy">// Save the stream to the database. This is exactly like Example 1</font>
+    Query1<b>-></b>Params<b>-></b>ParamByName<b>(</b><font color="blue">"string_field"</font><b>)</b><b>-></b>AsString <b>=</b> <font color="blue">"androm.bmp"</font><b>;</b>
+    Query1<b>-></b>Params<b>-></b>ParamByName<b>(</b><font color="blue">"image_field"</font><b>)</b> <b>-></b>SetBlobData<b>(</b>stream<b>-></b>Memory<b>,</b>
+                                                             stream<b>-></b>Size<b>)</b><b>;</b>
+
+    <font color="navy">// execute the query to perform the insert</font>
+    Query1<b>-></b>ExecSQL<b>(</b><b>)</b><b>;</b>
+<b>}</b>
+
+<font color="navy">//-------------------------------------------------------------</font>
+<font color="navy">// Example 8: Writing a TImage as a JPEG to a database.</font>
+
+<font color="green">#include &lt;jpeg.hpp></font>
+
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button2Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// create a jpeg object and assign the bitmap of the</font>
+    <font color="navy">// TImage to the jpeg object.</font>
+    std<b>:</b><b>:</b>auto_ptr&lt;TJPEGImage<b>></b> jpeg<b>(</b><b>new</b> TJPEGImage<b>)</b><b>;</b>
+    jpeg<b>-></b>Assign<b>(</b>Image1<b>-></b>Picture<b>-></b>Bitmap<b>)</b><b>;</b>
+
+    <font color="navy">// Now create a stream object and write the compressed JPEG</font>
+    <font color="navy">// image to the stream. Once we have the JPEG data in the</font>
+    <font color="navy">// stream, we can get it into the database.</font>
+    std<b>:</b><b>:</b>auto_ptr&lt;TMemoryStream<b>></b> stream <b>(</b><b>new</b> TMemoryStream<b>)</b><b>;</b>
+    jpeg<b>-></b>SaveToStream<b>(</b>stream<b>.</b>get<b>(</b><b>)</b><b>)</b><b>;</b>
+    stream<b>-></b>Position <b>=</b> <font color="blue">0</font><b>;</b>
+
+    <font color="navy">// Save the stream to the database. This is exactly like Example 1</font>
+    Query1<b>-></b>Params<b>-></b>ParamByName<b>(</b><font color="blue">"string_field"</font><b>)</b><b>-></b>AsString <b>=</b> <font color="blue">"androm.bmp"</font><b>;</b>
+    Query1<b>-></b>Params<b>-></b>ParamByName<b>(</b><font color="blue">"image_field"</font><b>)</b> <b>-></b>SetBlobData<b>(</b>stream<b>-></b>Memory<b>,</b>
+                                                             stream<b>-></b>Size<b>)</b><b>;</b>
+
+    <font color="navy">// execute the query to perform the insert</font>
+    Query1<b>-></b>ExecSQL<b>(</b><b>)</b><b>;</b>
+<b>}</b></PRE>
+
+<H4>
+Notes
+</H4>
+
+<P>
+<B> Note 1:</B> If you are reading bitmaps, icons, or Windows meta files from a database, you can save a few lines of code
+by using the <TT>TDBImage</TT> data-aware control. You can connect the <TT>TDBImage</TT> to a blob field via a <TT>TDataSource</TT> component.
+The <TT>TDBImage</TT> control is so easy to use, that I didn't bother describing it. The FISHFACT example program that ships with BCB demonstrates
+how to use this control. Note that you can only use <TT>TDBImage</TT> to view images, and you can only view native Windows images (ie not JPEGs).
+</P>
+<P>
+<B> Note 2:</B> The code examples for displaying images did not account for result sets that contain more than one record. This is one of the nice
+features of <TT>TDBImage</TT>. When you use a <TT>TDBImage</TT>, it automatically updates the image on the screen as you scroll through the dataset.
+If you don't use <TT>TDBImage</TT>, then you will need to add some supporting code if you're result sets return multiple rows. You will need to update
+the image on the screen each time you scroll from one record to another. The dataset components provide events that can help you accomplish this (namely
+<TT>AfterOpen</TT>, <TT>AfterClose</TT>, and <TT>AfterScroll</TT>).
+</P>
+
+<P>
+<B> Note 3:</B> The VCL provides a class called <TT>TBlobStream</TT> that is worth mentioning in this FAQ. <TT>TBlobStream</TT> is similar to
+<TT>TFileStream</TT>. <TT>TFileStream</TT> encapsulates a file in a stream object. When you read from or write to a <TT>TFileStream</TT>, you are
+actually reading from or writing to the underlying file. <TT>TBlobStream</TT> does the same thing, except that it encupulates reading and writing
+blob fields.
+</P>
+<P>
+When you create a <TT>TBlobStream</TT>, you pass it two constructor arguments. The first is a <TT>TBlobField</TT>. This is the field that you want to
+read or write. The second argument is an enum that tells the blob stream whether it will be reading from or writing to the underlying blob field.
+After you construct a blob stream, any operation that you perform on it will affect the internal blob field.
+</P>
+<P>
+We could have used <TT>TBlobStream</TT> in our examples. The code example below demonstrates how we could have written Example 4 using <TT>TBlobStream</TT>
+
+<PRE>
+<font color="navy">//-------------------------------------------------------------</font>
+<font color="navy">// Example 9: Loading a bitmap using a blob stream</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button3Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// query the image table</font>
+    Query<b>-></b>Active <b>=</b> <b>false</b><b>;</b>
+    Query<b>-></b>SQL<b>-></b>Text <b>=</b> <font color="blue">"select * from image_test\n"</font>
+                       <font color="blue">"where string_field = 'androm.bmp'"</font><b>;</b>
+    Query<b>-></b>Active <b>=</b> <b>true</b><b>;</b>
+
+    <font color="navy">// create a blob stream on the field</font>
+    std<b>:</b><b>:</b>auto_ptr&lt;TBlobStream<b>></b> stream
+      <b>(</b><b>new</b> TBlobStream<b>(</b>Query<b>-></b>FieldByName<b>(</b><font color="blue">"image_field"</font><b>)</b><b>,</b>bmRead<b>)</b><b>)</b><b>;</b>
+
+    <font color="navy">// Tell the picture control to load from the blob stream</font>
+    Image1<b>-></b>Picture<b>-></b>Bitmap<b>-></b>LoadFromStream<b>(</b>stream<b>.</b>get<b>(</b><b>)</b><b>)</b><b>;</b>
+    Query<b>-></b>Active <b>=</b> <b>false</b><b>;</b>
+<b>}</b></PRE>
+<P>
+This code is noticeably more compact than the code from Example 4, yet it does pretty much the same thing. Note that <TT>TBlobStream</TT> has some
+drawbacks. First of all, <TT>TBlobStream</TT> can only be used with BDE datasets. If you use the ADO datasets, you have to replace <TT>TBlobStream</TT>
+with <TT>TADOBlobStream</TT>. I prefer to have as much of my code remain constant as possible between the two, so I use <TT>TMemoryStream</TT> instead.
+Secondly, you navigating a record invalidates all existing blob streams that are connected to fields in a dataset. You have to delete and recreate each
+blob stream when you navigate a record.
+</p>
+<P>
+<B>Note 4:</B> You may have noticed that my code makes use the <TT>auto_ptr</TT> template class. <TT>auto_ptr</TT> is a wrapper class for a plain old
+pointer in C++. When an <TT>auto_ptr</TT> instance goes out of scope and is destroyed, its destructor automatically calls the <TT>delete</TT>
+operator on the pointer that you passed in during construction. This way, you don't have to call <TT>delete</TT> manually.
+</P>
+<p>
+This functionality is extremely beneficial for the obvious reason that you don't have to write <TT>delete</TT> statements all over the place. It is
+also beneficial for some not so obvious reasons. Namely, that <TT>auto_ptr</TT> cleans up objects even when an exception occurs. If you don't use
+<TT>auto_ptr</TT>, you have to be careful to ensure that exceptions don't bypass your <TT>delete</TT> statements, and this can be very difficult
+to do cleanly. <TT>auto_ptr</TT> is a great asset in all types of prorams, but especially in database programs, since just about any call
+on a database object can generate an exception.
+</P>
+<P>
+<B>Note 5:</B> The techniques presented in this FAQ don't apply only to graphics. You can use the code examples to store files of any type, including
+sound files, movie files, Word files and Excel files. Now obviously, you wouldn't try to load these types of objects into a <TT>TImage</TT>. But the
+example code for reading a file from the file system and saving it to the database applies to all types of files. The code that reverses the process
+by reading from the database and writing back to the file system can also be applied to other types of files.
+</P>
+<P>
+<B>Note 6:</B> The code examples for reading an image from the database fail miserably when the image has been stored using an embedded OLE object. MS
+Access is notorious for this. Actually, you can read and write the image just find, but you can't send the contents of an embedded OLE image to
+<TT>TImage</TT> because <TT>TImage</TT> doesn't understand the OLE image format. If you have to deal with an embedded OLE image, send me an email or
+search the newsgroups at <A href="http://groups.google.com/advanced_group_search">google</A> for posts by me. I have posted an example of how to deal
+with the evil that is embedded OLE. I may post that code in the form of an FAQ later.
+</P>
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

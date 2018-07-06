@@ -1,0 +1,701 @@
+ID=D0342
+URL=http://www.javaworld.com/javaworld/jw-12-2000/jw-1215-howto.html
+SIZE=51964
+DATE=16/07/02
+TIME=14:43:40
+DATASET=Java
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title> Secure thread collaboration across protection domains</title>
+<!-- ssilog 7814 -->
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<meta name="keywords" content=" AccessControlContext, GuardedObject, Guard">
+<meta name="description" content="
+
+When threads collaborate across protection domains, they introduce interesting wrinkles into the science of building secure applications. This month, Todd Sundsted presents these scenarios and shows how to use the AccessControlContext and GuardedObject classes to build solid solutions. (1,300 words) 
+">
+<meta name="date" content="2000-12-15">
+<META NAME="DC.Date" CONTENT="2000-12-15">
+<basefont face="verdana, arial, helvetica" size="3" />
+<style type="text/css">
+            code {font-size: 90%; font-family: monospace;}
+            pre {font-size: 90%; font-family: monospace;}
+            td {font-size: 90%;}
+</style>
+<script language="javascript">
+<!--// IDG.net Scripts
+            function mail2Friend () {
+                window.parent.location = "/MailToFriend?url=" + escape(document.location);
+            }
+
+            function openBrWindow() {
+                win=window.open("http://www.javaworld.com/channel_content/jw-story-feedback.shtml",'Feedback','width=600,height=330,toolbar=no,location=no,directories=no,menubar=no,scrollbars=yes,resizable=yes');
+            }
+            //-->
+        </script>
+    </head>
+<body bgcolor="#ffffff" text="#000000" link="#990033" vlink="#990033" alink="#990033" topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" marginheight="0" marginwidth="0">
+<table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td colspan="2" width="186" bgcolor="#006699"><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0 ></a></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- START TOP 468x60 BANNER -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=658085?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=658085?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=658085?" border="0" height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer1" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- END TOP 468x60 BANNER --></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="26" valign="top" align="left" bgcolor="#ffffff"><img height=8 src="http://www.javaworld.com/images/c_whtbottom.gif" width=8 border=0 ></td>
+                <td width="100%"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.global/idgpixel7.18.00;sz=1x1;ord=658085?" border=0 height="1" width="1"><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.usa.jw/usajw.081501;sz=1x1;ord=658085?" border=0 height="1" width="1"></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160" align="middle" valign="center" nowrap><nobr><font face="Verdana, Arial, Sans-serif" color="#ffffff" size="2">December 2000</font></nobr><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="8" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltlft.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="100%" align="middle" valign="center">    <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">HOME</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/features/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FEATURED TUTORIALS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/columns/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">COLUMNS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/news-reviews/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">NEWS & REVIEWS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://forums.idg.net/webx?13@@.ee6b802"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FORUM</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/resources/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">JW RESOURCES</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/info/jw-about-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">ABOUT JW</font></a></td>
+        </tr>
+    </table></td>
+                <td bgcolor="#006699" width="8" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltrt.gif" width=8 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr valign="top">
+                <td bgcolor="#006699" width="160" align="middle" valign="top">
+                    <table width="160" border="0" cellspacing="0" cellpadding="0" bgcolor="#006699" summary="">
+                        <tr>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                            <td align="center">
+                                <form action="http://www.javaworld.com/isearch" method="GET" name="search">
+                                    <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /><br />
+                                    <input type="text" name="qt" size="12" maxlength="2047" /><br />
+                                    <input type="image" value="search" src="http://www.javaworld.com/images/button_blue.gif" border="0" width="97" height="18" alt="GO" /><br />
+                                    <input type="hidden" name="site" value="javaworld"><br />
+                                   <!-- <a href="http://www.google.com/"><img src="http://www.javaworld.com/images/google-power-fp.gif" width="108" height="45" border="0" alt="Google.com"></a>-->
+                                    <input type="hidden" name="ms" value="1">
+                                    <input type="hidden" name="tid" value="1">
+                                    <input type="hidden" name="st" value="1">
+                                    <input type="hidden" name="rf" value="0">
+                                   
+                                </form>
+                            </td>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                        </tr>
+                        <tr>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td><img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <a href="http://www.javaworld.com/archives/index-year.html"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>ARCHIVE</strong></font></a><br>
+                                <img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <strong><a href="http://www.javaworld.com/channel_content/jw-topical-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff">TOPICAL INDEX</font></a></strong></font><br><table cellspacing="0" cellpadding="0" border="0" summary="">
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/channel_content/jw-core-index.shtml"><font color="#ffffff">Core Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-enterprise-index.shtml"><font color="#ffffff">Enterprise Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-micro-index.shtml"><font color="#ffffff">Micro Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-applied-index.shtml"><font color="#ffffff">Applied Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-community-index.shtml"><font color="#ffffff">Java Community</font></a></strong></font><br /></td>
+                        </tr>
+                    </table><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-qna-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA Q&A INDEX</strong></font></a><br /><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-tips-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA TIPS INDEX</strong></font></a><br /> <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br /><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#CCCCCC"><strong>JavaWorld Services</strong></font><br /><img alt="" height="4" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /><table cellspacing="0" cellpadding="0" border="0" summary=""><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /><img alt="" height="7" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /></td><td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/subscribe"><font color="#ffffff">Free JavaWorld newsletters</font></a></strong></font></td></tr><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://javaworld.pricegrabber.com"><font color="#ffffff">ProductFinder </font></a></strong></font></td></tr><tr> <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/white-paper/index.shtml"><font color="#ffffff">White Paper Library</font></a></strong></font></td></tr>
+</table>
+<img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br />
+</td>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                        </tr>
+                        <tr valign="bottom">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_gryblbottom.gif" width=8 ></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr>
+                       <td width="8" bgcolor="#cccccc"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                           <td align="middle" bgcolor="#cccccc"><!-- SKYSCRAPER AD START HERE -->
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=658085?" width="120" height="600" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=skyscraper;sz=120x600;tile=3;ord=658085?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;skyscraper=med;sz=120x600;tile=3;ord=658085?" border=0 height="600" width="120"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer3" visibility="hidden" width=120 height=600></ILAYER>
+<!-- SKYSCRAPER AD ENDS HERE -->
+</td>
+                       <td width="8" bgcolor="#cccccc"><img height=8 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr valign="top">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_grybltop.gif" width=8 ></td>
+                        </tr>
+                    </table>
+                    <img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                    <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                <td width="100%">
+                    <!-- ## MAIN CONTENT STARTS HERE ### -->
+                    <font face="verdana, arial, helvetica" size="3">
+                        <strong> How-To Java</strong>
+                        <p>
+                            <h1 align="CENTER"> Secure thread collaboration across protection domains</h1>
+                            <h3 align="CENTER"> Build solid applications with the AccessControlContext and the GuardedObject classes</h3>
+                        </p>
+                        <!--<BLOCKQUOTE><STRONG>Summary</STRONG><BR>-->
+                        <BLOCKQUOTE>
+<STRONG>Summary</STRONG><BR>
+
+
+When threads collaborate across protection domains, they introduce interesting wrinkles into the science of building secure applications. This month, Todd Sundsted presents these scenarios and shows how to use the <code>AccessControlContext</code> and <code>GuardedObject</code> classes to build solid solutions. <em>(1,300 words) </em>
+</BLOCKQUOTE>
+                        <!--</BLOCKQUOTE>-->
+                        <a href="http://www.javaworld.com/feedback" target="Feedback"><STRONG>By   Todd Sundsted</STRONG></a>
+                        <p><img src="http://www.javaworld.com/images/rule_ltblue.gif" width="100%" height="2"><br />
+                           <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                           <a href="/javaworld/jw-12-2000/jw-1215-howto_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><br /></p>
+                         <font size=-1>  <!-- REPLACE PAGECOUNT --></font>
+                        <p><!-- START BIG AD (336x280) -->
+<table align="right" border="0" cellpadding="0" cellspacing="0"><tr valign="bottom" align="center"><td><font face="verdana, arial, geneva, sans-serif" color="#999999" size="-2">Advertisement</font></td></tr><tr><td><table border=1 bordercolor="#cccccc" cellspacing="5" cellpadding="0"><tr><td>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=658085" width="336" height="280" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=658085"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=658085" border=0 height="280" width="336"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer5" visibility="hidden" width=336 height=280></ILAYER>
+</td></tr></table></td></tr></table>
+<!-- END BIG AD (336x280) --></p>
+                        <p>
+
+<img align="left" width="24" height="29" src="/javaworld/abcs/L.gif" alt="L">et's consider two related but slightly different scenarios.<P>
+
+<ol><P>
+
+<li>You're building an application with two threads, a server and a client,at its heart. The design requirements permit the server thread to access every file in the filesystem. However, they forbid the client thread from <P>
+accessing files outside a small part of the filesystem. The server API defines a mechanism whereby a client thread can request the server thread to perform a sensitive operation on an arbitrary file. How do you ensure that the server thread carries out this operation only on files that the client can legitimately access?</li><P>
+
+<li>Your application's threads consist of a producer and a consumer. The design requirements are the same as above -- the producer is the server, and the consumer is the client. When requested by the consumer thread, the producer thread creates a filesystem object, such as an instance of the <code>FileInputStream</code> class, and hands it to the consumer. The consumer can immediately use the resource, hold on to it, or hand it to another consumer. How do you ensure that the consumer thread doesn't use resources it should not have access to?</li><P>
+</ol><P>
+
+When confronted with situations like the two outlined above, you should develop solutions that take advantage of the security features provided by the Java programming language and class library. This will save you work and prevent you from making mistakes. This month I'll take you on a tour of the <code>AccessControlContext</code> and the <code>GuardedObject</code> classes, two tools that will help you solve problems like those above.<P><FONT SIZE="+1"><STRONG> Java security in a couple of paragraphs</STRONG></FONT><BR>
+Although the two preceding problems differ slightly, both share a common characteristic. They both involve making security-related decisions outside the bounds of Java's standard security machinery.<P>
+
+In order to understand what that means, it's worth taking a few moments to learn about Java security. Let's dive in.<P>
+
+Every method is part of a class. Every class is associated with a protection domain. A protection domain is a collection of classes that share critical security-related features -- they originate from the same place, and the same entity signs them. Every protection domain is associated with a set of permissions that define the security-sensitive operations that classes in the protection domain can perform.<P>
+
+That makes up only part of the picture. The decision whether or not to allow a security-sensitive operation to proceed depends not only on the permissions held by the current method but also on the permissions held by the method that called the current method, and by the method that called the method that called the current method, and so on, all the way back to the first method invocation by the Java Virtual Machine (VM).<P>
+
+<center><P>
+<TABLE CELLPADDING="5" BORDER="0"><TR><TD><P>
+<center><P>
+<IMG VSPACE="3" WIDTH="161" HEIGHT="199" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-12-2000/images/jw-1215-howto1.gif"><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+
+Figure 1. A thread's execution context</STRONG></FONT></center><P>
+</TD></TR></TABLE><P>
+</center><P>
+If you imagine the chain of method calls as a stack of blocks, it would look something like Figure 1, which I refer to as the execution context. Every thread has its own execution context.<P>
+
+By examining the execution context, the <code>AccessController</code> class decides whether or not to allow a method to execute a piece of security-critical code. More specifically, it makes the determination by examining the protection domains associated with the methods in the execution context. The <code>AccessController</code> class permits the operation if and only if every protection domain in the current execution context holds the appropriate permission. This "principle of least privilege" is a key characteristic of the Java security model.<P><FONT SIZE="+1"><STRONG> Security at the extremes</STRONG></FONT><BR>
+Let's consider again the two scenarios described above. Both situations present two threads, and therefore two contexts. The two threads will likely execute code from different protection domains as well. For example, in Situation 1, the server thread must belong to a protection domain with permission to access all files in the filesystem, while the client thread must belong to a protection domain with a more restrictive set of permissions.<P>
+
+The Java security model provides two mechanism for dealing with situations like those presented in the introduction: the <code>AccessControlContext</code> class and the <code>GuardedObject</code> class.<P>
+
+Let's look at each and examine how they solve these security problems.<P><STRONG> Class AccessControlContext</STRONG><BR>
+The <code>AccessControlContext</code> class encapsulates a static snapshot of an execution context. The <code>getContext()</code> method on the <code>AccessController</code> class creates an <code>AccessControlContext</code> instance for the current execution context.<P>
+
+The following code illustrates how to use <code>AccessControlContext</code> in the context of Situation 1. <P>
+
+<CODE><P>
+<BR>
+public<BR>
+static<BR>
+class Client<BR>
+implements Runnable<BR>
+{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;private<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;Server m_server = null;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;public<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;void<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;link(Server server)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (m_server != server)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_server = server;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_server.link(this);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;public<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;void<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;run()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (int i = 0; i < 10; i++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Server.Message message = new Server.Message("/tmp/out.tmp", Integer.toString(i) + '\n');<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_server.logMessage(message);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;public<BR>
+&nbsp;&nbsp;static<BR>
+&nbsp;&nbsp;class Server<BR>
+&nbsp;&nbsp;implements Runnable<BR>
+&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;private<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;Client m_client = null;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;public<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;void<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;link(Client client)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (m_client != client)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_client = client;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_client.link(this);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;private<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;LinkedList m_linkedlist = new LinkedList();<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;public<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;synchronized<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;void<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;logMessage(Message message)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message.m_accesscontrolcontext = AccessController.getContext();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_linkedlist.add(message);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;notifyAll();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;private<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;synchronized<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;Message<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;retrieveMessage()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;throws InterruptedException<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while (m_linkedlist.isEmpty()) wait();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return (Message)m_linkedlist.removeFirst();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;public<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;void<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;run()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while (true)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Message message = null;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message = retrieveMessage();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catch (InterruptedException interruptedexception)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;final String stringDestination = message.m_stringDestination;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;final String stringMessage = message.m_stringMessage;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AccessController.doPrivileged<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new PrivilegedAction()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Object<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;run()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FileWriter filewriter = null;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;filewriter = new FileWriter(stringDestination, true);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;filewriter.write(stringMessage);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;filewriter.close();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catch (IOException ioexception)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ioexception.printStackTrace();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return null;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message.m_accesscontrolcontext<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;public<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;static<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;class Message<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AccessControlContext m_accesscontrolcontext = null;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String m_stringDestination = null;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String m_stringMessage = null;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Message(String stringDestination, String stringMessage)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_stringDestination = stringDestination;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_stringMessage = stringMessage;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;}<BR>
+
+</CODE><P>
+The preceding code contains two threads, identified as the <em>client</em> and the <em>server</em>. The server thread writes messages to logs, which correspond to files in the local filesystem -- a log is specified by its path and filename. The requirements state that there are many logs, some of which the client thread can write to and some of which it can't.<P>
+
+Along with its request to write the message, the client passes its execution context in the form of an <code>AccessControlContext</code> instance. It obtains this instance by calling the <code>getContext()</code> method.<P>
+
+The server thread obtains the request from its queue. Before attempting to write to the log, it first checks the permissions associated with the protection domains of the client by invoking the <code>doPriviledged()</code> method on the <code>AccessController</code> class. This method accepts an instance of the  <code>AccessControlContext</code> class in addition to a block of code containing the security-sensitive operation.<P>
+
+Figure 2 illustrates how this works.<P>
+<center><P>
+<TABLE CELLPADDING="5" BORDER="0"><TR><TD><P>
+<center><P>
+<IMG VSPACE="3" WIDTH="339" HEIGHT="280" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-12-2000/images/jw-1215-howto2.gif"><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+
+Figure 2. Permission resolution using an AccessControlContext instance</STRONG></FONT></center><P>
+</TD></TR></TABLE><P>
+</center><P>
+The arrows illustrate the path followed by the <code>AccessController</code> class as it decides whether or not to permit the operation. Beginning at the point where the security-critical operation is attempted, the <code>AccessController</code> class examines each protection domain for the required permission. When it reaches the point at which the <code>doPriviledged()</code> method was called, it stops checking the current execution context and instead continues checking the client's execution context. In this way, it considers the client's permissions when deciding whether or not to permit a security-sensitive operation.<P><STRONG> Class GuardedObject</STRONG><BR>
+An instance of the <code>GuardedObject</code> class "guards" a wrapped instance of another class from code that lacks the correct permissions.<P>
+
+Figure 3 illustrates the relationship between the <code>GuardedObject</code>instance, the <code>Guard</code> instance, and the wrapped object.<P>
+
+<center><P>
+<TABLE CELLPADDING="5" BORDER="0"><TR><TD><P>
+<center><P>
+<IMG VSPACE="3" WIDTH="217" HEIGHT="170" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-12-2000/images/jw-1215-howto3.gif"><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+
+Figure 3. The GuardedObject and Guard instances</STRONG></FONT></center><P>
+</TD></TR></TABLE><P>
+</center><P>
+The following code illustrates how to use a <code>GuardedObject</code> instance and an associated <code>Guard</code> instance in the context of Situation 2.<P>
+
+<CODE><P>
+<BR>
+&nbsp;&nbsp;public<BR>
+&nbsp;&nbsp;static<BR>
+&nbsp;&nbsp;class Consumer<BR>
+&nbsp;&nbsp;implements Runnable<BR>
+&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;private<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;Producer m_producer = null;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;public<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;void<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;link(Producer producer)<BR>
+&nbsp;&nbsp; {<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (m_producer != producer)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_producer = producer;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_producer.link(this);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;public<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;void<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;run()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (int i = 0; i < 10; i++)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Object object = m_producer.retrieveLocation().getObject();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;public<BR>
+&nbsp;&nbsp;static<BR>
+&nbsp;&nbsp;class Producer<BR>
+&nbsp;&nbsp;implements Runnable<BR>
+&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;private<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;Consumer m_consumer = null;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;public<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;void<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;link(Consumer consumer)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (m_consumer != consumer)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_consumer = consumer;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_consumer.link(this);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;private<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;String m_stringLocation = null;<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;public<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;synchronized<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;GuardedObject<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;retrieveLocation()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String stringLocation = null;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while (m_stringLocation == null) wait();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stringLocation = m_stringLocation;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_stringLocation = null;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;notifyAll();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catch (InterruptedException interruprtedexception)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GuardedObject guardedobject = new GuardedObject<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new FileInputStream(stringLocation),<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new FilePermission(stringLocation, "read")<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return guardedobject;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catch (IOException ioexception)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ioexception.printStackTrace();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return null;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;private<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;synchronized<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;void<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;storeLocation(String stringLocation)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;throws InterruptedException<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while (m_stringLocation != null) wait();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_stringLocation = stringLocation;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;notifyAll();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;public<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;void<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;run()<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while (true)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;storeLocation("/tmp/out.tmp");<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catch (InterruptedException interruptedexception)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;}<BR>
+}<BR>
+
+</CODE><P>
+The preceding code contains two threads identified as the <em>producer</em> and the <em>consumer</em>. In response to consumer requests, the producer thread creates a <code>FileInputStream</code> instance, wraps it in an instance of the <code>GuardedObject</code> class, and returns it to the consumer.<P>
+
+Associated with every instance of the <code>GuardedObject</code> class is a <code>Guard</code> instance. The <code>Guard</code> interface has only one method, the <code>checkGuard()</code> method. <code>checkGuard()</code> should make the appropriate check and throw a <code>SecurityException</code> if access to the guarded object is not allowed.<P>
+
+In creating the <code>GuardedObject</code> instance, I used an instance of the <code>FilePermission</code> class as the guard. The <code>FilePermission</code> class, and all classes that subclass the <code>Permission</code> class, implement the <code>Guard</code> interface and are therefore suitable for use as guards. The code>Permission</code> class implements the <code>checkGuard()</code> method as follows:<P>
+
+<CODE><P>
+<BR>
+&nbsp;&nbsp;public<BR>
+&nbsp;&nbsp;void<BR>
+&nbsp;&nbsp;checkGuard(Object object)<BR>
+&nbsp;&nbsp;throws SecurityException<BR>
+&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;SecurityManager securitymanager = System.getSecurityManager();<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;if (securitymanager != null)<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;{<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;securitymanager.checkPermission(this);<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+&nbsp;&nbsp;}<BR>
+
+</CODE><P>
+That is the same logic used to implement normal security checks in the Java class libraries.<P><FONT SIZE="+1"><STRONG> Conclusion</STRONG></FONT><BR>
+When reflecting on the use of the <code>AccessControlContext</code> and the <code>GuardedObject</code> classes, it's important to consider the benefits they ring to the table. Superficially, they allow you to solve a pair of challenging programming tasks. Perhaps more importantly, they allow you to solve these tasks using tools that already exist and that have already undergone public scrutiny and test. When building secure applications, this  type of conservative strategy is often the best bet.
+<IMG HEIGHT="12" WIDTH="22" SRC="http://www.idg.net/microsites/javaworld/javaworld/icons/jw-dingbat.gif"><P><br /></p>
+                        <font size=-1><!-- REPLACE PAGEURLS --> </font>
+                        <p>
+                            <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                            <a href="/javaworld/jw-12-2000/jw-1215-howto_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><STRONG>About the author</STRONG><BR>
+<a href="http://www.javaworld.com/javaworld/feedback/jw-feedback-form.html" target="_blank">Todd Sundsted</a> has been writing programs since computers became available in convenient desktop models. Though originally interested in building distributed applications in C++, Todd moved on to the Java programming language when it became the obvious choice for that sort of thing. In addition to writing, Todd is chief architect and cofounder of PointFire.
+<br /></p>
+                        <p><ul><A NAME="resources"></a><STRONG>Resources</STRONG>
+<BR>
+
+<LI> <code>AccessControlConttext</code> API documentation <BR><A HREF="http://java.sun.com/j2se/1.3/docs/api/java/security/AccessControlContext.html">http://java.sun.com/j2se/1.3/docs/api/java/security/AccessControlContext.html
+</A><BR>
+
+
+<LI> <code>GuardedObject</code> API documentation: <BR><A HREF="http://java.sun.com/j2se/1.3/docs/api/java/security/GuardedObject.html">http://java.sun.com/j2se/1.3/docs/api/java/security/GuardedObject.html
+</A><BR>
+
+
+<LI>An introduction to the <code>GuardedObject</code> class: <BR><A HREF="http://java.sun.com/products/jdk/1.2/docs/guide/security/spec/security-spec.doc7.html">http://java.sun.com/products/jdk/1.2/docs/guide/security/spec/security-spec.doc7.html
+</A><BR>
+
+
+<LI>An introduction to the <code>AccessControlContext</code> class: <BR><A HREF="http://java.sun.com/products/jdk/1.2/docs/guide/security/spec/security-spec.doc4.html">http://java.sun.com/products/jdk/1.2/docs/guide/security/spec/security-spec.doc4.html
+</A><BR>
+
+
+<LI>Have a security question? Check out <em>JavaWorld'</em>s Java Security discussion: <BR><A HREF="http://www.itworld.com/jump/jw-1215-howto/forums.itworld.com/webx?14@@.ee6b80e">http://www.itworld.com/jump/jw-1215-howto/forums.itworld.com/webx?14@@.ee6b80e
+</A><BR>
+
+
+<LI>Sign up for the <em>JavaWorld This Week</em> free weekly email newsletter and keep up with what's new at <em>JavaWorld</em>: <BR><A HREF="http://www.idg.net/jw-subscribe">http://www.idg.net/jw-subscribe
+</A><BR>
+
+
+<LI>For a complete listing of all <strong>How-To Java</strong> columns: <BR><A HREF="http://www.javaworld.com/javaworld/topicalindex/jw-ti-howto.html">http://www.javaworld.com/javaworld/topicalindex/jw-ti-howto.html
+</A><BR>
+
+
+<LI>Read more articles on <strong>Java Threads</strong> in the <em>JavaWorld</em> Topical Index: <BR><A HREF="http://www.javaworld.com/javaworld/topicalindex/jw-ti-threads.html">http://www.javaworld.com/javaworld/topicalindex/jw-ti-threads.html
+</A><BR>
+
+
+<LI>Read more articles on <strong>Java Security</strong> in the <em>JavaWorld</em> Topical Index: <BR><A HREF="http://www.javaworld.com/javaworld/topicalindex/jw-ti-security.html">http://www.javaworld.com/javaworld/topicalindex/jw-ti-security.html
+</A><BR>
+
+
+</ul><br /></p>
+                        <!-- REPLACE SIDEBAR -->
+                    </font>
+                    <!-- ## MAIN CONTENT ENDS HERE ### -->
+                </td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="168" nowrap><nobr><img src="http://www.javaworld.com/images/spacer.gif" width=160 height=8 border=0 ><img src="http://www.javaworld.com/images/c_bllftbottom.gif" width=8 height=8 border=0 ></nobr></td>
+                <td width="100%"><img src="http://www.javaworld.com/images/spacer.gif" width=1 height=1 border=0 ></td>
+                <td width="8"><img src="http://www.javaworld.com/images/spacer.gif" width=8 height=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="186" bgcolor="#006699" align="middle"><nobr><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2"></font></nobr><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0></a></td>
+                <td bgcolor="#cccccc" width="8" valign="bottom"><img height=8 src="http://www.javaworld.com/images/c_blgrylftbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- BOTTOM 468x60 AD STARTS HERE -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=658085?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=658085?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=658085?" border=0 height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer4" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- BOTTOM 468x60 AD ENDS HERE -->
+</td>
+                <td width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table bgcolor="#006699" align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="100%" align="middle" valign="center">    <font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">
+        <p>
+            <br />
+            <a href="http://www.javaworld.com"><font color="#ffffff">HOME</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/features/index.shtml"><font color="#ffffff">FEATURED TUTORIALS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/columns/index.shtml"><font color="#ffffff">COLUMNS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/news-reviews/index.shtml"><font color="#ffffff">NEWS & REVIEWS</font></a>&nbsp;|&nbsp;
+            <a href="http://forums.idg.net/webx?13@@.ee6b802"><font color="#ffffff">FORUM</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/resources/index.shtml"><font color="#ffffff">JW RESOURCES</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/info/jw-about-index.shtml"><font color="#ffffff">ABOUT JW</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/feedback"><font color="#ffffff">FEEDBACK</font></a>
+        </p>
+        <p>
+
+            <a href="http://www.javaworld.com/javaworld/common/jw-copyright.html"><font color="#ffffff">Copyright © 2002</font></a> JavaWorld.com, an IDG Communications company
+        </p>
+    </font>
+</td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+            <tr>
+                <td width="100%" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_blrtbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <!--TOP_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=658085?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer1.pageX,layer1.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--125x125-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=med;sz=125x125;tile=2;ord=658085?" width=125 height=125 visibility="hidden" onLoad="moveToAbsolute(layer2.pageX,layer2.pageY);clip.height=125;clip.width=125;visibility='show';">
+</LAYER>
+
+<!--SKYSCRAPER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=658085?" width=120 height=600 visibility="hidden" onLoad="moveToAbsolute(layer3.pageX,layer3.pageY);clip.height=600;clip.width=120;visibility='show';">
+</LAYER>
+
+<!--BOTTOM_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=658085?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer4.pageX,layer4.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--Big AD-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=658085" width=336 height=280 visibility="hidden" onLoad="moveToAbsolute(layer5.pageX,layer5.pageY);clip.height=280;clip.width=336;visibility='show';">
+</LAYER>
+    </body>
+<!-- stories1 -->
+<!-- DOCID 658548 -->
+</html>
+

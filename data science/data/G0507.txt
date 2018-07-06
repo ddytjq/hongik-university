@@ -1,0 +1,95 @@
+ID=G0507
+URL=http://arcturus.mit.edu/cosmics/doc-html/node11.html
+SIZE=6786
+DATE=09/07/2002
+TIME=16:18:55
+DATASET=Astronomy
+HTML=<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95 (Thu Jan 19 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> GRAFIC Input 2: Using an analytical transfer function</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" GRAFIC Input 2: Using an analytical transfer function">
+<meta name="keywords" value="cosmics">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html134 HREF="node12.html"><IMG ALIGN=BOTTOM ALT="next" SRC="file:/usr/local/lib/latex2html/icons/next_motif.gif"></A>   <A NAME=tex2html132 HREF="node9.html"><IMG ALIGN=BOTTOM ALT="up" SRC="file:/usr/local/lib/latex2html/icons/up_motif.gif"></A>   <A NAME=tex2html126 HREF="node10.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="file:/usr/local/lib/latex2html/icons/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html135 HREF="node12.html"> GRAFIC Input 3: </A>
+<B>Up:</B> <A NAME=tex2html133 HREF="node9.html"> GRAFIC Usage</A>
+<B> Previous:</B> <A NAME=tex2html127 HREF="node10.html"> GRAFIC Input 1: </A>
+<BR> <HR> <P>
+<H3><A NAME=SECTION00041200000000000000> GRAFIC Input 2: Using an analytical transfer function</A></H3>
+<P>
+<A NAME=grafic2>&#160;</A>
+<P>
+If the user prefers to normalize the matter power spectrum for a
+physical model without <tt>linger</tt> output (this is useful for
+exploratory studies, or for nonflat models), <tt>Tflag = 2</tt> is the
+appropriate choice.  In this case, <tt>grafic</tt> cannot determine the
+desired cosmological parameters from <tt>linger.dat</tt>, so instead the
+user is immediately prompted for <IMG  ALIGN=MIDDLE ALT="" SRC="img152.gif">, <IMG  ALIGN=MIDDLE ALT="" SRC="img153.gif">, and <IMG  ALIGN=MIDDLE ALT="" SRC="img154.gif">
+(in km s<IMG  ALIGN=BOTTOM ALT="" SRC="img155.gif"> Mpc<IMG  ALIGN=BOTTOM ALT="" SRC="img156.gif">; ignore the message about <IMG  ALIGN=MIDDLE ALT="" SRC="img157.gif">).  This
+case is not limited to a flat (<IMG  ALIGN=MIDDLE ALT="" SRC="img158.gif">) cosmology, since
+<tt>grafic</tt> uses linear theory results valid in any Friedmann universe,
+including open ones.  (Closed universes are currently out of fashion;
+the correct treatment in this case is complicated slightly by the
+fact that the spatial frequency becomes a discrete variable.  <tt>Grafic</tt>
+is not set up for this.)
+<P>
+After the user enters the cosmological parameters, <tt>grafic</tt> requests
+the long-wave spectral index <b>n</b> and the normalization constant
+(<IMG  ALIGN=MIDDLE ALT="" SRC="img159.gif"> or <IMG  ALIGN=MIDDLE ALT="" SRC="img160.gif">), as discussed in section <A HREF="node10.html#grafic1">4.1.1</A>.
+(<tt>Grafic</tt> sets <IMG  ALIGN=MIDDLE ALT="" SRC="img161.gif"> K; when <tt>linger.dat</tt> is used, <IMG  ALIGN=MIDDLE ALT="" SRC="img162.gif">
+is read from the header.)  At this point onwards, the input for <tt>grafic</tt>
+is the same as in the first case (sec. <A HREF="node10.html#grafic1">4.1.1</A>).  However, there are
+some important issues to consider for an open universe, which is allowed here
+but not at present with <tt>linger</tt>.
+<P>
+<tt>Grafic</tt> computes the CMB normalization using the first of
+equations (<A HREF="node10.html#z0corr">6</A>), except that <IMG  ALIGN=BOTTOM ALT="" SRC="img163.gif"> is replaced by the conformal
+time at recombination (setting it at <b>a=1200</b>) and the Sachs-Wolfe terms
+are added for the intrinsic anisotropy at the cosmic photosphere in the
+instantaneous-recombination approximation [<A HREF="node15.html#sw67">34</A>].  <tt>Grafic</tt>
+also uses the correct ultraspherical Bessel function for an open
+universe.  Also, in an open universe with curvature constant
+<P><A NAME=curv>&#160;</A><IMG  ALIGN=BOTTOM ALT="" SRC="img164.gif"><P>
+the Poisson equation (<A HREF="node3.html#poisson">1</A>) is modified; <IMG  ALIGN=BOTTOM ALT="" SRC="img165.gif"> is replaced
+by <IMG  ALIGN=MIDDLE ALT="" SRC="img166.gif"> [<A HREF="node15.html#blh95">25</A>].  I define the spatial wavenumber <b>k</b> so that
+the eigenfunctions of the Laplacian have eigenvalues <IMG  ALIGN=MIDDLE ALT="" SRC="img167.gif">; <b>k</b> then
+has the continuous spectrum <IMG  ALIGN=MIDDLE ALT="" SRC="img168.gif">.  Most other workers define
+<b>k</b> differently, so that it starts at <IMG  ALIGN=MIDDLE ALT="" SRC="img169.gif"> rather than at 0.  This
+is entirely a matter of convention.  However, a power law spectrum with
+one choice obviously is not a power-law spectrum with the other one.
+Somewhat arbitrarily, <tt>grafic</tt> assumes <IMG  ALIGN=MIDDLE ALT="" SRC="img170.gif"> with
+<b>k</b> ranging from 0 to <IMG  ALIGN=BOTTOM ALT="" SRC="img171.gif">.  Users interested in open models are
+invited to use their own preferred power spectra.
+<P>
+<tt>Grafic</tt> does the numerical integration of the quadrupole anisotropy
+by nested quadrature; <IMG  ALIGN=MIDDLE ALT="" SRC="img172.gif"> requires an integral over <IMG  ALIGN=BOTTOM ALT="" SRC="img173.gif">
+for each <b>k</b> (cf. eq. <A HREF="node10.html#z0corr">6</A>), and <IMG  ALIGN=MIDDLE ALT="" SRC="img174.gif"> then requires
+an integration over <b>k</b> (eq. <A HREF="node10.html#norm">5</A>).  (In case 1 with <tt>linger.dat</tt>,
+if <tt>linger</tt> is not evolved to <b>a=1</b>, then a double quadrature is also
+used to correct the results to <b>a=1</b>.)  This quadrature takes a few minutes
+on a typical workstation; a progress counter is output by <tt>grafic</tt> so
+that the user knows it is working.  Romberg integration is used for the
+quadratures in <tt>grafic</tt>.  A very small tolerance level is set, which
+the integrator sometimes cannot satisfy.  It then prints out a message
+``<tt>Rombint failed to converge</tt>....''  Do not worry about this unless
+the <tt>error</tt> that follows is larger than <IMG  ALIGN=BOTTOM ALT="" SRC="img175.gif">.
+<P>
+For description of the other input, see section <A HREF="node10.html#grafic1">4.1.1</A>.
+<P>
+<BR> <HR><A NAME=tex2html134 HREF="node12.html"><IMG ALIGN=BOTTOM ALT="next" SRC="file:/usr/local/lib/latex2html/icons/next_motif.gif"></A>   <A NAME=tex2html132 HREF="node9.html"><IMG ALIGN=BOTTOM ALT="up" SRC="file:/usr/local/lib/latex2html/icons/up_motif.gif"></A>   <A NAME=tex2html126 HREF="node10.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="file:/usr/local/lib/latex2html/icons/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html135 HREF="node12.html"> GRAFIC Input 3: </A>
+<B>Up:</B> <A NAME=tex2html133 HREF="node9.html"> GRAFIC Usage</A>
+<B> Previous:</B> <A NAME=tex2html127 HREF="node10.html"> GRAFIC Input 1: </A>
+<BR> <HR> <P>
+<BR> <HR>
+<P><ADDRESS>
+<I>Edmund Bertschinger <BR>
+Mon Jun 12 01:14:50 EDT 1995</I>
+</ADDRESS>
+</BODY>
+

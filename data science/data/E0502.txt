@@ -1,0 +1,348 @@
+ID=E0502
+URL=http://www.bcbdev.com/articles/wwwtc4answer.htm
+SIZE=16772
+DATE=12/07/02
+TIME=19:21:35
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: Articles</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2>
+<IMG SRC="../images/articlebuilding.gif" BORDER=0 HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 HSPACE="0" >
+</TD>
+</TR>
+<TR>
+<TD WIDTH="7" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">      <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">         <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">      <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">          <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">       <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+<H2>
+What's Wrong With This Code? Volume #4
+</H2>
+<HR>
+<H4>
+Base class destructors
+</H4>
+<P>
+Let's show the output of this program one more time.
+</P>
+<pre>
+base constructor
+Foo constructor
+derived constructor
+Foo constructor
+base destructor
+</pre>
+<P>
+If you look at the code for the <TT>Foo</TT> class, you will notice that the <TT>Foo</TT> destructor is supposed
+print the message "Foo destructor". However, the output listing does not contain the destructor message for <TT>Foo</TT>.
+What's going on? Why doesn't the program print the foo destructor message? It should print two of them because there were
+two <TT>Foo</TT> objects created in the code. Take one more look at the output from the program. Notice that the <TT>Derived</TT>
+destructor is also supposed to print a message, but that message is not shown in the program's output either.
+</P>
+<P>
+The program never prints the foo destructor message because the foo objects are not being deleted. At first glance, this does not
+appear to be correct. One of the <TT>Foo</TT> objects is a member object of the <TT>Derived</TT> class. It should be deleted automatically
+when the <TT>Derived</TT> object is destroyed. The other <TT>Foo</TT> object is a member pointer. The <TT>Derived</TT> destructor deletes
+it, so that <TT>Foo</TT> object ought to be destroyed as well.
+</P>
+<P>
+The <TT>Foo</TT> objects are not being deleted because the <TT>Derived</TT> object is not being deleted. Well, actually it is being
+partially deleted. The <TT>Base</TT> part of the object is being deleted. We can see this in the output of the program. The <TT>Base</TT>
+destructor prints the message "base destructor". When the
+<TT>main</TT> function calls <TT>delete</TT>, the <TT>Base</TT> part of the object is destroyed, but the <TT>Derived</TT> part of the
+object is not.
+</P>
+<P>
+The code contains a critical design flaw. The destructor in the base class is not declared as virtual. As a result, when the code calls
+delete on the <TT>Base *</TT>, only the destructor for the base class gets called. Because there is no vtable entry for the destructor,
+operator delete has no way of knowing that you are really deleting a <TT>Derived</TT> object. As far as it is concerned, you are deleting
+a plain <TT>Base</TT> object.
+</P>
+<P>
+To fix the code, declare the base class destructor to be virtual. The following code listing illustrates how to correct the code.
+</P>
+<pre>
+<b>class</b> Base
+<b>{</b>
+<b>public</b><b>:</b>
+    Base<b>(</b><b>)</b>
+    <b>{</b>
+        cout <b><<</b> <font color="blue">"base constructor"</font> <b><<</b> endl<b>;</b>
+    <b>}</b>
+
+    <b>virtual</b> <b>~</b>Base<b>(</b><b>)</b>
+    <b>{</b>
+        cout <b><<</b> <font color="blue">"base destructor"</font> <b><<</b> endl<b>;</b>
+    <b>}</b>
+<b>}</b><b>;</b>
+</pre>
+<P>
+There is a bit of irony to how we fixed the code. The original problem was that the <TT>Foo</TT> objects were not being
+destroyed, and the destructor for the <TT>Derived</TT> class was not getting called. So who do we blame? We can't blame the
+<TT>Derived</TT> class, and we certainly can't pin any blame on <TT>Foo</TT>. It's just an innocent bystander. The culprit
+is embedded deep down in the base class.
+</P>
+<P>
+There is a rule of thumb that should be followed here (in my opinion anyway). Base class destructors should always be declared
+virtual. This may not be news to you, especially if you are familiar with Scott Meyer's "Effective C++" series. Some people argue
+that you don't always have to make the base class destructor virtual. If you don't delete the object by using a pointer to a base class,
+then the problem disappears. For example, if the main function was coded like this, then the <TT>Derived</TT> destructor would have
+been called.
+</p>
+<pre>
+<b>int</b> main<b>(</b><b>)</b>
+<b>{</b>
+    <font color="navy">//Base *b = new Derived;</font>
+    Derived <b>*</b>b <b>=</b> <b>new</b> Derived<b>;</b>
+    <b>delete</b> b<b>;</b>
+    <b>return</b> <font color="blue">0</font><b>;</b>
+<b>}</b>
+</pre>
+<P>
+I think this is a poor argument. As a designer of a base class, how can you be certain how people are going to use your class?
+Forcing your users to always use a pointer to a derived object severely limits their ability to use your class. You have effectively
+prevented them from using polymorphism, one of the key ingredients of object oriented programming.
+</P>
+<P>
+To drive home this argument, let's pretend that we have a base class and two classes that derive from it called <TT>Derived1</TT> and
+<TT>Derived2</TT>. Both derived classes share some common functionally in the <TT>Base</TT> class. This common base may consist of
+shared code, or the common base could provide only an interface that the derived classes have to support.
+</p>
+<pre>
+<b>class</b> Base
+<b>{</b>
+    <b>...</b>
+    <b>public</b><b>:</b>
+        <b>virtual</b> <b>void</b> DoSomething<b>(</b><b>)</b><b>;</b>
+        <b>~</b>Base<b>(</b><b>)</b><b>;</b>
+<b>}</b><b>;</b>
+
+<b>class</b> Derived1 <b>:</b> <b>public</b> Base
+<b>{</b>
+    <b>...</b> <font color="navy">// private members</font>
+    <b>public</b><b>:</b>
+        <b>virtual</b> <b>void</b> DoSomething<b>(</b><b>)</b><b>;</b>
+<b>}</b><b>;</b>
+
+<b>class</b> Derived2 <b>:</b> <b>public</b> Base
+<b>{</b>
+    <b>...</b> <font color="navy">// private members</font>
+    <b>public</b><b>:</b>
+        <b>virtual</b> <b>void</b> DoSomething<b>(</b><b>)</b><b>;</b>
+<b>}</b><b>;</b>
+</pre>
+<P>
+Now let's say that you want to store some of these objects in a container. The container should be able to store all three types
+of objects.  You intend to iterate the container and call the <TT>DoSomething</TT> method on each object. When you are done, you will
+need to loop through the container and delete each object. Here is how you might go about it.
+</P>
+<pre>
+vector&lt;Base <b>*</b><b>></b> base_vector<b>;</b>
+
+base_vector<b>.</b>push_back<b>(</b> <b>new</b> Base<b>)</b><b>;</b>
+base_vector<b>.</b>push_back<b>(</b> <b>new</b> Base<b>)</b><b>;</b>
+base_vector<b>.</b>push_back<b>(</b> <b>new</b> Derived1<b>)</b><b>;</b>
+base_vector<b>.</b>push_back<b>(</b> <b>new</b> Derived2<b>)</b><b>;</b>
+
+vector&lt;Base <b>*</b><b>></b><b>:</b><b>:</b>iterator iter <b>=</b> base_vector<b>.</b>begin<b>(</b><b>)</b><b>;</b>
+<b>for</b><b>(</b><b>;</b> iter <b>!=</b> base_vector<b>.</b>end<b>(</b><b>)</b><b>;</b> <b>++</b>iter<b>)</b>
+<b>{</b>
+    iter<b>-></b>DoSomething<b>(</b><b>)</b><b>;</b>
+<b>}</b>
+
+<b>...</b> more stuff
+
+iter <b>=</b> base_vector<b>.</b>begin<b>(</b><b>)</b><b>;</b>
+<b>for</b><b>(</b><b>;</b> iter <b>!=</b> base_vector<b>.</b>end<b>(</b><b>)</b><b>;</b> <b>++</b>iter<b>)</b>
+<b>{</b>
+    <b>delete</b> <b>*</b>iter<b>;</b>
+<b>}</b>
+</pre>
+<P>
+Because the container holds <TT>Base</TT> pointers, the container takes on a polymorphic form. It can hold <TT>Base</TT>
+objects, or derived objects. It really doesn't care. Because <TT>DoSomething</TT> is virtual, the correct member function
+gets called. But what about the destruction of the objects? Because the <TT>Base</TT> destructor is not virtual, the derived
+destructors will never run. If you design a base class and you don't make the destructor virtual, you are essentially preventing
+users of your class from ever putting objects of your class into a container. Ouch!
+</P>
+<P>
+I have also heard some people argue that if the derived class does not allocate any additional memory by calling operator <TT>new</TT>,
+that there is no need for its destructor to be called. Hence, the base destructor need not be virtual. This is complete hogwash. Look back
+at the original code for this article. The <TT>Derived</TT> class contained two <TT>Foo</TT> objects. One of them was a pointer, and one
+of them was not. Neither of them were destroyed properly. It makes no difference whether or not they are pointers. The reason for this is
+clear. When you write the <TT>Derived</TT> destructor, the compiler silently inserts code to destroy all non-pointer member objects. You can step
+through this code in assembler if you want. This code is part of the <TT>Derived</TT> destructor. If the <TT>Derived</TT> destructor
+is not called, neither is the silent code that cleans up non-pointer objects.
+</P>
+<p>
+Ok, ok, but what if the <TT>Derived</TT> object does not contain any member objects? Then its OK not to have a virtual destructor
+in the base class, right? Well, maybe. But if you are designing a base class, do you have any right to prevent all derived classes
+from having any member variables (other than integral types, such as int). People are not going to want to use your class as a base
+if you try to force that rule on them.
+</P>
+<P>
+There is only one situation where it is acceptable for a base class destructor to not be virtual: the class is a concrete class and it is
+should not be derived from. In reality, its not a base class at all. No classes derive from it.
+</P>
+<P>
+<B>Note :</B> The example code for this article contained a class hierarchy that was only two levels deep. When the hierarchy is more than
+two classes deep, the deepest base class should declare a virtual destructor (ie, the one at the top). For example:
+</P>
+<pre>
+<b>class</b> Base
+<b>{</b>
+    <b>...</b>
+    <b>public</b><b>:</b>
+        <b>virtual</b> <b>~</b>Base<b>(</b><b>)</b><b>;</b>
+<b>}</b><b>;</b>
+
+<b>class</b> Middle <b>:</b> <b>public</b> Base
+<b>{</b>
+    <b>...</b>
+    <b>public</b><b>:</b>
+       <b>~</b>Middle<b>(</b><b>)</b><b>;</b>
+<b>}</b><b>;</b>
+
+<b>class</b> End <b>:</b> <b>public</b> Middle
+<b>{</b>
+    <b>...</b>
+    <b>public</b><b>:</b>
+       <b>~</b>End<b>(</b><b>)</b><b>;</b>
+<b>}</b><b>;</b>
+</pre>
+<P>
+Recall that once a function is declared as virtual in a base class, it is considered virtual in all derived classes. This is why the
+<TT>Middle</TT> and <TT>End</TT> classes do not have to list virtual before their destructors. Some people like to list virtual anyway,
+to avoid confusion.
+</P>
+<hr size = 1>
+<P>
+<B>Note :</B> Chris Uzdavinis sent me this note:
+</P>
+<P>
+<I>I read the new "w3tc" article, on virtual destructors in the base class of
+polymorphic hierarchies.  You explain it well, but I think that your warning
+is too soft. :)  The ANSI standard says that if you call delete on a pointer
+that points to a derived type, then the destructor SHALL be virtual or
+behavior is undefined.  You cannot even count on the base part being deleted
+correctly.</I>
+</P>
+<P>
+<I>See Ansi 5.3.5 p3 for details.</I>
+</P>
+<P>
+<I>
+Chris Uzdavinis
+</I>
+</P>
+
+<hr size = 1>
+<P>
+<B>Note :</B> If you do not provide a destructor for your base class, the compiler will generate a default one for you.
+This default destructor is not virtual. Omitting a destructor in the base class is equivalent to adding a non-virtual destructor.
+In order to follow the advice in this article, you may have to add empty, virtual destructors to your base classes. In fact,
+this is how many people fall victim to this problem. They forget to provide a destructor in a base class that does not contain
+any members.
+</P>
+
+<hr size = 1>
+<P>
+<B>Note :</B> This is also a problem in Object Pascal and Delphi. Well sort of. The same problem exists, but Borland's version of
+Object Pascal essentially squashes it before it has a chance to surface. In Object Pascal, all classes are derived from <TT>TObject</TT>.
+It does not matter whether you list <TT>TObject</TT> as a base class or not. The <TT>TObject</TT> class contains a virtual
+destructor, which prevents the problem from surfacing. If Borland ever changes Delphi so that classes are not automatically derived from
+<TT>TObject</TT>, then the problem would become more serious for Object Pascal programmers.
+</P>
+
+<hr size = 1>
+<P>
+<B>Note :</B> If you are thinking of deriving from a class that someone else wrote, check to make sure that it has a virtual
+destructor. If it does not, then you can't derive from it. The STL classes fall into this category. Their destructors are
+not virtual, so you may not want to derive from them.
+</P>
+
+<hr size = 1>
+<P>
+<B>Note :</B> Scott Meyers discusses the importance of making base class destructors virtual in his book
+<A TARGET=_top HREF="http://www.amazon.com/exec/obidos/ISBN=0201924889/cbuilderfoundatiA/">"Effective C++"</A>.
+He discusses something in his book that I thought was worth mentioning here. While it is important to make the destructor
+of a base class virtual, it is equally important that you don't overdo it. If a class will not and should not be used as a
+base class, then do not make the destructor virtual. In fact, if the class is not a suitable base class, then it should not
+contain any virtual methods.
+</P>
+<P>
+Meyers gives some good examples of classes that should not have a virtual destructor. One example was a point class, similar to the
+<TT>TPoint</TT> class in C++Builder. <TT>TPoint</TT> represents an x-y point in a Cartesian coordinate system. The declaration
+for <TT>TPoint</TT> is in windows.hpp
+</P>
+<pre>
+<b>struct</b> TPoint
+<b>{</b>
+  TPoint<b>(</b><b>)</b> <b>{</b><b>}</b>
+  TPoint<b>(</b><b>int</b> _x<b>,</b> <b>int</b> _y<b>)</b> <b>:</b> x<b>(</b>_x<b>)</b><b>,</b> y<b>(</b>_y<b>)</b> <b>{</b><b>}</b>
+  TPoint<b>(</b>POINT<b>&</b> pt<b>)</b>
+  <b>{</b>
+    x <b>=</b> pt<b>.</b>x<b>;</b>
+    y <b>=</b> pt<b>.</b>y<b>;</b>
+  <b>}</b>
+<font color="navy">//  ...</font>
+  <b>int</b>  x<b>;</b>
+  <b>int</b>  y<b>;</b>
+
+<b>}</b><b>;</b>
+</pre>
+<P>
+This version of <TT>TPoint</TT> contains two integer member variables. Since the structure does not contain any virtual functions, the
+class won't have a vtable. The absence of a vtable means that the total size of a <TT>TPoint</TT> object will equal 8 bytes, 4 bytes
+for each integer member variable. If we add a virtual destructor to <TT>TPoint</TT>, then the size of the class grows by four bytes,
+making the total size 12. In addition to the extra four bytes, the code size of the class also grows because the compiler has to insert
+extra code to initialize and cleanup the vtable.
+</P>
+<P>
+The extra four bytes for the vtable pointer is uneeded bloat if the class does not serve as a base class. In "Effective C++", Meyers
+advice is simple: if a class serves as a base class, then it should have a virtual destructor. If a class functions as a stand alone,
+concrete class, such as <TT>TPoint</TT>, then it should not have virtual destructor. Furthermore, if someone gives you class that
+does not have a virtual destructor, then it means that either the class should not be derived from, or that person has not read "Effective
+C++". Either way, you probably should not derive from that class. (PS- If you don't already own a copy of
+<A TARGET=_top HREF="http://www.amazon.com/exec/obidos/ISBN=0201924889/cbuilderfoundatiA/">"Effective C++"</A>, you should buy one. This
+book is well worth the money).
+</P>
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2002 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

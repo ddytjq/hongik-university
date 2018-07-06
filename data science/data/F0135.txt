@@ -1,0 +1,357 @@
+ID=F0135
+URL=http://www.stlvbug.org/general.asp
+SIZE=8030
+DATE=09/07/2002
+TIME=13:15:27
+DATASET=Visual Basic
+HTML=<html>
+<head>
+<link rel="stylesheet" type="text/css" href="styles.css">
+	<title>General Information</title>
+</head>
+
+<body background="images/grytxtr5.jpg" bgcolor="#d5d5d5" BGPROPERTIES=FIXED>
+
+<p><img src="images/vbug.gif" width="576" height="144"></p>
+<!-- begin CoolBar Control -->
+<STYLE TYPE="text/css"><!--
+	
+	A { text-decoration:none; }
+
+	TABLE#tblCoolbar { 
+		background-color:threedface; padding:1px; color:menutext; 
+		border-width:1px; border-style:solid; 
+		border-color:threedhighlight threedshadow threedshadow threedhighlight;
+	}
+
+	TABLE#tblCoolbar TABLE { 
+		font-family:tahoma; font-size:70%; color:menutext; 
+		border:1px solid threedface; cursor:hand; padding:1px; 
+	}
+	
+--></STYLE>
+
+<SCRIPT LANGUAGE="JScript"><!--
+
+	// SET SOME "CONSTANT" VALUES FOR THE SCRIPT
+	// MAKES PLAYING WITH LOOK AND FEEL A LOT EASIER
+
+	var sOffBackColor = "threedface";
+	var sOffTextColor = "menutext"
+	var sOffBorderColor = "threedface";
+	var sOffPadding = "1px 1px 1px 1px";
+
+	var sOverBackColor = "threedface";
+	var sOverTextColor = "menutext"
+	var sOverBorderColor = "threedhighlight threedshadow threedshadow threedhighlight";
+	var sOverPadding = "1px 1px 1px 1px";
+
+	var sDownBackColor = "window"
+	var sDownTextColor = "menutext"
+	var sDownBorderColor = "threedshadow threedhighlight threedhighlight threedshadow";
+	var sDownPadding = "2px 0px 0px 2px";
+
+	var sPaneName = "";
+	var eActiveButton = null;
+
+	// TWO HELPER FUNCTIONS
+	// ONE TO SET BUTTON PADDING AND ONE TO SET BUTTON IMAGE
+
+	function SetButtonPadding(eButton,sPaddingStyle)
+	{
+		eButton.rows[0].cells[0].style.padding = sPaddingStyle;
+		eButton.rows[0].cells[1].style.padding = sPaddingStyle;
+	}
+	
+	function SetButtonImage(eButton,sState)
+	{
+		var eImg = eButton.rows[0].cells[0].children[0];
+		if (eImg) 
+		{
+			var sImgSrc = eImg.src;
+			
+			if (sState == "over")
+			{
+				eImg.src = "../images/minus.gif";
+			}
+			
+			if (sState == "off")
+			{
+				eImg.src = "../images/plus.gif";
+			}
+
+		}
+	}
+	
+	// FOUR EVENT-HANDLER FUNCTIONS
+
+	function button_over(eButton)
+	{
+
+		// IF WE'RE JUST MOUSING ABOUT WITHIN THE BUTTON, THEN BAIL
+
+		if (window.event && eButton.contains(window.event.fromElement)) return false;
+
+		// OTHERWISE CHANGE BUTTON STYLE
+
+		eButton.style.backgroundColor = sOverBackColor;
+		eButton.style.color = sOverTextColor;
+		if (eActiveButton != eButton)
+		{
+			eButton.style.borderColor = sOverBorderColor;
+			SetButtonImage(eButton,"over");
+		}
+	}
+
+
+	function button_out(eButton)
+	{
+		// IF WE'RE JUST MOUSING ABOUT WITHIN THE BUTTON, THEN BAIL
+		
+		if (window.event && eButton.contains(window.event.toElement)) return false;
+
+		// OTHERWISE CHANGE BUTTON STYLE
+
+		if (eActiveButton != eButton)
+		{
+			eButton.style.backgroundColor = sOffBackColor;
+			eButton.style.borderColor = sOffBorderColor;
+			eButton.style.color = sOffTextColor;
+			SetButtonPadding(eButton,sOffPadding);
+			SetButtonImage(eButton,"off")
+		}
+		else
+		{
+			eButton.style.backgroundColor = sDownBackColor;
+			eButton.style.borderColor = sDownBorderColor;
+			eButton.style.color = sDownTextColor;
+		}
+	}
+
+	function button_down(eButton)
+	{
+		eButton.style.borderColor = sDownBorderColor;
+		SetButtonPadding(eButton,sDownPadding);
+	}
+
+	function button_up(eButton)
+	{
+
+		// IF ANOTHER BUTTON IS ACTIVE, RESET IT
+
+		if (null != eActiveButton && eButton != eActiveButton)
+		{
+			eActiveButton.style.backgroundColor = sOffBackColor;
+			eActiveButton.style.borderColor = sOffBorderColor;
+			eActiveButton.style.color = sOffTextColor;
+			SetButtonImage(eActiveButton,"off");
+			SetButtonPadding(eActiveButton,sOffPadding);
+			eActiveButton = null; 
+
+			// insert code here for button hiding 
+			window.status = window.defaultStatus;
+		}
+
+		// IF THE BUTTON WE CLICKED IS NOT THE ACTIVE BUTTON, MAKE IT ACTIVE
+
+		if (eButton != eActiveButton)  
+		{
+			eActiveButton = eButton;
+			eActiveButton.style.borderColor = sDownBorderColor;
+			eActiveButton.style.color = sDownTextColor;
+			SetButtonPadding(eActiveButton,sDownPadding);
+			sPaneName = eActiveButton.id.replace(/tbl(.*)Button/,"$1");
+
+			// insert code here for button showing 
+			//window.status = "Now showing: " + sPaneName;
+		}
+
+		// OTHERWISE, RESET IT
+
+		else  
+		{
+			eActiveButton.style.backgroundColor = sOverBackColor;
+			eActiveButton.style.borderColor = sOverBorderColor;
+			eActiveButton.style.color = sOverTextColor;
+			SetButtonPadding(eActiveButton,sOverPadding);
+			eActiveButton = null;
+
+			// insert code here for button hiding 
+			window.status = window.defaultStatus;
+		}
+
+	}
+
+//--></SCRIPT>
+
+<TABLE ID="tblCoolbar" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONSELECTSTART="return false;">
+<TR VALIGN="middle">
+
+	<TD>
+	<TABLE ID="tblHomeButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="VBUG Home">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><A HREF="default.asp">Home</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>
+
+	<TD>
+	<TABLE ID="tblFeedbackButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="Send Us Feedback">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><A HREF="feedback.asp">Feedback</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>
+
+	<TD>
+	<TABLE ID="tblAppButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="Join VBUG!">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><A HREF="vbugapp.asp">VBUG Application</A>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>	
+	
+	<TD>
+	<TABLE ID="tblMeetingButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="Current Meeting">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><a href="currmtg.asp">Current Meeting</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>
+	
+	<TD>
+	<TABLE ID="tblTipsButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="VBUG Tips and Tricks">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><a href="tips.asp">Tips and Tricks</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>	
+
+	<TD>
+	<TABLE ID="tblNewsButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="VBUG Newsgroup">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><a href="newsgroup.asp">VBUG Online Newsgroup</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>	
+
+	<TD>&nbsp;</TD>
+
+</TR>
+</TABLE>
+
+<P><P>
+
+<!-- End CoolBar Control -->
+
+
+<h1 align="center">General Information</h1>
+
+<p><img src="images/rainbow.gif" alt="rainbow.gif" align="middle" width="100%" height="14"> </p>
+
+<p>Welcome! The purpose of the group is to share and learn Visual
+Basic Programming. Each meeting usually consists of a presentation of code by a member, a programming Tips session, and open Question and Answer session by
+participants as well as a general announcement session at the beginning of each meeting. No dues are collected from members. E-mail reminders are sent a week and then again one day prior to each meeting. </p>
+
+<p><b>Meeting Times:</b> 6:15-9:15 P.M. </p>
+<p>Each meeting has two sessions.  The first session consists of breaking the members up into smaller groups.  Each group then discusses some code that each of them brought.  The code they bring should be related to the meeting's topic (noted in the newsletter and on the website).  Afterwards, each group shares the main points of their talk with the rest of the group. This is an <strong>excellent</strong> chance to get know the other members in the group.  Afterall, what good is having a user group if you can't use its greatest resource, its members!
+<P>
+The second session is a presentation of coding techniques, add-on components, or products that relate to that month's topic.  Generally, these go further in depth and discuss the tricks and tips invloved.  Past presentations have covered error-handling techniques, data access methods, the help compiler, Visual Basic for Applications, SQL Server, ASP/ASP.Net, MTS/COM+, MSMQ, WinCE and VBCE, VBAssist, ToolThings, internet programming and other topics. Each meeting has a question and answer session. </p>
+
+<p><b>Location:</b> One CityPlace, Creve Coeur - a.k.a. Microsoft
+bldg. East of 270 and Olive, turn north off Olive at CityPlace
+Dr. Use main lobby entrance and take one flight down. <br>
+</p>
+
+<p><img src="images/vbugmap.gif" width="413" height="315"></p>
+
+<p>The security guard is not always at the door during meetings.
+We hope no one has missed a meeting because they couldn't get in.
+If so, we apologize. In order to avoid this in the future, we
+shall post someone on the door between 6:45 and 7:15. After that,
+someone from the meeting shall go to the door every 15 minutes to
+let in and sign in anyone there (if the security guard is not at
+the door). Security may be there, but just in case we will follow
+this practice. </p>
+
+<p>If you arrive late and there is no one to let you, WAIT. We
+will send in the cavalry. We would also appreciate help from
+members who would volunteer to do door duty, either during the 30
+minutes prior to start time, or every 15 minutes during the
+meeting. Thanks to everyone for their co-operation. This is life
+in the big city after the lights go out. If the door is locked,
+WAIT, someone will come and open it. </p>
+
+<p><b>Permanent Meeting Schedule:</b> 3rd Wednesday of the month </p>
+
+
+<h3>
+	<strong><b><font size="2">Steering Committee:</font></b></strong>
+</h3>
+<p>
+	<font size="2">Click below to send us an email message! </font>
+</p>
+<font size="2">
+	<table border="0">
+		<!--
+  <tr>
+    <td><img src="images/pinpurpl.gif" alt="Image Not Found" align="middle" WIDTH="21" HEIGHT="21"> </td>
+    <td><font size=2>Fred Gowin</font></td>
+    <td><font size=2>314-655-7493</font></td>
+    <td><a href="mailto:VBGuy@iname.com"><font size=2>VBGuy@iname.com</font></a></td>
+  </tr>
+-->
+		<tr>
+			<td>
+				<img src="images/pinpurpl.gif" alt="Image Not Found" align="middle" WIDTH="21" HEIGHT="21">
+			</td>
+			<td>
+				<font size="2">John Pirkey</font>
+			</td>
+			<td>
+				<font size="2">636-225-3262</font>
+			</td>
+			<td>
+				<font size="2"><a href="mailto:webmaster@stlvbug.org">webmaster@stlvbug.org</a></font>
+			</td>
+			<td>
+				&nbsp;
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<img src="images/pinpurpl.gif" alt="Image Not Found" align="middle" WIDTH="21" HEIGHT="21">
+			</td>
+			<td>
+				<font size="2">Dave Wickersheim</font>
+			</td>
+			<td>
+				<font size="2">&nbsp;</font>
+			</td>
+			<td>
+				<font size="2"><a href="mailto:dave@stlvbug.org">dave@stlvbug.org</a></font>
+			</td>
+		</tr>
+	</table>
+</font>
+<font size=2>Send an email to all of us here : <a href="mailto:committee@stlvbug.org">committee@stlvbug.org</a></font>
+<p>
+<p>
+	<font size="2">News Editor and Web Master: <em>John Pirkey</em></font>
+	<br>
+
+
+<p><br>
+</p>
+
+<h5>Send mail to the <a href="mailto:John@ShallowWaterSystems.com?subject=The VBUG Web Site">VBUG WebMaster</a> with questions or comments about this web site.<br>
+ </h5>
+</body>
+</html>
+

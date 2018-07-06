@@ -1,0 +1,111 @@
+ID=E0553
+URL=http://www.troubleshooters.com/codecorn/norm.htm
+SIZE=5297
+DATE=12/07/02
+TIME=19:22:10
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>Litt's Tips : Normalization</TITLE>
+   <META NAME="GENERATOR" CONTENT="Mozilla/3.01Gold (Win95; U) [Netscape]">
+   <META NAME="Author" CONTENT="Steve Litt">
+   <META NAME="Description" CONTENT="Data normalization is vital to robust apps. Here are the rules and tips.">
+   <META NAME="KeyWords" CONTENT="data normalization, normalization">
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFF0" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000" BACKGROUND="tcbk.gif">
+
+<H1 ALIGN=CENTER><A NAME="top"></A><A HREF="../troubleshooters.htm">Troubleshooters.Com
+Presents:</A></H1>
+
+<CENTER><P><IMG SRC="images/bignorm.gif" HEIGHT=55 WIDTH=252 ALIGN=CENTER><BR>
+<A HREF="../cpyright.htm">Copyright 1995-1997 by Steve Litt</A></P></CENTER>
+
+<P>Page Navigation: [ <A HREF="#normforms">Normalization</A> | <A HREF="#addtips">Additional
+Normalization Tips</A> ]<BR>
+Other Navigation: [ <A HREF="index.htm">Code Corner</A> | <A HREF="../troubleshooters.htm">Troubleshooters.Com</A>
+| <A HREF="mailto:slitt@troubleshooters.com">Email Steve Litt</A> | <A HREF="../cpyright.htm">Copyright
+Notice</A> ]</P>
+
+<P>
+<HR></P>
+
+<H1><A NAME="normform"></A>Normalization</H1>
+
+<P>Well normalized data makes programming (relatively) easy, and works
+very well in multi-platform, enterprise wide environments. Non-normalized
+data leads to heartbreak. </P>
+
+<H2><IMG SRC="images/ltsmlblw.gif" HEIGHT=32 WIDTH=32> Normalization: The
+first three forms</H2>
+
+<P><IMG SRC="images/n0.gif" HEIGHT=201 WIDTH=674><BR>
+<IMG SRC="images/ra.gif" HEIGHT=23 WIDTH=16> <B>First Normal Form:<BR>
+No repeating groups.</B> As an example, it might be tempting to make an
+invoice table with columns for the first, second, and third line item (see
+above). This violates the first normal form, and would result in large
+rows, wasted space (where an invoice had less than the maximum number of
+line items), and *horrible* SQL statements with a separate join for each
+repetition of the column. First form normalization requires you make a
+separate line item table, with it's own key (in this case the combination
+of invoice number and line number) (See below).</P>
+
+<P><IMG SRC="images/n1.gif" HEIGHT=281 WIDTH=614><BR>
+<IMG SRC="images/ra.gif" HEIGHT=23 WIDTH=16> <B>Second Normal Form:<BR>
+Each column must depend on the *entire* primary key.</B> As an example,
+the customer information could be put in the line item table (see above).
+The trouble with that is that the customer goes with the invoice, not with
+each line on the invoice. Putting customer information in the line item
+table will cause redundant data, with it's inherant overhead and difficult
+modifications. Second form normalization requires you place the customer
+information in the invoice table (see below).</P>
+
+<P><IMG SRC="images/n2.gif" HEIGHT=269 WIDTH=543><BR>
+<IMG SRC="images/ra.gif" HEIGHT=23 WIDTH=16> <B>Third Normal Form:<BR>
+Each column must depend on *directly* on the primary key.</B> As an example,
+the customer address could go in the invoice table (see above), but this
+would cause data redundancy if several invoices were for the same customer.
+It would also cause an update nightmare when the customer changes his address,
+and would require extensive programming to insert the address every time
+an existing customer gets a new invoice. Third form normalization requires
+the customer address go in a separate customer table with its own key (customer),
+with only the customer identifier in the invoice table (see below).</P>
+
+<P><IMG SRC="images/n3.gif" HEIGHT=327 WIDTH=481> </P>
+
+<P>[ <B><A HREF="../troubleshooters.htm">Troubleshooters.Com</A></B> | <A HREF="#top">Top
+of page</A> | <A HREF="index.html">Home page</A> | <A HREF="mailto:slitt@troubleshooters.com">Email
+Steve Litt</A> ]</P>
+
+<P>
+<HR></P>
+
+<H2><IMG SRC="images/ltsmlblw.gif" HEIGHT=32 WIDTH=32> <A NAME="addtips"></A>Additional
+Normalization Tips</H2>
+
+<P><IMG SRC="images/ra.gif" HEIGHT=23 WIDTH=16> <B>Make a table for each
+list<BR>
+</B>Do this right away. It will save a fortune in time. Go through the
+department or enterprise, ferreting out all lists. Document them. Each
+should be a table if their information is needed, and if practical.</P>
+
+<P><IMG SRC="images/ra.gif" HEIGHT=23 WIDTH=16> <B>Use non-meaningful primary
+keys<BR>
+</B>If employee numbers starting with C mean the person's stationed in
+Chicago, and the person moves to Los Angeles, what do you do with his employee
+number. Making primary keys non-meaningful means changes in environment
+or business rules can't render them ineffective. 
+<HR WIDTH="100%"></P>
+
+<P>Page Navigation: [ <A HREF="#normforms">Normalization</A> | <A HREF="#addtips">Additional
+Normalization Tips</A> ]<BR>
+Other Navigation: [ <A HREF="index.htm">Code Corner</A> | <A HREF="../troubleshooters.htm">Troubleshooters.Com</A>
+| <A HREF="mailto:slitt@troubleshooters.com">Email Steve Litt</A> | <A HREF="../cpyright.htm">Copyright
+Notice</A> ]</P>
+
+<P><A HREF="../cpyright.htm#top"><IMG SRC="../images/biglcpyr.gif" BORDER=0 HEIGHT=30 WIDTH=30></A>
+<A HREF="../cpyright.htm#top">Copyright (C)1997 by Steve Litt.</A> -- <A HREF="../cpyright.htm#top">Legal</A></P>
+
+</BODY>
+</HTML>
+

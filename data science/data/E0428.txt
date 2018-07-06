@@ -1,0 +1,565 @@
+ID=E0428
+URL=http://www.gotw.ca/gotw/058.htm
+SIZE=33677
+DATE=12/07/02
+TIME=19:20:51
+DATASET=C
+HTML=
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+
+
+<title>GotW #58: Nested Functions</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<link rel="stylesheet" type="text/css" href="../gotw.css">
+<meta name="Microsoft Theme" content="gotw 111, default">
+<meta name="Microsoft Border" content="tlb, default">
+</head>
+
+<body background="../_themes/gotw/glabkgnd.jpg" bgcolor="#CCFFFF" text="#000000" link="#008080" vlink="#008080" alink="#0000FF"  ><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><table border="0" cellspacing="0" width="100%">
+  <tr>
+    <td colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="6"><strong>
+    GotW #58</strong></font> <!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+
+
+
+<p align="left" style="margin-top: 0; margin-bottom: 0">
+
+<script language="JavaScript"><!--
+MSFPhover = 
+  (((navigator.appName == "Netscape") && 
+  (parseInt(navigator.appVersion) >= 3 )) || 
+  ((navigator.appName == "Microsoft Internet Explorer") && 
+  (parseInt(navigator.appVersion) >= 4 ))); 
+function MSFPpreload(img) 
+{
+  var a=new Image(); a.src=img; return a; 
+}
+// --></script><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav1n=MSFPpreload("../_derived/home_cmp_gotw110_hbtn.gif"); MSFPnav1h=MSFPpreload("../_derived/home_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1h.src" onmouseout="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1n.src"><img src="../_derived/home_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Home" align="middle" name="MSFPnav1"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav2n=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn.gif"); MSFPnav2h=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../news.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2h.src" onmouseout="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2n.src"><img src="../_derived/news.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="News &amp; Events" align="middle" name="MSFPnav2"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav3n=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav3h=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../resources/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3h.src" onmouseout="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3n.src"><img src="../resources/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Community Resources" align="middle" name="MSFPnav3"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav4n=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn.gif"); MSFPnav4h=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../consulting.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4h.src" onmouseout="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4n.src"><img src="../_derived/consulting.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Consulting Services" align="middle" name="MSFPnav4"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav5n=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn.gif"); MSFPnav5h=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../presentations.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5h.src" onmouseout="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5n.src"><img src="../_derived/presentations.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Presentations" align="middle" name="MSFPnav5"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav6n=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav6h=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../publications/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6h.src" onmouseout="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6n.src"><img src="../publications/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Publications" align="middle" name="MSFPnav6"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav7n=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav7h=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7h.src" onmouseout="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7n.src"><img src="_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Guru of the Week" align="middle" name="MSFPnav7"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav8n=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav8h=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../conv/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8h.src" onmouseout="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8n.src"><img src="../conv/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Conversations" align="middle" name="MSFPnav8"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav9n=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn.gif"); MSFPnav9h=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../search.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9h.src" onmouseout="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9n.src"><img src="../_derived/search.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Search GotW.ca" align="middle" name="MSFPnav9"></a>
+</p>
+
+
+
+
+    <!--mstheme--></font></td>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 0">
+      <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav10n=MSFPpreload("../_derived/back_cmp_gotw110_back.gif"); MSFPnav10h=MSFPpreload("../_derived/back_cmp_gotw110_back_a.gif"); }
+// --></script><a href="057.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10h.src" onmouseout="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10n.src"><img src="../_derived/back_cmp_gotw110_back.gif" width="100" height="20" border="0" alt="Prev" name="MSFPnav10"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav11n=MSFPpreload("../_derived/up_cmp_gotw110_up.gif"); MSFPnav11h=MSFPpreload("../_derived/up_cmp_gotw110_up_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11h.src" onmouseout="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11n.src"><img src="../_derived/up_cmp_gotw110_up.gif" width="100" height="20" border="0" alt="Up" name="MSFPnav11"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav12n=MSFPpreload("../_derived/next_cmp_gotw110_next.gif"); MSFPnav12h=MSFPpreload("../_derived/next_cmp_gotw110_next_a.gif"); }
+// --></script><a href="059.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12h.src" onmouseout="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12n.src"><img src="../_derived/next_cmp_gotw110_next.gif" width="100" height="20" border="0" alt="Next" name="MSFPnav12"></a><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td height="5" background="../images/bar.gif" colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td></tr><!--msnavigation--></table><!--msnavigation--><table dir="ltr" border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td valign="top" width="1%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<!--mstheme--></font><table border="0" cellspacing="0" bgcolor="#000000" cellpadding="0">
+  <tr>
+    <td><!--mstheme--><font face="Arial, Arial, Helvetica">
+    <!--mstheme--></font><table border="0" cellpadding="2" cellspacing="1" width="100%" height="483">
+        <tr>
+          <td align="center" bgcolor="#000000" colspan="2" height="16"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-top: 0; margin-bottom: 0"><a href="../news.htm"><b><font color="#FFFF00">News</font></b></a><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <font size="1" color="#0000FF">J<br>
+          U<br>
+          L<br>
+          Y</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-left: 3; margin-right: 3; margin-top: 0" align="center"><font size="1" color="#0000FF">
+            Print articles newly available online</font><!--mstheme--></font><table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%" id="AutoNumber1" bgcolor="#FFFFCC" bordercolordark="#006666" bordercolorlight="#99CCCC">
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill20.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 1&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000" bgcolor="#FFFFCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mxc++-item-4.htm">
+                <font color="#0000FF">Excerpt from MXC++, &quot;Extensible Templates: 
+                Via Inheritance or Traits?&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mcd_review.htm"><font color="#0000FF">
+                Book Review: Modern C++ Design</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill21.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 2: Namespaceops and 
+                Library Versioning&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+            </table><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;A Pragmatic Look at Exception Specifications&quot;<br>
+            </font><font size="1" color="#000080">The usefulness, or lack 
+            thereof, of exception specifications, and how results can vary 
+            across real-world compilers</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <a target="_blank" href="http://www.cuj.com/experts/2007/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;Getting to the Point&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">The Boost library has five 
+            smart pointers that provide a rich array [sic] of useful behaviors.</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font color="#0000FF" size="1">A<br>
+            U<br>
+          G<br>
+          U<br>
+          S<br>
+          T</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin:0 3; ">
+            <a target="_blank" href="http://www.cuj.com/experts/2008/sutter.htm"><i><b><font size="1" color="#0000FF">The New C++</font></b></i> <font size="1" color="#0000FF">
+            column, &quot;Smart(er) Pointers&quot;</font></a><font size="1" color="#000080"><br>
+            A closer look at one of the proposed new standard C++ library 
+            features -- smart pointers, particularly those in Boost and Loki, 
+            and a sneak peek at the usefulness of the proposed typedef templates</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin:0 3; ">
+          <a target="_blank" href="http://www.cuj.com/experts/2008/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;A Midsummer Night's Madness&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">A brew that mixes pointers, 
+          typedefs, and const</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin-top: 0; margin-bottom: 0">
+          <font size="1" color="#0000FF">S<br>
+          E<br>
+          P<br>
+          T<br>
+          E<br>
+          M<br>
+          B<br>
+          E<br>
+          R</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <font size="1" color="#0000FF">&quot;Standard C++ Meets Managed C++&quot;<br>
+            </font><font size="1" color="#000080">A survey of the main (in)compatibilities 
+            between Standard C++ and Microsoft’s managed extensions for C++, and 
+            how the two could converge</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;Export Restrictions, Part 1&quot;<br>
+            </font><font size="1" color="#000080">The scoop on export -- what 
+            some people think it does, what it actually does, and why it’s the 
+            most widely-ignored feature in the C++ standard</font><!--mstheme--></font></td>
+        </tr>
+      </table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p style="margin-top: 0; margin-bottom: 0">
+<img border="0" src="../images/140.gif" width="140" height="1"></p>
+
+<!--mstheme--></font></td><td valign="top" width="24"></td><!--msnavigation--><td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica">
+<!--mstheme--></font><table border="1" cellpadding="6" cellspacing="0" width="100%" bgcolor="#CCCCFF" bordercolordark="#006666" bordercolorlight="#99CCCC">
+  <tr>
+    <td width="100%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p align="center">This is the original GotW problem and solution
+      substantially as posted to Usenet. See the book <i><a href="../publications/mxc++.htm"><b>More
+      Exceptional C++</b></a></i> (Addison-Wesley, 2002) for the most current
+      solution to this GotW issue. The solutions in the book have been revised
+      and expanded since their initial appearance in GotW. The book versions
+      also incorporate corrections, new material, and conformance to the final
+      ANSI/ISO C++ standard.</p>
+    <!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <h2><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Nested Functions&nbsp;<font size="3"><br>
+      Difficulty: 4 / 10</font><!--mstheme--></font></h2>
+<p><i>C++ has nested classes, but not nested functions. When might nested
+functions be useful, and can they be simulated in C++?</i></p>
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Problem<!--mstheme--></font></h3>
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">JG Questions<!--mstheme--></font></h4>
+<p><b><font size="4">1.</font></b>   What is a nested class? Why can it be
+useful?</p>
+<p><b><font size="4">2.</font></b>   What is a local class? Why can it be
+useful?</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Guru Question<!--mstheme--></font></h4>
+<p><b><font size="4">3.</font></b>   C++ does not support nested functions. That
+is, we cannot write something like:</p>
+<!--mstheme--></font><pre>    //  Example 3
+    //
+    int f( int i )
+    {
+      int j = i*2;</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>      int g( int k )
+      {
+        return j+k;
+      }</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>      j += 4;</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>      return g( 3 );
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Demonstrate how it is possible to achieve the same effect in standard C++,
+and show how to generalize the solution.</p>
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a name="Solution"></a>Solution<!--mstheme--></font></h3>
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Recap: Nested and Local Classes<!--mstheme--></font></h4>
+<p>C++ provides many useful tools for information hiding and dependency
+management. As we recap nested classes and local classes, don't fixate too much
+on the syntax and semantics; rather, focus on how these features can be used to
+write solid, maintainable code and express good object designs -- designs that
+prefer weak coupling and strong cohesion.</p>
+<p><font color="#999933"><b><font size="4">1.</font></b>   What is a nested
+class? Why can it be useful?</font></p>
+
+<p>A nested class is a class enclosed within the scope of another class. For
+example:</p>
+
+<!--mstheme--></font><pre>  //  Example 1: Nested class
+  //
+  class OuterClass
+  {
+    class NestedClass
+    {
+      // ...
+    };</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    // ...
+  };</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Nested classes are useful for organizing code and controlling access and
+dependencies. Nested classes obey access rules just like other parts of a class
+do; so, in Example 1, if NestedClass is public then any code can name it as
+OuterClass::NestedClass. Often nested classes contain private implementation
+details, and are therefore made private; in Example 1, if NestedClass is
+private, then only OuterClass's members and friends can use NestedClass.</p>
+<p>Note that you can't get the same effect with namespaces alone, because
+namespaces merely group names into distinct areas. Namespaces do not by
+themselves provide access control, whereas classes do. So, if you want to
+control access rights to a class, one tool at your disposal is to nest it within
+another class.</p>
+<p><font color="#999933"><b><font size="4">2.</font></b>   What is a local
+class? Why can it be useful?</font></p>
+
+<p>A local class is a class defined within the scope of a function -- any
+function, whether a member function or a free function. For example:</p>
+
+<!--mstheme--></font><pre>  //  Example 2: Local class
+  //
+  int f()
+  {
+    class LocalClass
+    {
+      // ...
+    };</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    // ...
+  };</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Like nested classes, local classes can be a useful tool for managing code
+dependencies. In Example 2, only the code within f() itself is able to use
+LocalClass, which can be useful when LocalClass is, say, an internal
+implementation detail of f() that should never be exposed to other code.</p>
+<p>You can use a local class in most places where you can use a nonlocal class,
+but there is a major restriction to keep in mind: A local or unnamed class
+cannot be used as a template parameter. From the C++ standard (14.3.1/2):</p>
+<!--mstheme--></font><pre>   A local type, a type with no linkage, an unnamed
+   type or a type compounded from any of these types
+   shall not be used as a template-argument for a
+   template type-parameter.  [Example:</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    template &lt;class T&gt;
+    class X { /* ... */ };</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    void f()
+    {
+      struct S { /* ... */ };
+      X&lt;S&gt; x3;  // error: local type used as
+                //  template-argument
+      X&lt;S*&gt; x4; // error: pointer to local type
+                //  used as template-argument
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>   --end example]</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Both nested classes and local classes are among C++'s many useful tools for
+information hiding and dependency management.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Nested Functions: Overview<!--mstheme--></font></h4>
+<p>Some languages (but not C++) allow nested functions, which are similar in
+concept to nested classes. A nested function is defined inside another function
+(the &quot;enclosing function&quot;), such that:</p>
+<p>- the nested function has access to the enclosing function's variables; and</p>
+<p>- the nested function is local to the enclosing function, that is, it can't
+be called from elsewhere unless the enclosing function gives you a pointer to
+the nested function.</p>
+<p>Just as nested classes can be useful because they help control the visibility
+of a class, nested functions can be useful because they help control the
+visibility of a function.</p>
+<p>C++ does not have nested functions. But can we get the same effect? This
+brings us to the question:</p>
+<p><font color="#999933"><b><font size="4">3.</font></b>   C++ does not support
+nested functions. That is, we cannot write something like:</font></p>
+<!--mstheme--></font><pre><font color="#999933">    //  Example 3
+    //
+    int f( int i )
+    {
+      int j = i*2;</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre><font color="#999933">      int g( int k )
+      {
+        return j+k;
+      }</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre><font color="#999933">      j += 4;</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre><font color="#999933">      return g( 3 );
+    }</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p><font color="#999933">Demonstrate how it is possible to achieve the same
+effect in standard C++, and show how to generalize the solution.</font></p>
+<p>Short answer: Yes, it is possible, with only a little code reorganization and
+a minor limitation. The basic idea is to turn a function into a functor -- and
+this discussion, not coincidentally, will also serve to nicely illustrate some
+of the power of functors.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Attempts at Simulating Nested Functions in C++<!--mstheme--></font></h4>
+<p>To solve a problem like Question #3 above, most people start out by trying
+something like the following:</p>
+<!--mstheme--></font><pre>  //  Example 3(a): Naive &quot;local functor&quot;
+  //                approach (doesn't work)
+  //
+  int f( int i )
+  {
+    int j = i*2;</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    class g_
+    {
+    public:
+      int operator()( int k )
+      {
+        return j+k;   // error: j isn't accessible
+      }
+    } g;</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    j += 4;</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    return g( 3 );
+  }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>In Example 3(a), the idea is to wrap the function in a local class, and call
+the function through a functor object.</p>
+<p>It's a nice idea, but it doesn't work for a simple reason: The local class
+object doesn't have access to the enclosing function's variables.</p>
+<p>&quot;Well,&quot; one might say, &quot;why don't we just give the local class
+pointers or references to all of the function's variables?&quot; Indeed, that's
+usually the next attempt:</p>
+<!--mstheme--></font><pre>  //  Example 3(b): Naive &quot;local functor plus
+  //                references to variables&quot;
+  //                approach (complex, fragile)
+  //
+  int f( int i )
+  {
+    int j = i*2;</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    class g_
+    {
+    public:
+      g_( int&amp; j ) : j_( j ) { }</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>      int operator()( int k )
+      {
+        return j_+k;  // access j via a reference
+      }</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    private:
+      int&amp; j_;
+    } g( j );</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    j += 4;</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    return g( 3 );
+  }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Well, all right, I have to admit that this &quot;works&quot;... but only
+barely. This solution is fragile, difficult to extend, and can rightly be
+considered a hack. For example, consider that just to add a new variable
+requires four changes:</p>
+<p>a) add the variable;</p>
+<p>b) add a corresponding private reference to g_;</p>
+<p>c) add a corresponding constructor parameter to g_; and</p>
+<p>d) add a corresponding initialization to g_::g_().</p>
+<p>That's not very maintainable. It also isn't easily extended to multiple local
+functions. Couldn't we do better?</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">An Somewhat Improved Solution<!--mstheme--></font></h4>
+<p>We can do better by moving the variables themselves into the local class:</p>
+<!--mstheme--></font><pre>  //  Example 3(c): A better solution
+  //
+  int f( int i )
+  {
+    class g_
+    {
+    public:
+      int j;</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>      int operator()( int k )
+      {
+        return j+k;
+      }
+    } g;</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    g.j = i*2;
+    g.j += 4;</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    return g( 3 );
+  }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>This is a solid step forward. Now g_ doesn't need pointer or reference data
+members to point at external data, it doesn't need a constructor, and everything
+is much more natural all around. Note also that the technique is now extensible
+to any number of local functions, so let's add some more local functions called
+x(), y(), and z() while we're at it, and let's rename g_ to be more indicative
+of what the local class is actually doing:</p>
+
+<!--mstheme--></font><pre>  //  Example 3(d): Nearly there!
+  //
+  int f( int i )
+  {
+    //  Define a local functor that wraps all
+    //  local data and functions.
+    //
+    class Local_
+    {
+    public:
+      int j;</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>      // All local functions go here:
+      //
+      int g( int k )
+      {
+        return j+k;
+      }
+      void x() { /* ... */ }
+      void y() { /* ... */ }
+      void z() { /* ... */ }
+    } local;</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    local.j = i*2;
+    local.j += 4;</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    local.x();
+    local.y();
+    local.z();</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    return local.g( 3 );
+  }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>This still has the problem that, if you need to initialize j using something
+other than default initialization, you have to add a clumsy constructor to the
+local class just to pass through the initialization value. The original question
+tried to initialize j to the value of i*2; here, we've had to create j and then
+assign the value, which could be difficult for more complex types.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">A Complete Solution<!--mstheme--></font></h4>
+<p>If you don't need f itself to be a bona fide function (e.g., if you don't
+take pointers to it), you can turn the whole thing into a functor and elegantly
+support non-default initialization into the bargain:</p>
+<!--mstheme--></font><pre>  //  Example 3(e): A complete and nicely
+  //                extensible solution
+  //
+  class f
+  {
+    int  retval; // f's &quot;return value&quot;
+    int  j;
+    int  g( int k ) { return j + k; };
+    void x() { /* ... */ }
+    void y() { /* ... */ }
+    void z() { /* ... */ }
+  public:
+    f( int i )   // original function, now a constructor
+    : j( i*2 )
+    {
+      j += 4;
+      x();
+      y();
+      z();
+      retval = g( 3 );
+    }
+    operator int() // returning the result
+    {
+      return retval;
+    }
+  };</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>The code is shown inline for brevity, but all of the private members could
+also be hidden behind a Pimpl, giving the same full separation of interface from
+implementation that we had with the original simple function.</p>
+<p>Note that this approach is easily extensible to member functions. For
+example, suppose that f() was a member function instead of a free function, and
+we would like to write a nested function g() inside f() as follows:</p>
+<!--mstheme--></font><pre>  //  Example 4: This isn't legal C++, but it
+  //             illustrates what we want: a local
+  //             function inside a member function
+  //
+  class C
+  {
+    int data_;
+  public:
+    int f( int i )
+    {
+      // a hypothetical nested function
+      int g( int i ) { return data_ + i; }</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>      return g( data_ + i*2 );
+    }
+  };</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>We can express this by turning f() into a class as demonstrated in Example
+3(e), except that whereas in Example 3(e) the class was at global scope it is
+now instead a nested class and accessed via a passthrough helper function:</p>
+
+<!--mstheme--></font><pre>  //  Example 4(a): The complete and nicely
+  //                extensible solution, now
+  //                applied to a member function
+  //
+  class C
+  {
+    int data_;
+    friend class C_f;
+  public:
+    int f( int i );
+  };</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>  class C_f
+  {
+    C*  self;
+    int retval;
+    int g( int i ) { return self-&gt;data_ + i; }
+  public:
+    C_f( C* c, int i ) : self( c )
+    {
+      retval = g( self-&gt;data_ + i*2 );
+    }
+    operator int() { return retval; }
+  };</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>  int C::f( int i ) { return C_f( this, i ); }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Summary<!--mstheme--></font></h4>
+<p>This approach illustrated above in Examples 3(e) and 4(a) simulates most of
+the features of local functions, and is easily extensible to any number of local
+functions. Its main weakness is that it requires that all variables be defined
+at the start of the 'function,' and doesn't (easily) allow us to declare
+variables closer to point of first use. It's also more tedious to write than a
+local function would be, and clearly a workaround for a language limitation.
+But, in the end, it's not bad, and it demonstrates some of the power inherent in
+functors over plain functions.</p>
+<p>The purpose of this GotW wasn't just to learn about how nice it might be to
+have local functions in C++. It was, as always, about setting a specific design
+problem, exploring alternative methods for solving it, and weighing the
+solutions to pick the best-engineered option. Along the way, we also got to
+experiment with various C++ features and see through use what makes functors
+useful.</p>
+<p>When designing your programs, strive for simplicity and elegance wherever
+possible. Some of the intermediate above solutions would arguably
+&quot;work,&quot; yet should never be allowed to see the light of day in
+production code because they are complex, difficult to understand, and therefore
+difficult and expensive to maintain.</p>
+<p>Simpler designs are easier to code and test. Avoid complex solutions, which
+are almost certain to be fragile and harder to understand and maintain. While
+being careful not to fall into the trap of overengineering, do recognize that
+even if coming up with a judicious simple design takes a little extra time up
+front, the long-term benefits usually make that time well spent. Often putting
+in a little time now means saving more time later -- and most people would agree
+that the &quot;more time later&quot; is better spent with the family at the
+cottage than slaving away over a hot keyboard trying to find those last few bugs
+in a complicated rat's nest of code.<!--mstheme--></font><!--msnavigation--></td></tr><!--msnavigation--></table><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><h4 align="right"><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a href="../copyright.htm"><font size="2">Copyright ©
+2002 Herb Sutter</font></a><!--mstheme--></font></h4>
+
+<!--mstheme--></font></td></tr><!--msnavigation--></table></body>
+</html>
+

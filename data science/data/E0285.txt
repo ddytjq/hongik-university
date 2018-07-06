@@ -1,0 +1,340 @@
+ID=E0285
+URL=http://www.le.ac.uk/cc/iss/tutorials/cprog/ccccif.html
+SIZE=13202
+DATE=12/07/02
+TIME=19:19:30
+DATASET=C
+HTML=<!-- Filename: ccccif.html -->
+<!-- Author: mc39/rjm1 -->
+<!-- Supplied by: Richard Mobbs -->
+<!-- Created: 24-08-95 -->
+<!-- Expires: 24-08-96 -->
+
+<HTML>
+
+<HEAD>
+
+<TITLE>Computer Centre: Introduction to C Programming Course</TITLE>
+
+</HEAD> 
+
+
+
+<BODY>
+
+<H1><IMG ALT="[CWC logo]" ALIGN=middle SRC="http://www.le.ac.uk/images/compcen.gif" > Conditional Execution</H1>
+
+<HR>
+<H2>Objectives</H2>
+<P>Having read this section you should be able to:
+<OL>
+<LI>Program control with <TT><B>if</B></TT> , <TT><B>if-else</B></TT> and <TT><B>switch</B></TT> structures
+<LI>have a better idea of what <B>C</B> understands as true and false.
+</OL>
+<HR>
+<P>
+
+<A NAME="PC"></A>
+<H3>Program Control</H3>
+
+It is time to turn our attention to a different problem - <I>conditional execution</I>. We often need to be able to choose which set of instructions are obeyed according to a condition. For example, if you're keeping a total and you need to display the message '<B><TT>OK</TT></B>' if the value is greater than zero you would need to write something like:<P>
+
+<B><TT>if (total&GT;O) printf("OK");</TT></B><P>
+
+This is perfectly reasonable English, if somewhat terse, but it is also perfectly good <B>C</B>. The <B><TT>if</TT></B> statement allows you to evaluate a <I><B<TT>>condition</TT></B></I> and only carry out the statement, or <I>compound statement</I>, that follows if the <I><B><TT>condition</TT></B></I> is true. In other words the <B><TT>printf</TT></B> will only be obeyed if the <I><B><TT>condition</TT></B></I> <B><TT>total &GT; O</TT></B> is true.
+
+<P>If the condition is false then the program continues with the next instruction. In general the <B><TT>if</TT></B> statement is of the following form:
+
+<P><B><TT>if (<I>condition</I>) <I>statement</I>;</TT></B><P>
+
+and of course the <B><TT><I>statement</I></TT></B> can be a compound <B><TT><I>statement</I></TT></B>.
+
+<P>Here's an example program using two <B><TT>if</TT></B> statements:
+
+
+<PRE><B>
+
+#include &LT;stdio.h&GT;
+
+main()
+{
+    int a , b;
+
+    do {
+
+        printf("\nEnter first number: ");
+        scanf("%d" , &a);
+
+        printf("\nEnter second number: ");
+        scanf("%d" , &b);
+
+        if (a&LT;b) printf("\n\nFirst number is less than second\n\n");
+        if (b&LT;a) printf("Second number is less than first\n\n");
+
+       } while (a &LT; 999);
+}
+</B></PRE>
+
+<P>[<A HREF="if.c">program</A>]
+
+<P>Here's another program using an <B><TT>if</TT></B> keyword and a <I>compound statement</I> or a <I>block</I>:
+
+<PRE><B>
+#include &LT;stdio.h&GT;
+
+main()
+{
+    int a , b;
+
+    do {
+
+        printf("\nEnter first number: ");
+        scanf("%d" , &a);
+
+        printf("\nEnter second number: ");
+        scanf("%d" , &b);
+
+        if (a&LT;b) {
+                  printf("\n\nFirst number is less than second\n");
+                  printf("Their difference is : %d\n" , b-a);
+                  printf("\n");
+                 }
+
+        printf("\n");
+
+       } while (a < 999);
+}
+
+</B></PRE>
+
+<P>[<A HREF="ifcs.c">program</A>]
+
+<P>The <B><TT>if</TT></B> statement lets you execute or skip an instruction depending on the value of the <I><B><TT>condition</TT></B></I>. Another possibility is that you might want to select one of two possible statements - one to be obeyed when the condition is <I>true</I> and one to be obeyed when the <I><B><TT>condition</TT></B></I> is <I>false</I>. You can do this using the
+
+<P>
+<PRE>
+<B>
+if (<I>condition</I>) statement1;
+else statement2;</B>
+</PRE>
+form of the <B><TT>if</TT></B> statement.
+
+<P>In this case <TT><B>statement1</B></TT> is carried out if the <I><B><TT>condition</TT></B></I> is <I>true</I> and <B><TT>statement2</TT></B> if the <I><B><TT>condition</TT></B></I> is <I>false</I>.
+
+<P>Notice that it is certain that one of the two statements will be obeyed because the <I><B><TT>condition</TT></B></I> has to be either <I>true</I> or <I>false</I>! You may be puzzled by the semicolon at the end of the <B><TT>if</TT></B> part of the statement. The <TT><B>if (<I>condition</I>) statement1</B></TT> part is one statement and the <B><TT>else statement2</TT></B> part behaves like a second separate statement, so there has to be semi-colon terminating the first statement.
+
+<P>
+<HR>
+<P>
+
+<H3>Logical Expressions</H3>
+
+So far we have assumed that the way to write the <I><B><TT>conditions</TT></B></I> used in loops and <B><TT>if</TT></B> statements is so obvious that we don't need to look more closely. In fact there are a number of deviations from what you might expect. To compare two values you can use the standard symbols:<P>
+<PRE>
+<B><B>></B>   (greater than)<P>
+<B><</B>   (less than)<P>   
+<B>>=</B>  (for greater than or equal to )
+<B><=</B>  (for less than or equal to)
+<B>==</B>  (to test for equality).</B>
+</PRE>
+The reason for using two equal signs for equality is that the single equals sign always means store a value in a variable - i.e. it is the assignment operator. This causes beginners lots of problems because they tend to write:
+
+<P><B><TT>if (a = 10)</TT></B> instead of if <B><TT>(a == 10)</TT></B>
+
+<P>The situation is made worse by the fact that the statement <B><TT>if (a = 10)</TT></B> is legal and causes no compiler error messages! It may even appear to work at first because, due to a logical quirk of <B>C</B>, the assignment actually evaluates to the value being assigned and a non-zero value is treated as <I>true</I> (see below). Confused? I agree it is confusing, but it gets easier. . .
+
+<P>Just as the equals condition is written differently from what you might expect so the non-equals sign looks a little odd. You write not equals as <TT><B>!=</B></TT>. For example:
+
+<P><B><TT>if (a != 0)</TT></B>
+
+<P>is '<I>if a is not equal to zero</I>'.
+
+<P>An example program showing the <B><TT>if else</TT></B> construction now follows:<P>
+
+<PRE>
+<B>
+#include &LT;stdio.h&GT;
+
+main ()
+ {
+   int num1, num2;
+
+   printf("\nEnter first number ");
+   scanf("%d",&num1);
+
+   printf("\nEnter second number ");
+   scanf("%d",&num2);
+
+   if (num2 ==0) printf("\n\nCannot devide by zero\n\n");
+   else          printf("\n\nAnswer is %d\n\n",num1/num2);
+ }
+</B>
+</PRE>
+<P>[<A HREF="ifelse.c">program</A>]
+
+<P>This program uses an <B><TT>if</TT></B> and <B><TT>else</TT></B> statement to prevent division by 0 from occurring.
+
+<P>
+<HR>
+<P>
+
+<H3>True and False in C</H3>
+
+Now we come to an advanced trick which you do need to know about, but if it only confuses you, come back to this bit later. Most experienced <B>C</B> programmers would wince at the expression <TT><B>if(a!=0)</B></TT>.
+
+<P>The reason is that in the <B>C</B> programming language dosen't have a concept of a Boolean variable, i.e. a type class that can be either <I>true</I> or <I>false</I>. Why bother when we can use numerical values. In <B>C</B> <I>true</I> is represented by any numeric value not equal to 0 and <I>false</I> is represented by 0. This fact is usually well hidden and can be ignored, but it does allow you to write
+
+<P><B><TT>if(a != 0)</TT></B> just as <TT><B>if(a)</B></TT>
+
+<P>because if <B><TT>a</TT></B> isn't zero then this also acts as the value <I>true</I>. It is debatable if this sort of shortcut is worth the three characters it saves. Reading something like
+
+<P><B><TT>if(!done)</TT></B>
+
+<P>as '<I>if not done</I>' is clear, but <TT><B>if(!total)</B></TT> is more dubious.
+
+<P>
+<HR>
+<P>
+<A NAME="BC"></A>
+<H3>Using <TT>break</TT> and <TT>continue</TT> Within Loops</H3>
+
+The <B><TT>break</TT></B> statement allows you to exit a loop from any point within its body, bypassing its normal termination expression. When the <TT><B>break</B></TT> statement is encountered inside a loop, the loop is imediately terminated, and program control resumes at the next statement following the loop. The <B><TT>break</TT></B> statement can be used with all three of <B>C</B>'s loops. You can have as many statements within a loop as you desire. It is generally best to use the <B><TT>break</TT></B> for special purposes, not as your normal loop exit. <B><TT>break</TT></B> is also used in conjunction with functions and <B<TT>>case</TT></B> statements which will be covered in later sections.
+
+<P>The <B><TT>continue</TT></B> statement is somewhat the opposite of the <B><TT>break</TT></B> statement. It forces the next iteration of the loop to take place, skipping any code in between itself and the test condition of the loop. In <B><TT>while</TT></B> and <B><TT>do-while</TT></B> loops, a <B><TT><I>continue</I></TT></B> statement will cause control to go directly to the test condition and then continue the looping process. In the case of the <B><TT>for</TT></B> loop, the increment part of the loop continues. One good use of <B><TT>continue</TT></B> is to restart a statement sequence when an error occurs.
+
+<PRE><B>
+#include &LT;stdio.h&GT;
+
+main()
+{
+    int x ;
+
+    for ( x=0 ; x<=100 ; x++) {
+                               if (x%2) continue;
+                               printf("%d\n" , x);
+                              }
+}
+
+</B></PRE>
+
+<P>[<A HREF="ifcont.c">program</A>]
+
+<P>Here we have used <B>C</B>'s modulus operator: <B><TT>%</TT></B>. A expression:
+
+<P><B><TT>a % b</TT></B>
+
+<P>produces the remainder when <B><TT>a</TT></B> is divided by <B><TT>b</TT></B>; and zero when there is no remainder.
+
+<P>Here's an example of a use for the <B><TT>break</TT></B> statement:
+
+<PRE><B>
+#include &LT;stdio.h&GT;
+
+main()
+{
+    int t ;
+
+    for ( ; ; ) {
+                 scanf("%d" , &t)   ;
+                 if ( t==10 ) break ;
+                }
+    printf("End of an infinite loop...\n");
+
+}
+</B></PRE>
+
+<P>[<A HREF="ifbreak.c">program</A>]
+
+<P>
+<HR>
+<P>
+
+<A NAME="SW"></A>
+<H3>Select Paths with <TT>switch</TT></H3>
+
+While <B><TT>if</TT></B> is good for choosing between two alternatives, it quickly becomes cumbersome when several alternatives are needed. <B>C</B>'s solution to this problem is the <B><TT>switch</TT></B> statement. The <B><TT>switch</TT></B> statement is <B>C</B>'s multiple selection statement. It is used to select one of several alternative paths in program execution and works like this: A variable is successively tested against a list of integer or character constants. When a match is found, the statement sequence associated with the match is executed. The general form of the <B><TT>switch</TT></B> statement is:<P>
+
+<PRE>
+<B>
+switch(<I>expression</I>) 
+{
+  case <I>constant1</I>:   <I>statement sequence</I>; break;
+  case <I>constant2</I>:   <I>statement sequence</I>; break;
+  case <I>constant3</I>:   <I>statement sequence</I>; break;
+  .
+  .
+  .
+  default:   <I>statement sequence</I>; break;
+}
+</B>
+</PRE>
+
+<P>Each case is labelled by one, or more, constant expressions (or integer-valued constants). The <B><TT>default</TT></B> statement sequence is performed if no matches are found. The <B><TT>default</TT></B> is optional. If all matches fail and <B><TT>default</TT></B> is absent, no action takes place.
+
+<P>When a match is found, the <I><B><TT>statement sequence</TT></B></I> asociated with that <B><TT>case</TT></B> are executed until <B><TT>break</TT></B> is encountered.
+
+<P>An example program follows:
+
+<P>
+<PRE>
+<B>
+#include &LT;stdio.h&GT;
+
+main()
+ {
+  int i;
+
+  printf("Enter a number between 1 and 4");
+  scanf("%d",&i);
+
+  switch (i)
+   {
+     case 1:
+      printf("one");
+      break;
+     case 2:
+      printf("two");
+      break;
+     case 3:
+      printf("three");
+      break;
+     case 4:
+      printf("four");
+      break;
+     default:
+      printf("unrecognized number");
+   }    /* end of switch */
+
+ }
+</B>
+</PRE>
+
+<P>[<A HREF="switch.c">program</A>]
+
+<P>This simple program recognizes the numbers 1 to 4 and prints the name of the one you enter. The <B><TT>switch</TT></B> statement differs from <B><TT>if</TT></B>, in that <B><TT>switch</TT></B> can only test for equality, whereas the <B><TT>if</TT></B> conditional expression can be of any type. Also <B><TT>switch</TT></B> will work with only <B><TT>int</TT></B> and <B><TT>char</TT></B> types. You cannot for example, use floating-point numbers. If the statement sequence includes more than one statement they will have to be enclosed with <B>{}</B> to form a <I>compound statement</I>.
+
+<P>
+<HR>
+
+<A HREF="http://www.le.ac.uk/">
+<IMG ALT="[Leicester University]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/lhomebut.gif"></A>
+
+
+<A HREF="http://www.le.ac.uk/CWIS/AS/CC/cc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/ccbut.gif">
+ Computer Centre</A>   
+
+<A HREF="cccc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/backbut.gif">
+Introduction C Programming</A>
+
+<HR>
+<ADDRESS>Information Suppliers: <A HREF="http://www.le.ac.uk/rjm1.html">Richard Mobbs</A>, Head of Information Services, Leicester University Computer
+ Centre and Marina Carter, Postgraduate Student, Loughborough University.
+</ADDRESS>
+
+<ADDRESS>Last Updated: August 1995</ADDRESS>
+</BODY>
+</HTML>
+
+

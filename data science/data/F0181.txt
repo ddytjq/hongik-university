@@ -1,0 +1,187 @@
+ID=F0181
+URL=http://www.chez.com/scribe/en/directx/dxvb_us.htm
+SIZE=8877
+DATE=09/07/2002
+TIME=13:16:07
+DATASET=Visual Basic
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+<title>Using DirectX from Visual Basic</title>
+<LINK rel="stylesheet" type="text/css" href="../../global.css">
+<meta name="description" content="Using DirectX from Visual Basic">
+<meta name="keywords" content="DirectX,Visual Basic">
+<head>
+<body class="legacy">
+
+<h1>Using DirectX from Visual Basic</a></h1>
+<h5>
+<DIV align="center">&copy; <a href="../mail.htm">Patrice Scribe</a>, 1997-1998<br>
+VBA51 :</br>
+<a href="http://members.nbci.com/vba51/" target="_top">http://members.nbci.com/vba51/</a><br>
+<a href="http://www.chez.com/scribe/" target="_top">http://www.chez.com/scribe/</a></DIV>
+</h5>
+<P>Please note that these informations are provided for legacy support and left here for convenience. This should be used only in particular cases (such as when targetting NT4) as DirectX 7.0 now includes built-in support for Visual Basic.</P>
+<p>
+<strong>Abstract</strong> : <i>even if using DirectX from Visual Basic was not, prior to DirectX 7.0, supported by Microsoft, you can use the DirectX 3.0 to 6.1 API thanks to the Component Object Model - aka COM - architecture. This page gives all the necessary pointers for DirectX files, documentation, type library for use with Visual Basic and some more information for a proper use of DirectX from Visual Basic...</i>
+</p>
+<hr>
+<strong>History</strong>
+<p>
+A first type library was released in June 1997. Last changes were :<br>
+Updated in v 0.8 :
+<ul>
+<li>Direct3D error codes were incorrect.
+<li>DirectX 6 beta release GUIDs changed to match final release (IDirect3DRM3, IDirect3DRMMeshBuilder3).
+<li>IDirectDraw4 : GetDeviceIdentifier method added.
+<li>IDirectDrawClipper.SetClipList : accepts now user defined type (for variable length RGNDATA).
+<li>IDirectDrawSurface?.Blt : BltFx is now optional (use "ByVal 0&" to ignore).
+<li>Misc. DirectX 6 constants added.
+</ul>
+Updated in v 0.7 :
+<ul>
+<li>D3DRMRENDER_... constants are added.
+<li>DIEFFECT and DIEFFESCAPE now usable.
+<li>IDirectDrawClipper.SetClipList should be corrected.
+<li>IDirectSoundCapture is now usable.
+<li>DirectX6.tlb is new (and still to improve)
+</ul>
+Updated in v 0.6 :
+<ul>
+<li>Names are now using IDirect... (instead of Direct...) for conformance with the SDK documentation and hopefully an upcoming support for VB that would be provided by Microsoft. <strong>Some old samples on this site may still use this older naming convention...</strong>
+<li>Uses now Win32.tlb to access Windows API. You'll need to reference this library when appropriate. <strong>Some old samples may use DirectX.GUID, you'll have to use Win32.GUID instead to make them wrok with the latest TLB...</strong>
+<li>DirectDrawEx support : IDirectDrawFactory and IDirectDraw3
+<li>IDirectNotify is added (allows to notify that a position in a DirectSoundBuffer is reached).
+<li>Other minor changes (constants added).
+</ul>
+Updated in v 0.5 :
+<ul>
+<li>D3DRMVectorNormalize was returning an error (job was done however).
+<li>Direct3DRMFrame2, DirectPlayLobby added.
+<li>DirectDrawSurface : SetPalette, UpdateOverlayDisplay, UpdateOverlayZOrder, Unlock are now correctly implemented (was ok for DirectDrawSurface2 & DirectDrawSurface3)
+</ul>
+Updated in Win32 type library v 0.6 :
+<ul>
+<li>RGNDATA is replaced by Any, especially in GetRegionData
+</ul>
+Updated in Win32 type library v 0.5 :
+<ul>
+<li>lstrcpy changed
+</ul>
+Updated in Win32 type library v 0.4 :
+<ul>
+<li>GetPrivateProfileString corrected.
+</ul>
+Updated in Win32 type library v 0.3 :
+<ul>
+<li>CopyMemory seems now to work correctly.
+<li>MoveToEx now accept a NULL parameter for the POINTAPI structure.
+<li>WNDCLASS is now correctly declared.
+</ul>
+</p>
+<strong>Pre-requisite</strong>
+<p>
+To use the provided files, make sure you are running DirectX 3, DirectX 5 or DirectX 6.0 (note that Windows NT 4 supports only DirectX 3). You should use Visual Basic 5.0 or later (you may want to use Visual Basic Control Creation Edition 5.0 that is freely available on the Internet).
+</p>
+<strong>Using a type library</strong>
+<p>A type library is just a description of COM objects (neutral language objects that are managed at the Operating System level). This description is used <strong>at compile time</strong> by Visual Basic to build the necessary calls into the final EXE file. To reference a type library :
+<ul>
+<li>copy the appropriate TLB file(s) into the system directory, that is one of the DirectX3.tlb, DirectX5.tlb or DirectX6.tlb files ; you should also copy and reference Win32.tlb at least one time so that VB is aware of its existance (used by DirectX?.tlb for Win32 related stuff).
+<li>create a new project
+<li>choose "References" under the "Project" menu and check the appropriate library (the first time use the browse button to register the library). 
+</ul>
+</ul>
+To test that all is properly installed, use this short snippet of code :
+<DIV class="code"><PRE>
+Private Sub Main()
+    Dim DirectDraw As IDirectDraw <SPAN class="comment">' Or up to IDirectDraw4 if running DirectX 6</SPAN>
+    DirectDrawCreate ByVal 0&, DirectDraw, Nothing
+    Set DirectDraw = Nothing
+End Sub
+</PRE></DIV></p>
+If it doesn't compile, the TLB file is not properly referenced...<br>
+If it doesn't run, DirectX is not properly installed...</p>
+<strong>Known issues</strong>
+<ul>
+<li>Callbacks : some callbacks are declared using "CDECL" (that is the C calling convention that is not compatible with VB). These callbacks are : D3DRMOBJECTCALLBACK, D3DRMFRAMEMOVECALLBACK, D3DRMUPDATECALLBACK, D3DRMUSERVISUALCALLBACK, D3DRMLOADTEXTURECALLBACK, D3DRMLOADCALLBACK.
+<li>DirectX 3 and NT 4 : please use DirectDrawSurface instead of DirectDrawSurface2 (it seems that RestoreDisplayMode and/or FlipToGdiSurface fails otherwise. Also there is a known problem in DirectX 3 with DirectDrawSurface2.Flip).
+</ul>
+<strong>Releasing objects</strong>
+<p>A very important point is <strong>to make sure that you set to nothing every DirectX objects before your app ends</strong>. Or your apps will likely crash...</p>
+<strong>Divide by zero error</strong>
+<p>You may also experience math errors when running DirectX. Unfortunately it is related to the way internal math errors are reported by Direct3D. Similarly to Borland compilers users, you'll have to workaround this problem by trapping errors and resuming execution.</p>
+<DIV class="code"><PRE>
+Sub MySub()
+    On Error Goto MySub_Error
+    <SPAN class="comment">' DirectX code...</SPAN>
+    Exit Sub
+MySub_Error:
+    If Err.Number=11 Then Resume <SPAN class="comment">' Divide by zero</SPAN>
+    <SPAN class="comment">' Other errors and error handler here</SPAN>
+Exit Sub
+</PRE></DIV>
+<p>
+<hr>
+<strong>Any datatype</strong>
+<p>
+In some cases, the Any datatype is used to be able to use either :
+<ul>
+<li>ByVal 0& to pass a NULL pointer to ignore this argument
+<li>a variable name to use this parameter
+</ul>
+</p>
+<strong>Ansi and Unicode</strong>
+<p>
+Both Ansi and Unicode version of objects are exposed by the type librairies. This is because you can't choose at compile time as when using C or C++. For example there is no DirectInput object. Use DirectInputA or DirectInputW instead.</p>
+<strong>Unions</strong>
+<p>As unions are not supported by Visual Basic, when the same area memory can be seen under various names, the first name is used in the type library.</p>
+<strong>D3DMATRIX</strong>
+<p>As "_" as a lead character in a type library hides the identifier, D3DMATRIX members are named v_11, v_12 and so on instead of _11, _12...</p>
+<strong>Automation errors</strong>
+<p>The standard trapping error mechanism of Visual Basic applies to DirectX errors. Use On Error Goto to trap DirectX errors...</p>
+<strong>QueryInterface</strong>
+<p>QueryInterface is performed automatically by Visual Basic when using the Set statement. For example to create a Direct3D from a DirectDraw object just use the following code :
+<DIV class="code"><PRE>
+Private Sub Main()
+    Dim DirectDraw As IDirectDraw
+    Dim Direct3D As IDirect3D
+    DirectDrawCreate ByVal 0&, DirectDraw, Nothing
+    Set Direct3D = DirectDraw
+    MsgBox "Direct3D created !"
+    Set Direct3D = Nothing
+    Set DirectDraw = Nothing
+End Sub
+</PRE></DIV>
+<STRONG>More about DirectX</STRONG>
+<P>As a type library allows to use the same objects as those used by C or C++ users, the <a href="http://www.microsoft.com/directx/developer/sdkdoc.asp" target="_top">DirectX SDK documentation</A> available from the <A href="http://www.microsoft.com/directx/" target="_top">Microsoft DirectX site</A> applies as well to Visual Basic.</P>
+<HR>
+<DIV align="center"><A href="../mail.htm">Patrice Scribe</A></DIV>
+</body>
+</html>
+<!-- -->
+</noscript>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+<!--
+var rnd = Math.floor(Math.random() * 9) + 1 ; 
+if (rnd <= 4) { 
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/default','pub','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=470,height=120');
+} else if(rnd == 5) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre4','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=200,height=200');
+} else if(rnd == 6) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre2','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=200,height=200');
+} else if(rnd >= 7) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=200,height=200');
+}
+// -->
+</SCRIPT>
+
+<script language="javascript">
+WEBO_ZONE=122;
+WEBO_PAGE=1;
+weboplus_ok=0;
+</script>
+<script language="javascript"
+src="http://js.libertysurf.fr/chez/weborama/weboscopeplus.js"></SCRIPT>
+<SCRIPT>if(weboplus_ok==1){weboplus_zp(WEBO_ZONE,WEBO_PAGE);}
+</script>
+

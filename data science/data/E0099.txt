@@ -1,0 +1,1010 @@
+ID=E0099
+URL=http://www.gotw.ca/gotw/045.htm
+SIZE=55827
+DATE=12/07/02
+TIME=19:17:29
+DATASET=C
+HTML=
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+
+
+<title>GotW #45: Reference Counting - Part III</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<link rel="stylesheet" type="text/css" href="../gotw.css">
+<meta name="Microsoft Theme" content="gotw 111, default">
+<meta name="Microsoft Border" content="tlb, default">
+</head>
+
+<body background="../_themes/gotw/glabkgnd.jpg" bgcolor="#CCFFFF" text="#000000" link="#008080" vlink="#008080" alink="#0000FF"  ><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><table border="0" cellspacing="0" width="100%">
+  <tr>
+    <td colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="6"><strong>
+    GotW #45</strong></font> <!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+
+
+
+<p align="left" style="margin-top: 0; margin-bottom: 0">
+
+<script language="JavaScript"><!--
+MSFPhover = 
+  (((navigator.appName == "Netscape") && 
+  (parseInt(navigator.appVersion) >= 3 )) || 
+  ((navigator.appName == "Microsoft Internet Explorer") && 
+  (parseInt(navigator.appVersion) >= 4 ))); 
+function MSFPpreload(img) 
+{
+  var a=new Image(); a.src=img; return a; 
+}
+// --></script><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav1n=MSFPpreload("../_derived/home_cmp_gotw110_hbtn.gif"); MSFPnav1h=MSFPpreload("../_derived/home_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1h.src" onmouseout="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1n.src"><img src="../_derived/home_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Home" align="middle" name="MSFPnav1"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav2n=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn.gif"); MSFPnav2h=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../news.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2h.src" onmouseout="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2n.src"><img src="../_derived/news.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="News &amp; Events" align="middle" name="MSFPnav2"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav3n=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav3h=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../resources/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3h.src" onmouseout="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3n.src"><img src="../resources/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Community Resources" align="middle" name="MSFPnav3"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav4n=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn.gif"); MSFPnav4h=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../consulting.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4h.src" onmouseout="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4n.src"><img src="../_derived/consulting.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Consulting Services" align="middle" name="MSFPnav4"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav5n=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn.gif"); MSFPnav5h=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../presentations.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5h.src" onmouseout="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5n.src"><img src="../_derived/presentations.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Presentations" align="middle" name="MSFPnav5"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav6n=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav6h=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../publications/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6h.src" onmouseout="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6n.src"><img src="../publications/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Publications" align="middle" name="MSFPnav6"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav7n=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav7h=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7h.src" onmouseout="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7n.src"><img src="_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Guru of the Week" align="middle" name="MSFPnav7"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav8n=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav8h=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../conv/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8h.src" onmouseout="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8n.src"><img src="../conv/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Conversations" align="middle" name="MSFPnav8"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav9n=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn.gif"); MSFPnav9h=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../search.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9h.src" onmouseout="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9n.src"><img src="../_derived/search.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Search GotW.ca" align="middle" name="MSFPnav9"></a>
+</p>
+
+
+
+
+    <!--mstheme--></font></td>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 0">
+      <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav10n=MSFPpreload("../_derived/back_cmp_gotw110_back.gif"); MSFPnav10h=MSFPpreload("../_derived/back_cmp_gotw110_back_a.gif"); }
+// --></script><a href="044.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10h.src" onmouseout="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10n.src"><img src="../_derived/back_cmp_gotw110_back.gif" width="100" height="20" border="0" alt="Prev" name="MSFPnav10"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav11n=MSFPpreload("../_derived/up_cmp_gotw110_up.gif"); MSFPnav11h=MSFPpreload("../_derived/up_cmp_gotw110_up_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11h.src" onmouseout="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11n.src"><img src="../_derived/up_cmp_gotw110_up.gif" width="100" height="20" border="0" alt="Up" name="MSFPnav11"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav12n=MSFPpreload("../_derived/next_cmp_gotw110_next.gif"); MSFPnav12h=MSFPpreload("../_derived/next_cmp_gotw110_next_a.gif"); }
+// --></script><a href="046.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12h.src" onmouseout="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12n.src"><img src="../_derived/next_cmp_gotw110_next.gif" width="100" height="20" border="0" alt="Next" name="MSFPnav12"></a><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td height="5" background="../images/bar.gif" colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td></tr><!--msnavigation--></table><!--msnavigation--><table dir="ltr" border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td valign="top" width="1%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<!--mstheme--></font><table border="0" cellspacing="0" bgcolor="#000000" cellpadding="0">
+  <tr>
+    <td><!--mstheme--><font face="Arial, Arial, Helvetica">
+    <!--mstheme--></font><table border="0" cellpadding="2" cellspacing="1" width="100%" height="483">
+        <tr>
+          <td align="center" bgcolor="#000000" colspan="2" height="16"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-top: 0; margin-bottom: 0"><a href="../news.htm"><b><font color="#FFFF00">News</font></b></a><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <font size="1" color="#0000FF">J<br>
+          U<br>
+          L<br>
+          Y</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-left: 3; margin-right: 3; margin-top: 0" align="center"><font size="1" color="#0000FF">
+            Print articles newly available online</font><!--mstheme--></font><table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%" id="AutoNumber1" bgcolor="#FFFFCC" bordercolordark="#006666" bordercolorlight="#99CCCC">
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill20.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 1&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000" bgcolor="#FFFFCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mxc++-item-4.htm">
+                <font color="#0000FF">Excerpt from MXC++, &quot;Extensible Templates: 
+                Via Inheritance or Traits?&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mcd_review.htm"><font color="#0000FF">
+                Book Review: Modern C++ Design</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill21.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 2: Namespaceops and 
+                Library Versioning&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+            </table><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;A Pragmatic Look at Exception Specifications&quot;<br>
+            </font><font size="1" color="#000080">The usefulness, or lack 
+            thereof, of exception specifications, and how results can vary 
+            across real-world compilers</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <a target="_blank" href="http://www.cuj.com/experts/2007/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;Getting to the Point&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">The Boost library has five 
+            smart pointers that provide a rich array [sic] of useful behaviors.</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font color="#0000FF" size="1">A<br>
+            U<br>
+          G<br>
+          U<br>
+          S<br>
+          T</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin:0 3; ">
+            <a target="_blank" href="http://www.cuj.com/experts/2008/sutter.htm"><i><b><font size="1" color="#0000FF">The New C++</font></b></i> <font size="1" color="#0000FF">
+            column, &quot;Smart(er) Pointers&quot;</font></a><font size="1" color="#000080"><br>
+            A closer look at one of the proposed new standard C++ library 
+            features -- smart pointers, particularly those in Boost and Loki, 
+            and a sneak peek at the usefulness of the proposed typedef templates</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin:0 3; ">
+          <a target="_blank" href="http://www.cuj.com/experts/2008/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;A Midsummer Night's Madness&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">A brew that mixes pointers, 
+          typedefs, and const</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin-top: 0; margin-bottom: 0">
+          <font size="1" color="#0000FF">S<br>
+          E<br>
+          P<br>
+          T<br>
+          E<br>
+          M<br>
+          B<br>
+          E<br>
+          R</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <font size="1" color="#0000FF">&quot;Standard C++ Meets Managed C++&quot;<br>
+            </font><font size="1" color="#000080">A survey of the main (in)compatibilities 
+            between Standard C++ and Microsoft’s managed extensions for C++, and 
+            how the two could converge</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;Export Restrictions, Part 1&quot;<br>
+            </font><font size="1" color="#000080">The scoop on export -- what 
+            some people think it does, what it actually does, and why it’s the 
+            most widely-ignored feature in the C++ standard</font><!--mstheme--></font></td>
+        </tr>
+      </table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p style="margin-top: 0; margin-bottom: 0">
+<img border="0" src="../images/140.gif" width="140" height="1"></p>
+
+<!--mstheme--></font></td><td valign="top" width="24"></td><!--msnavigation--><td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica">
+<!--mstheme--></font><table border="1" cellpadding="6" cellspacing="0" width="100%" bgcolor="#CCCCFF" bordercolordark="#006666" bordercolorlight="#99CCCC">
+  <tr>
+    <td width="100%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p align="center">This is the original GotW problem and solution
+      substantially as posted to Usenet. See the book <i><a href="../publications/mxc++.htm"><b>More
+      Exceptional C++</b></a></i> (Addison-Wesley, 2002) for the most current
+      solution to this GotW issue. The solutions in the book have been revised
+      and expanded since their initial appearance in GotW. The book versions
+      also incorporate corrections, new material, and conformance to the final
+      ANSI/ISO C++ standard.</p>
+    <!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+<h2><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Reference Counting - Part III<font size="3"><br>
+      Difficulty: 9 / 10</font><!--mstheme--></font></h2>
+<p><i>In this final chapter of the miniseries, we consider the effects of thread
+safety on reference-counted strings. Is reference counting really an
+optimization? The answer will likely surprise you.</i></p>
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Problem<!--mstheme--></font></h3>
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">JG Question<!--mstheme--></font></h4>
+<p><b><font size="4">1.</font></b>   Why is Optimized::String not thread-safe?
+Give examples.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Guru Questions<!--mstheme--></font></h4>
+<p><b><font size="4">2.</font></b>   Demonstrate how to make Optimized::String
+(from <a href="044.htm">GotW #44</a>) thread-safe:</p>
+<blockquote>
+  <p>a) assuming that there atomic operations to get, set, and compare integer
+  values; and</p>
+  <p>b) assuming that there aren't.</p>
+</blockquote>
+<p><b><font size="4">3.</font></b>   What are the effects on performance?
+Discuss.</p>
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a name="Solution"></a>Solution<!--mstheme--></font></h3>
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Introduction<!--mstheme--></font></h4>
+<p>Standard C++ is silent on the subject of threads. Unlike Java, C++ has no
+built-in support for threads, and does not attempt to address thread safety
+issues through the language. So why a GotW issue on threads? Simply because more
+and more of us are writing multithreaded (MT) programs, and no discussion of
+reference-counted String implementations is complete if it does not cover thread
+safety issues.</p>
+<p>I won't go into a long discussion about what's involved with writing
+thread-safe code in detail; see a good book on threads for more details.</p>
+
+<p><font color="#999933"><b><font size="4">1.</font></b>   Why is
+Optimized::String not thread-safe? Give examples.</font></p>
+
+<p>It is the responsibility of code that uses an object to ensure that access to
+the object is serialized as needed. For example, if a certain String object
+could be modified by two different threads, it's not the poor String object's
+job to defend itself from abuse; it's the job of the code that uses the String
+to make sure that two threads never try to modify the same String object at the
+same time.</p>
+<p>The problem with the code in <a href="044.htm"> GotW #44</a> is twofold: First, the
+reference-counted (copy-on-write, COW) implementation is designed to hide the
+fact that two different visible String objects could be sharing a common hidden
+state; hence it's the String class's responsibility to ensure that the calling
+code never modifies a String whose representation is shared. The String code
+shown already does that, by performing a deep copy (&quot;un-sharing&quot; the
+representation) if necessary the moment a caller tries to modify the String.
+This part is fine in general.</p>
+<p>Unfortunately, it now brings us to the second problem: The code in String
+that &quot;un-shares&quot; the representation isn't thread-safe. Imagine that
+there are two String objects s1 and s2:</p>
+<blockquote>
+  <p>a) s1 and s2 happen to share the same representation under the covers
+  (okay, because String is designd for this);</p>
+  <p>b) thread 1 tries to modify s1 (okay, because thread 1 knows that no one
+  else is trying to modify s1);</p>
+  <p>c) thread 2 tries to modify s2 (okay, because thread 2 knows that no one
+  else is trying to modify s2);</p>
+  <p>d) at the same time (error)</p>
+</blockquote>
+<p>The problem is (d): At the same time, both s1 and s2 will attempt to
+&quot;un-share&quot; their shared representation, and the code to do that is is
+not thread-safe. Specifically, consider the very first line of code in
+String::AboutToModify():</p>
+<!--mstheme--></font><pre>    void String::AboutToModify(
+      size_t n,
+      bool   bMarkUnshareable /* = false */
+    ) {
+      if( data_-&gt;refs &gt; 1 &amp;&amp; data_-&gt;refs != Unshareable ) {
+        /* ... etc. ... */</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>This if-condition is not thread-safe. For one thing, evaluating even
+&quot;data_-&gt;refs &gt; 1&quot; may not be atomic; if so, it's possible that
+if thread 1 tries to evaluate &quot;data_-&gt;refs &gt; 1&quot; while thread 2
+is updating the value of refs, the value read from data_-&gt;refs might be
+anything -- 1, 2, or even something that's neither the original value nor the
+new value. The problem is that String isn't following the basic thread-safety
+requirement that code that uses an object must ensure that access to the object
+is serialized as needed. Here, String has to ensure that no two threads are
+going to use the same &quot;refs&quot; value in a dangerous way at the same
+time. The traditional way to accomplish this is to serialize access to the
+shared StringBuf (or just its .refs member) using a critical section or
+semaphore. In this case, at minimum the &quot;comparing an int&quot; operation
+must be guaranteed to be atomic.</p>
+<p>This brings us to the second issue: Even if reading and updating
+&quot;refs&quot; were atomic, there are two parts to the if condition. The
+problem is that the thread executing the above code could be interrupted after
+it evaluates the first part of the condition but before it evaluates the second
+part. In our example:</p>
+<!--mstheme--></font><table border="0" cellpadding="6" cellspacing="0">
+  <tr>
+    <td bgcolor="#CCCCCC" width="60%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 6"><b><font color="#FFFFCC">Thread
+      1</font></b><!--mstheme--></font></td>
+    <td bgcolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 6"><b><font color="#FFFFCC">Thread
+      2</font></b><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 6">&gt;&gt; enter s1's
+      AboutToModify()</p>
+      <p style="margin-top: 0; margin-bottom: 6">evaluate &quot;data_-&gt;refs
+      &gt; 1&quot; (true, because data_-&gt;refs is 2)<!--mstheme--></font></td>
+    <td><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 6"><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 6" align="center">******** context
+      switch ********<!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 6"><!--mstheme--></font></td>
+    <td><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 6">&gt;&gt; enter s2's
+      AboutToModify()</p>
+      <p style="margin-top: 0; margin-bottom: 6">(runs all the way to
+      completion, including that it decrements data_-&gt;refs to the value 1)</p>
+      <p style="margin-top: 0; margin-bottom: 6">&lt;&lt; exit s2's
+      AboutToModify()<!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 6" align="center">******** context
+      switch ********<!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 6">evaluate &quot;data_-&gt;refs
+      != Unshareable&quot; (true, because data_-&gt;refs is now 1)</p>
+      <p style="margin-top: 0; margin-bottom: 6">enters AboutToModify's
+      &quot;I'm shared and need to unshare&quot; block, which clones the
+      representation, decrements data_-&gt;refs to the value 0, and gives up the
+      last pointer to the StringBuf... poof, we have a memory leak because the
+      StringBuf that had been shared by s1 and s2 can now never be deleted<!--mstheme--></font></td>
+    <td><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 6"><!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Having covered that, we're ready to see how to solve these safety problems.</p>
+
+<p><font color="#999933"><b><font size="4">2.</font></b>   Demonstrate how to
+make Optimized::String (from <a href="044.htm">GotW #44</a>) thread-safe:</font></p>
+<blockquote>
+  <p><font color="#999933">a) assuming that there atomic operations to get, set,
+  and compare integer values; and</font></p>
+</blockquote>
+<blockquote>
+  <p><font color="#999933">b) assuming that there aren't.</font></p>
+</blockquote>
+<p>I'm going to answer b) first because it's more general. What's needed here is
+a lock-management device like a critical section or a mutex. The code is
+equivalent in either case, so below I'll use a critical section, which is
+usually a more efficient synchronization device than a general-purpose mutex.
+The key to what we're about to do is quite simple: It turns out that if we do
+things right we only need to lock access to the reference count itself.</p>
+<p>Before doing anything else, we need to add a CriticalSection member object
+into Optimized::StringBuf. Let's call the member cs:</p>
+<!--mstheme--></font><pre>  namespace Optimized {
+
+    struct StringBuf {
+        StringBuf();              // start off empty
+       ~StringBuf();              // delete the buffer
+        StringBuf( const StringBuf&amp; other, size_t n = 0 );
+                                  // initialize to copy of other,
+                                  //  and ensure len &gt;= n
+
+        void Reserve( size_t n ); // ensure len &gt;= n
+
+        char*    buf;             // allocated buffer
+        size_t   len;             // length of buffer
+        size_t   used;            // # chars actually used
+        unsigned refs;            // reference count
+        CriticalSection cs;       // serialize work on this object
+    };</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>The only function that necessarily operates on two StringBuf objects at once
+is the copy constructor. String only calls StringBuf's copy constructor from two
+places (from String's own copy constructor, and from AboutToModify()). Note that
+String only needs to serialize access to the reference count, because by
+definition no String will do any work on a StringBuf that's shared (if it is
+shared, it will be read in order to take a copy, but we don't need to worry
+about anyone else trying to change or Reserve() or otherwise alter/move the
+buffer).</p>
+<p>The default constructor needs no locks:</p>
+<!--mstheme--></font><pre>    String::String() : data_(new StringBuf) { }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>The destructor need only lock its interrogation and update of the refs count:</p>
+
+<!--mstheme--></font><pre>    String::~String() {
+      bool bDelete = false;
+      data_-&gt;cs.Lock(); //---------------------------
+      if( data_-&gt;refs == Unshareable || --data_-&gt;refs &lt; 1 ) {
+        bDelete = true;
+      }
+      data_-&gt;cs.Unlock(); //-------------------------
+      if( bDelete ) {
+        delete data_;
+      }
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>For the String copy constructor, note that we can assume that the other
+String's data buffer won't be modified or moved during this operation, since
+it's the responsibility of the caller to serialize access to visible objects. We
+must still, however, serialize access to the reference count itself, as we did
+above:</p>
+
+<!--mstheme--></font><pre>    String::String( const String&amp; other )
+    {
+      bool bSharedIt = false;
+      other.data_-&gt;cs.Lock(); //---------------------
+      if( other.data_-&gt;refs != Unshareable ) {
+        bSharedIt = true;
+        data_ = other.data_;
+        ++data_-&gt;refs;
+      }
+      other.data_-&gt;cs.Unlock(); //-------------------
+
+      if( !bSharedIt ) {
+        data_ = new StringBuf( *other.data_ );
+      }
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>So making the String copy constructor safe wasn't very hard at all. This
+brings us to AboutToModify(), which turns out to be very similar, but notice
+that this sample code actually acquires the lock during the entire deep copy
+operation... really, the lock is strictly only needed when looking at the refs
+value, and again when updating the refs value at the end, but I decided to lock
+the whole operation instead of getting slightly better concurrency by releasing
+the lock during the deep copy and then reacquiring it just to update refs:</p>
+
+<!--mstheme--></font><pre>    void String::AboutToModify(
+      size_t n,
+      bool   bMarkUnshareable /* = false */
+    ) {
+      data_-&gt;cs.Lock(); //---------------------------
+      if( data_-&gt;refs &gt; 1 &amp;&amp; data_-&gt;refs != Unshareable ) {
+        StringBuf* newdata = new StringBuf( *data_, n );
+        --data_-&gt;refs;   // now all the real work is
+        data_-&gt;cs.Unlock(); //-----------------------
+        data_ = newdata; //  done, so take ownership
+      }
+      else {
+        data_-&gt;cs.Unlock(); //-----------------------
+        data_-&gt;Reserve( n );
+      }
+      data_-&gt;refs = bMarkUnshareable ? Unshareable : 1;
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>None of the other functions need to be changed. Append() and operator[]()
+don't need locks because once AboutToModify() completes we're guaranteed that
+we're not using a shared representation. Length() doesn't need a lock because by
+definition we're okay if our StringBuf is not shared (there's no one else to
+change the used count on us), and we're okay if it is shared (the other thread
+would take its own copy before doing any work and hence still wouldn't modify
+our used count on us):</p>
+
+<!--mstheme--></font><pre>    void String::Append( char c ) {
+      AboutToModify( data_-&gt;used+1 );
+      data_-&gt;buf[data_-&gt;used++] = c;
+    }
+
+    size_t String::Length() const {
+      return data_-&gt;used;
+    }
+
+    char&amp; String::operator[]( size_t n ) {
+      AboutToModify( data_-&gt;len, true );
+      return *(data_-&gt;buf+n);
+    }
+
+  }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Again, note the interesting thing in all of this: The only locking we needed
+to do involved the refs count itself.</p>
+<p>With that observation and the above general-purpose solution under our belts,
+let's look back to the a) part of the question:</p>
+<blockquote>
+  <p><font color="#999933">a) assuming that there atomic operations to get, set,
+  and compare integer values; and</font></p>
+</blockquote>
+<p>Some operating systems provide these kinds of functions.</p>
+<blockquote>
+  <p>NOTE: These functions are usually much more efficient than general-purpose
+  synchronization primitives like critical sections and mutexes. It is, however,
+  a fallacy so say that we can use atomic integer operations &quot;instead of
+  locks&quot; because locking is still required -- the locking is just generally
+  less expensive than other alternatives, but it's not free by a long shot.</p>
+</blockquote>
+<p>Here is a thread-safe implementation of String that assumes we have three
+functions: an IntAtomicGet, and IntAtomicDecrement and IntAtomicIncrement that
+safely return the new value. We'll do essentially the same thing we did above,
+but use only atomic integer operations to serialize access to the refs count:</p>
+<!--mstheme--></font><pre>  namespace Optimized {
+
+    String::String() : data_(new StringBuf) { }
+
+    String::~String() {
+      if( IntAtomicGet( data_-&gt;refs ) == Unshareable ||
+          IntAtomicDecrement( data_-&gt;refs ) &lt; 1 ) {
+        delete data_;
+      }
+    }
+
+    String::String( const String&amp; other )
+    {
+      if( IntAtomicGet( other.data_-&gt;refs ) != Unshareable ) {
+        data_ = other.data_;
+        IntAtomicIncrement( data_-&gt;refs );
+      }
+      else {
+        data_ = new StringBuf( *other.data_ );
+      }
+    }
+
+    void String::AboutToModify(
+      size_t n,
+      bool   bMarkUnshareable /* = false */
+    ) {
+      int refs = IntAtomicGet( data_-&gt;refs );
+      if( refs &gt; 1 &amp;&amp; refs != Unshareable ) {
+        StringBuf* newdata = new StringBuf( *data_, n );
+        if( IntAtomicDecrement( data_-&gt;refs ) &lt; 1 ) {
+          delete newdata;  // just in case two threads
+        }                  //  are trying this at once
+        else {             // now all the real work is
+          data_ = newdata; //  done, so take ownership
+        }
+      }
+      else {
+        data_-&gt;Reserve( n );
+      }
+      data_-&gt;refs = bMarkUnshareable ? Unshareable : 1;
+    }
+
+    void String::Append( char c ) {
+      AboutToModify( data_-&gt;used+1 );
+      data_-&gt;buf[data_-&gt;used++] = c;
+    }
+
+    size_t String::Length() const {
+      return data_-&gt;used;
+    }
+
+    char&amp; String::operator[]( size_t n ) {
+      AboutToModify( data_-&gt;len, true );
+      return *(data_-&gt;buf+n);
+    }
+
+  }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p><font color="#999933"><b><font size="4">3.</font></b>   What are the effects
+on performance? Discuss.</font></p>
+
+<p>Without atomic integer operations, copy-on-write typically incurs a
+significant performance penalty. Even with atomic integer operations, COW can
+make common String operations take nearly 50% longer -- even in single-threaded
+programs.</p>
+<p>In general, copy-on-write is often a bad idea in multithread-ready code. In
+short, the reason is that the calling code can no longer know whether two
+distinct String objects actually share the same representation under the covers,
+and so String must incur overhead to do enough serialization that calling code
+can take its normal share of responsibility for thread safety. Depending on the
+availability of more-efficient options like atomic integer operations, the
+impact on performance ranges from &quot;moderate&quot; to &quot;profound.&quot;</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">SOME EMPIRICAL RESULTS<!--mstheme--></font></h4>
+<p>In this test environment I tested six main flavours of string
+implementations:</p>
+<!--mstheme--></font><pre>             Name  Description
+  ---------------  ---------------------------------------
+            Plain  Non-use-counted string; all others are
+                   modeled on this (a refined version of
+                   the <a href="043.htm">GotW #43</a> answer)
+
+       COW_Unsafe  Plain + COW, not thread-safe (a refined
+                   version of the <a href="044.htm">GotW #44</a> answer)
+
+    COW_AtomicInt  Plain + COW + thread-safe (a refined
+                   version of this GotW #45 1(a) answer
+                   above)
+
+   COW_AtomicInt2  COW_AtomicInt + StringBuf in same
+                   buffer as the data (another refined
+                   version of this GotW #45 #1(a) above)
+
+      COW_CritSec  Plain + COW + thread-safe (Win32
+                   critical sections) (a refined version
+                   of this GotW #45 #1(b) answer above)
+
+        COW_Mutex  Plain + COW + thread-safe (Win32
+                   mutexes) (COW_CritSec with mutexes
+                   instead of critical sections)</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>I also threw in a seventh flavour to measure the result of optimizing memory
+allocation instead of optimizing copying:</p>
+
+<!--mstheme--></font><pre>  Plain_FastAlloc  Plain + an optimized memory allocator</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>I focused on comparing Plain with COW_AtomicInt. COW_AtomicInt was generally
+the most efficient thread-safe COW implementation. The results were as follows:</p>
+<blockquote>
+  <p>1. For all mutating and possibly-mutating operations, COW_AtomicInt was
+  always worse than Plain. This is natural and expected.</p>
+  <p>2. COW should shine when there are many unmodified copies, but for an
+  average string length of 50:</p>
+  <blockquote>
+    <p>a) When 33% of all copies were never modified, and the rest were modified
+    only once each, COW_AtomicInt was still slower than Plain.</p>
+    <p>b) When 50% of all copies were never modified, and the rest were modified
+    only thrice each, COW_AtomicInt was still slower than Plain.</p>
+  </blockquote>
+  <p>This result may be more surprising to many -- particularly that
+  COW_AtomicInt is slower in cases where there are more copy operations than
+  mutating operations in the entire system!</p>
+  <p>Note that, in both cases, traditional thread-unsafe COW did perform better
+  than Plain. This shows that indeed COW can be an optimization for purely
+  single- threaded environments, but it is less often appropriate for
+  thread-safe code.</p>
+  <p>3. It is a myth that COW's principal advantage lies in avoiding memory
+  allocations. Especially for longer strings, COW's principal advantage is that
+  it avoids copying the characters in the string.</p>
+  <p>4. Optimized allocation, not COW, was a consistent true speed optimization
+  in all cases (but note that it does trade off space). Here is perhaps the most
+  important conclusion from the Detailed Measurements section:</p>
+  <p>&quot;* Most of COW's primary advantage for small strings could be gained
+  without COW by using a more efficient allocator. (Of course, you could also do
+  both -- use COW and an efficient allocator.)&quot;</p>
+</blockquote>
+<p>Q: Why measure something as inefficient as COW_CritSec? A: Because at least
+one popular commercial basic_string implementation used this method as recently
+as a year ago (and perhaps still does, I haven't seen their code lately),
+despite the fact that COW_CritSec is nearly always a pessimization. Be sure to
+check whether your library vendor is doing this, because if the library is built
+for possible multithreaded use then you will bear the performance cost all the
+time -- even if your program is single-threaded.</p>
+<p>Q: What's COW_AtomicInt2? A: It's the same as COW_AtomicInt except that,
+instead of allocating a StringBuf and then separately allocating the data
+buffer, the StringBuf and data are in the same allocated block of memory. Note
+that all other COW_* variants use a fast allocator for the StringBuf object (so
+that there's no unfair &quot;double allocation&quot; cost), and the purpose of
+COW_AtomicInt2 is mainly to demonstrate that I have actually addressed that
+concern... COW_AtomicInt2 is actually slightly slower than COW_AtomicInt for
+most operations (because of the extra logic).</p>
+<p>I also tested the relative performance of various integer operations
+(incrementing int, incrementing volatile int, and incrementing int using the
+Win32 atomic integer operations), to ensure that COW_AtomicInt results were not
+unfairly skewed by poor implementations or function call overhead.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">APPROACH<!--mstheme--></font></h4>
+<p>To assess COW, I performed measurements of three kinds of functions:</p>
+<blockquote>
+  <p>- copying (where COW shines, its raison d'etre)</p>
+  <p>- mutating operations that could trigger reallocation (represented by
+  Append, which gradually lengthens; this is to make sure any conclusions drawn
+  can take into account periodic reallocation overhead due to normal string use)</p>
+  <p>- possibly-mutating operations that do not change length enough to trigger
+  reallocation, or that do not actually mutate the string at all (represented by
+  operator[])</p>
+</blockquote>
+<p>It turns out that the last two both incur a constant (and similar, within
+~20%) cost per operation, and can be roughly considered together. Assuming for
+simplicity that mutating-and-extending operations like Append (235ms overhead)
+and possibly-mutating operations like operator[] (280ms overhead) will be about
+equally frequent, the COW_AtomicInt overhead for mutating and possibly-mutating
+operations is about 260ms per 1,000,000 operations in this implementation.</p>
+<p>Finally, for each of 2(a) and 2(b), I first used the &quot;Raw
+Measurements&quot; section below to hand-calculate a rough prediction of
+expected relative performance, then ran the test to check actual performance.</p>
+<!--mstheme--></font><pre>SUMMARY FOR CASE 2(a):
+
+    PREDICTION
+
+      COW_AtomicInt Cost         Plain Cost
+      -------------------------  ----------------------
+      1M shallow copies          1M deep copies
+       and dtors            400   and dtors        1600
+      667K mutations        ???                     ???
+      667K deep copies     1060
+      extra overhead on
+       667K deep copies     ???
+      extra overhead on
+       667K mutations       175
+                          -----                   -----
+                           1635+                   1600+
+
+    TEST
+        (program that makes copies in a tight loop, and
+         modifies 33% of them with a single Append and
+         another 33% of them with a single op[])
+
+      Running 1000000 iterations with strings of length 50:
+        Plain_FastAlloc    642ms  copies: 1000000  allocs: 1000007
+                  Plain   1726ms  copies: 1000000  allocs: 1000007
+             COW_Unsafe   1629ms  copies: 1000000  allocs:  666682
+          COW_AtomicInt   1949ms  copies: 1000000  allocs:  666682
+         COW_AtomicInt2   1925ms  copies: 1000000  allocs:  666683
+            COW_CritSec  10660ms  copies: 1000000  allocs:  666682
+              COW_Mutex  33298ms  copies: 1000000  allocs:  666682
+
+SUMMARY FOR CASE 2(b):
+
+    PREDICTION
+
+      COW_AtomicInt Cost         Plain Cost
+      -------------------------  ----------------------
+      1M shallow copies          1M deep copies
+       and dtors            400   and dtors        1600
+      1.5M mutations        ???                     ???
+      500K deep copies      800
+      extra overhead on
+       500K deep copies     ???
+      extra overhead on
+       1.5M mutations       390
+                          -----                   -----
+                           1590+                   1600+
+
+    TEST
+        (program that makes copies in a tight loop, and
+         modifies 25% of them with three Appends and
+         another 25% of them with three operator[]s)
+
+      Running 1000000 iterations with strings of length 50:
+        Plain_FastAlloc    683ms  copies: 1000000  allocs: 1000007
+                  Plain   1735ms  copies: 1000000  allocs: 1000007
+             COW_Unsafe   1407ms  copies: 1000000  allocs:  500007
+          COW_AtomicInt   1838ms  copies: 1000000  allocs:  500007
+         COW_AtomicInt2   1700ms  copies: 1000000  allocs:  500008
+            COW_CritSec   8507ms  copies: 1000000  allocs:  500007
+              COW_Mutex  31911ms  copies: 1000000  allocs:  500007</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">RAW MEASUREMENTS<!--mstheme--></font></h4>
+
+<!--mstheme--></font><pre>TESTING CONST COPYING + DESTRUCTION: The target case of COW
+
+  Notes:
+   - COW_AtomicInt always took over twice as long to create and
+      destroy a const copy as did plain thread-unsafe COW.
+   - For every copy of a string that was later modified,
+      COW_AtomicInt added constant unrecoverable overhead
+      (400ms per 1,000,000) not counting the overhead on other
+      operations.
+   * Most of COW's primary advantage for small strings could be
+      gained without COW by using a more efficient allocator.
+      (Of course, you could also do both -- use COW and an
+      efficient allocator.)
+   * COW's primary advantage for large strings lay, not in
+      avoiding the allocations, but in avoiding the char copying.
+
+Running 1000000 iterations with strings of length 10:
+  Plain_FastAlloc    495ms  copies: 1000000  allocs: 1000003
+            Plain   1368ms  copies: 1000000  allocs: 1000003
+       COW_Unsafe    160ms  copies: 1000000  allocs:       3
+    COW_AtomicInt    393ms  copies: 1000000  allocs:       3
+   COW_AtomicInt2    433ms  copies: 1000000  allocs:       4
+      COW_CritSec    428ms  copies: 1000000  allocs:       3
+        COW_Mutex  14369ms  copies: 1000000  allocs:       3
+
+Running 1000000 iterations with strings of length 50:
+  Plain_FastAlloc    558ms  copies: 1000000  allocs: 1000007
+            Plain   1598ms  copies: 1000000  allocs: 1000007
+       COW_Unsafe    165ms  copies: 1000000  allocs:       7
+    COW_AtomicInt    394ms  copies: 1000000  allocs:       7
+   COW_AtomicInt2    412ms  copies: 1000000  allocs:       8
+      COW_CritSec    433ms  copies: 1000000  allocs:       7
+        COW_Mutex  14130ms  copies: 1000000  allocs:       7
+
+Running 1000000 iterations with strings of length 100:
+  Plain_FastAlloc    708ms  copies: 1000000  allocs: 1000008
+            Plain   1884ms  copies: 1000000  allocs: 1000008
+       COW_Unsafe    171ms  copies: 1000000  allocs:       8
+    COW_AtomicInt    391ms  copies: 1000000  allocs:       8
+   COW_AtomicInt2    412ms  copies: 1000000  allocs:       9
+      COW_CritSec    439ms  copies: 1000000  allocs:       8
+        COW_Mutex  14129ms  copies: 1000000  allocs:       8
+
+Running 1000000 iterations with strings of length 250:
+  Plain_FastAlloc   1164ms  copies: 1000000  allocs: 1000011
+            Plain   5721ms  copies: 1000000  allocs: 1000011 [*]
+       COW_Unsafe    176ms  copies: 1000000  allocs:      11
+    COW_AtomicInt    393ms  copies: 1000000  allocs:      11
+   COW_AtomicInt2    419ms  copies: 1000000  allocs:      12
+      COW_CritSec    443ms  copies: 1000000  allocs:      11
+        COW_Mutex  14118ms  copies: 1000000  allocs:      11
+
+Running 1000000 iterations with strings of length 1000:
+  Plain_FastAlloc   2865ms  copies: 1000000  allocs: 1000014
+            Plain   4945ms  copies: 1000000  allocs: 1000014
+       COW_Unsafe    173ms  copies: 1000000  allocs:      14
+    COW_AtomicInt    390ms  copies: 1000000  allocs:      14
+   COW_AtomicInt2    415ms  copies: 1000000  allocs:      15
+      COW_CritSec    439ms  copies: 1000000  allocs:      14
+        COW_Mutex  14059ms  copies: 1000000  allocs:      14
+
+Running 1000000 iterations with strings of length 2500:
+  Plain_FastAlloc   6244ms  copies: 1000000  allocs: 1000016
+            Plain   8343ms  copies: 1000000  allocs: 1000016
+       COW_Unsafe    174ms  copies: 1000000  allocs:      16
+    COW_AtomicInt    397ms  copies: 1000000  allocs:      16
+   COW_AtomicInt2    413ms  copies: 1000000  allocs:      17
+      COW_CritSec    446ms  copies: 1000000  allocs:      16
+        COW_Mutex  14070ms  copies: 1000000  allocs:      16
+
+
+
+TESTING APPEND: An always-mutating periodically-reallocating operation
+
+  Notes:
+   - Plain always outperformed COW.
+   - The overhead of COW_AtomicInt compared to Plain did not
+      vary greatly with string lengths: It was fairly constant
+      at about 235ms per 1,000,000 operations.
+   - The overhead of COW_AtomicInt compared to COW_Unsafe did not
+      vary greatly with string lengths: It was fairly constant
+      at about 110ms per 1,000,000 operations.
+   * The overall ever-better performance for longer strings was
+      due to the allocation strategy (see <a href="043.htm">GotW #43</a>), not COW vs.
+      Plain issues.
+
+Running 1000000 iterations with strings of length 10:
+  Plain_FastAlloc    302ms  copies:       0  allocs:  272730
+            Plain    565ms  copies:       0  allocs:  272730
+       COW_Unsafe    683ms  copies:       0  allocs:  272730
+    COW_AtomicInt    804ms  copies:       0  allocs:  272730
+   COW_AtomicInt2    844ms  copies:       0  allocs:  363640
+      COW_CritSec    825ms  copies:       0  allocs:  272730
+        COW_Mutex   8419ms  copies:       0  allocs:  272730
+
+Running 1000000 iterations with strings of length 50:
+  Plain_FastAlloc    218ms  copies:       0  allocs:  137262
+            Plain    354ms  copies:       0  allocs:  137262
+       COW_Unsafe    474ms  copies:       0  allocs:  137262
+    COW_AtomicInt    588ms  copies:       0  allocs:  137262
+   COW_AtomicInt2    536ms  copies:       0  allocs:  156871
+      COW_CritSec    607ms  copies:       0  allocs:  137262
+        COW_Mutex   7614ms  copies:       0  allocs:  137262
+
+Running 1000000 iterations with strings of length 100:
+  Plain_FastAlloc    182ms  copies:       0  allocs:   79216
+            Plain    257ms  copies:       0  allocs:   79216
+       COW_Unsafe    382ms  copies:       0  allocs:   79216
+    COW_AtomicInt    492ms  copies:       0  allocs:   79216
+   COW_AtomicInt2    420ms  copies:       0  allocs:   89118
+      COW_CritSec    535ms  copies:       0  allocs:   79216
+        COW_Mutex   7810ms  copies:       0  allocs:   79216
+
+Running 1000000 iterations with strings of length 250:
+  Plain_FastAlloc    152ms  copies:       0  allocs:   43839
+            Plain    210ms  copies:       0  allocs:   43839
+       COW_Unsafe    331ms  copies:       0  allocs:   43839
+    COW_AtomicInt    438ms  copies:       0  allocs:   43839
+   COW_AtomicInt2    366ms  copies:       0  allocs:   47825
+      COW_CritSec    485ms  copies:       0  allocs:   43839
+        COW_Mutex   7358ms  copies:       0  allocs:   43839
+
+Running 1000000 iterations with strings of length 1000:
+  Plain_FastAlloc    123ms  copies:       0  allocs:   14000
+            Plain    149ms  copies:       0  allocs:   14000
+       COW_Unsafe    275ms  copies:       0  allocs:   14000
+    COW_AtomicInt    384ms  copies:       0  allocs:   14000
+   COW_AtomicInt2    299ms  copies:       0  allocs:   15000
+      COW_CritSec    421ms  copies:       0  allocs:   14000
+        COW_Mutex   7265ms  copies:       0  allocs:   14000
+
+Running 1000000 iterations with strings of length 2500:
+  Plain_FastAlloc    122ms  copies:       0  allocs:    6416
+            Plain    148ms  copies:       0  allocs:    6416
+       COW_Unsafe    279ms  copies:       0  allocs:    6416
+    COW_AtomicInt    380ms  copies:       0  allocs:    6416
+   COW_AtomicInt2    304ms  copies:       0  allocs:    6817
+      COW_CritSec    405ms  copies:       0  allocs:    6416
+        COW_Mutex   7281ms  copies:       0  allocs:    6416
+
+
+
+TESTING OPERATOR[]: A possibly-mutating operation, never does mutate
+
+  Notes:
+   - Plain always vastly outperformed COW.
+   - Results were independent of string lengths.
+   - The overhead of COW_AtomicInt compared to Plain was
+      constant at about 280ms per 1,000,000 operations.
+   - COW_AtomicInt2 fared better in this test case, but
+      COW_AtomicInt did better overall and so I am focusing
+      on comparing that with Plain.
+
+[10x iterations] Running 10000000 iterations with strings of length 10:
+  Plain_FastAlloc      3ms  copies:       0  allocs:       3 [*]
+            Plain      2ms  copies:       0  allocs:       3 [*]
+       COW_Unsafe   1698ms  copies:       0  allocs:       3
+    COW_AtomicInt   2833ms  copies:       0  allocs:       3
+   COW_AtomicInt2   2112ms  copies:       0  allocs:       4
+      COW_CritSec   3587ms  copies:       0  allocs:       3
+        COW_Mutex  71787ms  copies:       0  allocs:       3
+
+   [*] within measurement error margin, both varied from 0ms to 9ms
+
+
+
+TESTING VARIOUS INTEGER INCREMENT/DECREMENT OPERATIONS
+
+  Test Summary:
+   - &quot;plain&quot; performs the operations on normal
+      nonvolatile ints
+   - &quot;volatile&quot; is the only case to use volatile ints
+   - &quot;atomic&quot; uses the Win32 InterlockedXxx operations
+   - &quot;atomic_ass&quot; uses inline x86 assembler locked
+      integer operations
+
+  Notes:
+   - ++atomic took only three times as long as either
+      ++volatile and unoptimized ++plain
+   - ++atomic does not incur function call overhead
+
+[100x iterations] Running 100000000 iterations for integer operations:
+
+          ++plain   2404ms, counter=100000000
+          --plain   2399ms, counter=0
+
+       ++volatile   2400ms, counter=100000000
+       --volatile   2405ms, counter=0
+
+         ++atomic   7480ms, counter=100000000
+         --atomic   9340ms, counter=0
+
+     ++atomic_ass   8881ms, counter=100000000
+     --atomic_ass  10964ms, counter=0</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>Here are a few extra notes on the relative timings of various flavours of x86
+assembler implementations of IntAtomicIncrement (these timings were taken under
+the same conditions as above and can be compared directly):</p>
+
+<!--mstheme--></font><pre>    Instructions                    Timing
+    ---------------------------     --------
+    __asm mov       eax, 1
+    __asm lock xadd i, eax
+    __asm mov       result, eax     ~11000ms
+
+    __asm mov       eax, 1
+    __asm lock xadd i, eax          ~10400ms
+
+    __asm lock inc i                 ~8900ms
+      (this is the one actually used above)</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>Note that the non-atomic versions are much better, and map directly onto the
+&quot;plain&quot; timings:</p>
+
+<!--mstheme--></font><pre>    __asm inc i                      ~2400ms</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Conclusion: So there is indeed overhead introduced by the x86 LOCK
+instruction, even on a single-CPU machine. This is natural and to be expected,
+but I point it out because some people said there was no difference.</p>
+<p>I am very impressed that Win32's InterlockedIncrement is actually faster at
+765ms than my hand-coded assembler at 900ms, even though my hand-coded version
+actually does less work (only a single instruction!) because it doesn't return
+the new value. Of course, I'm no x86 assembler expert; the explanation is
+certainly that the OS's wrapper is using a different opcode than my hand-coded
+version.</p>
+<p>Finally, of course, note that the Win32 atomic int functions clearly are not
+incurring function-call overhead. Never assume -- measure.</p>
+<p>A few important points about this test harness:</p>
+<blockquote>
+  <p>1. CAVEAT LECTOR: Take this for what it is: A first cut at a test harness.
+  Comments and corrections are welcome. I'm showing raw performance numbers
+  here; I haven't inspected the compiled code, and I've made no attempt to
+  determine the impact of cache hits/misses and other secondary effects. (Even
+  so, this GotW took much more effort than usual to produce, and I guarantee
+  that the next few issues will feature simpler topics!)</p>
+  <p>2. TANSTAAFL (&quot;there ain't no such thing as a free lunch&quot;
+  -R.A.Heinlein). Even with atomic integer operations, it is incorrect to say
+  &quot;there's no locking required&quot; because the atomic integer operations
+  clearly do perform serialization, and do incur significant overhead.</p>
+  <p>3. The test harness itself is SINGLE-threaded. A thread-safe COW
+  implementation incurs overhead even in programs that are not themselves
+  multithreaded. At best, COW could be a true optimization only when the COW
+  code does not need to be made thread-safe at all (even then, see Rob Murray's
+  &quot;C++ Strategies and Tactics&quot; book, pages 70-72, for more empirical
+  tests that show COW is only beneficial in certain situations). If thread
+  safety is required, COW imposes a significant performance penalty on all
+  users, even users running only single-threaded code.</p>
+</blockquote>
+<p style="margin-top: 0; margin-bottom: 6"><a href="045code.zip">Click here to
+download the test harness source code.</a></p>
+<!--mstheme--></font><!--msnavigation--></td></tr><!--msnavigation--></table><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><h4 align="right"><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a href="../copyright.htm"><font size="2">Copyright ©
+2002 Herb Sutter</font></a><!--mstheme--></font></h4>
+
+<!--mstheme--></font></td></tr><!--msnavigation--></table></body>
+</html>
+

@@ -1,0 +1,173 @@
+ID=F0353
+URL=http://www.chez.com/scribe/en/directx/d3d8_01.htm
+SIZE=7210
+DATE=09/07/2002
+TIME=13:19:25
+DATASET=Visual Basic
+HTML=<HTML>
+<HEAD>
+<LINK rel="stylesheet" type="text/css" href="../..//global.css">
+</HEAD>
+<BODY>
+<TABLE class="menu" width="100%"><TR><TD class="header">
+<A href="../index.htm">Home</A> - <A href="../about/index.htm">About</A> - <A href="../assembly/index.htm">Assembly</A> - <A href="../directx/index.htm">DirectX</A> - <A href="../opengl/index.htm">OpenGL</A> - <A href="../dotnet/index.htm">.NET</A> - <A href="../psdk/index.htm">Platform SDK</A> - <A href="../downloads/index.htm">Downloads</A> - <A href="../links/index.htm">Links</A></TD>
+<TD class="header" style="text-align:right">June 6, 2001</TD></TR></TABLE><TABLE align="right"><TR><TD><!-- BEGIN WEBSIDESTORY CODE -->
+<!-- COPYRIGHT 1997-2001 WEBSIDESTORY, INC. ALL RIGHTS RESERVED. U.S.PATENT PENDING. Privacy notice at: http://websidestory.com/privacy -->
+<!-- webbot bot="HTMLMarkup" startspan -->
+<script language="javascript">
+var _pn="en - Initializing DirectX Graphics"; //page name
+var _acct="WQ5909151KCE94EN7";   //account number
+var _pndef="title";var _hcv=65;var _mn="wf200";
+var _lp=location.protocol.indexOf('https')==0?"https://":"http://";
+var _gn="hg1.hitbox.com";function _ps(_h){if(_h.indexOf("en - Initializing DirectX Graphics")==0) {
+if (_pndef=="title"){return document.title?document.title:_pndef;}else{
+var _g=location.pathname;_h=_g.substring(_g.lastIndexOf("/")+1,_g.length);
+if(_h==""){return _pndef};}};return _h;}var _sv=10;var _bn=navigator.appName;
+if(_bn.substring(0,9)=="Microsoft"){_bn="MSIE";};var _bv=Math.round(parseFloat(navigator.appVersion)*100);
+if((_bn=="MSIE")&&(parseInt(_bv)==2))_bv=301;var _rf=escape(document.referrer);_pn=_ps(_pn);
+var _hbfa="<a href='http://rd1.hitbox.com/rd?acct="+_acct+"' target=_top><img src='";
+var _hbfc="' border=0 width=125 height=125></a><div><font face='MS Sans Serif,Arial,Helvetica '"+
+"size=1><a href='http://counter.hitbox.com/a/hitboxfree.cgi' target='_blank'>privacy</a></font></div>";
+var _hbfb="";</script><script language="javascript1.1" id="_hbc">_sv=11;</script><script
+language="javascript1.1" src="http://stats.hitbox.com/js/hbf.js"></script><script language="javascript">
+if(_hbfb.length!=0){document.write(_hbfa+_hbfb+_hbfc);}else{if((_rf=="undefined")||(_rf=="")){
+_rf="bookmark";};document.write(_hbfa+_lp+_gn+"/HG?hc="+_mn+"&hb="+_acct+"&n="+escape(_pn)+
+"&cd=1&hv=6"+"&bn="+escape(_bn)+"&bv="+_bv+"&ss=na&sc=na&dt=&sv="+_sv+"&ja=na&ln=na&pl=&rf="+_rf+_hbfc);}
+</script><noscript><a href="http://rd1.hitbox.com/rd?acct=WQ5909151KCE94EN7" target=_top><img
+src = "http://hg1.hitbox.com/HG?hc=wf200&cd=1&hv=6&ce=u&hb=WQ5909151KCE94EN7&n=en - Initializing DirectX Graphics"
+border="0" width=125 height=125></a><div><font face="MS Sans Serif,Arial,Helvetica" size=1><a
+href="http://counter.hitbox.com/a/hitboxfree.cgi" target="_blank">privacy</a></font></div>
+</noscript><!--//-->
+
+<!-- webbot bot="HTMLMarkup" endspan -->
+<!-- END WEBSIDESTORY CODE  -->
+</TD></TR></TABLE>
+<TABLE align="center"><TR><TD align="right" class="header" width="45%"><A href="directx_setup.htm">DirectX 8 Setup for Visual Basic Developers</A>&nbsp;&lt;&lt;</TD>
+<TD align="center" class="header" width="10%"><A href="index.htm">Up</A></TD><TD align="left" class="header" width="45%">&gt;&gt;&nbsp;<A href="d3d8_02.htm">2D Graphics - Sprite</A></TD></TR></TABLE>
+<H1>Initializing DirectX Graphics</H1>
+<P>See also : <A href="http://msdn.microsoft.com/library/psdk/directx/dx8_vb/hh/directx8_vb/_dx_roadmap_graphics.htm" target="external">DirectX Graphics Roadmap</A><BR>
+Download : <A href="../../downloads/d3d8_01.zip">d3d8_01.zip</A></P>
+<P>If you are new to DirectX, you may want to check <A href="directx_setup.htm">DirectX Setup for Visual Basic Developers</A> to initialize your development environment.</P>
+<H2>basD3D Module</H2>
+We'll keep our general DirectX Graphics code in its own module. For now, this module only brings us a very simple initialization routine, and the corresponding shutdown routine. This module provides the following public objects :</P>
+<DIV class="code"><PRE>
+Public DirectX As DirectX8
+Public Direct3D As Direct3D8
+Public Device As Direct3DDevice8
+Public d3dx As D3DX8
+</PRE></DIV>
+For now, <CODE>d3dStart</CODE> will use the default adapter and the HAL (hardware) device.
+<DIV class="code"><PRE>
+Public Function d3dStart(frm As Form) As CONST_D3DERR
+    Const Adapter = D3DADAPTER_DEFAULT
+    Const DeviceType = D3DDEVTYPE_HAL <SPAN class="comment">' D3DDEVTYPE_REF for the "Reference Rasterizer"</SPAN>
+    Dim DisplayMode As D3DDISPLAYMODE
+    Dim PresentParameters As D3DPRESENT_PARAMETERS
+    Dim ReturnCode As Long
+</PRE></DIV>
+We'll start first by setting the client area to a particular aspect ratio and we then show the rendering form.
+<DIV class="code"><PRE>
+    SetClientSize frm, 320, 240
+    frm.Show
+</PRE></DIV>
+Once the form is shown, we then create the basic DirectX Graphics objects :
+<DIV class="code"><PRE>
+    <SPAN class="comment">' Initialize DirectX</SPAN>
+    Set DirectX = New DirectX8
+    Set Direct3D = DirectX.Direct3DCreate
+    Set d3dx = New D3DX8
+</PRE></DIV>
+<P>Now, we can get the current display mode to initialize presentation parameters. <CODE>D3DPRESENT_PARAMETERS.SwapEffect</CODE> allows to specify how the back buffer will be presented to the screen. In particular changing these parameters allows to use full screen mode.</P>
+<DIV class="code"><PRE>
+    Direct3D.GetAdapterDisplayMode D3DADAPTER_DEFAULT, DisplayMode
+    With PresentParameters
+        .BackBufferFormat = DisplayMode.Format
+        .SwapEffect = D3DSWAPEFFECT_DISCARD
+        .Windowed = 1
+    End With
+</PRE></DIV>
+Now, we'll check that these parameters are supported by the hardware. If it is not supported, we'll return the result code to the caller.<UL><LI><CODE>D3DERR_INVALIDDEVICE</CODE> indicates that there is no hardware support (in which case you could use <CODE>D3DDEVTYPE_REF</CODE>, a "Reference Rasterizer" that promotes features over rendering speed (intended for use as a debugging tool or as a full featured slow device for your tries).<LI><CODE>D3DERR_NOTAVAILABLE</CODE> indicates that hardware acceleration mode is not supported for the current display mode. In particular 8 bit mode is not hardware accelerated and 24 bit is unlikely (for performance reasons). You'll have then to change your current desktop bit depth before running this code.</UL>
+<DIV class="code"><PRE>
+    ReturnCode = Direct3D.CheckDeviceType(Adapter, DeviceType, DisplayMode.Format, _
+                 DisplayMode.Format, PresentParameters.Windowed)
+    If ReturnCode <> D3D_OK Then
+        d3dStart = ReturnCode
+        Exit Function
+    End If
+</PRE></DIV>
+Finally we can create the rendering device.
+<DIV class="code"><PRE>
+    Set Device = Direct3D.CreateDevice(Adapter, DeviceType, frm.hWnd, _
+                 D3DCREATE_SOFTWARE_VERTEXPROCESSING, PresentParameters)
+    
+    d3dStart = Err.Number
+End Function
+</PRE></DIV>
+This module also provides the <CODE>d3dStop</CODE> subroutine that just clears the various objects...
+<DIV class="code"><PRE>
+Public Sub d3dStop()
+    Set Device = Nothing
+    Set d3dx = Nothing
+    Set Direct3D = Nothing
+    Set DirectX = Nothing
+End Sub
+</PRE></DIV>
+...and also <CODE>SetClientSize</CODE> that allows to ask for a particular client area size (wanted size + difference beetween current client size and total size).
+<DIV class="code"><PRE>
+Private Sub SetClientSize(frm As Form, ByVal Width As Long, ByVal Height As Long)
+    frm.Move frm.Left, frm.Top, Width * Screen.TwipsPerPixelX + (frm.Width - frm.ScaleWidth), Height * Screen.TwipsPerPixelY + (frm.Height - frm.ScaleHeight)
+End Sub
+</PRE></DIV>
+<H2>Main loop</H2>
+<P>Now, we are ready to use this module for our tiny first application.</P>
+<DIV class="code"><PRE>
+Private Sub Main()
+    Dim ReturnCode As Long
+    ReturnCode = d3dStart(frmMain)
+    If ReturnCode <> D3D_OK Then
+        MsgBox d3dx.GetErrorString(ReturnCode)
+        Unload frmMain
+        d3dStop
+        Exit Sub
+    End If
+    Do While DoEvents
+        Device.Clear 0, ByVal 0, D3DCLEAR_TARGET, D3DColorMake(Rnd, Rnd, Rnd, 0), 1, 0
+        Device.Present ByVal 0, ByVal 0, 0, ByVal 0
+    Loop
+    d3dStop
+End Sub
+</PRE></DIV>
+<P>Once DirectX Graphics is initialized, through a call to our <CODE>d3dStart</CODE>, we clear the device to a random color and we present this device to the screen using our main window. When all windows are closed, the loop is exited and <CODE>d3dStop</CODE> clears DirectX objects.</P>
+<HR>
+<DIV class="copyright"><A href="../mail.htm">Patrice Scribe</A></DIV>
+<HR>
+<DIV class="copyright"><A href="../mail.htm">Patrice Scribe</A></DIV>
+</BODY>
+</HTML>
+<!-- -->
+</noscript>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+<!--
+var rnd = Math.floor(Math.random() * 9) + 1 ; 
+if (rnd <= 4) { 
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/default','pub','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=470,height=120');
+} else if(rnd == 5) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre4','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+} else if(rnd == 6) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre2','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+} else if(rnd >= 7) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+}
+// -->
+</SCRIPT>
+
+<script language="javascript">
+WEBO_ZONE=122;
+WEBO_PAGE=1;
+weboplus_ok=0;
+</script>
+<script language="javascript"
+src="http://js.libertysurf.fr/chez/weborama/weboscopeplus.js"></SCRIPT>
+<SCRIPT>if(weboplus_ok==1){weboplus_zp(WEBO_ZONE,WEBO_PAGE);}
+</script>
+

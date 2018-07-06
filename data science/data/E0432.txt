@@ -1,0 +1,109 @@
+ID=E0432
+URL=http://www.hh.se/stud/d98rolb/ansi/offsetof().html
+SIZE=3677
+DATE=12/07/02
+TIME=19:20:52
+DATASET=C
+HTML=<html>
+<head>
+  <title>offsetof()</title>
+  <meta name="Generator" content="GuideML V1.6">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+<body>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="modf().html"><img src="prev.gif" alt="PREV" border=0></a><a href="perror().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+<hr>
+<pre>
+offsetof-Get the byte offset of a structure member
+
+Synopsis
+
+        #include &#060;stddef.h&#062;
+
+        size_t offsetof(type, element);
+
+Description
+
+        The offsetof macro returns a size_t constant specifying the
+        decimal byte offset of a component within a structure.        This
+        constant is generated at compile time.        Padding for alignment,
+if
+        any, is included.  The operands of the offsetof function are a
+        structure type (type) and structure member (element).  The element
+        does not include the structure type or the selection operators '.'
+        or '-&#062;'.
+
+
+Returns
+
+        The offsetof function returns the byte offset of element, within
+        the structure type.
+
+Example
+
+        This section contains several examples of the use of the offsetof
+        macro. In these examples, the member specification is written as
+        it would be written to access the value of a structure member,
+        except that there is no leading '.' or '-&#062;' selection operator.
+
+        #include &#060;stddef.h&#062;
+
+        struct AAA {        /* Define structure AAA */
+            double ddd;
+            char ccc;
+            int bbb;
+        };
+
+        size_t x;
+
+        /* x is the byte offset of component bbb in */
+        /* struct AAA */
+        x = offsetof(struct AAA, bbb);
+
+
+        The following example shows a structure, data, with an inner
+        structure base.
+
+        #include &#060;stddef.h&#062;
+
+        struct data {        /* Define struct data */
+            int id;
+            int *elem;
+            char *name;
+            struct {        /* Define struct type base */
+                double proj;
+            } base;
+        };
+
+        long ofs;
+
+        /* ofs is the byte offset of base.proj */
+        ofs = offsetof(struct data, base.proj);
+
+
+        In the following example, complex is defined with a typedef
+        statement to be a structure type.  The component specification
+        inner.d[5] specifies an array element within an inner structure.
+        The variable y is set to the offset of the sixth array element in
+        the inner structure (decimal 56).
+
+        #include &#060;stddef.h&#062;
+
+        typedef struct {        /* Define struct type complex */
+            struct XXX *xptr, *xptr2;
+            struct {                /* Define struct type inner */
+                int count, count2;
+                double d[10];
+            } inner;
+            struct XXX *xptr3;
+        } complex;
+
+        /* y is the byte offset of inner.d[5] */
+        long y;
+        y = offsetof(complex, inner.d[5]);
+</pre>
+<hr>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="modf().html"><img src="prev.gif" alt="PREV" border=0></a><a href="perror().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+</body>
+</html>
+

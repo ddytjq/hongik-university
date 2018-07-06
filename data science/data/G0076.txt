@@ -1,0 +1,255 @@
+ID=G0076
+URL=http://xray.astro.umass.edu/intern/aciscal_corn.html
+SIZE=16964
+DATE=09/07/2002
+TIME=16:15:52
+DATASET=Astronomy
+HTML=<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.75 [en] (X11; U; Linux 2.2.16-3 i686) [Netscape]">
+   <title>University of Massachusetts  -  High Energy Astrophysics Group</title>
+</head>
+<body text="#800000" bgcolor="#FEFFD3" link="#000080" vlink="#000080" alink="#000080">
+&nbsp;
+<center>
+<h1>
+Chandra Calibration Cookbook: ACIS Data</h1></center>
+<font size=+1>This cookbook steps through the basic calibration steps of
+Chandra data. The examplegiven is for a 50 ks observation of the Galactic
+Center using ACIS-I.</font>
+<p><b><font size=+2>PRELIMINARY PREPARATIONS</font></b>
+<p><b><font size=+1>1. Definition of the Basic Tools</font></b>
+<blockquote><font color="#009900"><font size=+1><b>CIAO 2.1:</b> `Chandra
+Interactive Analysis of Observations'; the software is located in /net/xray/usr/local/ciao_2.1</font></font>
+<p><font color="#009900"><font size=+1><b>HEAsoft:</b> a unified Release
+of the FTOOLS and XANADU Software Packages</font></font>
+<p><font color="#009900"><font size=+1><b>FV :</b> `The Interactive FITS
+File Editor'</font></font>
+<p><font color="#009900"><font size=+1><b>ds9 : </b>SAOImager, what you
+will use to display the images in CIAO</font></font>
+<br>&nbsp;</blockquote>
+<font size=+1><b>2. Location of the Basic Tools:</b> the tools above are
+all located in a common area on Stefan's machine "xray". You will need
+to have your computer crossmounted to the partition: /net/xray/. In this
+area are several directories: www (where the webpages are stored), pub
+(for group documents) and data1 (for shared data space).</font>
+<p><font size=+1><b>3. To start and use any of the packages,</b>&nbsp;
+your .chsrc file (located in your home directory on your machine) must
+be modified. Add these lines to this file:</font>
+<blockquote><font color="#009900"><font size=+1>## CIAO 2.1 version:</font></font>
+<br><font color="#009900"><font size=+1>setenv CALDB /net/xray/usr/local/ciao_2.1</font></font>
+<br><font color="#009900"><font size=+1>setenv CALDBCONFIG $CALDB/software/tools/caldb.config</font></font>
+<br><font color="#009900"><font size=+1>setenv CALDBALIAS $CALDB/software/tools/alias_config.fits</font></font>
+<br><font color="#009900"><font size=+1>alias ciao "source /net/xray/usr/local/ciao_2.1/bin/ciao_users.csh"</font></font></blockquote>
+<font size=+1><b>4. CIAO consists of a number of different tools.</b> Much
+of CIAO can be used at the command line, but there are several GUI-based
+programs as well:</font>
+<blockquote><font color="#009900"><font size=+1><b>FirstLook: </b>GUI for
+looking at the data, quick spectrum, light curve, etc.</font></font>
+<br><font color="#009900"><font size=+1><b>FilterWindow:</b> GUI for filter
+creation</font></font>
+<br><font color="#009900"><font size=+1><b>Prism:</b> GUI for browsing</font></font>
+<br><font color="#009900"><font size=+1><b>CHiPS: </b>for imaging, plotting</font></font>
+<br><font color="#009900"><font size=+1><b>Sherpa: </b>for fitting, modeling</font></font>
+<br><font color="#009900"><font size=+1><b>datamodel </b>(command-line
+based) : filtering and binning language (have printed out manual)</font></font></blockquote>
+<font size=+1><b>5. Other x-ray software packages</b> can be run by typing
+the following commands at the command line prompt before using the packages:</font>
+<blockquote><b><font color="#993300"><font size=+1>Fits View (FV)</font></font></b>
+<br><font color="#009900"><font size=+1>setenv FV /net/xray/usr/local/fv2.6/linux/</font></font>
+<br><font color="#009900"><font size=+1>set path = ($FV/bin $path)</font></font>
+<br><font size=+1><font color="#009900">type </font><font color="#993300">fv
+&amp;</font><font color="#009900"> to start</font></font>
+<br>&nbsp;
+<p><b><font color="#993300"><font size=+1>XANADU (incl. XSpec, FTools,
+etc.)</font></font></b>
+<br><font color="#009900"><font size=+1>setenv LHEASOFT /net/xray/usr/local/lheasoft/Linux_2.2_i686</font></font>
+<br><font color="#009900"><font size=+1>source $LHEASOFT/lhea-init.csh</font></font>
+<br><font size=+1><font color="#009900">type </font><font color="#993300">xspec
+</font><font color="#009900">to
+start</font></font>
+<br>&nbsp;
+<p><b><font color="#993300"><font size=+1>SAO Image Window</font></font></b>
+<br><font color="#009900"><font size=+1>alias ds9 "/net/xray/usr/ds9"</font></font>
+<br><font size=+1><font color="#009900">type </font><font color="#993300">ds9
+</font><font color="#009900">to
+start</font></font>
+<br><font color="#009900"><font size=+1>note: you may want to add this
+line to your .cshrc file as well as the above CIAO commands</font></font>
+<p><b><font color="#993300"><font size=+1>IDL (Interactive Data Language):</font></font></b>
+<p><font color="#009900"><font size=+1>IDL programs for the analysis of
+ACIS data (e.g. PSF analysis software) can be found at</font></font>
+<br><font color="#009900"><font size=+1>&nbsp;/net/xray/usr/local/idladd/chandraidl</font></font>
+<p><font color="#009900"><font size=+1>and general xray idl programs can
+be found at</font></font>
+<br><font color="#009900"><font size=+1>/net/xray/pub/xrayidl</font></font>
+<br><font color="#009900"><font size=+1>&nbsp;Instructions to run Daniel's
+IDL startup script can be found <a href="http://xray.astro.umass.edu/idlsetup/idlsetup.html">here</a></font></font>
+<p><b><font color="#993300"><font size=+1>Special CIAO software downloaded
+from the <a href="http://asc.harvard.edu/cgi-gen/cont-soft/soft-list.cgi">user-exchange
+software page</a></font></font></b>
+<p><font color="#993300"><font size=+1>Maxim Markevitch's programs for
+blank sky background issues and for filtering data:</font></font>
+<p><font color="#009900"><font size=+1>badpixfilter</font></font>
+<br><font color="#009900"><font size=+1>lc_clean</font></font>
+<br><font color="#009900"><font size=+1>make_acisbg</font></font>
+<br><font color="#009900"><font size=+1>are located in /net/xray/usr/local/acisbg/bin.redhat62/</font></font>
+<br>&nbsp;
+<p><font color="#993300"><font size=+1>Spatially-weighted RMF and ARF files
+(background and filtering) used for spectral analysis of extended emission:</font></font>
+<p><font color="#009900"><font size=+1>calcarf</font></font>
+<br><font color="#009900"><font size=+1>calcrmf</font></font>
+<br><font color="#009900"><font size=+1>are located in /net/xray/usr/local/ciao_2.0/bin.rh/</font></font>
+<p><font color="#993300"><font size=+1>when using any of these programs,
+you must type the path as part of the command, i.e.</font></font>
+<br><font color="#009900"><font size=+1>/net/xray/usr/local/ciao_2.0/bin.rh/calcrmf
+-phafile galaxy.pi -wmap galaxy_wmap.fits -o galaxy.wrmf</font></font>
+<br><font color="#009900"><font size=+1>/net/xray/usr/local/acisbg/bin.redhat62/lc_clean
+lc_clean.par</font></font>
+<br>&nbsp;
+<br>&nbsp;</blockquote>
+
+<p><br><b><font size=+2>CALIBRATION OF ACIS DATA</font></b>
+<p><b><font color="#009900"><font size=+1>Outline:</font></font></b>
+<br><b><font color="#009900"><font size=+1>1. Examine Chandra data,&nbsp;
+get familiar with file structure</font></font></b>
+<br><b><font color="#009900"><font size=+1>2. Append appropriate "bad pixel"
+file to data</font></font></b>
+<br><b><font color="#009900"><font size=+1>3. Restrict the energy range
+to energies for which the calibration is well known</font></font></b>
+<br><b><font color="#009900"><font size=+1>4. Check for background flares
+by making a lightcurve of your dataset -- 2 ways</font></font></b>
+<br>&nbsp;
+<p><b><font color="#009900"><font size=+1>1. Examine Chandra data and familiarize
+yourself with file structure</font></font></b>
+<p><font size=+1>&nbsp;&nbsp; data will come as tar file, e.g. gc.tar;
+need to unpack</font>
+<p><font color="#009900"><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+tar xvf gc.tar</font></font>
+<p><b><font size=+1>A - what are the components of my dataset?</font></b>
+<blockquote><font color="#009900"><font size=+1>ls</font></font>
+<br><font size=+1>oif.fits&nbsp; primary&nbsp; secondary</font></blockquote>
+
+<p><br><font size=+1><font color="#009900">oif.fits --></font> "Observation
+Index File"</font>
+<p><font color="#009900"><font size=+1>primary:</font></font>
+<br><font size=+1>acisf00945N001_cntr_img2.fits&nbsp; --> high resolution
+image of ctr in sky coords</font>
+<br><font size=+1>acisf00945N001_src2.fits&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+--> list of detected sources, ct. rates</font>
+<br><font size=+1>acisf00945N001_<font color="#009900">evt2.fits&nbsp;</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+--> <font color="#009900">filtered events file; 'good' photons *** most
+important file!***</font></font>
+<br><font size=+1>acisf00945_000N001_evt1.fits&nbsp;&nbsp; --> raw events
+file</font>
+<br><font size=+1>acisf00945N001_full_img2.fits&nbsp; --> low resolution
+of full field in sky coords</font>
+<br><font size=+1>acisf00945_000N001_flt1.fits&nbsp;&nbsp; --> list of
+good time intervals</font>
+<p><font color="#009900"><font size=+1>secondary:</font></font>
+<p><font size=+1>acisf00945_000N001_<font color="#009900">aoff1.fits</font>
+--> <font color="#009900">aspect offsets ***you will be using this file
+also***</font></font>
+<br><font size=+1>acisf00945_000N001_mtl1.fits&nbsp; --> mission timeline</font>
+<br><font size=+1>acisf00945_000N001_bpix1.fits --> bad pixel lists</font>
+<br><font size=+1>acisf00945_000N001_soff1.fits --> alignment offsets</font>
+<br><font size=+1>acisf00945_000N001_msk1.fits&nbsp; --> mask</font>
+<br><font size=+1>acisf00945_000N001_stat1.fits --> exposure statistics</font>
+<p><font color="#009900"><font size=+1>the events level 2 file is the fits
+file you will be using in all of the following</font></font>
+<p><b><font size=+1>B - use the datamodel language to learn more about
+the dataset</font></b>
+<br>&nbsp;
+<blockquote><font color="#009900"><font size=+1>dmlist acisf00945N001_evt2.fits
+header | grep DATE-OBS</font></font></blockquote>
+<font size=+1>0011 DATE-OBS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+2000-07-07T19:05:19&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+String&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date and time of observation
+start</font>
+<p><b><font size=+1>C - check which CCDs were on, what the exposure time
+is, how many counts, etc.:</font></b>
+<br>&nbsp;
+<blockquote><font color="#009900"><font size=+1>dmlist acisf00945N001_evt2.fits
+blocks</font></font></blockquote>
+<font size=+1>----------------------------------------------------------------------------</font>
+<br><font size=+1>Dataset: acisf00945N001_evt2.fits</font>
+<br><font size=+1>-----------------------------------------------------------------------------</font>
+<p><font size=+1>&nbsp;&nbsp;&nbsp;&nbsp; Block Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dimensions</font>
+<br><font size=+1>------------------------------------------------------------------------------</font>
+<br><font size=+1>Block&nbsp;&nbsp;&nbsp; 1: PRIMARY&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Null</font>
+<br><font size=+1>Block&nbsp;&nbsp;&nbsp; 2: EVENTS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Table&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 15 cols x 596739&nbsp;&nbsp;
+rows</font>
+<br><font size=+1>Block&nbsp;&nbsp;&nbsp; 3: GTI3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Table&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2 cols x 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+rows</font>
+<br><font size=+1>Block&nbsp;&nbsp;&nbsp; 4: GTI0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Table&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2 cols x 2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+rows</font>
+<br><font size=+1>Block&nbsp;&nbsp;&nbsp; 5: GTI1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Table&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2 cols x 3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+rows</font>
+<br><font size=+1>Block&nbsp;&nbsp;&nbsp; 6: GTI2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Table&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2 cols x 4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+rows</font>
+<br><font size=+1>Block&nbsp;&nbsp;&nbsp; 7: GTI6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Table&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2 cols x 3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+rows</font>
+<br><font size=+1>Block&nbsp;&nbsp;&nbsp; 8: GTI7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Table&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2 cols x 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+row</font>
+<br>&nbsp;
+<blockquote><font color="#009900"><font size=+1>dmlist acisf00945N001_evt2.fits
+header | grep ONTIME</font></font></blockquote>
+
+<p><br><font size=+1>0079 ONTIME0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 49376.0000459850
+[s]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Real8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[s] Sum of GTIs</font>
+<br><font size=+1>0082 ONTIME1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 49372.8000459820
+[s]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Real8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[s] Sum of GTIs</font>
+<br><font size=+1>0085 ONTIME2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 49369.6000459790
+[s]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Real8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[s] Sum of GTIs</font>
+<br><font size=+1>0088 ONTIME3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 49379.2000459880
+[s]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Real8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[s] Sum of GTIs</font>
+<br><font size=+1>0091 ONTIME6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 49372.8000459820
+[s]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Real8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[s] Sum of GTIs</font>
+<br><font size=+1>0094 ONTIME7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 49379.2000459880
+[s]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Real8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[s] Sum of GTIs</font>
+<br><font size=+1>0097 ONTIME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+49379.2000459880 [s]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Real8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[s] Sum of GTIs</font>
+<br>&nbsp;
+<p><b><font color="#009900"><font size=+1>2. Use Observation-specific Bad
+Pixel Files</font></font></b>
+<blockquote><font color="#993300"><font size=+1><a href="http://asc.harvard.edu/ciao/threads/badpix.thread.html">Follow
+CIAO 2.1 Science Thread- part A (Changing ardlib manually)</a></font></font></blockquote>
+<b><font color="#009900"><font size=+1>3. Restrict the Energy Range</font></font></b>
+<blockquote><font color="#009900"><font size=+1><a href="http://asc.harvard.edu/ciao/threads/filter.thread.html#FilterEnergyRange">Follow
+CIAO 2.1 Science Thread - part C (Restrict the energy range)</a></font></font></blockquote>
+<b><font color="#009900"><font size=+1>4. Filter data for high-background
+(i.e. flare) events</font></font></b>
+<blockquote><font color="#009900"><font size=+1><a href="http://asc.harvard.edu/ciao/threads/filter.thread.html#FilterBadBckg">Follow
+CIAO 2.1 Science Thread - part D (Eliminate High Background Times)</a></font></font></blockquote>
+<font size=+1>For more rigorous filtering and removal of flare events you
+may need to use <font color="#009900">analyze_ltcurv.sl</font> script,
+but so far the data in NGC4631 and the GC Radio Arc have been free of strong
+background flares and were not observed during unusually high background
+rates. See <a href="http://asc.harvard.edu/ciao/threads/filter_ltcrv.thread.html">this
+science thread</a> if background flares are a problem in your data.</font>
+<p>
+<hr>
+<center><a href="mailto:immler@xray.astro.umass.edu">Cornelia Lang</a>
+<br>last update 06/5/2001</center>
+
+</body>
+</html>
+

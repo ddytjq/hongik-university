@@ -1,0 +1,1871 @@
+ID=E0023
+URL=http://www.troubleshooters.com/codecorn/shellscript/index.htm
+SIZE=79898
+DATE=12/07/02
+TIME=19:16:29
+DATASET=C
+HTML=<!DOCTYPE doctype PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+                
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+                
+  <meta name="Author" content="Steve Litt">
+                
+  <meta name="Description" content="The 10% of shellscripting you use 90% of the time.">
+                
+  <meta name="KeyWords" content="shellscripts,scripts,scripting,bash,csh,bourne shell,unix,unix shell,linux,linux shell,perl,programming, CGI">
+                
+  <meta name="GENERATOR" content="Mozilla/4.74 [en] (Win98; U) [Netscape]">
+  <title>Steve's Shellscript Subset</title>
+</head>
+  <body text="#000000" bgcolor="#ffffff" link="#0000ee" vlink="#551a8b" alink="#ff0000">
+  &nbsp;      
+<center>    
+<h2> <a name="top"></a><a href="file:///d/websites/tjunct/troubleshooters.htm">
+  Troubleshooters.Com</a>  and <a href="file:///d/websites/tjunct/codecorn/index.htm">
+  Code Corner</a> Present</h2>
+   </center>
+        
+<center>    
+<h1> <font color="#c80000">Steve's Shellscript Subset<br>
+    </font><font size="+0">The 10% you need -- for 90% of your work</font></h1>
+   </center>
+        
+<center>    
+<h5> <a href="file:///d/websites/tjunct/cpyright.htm">Copyright (C) 2000-2002
+ by Steve Litt</a></h5>
+   </center>
+        
+<center>   
+<table border="1" bgcolor="#fffff8">
+    <tbody>
+       <tr align="left" valign="top">
+    <td>                      
+      <ul>
+            <li> <b><a href="#Introduction">Introduction</a></b></li>
+     <li> <b><a href="#Acknowledgments">Acknowledgements</a></b></li>
+     <li> <b><a href="#HelloWorld">Hello World</a></b></li>
+                  <li><b><a href="#Some_Syntax_Gotchas">Some Syntax Gotchas</a></b></li>
+              <li> <b><a href="#OutputtingtoStdout">Outputting to Stdout</a></b></li>
+     <li> <b><a href="#OutputtingtoStderr">Outputting to Stderr</a></b></li>
+     <li> <b><a href="#ArgumentsEnvironmentVariablesandReturnValues">Arguments, 
+ Environment Variables</a></b></li>
+                <b><a href="#ArgumentsEnvironmentVariablesandReturnValues">
+  and Return  Values</a></b> <li> <b><a href="#Branching">Branching</a></b></li>
+     <li> <b><a href="#UserInput">User Input</a></b></li>
+     <li> <b><a href="#Looping">Looping</a></b></li>
+                   
+      </ul>
+            </td>
+     <td>&nbsp;</td>
+     <td>                            
+      <ul>
+    <li> <b><a href="#Subroutines">Subroutines</a></b></li>
+     <li> <b><a href="#FileIO">File I/O</a></b></li>
+     <li> <b><a href="#RegularExpressions">Regular Expressions</a></b></li>
+     <li> <b><a href="#StringManipulation">String Manipulation</a></b></li>
+     <li> <b><a href="#QuasiObjectProgramming">Quasi Object Programming</a></b></li>
+                               
+      </ul>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </center>
+              
+<h1> <a name="Introduction"></a>Introduction</h1>
+    Shell scripting is among the most hated of programming languages. The 
+syntax  can be quirky, and the anemic DOS batch file scripting language has 
+given  it a black eye. Great scripting languages like Perl and Python are 
+certainly  easier to use, and a little more powerful (you'd be surprised at
+how powerful  Unix shellscripts are). Due to all this, I long ago made a
+policy decision  to use Perl instead of shellscripts. I later had to eat my
+words, for the  following reasons:          
+<ul>
+    <li> Perl/Python may not be available on the machine.</li>
+     <li> Boot init code may not be able to access Perl or Python</li>
+     <li> Many existing scripts are shellscripts</li>
+             
+</ul>
+    Shellscripts may be necessary, but you don't need to put up with their
+ quirky syntax. By using a subset, and staying away from confusing features,
+ you can easily write shellscripts.          
+<p>This document covers only the sh/bash shells, although others are somewhat 
+ similar. I had only Linux bash (Mandrake 7.0) available for testing, but 
+my memory of HP UX tells me that it's pretty applicable across Unices.   
+ </p>
+           
+<p>Note: Some nice sed one liners can be had at <a href="http://www-h.eng.cam.ac.uk/help/tpl/unix/sed.html">
+   http://www-h.eng.cam.ac.uk/help/tpl/unix/sed.html</a>. </p>
+           
+<h1> <a name="Acknowledgments"></a>Acknowledgments</h1>
+    A big shout out to my buddies at Linux Enthusiasts and Professionals
+of  Central Florida (LEAP-CF). With mailing list and meetings, they (we)
+form  a 70 brain parallel supercomputer.          
+<p>Special thanks go out to 3 LEAPsters. Tony Becker gave an incredible  bash
+presentation at LEAP. It was Tony's presentation that illuminated the  fact
+that the left bracket character is really a symbolic link to <tt>/usr/bin/test</tt>
+    command. After seeing Tony's presentation, I decided to start using more
+  shellscripts and to write this web page. Mark Alexander and Nickolai Zeldovich
+  helped me with shellscript file I/O. </p>
+           
+<p>And of course, thanks to the help and support of Troubleshooters.Com's
+  visitors. </p>
+           
+<h1> <a name="HelloWorld"></a>Hello World</h1>
+    Make the following file, called hello.sh: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>echo "Hello World"</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+    Set it executable with the following command:          
+<pre>chmod a+x hello.sh</pre>
+    Finally, run it as follows:          
+<pre>./hello.sh</pre>
+    In the tradition of hello world programs since K&amp;R, it prints out 
+the  words "Hello World". This is the simplest possible shellscript.<br>
+       
+<h1><a name="Some_Syntax_Gotchas"></a>Some Syntax Gotchas</h1>
+      Be careful of spacing. For instance, the equal sign you use for assignment 
+must NOT be surrounded by spaces. But the equal sign used for comparison MUST
+be surrounded by spaces:<br>
+ <br>
+ 
+<table cellpadding="2" cellspacing="2" border="1">
+   <tbody>
+     <tr>
+       <td valign="top"><tt>currdir=`pwd`</tt><br>
+       </td>
+       <td valign="top">RIGHT<br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top"><tt>currdir = `pwd`</tt><br>
+       </td>
+       <td valign="top">WRONG<br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top"><tt>if test "$currdir" = "/home/john"; then</tt><br>
+       </td>
+       <td valign="top">RIGHT<br>
+       </td>
+     </tr>
+     <tr>
+       <td valign="top"><tt>if test "$currdir"="/home/john"; then</tt><br>
+       </td>
+       <td valign="top">WRONG<br>
+       </td>
+     </tr>
+   
+  </tbody> 
+</table>
+<br>
+Another gotcha is the bracket syntax:<br>
+<br>
+if [ "currdir" = "/home/john" ]; then<br>
+<br>
+Notice the spaces on the inside of the brackets? They're manditory. To anyone
+knowing any other language, this is totally inobvious and will be skipped.
+This syntax is really just a substitute for the <tt>test</tt> command, as
+in:<br>
+<pre>if test "$currdir" = "/home/john"; then</pre>
+If that sounds unbelievable, try doing an <tt>ls</tt> command on an opening
+square bracket in the <tt>/usr/bin</tt> directory:<br>
+<pre>[slitt@mydesk bin]$ ls -l [<br>lrwxrwxrwx    1 root     root            4 Apr 25 17:01 [ -&gt; test*<br>[slitt@mydesk bin]$<br></pre>
+That's the proof. <tt>[</tt> is a symbolic link to the test executable. So
+use the test command whenever possible, and when you must maintain code with
+the bracket construct, remember that <tt>[</tt> is a link to <tt>test</tt>
+, and you would certainly put a space after <tt>test</tt>, so put a space
+after the opening square bracket.<br>
+<br>
+Another gotcha is the relational operators. As in many other languages, relational
+operators for strings are different than for numbers. But shellscripts are
+the reverse of what you'd expect. The equal sign (<tt>=</tt>) is used for
+strings, while <tt>-eq</tt> is used for numbers. The relational operators
+are listed later in this document.<br>
+<br>
+One more thing. In certain situations it might be necessary to escape parentheses
+with backslashes.<br>
+<br>
+So when you have a shellscript that just won't behave, review these gotchas
+and see if you've inadvertently violated one. It's often much quicker than
+troubleshooting.<br>
+            
+<h1> <a name="OutputtingtoStdout"></a>Outputting to Stdout</h1>
+    The simplest way to output to stdout is the echo command, as shown in 
+the  preceding "Hello World" example. However, you can also get formatted 
+output  via the <tt>printf</tt> command: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>aname="Florida"<br>let adollars=3290<br>bname="Utah"<br>let bdollars=817<br>printf "%10s budget is %06d\n" $aname $adollars<br>printf "%10s budget is %06d\n" $bname $bdollars</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+              
+<p>The preceding code prints the following: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ffffcc">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>[slitt@mydesk slitt]$ ./myscript<br>&nbsp;&nbsp; Florida budget is 003290<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Utah budget is 000817<br>[slitt@mydesk slitt]$</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>As you can see, fields are properly padded. This is very similar to the 
+C printf command. </p>
+           
+<h1> <a name="OutputtingtoStderr"></a>Outputting to Stderr</h1>
+    As seen in the previous "Hello World" program, you use the <tt>echo</tt>
+    command or <tt>printf</tt> command to output to stdout. But you don't 
+echo  error messages and syntax reminders to stdout, you echo them to stderr.
+ The following echos "Hello World" to stdout, and "This is an error" to stderr:
+          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>echo "Hello World"<br>echo 1&gt;&amp;2 "This is an error"</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+              
+<p>Running this script you'll see both lines. But if you do the following:
+    </p>
+           
+<pre>./hello.sh | less</pre>
+    and then refresh with Ctrl-L, you'll see only the "Hello World".    
+     
+<p>You can observe stderr in isolation with the following command, which
+ diverts stdout from the screen: </p>
+           
+<pre>./hello.sh &gt; /dev/null</pre>
+    The preceding command prints only "This is an error" on the screen. 
+       
+<h1> <a name="ArgumentsEnvironmentVariablesandReturnValues"></a>Arguments, 
+ Environment Variables and Return Values</h1>
+    Programs need to access command line arguments and environment variables.
+  They may need to return a numeric value. This section explains how to do
+ all these things. <br>
+   &nbsp;          
+<table border="1" cellpadding="4">
+    <tbody>
+         <tr>
+    <td>$0</td>
+     <td>The name of the script file (like argv[0] in C)</td>
+    </tr>
+     <tr>
+    <td>$1, $2, ...</td>
+     <td>The positional arguments (like argv[1], argv[2]... in C)</td>
+    </tr>
+     <tr>
+    <td>$@</td>
+     <td>Expands to a string containing all positional arguments (but not 
+$0),  separated by spaces.</td>
+    </tr>
+     <tr>
+    <td>$#</td>
+     <td>The number of arguments (not counting $0). Similar to argc in C.</td>
+    </tr>
+     <tr>
+    <td>$$</td>
+     <td>The process ID of the running script (not of the calling process).</td>
+    </tr>
+     <tr>
+    <td>$?</td>
+     <td>The exit status (return value) of the last foreground process. This
+  is used to test the return value of programs run from the script.</td>
+    </tr>
+     <tr>
+    <td>$(command)</td>
+     <td>Expands to the stdout output by the command in the parens. Note
+that   the same effect can be produced by surrounding the command with backticks,
+  but that syntax is becoming depreciated.</td>
+    </tr>
+                   
+  </tbody>         
+</table>
+              
+<p>There is other info that can be accessed from inside the script. For  complete
+info, search the string <b><tt>Special Parameters</tt></b> in the  bash man
+page. For another interesting topic, search <b><tt>Brace Expansion</tt></b>
+   . </p>
+           
+<h2> Saving PID of Spawned Binary Executable</h2>
+    This is slick, and you can do it for any binary executable in which you
+ can use the shellscript's process ID as an argument. In this example we'll
+ use the command open less jj, which opens a less session for file jj on
+the  next available console.          
+<p>Any running program appears in a ps ax command, and you can certainly
+ grep for the executable. The problem is you don't know which process is
+the one spawned by a particular invocation of your shellscript. But if you
+can use the shellscript's process id (PID) as an argument to the binary executable, 
+ you can uniquely "brand" the executable, thus grep for the one and only one
+ copy run from the particular shellscript. </p>
+           
+<p>Check out this code: <br>
+   &nbsp; <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>open less jj $$&nbsp;&nbsp;&nbsp;&nbsp; #run job with script pid as arg<br><br>## Find job non-grep job with command and script pid ##<br>jobline=`ps ax | grep -v grep | grep "less jj $$"`<br><br>job=${jobline%% *}&nbsp; #spawned pid is everything before 1st space<br>echo $job</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>The preceding prints the binary executable's PID to stdout. It could  also
+be redirected to a file for safe keeping. The first stsep is to run the command
+with the shellscript's PID ($$) as an argument. This is safe if the command
+ignores extraneous arguments. The next step is to find the job in a <tt>ps
+ax</tt> listing. Assuming $$ expands to 43210, you can grep for "less jj
+43210 to find the executable. Except the grep will also return the grep command
+itself. So you filter out any commands containing the word "grep" with <tt>
+grep -v grep</tt>. This yields the single line containing the spawned binary
+executable's process. The number at the start of the line is the spawned executable's
+PID, and everything right of that point is extraneous. So you blow it off
+with the ${jobline%% *} construct (explained in the section on   <a href="#StringManipulation">
+string manipulation</a>). What's left is the PID of the spawned binary executable.
+I like it. </p>
+           
+<h2> Environment Variables</h2>
+    It's easy to read an environment variable. Simply precede the variable's
+  name with a dollar sign. For instance, the following script outputs the
+current directory, and then outputs the executable path: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>echo $PWD<br>echo $PATH</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+              
+<p>You use the dollar sign to *read* an environment variable, but not to 
+write one. The dollar sign can be though of as a "what is the value of" operation. 
+   </p>
+           
+<p>To write an environment variable, simply use the name of the variable
+ on the left side of an equal sign (no spaces please). For instance, the
+following script creates an environment variable called SHELLSCRIPTS and
+sets it to the string "are cool" <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>echo \&gt;$@\&lt;<br>echo $SHELLSCRIPTS<br>SHELLSCRIPTS="are cool"<br>echo $SHELLSCRIPTS</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>Once again, use the dollar sign only when you want to *use* the value
+ of the variable -- you do not use the dollar sign when you want to *set*
+the value of the variable. </p>
+           
+<p>You'll notice that the new environment variable is in scope only within
+  the shellscript. This can be proven by running the following command at
+the shell prompt: </p>
+           
+<pre>set | grep SHELLSCRIPTS</pre>
+    A shellscript *cannot* change the environment of the caller unless the
+ caller calls the shellscript in one of two special ways. Assuming the preceding
+ script is file hello.sh, either of the following would apply any environment
+ changes to the caller (typically the shell prompt):          
+<pre>. ./hello.sh</pre>
+              
+<pre>source ./hello.sh</pre>
+    Even more interesting, the new value of the variable is not passed even
+ to the script's children. Assuming the following <tt>parent.sh</tt> and
+<tt>   child.sh</tt> scripts: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td><b><font size="+2">parent.sh</font></b></td>
+    </tr>
+     <tr>
+    <td>                            
+      <pre>SHELLSCRIPTS="set by parent"<br>echo "In parent, value is &gt;$SHELLSCRIPTS&lt;"<br>./child.sh</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+              
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td><b><font size="+2">child.sh</font></b></td>
+    </tr>
+     <tr>
+    <td>                            
+      <pre>echo "In child, value is &gt;$SHELLSCRIPTS&lt;"</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+              
+<p>Look what happens when you run it: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ffffcc">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>[slitt@mydesk slitt]$ ./parent.sh<br>In parent, value is &gt;set by parent&lt;<br>In child, value is &gt;&lt;<br>[slitt@mydesk slitt]$</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>The setting didn't survive the call to child.sh. If you want to pass  the
+parent value to the child, use the export command in parent.sh, as shown 
+below: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td><b><font size="+2">parent.sh</font></b></td>
+    </tr>
+     <tr>
+    <td>                            
+      <pre>SHELLSCRIPTS="set by parent"<br>echo "In parent, value is &gt;$SHELLSCRIPTS&lt;"<br><b>export SHELLSCRIPTS<br></b>./child.sh</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>Now the value is passed to the child: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ffffcc">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>[slitt@mydesk slitt]$ ./parent.sh<br>In parent, value is &gt;set by parent&lt;<br>In child, value is &gt;set by parent&lt;<br>[slitt@mydesk slitt]$&nbsp;</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>Can the child change the variable and send it back to the parent? Let's 
+ modify each to find out: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td><b><font size="+2">parent.sh</font></b></td>
+    </tr>
+     <tr>
+    <td>                            
+      <pre>SHELLSCRIPTS="set by parent"<br>echo "In parent, value is &gt;$SHELLSCRIPTS&lt;"<br>export SHELLSCRIPTS<br>./child.sh<br>echo "In parent after child, value is &gt;$SHELLSCRIPTS&lt;"</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+              
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td><b><font size="+2">child.sh</font></b></td>
+    </tr>
+     <tr>
+    <td>                            
+      <pre>echo "In child, value is &gt;$SHELLSCRIPTS&lt;"<br>SHELLSCRIPTS="changed by child"<br>echo "In child after change, value is &gt;$SHELLSCRIPTS&lt;"</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+              
+<table border="1" cols="1" width="100%" bgcolor="#ffffcc">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>[slitt@mydesk slitt]$ ./parent.sh<br>In parent, value is &gt;set by parent&lt;<br>In child, value is &gt;set by parent&lt;<br>In child after change, value is &gt;changed by child&lt;<br><b>In parent after child, value is &gt;set by parent&lt;<br></b>[slitt@mydesk slitt]$&nbsp;&nbsp;&nbsp;</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>Oops! The child can't pass back its changes. In fact, there is *nothing*
+  the *child* can do to pass back the change. Only the parent has the power
+  to request the passback. That is done via the dot command or the source
+command. To use it, in <tt>parent.sh</tt> the call to <tt>child.sh</tt> would
+be changed to one of these two: </p>
+           
+<pre>. ./child.sh</pre>
+              
+<pre>source ./child.sh</pre>
+    The following session shows what happens after changing the parent's
+call   to the child as in the first of the preceding two lines:          
+<table border="1" cols="1" width="100%" bgcolor="#ffffcc">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>[slitt@mydesk slitt]$ ./parent.sh<br>In parent, value is &gt;set by parent&lt;<br>In child, value is &gt;set by parent&lt;<br>In child after change, value is &gt;changed by child&lt;<br><b>In parent after child, value is &gt;changed by child&lt;<br></b>[slitt@mydesk slitt]$</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+              
+<h2> Returning a value</h2>
+    By default, shellscripts return 0. That's is a good thing, because in 
+the  UNIX world 0 means success. That's because there can be many, many different
+  errors, but there's only one success status. So 0 is success, and 1 through
+  maxint show exactly which error occurs.          
+<p>The following script, called <tt>showreturn.sh</tt>, can be used to show 
+the return status of a command: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>$@<br>echo Return value is $?</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>Running it on <tt>hello.sh</tt> confirms that the default return is 0: 
+         
+<table border="1" cols="1" width="100%" bgcolor="#ffffcc">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>[slitt@mydesk slitt]$ ./showreturn.sh ./hello.sh<br>Hello World<br>Return value is 0<br>[slitt@mydesk slitt]$</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>To return a specific return value, use the <tt>exit</tt> command as added 
+to <tt>hello.sh</tt> below: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>echo "Hello World"<br>exit 44</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+              
+<table border="1" cols="1" width="100%" bgcolor="#ffffcc">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>[slitt@mydesk slitt]$ ./showreturn.sh ./hello.sh<br>Hello World<br>Return value is 44<br>[slitt@mydesk slitt]$</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     <br>
+   &nbsp; </p>
+           
+<center>         
+<table border="1" cols="1" width="60%" bgcolor="#ffcc00">
+    <tbody>
+         <tr>
+    <td>NOTE: The $? special parameter accesses only the last process run,
+ not processes run before that. To save the value of the return value, save
+ it to a new environment variable like this:                            
+      <pre>IFCONFIG_RETURN=$?</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </center>
+              
+<h2> Summary</h2>
+    Positional parameters and special parameters are listed below: <br>
+   &nbsp;          
+<table border="1" cellpadding="4">
+    <tbody>
+         <tr>
+    <td>$0</td>
+     <td>The name of the script file (like argv[0] in C)</td>
+    </tr>
+     <tr>
+    <td>$1, $2, ...</td>
+     <td>The positional arguments (like argv[1], argv[2]... in C)</td>
+    </tr>
+     <tr>
+    <td>$@</td>
+     <td>Expands to a string containing all positional arguments (but not 
+$0),  separated by spaces.</td>
+    </tr>
+     <tr>
+    <td>$#</td>
+     <td>The number of arguments (not counting $0). Similar to argc in C.</td>
+    </tr>
+     <tr>
+    <td>$$</td>
+     <td>The process ID of the running script (not of the calling process).</td>
+    </tr>
+     <tr>
+    <td>$?</td>
+     <td>The exit status (return value) of the last foreground process. This
+  is used to test the return value of programs run from the script.</td>
+    </tr>
+     <tr>
+    <td>$(command)</td>
+     <td>Expands to the stdout output by the command in the parens. Note
+that   the same effect can be produced by surrounding the command with backticks,
+  but that syntax is becoming depreciated.</td>
+    </tr>
+                   
+  </tbody>         
+</table>
+              
+<p>You can deduce the PID of a spawned executable by using the present shellscript's 
+PID as an argument to the executable, and grepping for it in a <tt>ps ax</tt>
+   command. </p>
+           
+<p>There is other info that can be accessed from inside the script. For  complete
+info, search the string <b><tt>Special Parameters</tt></b> in the    <tt>
+bash</tt> man page. For another interesting topic, search <b><tt>Brace  
+Expansion</tt></b>. </p>
+           
+<p>The value of an environment variable is read by preceding the variable
+  name with a dollar sign. However, the dollar sign is not used when setting
+  the value of the variable. Instead, the variable name is immediately followed
+  by an equal sign and the desired value. Setting an environment variable
+within a script only effects the value within that script, not in the calling
+parent or any called children. To have it affect child processes, you must
+use the   <tt>export</tt> command before issuing the call to the child. A
+script *cannot* affect environment variable values of its calling parent
+without the cooperation of the parent. That parent cooperation is in the
+form of calling the script with a preceding dot and space, or with the <tt>
+ source</tt>   keyword. </p>
+           
+<p>By default, scripts return a value of 0. To return a different value,
+ use the <tt>exit</tt> command with the desired numerical return value. Within 
+ a script you can access the returned value of the last process run from the
+ script with the $? special parameter. Because that special parameter changes
+ with each new process, be sure to save it if it will be needed later. </p>
+           
+<h1> <a name="Branching"></a>Branching</h1>
+    Branching is fraught with landmines. It's the purpose of this document
+ to help you avoid the landmines. Perhaps the greatest landmine is placing
+ the conditional statement in brackets. In Linux, the left bracket character
+ is a symbolic link to the <tt>test</tt> program, a fact you can confirm
+with  the <tt>ls -l /usr/bin/[</tt> command. After finding that out, I no
+longer  use the brackets.          
+<p>Here is the syntax for shellscript "if" statements: </p>
+           
+<pre>if command; then<br>&nbsp; statement 1<br>&nbsp; statement 2<br>&nbsp; ...<br>fi</pre>
+    Notice the following:          
+<ul>
+    <li> There are no brackets. Brackets are really a substitute for the
+    <tt>   test</tt> executable. The <tt>test</tt> executable evaluates conditions
+ and file properties. Life is simpler if you just use the <tt>test</tt> executable.
+  When reading code with brackets in <tt>if</tt> statements, substitute the
+  word <tt>test</tt> in your mind.</li>
+     <li> The <tt>if</tt> statement operates on an executable command, not
+ on a condition.</li>
+     <li> If the executable returns 0, the statements in the <tt>if</tt>
+statement   are execuated. <b>CAREFUL! Note how different this is from C,
+where a true   condition triggers an if statement.</b></li>
+     <li> The command being tested must end with a semicolon followed by
+the  word <tt>then</tt>. The semicolon serves to separate the statement comprised 
+ of the <tt>if</tt> and associated command from the statement comprised of 
+ the <tt>then</tt>. Note there exists an alternative syntax in which the keyword
+       <tt>then</tt> goes on the next line, in which case the semicolon is
+ no longer necessary in order to separate the two:</li>
+                    
+  <center>               
+  <table border="1" cols="1" width="30%" bgcolor="#ccffff">
+    <tbody>
+           <tr>
+    <td>                                  
+        <pre>if command<br>&nbsp; then<br>&nbsp; statements<br>&nbsp; fi</pre>
+    </td>
+    </tr>
+                         
+    </tbody>               
+  </table>
+       </center>
+     <li> However, the preceding syntax is so incredibly ugly it will be
+discussed   no further.</li>
+     <li> Shellscripts are not indentation sensitive. They can be, however, 
+ space sensitive, especially when using those lame bracket constructs.</li>
+     <li> The statements to be executed when the command returns zero are 
+delineated  on top by the <tt>then</tt> keyword, and on the bottom by the 
+    <tt>fi</tt>   ("if" backwords) keyword. Even when <tt>else</tt> and <tt>
+ elif</tt> clauses  are included, there is still only one <tt>fi</tt> in
+a non-nested complex        <tt>if</tt> statement.</li>
+             
+</ul>
+    So if the <tt>if</tt> statement works only on on commands, and triggers
+ only when those commands return 0, you need an executable to evaluate conditions
+  and return 0 when those conditions evaluate to TRUE or non-zero, and return
+  non-zero otherwise. The <tt>test</tt> executable (contained in <tt>/usr/bin</tt>
+   ) is just such an executable. It's not magic -- just a program to evaluate
+  conditions. And while it's at it, the <tt>test</tt> executable also tests
+  for various file properties. The test executable was programmed specifically
+  to go with <tt>if</tt> statements in shellscripts. Rather than rehashing
+ everything about the <tt>test</tt> executable here, I recommend you read
+the <tt>test</tt>  program's man page.          
+<p>The following is a very simple if construct that tells you whether or 
+not the first argument was the letter <tt>s</tt>. <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>if test "$1" = "s"; then<br>&nbsp; echo "Arg 1 was s.";<br>fi</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>In the preceding, you can see how the test executable evaluated the condition 
+"$1" = ""s" and returns 0 if that statement is true. </p>
+           
+<p>Shellscripts give you full "if, else if, else" capabilities without obnoxious 
+nesting. The following example tests arg1 for either s, t, or something else: 
+   <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>if test "$1" = "s"; then<br>&nbsp; echo "Arg 1 was s."<br>elif test "$1" = "t"; then<br>&nbsp; echo "Arg 1 was t."<br>else<br>&nbsp; echo "Arg 1 was neither s nor t."<br>fi</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>In the preceding, note that there is only one <tt>fi</tt> keyword. That 
+   <tt>fi</tt> keyword ends the entire <tt>if elif else</tt> statement. There's 
+no necessity for nesting in an <tt>if elif else</tt> construct. However, 
+note that the <tt>elif</tt> statement requires a command, semicolon, and then
+keyword just like <tt>if</tt>. It does not require its own <tt>fi</tt>  
+terminator.     </p>
+           
+<p>Although nesting isn't necessary for <tt>if elif else</tt> constructs,
+  in some cases it's desirable. That's not a problem -- it is done with <tt>
+   fi</tt> keywords. The following evaluates arg2 if arg1 is "s", otherwise 
+ not. It nests an <tt>if elif else</tt> inside the first <tt>if</tt> statement:
+          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>if test "$1" = "s"; then<br>&nbsp; echo "Arg 1 was s."<br>&nbsp; if test "$2" = "1"; then<br>&nbsp;&nbsp;&nbsp; echo "arg2 was 1"<br>&nbsp; elif test "$2" = "2"; then<br>&nbsp;&nbsp;&nbsp; echo "arg2 was 2"<br>&nbsp; else<br>&nbsp;&nbsp;&nbsp; echo "arg2 was neither 1 nor 2"<br>&nbsp; fi<br>elif test "$1" = "t"; then<br>&nbsp; echo "Arg 1 was t."<br>else<br>&nbsp; echo "Arg 1 was neither s nor t."<br>fi</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>In the preceding, notice the <tt>fi</tt> keyword at the end of the nested 
+   <tt>if elif else</tt>, just before the unindented <tt>elif</tt> . It's 
+that    <tt>fi</tt> that does the nesting.</p>
+           
+<h2>The Test Command</h2>
+The <tt>test</tt> executable resides in <tt>/usr/bin</tt>.<br>
+<br>
+As mentioned previously, the if command does nothing but evaluate the return
+code of an executable, executing the enclosed code if the return is <tt>0</tt>
+, and not executing it (or skipping to an <tt>else</tt> or <tt>elif</tt>)
+if the executable returns non-zero. This precludes directly evaluating expressions.
+So there's an executable called <tt>test</tt> that evaluates expressions,
+returning <tt>0</tt> if the expression is true and non-zero if it's false.
+Besides making expression evaluation possible, this double negation makes
+the <tt>if</tt> statement intuitive, because if the expression is true the
+enclosed statements are executed.<br>
+<br>
+Boolean and, or, and not are supported by <tt>-a</tt>, <tt>-o</tt> and <tt>
+!</tt> respectively.<br>
+<br>
+Besides evaluating expressions, the <tt>test</tt> executable also evaluates
+many properties of a file. This is all explained in this section.<br>
+       
+<h3>Relational Operators for test command</h3>
+       
+<pre>if test "$1" = "mystring"; then<br>&nbsp; mycommand<br>fi<br></pre>
+  Important note: All relational operators must be surrounded on both sides
+ with whitespace.<br>
+           
+<table cellpadding="2" cellspacing="2" border="1">
+       <tbody>
+         <tr>
+           <td valign="top" bgcolor="#cccccc"><b>Relation<br>
+            </b>         </td>
+           <td valign="top" bgcolor="#cccccc"><b>Arithmetic<br>
+            </b>         </td>
+           <td valign="top" bgcolor="#cccccc"><b>Text</b><br>
+           </td>
+         </tr>
+         <tr>
+            <td valign="top">Equal<br>
+            </td>
+            <td valign="top">-eq<br>
+            </td>
+            <td valign="top">=<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">Not equal<br>
+            </td>
+            <td valign="top">-ne<br>
+            </td>
+            <td valign="top">!=<br>
+            </td>
+          </tr>
+          <tr>
+           <td valign="top">Less than<br>
+           </td>
+           <td valign="top"> -lt<br>
+           </td>
+           <td valign="top"><br>
+           </td>
+         </tr>
+         <tr>
+           <td valign="top">Greater than<br>
+           </td>
+           <td valign="top"> -gt</td>
+           <td valign="top"><br>
+           </td>
+         </tr>
+         <tr>
+           <td valign="top">Less than or equal<br>
+           </td>
+           <td valign="top">-le<br>
+           </td>
+           <td valign="top"><br>
+           </td>
+         </tr>
+         <tr>
+           <td valign="top">Greater than or equal<br>
+           </td>
+           <td valign="top"> -ge</td>
+           <td valign="top"><br>
+           </td>
+         </tr>
+          <tr>
+            <td valign="top">Zero length string<br>
+            </td>
+            <td valign="top"><br>
+            </td>
+            <td valign="top">-z STRING<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">Non-sero length string<br>
+            </td>
+            <td valign="top"><br>
+            </td>
+            <td valign="top">&nbsp;[-n] STRING<br>
+            </td>
+          </tr>
+                        
+  </tbody>         
+</table>
+           
+<h3></h3>
+       
+<h3>Boolean Operators for test command</h3>
+       
+<pre>if test "$1" = "one" -a "$2" = "two"; then<br>  echo "TRUE"<br>fi<br><br></pre>
+  Important Note: All boolean operators must be surrounded on both sides
+with  whitespace. That includes the Not operator.<br>
+      <br>
+       
+<table cellpadding="2" cellspacing="2" border="1">
+        <tbody>
+          <tr>
+            <td valign="top" bgcolor="#cccccc"><b>Boolean<br>
+            </b></td>
+            <td valign="top" bgcolor="#cccccc"><b>Operator<br>
+            </b></td>
+            <td valign="top" bgcolor="#cccccc">Example<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">Not<br>
+            </td>
+            <td valign="top">!<br>
+            </td>
+            <td valign="top">! EXPRESSION<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">And<br>
+            </td>
+            <td valign="top">-a<br>
+            </td>
+            <td valign="top">EXPRESSION1 -a EXPRESSION2<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">Or<br>
+            </td>
+            <td valign="top"> -o<br>
+            </td>
+            <td valign="top">EXPRESSION1 -o EXPRESSION2<br>
+            </td>
+          </tr>
+           
+  </tbody>      
+</table>
+      <br>
+       
+<h3>File Operators for test command</h3>
+       
+<pre>if test -d /home/slitt/umenu; then<br>  echo DIRECTORY<br>fi<br></pre>
+  Entries with leading asterisks are most common.<br>
+  Important Note: All file test operators must be surrounded on both sides
+ with whitespace.<br>
+      <br>
+       
+<table cellpadding="2" cellspacing="2" border="1">
+        <tbody>
+          <tr>
+            <td valign="top" bgcolor="#cccccc"><br>
+            </td>
+            <td valign="top" bgcolor="#cccccc"><b>Operator<br>
+            </b></td>
+            <td valign="top" bgcolor="#cccccc"><b>Explanation</b><br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><br>
+            </td>
+            <td valign="top">FILE1 -ef FILE2<br>
+            </td>
+            <td valign="top">FILE1 and FILE2 have the same device and inode
+ num&shy;bers<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><font size="+2"><b>*</b></font><br>
+            </td>
+            <td valign="top">FILE1 -nt FILE2<br>
+            </td>
+            <td valign="top">FILE1 is newer (modification date) than FILE2<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><font size="+2"><b>*</b></font><br>
+            </td>
+            <td valign="top">FILE1 -ot FILE2<br>
+            </td>
+            <td valign="top">FILE1 is older than FILE2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+           <br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><br>
+            </td>
+            <td valign="top">-b FILE<br>
+            </td>
+            <td valign="top">FILE exists and is block special<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><br>
+            </td>
+            <td valign="top">-c FILE<br>
+            </td>
+            <td valign="top">FILE exists and is character special<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><font size="+2"><b>*</b></font><br>
+            </td>
+            <td valign="top">-d FILE<br>
+            </td>
+            <td valign="top">FILE exists and is a directory<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><font size="+2"><b>*</b></font><br>
+            </td>
+            <td valign="top">-e FILE<br>
+            </td>
+            <td valign="top">FILE exists<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><br>
+            </td>
+            <td valign="top">-f FILE</td>
+            <td valign="top">FILE exists and is a regular file<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><br>
+            </td>
+            <td valign="top">-g FILE<br>
+            </td>
+            <td valign="top">FILE exists and is set-group-ID<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><br>
+            </td>
+            <td valign="top">-G FILE<br>
+            </td>
+            <td valign="top">FILE exists and is owned by the effective group
+ ID</td>
+          </tr>
+          <tr>
+            <td valign="top"><br>
+            </td>
+            <td valign="top">-k FILE<br>
+            </td>
+            <td valign="top">FILE exists and has its sticky bit set<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><font size="+2"><b>*</b></font><br>
+            </td>
+            <td valign="top">-L FILE<br>
+            </td>
+            <td valign="top">FILE exists and is a symbolic link<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><br>
+            </td>
+            <td valign="top">-O&nbsp;FILE<br>
+            </td>
+            <td valign="top">FILE exists and is owned by the effective user
+ ID<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><br>
+            </td>
+            <td valign="top">-p FILE<br>
+            </td>
+            <td valign="top">FILE exists and is a named pipe<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><font size="+2"><b>*</b></font><br>
+            </td>
+            <td valign="top">-r FILE<br>
+            </td>
+            <td valign="top">FILE exists and is readable<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><font size="+2"><b>*</b></font><br>
+            </td>
+            <td valign="top">-s FILE<br>
+            </td>
+            <td valign="top">FILE exists and has a size greater than zero<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><br>
+            </td>
+            <td valign="top">-S FILE<br>
+            </td>
+            <td valign="top">FILE exists and is a socket</td>
+          </tr>
+          <tr>
+            <td valign="top"><br>
+            </td>
+            <td valign="top">-t [FD]</td>
+            <td valign="top">file descriptor FD (stdout by default) is opened
+ on a terminal<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><br>
+            </td>
+            <td valign="top">-u FILE<br>
+            </td>
+            <td valign="top">FILE exists and its set-user-ID bit is set<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><font size="+2"><b>*</b></font><br>
+            </td>
+            <td valign="top">-w FILE<br>
+            </td>
+            <td valign="top">FILE exists and is writable<br>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><font size="+2"><b>*</b></font><br>
+            </td>
+            <td valign="top">-x FILE&nbsp; </td>
+            <td valign="top">FILE exists and is executable<br>
+            </td>
+          </tr>
+           
+  </tbody>      
+</table>
+      <br>
+           
+<h2> Case Statements</h2>
+    Case statements do what the if elif else constructs do, but they do not
+ rely on a command. Instead, they rely on pattern matching. The following
+simple script outputs "YES" if the first argument is anything typically used
+to mean yes, "NO" if the first argument is anything typically used to mean
+no, and "Maybe" otherwise. <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>case "$1" in<br>&nbsp; (y|Y|1|yes|Yes|YES)<br>&nbsp;&nbsp;&nbsp; echo YES<br>&nbsp;&nbsp;&nbsp; ;;<br>&nbsp; (n|N|0|no|No|NO)<br>&nbsp;&nbsp;&nbsp; echo NO<br>&nbsp;&nbsp;&nbsp; ;;<br>&nbsp; (*)<br>&nbsp;&nbsp;&nbsp; echo Maybe<br>&nbsp;&nbsp;&nbsp; ;;<br>esac</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+              
+<p>The variable or expression to be matched appears immediately to the right 
+of the <tt>case</tt> keyword. Each list of matches is in parentheses. Between 
+the closing paren and a line with a double semicolon are all the statements 
+to be executed if there's a match between the expression on the case line 
+and any of the items in the parentheses. The equivalent of "default" in a 
+C switch statement is achieved by making the last choice be an asterisk, 
+which matches anything. The entire case structure is bottom delineated by 
+ keyword esac, which is case spelled backwards. </p>
+           
+<p>Note that <tt>case</tt> statements are often used with just one choice.
+  That's because they directly evaluate a match without using the test command
+  or other commands, and because they can match against a list of possibilities.
+  If you've ever wished <tt>if</tt> statements could be tested against a
+list  of strings, use <tt>case</tt>. </p>
+           
+<p>While maintaining code, you may find that the opening parentheses are 
+omitted. That works, but the bash man page says to use opening and closing
+  parentheses. Also, I think it looks more satisfying than having unmatched
+  parens. </p>
+           
+<h2> Short Circuit Logic</h2>
+    When evaluating <tt>and</tt> and <tt>or</tt> logic, shellscripts quit 
+once  the result is known. This is called short circuit logic, and is handy 
+for  writing readable, compact code. The following code prints a message if
+the  command has any arguments: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>test $# -eq 0 || echo 1&gt;&amp;2 Information: Command takes no arguments</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+              
+<p>The preceding is an example of short circuit logic. If the first part
+ is true, there's no need to "evaluate" the second part, so it's not done.
+  If the first part is false, the truth of the entire statement depends on
+ the truth of the second part, so it's "evaluated", which in this case prints
+ an informational message. Note that the same effect can be had with negative
+  logic:          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>test $# -ne 0 &amp;&amp; echo 1&gt;&amp;2 Information: Command takes no arguments</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>In the preceding, the first clause produces a true, but to make the entire 
+statement true requires truth in both clauses, so the second clause is "evaluated", 
+printing the message. </p>
+           
+<p>Short circuit logic is a great shorthand notation when there's exactly
+  one statement to be done upon satisfaction of the condition. Typically,
+that single statement is a function call (shellscript subroutines are discussed
+  later in this document). However, the ease and conciseness of this form
+breaks down rapidly when more than one statements must be done if the condition
+is satisfied. For instance, suppose that you want to print a message AND
+exit if there are command line arguments. Here's the syntax: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>test $# -eq 0 || { echo 1&gt;&amp;2 "Error: Command takes no arguments";exit;&nbsp; }</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>Notice that braces are used to make both the <tt>echo</tt> command and 
+ the <tt>exit</tt> command into a single command that is the second clause
+  of the <tt>or</tt> statement. Without the braces, the exit command would
+ be done regardless of the condition. Notice that the braces must be separated
+  from the commands by a space. That non-obvious shellscriptism is truly
+ugly,  and very hard to troubleshoot when neglected. For all these reasons,
+short  circuit logic is best employed only when there's a single statement
+to be  executed on satisfaction. Otherwise, it's best to use the standard
+<tt>if   elif else</tt>, or possibly the <tt>case</tt> statements. </p>
+           
+<p>Bracket notation is often used on the condition in short circuit logic.
+  Always remember that the brackets are shorthand for the <tt>test</tt> executable,
+  and therefore must be separated from the text by space. I recommend that
+ on new code you write, you simply use the <tt>test</tt> executable. </p>
+           
+<h1> <a name="UserInput"></a>User Input</h1>
+    What language is complete without user input? The simplest way to get 
+input  from the user is the read statement, as follows: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>echo -n "Please type your name==&gt;"<br>read namevar<br>echo "Your name is $namevar!"</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+              
+<p>This has no input validation. Validation can be had by placing the preceding 
+ in a loop that exits on valid input, and re-enquires on bad input. Also, 
+the preceding snippet can be a security hazzard. The most obvious case is 
+if the user is allowed to type in a command (typically in a CGI shellscript).
+    </p>
+           
+<p>To restrict the user to a set of choices, use the <tt>select</tt> keyword, 
+ which constructs a sort of poor man's menu. The following is an incredibly 
+ simple example which gives the user three choices -- a directory listing 
+of *.sh, a directory listing of *.c, or terminate the select statement by 
+executing a break statement: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>select choice in "ls *.sh" "ls *.c" "break";do<br>&nbsp;&nbsp; test "$choice" = "" || $choice;<br>done<br>echo "Dropped through loop"&nbsp;&nbsp;</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>The test for a blank $choice variable prevents execution of an invalid
+  user choice. Invalid choices assign a NULL to the select variable ($choice
+  in this case). </p>
+           
+<p>The preceding throws up a menu that looks like this: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ffffcc">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>[slitt@mydesk slitt]$ ./jj<br>1) ls *.sh<br>2) ls *.c<br>3) break<br>#?</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>Each number corresponds in to a list element after the <tt>in</tt>  keyword. 
+ Note that the <tt>$choice</tt> variable is filled by the string corresponding 
+ to the choice, not the number the user typed. Note also that if the user 
+types anything not corresponding to one of the choices, the <tt> $choice</tt>
+  variable is NULL. </p>
+           
+<p>Most real world menus with error messages and the like include a case
+ statement inside the <tt>select</tt> construct. This is also vital if the
+  choices are not commands. </p>
+           
+<h1> <a name="Looping"></a>Looping</h1>
+    Looping is the basis of computer power. Computers gain their power through
+  quickly and repeatedly performing small tasks. Shellscripts yield many,
+many methods of looping. Only a small subset are discussed here, but the
+simple methods discussed here should be sufficient for 90% of your shellscript
+needs.          
+<h2> Looping Through Lists</h2>
+    Lists (and here I mean lists of strings, not lists of commands as per 
+the  bash man page), can be constructed through filename wildcards, or explicitly
+  with space delimited characters or words: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>for i in *.sh; do<br>&nbsp; echo "Shellscript $i"<br>done&nbsp;</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+              
+<p>The preceding code lists all files in the current directory ending in 
+.sh, and assigns variable i to each one sequentially. Have you ever wondered
+  how to do a wildcard rename in UNIX? You do it with a script like the preceding.
+  Of course the script would have a <tt>mv</tt> statement instead of an <tt>
+   echo</tt>. </p>
+           
+<p>This gets really handy when you need a multiple file "rename" command.
+  UNIX has no "rename" command, because any "rename" command at best guess
+ what you meant. The following is a one liner to rename files starting with
+ a yymmdd date format in the 90's, and prepending 19 onto the front to make
+ them accurate yyyymmdd: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>$ for i in 9*.html; do mv $i 19$i; done</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>Lists needn't be just filenames. Any space delimited sequence of strings
+  will do. The following makes a list of all the vowels, and echos them:
+<br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>for i in a e i o u; do<br>&nbsp; echo "Vowel $i"<br>done</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>Whole words can be used as a list and looped through, as shown in the 
+presidential lister that follows: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>for i in Reagan Bush Clinton; do<br>&nbsp;&nbsp;&nbsp; echo "President $i"<br>done</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>Any space delimited string can be used as a list. Not only that, the  list
+can be modified by changing the space delimited string. The following   code
+snippet places Carter, Reagan, Bush and Clinton in a list of presidents,
+  and then belatedly adds Ford to the front of the list. Then a for statement
+  loops through the presidents: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>presidents="Carter Reagan Bush Clinton"<br>presidents="Ford $presidents"<br>for i in $presidents; do<br>&nbsp;&nbsp;&nbsp; echo "President $i"<br>done</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>The following is a recursive directory lister that loops through all  the
+file objects in a directory, and calls other invocations of itself for  subdirectories.
+The result is a list of all regular files in a tree: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>directory=$1<br>for filename in $directory/*; do<br>&nbsp;&nbsp; if test -d $filename; then&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ### -d in test command returns 0 on directory file objects<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ./showfiles.sh $filename&nbsp;&nbsp;&nbsp;&nbsp; ###Recurse into another showfiles.sh<br>&nbsp;&nbsp; elif test -f $filename; then&nbsp;&nbsp;&nbsp; ### -f in test command returns 0 on regular files<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; echo $filename<br>&nbsp;&nbsp; fi<br>done</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>Life's not always that simple. Sometimes there's no list to conveniently
+  loop through. In such a case you use a <tt>while</tt> loop. The following
+    <tt>while</tt> loop prints numbers from 1 to 4: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>let repeats=4<br>let iteration=1<br>while test $iteration -le $repeats; do<br>&nbsp;&nbsp; echo "Iteration number $iteration"<br>&nbsp;&nbsp; let iteration+=1<br>done&nbsp;&nbsp;&nbsp;</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>Note that once again, the <tt>while</tt> loop operates on a commmand,
+ not a condition. Therefore you must use the <tt>test</tt> executable to
+convert the condition into a return value. </p>
+           
+<p>Generally speaking, you use the <tt>let</tt> keyword when you want to 
+make the variable a number rather than a string, and/or when you want to do
+arithmetic on the number. </p>
+           
+<p>There's also an <tt>until</tt> keyword that's identical to <tt>while</tt>
+    except that it reverses the sense of the condition. In other words, it
+ repeats UNTIL the command being tested returns 0. The following produces
+output identical to the preceding code snippet, but it uses <tt>until</tt>
+  instead of <tt> while</tt>: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>let repeats=4<br>let iteration=1<br>until test $iteration -gt $repeats; do<br>&nbsp;&nbsp; echo "Iteration number $iteration"<br>&nbsp;&nbsp; let iteration+=1<br>done</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     <br>
+   &nbsp; </p>
+           
+<center>         
+<table border="1" cols="1" width="50%" bgcolor="#ff6666">
+    <tbody>
+         <tr>
+    <td>                            
+      <center><b><font size="+1">WARNING!</font></b> <br>
+           <b><font size="+1">Shellscript loops do not yield good performance 
+ when looping numerous times. This is because each iteration requires a call
+  to the test executable to test the condition. Additionally, many other
+actions  must spawn programs, including echo. Replace tight loops with C,
+Perl or Python, and watch your performance skyrocket, possibly 100 fold or
+more. Use shellscripts as the glue, and do the heavy lifting with languages
+designed to do the work from within a single session.</font></b></center>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </center>
+              
+<h1> <a name="Subroutines"></a>Subroutines</h1>
+    The industry learned in the 1960's and early 1970's that you can't write
+  very complex or readable programs without using subroutines. Shellscripts
+  include facilities for subroutines (functions). There are all sorts of
+syntax  variations, but the syntax used here is one easily readable and likely
+to  succeed in a variety of situations. The following example illustrates
+most  of the principles of subroutines by creating and printing Fibonacci
+numbers.  The Fibonacci numbers are a series whose each number is the sum
+of the previous  two. In other words, 1,1,2,3,5,8,13, etc. Function fibonacci
+creates and prints the next Fibonacci number, assuming its two arguments
+are the previous two Fibonacci numbers: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>function fibonacci()<br>&nbsp; {<br>&nbsp; local newnumber<br>&nbsp; let newnumber=$1+$2<br>&nbsp; echo $newnumber<br>&nbsp; return $newnumber<br>&nbsp; }<br><br>let maximum=100<br>let n1=0<br>let n2=1<br>while test $n2 -le $maximum; do<br>&nbsp; fibonacci $n1 $n2<br>&nbsp; let temp=$?<br>&nbsp; let n1=$n2<br>&nbsp; let n2=$temp<br>done&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+              
+<p>In the preceding example, notice that the function is declared with the 
+word function, the name, and a set of *empty* parentheses. Unlike C and the 
+new Perl syntax, subroutine arguments are accessed as $1, $2... and the number 
+of arguments as $#. The statements of the function are between braces. Because 
+braces in shellscripts are space dependent, I believe the best syntax is to
+have each brace on its own line. Other syntaxes work -- you can experiment. 
+ Notice the keyword <tt>local</tt>. That declares variable <tt>newnumber</tt>
+    as local to <tt>function fibonacci</tt> in scope. Otherwise it would
+be  a global variable, even though it's declared inside the function. Global 
+variables are the kiss of death for modularity. </p>
+           
+<p>Notice that the function uses its <tt>return</tt> statement to return
+ a value. If you do not have a return statement, the return value is the
+return value of the last executable statement executed in the function. That
+being somewhat arbitrary, it's a good idea to explicitly specify a return
+value in any function whose return value is important. </p>
+           
+<p>Unlike C, Perl and the like, the return value cannot immediately be assigned 
+to a variable. In other words, the following is a no-no: </p>
+           
+<pre>temp=fibonacci $n1 $n2</pre>
+    Instead the function must be run without assignment, and then the return
+  value deduced on the next line from the <tt>$?</tt> special parameter.
+You  can see how that's done in the main routine of the code snippet above.
+The  inability to directly assign function returns is unfortunate, because
+if there were a way to make a direct assignment, the call to the subroutine 
+could have been moved to the <tt>while</tt> loop test, and the entire routine 
+would have been much simpler and more readable. If you run across a way to 
+execute, test and assign a subroutine from within the test of a <tt>while</tt>
+  loop, please let me know.          
+<h1> <a name="FileIO"></a>File I/O</h1>
+    The simplest method of file output is the <tt>echo</tt> statement:  
+       
+<pre>echo $mystring &gt; myfile.txt</pre>
+    You should use that syntax for programs with trivial file output. Unfortunately,
+  that syntax requires the opening and closing of the file for each write
+-- mucho inefficient if file output is the bottleneck of the process.   
+     
+<p>You can get better performance out of the <tt>echo</tt> statement by  collecting
+large amounts of text in the variable (including newline characters),   and
+then writing the huge text collection to the bottom of the file. Unfortunately,
+  that takes lots of memory, probably coming off the stack. </p>
+           
+<p>Of course, you can simply echo to stdout (echo statement without redirection),
+  and then have the calling process redirect your script's stdout to a file.
+  That's a great alternative if practical. But sometimes you just have to
+byte the bullet and have your script write directly to a file. Here's what
+you do: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>exec 44&gt;test.txt<br>let index=0<br>while test $index -lt 10; do<br>&nbsp; echo "This is line $index" &gt;&amp;44<br>&nbsp; let index+=1<br>done<br>exec 44&gt;-</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>The first exec statement opens a file on file descriptor 44. The echo
+ statement in the loop writes to that continously open file descriptor. The 
+ exec at the end closes the file descriptor. </p>
+           
+<p>The problem is that often you need to use a variable for the file descriptor 
+ number, and doing so totally messes up the preceding syntax (trust me on 
+this, I tried everything). So to use variables instead of hard coded numbers 
+and strings, you use the eval command as follows: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>filename=test.txt<br>let filedescriptor=44<br>let maxindex=10<br><br>eval "exec $filedescriptor&gt;$filename"<br>let index=0<br>while test $index -lt $maxindex; do<br>&nbsp; echo "This is line $index" &gt;&amp;$filedescriptor<br>&nbsp; let index+=1<br>done<br>eval "exec $filedescriptor&gt;-"</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>Even this does not yield good performance, because every call to echo
+ and every call to test must spawn a program, a very slow task. As a result,
+  the same algorithm in C is over 100 times faster. </p>
+           
+<h1> <a name="RegularExpressions"></a>Regular Expressions</h1>
+    Regular expressions are not available in shellscripts (at least in sh/bash
+  type shellscripts). However, shellscripts can call programs like a<tt>wk,
+  sed, ex</tt> and <tt>egrep</tt> to do regular expressions for them. That's
+  probably your best bet.          
+<p>Shellscripts have filename type wildcards * and ?, which expand the same 
+as in filenames. It is possible to use those as a "poor man's regular expression". 
+   </p>
+           
+<h1> <a name="StringManipulation"></a>String Manipulation</h1>
+    Be forewarned -- string manipulation in shellscripts is often awkward.
+ Many people choose to do their string manipulation with tools like <tt>awk</tt>
+   , <tt>sed</tt>, <tt>ex</tt>, <tt>grep</tt>/<tt>egrep</tt> and the like,
+ retrieving the processed string with the $(command) construct. In addition,
+ shellscript string processing uses file-expansion like wildcards (*, ?)
+rather  than the more powerful regular expressions available with <tt>awk,
+sed, ex,  grep,</tt>  the <tt>cut</tt> command etc. But if you're willing
+to put up  with some ugly constructs, shellscripts do have quite a bit of
+string processing  power.          
+<p>The following shows a code snippit to indent relative to arg1. The second 
+ statement creates the longest possible indent. The third line prints a substring 
+of $indents*2 spaces, without printing a newline (the -n suppresses the newline). 
+         
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>indents=$1<br>indentstring="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "<br>echo -n "${indentstring:0:$indents*2}"<br>echo "Hello"&nbsp;</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>The syntax ${stringvar:offset:length} is a "substring" type function  that
+works very well. To prepend a string to a string variable, simply put  both
+inside a single set of doublequotes as follows: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>mystring=xyz<br>newstring="abc$mystring"<br>###Following line prints "abcxyz"###<br>echo "$newstring"</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>However, if you append literal "abc" to the variable, the shell will  interpret
+it as a variable called <tt>$mystringabc</tt>, clearly not what   you want.
+So you place braces around the variable name (but not the dollar   sign),
+to isolate the variable name: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>mystring=xyz<br>newstring="${mystring}abc"<br>###Following line prints "xyzabc"###<br>echo "$newstring"</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>You can get the length of a string variable with the ${#parameter} syntax: 
+   <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>mystring="1234"<br>let stringlength=${#mystring}<br>echo "String is $mystring, whose length is $stringlength"</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>A string variable can be subjected to search and replace with the following 
+ syntax: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>mystring="I say replace me before it's too late to replace me!"<br>mystring=${mystring//replace me/replaced}<br>echo $mystring</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>A couple facts about the preceding syntax. The ${parameter//pattern/replacement}
+  syntax does not, in and of itself, change the parameter string. The reason
+    <tt>$mystring</tt> changed is because I assigned the value of <tt>${mystring//replace 
+ me/replaced}</tt> back to <tt>$mystring</tt>. It could have just as easily 
+ been assigned to something else, leaving <tt>$mystring</tt> untouched. Also, 
+ note that the preceding syntax replaces all instances of the pattern text. 
+ To replace just the first instance, use a single slash instead of the double 
+ slash. </p>
+           
+<p>Sometimes you need to walk through a string finding occurrences of a  word.
+Check out this script, which uses the word "delimit" to delimit parts  of
+the string: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>mystring="ReagandelimitBush SeniordelimitClinton"<br>name="primingvalue"<br>while test ${#name} -gt 0; do<br>&nbsp;&nbsp; xstring=${mystring#*delimit}&nbsp;&nbsp; # Take shortest *delimit off front of $mystring<br>&nbsp;&nbsp; name=${mystring%$xstring}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # Take shortest $xstring off back of $mystring<br>&nbsp;&nbsp; name=${name%delimit}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # Take shortest delimit off back of $name<br>&nbsp;&nbsp; if test ${#name} -gt 0; then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; echo $name<br>&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; echo $mystring<br>&nbsp;&nbsp; fi<br>&nbsp;&nbsp; mystring=$xstring<br>done</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>If this script is called walkthrough.sh, here is the result: <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ffffcc">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>[slitt@mydesk slitt]$ ./walkthrough.sh<br>Reagan<br>Bush Senior<br>Clinton<br>[slitt@mydesk slitt]$</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<p>Here's a statement by statement description: </p>
+           
+<h2> mystring="ReagandelimitBush SeniordelimitClinton"</h2>
+    This initializes the string to be walked through, to include the last 
+three  presidents (as of 9/12/2000). Just for fun we put a space in George 
+Bush Sr.'s name.          
+<h2> name="primingvalue"</h2>
+    Because the loop will test for a zero length <tt>$name</tt> variable, 
+it  must be initialized to a string in order to assure the first pass through
+  the loop.          
+<h2> while test ${#name} -gt 0; do</h2>
+    Continue looping until the <tt>$name</tt> variable is zero length.  
+       
+<h2> &nbsp;&nbsp; xstring=${mystring#*delimit}</h2>
+    This construct returns a string consisting of <tt>$mystring</tt> minus
+ the front of the string through the first occurrance of the string "delimit".
+  It subtracts the first name and the "delimit" behind it.          
+<p>"*delimit" means any string followed by string "delimit". The fact that 
+ there is only a single pound sign (hash mark) means expand the search text 
+ to the shortest such possible string. If there had been two pound signs
+it would have expanded the search text to include everything up to the final 
+ "delimit" string, which is not what we want. The pound sign operator used 
+ in this way returns a substring, to variable <tt>$xstring</tt>, of the contents 
+ of <tt>$mystring</tt> *after* the end of the first "delimit" string. In other
+ words, on the first loop through, it removes "Reagandelimit" and returns 
+the rest. Because we will later be assigning <tt>$xstring</tt> to <tt>$mystring</tt>
+   , we will iteratively walk through the string. </p>
+           
+<p>Notice that this basically returns *everything but* what we really want, 
+ which is the name at the front of the string. The next few statements take 
+ care of that. </p>
+           
+<h2> &nbsp;&nbsp; name=${mystring%$xstring}</h2>
+    This returns <tt>$mystring</tt> up to the beginning of the first occurrance
+  of <tt>$xstring</tt>. In other words, it returns the name we want with
+string  "delimit" appended on. This is because the percent sign returns the
+parameter  (<tt>$mystring</tt>) up to the final occurrance of the pattern
+(<tt>$xstring</tt>   ).          
+<p>So after the execution of this statement, <tt>$name</tt> contains the 
+name we want with a trailing "delimit" string, which must be gotten rid of.
+Note, however, that if no more "delimit" strings exist, this construct  returns
+an empty string (or NULL, or whatever) to the <tt>$name</tt> variable.  That
+is how the loop is exited. </p>
+           
+<h2> &nbsp;&nbsp; name=${name%delimit}</h2>
+    Same syntax, this simply deletes the trailing "delimit" string from the
+ name to yield exactly what we want. Once again, the last time through the
+ loop there is no trailing "delimit", so <tt>$name</tt> is zero length. 
+        
+<h2> &nbsp;&nbsp; if test ${#name} -gt 0; then<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; echo $name<br>
+    &nbsp;&nbsp; else<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; echo $mystring<br>
+    &nbsp;&nbsp; fi</h2>
+    The entire preceding construct is due to the fact that there's no trailing
+  "delimit" string, so the last time through the desired name is in<tt> $mystring</tt>
+   , not in <tt>$name</tt> (which is empty and will subsquently cause exit
+ from  the loop).          
+<h2> &nbsp;&nbsp; mystring=$xstring</h2>
+    This is the loop's method of iteration. It assigns the new, shortened 
+string  to <tt>$mystring</tt>, thus enabling the next iteration to operate 
+on a different name.          
+<h2> done</h2>
+    This indicates the end of the loop.          
+<p>The preceding example is pretty ugly, and one excellent example why Perl 
+and Python (and C and Java) are often chosen over shellscripts. Nevertheless,
+  it goes to show that if you're willing to get down and dirty, shellscripts
+  often have the power you need. </p>
+           
+<p>The next sample is the walkthrough.sh shellscript rewritten. It directly
+  grabs the first name on the list using %% to delete all before the first
+ delimit, thus eliminating the extra step to remove delimit from the end
+of  the name. It also detects the last record directly by comparing the length
+ of $mystring to its length on the previous iteration, thereby removing the
+ need for the   <tt>if</tt> statement. <br>
+   &nbsp;          
+<table border="1" cols="1" width="100%" bgcolor="#ccffff">
+    <tbody>
+         <tr>
+    <td>                            
+      <pre>mystring="ReagandelimitBush SeniordelimitClinton"<br>name="primingvalue"<br>let lastlength=99999&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # Longer than any anticipated $mystring<br>while test ${#mystring} -lt $lastlength; do<br>&nbsp;&nbsp; let lastlength=${#mystring}&nbsp;&nbsp;&nbsp; # Prepare break logic<br>&nbsp;&nbsp; name=${mystring%%delimit*}&nbsp;&nbsp;&nbsp;&nbsp; # Get everything before first delimit<br>&nbsp;&nbsp; echo $name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # Output this name<br>&nbsp;&nbsp; mystring=${mystring#*delimit}&nbsp; # Take shortest *delimit off front of $mystring<br>done</pre>
+    </td>
+    </tr>
+                   
+  </tbody>         
+</table>
+     </p>
+           
+<h1> <a name="QuasiObjectProgramming"></a>Quasi Object Programming</h1>
+    There's no object orientation in shellscripts. But you can do a remarkable
+  job of OOP-like encapsulation, and maybe even inheritance, by making a
+new  script for each "class". Run the script, with args telling it what behavior 
+ to exhibit. Each script can give the capability of storing information in 
+ files. The filename can be returned to the caller so that multiple "objects"
+  can be made from each "class" script. To subclass a script, write another
+  script that gives it additional capabilities. Not perfect, but... <br>
+             
+<hr>          
+<p>&nbsp;[ <a href="file:///d/websites/tjunct/troubleshooters.htm">Troubleshooters.com</a>
+   |   <a href="file:///d/websites/tjunct/codecorn/index.htm">Code Corner</a>
+   | <a href="mailto:slitt@troubleshooters.com"> Email Steve Litt</a> ] </p>
+           
+<p><a href="file:///d/websites/tjunct/cpyright.htm#top"><img src="biglcpyr.gif" border="0" height="30" width="30">
+     </a><a href="file:///d/websites/tjunct/cpyright.htm#top">Copyright (C)2000-2002
+ by Steve Litt</a>  -- <a href="file:///d/websites/tjunct/cpyright.htm#top">
+  Legal</a> <br>
+   &nbsp; <br>
+   &nbsp; </p>
+           
+</body>
+</html>
+

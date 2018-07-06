@@ -1,0 +1,87 @@
+ID=E0456
+URL=http://www.hh.se/stud/d98rolb/ansi/signal().html
+SIZE=3603
+DATE=12/07/02
+TIME=19:21:04
+DATASET=C
+HTML=<html>
+<head>
+  <title>signal()</title>
+  <meta name="Generator" content="GuideML V1.6">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+<body>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="setvbuf().html"><img src="prev.gif" alt="PREV" border=0></a><a href="sin().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+<hr>
+<pre>
+signal-Establish event traps
+
+Synopsis
+
+        #include &#060;signal.h&#062;
+
+        oldfun = signal(sig,newfun);
+
+        void (*oldfun)(int);  /* old trap function */
+        int sig;              /* signal number */
+        void (*newfun)(int);  /* new trap function */
+
+Description
+
+        This function establishes traps for various events that can occur
+        outside of your program.
+
+        The newfun argument specifies the action to be taken when the
+        signal occurs, as follows:
+
+            SIG_IGN
+                ignore the signal.
+
+            SIG_DFL
+                take the system default action, as indicated above for
+                each signal.
+
+        If the newfun argument is not either of the above, then it must be
+        a valid function pointer. When the signal is detected, the action
+        is reset to either SIG_DFL or SIG_IGN, depending on the particular
+        signal.  Then, the trap function is called with an integer
+        argument specifying which signal was detected (for example,
+        SIGINT).  The trap function can take whatever action is necessary,
+        including calling the signal function again to re-establish itself
+        as the trap function.  If the function returns, execution
+        continues at the point in your program where the signal was
+        detected.
+
+        The sig argument specifies which signal is being trapped, using
+        the following symbols defined in the file signal.h:
+
+            SIGFPE
+                occurs whenever a floating-point error is detected and the
+                standard version of the CXFERR function is installed.  If
+                you install your own version, you must duplicate our code
+                (supplied as a file named CXFERR.C) to provide this
+                signal.
+
+            SIGINT
+                occurs whenever the user operates the Control-C or
+                Control-D key combination.  The default action for
+                AmigaDOS is to abort your program.  If you specify a
+                function to be called, the signal is reset to SIG_IGN when
+                the interrupt occurs.  Your function should call the
+                signal function again if you want to reinstall the trap.
+
+
+Returns
+
+        If the trap can be established, the signal function returns a
+        pointer to the previous handler function.  Otherwise, it returns
+        the value SIG_ERR and places error information in the external
+        integer <a href="errno.html"> errno </a>. See Also
+
+        <a href="raise().html"> raise </a>
+</pre>
+<hr>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="setvbuf().html"><img src="prev.gif" alt="PREV" border=0></a><a href="sin().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+</body>
+</html>
+

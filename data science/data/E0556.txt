@@ -1,0 +1,191 @@
+ID=E0556
+URL=http://www.intap.net/~drw/cpp/cpp07_05.htm
+SIZE=5503
+DATE=12/07/02
+TIME=19:22:10
+DATASET=C
+HTML=
+<html>
+<head> 
+<title>
+online C++ tutorial: Inline Functions
+</title>
+</head>
+
+<body bgcolor="#ffffff"
+       link = "#ff0000"
+      alink = "#00ff00"
+      vlink = "#660000" >
+
+
+<table width="100%" border=0>
+<tr>
+<td align=left>
+<a href="cpp07_01.htm"><img border=0 src="pictures/buttons/prevs.gif" width=51 height=34 alt="&lt;&lt;=="></a>
+<a href="cpp07_04.htm"><img border=0 src="pictures/buttons/prevp.gif" width=37 height=34 alt="&lt;="></a>
+</td>
+<td align=center>
+<a href="index.htm">
+<img border=0 width=122 height=34 src="pictures/buttons/toc.gif"
+    alt="[table of contents]"></a>
+<a href="/cgi-bin/drw/cpp/search.cgi">
+<img border=0 width=46 height=34 src="pictures/buttons/search.gif"
+    alt="[search]"></a>
+<a href="glossary.htm">
+<img border=0 width=61 height=34 src="pictures/buttons/glossary.gif"
+    alt="[glossary]"></a>
+<a href="feedback.htm">
+<img border=0 width=65 height=34 src="pictures/buttons/feedback.gif"
+    alt="[feedback]"></a>
+</td>
+<td align=right>
+
+<a href="cpp08_01.htm"><img border=0 src="pictures/buttons/nextp.gif" width=37 height=34 alt="=&gt;"></a>
+<a href="cpp08_01.htm"><img border=0 src="pictures/buttons/nexts.gif" width=51 height=34 alt="==&gt;&gt;"></a>
+</td>
+</tr>
+</table>
+<hr>
+<table width="100%"><tr><td align=left><img src="pictures/buttons/cppsm.gif" width=143 height=37 alt="[online C++ tutorial]"></td><td align=right><b>Section 7: Class Declarations </b></td></tr></table>
+<center><h2>Section 7.5: Inline Functions</h2></center>
+<p>
+
+We've already seen how to define member functions for a class, as follows:
+
+
+<pre>
+void Player::getTreasure() {
+  health++;  // increments the value of the player's health by one
+}
+</pre>
+
+There's another way in C++ to define your member functions.  You can
+define them "inline", inside the class declaration.  Here's how you
+would define <code>getTreasure</code> inline:
+
+<pre>
+class Player {
+private:
+  int health;
+  int strength;
+  int agility;
+
+public:
+  void move();
+  void attackMonster();
+  void getTreasure() { health++; } // this is the function definition
+};
+
+</pre>
+
+The braces following <code>getTreasure()</code> contain the entire
+code for the function.  We don't have to define the function later in
+our code using the <code>Player::getTreasure()</code> syntax -- in
+fact, the compiler won't allow it, because it's already been defined
+here inside the class declaration.
+
+
+</p>
+
+
+<h3> Why inline? </h3>
+
+<p>
+
+As you probably noticed, it's definitely fewer keystrokes to inline a
+function.  However, another good reason to inline is that you can
+sometimes speed up your program by inlining the right function.
+Instead of calling the function every time it is invoked, the compiler
+will replace the function call with a copy of the function body.  If
+it's a small function which gets called a lot, this can sometimes
+speed things up.
+
+</p>
+
+<p>
+Depending on the function, it can also be easier to read inline.  If
+it's a function like the following:
+
+<pre>
+class Math {                                // class declaration
+public:
+  int addTwoIntegers(int a, int b);         // function declaration
+};
+
+int Math::addTwoIntegers(int a, int b) {    // function definition
+  return a + b;
+}
+
+</pre>
+
+it's probably easier to read if it's inlined:
+
+<pre>
+class Math {                                // class declaration
+public:
+  int addTwoIntegers(int a, int b) {return a + b; } // inlined function
+};                                         // (combined declaration and definition)
+
+</pre>
+
+
+</p>
+
+
+<h3> Why not inline everything? </h3>
+
+<p>
+
+Since the compiler will copy the entire function body every time the
+function is called, if it is a large function (more than three or four
+lines), inlining can increase the size of your executable program
+significantly.  You may want to try to see what kind of speed gains
+you can achieve by inlining, and also compare the increase in the size
+of your executable.
+
+</p>
+
+
+<p>
+
+And, just as it is sometimes easier to read functions if they are
+inlined, it is sometimes harder to read inlined functions.  If a
+function is more than one or two lines, inlining it will more than
+likely distract a reader who is trying to understand how the class
+works.  In these cases, it's probably better not to inline.
+</p>
+
+
+
+
+<hr>
+<table width="100%" border=0>
+<tr>
+<td align=left>
+<a href="cpp07_01.htm"><img border=0 src="pictures/buttons/prevs.gif" width=51 height=34 alt="&lt;&lt;=="></a>
+<a href="cpp07_04.htm"><img border=0 src="pictures/buttons/prevp.gif" width=37 height=34 alt="&lt;="></a>
+</td>
+<td align=center>
+<a href="index.htm">
+<img border=0 width=122 height=34 src="pictures/buttons/toc.gif"
+    alt="[table of contents]"></a>
+<a href="/cgi-bin/drw/cpp/search.cgi">
+<img border=0 width=46 height=34 src="pictures/buttons/search.gif"
+    alt="[search]"></a>
+<a href="glossary.htm">
+<img border=0 width=61 height=34 src="pictures/buttons/glossary.gif"
+    alt="[glossary]"></a>
+<a href="feedback.htm">
+<img border=0 width=65 height=34 src="pictures/buttons/feedback.gif"
+    alt="[feedback]"></a>
+</td>
+<td align=right>
+
+<a href="cpp08_01.htm"><img border=0 src="pictures/buttons/nextp.gif" width=37 height=34 alt="=&gt;"></a>
+<a href="cpp08_01.htm"><img border=0 src="pictures/buttons/nexts.gif" width=51 height=34 alt="==&gt;&gt;"></a>
+</td>
+</tr>
+</table>
+</body>
+</html>
+

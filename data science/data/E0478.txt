@@ -1,0 +1,385 @@
+ID=E0478
+URL=http://www.bcbdev.com/articles/boostregex.htm
+SIZE=17167
+DATE=12/07/02
+TIME=19:21:16
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: Articles</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2>
+<IMG SRC="../images/articlebuilding.gif" BORDER=0 HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 HSPACE="0" >
+</TD>
+</TR>
+<TR>
+<TD WIDTH="7" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">      <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">         <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">      <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">          <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">       <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+
+<H2>
+Building the Boost regex library with C++Builder 6
+</H2>
+
+<H3>Introduction</H3>
+<P>
+Boost is a popular set of open source libraries that many C++ developers have added to their toolset.
+One of the most useful libraries in Boost is the regular expression library by Dr. John Maddock.
+The current version of boost (1.27 at the time of this writing), includes makefiles for building the regex
+library with BCB5 and the free BC55 command line compiler. However, Boost does not yet include a makefile
+for building the regex library with BCB6.
+</P>
+<P>
+The lack of a makefile isn't a huge issue. However, if you try to build the Boost regex library, you may run into
+additional problems. Some of those problems have to do with the fact that Borland has switched to STLPort in
+C++Builder6. The switch to STLPort is a welcome change. However, the maintainers of Boost have not yet taken
+this switch into account. As a result, some of the Boost libraries, including the regex library, fail to compile
+as is with BCB6.
+</P>
+<P>
+Thankfully, Boost is an open source library. While the regex library in Boost 1.27 does not compile with BCB6
+as is, the changes necessary to make it compile are relatively minor. This article describes what files you
+need to change in order to build Boost regex with BCB6. You can download the patched boost files from the
+link at the bottom of the article.
+</P>
+
+<H3>Summary of problems</H3>
+<PRE>
+<B>Problem 1: </B>
+---------------------
+Boost does not include a BCB6 makefile for building the regex library.
+
+<B>Solution:  </B>
+---------------------
+Use the provided BCB5 makefile as a starting point.
+
+
+<B>Problem 2: </B>
+---------------------
+The file boost\regex\config.hpp generates compiler errors when building
+the regex library. The errors are :
+
+Borland C++ 5.6 for Win32 Copyright (c) 1993, 2002 Borland
+../src/c_regex_traits.cpp:
+Error E2272 ../../../boost/regex/config.hpp 481: Identifier expected
+Error E2272 ../../../boost/regex/config.hpp 483: Identifier expected
+Error E2272 ../../../boost/regex/config.hpp 484: Identifier expected
+Error E2272 ../../../boost/regex/config.hpp 497: Identifier expected
+Error E2272 ../../../boost/regex/config.hpp 521: Identifier expected
+Error E2272 ../../../boost/regex/config.hpp 522: Identifier expected
+Error E2272 ../../../boost/regex/config.hpp 523: Identifier expected
+Error E2272 ../../../boost/regex/config.hpp 524: Identifier expected
+Error E2272 ../../../boost/regex/config.hpp 525: Identifier expected
+*** 9 errors in Compile ***
+
+<B>Solution: </B>
+---------------------
+The errors were caused because BOOST_NO_STDC_NAMESPACE was defined by
+boost\config\stdlib\stlport.hpp. The solution was to modify stlport.hpp to
+detect the presence of BCB6. If BCB6 is detected, BOOST_NO_STDC_NAMESPACE is not
+defined.
+</PRE>
+<pre>
+<font color="navy">/***** Original code- boost\config\stdlib\stlport.hpp line 78 *****/</font>
+<font color="navy">//</font>
+<font color="navy">// STLport does a good job of importing names into namespace std::,</font>
+<font color="navy">// but doesn't always get them all, define BOOST_NO_STDC_NAMESPACE, since our</font>
+<font color="navy">// workaround does not conflict with STLports:</font>
+<font color="navy">//</font>
+<font color="green">#if defined(__STL_IMPORT_VENDOR_CSTD) || defined(__STL_USE_OWN_NAMESPACE) || \
+    defined(_STLP_IMPORT_VENDOR_CSTD) || defined(_STLP_USE_OWN_NAMESPACE)</font>
+<font color="green">#  define BOOST_NO_STDC_NAMESPACE</font>
+<font color="green">#endif</font>
+
+
+<font color="navy">/***** New code  *****/</font>
+<font color="navy">//</font>
+<font color="navy">// STLport does a good job of importing names into namespace std::,</font>
+<font color="navy">// but doesn't always get them all, define BOOST_NO_STDC_NAMESPACE, since our</font>
+<font color="navy">// workaround does not conflict with STLports:</font>
+<font color="navy">//</font>
+<font color="navy">// HJH note:</font>
+<font color="navy">// Borland switched to STLport in BCB6. Defining BOOST_NO_STDC_NAMESPACE with</font>
+<font color="navy">// BCB6 does cause problems. If we detect BCB6, then don't define</font>
+<font color="navy">// BOOST_NO_STDC_NAMESPACE</font>
+<font color="green">#if !defined(__BORLANDC__) || (__BORLANDC__ &lt; 0x560)</font>
+<font color="green">#if defined(__STL_IMPORT_VENDOR_CSTD) || defined(__STL_USE_OWN_NAMESPACE) ||  \
+    defined(_STLP_IMPORT_VENDOR_CSTD) || defined(_STLP_USE_OWN_NAMESPACE)</font>
+<font color="green">#  define BOOST_NO_STDC_NAMESPACE</font>
+<font color="green">#endif</font>
+<font color="green">#endif</font>
+</pre>
+<PRE>
+
+<B>Problem 3: </B>
+---------------------
+regex\config.hpp does not define BOOST_REGEX_USE_VCL for console mode apps that
+use the VCL.
+
+<B>Solution: </B>
+---------------------
+<B><FONT color="blue">Update!!!</FONT> </B>
+Originally, I had posted a change to config.hpp. That change would allow
+BOOST_REGEX_USE_VCL to be defined for console mode projects. The change that I
+posted works fine with BCB6, however, it causes major problems with the free
+BC55 command line compiler. The author of boost::regex, Dr Maddock, notified me
+of this fact.
+
+In order to remain compatible with BC55, regex\config.hpp should remain as it
+comes out of the box from boost. The original version of regex\config.hpp is
+still not compatible with BCB console mode projects that use the VCL, but there
+are easy workarounds for that. Here is the relevant code from regex\config.hpp.
+</PRE>
+<pre>
+<font color="navy">/***** Original code- boost\regex\config.hpp line 214 *****/</font>
+   <font color="navy">//</font>
+   <font color="navy">// VCL support:</font>
+   <font color="navy">// if we're building a console app then there can't be any VCL (can there?)</font>
+   <font color="navy">//</font>
+<font color="green">#  if !defined(__CONSOLE__) && !defined(_NO_VCL)</font>
+<font color="green">#     define BOOST_REGEX_USE_VCL</font>
+<font color="green">#  endif</font>
+</pre>
+<PRE>
+This code attempts to define the macro BOOST_REGEX_USE_VCL for VCL projects.
+However, it won't define the value if you are compiling a VCL console mode
+project. This isn't a huge problem. If you are compiling a VCL console mode
+program and you want to use Boost::regex, just define the value yourself. You
+can define it in your makefile, or if you use the IDE, by adding
+BOOST_REGEX_USE_VCL to the list of conditional defines in your project options.
+
+This define is used to automatically link with the correct regex library. The
+automatic detection occurs in boost\regex\detail\regex_library_include.hpp. If
+you are using Boost::regex in a console mode VCL project, you will need to
+manually define BOOST_REGEX_USE_VCL if you want the automatic selection to
+work properly. If you don't, regex_library_include.hpp will attempt to link with
+the non VCL version of the regex library.
+
+
+<B>Problem 4: </B>
+---------------------
+regex\detail\regex_library_include.hpp is not ready for use with BCB6. It
+detects the compiler version and links with files name bcb4re*.lib or
+bcb5re*.lib. In BCB6, it should link with files named bcb6re*.lib.
+
+<B>Solution: </B>
+---------------------
+Modified regex_library_include.hpp to detect the BCB6 version of the compiler
+and link with libraries that have BCB6 in the name.
+</PRE>
+<pre>
+<font color="navy">/***** Original code- boost\regex\config.hpp lines 114-174 *****/</font>
+<font color="green">#if defined(__BORLANDC__) && !defined(BOOST_REGEX_BUILD_DLL)</font>
+
+   <font color="green">#if __BORLANDC__ &lt; 0x550</font>
+   <font color="navy">/*** snip ***/</font>
+   <font color="green">#else </font><font color="navy">// C++ Builder 5:</font>
+
+   <font color="green">#ifdef BOOST_REGEX_USE_VCL</font>
+
+      <font color="green">#ifdef _RTLDLL</font>
+         <font color="green">#pragma comment(lib, "bcb5re300lv.lib")</font>
+      <font color="green">#else</font>
+         <font color="green">#pragma comment(lib, "bcb5re300v.lib")</font>
+      <font color="green">#endif</font>
+
+   <font color="green">#else </font><font color="navy">// VCL</font>
+   <font color="navy">/*** snip ***/</font>
+   <font color="green">#endif </font><font color="navy">// VCL</font>
+
+   <font color="green">#endif</font>
+
+<font color="green">#endif </font><font color="navy">//__BORLANDC__</font>
+
+<font color="navy">/***** New code  *****/</font>
+<font color="green">#if defined(__BORLANDC__) && !defined(BOOST_REGEX_BUILD_DLL)</font>
+
+   <font color="green">#if __BORLANDC__ &lt; 0x550  </font><font color="navy">// before BCB5 or free BC55 compiler</font>
+
+   <font color="green">#ifdef BOOST_REGEX_USE_VCL</font>
+
+      <font color="green">#ifdef _RTLDLL</font>
+         <font color="green">#pragma comment(lib, "bcb4re300lv.lib")</font>
+      <font color="green">#else</font>
+         <font color="green">#pragma comment(lib, "bcb4re300v.lib")</font>
+      <font color="green">#endif</font>
+
+   <font color="green">#else </font><font color="navy">// VCL</font>
+
+   <font color="green">#ifdef _RTLDLL</font>
+      <font color="green">#ifdef __MT__</font>
+         <font color="green">#pragma comment(lib, "bcb4re300lm.lib")</font>
+      <font color="green">#else </font><font color="navy">// __MT__</font>
+         <font color="green">#pragma comment(lib, "bcb4re300l.lib")</font>
+      <font color="green">#endif </font><font color="navy">// __MT__</font>
+   <font color="green">#else </font><font color="navy">//_RTLDLL</font>
+      <font color="green">#ifdef __MT__</font>
+         <font color="green">#pragma comment(lib, "bcb4re300m.lib")</font>
+      <font color="green">#else </font><font color="navy">// __MT__</font>
+         <font color="green">#pragma comment(lib, "bcb4re300.lib")</font>
+      <font color="green">#endif </font><font color="navy">// __MT__</font>
+   <font color="green">#endif </font><font color="navy">// _RTLDLL</font>
+
+   <font color="green">#endif </font><font color="navy">// VCL</font>
+
+   <font color="green">#elif __BORLANDC__ &lt; 0x560 </font><font color="navy">// C++Builder 5.x or the free BC55 compiler</font>
+
+   <font color="green">#ifdef BOOST_REGEX_USE_VCL</font>
+
+      <font color="green">#ifdef _RTLDLL</font>
+         <font color="green">#pragma comment(lib, "bcb5re300lv.lib")</font>
+      <font color="green">#else</font>
+         <font color="green">#pragma comment(lib, "bcb5re300v.lib")</font>
+      <font color="green">#endif</font>
+
+   <font color="green">#else </font><font color="navy">// VCL</font>
+
+   <font color="green">#ifdef _RTLDLL</font>
+      <font color="green">#ifdef __MT__</font>
+         <font color="green">#pragma comment(lib, "bcb5re300lm.lib")</font>
+      <font color="green">#else </font><font color="navy">// __MT__</font>
+         <font color="green">#pragma comment(lib, "bcb5re300l.lib")</font>
+      <font color="green">#endif </font><font color="navy">// __MT__</font>
+   <font color="green">#else </font><font color="navy">//_RTLDLL</font>
+      <font color="green">#ifdef __MT__</font>
+         <font color="green">#pragma comment(lib, "bcb5re300m.lib")</font>
+      <font color="green">#else </font><font color="navy">// __MT__</font>
+         <font color="green">#pragma comment(lib, "bcb5re300.lib")</font>
+      <font color="green">#endif </font><font color="navy">// __MT__</font>
+   <font color="green">#endif </font><font color="navy">// _RTLDLL</font>
+
+   <font color="green">#endif </font><font color="navy">// VCL</font>
+
+   <font color="green">#else </font><font color="navy">// C++ Builder 6:</font>
+
+   <font color="green">#ifdef BOOST_REGEX_USE_VCL</font>
+
+      <font color="green">#ifdef _RTLDLL</font>
+         <font color="green">#pragma comment(lib, "bcb6re300lv.lib")</font>
+      <font color="green">#else</font>
+         <font color="green">#pragma comment(lib, "bcb6re300v.lib")</font>
+      <font color="green">#endif</font>
+
+   <font color="green">#else </font><font color="navy">// VCL</font>
+
+   <font color="green">#ifdef _RTLDLL</font>
+      <font color="green">#ifdef __MT__</font>
+         <font color="green">#pragma comment(lib, "bcb6re300lm.lib")</font>
+      <font color="green">#else </font><font color="navy">// __MT__</font>
+         <font color="green">#pragma comment(lib, "bcb6re300l.lib")</font>
+      <font color="green">#endif </font><font color="navy">// __MT__</font>
+   <font color="green">#else </font><font color="navy">//_RTLDLL</font>
+      <font color="green">#ifdef __MT__</font>
+         <font color="green">#pragma comment(lib, "bcb6re300m.lib")</font>
+      <font color="green">#else </font><font color="navy">// __MT__</font>
+         <font color="green">#pragma comment(lib, "bcb6re300.lib")</font>
+      <font color="green">#endif </font><font color="navy">// __MT__</font>
+   <font color="green">#endif </font><font color="navy">// _RTLDLL</font>
+
+   <font color="green">#endif </font><font color="navy">// VCL</font>
+
+   <font color="green">#endif</font>
+
+<font color="green">#endif </font><font color="navy">//__BORLANDC__</font>
+</pre>
+<PRE>
+
+<B>Problem 5: </B>
+---------------------
+The boost source files don't include vcl.h, which causes a #pragma commment(lib)
+comment in sysmac.h to be missed. This results in unresolved linker errors
+when building the VCL version of the regex DLL. This is an existing problem that
+BCB5 users might want to look at.
+
+<B>Solution: </B>
+---------------------
+One solution would be to add a #include for vcl.h or system.hpp to one of the
+regex header files. Such an include would have to be conditionally compiled
+in when __BORLANDC__ is detected and when the VCL is detected. Another solution
+is to just link with the correct lib files in the make file.
+
+I chose to link with the lib files in BCB6.mak. When building the VCL version
+of the regex DLL, the makefile passes rtl.lib and vcle.lib to the linker.
+
+
+<B>Problem 6: </B>
+---------------------
+The BCB5 makefile invokes tlib using the + option. This option does not replace
+a module if it already exists in the libary. This is an existing problem that
+BCB5 users might want to look at.
+
+<B>Solution: </B>
+---------------------
+Switched from + to -+ instead, which replaces the module in the library if it
+exists.
+
+
+<B>Problem 7: </B>
+---------------------
+The BCB5 makefile created files with BCB5 in the name. It also placed all output
+in a directory called BCB5.
+
+<B>Solution: </B>
+---------------------
+Replaced all occurrences of BCB5 in the makefile with BCB6.
+</PRE>
+
+<BR>
+<HR>
+<H3>Notes</H3>
+<P>
+<B>Note 1:</B> Ed James-Beckham from Borland has submitted a BCB6 compatible
+version of <TT>boost\config\compilers\borland.hpp</TT>. His changes are not in
+the Boost 1.27 download, but you can obtain his changes from the CVS repository
+for boost. The newest version of <TT>borland.hpp</TT> is available
+<A HREF="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/boost/boost/boost/config/compiler/borland.hpp">here</A>.
+<BR>
+<H3>
+<A NAME="downloads">Downloads</A>
+</H3>
+
+<BR>
+<TABLE  BORDER=1 CELLPADDING=10 CELLSPACING=0 WIDTH="100%">
+<TR> <TD colspan = 2><B>Downloads for this article</B> </TD> </TR>
+<TR> <TD><TT><A HREF="http://www.bcbdev.com/ftp/source/boostregex.zip">boostregex.zip </A></TT></TD><TD>Modified files for building Boost regex with BCB6</TD> </TR>
+</TABLE>
+
+
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2002 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

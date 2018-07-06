@@ -1,0 +1,282 @@
+ID=E0734
+URL=http://www.bcbdev.com/faqs/faq43.htm
+SIZE=12566
+DATE=12/07/02
+TIME=19:23:54
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+
+<H3>
+Q: Add version info to a BCB project
+</H3>
+<BR>
+<H3>Answer</H3>
+<P>
+C++Builder 3.0 and above provide built in support for adding version information for your BCB program.
+This support can be found on the Version tab of the Project-Options dialog box. In C++Builder 1.0, you
+must add an <TT>RC</TT> resource file to your project if you want to include version information. This
+FAQ applies to BCB 1.0 users, and to users of BCB3, BCB4, and BCB5 who want more flexibility than what
+is provided by theversion settings in the project options. Most programmers can just use the settings
+in the project options.
+</P>
+<P>
+Select File | New... from the BCB menu and select the Text object
+in the object repository. If you don't have an object repository (Standard
+edition of BCB), create the file using Notepad or some other editor. Save the
+file as <TT>VERSION.RC</TT>. Insert the following text into the file, and add
+the file to your project by selecting the Project | Add To Project menu option.
+</P>
+<PRE>
+#include &lt;winver.h&gt;
+
+1  VERSIONINFO
+ FILEVERSION    1,0,0,201
+ PRODUCTVERSION 1,0,0,0
+ FILEFLAGSMASK  0x3fL
+ FILEFLAGS      0x0L
+ FILEOS         VOS_WINDOWS32
+ FILETYPE       VFT_APP
+ FILESUBTYPE    0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName",      "Bob's Software Inc\0"
+            VALUE "FileDescription",  "Bob's Database Program\0"
+            VALUE "FileVersion",      "1.001\0"
+            VALUE "InternalName",     "buffy\0"
+            VALUE "LegalCopyright",   "Copyright \xA9 1998\0"
+            VALUE "LegalTrademarks",  "\0"
+            VALUE "OriginalFilename", "bobdb.EXE\0"
+            VALUE "ProductName",      "BobDB\0"
+            VALUE "ProductVersion",   "1.0\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+</PRE>
+<P>
+<B>Note 1:</B> You can use the resource editor from Borland C++ 5, MSVC++ 4.X or 5,
+or any other Windows compiler to create the version resource for you instead of creating the
+RC file manually with a text editor. Create the resource, save it to an <TT>RC</TT> file, and then add it to your BCB project.
+</P>
+<P>
+<B>Note 2:</B> The number 1 before the <TT>VERSIONINFO</TT> keyword is the
+resource ID of of the version resource. Sometimes you might see a resource
+identifier, such as <TT>VS_VERSION_INFO</TT>, in place of the number 1. In this
+case, <TT>VS_VERSION_INFO</TT> would be defined in a header or make file. However,
+Windows requires that this ID be set to 1. To save time and trouble, I prefer to
+literally place the value 1 right in the resource. You can use whichever
+strategy you prefer.
+</P>
+<P>
+<B>Note 3:</B> The lines that follow the <TT>VERSIONINFO</TT> keyword are called
+the fixed-info block of the version resource. The fixed-info block ends with the
+first <TT>BEGIN</TT> statement. The fixed-info block is important, but it will
+not normally be seen by users.  The table below explains each statement in the
+fixed-info block:
+</P>
+<PRE>
+Item               Description                                 Examples
+-------------------------------------------------------------------------
+FILEVERSION        The version number of the file.             1,0,0,200
+PRODUCTVERSION     The version number of the product.          1,0,0,0
+FILEFLAGSMASK      Always set to 0x3fL                         0x3fL
+FILEFLAGS          Allows you to mark the app as debug,        0
+                   or pre-release software. Some valid         VS_FF_DEBUG
+                   values (see winver.h for more choices):
+                      0x0L             :normal flag
+                      VS_FF_DEBUG      :contains debug info
+                      VS_FF_PATCHED    :has been patched
+                      VS_FF_PRERELEASE :still in beta
+FILEOS             Describes the target OS for the app.        VOS_WINDOWS32
+                   Some values (see winver.h):
+                      VOS_DOS
+                      VOS_NT
+                      VOS_WINDOWS16
+                      VOS_WINDOWS32
+FILETYPE           Identifies the file as an app, dll,         VFT_APP
+                   or driver
+                      VFT_APP  :application.
+                      VFT_DLL  :dynamic link library
+                      VFT_DRV  :device driver
+                      VFT_VXD  :virtal device driver
+FILESUBTYPE        Subtype is only used when FILETYPE is       0x0L
+                   a font or a driver. Set to 0 normally
+</PRE>
+<P>
+<B>Note 4:</B> So what's the difference between the <TT>FILEVERSION</TT> and the
+<TT>PRODUCTVERSION</TT>? I'll use BCB to explain. C++Builder shipped with
+version <TT>2.05</TT> of <TT>WinSight</TT>. If you were designing a version
+resource for WinSight, you might set the <TT>FILEVERSION</TT> to <TT>2,0,5,0</TT>
+because WinSight's version is 2.05, but <TT>PRODUCTVERSION</TT> would be <TT>1,0,0,0</TT>
+because <TT>WinSight</TT> is part of the C++Builder package, and BCB is version
+1.00 (if you have BCB3, then adjust the numbers accordingly).
+</P>
+<P> The meaning of the <TT>FILEVERSION</TT> and <TT>PRODUCTVERSION</TT> is up to
+you. In general, let's say that your program is on version 2.1.10. You might set
+the <TT>FILEVERSION</TT> to <TT>2,1,10,0</TT>. Some companies keep track of build
+numbers (Microsoft does this a lot). You could stick this in the last item.
+Imagine your program is on build number 738. You could use <TT>2,1,10,738</TT>
+as your <TT>FILEVERSION</TT>. The choice is up to you. Here are what some of the
+programs on my PC use in their version resources.
+</P>
+<PRE>
+Product                FILEVERSIONINFO       Help About
+--------------------------------------------------------
+Internet Explorer 4    4, 71, 1712,    0     4.71.1712.6
+MS Dev Studio          5,  0,    0, 7022
+MS Spy program         4,  0,    0,    0     5.00.7022
+MS rc.exe              5,  0, 1472,    1
+MS word                8,  0,    0, 3514
+MS outlook             8,  2,    1, 4106     8.02.4212
+</PRE>
+<P>
+Notice that Microsoft gets a little careless. It looks like somebody forget to
+alter the version resource for the Spy program. Outlook's version resource contains
+a 1 that never appears in the help about screen. Plus, look at how those big
+numbers move around. I assume these big numbers are the build numbers, but
+Microsoft puts them in different locations for different products.
+</P>
+<P>
+<B>Note 5:</B> The version resource contains two blocks of data between the first
+<TT>BEGIN</TT> and the very last <TT>END</TT>. One block is called the
+<I>Variable Information Block</I>,
+and the other is called the <I>String Information Block</I>. The var info block is
+marked by the line <TT>BLOCK "VarFileInfo"</TT>. The var info block contains a value
+that is labelled <TT>"Translation"</TT>. The translation value contains two
+numbers that dennote which languages and character sets your product supports.
+The first number (<TT>0x409</TT> in the example) determines which language the
+program supports. <TT>0x409</TT> is the code for US English. The second value
+(<TT>1200</TT> in the example) describes the character set. <TT>1200</TT> is the
+value for the <TT>UNICODE</TT> set. Other common values are <TT>1252</TT> for
+Windows Multilingual (word uses this setting), and 0 for 7 bit ascii. For a
+complete list of language and character set values, look under Language
+Identifiers and Code Page Identifiers in the Win32 help file.
+</P>
+<P>
+Your version resource can contain multiple values in its var info block. Each
+value in the var info block will contain a corresponding string info block. The
+collection of string info blocks begin with the line <TT>BLOCK "StringFileInfo"</TT>
+Each string info block contains a <TT>BLOCK</TT> value that links it to a var
+info block value. In this example, the <TT>BLOCK</TT> value is <TT>"040904B0"</TT>.
+Observe that <TT>0x0409</TT> matches the language setting, and <TT>0x04B0</TT>
+is 1200 in Hex, which matches the character set.
+</P>
+<P>
+The string info block contains a number of string settings. Some of these settings
+are required: <TT>CompanyName</TT>, <TT>FileDescription</TT>, <TT>FileVersion</TT>,
+<TT>InternalName</TT>, <TT>OriginalName</TT>, and <TT>ProductName</TT>. The
+others are optional. You can even add new strings. For example, Microsoft Word
+adds two strings called <TT>LegalTrademarks1</TT> and <TT>LegalTrademarks2</TT>.
+These extra strings will appear when a user views the version info of your program.
+</P>
+<P>
+<B>Note 6:</B> When user views the version info from your program, the dialog box
+will display the version number from the <TT>FileVersion</TT> section of the
+String Info Block. The data from the fixed info block is not displayed.
+</P>
+<P>
+<B>Note: 7</B> The <TT>\xA9</TT> inserts a copyright character into the version resource
+string. See the example of the <TT>LegalCopyright</TT> above.
+</P>
+<P>
+<B>Note:8</B> The sample below shows how to structure a version resource if it
+needs to contain several values in the Variable Information Block.
+</P>
+<PRE>
+#include &lt;winver.h&gt;
+1  VERSIONINFO
+ FILEVERSION    1,0,0,201
+ PRODUCTVERSION 1,0,0,0
+ FILEFLAGSMASK  0x3fL
+ FILEFLAGS      0x0L
+ FILEOS         VOS_WINDOWS32
+ FILETYPE       VFT_APP
+ FILESUBTYPE    0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName",      "Bob's Software Inc\0"
+            VALUE "FileDescription",  "Bob's Database Program\0"
+            VALUE "FileVersion",      "1.001\0"
+            VALUE "InternalName",     "buffy\0"
+            VALUE "LegalCopyright",   "Copyright \xA9 1998\0"
+            VALUE "LegalTrademarks",  "\0"
+            VALUE "OriginalFilename", "bobdb.EXE\0"
+            VALUE "ProductName",      "BobDB\0"
+            VALUE "ProductVersion",   "1.0\0"
+        END
+        BLOCK "041f04e6"
+        BEGIN
+            VALUE "CompanyName",      "Bob's Software Inc\0"
+            VALUE "FileDescription",  "Bob's DB program ported to Greece\0"
+            VALUE "FileVersion",      "1.001\0"
+            VALUE "InternalName",     "buffy\0"
+            VALUE "LegalCopyright",   "Copyright \xA9 1998\0"
+            VALUE "OriginalFilename", "bobdb.EXE\0"
+            VALUE "ProductName",      "Version Application\0"
+            VALUE "ProductVersion",   "1.0\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200, 0x41f, 1254
+    END
+END                                   
+</PRE>
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

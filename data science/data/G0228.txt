@@ -1,0 +1,165 @@
+ID=G0228
+URL=http://arcturus.mit.edu/cosmics/doc-html/node3.html
+SIZE=11325
+DATE=09/07/2002
+TIME=16:17:10
+DATASET=Astronomy
+HTML=<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95 (Thu Jan 19 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> LINGER: Linear General Relativity</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" LINGER: Linear General Relativity">
+<meta name="keywords" value="cosmics">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html46 HREF="node4.html"><IMG ALIGN=BOTTOM ALT="next" SRC="file:/usr/local/lib/latex2html/icons/next_motif.gif"></A>   <A NAME=tex2html44 HREF="cosmics.html"><IMG ALIGN=BOTTOM ALT="up" SRC="file:/usr/local/lib/latex2html/icons/up_motif.gif"></A>   <A NAME=tex2html38 HREF="node2.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="file:/usr/local/lib/latex2html/icons/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html47 HREF="node4.html"> Linger Usage</A>
+<B>Up:</B> <A NAME=tex2html45 HREF="cosmics.html">COSMICS: Cosmological Initial Conditions </A>
+<B> Previous:</B> <A NAME=tex2html39 HREF="node2.html"> Building COSMICS</A>
+<BR> <HR> <P>
+<H1><A NAME=SECTION00020000000000000000> LINGER: Linear General Relativity</A></H1>
+<P>
+<tt>Linger</tt> integrates the coupled, linearized, Einstein, Boltzmann, and fluid
+equations governing the evolution of scalar metric perturbations and photons
+(both polarizations), neutrinos (both massless and, optionally, massive),
+baryons, and cold dark matter in a perturbed flat Robertson-Walker universe.
+In other words, it computes the linear evolution of fluctuations generated
+in the early universe through the radiation-dominated era and recombination,
+down to a small redshift input by the user.  The results are useful both for
+calculations of the CMB anisotropy (with <tt>deltat</tt>) and the linear power
+spectrum of matter fluctuations (with <tt>grafic</tt>).  <tt>Linger</tt> provides
+the link between the primeval fluctuations in the early universe and those
+at late times (e.g., the present).  The <tt>linger</tt> codes are described
+in a preprint by Ma and Bertschinger [<A HREF="node15.html#mab1">3</A>].
+<P>
+Many other groups have written codes to integrate these equations (or a subset
+of them): [<A HREF="node15.html#py70">4</A>]--[<A HREF="node15.html#st94">18</A>]; see [<A HREF="node15.html#hu">19</A>] for a recent summary.
+However, we believe that our treatment is the most accurate to date in its
+treatment of the physics and the numerical integrations.  Our physics model
+includes an accurate treatment of hydrogen recombination and the decoupling
+of photons and baryons based on [<A HREF="node15.html#p68">20</A>] with the addition of helium; helium
+recombination using the Saha equation (this is adequate given the high
+electron densities); a full treatment of Thomson scattering including two
+photon polarizations and the full angular dependences of the scattering
+cross section and distribution functions (see [<A HREF="node15.html#k95">21</A>] for a complete
+presentation of the theory); full computation of the gravitational sources
+from all relevant particle species including all relativistic shear stresses
+of photons and neutrinos; and full integration down to the final redshift
+without use of any free-streaming approximation.  Our numerical methods
+include a multipole expansion of the angular distribution of photons and
+massless neutrinos to sufficiently high degree to accurately represent them
+(up to <b>l=10000</b> for late times and high spatial wavenumbers, when computing
+CMB anisotropy; up to <b>l=100</b> when computing matter transfer functions);
+accurate sampling (with 128 points) of the momentum distribution of massive
+neutrinos (and computation of the angular multipoles up to <b>l=50</b>); and
+sufficiently fine sampling in the spatial wavenumber <b>k</b> to give accurate
+matter transfer functions and CMB anisotropy without any additional smoothing.
+<P>
+The aim of <tt>linger</tt> is to produce results that are accurate to about 0.1%.
+This accuracy is, admittedly, somewhat artificial, since nonlinear effects
+or other physics that is neglected by <tt>linger</tt> may produce larger
+differences.  (Research into this question is currently a focus of activity
+for theoreticians investigating CMB anisotropy.)   However, I believe that
+it is still worthwhile to solve the linear problem with such high precision.
+Of course, all of this effort has a cost in the need for substantial computing
+resources.  We discuss the requirements in section <A HREF="node4.html#lingerusage">2.1</A>.
+The user who wishes to can easily change <tt>linger</tt> to be faster and
+less accurate, by reducing the maximum multipole expansion orders <tt>lmax0</tt>
+and <tt>lmaxnu</tt> set in fortran-77 <tt>parameter</tt> statements in the code
+(though be sure to search for occurrences in several subroutines).
+<P>
+The primary restrictions of the current release of <tt>linger</tt> are: (1) it
+assumes the unperturbed spacetime is flat, thereby excluding open or closed
+models, and (2) only scalar (i.e., density) perturbations are included
+(excluding vector and tensor perturbations, also known as gravitomagnetism
+and gravitational radiation).  The second restriction is not a serious
+limitation for computations of the matter fluctuation spectrum, although it
+can lead to an underestimate of the large angular scale CMB anisotropy in
+some cosmological models.  The first restriction, on the other hand, is more
+serious given the interest among astronomers in testing open universe models
+(despite the fact that such models lack a natural primeval fluctuation
+spectrum).  However, <tt>linger</tt> does allow for a cosmological constant,
+so that <IMG  ALIGN=BOTTOM ALT="" SRC="img4.gif"> in matter may be less than unity.
+<P>
+<tt>Linger</tt> comes in two versions, corresponding to two different gauge
+choices for coordinates in the perturbed spacetime: synchronous gauge
+(<tt>linger_syn</tt>) and longitudinal or conformal Newtonian gauge
+(<tt>linger_con</tt>).  The latter case is equivalent to the so-called
+gauge-invariant formalism.  (For a discussion of these and other gauges,
+see refs. [<A HREF="node15.html#b80">22</A>]--[<A HREF="node15.html#blh95">25</A>]).  Although physically equivalent,
+the output of the two codes is different.  Roughly speaking, the synchronous
+case corresponds to using Lagrangian spatial coordinates that are fixed
+with respect to the cold dark matter, while the conformal Newtonian case
+corresponds to using Eulerian coordinates that (at late times) are (nearly)
+fixed with respect to the microwave background.  See [<A HREF="node15.html#mab1">3</A>] for the
+transformation between the two sets of variables.
+<P>
+The two varieties of <tt>linger</tt> are useful for different types of initial
+conditions.  Isentropic (often inappropriately called adiabatic) initial
+conditions, the type most naturally produced by cosmic inflation, may be
+evolved equally well numerically in either gauge.  Many workers prefer the
+conformal Newtonian gauge because the coordinates are minimally deformed
+so that gauge variables are close to the quantities measured by Newtonian
+observers.  Isocurvature fluctuations, which may be produced by first-order
+phase transitions in the early universe, should be evolved in synchronous
+gauge because they require fine-tuning in conformal Newtonian and other
+gauges [<A HREF="node15.html#b80">22</A>].
+<P>
+Although the data output by the two versions of <tt>linger</tt> differ because
+of the gauges used, these differences do not affect their use because
+physical observables are gauge-invariant.  <tt>Linger</tt> output is used in
+COSMICS for two purposes: computing the CMB angular power spectrum (in
+<tt>deltat</tt>) and computing and using the matter power spectrum (in <tt>
+grafic</tt>).  In the former case, the angular power spectrum <IMG  ALIGN=MIDDLE ALT="" SRC="img5.gif"> is
+gauge-invariant for <b>l&gt;1</b>.  The monopole (<b>l=0</b>) is unobservable, while
+the dipole (<b>l=1</b>) reflects the local motion of our galaxy and is
+gauge-dependent simply because the coordinates of one gauge move relative
+to those of another.  In synchronous gauge there is a very large <IMG  ALIGN=MIDDLE ALT="" SRC="img6.gif">
+(compared with the higher multipole moments) simply because the CMB
+radiation has a large velocity (<IMG  ALIGN=BOTTOM ALT="" SRC="img7.gif"> km s<IMG  ALIGN=BOTTOM ALT="" SRC="img8.gif">) relative to the
+rest frame defined by the matter --- the cold dark matter is, by definition,
+at rest in synchronous coordinates.  In conformal Newtonian gauge, on
+the other hand, the dipole moment is very small (comparable with the
+higher multipoles) while the matter velocity is now nonzero.
+<P>
+The matter power spectrum used in <tt>grafic</tt> is computed from the
+gauge-invariant potential <IMG  ALIGN=MIDDLE ALT="" SRC="img9.gif"> of conformal Newtonian gauge using the
+Poisson equation:
+<P><A NAME=poisson>&#160;</A><IMG  ALIGN=BOTTOM ALT="" SRC="img10.gif"><P>
+where <b>k</b> is the spatial wavenumber and <b>a</b> is the cosmic expansion
+scale factor.  (This equation assumes that space curvature is negligible;
+in section <A HREF="node11.html#grafic2">4.1.2</A> below it is generalized to the case of open
+models.)  On scales small compared with the Hubble distance, <IMG  ALIGN=MIDDLE ALT="" SRC="img11.gif">
+equals the Newtonian gravitational potential and <IMG  ALIGN=MIDDLE ALT="" SRC="img12.gif"> is the net
+matter density fluctuation; on larger scales they are the natural
+generalized gauge-invariant variables defined by Bardeen [<A HREF="node15.html#b80">22</A>].
+<tt>Linger_con</tt> outputs <IMG  ALIGN=MIDDLE ALT="" SRC="img13.gif">; in <tt>linger_syn</tt> we output the
+synchronous gauge metric variables plus the variable giving the exact
+transformation to <IMG  ALIGN=MIDDLE ALT="" SRC="img14.gif">.  So, either <tt>linger</tt> code may be used, with
+no difference whatsoever for <tt>grafic</tt>, which automatically determines
+the correct variables.  (The careful user should try both and compare them
+as a test of speed and numerical precision.)
+<P>
+<BR> <HR>
+<UL> 
+<LI> <A NAME=tex2html48 HREF="node4.html#SECTION00021000000000000000"> Linger Usage</A>
+<UL> 
+<LI> <A NAME=tex2html49 HREF="node5.html#SECTION00021100000000000000"> Linger Input</A>
+<LI> <A NAME=tex2html50 HREF="node6.html#SECTION00021200000000000000"> Linger Output</A>
+</UL>
+</UL>
+<BR> <HR><A NAME=tex2html46 HREF="node4.html"><IMG ALIGN=BOTTOM ALT="next" SRC="file:/usr/local/lib/latex2html/icons/next_motif.gif"></A>   <A NAME=tex2html44 HREF="cosmics.html"><IMG ALIGN=BOTTOM ALT="up" SRC="file:/usr/local/lib/latex2html/icons/up_motif.gif"></A>   <A NAME=tex2html38 HREF="node2.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="file:/usr/local/lib/latex2html/icons/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html47 HREF="node4.html"> Linger Usage</A>
+<B>Up:</B> <A NAME=tex2html45 HREF="cosmics.html">COSMICS: Cosmological Initial Conditions </A>
+<B> Previous:</B> <A NAME=tex2html39 HREF="node2.html"> Building COSMICS</A>
+<BR> <HR> <P>
+<BR> <HR>
+<P><ADDRESS>
+<I>Edmund Bertschinger <BR>
+Mon Jun 12 01:14:50 EDT 1995</I>
+</ADDRESS>
+</BODY>
+

@@ -1,0 +1,868 @@
+ID=E0153
+URL=http://home.att.net/~robertdunn/Papers/Registry.html
+SIZE=33590
+DATE=12/07/02
+TIME=19:18:05
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+ 
+<HTML>
+ 
+<HEAD>
+<TITLE>Yet Another Code Site - Using The Registry </TITLE>
+<META NAME="GENERATOR" CONTENT="StarOffice/5.1 (Win32)"> 
+<META NAME="CREATED" CONTENT="19981222;20385951"> 
+<META NAME="CHANGEDBY" CONTENT="Robert Dunn"> 
+<META NAME="CHANGED" CONTENT="19991127;22454960"> 
+<META NAME="Template"
+ CONTENT="C:\Program Files\Microsoft Office\Templates\Web Pages\Web Page Wizard.wiz">
+
+</HEAD>
+
+<BODY>
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="0"
+ CELLSPACING="0"> 
+<TR>
+  <TD WIDTH="100%" VALIGN="TOP" BGCOLOR="#000080">
+	 <H1 ALIGN="CENTER" STYLE="margin-top: 0in"><FONT
+	 COLOR="#ffffff"> <A NAME="TopOfPage"></A> Yet Another Code
+	 Site</FONT> </H1>
+  </TD>
+</TR>
+</TABLE> 
+<H2 ALIGN="CENTER"><A NAME="UsingTheRegistryPaper"></A>
+Storing Program State In The Windows Registry </H2>
+<P>I will tell you a secret:&nbsp; What users <I>really
+  want</I> is for our programs to read their minds.&nbsp;
+  They want the font to magically change to bold when the
+  thought of bold fonts crosses their minds.&nbsp; They want
+  the program window to leap to the front of the screen when
+  they are ready to use it (and not before).&nbsp; They want
+  -- well, they just want and want and want.... 
+</P> 
+<P>Given that I cannot read minds -- much less teach my
+  programs to accomplish such magic -- then my programs must
+  do the next best thing:&nbsp; They must remember what the
+  user has told them.&nbsp; They must remember everything
+  they &quot;know&quot; about the user's preferred fonts,
+  window positions, recently used files, et cetera, ad
+  nauseam.&nbsp; In other words, we need to store everything
+  we know about the program's current state so that we can
+  retrieve it the next time that the user runs the program. 
+</P> 
+<P>Clearly, saving information about the program's current
+  state is an obvious requirement for any non-trivial
+  program.&nbsp; Hopefully, this paper will explain enough to
+  get you going and provide some useful code in the process. 
+</P> 
+<H4>The Dark And Middle Ages </H4>
+<P>Back in the Dark Ages, we simply created a binary file,
+  wrote out program state information in some proprietary
+  format, and read it back in when the program was next
+  started.&nbsp; The key words here are &quot;binary&quot;
+  and &quot;proprietary&quot; -- the typical user lacked the
+  tools and knowledge to directly change any of the
+  values.&nbsp; He could, of course, simply delete our
+  configuration file or replace it with garbage, but that was
+  his problem -- at least, until he called for help.&nbsp;
+  But that was all we we could do. 
+</P> 
+<P>Then came the Middle Ages and Windows 3.1 and we walked
+  down the &quot;INI file&quot; path.&nbsp; For those too
+  young to remember, &quot;INI files&quot; (or
+  &quot;initialization files&quot;) were text files, usually
+  stored in the Windows directory, where we saved program
+  state information in those days.&nbsp; To be kind, INI
+  files were clumsy for storing arbitrary non-string values
+  and they were too easily screwed up by users.&nbsp;
+  However, both the Windows API and the VCL still support INI
+  files so you can use them if you wish.&nbsp; Or you can
+  join us zombies and follow Bill Gates to The Age Of
+  Enlightenment. 
+</P> 
+<H4>The Age Of Enlightenment </H4>
+<P>After WIndows 3.x came Windows 95 and Microsoft led us
+  down The Registry Path.&nbsp; The Enlightened were now
+  encouraged to store program state information in the
+  Registry, a single, huge repository containing everything
+  from individual user desktop preferences to system
+  performance data to OLE/ActiveX control registration
+  information.&nbsp; Although I could not find the kitchen
+  sink, I am confident that it is in there somewhere. 
+</P> 
+<P>From a high level, the Registry is simply a database for
+  storing arbitrary values.&nbsp; Using Windows API calls or
+  the TRegistry VCL class, you can save integer, boolean, and
+  binary data without first converting the values to strings
+  (as was required with INI files -- of course, you can save
+  strings, too).&nbsp; Even better, the Registry is a
+  hierarchical database allowing you to save your program's
+  state data in logical groups if desired. 
+</P> 
+<P>Microsoft has set up certain rules, standards, and
+  conventions for using the Registry.&nbsp; By following
+  these rules, you can do things like setting an icon for a
+  document file that will be displayed in Explorer and
+  registering the program to be started when the document
+  file is opened.&nbsp; Object Linking and Embedding (OLE)
+  uses the Registry extensively to locate OLE servers and
+  services.&nbsp; The list goes on and on. 
+</P> 
+<P>There are way too many &quot;rules, standards, and
+  conventions&quot; for using these Registry features for me
+  to cover in any useful detail here.&nbsp; Instead, this
+  paper will be limited to outlining the basic Registry
+  structure and describing how you can save your program's
+  state information into it.&nbsp; Then, I will discuss the
+  basic VCL methods used to store and retrieve strings,
+  integers, boolean, and arbitrary binary values.&nbsp;
+  Finally, I will present code to simplify storing and
+  retrieving string lists, font information, and printer
+  selections. 
+</P> 
+<H4>The Structure Of The Registry </H4>
+<P>There are four elements, or levels, to the Registry: 
+</P> <UL>
+<LI> Root Keys. </LI>
+<LI> Subkeys. </LI>
+<LI> Value Names. </LI>
+<LI> Data Values. </LI>
+</UL>
+<P>I think of the Registry as being a lot like a typical
+  file system.&nbsp; Root Keys are rather like drive letters
+  -- they are at the top of the hierarchy and you cannot add
+  one on a whim, at least not as far as I know.&nbsp; There
+  are four predefined Root keys (technically <I>handles</I>
+  to keys): 
+</P> <PRE STYLE="margin-left: 0.5in">HKEY_CLASSES_ROOT
+HKEY_CURRENT_USER
+HKEY_LOCAL_MACHINE
+HKEY_USERS</PRE>
+
+<P> Subkeys are rather like directory paths.&nbsp; With
+  directories, you specify a top level directory, then a
+  subdirectory within that, and so on.&nbsp; Subkeys are
+  similarly constructed.&nbsp; Importantly, you can add a new
+  one just as easily as you can create a new subdirectory
+  when you need one.&nbsp; (Note: On WIndows NT, you must
+  have sufficient security rights to use or modify the
+  Registry.)&nbsp; Subkeys look something like this: 
+</P> <PRE STYLE="margin-left: 0.5in">\Software\Microsoft\Outlook Express\Mail</PRE>
+
+<P> Value Names are much like file names.&nbsp; They are
+  the names of the containers for data. Just as you store
+  data in a file, you store data in a Value Name.&nbsp; And,
+  just as you can have an unlimited number of files within a
+  directory, you can have as many Value Names in a subkey as
+  you need.&nbsp; For example, within the subkey above on my
+  machine is the following Value Name: 
+</P> <PRE STYLE="margin-left: 0.5in">Message HTML Allow 8bit in Header</PRE>
+
+<P> To complete the analogy, Data Values correspond to the
+  data we store in files.&nbsp; That is, you store a Data
+  Value in the Registry within a specified Value Name.&nbsp;
+  Each Data Value has a specific type associated with it when
+  it is stored:&nbsp; The native Registry types include
+  strings, boolean, DWORD, and binary. The VCL adds
+  TDateTime, TCurrency, and other types.&nbsp; In the Value
+  Name above, I have the following Data Value (which I take
+  to be a boolean false) on my PC: 
+</P> <PRE STYLE="margin-left: 0.5in">0x00000000</PRE>
+
+<P> Now, there are some differences.&nbsp; In the file
+  system world, we open files and then read or write
+  data.&nbsp; In the Registry world, we do the equivalent of
+  opening directories (not the files) and, continuing in the
+  file system context, read or write the entire contents of
+  the file in one big gulp.&nbsp; That is, we open a
+  key/subkey and read then read/write Data Values from the
+  Value Names in that open key. 
+</P> 
+<P>Another difference is that we do not specify the type of
+  the data in files in the file system itself; however, the
+  Registry does record which of the native data types you are
+  storing in each Value Name/Data Value. 
+</P> 
+<P>I have rewritten the above few paragraphs ten or twelve
+  times, and I fear that it is still about as clear as
+  mud.&nbsp; Hopefully, all of this will get clearer as we
+  get to the examples in the next section.&nbsp; However,
+  before we go there I should warn you that both the Windows
+  API help and the VCL help use rather different
+  terminology.&nbsp; What I call Value Names, the WinAPI
+  calls &quot;values&quot; and the VCL calls
+  &quot;Names.&quot;&nbsp; What I call Data Values, the
+  WInAPI calls &quot;data&quot; and the VCL calls
+  &quot;values.&quot;&nbsp; Neither of these conventions
+  seems particularly clear to me, so I chose my own
+  convention.&nbsp; Hopefully, the terminology will become
+  less important after you have gone through the examples. 
+</P> 
+<H4>The First Example -- Saving Data </H4>
+<P>They say, &quot;a picture is worth a thousand
+  words.&quot;&nbsp; If that is true, then a code sample
+  should be worth, perhaps, a thousand machine
+  instructions.&nbsp; So let's jump right into an example. 
+</P> 
+<P>Reading and writing values to and from the Registry is a
+  five step process: 
+</P> <OL>
+<LI> Create a TRegistry object. </LI>
+<LI> Create a new Registry key or open an existing one. 
+</LI>
+<LI> Read or write values to or from the Registry. </LI>
+<LI> Close the Registry key. </LI>
+<LI> Destroy the TRegistry object. </LI>
+</OL>
+<P>We need to decide on a Root key and subkey where we will
+  store our data.&nbsp; For the example, we will follow
+  Microsoft's advice (even though they frequently do not) and
+  use the HKEY_CURRENT_USER Root key and a subkey something
+  like this: 
+</P> <PRE STYLE="margin-left: 0.5in">\Software\company name\product name\version number</PRE>
+
+<P> The first subkey level, &quot;Software,&quot; is
+  predefined.&nbsp; For the remaining values, the examples
+  that follow use &quot;My Great Software Company,&quot;
+  &quot;My Killer App,&quot; and version
+  &quot;1.0.&quot;&nbsp; Naturally, you should change these
+  to something unique for your applications. 
+</P> 
+<P>For our first example, we will save an arbitrary string,
+  presumably the user's name, to the Registry in a Value Name
+  called &quot;User Name.&quot;&nbsp; Here's the code in
+  full, with comments embedded in the code. 
+</P> <PRE STYLE="margin-left: 0.5in">// for convenience, we define the subkey string as a macro
+#define REGISTRY_KEY AnsiString(&quot;\\Software\\My Great Software Company\\My Killer App\\1.0&quot;)
+
+// SaveUserName() - Saves a string to the Registry as the Value Name &quot;User Name&quot;
+// Parameters:
+//   username - the string to save
+// Returns:
+//   true on success; false on failure
+// Exceptions:
+//   Should not raise exceptions (we hope)
+//
+bool SaveUserName(AnsiString username)
+
+        // create a VCL TRegistry object
+        TRegistry* reg;
+        try {
+                reg = new TRegistry;
+                }
+        catch (...) {
+                return false;
+                }
+        
+        // set the registry root key to the correct place for 
+        // storing an individual user's information (HKEY_CURRENT_USER)
+        if (reg-&gt;RootKey != HKEY_CURRENT_USER) {
+                reg-&gt;RootKey = HKEY_CURRENT_USER;
+                if (reg-&gt;RootKey != HKEY_CURRENT_USER) {
+                        delete reg;
+                        return false;
+                        }
+                }
+        
+        // set the registry key to the key where we will store
+        // our unique program's data
+        if (!reg-&gt;OpenKey(REGISTRY_KEY /* #define'd above*/, 
+                true /* create the key if it does not exist */)) {
+                delete reg;
+                return false;
+                }
+        
+        // try to write the value to the registry
+        try {
+                reg-&gt;WriteString(&quot;User Name&quot;, username);
+                }
+
+        // catch all exceptions -- return failure
+        catch (...) {
+                delete reg;
+                return false;
+                }
+        
+        // successfully saved data so delete the reg object
+        // and return success
+        delete reg;
+        return true;
+}</PRE>
+
+<P> There are only a few points to add to the comments in
+  the code.&nbsp; First, in many file systems you must create
+  a subdirectory before creating a subdirectory within that
+  directory.&nbsp; However, you can create an arbitrary
+  number of Registry subkeys in a single OpenKey()
+  call.&nbsp; That is, even though the subkey
+  &quot;\Software\My Great Software Company&quot; may not
+  exist before the OpenKey() call, the entire subkey path
+  &quot;\Software\My Great Software Company\My Killer
+  App\1.0&quot; is created in the single OpenKey() call. 
+</P> 
+<P>Second, notice that we did not explicitly close the key
+  after using it as mentioned in step 4 of the 5 step process
+  listed above.&nbsp; Closing the key is optional with the
+  VCL TRegistry class because open keys are automatically
+  closed when TRegistry objects are destroyed.&nbsp; I listed
+  closing keys only in case you ever need to read or code the
+  equivalent Windows API calls. 
+</P> 
+<P>Third, recall that we stored the data with
+  WriteString(). WriteString() does more than let the VCL
+  know what kind of parameters to expect -- it also lets the
+  Registry store the data type (string) with the data
+  itself.&nbsp; This will become more important in the next
+  section when we read the data back. 
+</P> 
+<P>Last, note that the above code is structured to trap all
+  exceptions and return false on any failure.&nbsp; Not all
+  of the remaining examples will be this careful. 
+</P> 
+<H4>The Second Example -- Retrieving Data </H4>
+<P>Next, let's read back the data we saved in the prior
+  example.&nbsp; In my first attempt, I declared the call as:
+  
+</P> <PRE STYLE="margin-left: 0.5in">bool GetUserName(AnsiString&amp; username);</PRE>
+
+<P> because I thought it should look just like the
+  SaveUserName() call above.&nbsp; Unfortunately, you cannot
+  pass an AnsiString by reference, at least not as I
+  understand it.&nbsp; So we have to restructure the call to
+  return the &quot;success&quot; indicator in a passed
+  reference.&nbsp; The code looks like this: 
+</P> <PRE STYLE="margin-left: 0.5in">// GetUserName() - retrieve the string saved in the &quot;User Name&quot; Value Name
+// Parameters:
+//   success - a reference to boolean value defined in the caller (of course)
+// Returns:
+//   the retrieved Registry value on success; an empty string on failure;
+//   the parameter &quot;success&quot; is true if successful, false otherwise
+// Exceptions:
+//   Should not raise exceptions (we hope)
+//   
+AnsiString GetUserName(bool&amp; success)
+
+        // initialize success indicator to failure
+        success = false;
+        
+        // create a TRegistry object
+        TRegistry* reg;
+        try {
+                reg = new TRegistry;
+                }
+        catch (...) {
+                return &quot;&quot;;
+                }
+        
+        // set the registry root key to the correct place for 
+        // storing an individual user's information (HKEY_CURRENT_USER)
+        if (reg-&gt;RootKey != HKEY_CURRENT_USER) {
+                reg-&gt;RootKey = HKEY_CURRENT_USER;
+                if (reg-&gt;RootKey != HKEY_CURRENT_USER) {
+                        delete reg;
+                        return &quot;&quot;;
+                        }
+                }
+        
+        // set the registry key to the key where we stored
+        // our unique program's data
+        if (!reg-&gt;OpenKey(REGISTRY_KEY /* #define'd above*/, 
+                false /* do not create the key if it does not exist */)) {
+                delete reg;
+                return &quot;&quot;;
+                }
+        
+        // make sure the value exists before trying to read it
+        if (!reg-&gt;ValueExists(&quot;User Name&quot;)) return &quot;&quot;;
+
+
+        // try to read a value from the registry
+        try {
+                AnsiString s = reg-&gt;ReadString(&quot;User Name&quot;, username);
+                delete reg;
+                success = true;
+                return s;
+                }
+
+        // catch all exceptions
+        catch (...) {
+                }
+
+        // we must have failed...       
+        delete reg;
+        return &quot;&quot;;
+}</PRE>
+
+<P> The main thing to note about the above code is that we
+  made sure that the subkey existed before reading it.&nbsp;
+  This was necessary because TRegistry::ReadString() does not
+  return an error nor does it raise an exception if the Value
+  Name does not exist.&nbsp; However, this might not be good
+  enough. 
+</P> 
+<P>Remember that the data type (boolean, string, DWORD,
+  binary) is stored with the key.&nbsp; What would happen if
+  we had stored &quot;User Name&quot; as a boolean?&nbsp;
+  What if the user modified the entry with RegEdit.exe but
+  changed the type?&nbsp; The value would exist and our check
+  would not fail.&nbsp; However, TRegistry::ReadString() does
+  not raise an exception upon failure -- it simply returns a
+  NULL string.&nbsp; In this case, the above example would
+  return success and an empty string. 
+</P> 
+<P>The point is that if you really want to trap all
+  potential errors, you will have to work harder.&nbsp; In
+  addition to the above check, you should check the type of
+  the value with TRegistry::GetDataInfo() before attempting
+  to read it.&nbsp; Of course, after reading it, you will
+  need to make sure that the Data Value is sane. 
+</P> 
+<H4>VCL Classes Directly Supported By TRegistry </H4>
+<P>The TRegistry VCL class supports a storing and
+  retrieving a number of different types and classes of data
+  to and from the Registry. 
+</P> 
+<TABLE BORDER="5" CELLPADDING="5" CELLSPACING="6"
+ ALIGN="CENTER"> 
+<TR>
+  <TH> 
+  <P ALIGN="LEFT">Data Type 
+  </P> 
+  </TH> 
+  <TH> 
+  <P ALIGN="LEFT">Read Method 
+  </P> 
+  </TH> 
+  <TH> 
+  <P ALIGN="LEFT">Write Method 
+  </P> 
+  </TH> 
+</TR>
+<TR>
+  <TD>
+	 <P>Arbitrary Binary Data 
+	 </P> 
+  </TD>
+  <TD>
+	 <P>ReadBinaryData 
+	 </P> 
+  </TD>
+  <TD>
+	 <P>WriteBinaryData 
+	 </P> 
+  </TD>
+</TR>
+<TR>
+  <TD>
+	 <P>Boolean 
+	 </P> 
+  </TD>
+  <TD>
+	 <P>ReadBool 
+	 </P> 
+  </TD>
+  <TD>
+	 <P>WriteBool 
+	 </P> 
+  </TD>
+</TR>
+<TR>
+  <TD>
+	 <P>TCurrency 
+	 </P> 
+  </TD>
+  <TD>
+	 <P>ReadCurrency 
+	 </P> 
+  </TD>
+  <TD>
+	 <P>WriteCurrency 
+	 </P> 
+  </TD>
+</TR>
+<TR>
+  <TD>
+	 <P>TDateTime 
+	 </P> 
+  </TD>
+  <TD>
+	 <P>ReadDate 
+	 </P> 
+  </TD>
+  <TD>
+	 <P>WriteDate 
+	 </P> 
+  </TD>
+</TR>
+<TR>
+  <TD>
+	 <P>TDateTime 
+	 </P> 
+  </TD>
+  <TD>
+	 <P>ReadDateTime 
+	 </P> 
+  </TD>
+  <TD>
+	 <P>WriteDateTime 
+	 </P> 
+  </TD>
+</TR>
+<TR>
+  <TD>
+	 <P>double 
+	 </P> 
+  </TD>
+  <TD>
+	 <P>ReadFloat 
+	 </P> 
+  </TD>
+  <TD>
+	 <P>WriteFloat 
+	 </P> 
+  </TD>
+</TR>
+<TR>
+  <TD>
+	 <P>int 
+	 </P> 
+  </TD>
+  <TD>
+	 <P>ReadInteger 
+	 </P> 
+  </TD>
+  <TD>
+	 <P>WriteInteger 
+	 </P> 
+  </TD>
+</TR>
+<TR>
+  <TD>
+	 <P>AnsiString 
+	 </P> 
+  </TD>
+  <TD>
+	 <P>ReadString 
+	 </P> 
+  </TD>
+  <TD>
+	 <P>WriteString 
+	 </P> 
+  </TD>
+</TR>
+<TR>
+  <TD>
+	 <P>TDateTime 
+	 </P> 
+  </TD>
+  <TD>
+	 <P>ReadTime 
+	 </P> 
+  </TD>
+  <TD>
+	 <P>WriteTime 
+	 </P> 
+  </TD>
+</TR>
+</TABLE> 
+<P>Hopefully, you should be able to modify the above
+  examples to use these methods without much trouble. 
+</P> 
+<P>For any data type not directly supported by the VCL
+  TRegistry methods, you can use the ReadBinaryData() and
+  WriteBinaryData() methods.&nbsp; Personally, I avoid that
+  approach.&nbsp; It is usually not a great deal harder to
+  save each piece of information from a structure
+  individually, and this makes it significantly easier to
+  view the Registry entries and debug the code. 
+</P> 
+<P>If you decide to use ReadBinaryData() and
+  WriteBinaryData(), keep in mind that pointer types are
+  essentially useless in any program execution other than the
+  one in which they were saved.&nbsp; It would be a great
+  temptation to save arbitrary structures using the binary
+  read/write functions, but, if they contain pointers, you
+  will have to find other techniques.&nbsp; See the below
+  examples for ways of dealing with this. 
+</P> 
+<H4>Using TRegistry With Other Classes </H4>
+<P>I found it, shall we say, mildly frustrating that the
+  TRegistry class provides methods for storing things like
+  TDateTime, but does not directly support saving important
+  classes like TPrinter and TFont.&nbsp; My current project
+  is pretty much a replacement for WordPad -- fonts,
+  printers, and string lists are scattered throughout the
+  project. 
+</P> 
+<P>The following code was developed to address these
+  shortcomings.&nbsp; You will almost certainly need to
+  modify it.&nbsp; During the course of writing this paper, I
+  discovered that my code potentially leaked memory -- I was
+  not deleting TRegistry objects everywhere that I needed to
+  delete them.&nbsp; I may have missed such potential
+  problems in the following code, so use it carefully.&nbsp;
+  In particular, the code for saving and restoring printer
+  state is highly suspect.&nbsp; It certainly does not make
+  all of the defensive checks that production code should
+  make. 
+</P> 
+<P>In other words, the following code is here for
+  study.&nbsp; So study it -- but do not assume that there
+  are no problems. 
+</P> <PRE STYLE="margin-left: 0.5in">[ registry.h ]
+//---------------------------------------------------------------------------
+#ifndef RegistryH
+#define RegistryH
+
+#include &lt;vcl\registry.hpp&gt;
+#include &lt;vcl\printers.hpp&gt;
+//---------------------------------------------------------------------------
+inline TRegistry&amp; RegValueExists(TRegistry&amp; reg, AnsiString value)
+{
+        if (reg.ValueExists(value)) return reg;
+        throw ERegistryException(&quot;No such value (&quot; + value + &quot;)&quot;);
+}
+void LoadFromRegistry(TRegistry&amp; reg, AnsiString name, TFont&amp; font);
+void SaveToRegistry(TRegistry&amp; reg, AnsiString name, TFont&amp; font);
+void LoadFromRegistry(TRegistry&amp; reg, AnsiString name, TPrinter&amp; printer);
+void SaveToRegistry(TRegistry&amp; reg, AnsiString name, TPrinter&amp; printer);
+void LoadFromRegistry(TRegistry&amp; reg, AnsiString name, TStringList&amp; list);
+void SaveToRegistry(TRegistry&amp; reg, AnsiString name, TStringList&amp; list);
+//---------------------------------------------------------------------------
+#endif
+[ end registry.h ]
+[ registry.cpp ]
+//---------------------------------------------------------------------------
+#include &lt;vcl.h&gt;
+#pragma hdrstop
+
+#include &quot;Registry.h&quot;
+//---------------------------------------------------------------------------
+// save a font to the Registry
+//
+void SaveToRegistry(TRegistry&amp; reg, AnsiString name, TFont&amp; font)
+{
+        reg.WriteString(name + &quot;Name&quot;, font.Name);
+        reg.WriteInteger(name + &quot;Height&quot;, font.Height);
+
+        // note font.Style.contains(fsXXX), does not, for some reason,
+        // write anything but zeros -- added &quot;? true : false&quot; to overcome
+        reg.WriteBool(name + &quot;Bold&quot;, font.Style.Contains(fsBold) ? true : false);
+        reg.WriteBool(name + &quot;Italic&quot;, font.Style.Contains(fsItalic) ? true : false);
+        reg.WriteBool(name + &quot;Underline&quot;, font.Style.Contains(fsUnderline) ? true : false);
+        reg.WriteBool(name + &quot;StrikeOut&quot;, font.Style.Contains(fsStrikeOut) ? true : false);
+
+        reg.WriteInteger(name + &quot;Pitch&quot;, (int) font.Pitch);
+        reg.WriteInteger(name + &quot;Color&quot;, (int) font.Color);
+}
+//---------------------------------------------------------------------------
+// load a saved font from the Registry
+//
+void LoadFromRegistry(TRegistry&amp; reg, AnsiString name, TFont&amp; font)
+{
+        font.Name = RegValueExists(reg, name + &quot;Name&quot;).ReadString(name + &quot;Name&quot;);
+        font.Height = RegValueExists(reg, name + &quot;Height&quot;).ReadInteger(name + &quot;Height&quot;);
+
+        TFontStyles fs; // need because working directly with font.Style doesn't work...
+        if (RegValueExists(reg, name + &quot;Bold&quot;).ReadBool(name + &quot;Bold&quot;))
+                fs &lt;&lt; fsBold;
+        if (RegValueExists(reg, name + &quot;Italic&quot;).ReadBool(name + &quot;Italic&quot;))
+                fs &lt;&lt; fsItalic;
+        if (RegValueExists(reg, name + &quot;Underline&quot;).ReadBool(name + &quot;Underline&quot;))
+                fs &lt;&lt; fsUnderline;
+        if (RegValueExists(reg, name + &quot;StrikeOut&quot;).ReadBool(name + &quot;StrikeOut&quot;))
+                fs &lt;&lt; fsStrikeOut;
+
+        font.Style = fs;
+        font.Pitch = (TFontPitch) RegValueExists(reg, name + &quot;Pitch&quot;).ReadInteger(name + &quot;Pitch&quot;);
+        font.Color = (TColor) RegValueExists(reg, name + &quot;Color&quot;).ReadInteger(name + &quot;Color&quot;);
+}
+//---------------------------------------------------------------------------
+// save a printer setup to the Registry
+//
+void SaveToRegistry(TRegistry&amp; reg, AnsiString name, TPrinter&amp; printer)
+{
+        char device[255];
+        char driver[255];
+        char port[255];
+        HGLOBAL hDevMode;
+
+        // get printer information
+        printer.GetPrinter(device, driver, port, (int) hDevMode);
+        reg.WriteString(name + &quot;Device&quot;, device);
+        reg.WriteString(name + &quot;Driver&quot;, driver);
+        reg.WriteString(name + &quot;Port&quot;, port);
+        reg.WriteBinaryData(name + &quot;Mode&quot;, ::GlobalLock(hDevMode), sizeof(DEVMODE));
+        ::GlobalUnlock(hDevMode);
+}
+//---------------------------------------------------------------------------
+// load a saved printer setup from the Registry
+//
+// note: the following function will fail in horrible and undefined ways
+// if it attempts to load a printer that has been deleted...  also, I am
+// concerned about saving/restoring the DEVMODE structure -- it works for 
+// me so far, but it seems like a potential source of problems...
+//
+void LoadFromRegistry(TRegistry&amp; reg, AnsiString name, TPrinter&amp; printer)
+{
+        HGLOBAL hDevMode = ::GlobalAlloc(GMEM_MOVEABLE, sizeof(DEVMODE));
+        void* pDevMode = ::GlobalLock(hDevMode);
+
+        RegValueExists(reg, name + &quot;Device&quot;);
+        AnsiString device = reg.ReadString(name + &quot;Device&quot;);
+        RegValueExists(reg, name + &quot;Driver&quot;);
+        AnsiString driver = reg.ReadString(name + &quot;Driver&quot;);
+        RegValueExists(reg, name + &quot;Port&quot;);
+        AnsiString port = reg.ReadString(name + &quot;Port&quot;);
+        RegValueExists(reg, name + &quot;Mode&quot;);
+        reg.ReadBinaryData(name + &quot;Mode&quot;, pDevMode, sizeof(DEVMODE));
+        ::GlobalUnlock(hDevMode);
+        printer.SetPrinter(device.c_str(), driver.c_str(), port.c_str(), (int) hDevMode);
+}
+//---------------------------------------------------------------------------
+// save a TStringList to the Registry
+//
+void SaveToRegistry(TRegistry&amp; reg, AnsiString name, TStringList&amp; list)
+{
+        // save existing count
+        int oldCnt = 0;
+        if (reg.ValueExists(name + &quot;Count&quot;)) oldCnt = reg.ReadInteger(name + &quot;Count&quot;);
+
+        // write new count and strings
+        reg.WriteInteger(name + &quot;Count&quot;, list.Count);
+        for (int i = 0; i &lt; list.Count; i++)
+                reg.WriteString(name + &quot;Item&quot; + AnsiString(i), list.Strings[i]);
+
+        // delete any entries from prior, longer list
+        for (int i = list.Count; i &lt; oldCnt; i++)
+                reg.DeleteValue(name + &quot;Item&quot; + AnsiString(i));
+}
+//---------------------------------------------------------------------------
+// load a saved TStringList from the Registry
+//
+void LoadFromRegistry(TRegistry&amp; reg, AnsiString name, TStringList&amp; list)
+{
+        // clear any existing strings
+        list.Clear();
+
+        // get count
+        int count = RegValueExists(reg, name + &quot;Count&quot;).ReadInteger(name + &quot;Count&quot;);
+
+        // load strings in reverse order
+        AnsiString s;
+        for (int i = 0; i &lt; count; i++) {
+                s = name + &quot;Item&quot; + AnsiString(i);
+                list.Add(RegValueExists(reg, s).ReadString(s));
+                }
+}
+//---------------------------------------------------------------------------
+[ end registry.cpp ]</PRE>
+
+<P> The above code is pretty simple to use.&nbsp; Assume
+  that we have a form of class TForm1, which contains a
+  TRichEdit, RichEdit1.&nbsp; You might use code similar to
+  the following to save the global printer settings, i.e.,
+  the current printer settings for Printer(), the font used
+  by RichEdit1, and the contents of RichEdit1 as a
+  TStringList like this: 
+</P> <PRE STYLE="margin-left: 0.5in">bool TForm1::SaveLotsOfStuff(void)
+{
+        // create a VCL TRegistry object
+        TRegistry* reg;
+        TStringList* list;
+
+        try {
+                reg = new TRegistry();
+                }
+        catch (...) {
+                return false;
+                }
+
+        try {
+                // set the registry root key to the correct place for 
+                // storing an individual user's information (HKEY_CURRENT_USER)
+                if (reg-&gt;RootKey != HKEY_CURRENT_USER) {
+                        reg-&gt;RootKey = HKEY_CURRENT_USER;
+                        if (reg-&gt;RootKey != HKEY_CURRENT_USER)
+                                throw new ERegistryException(&quot;Failed 1);
+                        }
+
+                // set the registry key to the key where we will store
+                // our unique program's data
+                if (!reg-&gt;OpenKey(REGISTRY_KEY /* #define'd above*/, 
+                        true /* create the key if it does not exist */))
+                        throw new ERegistryException(&quot;Failed 1&quot;);
+
+                // try to write the value to the registry
+                try {
+                        ::SaveToRegistry(*reg, &quot;Current Printer&quot;, *Printer();
+                        ::SaveToRegistry(*reg, &quot;Current Font&quot;, *(RichEdit1-&gt;Font);
+
+                        TStringList* list = new TStringList();
+                        try {
+                                list-&gt;Assign(RichEdit1-&gt;Lines);
+                                ::SaveToRegistry(*reg, &quot;Current List&quot;, list);
+                                }
+                        catch {
+                                delete list;
+                                throw new ERegistryException(&quot;Failed 2&quot;);
+                                }
+                        }
+                }
+
+        // catch all exceptions -- return failure
+        catch (...) {
+                delete reg;
+                return false;
+                }
+
+        // successfully saved data so delete the reg object
+        // and return success
+        delete reg;
+        return true;
+}</PRE>
+
+<P> The above example is somewhat complicated by efforts to
+  release storage for all dynamically created objects
+  whenever an exception is raised.&nbsp; On the other hand,
+  it is pretty simplistic from the caller's standpoint.&nbsp;
+  For example, although the return value indicates failure,
+  it does not tell the caller at what point the code failed.
+  You would probably want to either throw exceptions (instead
+  of returning true/false) or return unique error codes for
+  each point of failure. 
+</P> 
+<P>In spite of these simplifications, the above code should
+  give you an idea of what is involved in using TRegistry for
+  arbitrary classes.&nbsp; Of course, I would welcome
+  improvements.... 
+</P> 
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="2"
+ CELLSPACING="0"> 
+<TR VALIGN="TOP">
+  <TD WIDTH="*" BGCOLOR="#e6e6e6">
+	 <P><FONT SIZE="-1"><B><A HREF="../Yacs.html" TARGET="_top">Home</A> |
+		<A HREF="#TopOfPage" TARGET="_top">Top Of Page</A> |
+		<A HREF="../Yacs.html#CodeSection" TARGET="_top">Code</A> |
+		<A HREF="../Yacs.html#Papers" TARGET="_top">Papers</A> |
+		<A HREF="../Yacs.html#FAQs" TARGET="_top">FAQs</A> |
+		<A HREF="../Links.html" TARGET="_top">Links</A> |
+		<A HREF="../Yacs.html#SiteSearch" TARGET="_top">Search</A> |
+		<A HREF="../Yacs.html#ContactMe" TARGET="_top">Feedback</A></B></FONT>
+	 </P> 
+  </TD>
+  <TD WIDTH="*" BGCOLOR="#e6e6e6">
+	 <P ALIGN="RIGHT"><FONT SIZE="-1">Page updated 
+		<SCRIPT LANGUAGE="javascript" TYPE="text/javascript" SRC="../lstmoddt.js">
+			</SCRIPT> </FONT> 
+	 </P> 
+  </TD>
+</TR>
+</TABLE> 
+<P ALIGN="CENTER"><FONT SIZE=-1><B>Copyright &copy; 1998-2001 Thin Air
+  Enterprises and Robert Dunn.&nbsp; All rights reserved.</B></FONT>  
+</P> 
+</BODY>
+</HTML>
+
+

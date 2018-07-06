@@ -1,0 +1,220 @@
+ID=E0928
+URL=http://www.bcbdev.com/faqs/faq16.htm
+SIZE=10093
+DATE=12/07/02
+TIME=19:25:54
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+<H3>
+Q: Respond to messages sent to the application.
+</H3>
+<BR>
+<H3>
+Answer:
+</H3>
+<P>
+There is more than one way to catch messages that Windows sends to your program. You can override
+the virtual <TT>WndProc</TT> function of the main form, you can create a message map, or you can create an
+<TT>OnMessage</TT> handler for the application. This FAQ describes each one briefly.
+</P>
+<HR>
+<P>
+<B>Overriding <TT>WndProc</TT>:</B> All descendants of <TT>TControl</TT>, including
+<TT>TForm</TT>, contain a <TT>WndProc</TT> function that serves as the window procedure for
+the component. This function is virtual, which means that you can override the
+function to intercept messages. The argument to <TT>WndProc</TT> is a <TT>TMessage</TT>
+structure passed by reference that contains the message command ID and the <TT>WPARAM</TT>
+and <TT>LPARAM</TT> values.
+</P>
+<P>
+<B>Step 1:</B> Add the <TT>WndProc</TT> declaration to your form's header.
+</P>
+<pre>
+    <b>private</b><b>:</b>
+        <b>void</b> <b>__fastcall</b> WndProc<b>(</b>Messages<b>:</b><b>:</b>TMessage <b>&</b>Message<b>)</b><b>;</b>
+</pre>
+<P>
+<B>Step 2:</B> Code the function. The derived <TT>WndProc</TT> should call the base class
+<TT>TForm::WndProc</TT> for all messages that you don't process. This function prevents the
+windows screensaver from starting.
+</P>
+<pre>
+    <b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>WndProc<b>(</b>Messages<b>:</b><b>:</b>TMessage <b>&</b>Message<b>)</b>
+    <b>{</b>
+        <b>if</b><b>(</b>  <b>(</b>Message<b>.</b>Msg    <b>==</b> WM_SYSCOMMAND<b>)</b> <b>&&</b>
+             <b>(</b>Message<b>.</b>WParam <b>==</b> SC_SCREENSAVE<b>)</b>    <b>)</b>
+        <b>{</b>
+            Application<b>-></b>MessageBox<b>(</b><font color="blue">"Good bye screen saver"</font><b>,</b> <font color="blue">"SCR No"</font><b>,</b> MB_OK<b>)</b><b>;</b>
+            Message<b>.</b>Result <b>=</b> <b>true</b><b>;</b>
+        <b>}</b>
+        <b>else</b>
+            TForm<b>:</b><b>:</b>WndProc<b>(</b>Message<b>)</b><b>;</b>
+    <b>}</b>
+</pre>
+<HR>
+<B>Creating a Message Map:</B> Message maps allow you to write a function that receives only
+one specific message, rather than all of a form's messages like <TT>WndProc</TT> does. Message
+maps utilize the various message structures found in \INCLUDE\MESSAGES.HPP. For example, a
+message map for <TT>WM_GETMINMAXINFO</TT> would utilize the <TT>TWMGetMinMaxInfo</TT>
+structure. These structures are nice because the <TT>WPARAM</TT> and <TT>LPARAM</TT> values
+are decoded into more meaningful structure members.
+</P>
+<P>
+<B>Step 1:</B> Add a function declaration and the message map body to your form's header.
+</P>
+<pre>
+    <b>private</b><b>:</b>
+        <b>void</b> <b>__fastcall</b> WMSysCommand<b>(</b>TWMSysCommand <b>&</b>Message<b>)</b><b>;</b>
+    <b>public</b><b>:</b>
+        <b>__fastcall</b> TForm1<b>(</b>TComponent<b>*</b> Owner<b>)</b><b>;</b>
+
+    BEGIN_MESSAGE_MAP
+        MESSAGE_HANDLER<b>(</b>WM_SYSCOMMAND<b>,</b>TWMSysCommand<b>,</b>WMSysCommand<b>)</b>
+    END_MESSAGE_MAP<b>(</b>TForm<b>)</b>
+</pre>
+<P>
+<B>Step 2:</B> Code the function. If you need to pass the message on to the base class,
+call the <TT>Dispatch</TT> function of the base class.
+</P>
+<pre>
+    <b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>WMSysCommand<b>(</b>TWMSysCommand <b>&</b>Message<b>)</b>
+    <b>{</b>
+        <b>if</b><b>(</b>Message<b>.</b>CmdType <b>==</b> SC_SCREENSAVE<b>)</b>
+        <b>{</b>
+            Application<b>-></b>MessageBox<b>(</b><font color="blue">"Good bye screen saver"</font><b>,</b> <font color="blue">"SCR No"</font><b>,</b> MB_OK<b>)</b><b>;</b>
+            Message<b>.</b>Result <b>=</b> <b>true</b><b>;</b>
+        <b>}</b>
+        <b>else</b>
+            TForm<b>:</b><b>:</b>Dispatch<b>(</b><b>&</b>Message<b>)</b><b>;</b>
+    <b>}</b>
+</pre>
+<P>
+<B>Note:</B> Make sure that you call the <TT>Dispatch</TT> method of the base class, and not the <TT>Dispatch</TT>
+method of your derived class. Message maps are triggered from the <TT>Dispatch</TT> method of the derived class.
+Calling the derived version of <TT>Dispatch</TT> triggers your message map again, and this results in infinite recursion.
+</P>
+<HR>
+<B>Creating an <TT>OnMessage</TT> handler:</B> The <TT>OnMessage</TT> handler allows you to
+handle messages before they are processed by the application.
+</P>
+<P>
+<B>Step 1:</B> Add a function declaration for the <TT>OnMessage</TT> handler.
+</P>
+<pre>
+    <b>private</b><b>:</b>
+        <b>void</b> <b>__fastcall</b> AppOnMessage<b>(</b>TMsg <b>&</b>Message<b>,</b> <b>bool</b> <b>&</b>Handled<b>)</b><b>;</b>
+</pre>
+<P>
+<B>Step 2:</B> Code the function. Set the <TT>Handled</TT> flag for messages that you handle.
+</P>
+<pre>
+    <b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>AppOnMessage<b>(</b>TMsg <b>&</b>Msg<b>,</b> <b>bool</b> <b>&</b>Handled<b>)</b>
+    <b>{</b>
+        <b>if</b><b>(</b>  <b>(</b>Msg<b>.</b>message <b>==</b> WM_SYSCOMMAND<b>)</b> <b>&&</b>
+             <b>(</b>Msg<b>.</b>wParam  <b>==</b> SC_SCREENSAVE<b>)</b>   <b>)</b>
+        <b>{</b>
+            Application<b>-></b>MessageBox<b>(</b><font color="blue">"Good bye screen saver"</font><b>,</b> <font color="blue">"SCR No"</font><b>,</b> MB_OK<b>)</b><b>;</b>
+            Handled <b>=</b> <b>true</b><b>;</b>
+        <b>}</b>
+        <b>else</b>
+            Handled <b>=</b> <b>false</b><b>;</b>
+    <b>}</b>
+</pre>
+<P>
+<B>Step 3:</B> In the constructor of the main form, assign the function <TT>AppOnMessage</TT> to the <TT>OnMessage</TT>
+event of the global <TT>Application</TT> object.
+</P>
+<pre>
+    <b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>TForm1<b>(</b>TComponent<b>*</b> Owner<b>)</b>
+        <b>:</b> TForm<b>(</b>Owner<b>)</b>
+    <b>{</b>
+        Application<b>-></b>OnMessage <b>=</b> AppOnMessage<b>;</b>
+    <b>}</b>
+</pre>
+<HR>
+<P>
+<B>Notes: </B>So how do you decide which of the previous methods to use? Overriding
+<TT>WndProc</TT> works well when you need to respond to a lot of different messages, or when
+you have existing switch/case message handling code from an API project that you would like
+to reuse with minimum effort. The message maps are nice because they allow you to focus on a
+single message, and the message structures can make your code easy to read. The
+<TT>OnMessage</TT> approach allows you to intercept messages before the program gets a chance
+to process them. The downfall of <TT>OnMessage</TT> is that messages sent via
+<TT>SendMessage</TT> or <TT>Perform</TT> don't get passed to the <TT>OnMessage</TT> handler.
+Additionally, the <TT>OnMessage</TT> handler can bog down the system. </P>
+<P>
+In general, use <TT>WndProc</TT> or message maps for most cases. Use <TT>OnMessage</TT> only
+when its the only way to intercept a message. Never use <TT>OnMessage</TT> from within a
+component to intercept application messages. If necessary, use good ol' subclassing. The VCL makes
+subclassing painless through the <TT>WindowProc</TT> property of classes
+derived from <TT>TControl</TT>.
+</P>
+<P>
+<B>Note added 1/15/2002:</B> Jonathan Arnold sent me this comment about the trapping the <TT>OnMessage</TT> event
+for the application.
+</P>
+<P>
+<I>
+In your discussion of the pros and cons of the various methods, you
+should mention that if you override the form's WndProc method, you don't get messages
+destined for controls on your form, while the OnMessage method does.
+</I>
+</P>
+<P>
+He is correct. With <TT>OnMessage</TT> you can intercept a message that was posted
+directly to a tree view or edit box or any window control that is on your form. This can prove useful
+at times. However, keep in mind that you can also intercept such messages by
+deriving a new class from the control. If you find yourself frequently using <TT>OnMessage</TT>
+to intercept messages for a particular control, you might want to consider deriving a new
+component class instead. Sometimes, making a new component class is a hastle, especially
+if you are not going to reuse the custom behavior in other projects. If this is the
+case, then <TT>OnMessage</TT> might be more appropriate.
+</P>
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

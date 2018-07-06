@@ -1,0 +1,1105 @@
+ID=E0020
+URL=http://www.bcbdev.com/articles/suggest.htm
+SIZE=58512
+DATE=12/07/02
+TIME=19:16:28
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: Articles</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2>
+<IMG SRC="../images/articlebuilding.gif" BORDER=0 HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 HSPACE="0" >
+</TD>
+</TR>
+<TR>
+<TD WIDTH="7" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">      <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">         <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">      <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">          <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">       <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+
+<H3>
+The TeamB guide to avoiding common mistakes in C++Builder.
+</H3>
+
+<P>
+This article contains a list of suggestions put together by the members of
+<A TARGET=_top HREF="http://www.inprise.com/newsgroups/teamb/teambbyproduct.html">TeamB for C++Builder</A>. The
+suggestions will help you avoid subtle coding errors that often have disastrous effects at runtime. Most of the
+suggestions in the list contain a link to a paragraph of text that explains why you should follow the suggestion. Some
+of the suggestions are self explanatory, and these suggestions don't have a corresponding link.
+</P>
+
+<P><B>Note:</B> Updated Feb 21, 2000. New items have a <B>NEW</B> icon.</P>
+<BR>
+<P>
+<OL>
+<LI>AnsiString
+    <TABLE WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">1.1</TD><TD><A HREF="#cstr"        >Don't store the result of AnsiString::c_str()</A>          </TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">1.2</TD><TD><A HREF="#unsignedlong">Don't use the unsigned long constructor for AnsiString</A></TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">1.3</TD><TD><A HREF="#ansiproperty">Don't use the += AnsiString operator on properties</A></TD></TR>
+    </TABLE>
+    <br>
+
+<LI>TList
+    <TABLE WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">2.1</TD><TD><A HREF="#tlist"         >Don't forget to delete pointers in a TList</A></TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">2.2</TD><TD><A HREF="#voidptr"       >Don't delete the void pointers in a TList</A></TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">2.3</TD><TD><IMG SRC="../images/new.gif" BORDER=0 ALIGN="BOTTOM"><A HREF="#overuse_tlist" >Don't overuse the TList class</A></TD></TR>
+    </TABLE>
+    <BR>
+
+<LI> General VCL suggestions
+    <TABLE WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">3.1</TD><TD>Don't Change the Name property of a control at runtime                                           </TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">3.2</TD><TD><A HREF="#parent"    >Don't forget to set the Parent property of a control created at runtime</A></TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">3.3</TD><TD><A HREF="#mdiparent" >Don't set the Parent property of MDI child forms</A>                       </TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">3.4</TD><TD>Don't forget to call Synchronize when modifying visual controls in a background thread           </TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">3.5</TD><TD>Don't delete child controls after their parent is gone                                           </TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">3.6</TD><TD>Don't pass parameters by reference to property methods                                           </TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">3.7</TD><TD>Don't use the Selected property of TListBox in single selection ListBox controls                 </TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">3.8</TD><TD>Don't try to put more than 32k of text into a TMemo on Win95/Win98                               </TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">3.9</TD><TD><A HREF="#oncreate"  >Don't use OnCreate and OnDestroy, use C++ constructors and destructors instead</TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">3.10</TD><TD><A HREF="#createform" >Use <TT>new</TT> instead of Application-&gt;CreateForm</TD></TR>
+    </TABLE>
+    <BR>
+
+<LI> C++ Language Suggestions
+    <TABLE WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">4.1</TD><TD>Don't mix operator new[] with delete, and don't mix delete[] with new                  </TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">4.2</TD><TD><IMG SRC="../images/new.gif" BORDER=0 ALIGN="BOTTOM"><A HREF="#nullptr"    >Always set a pointer variable to NULL or 0 after deleting it</A></TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">4.3</TD><TD>Don't use memset or ZeroMemory as constructor replacements                             </TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">4.4</TD><TD>Don't make assumptions about the size of an enum variable                              </TD></TR>
+    </TABLE>
+    <BR>
+
+<LI> Project Suggestions
+    <TABLE WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">5.1</TD><TD><IMG SRC="../images/new.gif" BORDER=0 ALIGN="BOTTOM"><A HREF="#makefile" >Don't alter the makefile switches for alignment or enum variables</A>               </TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">5.2</TD><TD><A HREF="#vclib"    >Don't link with LIB files or OBJ files created by other compilers</A>               </TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">5.3</TD><TD><A HREF="#bclib"    >Don't link with OBJ files created by a previous version of the Borland compiler</A> </TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">5.4</TD><TD><A HREF="#tlibimp"  >Don't import COM type libraries using the IDE menu option</A>                       </TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">5.5</TD><TD><IMG SRC="../images/new.gif" BORDER=0 ALIGN="BOTTOM"><A HREF="#oldcreateorder">When you import BCB3 forms into BCB4, set OldCreateOrder to false</A></TD></TR>
+    </TABLE>
+
+     <BR>
+<LI> Database Suggestions
+    <TABLE WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">6.1</TD><TD><A HREF="#asfunction"    >Don't use AsDateTime or AsInteger to assign one TField to another</A></TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">6.2</TD><TD><A HREF="#currency"      >Don't use TCurrencyField unless you have to</A></TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">6.3</TD><TD><A HREF="#cachedfilter"  >Don't turn on CachedUpdates when the Filtered property of dataset is on</A></TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">6.4</TD><TD><A HREF="#updatefilter"  >Don't call ApplyUpdates when the Filtered property of dataset is on</A></TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">6.5</TD><TD><A HREF="#dataaware"     >Don't use the VCL's data aware controls</A></TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">6.6</TD><TD><IMG SRC="../images/new.gif" BORDER=0 ALIGN="BOTTOM"><A HREF="#lookupcontrols">Don't use TDBLookupComboBox or TDBLookupListBox</A></TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">6.7</TD><TD><A HREF="#active"        >Don't set the Active property of a dataset to true at design time</A></TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">6.8</TD><TD><A HREF="#filteredit"    >Don't change the Filter property of a dataset while the dataset is in edit mode</A></TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">6.9</TD><TD><A HREF="#updatestatus"  >Don't look at the value of UpdateStatus in the OnUpdateRecord handler of a dataset</A></TD></TR>
+    <TR> <TD WIDTH=5% ALIGN="LEFT" VALIGN="TOP">6.10</TD><TD><IMG SRC="../images/new.gif" BORDER=0 ALIGN="BOTTOM"><A HREF="#disablecontrols" >Don't call Post after calling DisableControls on a dataset</A></TD></TR>
+    </TABLE>
+    <BR>
+</OL>
+</P>
+
+
+<HR>
+<BR>
+<H3>
+<A NAME="cstr">Don't store the result of AnsiString::c_str()</A>
+</H3>
+<P>
+Examine the following code segment.
+</P>
+<pre>
+    AnsiString strText <b>=</b> <font color="blue">"Howdy Mr. Ditka."</font><b>;</b>
+    <b>char</b> <b>*</b>ptr <b>=</b> strText<b>.</b>c_str<b>(</b><b>)</b><b>;</b>
+    strText <b>=</b> <font color="blue">"Goodbye Mr. Ditka"</font><b>;</b>
+    Label1<b>-></b>Caption <b>=</b> ptr<b>;</b>
+</pre>
+<P>
+This code contains a serious defect. If you execute this code, you will see that the label displays the first string that
+was assigned to <TT>strText</TT>. This may surprise you. Why doesn't the label contain the string that says
+"Goodbye Mr. Ditka"? After all, doesn't <TT>ptr</TT> point to the string that is contained in the <TT>strText</TT>
+variable?
+</P>
+<P>
+Whenever you assign a new string to an <TT>AnsiString</TT> variable, the <TT>AnsiString</TT> deallocates whatever
+memory it previously owned and allocates new memory for the new string. When the new memory is allocated, it is unlikely
+to be the same memory that was originally returned by the <TT>c_str</TT> function.
+</P>
+<P>
+The second line of code in the example above stores the pointer returned by <TT>c_str</TT> for later use. After the
+pointer is stored, a new string is assigned to the <TT>AnsiString</TT> variable. At this point, the <TT>strText</TT>
+variable deallocates the first string and allocates memory for the new string. Now <TT>ptr</TT> points to memory that
+has been deleted. When you copy that memory into the label, you see the remnants of the original string. For larger
+strings, the label may contain garbage characters, or the label may appear to be truncated. De-referencing the data in the
+<TT>ptr</TT> variable may also cause an access violation because you are using memory that the application no longer
+owns.
+</P>
+<P>
+Storing the result of <TT>c_str</TT> can lead to problems that are more difficult to track down. For example:
+</P>
+<pre>
+    <b>char</b> <b>*</b>ptr1 <b>=</b> Edit1<b>-></b>Text<b>.</b>c_str<b>(</b><b>)</b><b>;</b>
+    <b>char</b> <b>*</b>ptr2 <b>=</b> Edit2<b>-></b>Text<b>.</b>c_str<b>(</b><b>)</b><b>;</b>
+
+    Label1<b>-></b>Caption <b>=</b> <font color="blue">"Edit1 contains "</font> <b>+</b> AnsiString<b>(</b>ptr1<b>)</b><b>;</b>
+    Label2<b>-></b>Caption <b>=</b> <font color="blue">"Edit2 contains "</font> <b>+</b> AnsiString<b>(</b>ptr2<b>)</b><b>;</b>
+</pre>
+<P>
+On the surface, the code looks like it should work. Sure, we store the pointer returned from <TT>c_str</TT>, but nothing
+is done that would cause the string to be re-allocated as in the first example. However, if you test this code, you
+will see that it does not work. Sometimes the labels will both display the string from the second edit box, and
+sometimes they contain garbage.
+</P>
+<P>
+The problem is that the <TT>Text</TT> property of <TT>TEdit</TT> returnes a new <TT>AnsiString</TT> by value. This new
+<TT>AnsiString</TT> object is a temporary object. Temporary objects don't last forever. They only hang around as long
+as they are needed. They are destroyed before the next line of code executes.
+</P>
+<P>
+In this code example, the temporary object is only needed for the call to <TT>c_str.</TT> Once the <TT>c_str</TT>
+method has been called, the temporary object is destroyed because it is no longer needed. Here is the catch. Deleting
+the temporary object deletes the memory that was pointed to by <TT>c_str</TT>, which means that <TT>ptr1</TT> points
+to deleted memory. You can see the destruction of the temporary object by viewing the assembly code generated by these
+statements.
+</P>
+<PRE>
+    // assembly output for the statement
+    <B>char</B> *ptr1 = Edit1->Text.c_str();
+
+    mov   ...
+    lea   ...
+    call  System::AnsiString::AnsiString(); // create temp object
+    mov   ...
+    inc   ...
+    mov   ...
+    call  Controls::TControl::GetText();    // load Caption into temp AnsiString
+    lea   ...
+    call  System::AnsiString::c_str()       // get c_str of temp object
+    mov   ...
+    dec   ...
+    lea   ...
+    mov   ...
+    call  System::AnsiString::~AnsiString   // delete temp object
+</PRE>
+<P>
+All of this code is generated by the one statement where <TT>ptr1</TT> is assigned the value of
+<TT>Edit1->Text.c_str()</TT>. Before the next line of code executes, the temporary <TT>AnsiString</TT> object is
+destroyed. Deleting the temporary <TT>AnsiString</TT> object renders the previous <TT>c_str</TT> result worthless,
+and that is exactly what happens (and it's exactly what should happen, the compiler is obeying the standard by
+cleaning up temporary objects in this manner).
+</P>
+<P>
+The moral of this story is to avoid saving the result from <TT>AnsiString::c_str</TT> because you run the risk of
+keeping a pointer to memory that has been de-allocated.
+</P>
+
+<HR>
+<BR>
+<H3>
+<A NAME="unsignedlong">Don't use the unsigned long constructor for AnsiString</A>
+</H3>
+<P>
+If you are using C++Builder 3, the unsigned long constructor for <TT>AnsiString</TT> has a bug in it. The bug looks
+like this:
+</P>
+<pre>
+    <b>__fastcall</b> AnsiString<b>:</b><b>:</b>AnsiString<b>(</b><b>unsigned</b> <b>long</b> src<b>)</b> <b>:</b> Data<b>(</b><font color="blue">0</font><b>)</b>
+    <b>{</b>
+        <b>char</b> buff<b>[</b><font color="blue">20</font><b>]</b><b>;</b>
+        wsprintf<b>(</b>buff<b>,</b> <font color="blue">"%lu"</font><b>,</b> src<b>)</b><b>;</b>
+        <b>*</b><b>this</b> <b>=</b> src<b>;</b>
+    <b>}</b>
+</pre>
+<P>
+The last line should be <TT>*this = buff;</TT> The bug is fixed in BCB4 and newer.
+</P>
+
+<HR>
+<BR>
+<H3>
+<A NAME="ansiproperty">Don't use the += AnsiString operator on properties</A>
+</H3>
+<P>
+Examine the following code that attempts to add some exclamation points to the string that is already in a label control:
+</P>
+<pre>
+    Label1<b>-></b>Caption <b>+</b><b>=</b> <font color="blue">"!!!!!!!"</font><b>;</b>
+</pre>
+<P>
+When you use the += operator on the <TT>Caption</TT> property, the compiler creates code that constructs a new
+temporary <TT>AnsiString</TT> object. The compiler then calls the <TT>GetText</TT> function to copy the contents of
+the label into the temporary variable. Next, the compiler constructs another <TT>AnsiString</TT> object and initializes
+it with the string "!!!!!". Finally, the compiler calls the += operator of the first temporary object to combine the two
+strings. The problem is that the compiler does not generator code to write the resulting temporary <TT>AnsiString</TT>
+value back into the <TT>Caption</TT> property. Instead, the temporary object is deleted because it is no longer needed.
+</P>
+<P>The assembly code looks something like this:</P>
+<PRE>
+    // assembly output for the statement
+    Label1->Caption += "!!!!!!!";
+
+    mov   ...
+    lea   ...
+    call  System::AnsiString::AnsiString() // create temp object
+    mov   ...
+    inc   ...
+    mov   ...
+    mov   ...
+    call  Controls::TControl::GetText()    // read Caption into temp object
+    lea   ...
+    push  ...
+    mov   ...
+    lea   ...
+    call  System::AnsiString::AnsiString(char *) // create AnsiString for "!!!!"
+    inc   ...
+    lea   ...
+    pop   ...
+    call  System::AnsiString::operator +=        // combine the two strings
+    dec   ...
+    lea   ...
+    mov   ...
+    call  System::AnsiString::~AnsiString() // destroy one temp
+    dec   ...
+    lea   ...
+    mov   ...
+    call  System::AnsiString::~AnsiString() // destroy the other temp
+</PRE>
+<P>
+In the assembly code above, locate the += operator call. Notice that nothing is done with the resulting string
+after the += operator returns. After the += operator returns, the strings are destroyed. In order for the property
+assignment to take affect, the resulting string should be passed to the <TT>SetText</TT> function. Because the write
+method for the property is not called, the <TT>TLabel</TT> object is not modified.
+</P>
+<P>
+Through experimentation, I have found that the += operator does work on integer properties, such as the <TT>Width</TT>
+property of the form. However, in order to avoid confusion, it may be wise to avoid the += operator on all properties.
+The same can be said for the other combination operators <TT>(-= , *= , /=, ^= ,</TT> and so on).
+</P>
+
+
+<HR>
+<BR>
+<H3>
+<A NAME="tlist">Don't forget to delete pointers in a TList</A>
+</H3>
+<P>
+If you use <TT>TList</TT> to store pointers, make sure that you delete the pointers. <TT>TList</TT> makes
+no assumptions about the data it holds, and it does not delete the pointers in the list when it is deleted.
+That is your responsibility.
+</P>
+
+
+<HR>
+<BR>
+<H3>
+<A NAME="voidptr">Don't delete the void pointers in a TList</A>
+</H3>
+<P>
+Yes, it is your responsibility to delete pointers that are contained in a <TT>TList</TT>, but you have to be careful
+about how you do it. Consider the following code.
+</P>
+<pre>
+    <font color="navy">// construct a list of bitmaps</font>
+    TList <b>*</b>list <b>=</b> <b>new</b> TList<b>;</b>
+    <b>const</b> <b>int</b> nButtonCount <b>=</b> <font color="blue">100</font><b>;</b>
+    <b>for</b><b>(</b><b>int</b> j<b>=</b><font color="blue">0</font><b>;</b> j&lt;nButtonCount<b>;</b> j<b>++</b><b>)</b>
+    <b>{</b>
+        list<b>-></b>Add<b>(</b><b>new</b> Graphics<b>:</b><b>:</b>TBitmap<b>)</b><b>;</b>
+    <b>}</b>
+
+    <font color="navy">// do something with the list</font>
+
+    <font color="navy">// now delete the list</font>
+    <b>for</b><b>(</b><b>int</b> j<b>=</b><font color="blue">0</font><b>;</b> j&lt; list<b>-></b>Count<b>;</b> j<b>++</b><b>)</b>
+    <b>{</b>
+        <b>delete</b> list<b>-></b>Items<b>[</b>j<b>]</b><b>;</b>
+    <b>}</b>
+    <b>delete</b> list<b>;</b>
+</pre>
+<P>
+Everything looks good on the surface. You construct a list and add some items. When you are done with the list, you
+loop through and delete the pointers in the list before deleting the list itself. It all looks good, but it doesn't
+work correctly. In fact, the code usually crashes. The problem is that the <TT>Items</TT> property of <TT>TList</TT> returns a <TT>void</TT> pointer.
+So how do you destroy a <TT>void</TT> pointer? I don't know, but I do know that deleting a <TT>void</TT> pointer is
+not the same as deleting a <TT>TBitmap</TT> pointer.
+</P>
+<P>
+Since <TT>TList</TT> doesn't know what kind of stuff you are storing in it, it returns a <TT>void</TT> pointer when you
+fetch an item from the <TT>Items</TT> array. When you try to delete a <TT>void</TT> pointer, the operator
+<TT>delete</TT> doesn't really know what you are asking it to do. It doesn't know that the pointer is really a
+<TT>TBitmap</TT> pointer. As a result, the destructor for <TT>TBitmap</TT> will not be called when you delete the
+items in the for loop. In order to correctly destroy the items in the list, you must tell the compiler
+what type of objects you are deleting. The correct code looks like this:
+</P>
+<pre>
+    <font color="navy">// construct a list of bitmaps</font>
+    TList <b>*</b>list <b>=</b> <b>new</b> TList<b>;</b>
+    <b>const</b> <b>int</b> nButtonCount <b>=</b> <font color="blue">100</font><b>;</b>
+    <b>for</b><b>(</b><b>int</b> j<b>=</b><font color="blue">0</font><b>;</b> j&lt;nButtonCount<b>;</b> j<b>++</b><b>)</b>
+    <b>{</b>
+        list<b>-></b>Add<b>(</b><b>new</b> Graphics<b>:</b><b>:</b>TBitmap<b>)</b><b>;</b>
+    <b>}</b>
+
+    <font color="navy">// do something with the list</font>
+
+    <font color="navy">// now delete the list</font>
+    <b>for</b><b>(</b><b>int</b> j<b>=</b><font color="blue">0</font><b>;</b> j&lt; list<b>-></b>Count<b>;</b> j<b>++</b><b>)</b>
+    <b>{</b>
+        <b>delete</b> <b>reinterpret_cast</b>&lt;Graphics<b>:</b><b>:</b>TBitmap <b>*</b><b>></b><b>(</b>list<b>-></b>Items<b>[</b>j<b>]</b><b>)</b><b>;</b>
+    <b>}</b>
+    <b>delete</b> list<b>;</b>
+</pre>
+<P>
+There are a couple of additional things to think about. First, remember that <TT>reinterpret_cast</TT> is not a type
+safe cast. It does not check that the items are the correct type. Secondly, don't bother trying to use
+<TT>dynamic_cast</TT> because you cannot use <TT>dynamic_cast</TT> on a <TT>void pointer</TT>. Thirdly, if your list
+contains different types of objects, cast the objects to the most immediate, common base class. For example, if your list contains
+<TT>TEdit</TT> pointers and <TT>TButton</TT> pointers, then cast the items to a <TT>TWinControl</TT> pointer before
+deleting. In order for this to work, the destructors in your classes must be declared as virtual. Also, this won't work
+if the pointers do not have a common base class. Finally, many of these headaches can be avoided by using a type-safe
+derivative of <TT>TList</TT> or one of the typesafe template containers in the STL.
+</P>
+
+<HR>
+<BR>
+<H3>
+<A NAME="overuse_tlist">Don't overuse the TList class</A>
+</H3>
+<P>
+C++ programmers should generally use the containers from the STL instead of using
+<TT>TList</TT>. There are several reasons. First of all, STL code is portable between
+compilers and operating systems. Secondly, <TT>TList</TT> is not typesafe. When you
+use <TT>TList</TT> as a container for <TT>TButton</TT> objects, nothing prevents you
+from adding a <TT>TListBox</TT> to your container. STL containers prevent you from adding
+the wrong types of objects to the container. Lastly, <TT>TList</TT> is very poor at storing
+large numbers of objects (> 5000 or so). The STL containers are much more efficient at storing
+large numbers of objects.
+</P>
+
+<HR>
+<BR>
+<H3>
+<A NAME="parent">Don't forget to set the Parent property of a control created at runtime</A>
+</H3>
+<P>
+When you create a control at runtime, the control will not appear if you forget to set the control's
+<TT>Parent</TT> property. You will usually set the <TT>Parent</TT> to be a form, a panel, or a group box.
+See the FAQ on how to <A TARGET=_top HREF="../faqs/faq2.htm">create a control at runtime</A> for more info.
+</P>
+
+<HR>
+<BR>
+<H3>
+<A NAME="mdiparent">Don't set the Parent property of MDI child forms</A>
+</H3>
+<P>
+Doing so will cause runtime problems in your program. To create an MDI child form, simply construct the form object.
+Don't worry about the <TT>Parent</TT> property.
+</P>
+
+<HR>
+<BR>
+<H3>
+<A NAME="oncreate">Don't use OnCreate and OnDestroy, use C++ constructors and destructors instead</A>
+</H3>
+<P>
+If you need to run some code during the construction of a form, you should place the code inside the
+constructor of the form. If you need to do something while a form is being destroyed, add a destructor to your
+class and place the finalization code there. Avoid using the <TT>OnCreate</TT> and <TT>OnDestroy</TT> events that are provided
+by the form.
+</P>
+<P>
+<TT>OnCreate</TT> and <TT>OnDestroy</TT> are handy to use, because you can create them from the Object Inspector. Despite this ease of
+use, you should avoid them. There are several reasons. The most important reason is that you don't know when the <TT>OnCreate</TT>
+and <TT>OnDestroy</TT> events will fire.
+</p>
+<P>
+Let's look at the <TT>OnCreate</TT> event. It is triggered from inside the VCL function <TT>TCustomForm::DoCreate</TT>. OK, so who calls
+<TT>DoCreate</TT>? It is called from one of two places depending on the value of the <TT>OldCreateOrder</TT> property. If <TT>OldCreateOrder</TT> is
+false (ie the good setting), then <TT>DoCreate</TT> is called from <TT>TCustomForm.AfterConstruction</TT>. <TT>AfterConstruction</TT> executes
+immediately after all of the constructors for your form have finished running (how this happens can be attributed to compiler magic). The second function
+that calls <TT>DoCreate</TT> is <TT>TCustomForm::Create</TT>, the pascal constructor for the form.
+</P>
+<P>
+This is where things get interesting. What are the consequences of triggering an event, such as <TT>OnCreate</TT>, from inside the
+constructor of a base class? Well, the consequences are serious. Recall that the base class constructors execute before the
+body of your derived constructor and more importantly, before any derived member objects have been initialized. Take this
+code for example:
+<pre>
+<font color="navy">// header file</font>
+<b>class</b> TForm1 <b>:</b> <b>public</b> TForm
+<b>{</b>
+<b>__published</b><b>:</b>
+    <b>void</b> <b>__fastcall</b> FormCreate<b>(</b>TObject <b>*</b>Sender<b>)</b><b>;</b>
+<b>public</b><b>:</b>
+    AnsiString m_foo<b>;</b>
+    <b>__fastcall</b> TForm1<b>(</b>TComponent<b>*</b> Owner<b>)</b><b>;</b>
+<b>}</b>
+
+<font color="navy">// cpp file</font>
+<b>__fastcall</b> TForm1<b>:</b><b>:</b>TForm1<b>(</b>TComponent<b>*</b> Owner<b>)</b>
+    <b>:</b> TForm<b>(</b>Owner<b>)</b>
+<b>{</b>
+<b>}</b>
+
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>FormCreate<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    m_foo <b>=</b> <font color="blue">"hello world"</font><b>;</b>
+<b>}</b>
+</pre>
+<P>
+If <TT>OldCreateOrder</TT> is true, <TT>FormCreate</TT> will execute before the derived <TT>TForm1</TT> constructor runs, and before the
+<TT>m_foo</TT> member variable has been constructred. In this code, <TT>m_foo</TT> is default constructed. This default construction happens just after
+the base class constructor is called (ie when <TT>:TForm(Owner)</TT> returns). But <TT>FormCreate</TT> is triggered from inside of the base class
+constructor. When the "hello world" assignment executes, <TT>m_foo</TT> hasn't been constructed yet. It essentially does not exist.
+</P>
+<P>
+Assigning values to variables that haven't been constructed is not a good thing. So what happens to this code if <TT>OldCreateOrder</TT> is true?
+At best, the assignment of "hello world" will be lost. That's what happened when I ran the code. In a worst case scenario, the app would crash.
+What's really scary is that this code switches from being malformed to being perfectly
+legal with a switch of the <TT>OldCreateOrder</TT> property.
+</p>
+<P>
+Ok, so let's summarize the most important reason why <TT>OnCreate</TT> is dangerous: because it could execute before your constructor executes and
+before any member objects have been initialized. In C++, it is generally mandated that a base class constructor should not be able to call the
+member functions of a derived class. <TT>OnCreate</TT> violates this. <TT>OnDestroy</TT> does too, but during destruction.
+</P>
+<P>
+Now, you might be thinking to yourself: "hey they danger isn't <TT>OnCreate</TT>, its that evil <TT>OldCreateOrder</TT> property. As long as
+<TT>OldCreateOrder</TT> is false, <TT>OnCreate</TT> and <TT>OnDestroy</TT> are safe." This statement is for the most part correct. While it is
+true that you can control the behavior of <TT>OnCreate</TT> and <TT>OnDestroy</TT> through <TT>OldCreateOrder</TT>, it is in fact difficult to
+keep control of <TT>OldCreateOrder</TT> itself. <TT>OldCreateOrder</TT> is true by default when upgrading projects from BCB3 (true == the bad setting).
+And it gets stuck on true when using form inheritance. In BCB5, <TT>OldCreateOrder</TT>, the deadliest property of all, is not even displayed by the
+object inpsector unless you specifically tell the OI to show it. In the end, it just isn't worth it. Avoid the use of <TT>OnCreate</TT> and
+<TT>OnDestroy</TT>, and you won't have to worry about <TT>OldCreateOrder</TT> rearing its ugly head.
+</P>
+<P>
+There is another reason to avoid <TT>OnCreate</TT>, even if you have <TT>OldCreateOrder</TT> set properly. It is inefficient to initialize
+objects inside of <TT>OnCreate</TT>. In the code above, <TT>m_foo</TT> is default constructed. When the <TT>AfterConstruction</TT> event fires the
+<TT>OnCreate</TT> handler, the string "hello world" is copied into <TT>m_foo</TT>. This occurs via the construction of a temporary <TT>AnsiString</TT>
+object, followed by a called to <TT>AnsiString</TT>'s assignment operator. This is somewhate ineffiectient. If all we wanted to do was initialize
+<TT>m_foo</TT> with "hello world", the most efficient method is to use direct initialization in the constructor. Like this:
+</P>
+<pre>
+<b>__fastcall</b> TForm1<b>:</b><b>:</b>TForm1<b>(</b>TComponent<b>*</b> Owner<b>)</b>
+    <b>:</b> TForm<b>(</b>Owner<b>)</b><b>,</b>
+      m_foo<b>(</b><font color="blue">"hello world"</font><b>)</b>
+<b>{</b>
+<b>}</b>
+</pre>
+<P>
+This code initializes <TT>m_foo</TT> using the <TT>char *</TT> conversion constructor of <TT>AnsiString</TT>. As a result, we have replaced a
+default constructor call, creation of a temporary AnsiString object, and a call to the assignment operator with a single call to a conversion
+constructor. Plus, this method of construction is the C++ way of doing things, as opposed to the Delphi way.
+</P>
+<P>
+It is our advice that BCB users pretend that <TT>OnCreate</TT> and <TT>OnDestroy</TT> don't exist. You are using a C++ product, so we feel it is
+wise just code things the C++ way.
+</P>
+
+
+
+<HR>
+<BR>
+<H3>
+<A NAME="createform">Use <TT>new</TT> instead of Application-&gt;CreateForm</A>
+</H3>
+<P>
+When you need to create a form in code, use the <TT>new</TT> operator instead of calling <TT>Application-&gt;CreateForm</TT>.
+If the IDE puts <TT>CreateForm</TT> in your code, then just leave it alone. This applies primarily to the <TT>WinMain</TT> function
+in your project cpp file. But for code that you write, use <TT>new</TT> instead.
+</P>
+<P>
+Here are some differences between <TT>CreateForm</TT> and the <TT>new</TT> operator (5 is the best):
+</P>
+<P>
+<B>1-</B> If your form is the first form being constructed with <TT>CreateForm</TT>, then it is
+automatically promoted to the job of being the mainform of the app. This may not be
+what you want. What if you need to display a splash screen or a login dialog when
+your app starts? If you create this dialog first with <TT>CreateForm</TT>, then it gets
+promoted to be the main form. With <TT>new</TT>, this does not happen.
+</P>
+<P>
+<B>2-</B> <TT>CreateForm</TT> always sets the global application object to be the owner of the form.
+You can't override this. With <TT>new</TT>, you get to explicitly pass the owner.
+</P>
+<P>
+<B>3-</B> <TT>CreateForm</TT> has to invoke the constructor for your form class. Your constructor is
+off in your c++ code somewhere. Have you ever wondered how code written in a pascal
+library can find and execute your constructor? How does it even know anything about
+your constructor? It doesn't even know anything about your form's type (ie <TT>TForm1</TT>).
+</P>
+<P>
+The answer is that <TT>CreateForm</TT> invokes your constructor virtually. This is that
+virtual constructor stuff that everyone is always talking about. If the idea of a
+virtual constructor (which should not exist in c++) makes you queasy, then just use
+<TT>new</TT> instead.
+</P>
+<P>
+<B>4-</B> Because of the virtual constructor stuff, <TT>CreateForm</TT> can only call one type of
+form constructor: the constructor that takes a single <TT>TComponent *</TT> for an owner. If
+you write alternative constructors, then you can't use them with <TT>CreateForm</TT>.
+</p>
+<p>
+<B>5-</B> What happens if you call <TT>CreateForm</TT> and your form does not have a constructor that
+takes a single <TT>TComponent *</TT> as an owner? The answer is 'bad stuff happens'. Try it
+out. Create a new application. In the main form, add an <TT>AnsiString</TT> parameter to the
+existing constructor. Then add a <TT>ShowMessage</TT> or something to the body of the constructor. Like this:
+</P>
+<pre>
+<b>__fastcall</b> TForm1<b>:</b><b>:</b>TForm1<b>(</b>TComponent<b>*</b> Owner<b>,</b> <b>const</b> AnsiString <b>&</b>foo<b>)</b>
+    <b>:</b> TForm<b>(</b>Owner<b>)</b>
+<b>{</b>
+    ShowMessage<b>(</b><font color="blue">"Foo = "</font> <b>+</b>  foo<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+Make sure you change the header file too. Compile and link the app (no warnings or
+errors occur). Put a breakpoint on the <TT>ShowMessage</TT> call (if you can, hint hint). Run the
+app. Notice anything missing? Does the <TT>ShowMessage</TT> line ever execute?
+</p>
+<p>
+No it doesn't. How come? How can a class be constructed without calling its constructor? The
+answer lies in that virtual constructor stuff. When you change the argument pattern
+for the constructor, you are no longer overriding the virtual constructor of the base
+class. Since <TT>CreateForm</TT> invokes the virtual constructor, and because your class does
+not override that virtual function, code execution jumps straight to the constructor
+of the base class, completely bypassing the derived class (ie *your* class). The
+initialization of your form and all its member variables is circumvented. 
+</P>
+<P>
+For these reasons, it is wise to use operator <TT>new</TT> for code that you write. <TT>CreateForm</TT> is one of those
+pascal things that C++ programmers are wise to avoid.
+</P>
+
+<HR>
+<BR>
+<H3>
+<A NAME="nullptr">Always set a pointer variable to NULL or 0 after deleting it</A>
+</H3>
+<P>
+Dereferencing a <TT>NULL</TT> pointer will always cause an access violation. Dereferencing a non-null pointer that has
+been deleted will sometimes raise an access violation, but many times, your program will continue to run. Sometimes,
+the program will appear to behave normally, and then mysteriously crash on you without warning. For debugging purposes,
+it's best to try and force your program to always crash when you dereference a pointer that has already been deleted.
+It is much easier to fix a program that always fails than it is to fix a program that sometimes fails.
+</P>
+<P>
+<B>Note:</B> A couple of readers have pointed out some problems with this suggestion. Hendrik Schober had this to say
+</P>
+<I>
+<P>
+[Always setting] a pointer variable to NULL or 0 after deleting it
+has one disadvantage: It makes it harder to find multiple deletes.
+</P>
+<P>
+Hendrik Schober
+</P>
+</I>
+<P>
+He has a good point. Deleting a null pointer is guaranteed to be safe. However, deleting the same pointer multiple times may be the
+result of poor coding. Setting your pointers to <TT>NULL</TT> will mask this problem. Chris Uzdavinis, a fellow TeamB member for C++
+also had some comments:
+</P>
+<I>
+<P>
+There are two things that I think should be mentioned.
+</P>
+<P>
+1) class member pointers that point to objects deallocated in a destructor
+need not be zeroed, because the class containing the pointer is going away
+and the dangling pointer problem doesn't exist.  Zeroing the pointer is pure
+overhead without any benefit.
+</P>
+<P>
+2) If a pointer has its object deleted, something non-zero but recognizable
+is preferable, IMHO, because when a particular address is referenced that is
+known to be out-of bounds, then you know what the error is immediately.
+Null pointers may or may not be problems.
+</P>
+<P>
+Also, nullifying pointers encourages bad coding.  People stop paying as much
+attention to writing correct code.  Instead, there are lots of "if (x)
+x->do_someting()" kinds of statements, because the programmers seem to stop
+caring about if the pointer should be valid.
+</P>
+<P>
+...
+</P>
+<P>
+If a pointer must be set to anything, I think a non-zero value that is
+guarenteed to be invalid is a better solution.
+</P>
+<P>
+Chris Uzdavinis
+</P>
+</I>
+<P>
+Both items are true. Point #1 highlights the fact that assigning NULL to all of
+your pointers is going to cost you some CPU cycles. For the most part, those CPU cycles
+are wasted cycles. Point #2 suggests that you use some other, non-zero constant to
+make the assignment. What's the benefit of this? Well, if you try to access a null
+pointer, the error box will say "Read of address 0". This error message does not provide
+much information about where the access violation occurred. Using a non-zero constant can help
+you isolate the problem.
+</P>
+<P>
+You should way the pros and cons of this suggestion before deciding whether or not
+you actually want to use this technique. 
+</P>
+
+<HR>
+<BR>
+<H3>
+<A NAME="makefile">Don't alter the makefile switches for alignment or enum variables</A>
+</H3>
+<P>
+<B>Note:</B> This suggestion applies to BCB3. Borland fixed the VCL headers in BCB4 and BCB5. You can now change the project
+options for alignment and enums in BCB4 and BCB5 without worrying about messing up the VCL. The VCL headers contain <TT>#pragma</TT>
+guards to ensure correct alignment for VCL objects.
+</P>
+<P>
+The VCL relies on dword alignment (-a4) and enum types that are not forced to be the same size as an int (-b-).
+If you switch the alignment mode to byte size alignment (-a1) or word alignment (-a2), you will start to see some strange access
+violations when you run your program. The same applies if you turn on the treat enums as integers compiler option (-b).
+</P>
+<P>
+If you have a section of code that requires a different setting for alignment or enums, you can use the <TT>#pragma push</TT> and
+<TT>#pragma pop</TT> compiler directives.
+</P>
+<pre>
+<font color="green">#pragma option push -a1</font>
+<b>struct</b> Foo
+
+<b>{</b>
+  <b>int</b>  x<b>;</b>
+  <b>int</b>  y<b>;</b>
+<b>}</b><b>;</b>
+<font color="green">#pragma pop</font>
+</pre>
+
+
+
+<HR>
+<BR>
+<H3>
+<A NAME="vclib">Don't link with LIB files or OBJ files created by other compilers</A>
+</H3>
+<P>
+Visual C++ uses a derivative of the COFF file format format for LIB and OBJ files. Borland compilers use the OMF
+format. The two are not compatible. You cannot link with a LIB or OBJ file that was created with Visual C++ (or any
+other compiler for that matter).
+</P>
+
+
+
+<HR>
+<BR>
+<H3>
+<A NAME="bclib">Don't link with OBJ files created by a previous version of the Borland compiler</A>
+</H3>
+<P>
+The OBJ file format changed in C++Builder 3. OBJ files created with older versions of C++Builder or Borland C++ are
+not compatible with the new format.
+</P>
+
+
+<HR>
+<BR>
+<H3>
+<A NAME="tlibimp">Don't import COM type libraries using the IDE menu option</A>
+</H3>
+<P>
+<B>Note:</B> This suggestion applies only to BCB3. Ignore this suggestion for BCB4, BCB5, and newer.
+</P>
+<P>
+C++Builder 3 contained a bug that made it difficult, if not impossible, to import type libraries. The patch to
+C++Builder 3 fixes many of these problems. However, the patch only fixes the command line TLIBIMP.EXE utility. The
+patch does not fix the code in the IDE that imports a type library when you choose the Project | Import Type Library
+menu item.
+<P>
+If you experience problems importing a particular type library, try to import the library using
+the command line utility instead of using the IDE. After running TLIBIMP, add the resulting files to your project.
+</P>
+
+
+<HR>
+<BR>
+<H3>
+<A NAME="oldcreateorder">When you import BCB3 forms into BCB4, set OldCreateOrder to false</A>
+</H3>
+<P>
+Be careful when you migrate your projects from BCB3 to BCB4. You need to watch out for the
+<TT>OldCreateOrder</TT> property on your forms and datamodules. For some reason, when you import
+your BCB3 forms into BCB4, the <TT>OldCreateOrder</TT> property gets set to true. Having <TT>OldCreateOrder</TT>
+set to true can cause access violations when your forms are created or destroyed.
+</P>
+<P>
+In C++Builder 4, <TT>TForm</TT> contains a new property called <TT>OldCreateOrder</TT>. If this property is true, the
+<TT>OnCreate</TT> event of your forms will execute before the constructor runs. Actually, the <TT>OnCreate</TT> handler
+will fire from within the <TT>Create</TT> method of <TT>TCustomForm</TT>. Recall that in C++, base class
+constructors execute before constructors in derived classes.
+</P>
+<P>
+Having the <TT>OnCreate</TT> handler fire before your constructor runs creates a scenario that is compatible with
+Delphi 1, 2, and 3, and C++Builder 1. However, this backward compatability can also cause memory problems. If
+<TT>OldCreateOrder</TT>  is true, your <TT>OnCreate</TT> handler will run before your constructor has a chance to
+initialize variables and construct member objects. Access violations can occur if your <TT>OnCreate</TT> handler
+attempts to dereference or use member variables. For this reason, it is best to always leave <TT>OldCreateOrder</TT>
+false. When <TT>OldCreateOrder</TT> is false, the <TT>OnCreate</TT> event is fired after your constructor runs.
+This mode is compatible with C++Builder 3.
+</P>
+
+<P>
+If you upgrade a project to C++Builder 4, you should open each form in your project and manually set
+<TT>OldCreateOrder</TT> to false. You can leave <TT>OldCreateOrder</TT> set on true if you don't write
+<TT>OnCreate</TT> or <TT>OnDestroy</TT> handlers, but this could cause code maintenance headaches down the road.
+</P>
+<P>
+The <TT>OldCreateOrder</TT> property also applies to the <TT>OnDestroy</TT> event. The following table explains how
+<TT>OldCreateOrder</TT> affects the sequence of events during a form's lifetime.
+</P>
+<PRE>
+<B>Table 1</B>: Understanding the OldCreateOrder property in C++Builder 4.0
+===========================================================================
+OldCreateOrder = false                               OldCreateOrder = true
+---------------------------------------------------------------------------
+ TCustomForm.Create                                   TCustomForm.Create
+ TMyForm::TMyForm()                                   TMyForm::OnCreate
+ TMyForm::OnCreate                                    TMyForm::TMyForm()
+ ...                                                  ...
+ TMyForm::OnDestroy                                   TMyForm::~TMyForm()T
+ TMyForm::~TMyForm()                                  TMyForm::OnDestroy
+ TCustomForm.Destroy                                  TCustomForm.Destroy
+--------------------------------------------------------------------------
+</PRE>
+
+<HR>
+<BR>
+<H3>
+<A NAME="asfunction">Don't use AsDateTime or AsInteger to assign one TField to another</A>
+</H3>
+<P>
+Assigning the value of one field to another is a common task in database applications. In C++Builder or Delphi
+programs, you may find yourself writing code like this:
+<pre>
+    Table1<b>-></b>FieldByName<b>(</b>seq_no<b>)</b><b>-></b>AsInteger  <b>=</b> Table2seq_no<b>-></b>AsInteger<b>;</b>
+    Table1<b>-></b>FieldByName<b>(</b>date<b>)</b>  <b>-></b>AsDateTime <b>=</b> Table2date  <b>-></b>AsDateTime<b>;</b>
+</pre>
+<P>
+As long as the fields in <TT>Table2</TT> are not null, these two code statements work great. What happens when
+the fields in <TT>Table2</TT> are null (ie, the fields contain no value)? You might think that the fields in
+<TT>Table1</TT> will also be null after the <TT>AsInteger</TT> and <TT>AsDateTime</TT> assignments.
+</P>
+<P>
+This isn't the way it works. When you assign a null field to another
+field through the <TT>AsInteger</TT> property, the VCL copies over a value of 0. The field will not be null.
+Likewise, the datetime field wont be null if you use <TT>AsDateTime</TT> to assign its value. It will also
+contain the value 0, which corresponds to a date of Jan 1 1900. In the sample above, the integer field in
+<TT>Table1</TT> will contain the value 0 if <TT>Table2seq_no</TT> is empty, and the date field of <TT>Table1</TT> will
+contain the date Jan 1 1900 if <TT>Table2date</TT> is null.
+</P>
+<P>
+Assigning a null string field to another field through the <TT>AsString</TT> property works ok. However,
+<TT>AsCurrency</TT>, <TT>AsBoolean</TT>, and <TT>AsFloat</TT> suffer from the same problems that plague
+<TT>AsDateTime</TT> and <TT>AsInteger</TT>. As a workaround, you can use the <TT>AsVariant</TT> property.
+<TT>Variant</TT> types support the concept of a null value. If the source field is null, the destination field
+will also be null if you use the <TT>AsVariant</TT> property to assign its value. As an added bonus, you can use
+<TT>AsVariant</TT> on almost all field types. To use the <TT>AsVariant</TT> property, change the previous code to:
+</P>
+<pre>
+    Table1<b>-></b>FieldByName<b>(</b>seq_no<b>)</b><b>-></b>AsVariant <b>=</b> Table2seq_no<b>-></b>AsVariant<b>;</b>
+    Table1<b>-></b>FieldByName<b>(</b>date<b>)</b>  <b>-></b>AsVariant <b>=</b> Table2date  <b>-></b>AsVariant<b>;</b>
+</pre>
+
+
+<HR>
+<BR>
+<H3>
+<A NAME="currency">Don't use TCurrencyField unless you have to</A>
+</H3>
+<P>
+<TT>TCurrencyField</TT> is a poorly named class. This field type is used to represent decimal numbers in a database.
+Since the class name is <TT>TCurrencyField</TT>, you might expect that the class uses the <TT>Currency</TT> datatype
+internally. This is not the case. <TT>TCurrencyField</TT> uses floating point numbers internally to store data.
+</P>
+<P>
+Unfortunately, floating point numbers can lead to problems in database applications, particularly when dealing with
+fields that represent dollar amounts. Your dollar amounts may, at times, appear to be off by a penny, and to some
+bankers, this is a big deal! To see what I mean, run a program that displays a <TT>TCurrencyField</TT> in a
+<TT>DBEdit</TT>. Edit the field and set the amount to $12.1351. When the value is written, the half penny causes the
+.1351 to round up to .14. This is correct. Now try to enter 12.1350. Once again, the amount should be rounded up. When
+I test this on the orders database that comes with C++Builder, I see that the amount rounds down to $12.13. This may
+not seem like a big deal, but the problem gets worse when you start connecting to SQL servers, such as MS SQL
+Server and Oracle, where the database's internal format of a number may be different than the BDE's representation of
+the value.
+</P>
+<P>
+The solution to this problem is to switch to the <TT>TBCDField</TT> class whenever possible. <TT>TBCDField</TT>
+represents its data internally using the <TT>Currency</TT> datatype. The <TT>Currency</TT> datatype doesn't suffer
+from the same formatting and rounding problems that plague floating point numbers. You can tell the BDE to use
+<TT>TBCDField</TT>'s by default. To do so, run the BDE administrator, select the configuration tab, find the driver
+that you are using, and set the value of <TT>Enable BCD</TT> to <TT>true</TT>. The <TT>Enable BCD</TT> parameter can
+also be added to the <TT>Params</TT> property of <TT>TDatabase</TT>.
+</P>
+
+
+<HR>
+<BR>
+<H3>
+<A NAME="cachedfilter">Don't turn on CachedUpdates when the Filtered property of dataset is on</A>
+</H3>
+<P>
+When you turn on <TT>CachedUpdates</TT>, only the records that are active in the filter are cached.
+If this is the behavior that you expect, then it's no big deal. This presents a problem if you were
+expecting that all records would get cached, regardless of whether they meet the current filter requirements.
+For example:
+</P>
+<pre>
+    <font color="navy">// assume that filters and cachedupdates are already off</font>
+    <font color="navy">// filter out all records where the stat is not iowa</font>
+    Table1<b>-></b>Filter <b>=</b> <font color="blue">"state = 'IA'"</font><b>;</b>
+    Table1<b>-></b>Filtered <b>=</b> <b>true</b><b>;</b>
+    Table1<b>-></b>CachedUpdates <b>=</b> <b>true</b><b>;</b>
+</pre>
+<P>
+In this code example, only records where the state is Iowa will be cached.
+</P>
+
+
+<HR>
+<BR>
+<H3>
+<A NAME="updatefilter">Don't call ApplyUpdates when the Filtered property of dataset is on</A>
+</H3>
+<P>
+If you call <TT>ApplyUpdates</TT> on a filtered dataset, only the active records that meed the filter requirements
+will be updated. Records that are hidden because of the filter will not be updated. This isn't so bad if you want
+this behavior. However, you will notice subtle data loss problems if you expect all records to get updated. Inserted
+records that are hidden because of the filter won't be inserted, and modified records that are hidden won't be updated.
+</P>
+<P>
+To ensure that all records get applied, turn off filters while applying the updates.
+</P>
+<pre>
+    Query1<b>-></b>Filtered <b>=</b> <b>false</b><b>;</b>
+    Query1<b>-></b>ApplyUpdates<b>(</b><b>)</b><b>;</b>
+    Query1<b>-></b>CommitUpdates<b>(</b><b>)</b><b>;</b>
+    Query1<b>-></b>Filtered <b>=</b> <b>true</b><b>;</b>
+</pre>
+
+
+<HR>
+<BR>
+<H3>
+<A NAME="dataaware">Don't use the VCL's data aware controls</A>
+</H3>
+<P>
+The data aware controls that come with C++Builder are extremely inflexible to change. Deriving a new control from
+<TT>TDBEdit</TT> or <TT>TDBCheckBox</TT> doesn't buy you much because just about everything in the base class is
+private. If you want to modify a data aware control, you essentially have to create a new control from scratch and
+duplicate the existing functionality that exists in the VCL class. Duplicating functionality is bad practice.
+</P>
+Take the <TT>TDBCheckBox</TT> class for example. I recently wanted to derive a new control that modified the behavior
+of the default <TT>DBCheckBox</TT>. All I wanted to do was to update the record as soon as the box was checked,
+instead of waiting until the user tabbed to a new control. In order to modify the control, I needed access to the
+<TT>TDataLink</TT> member of the base class. Unfortunately it is declared private, so I could't access it my derived
+class. Because the <TT>TDataLink</TT> and its associated methods were declared private, I could not modify the behavior
+of the control without resorting to hacks (and yes, the <TT>CM_GETDATALINK</TT> message is a hack).
+</P>
+<P>
+Before you begin a large database project with C++Builder, I suggest that you copy all of the code from DBCTRLS.PAS
+into a new unit. This way, if you need to make a change or derive a new class, you can do so without hacking your way
+into the default VCL controls. If you find that you don't need to modify the default functionality, then you haven't lost
+anything.
+</P>
+<P><B>Note:</B> In order to avoid confusion with the existing VCL controls, I rename my altered controls. For example,
+<TT>TDBEdit</TT> becomes <TT>TXDBEdit</TT>, and <TT>TDBCheckBox</TT> becomes <TT>TXDBCheckBox</TT>. I then add these
+controls to my user package.
+</P>
+
+<HR>
+<BR>
+<H3>
+<A NAME="lookupcontrols">Don't use TDBLookupComboBox or TDBLookupListBox</A>
+</H3>
+<P>
+<B>Update:</B> This suggestion applies to BCB3 and BCB4. The bug has been fixed in BCB5.
+</P>
+<P>
+<TT>TDBLookupComboBox</TT> and <TT>TDBLookupListBox</TT> both derive from <TT>TDBLookupControl</TT>. Unfortunately, as
+of version 4.0 of the VCL, <TT>TDBLookupControl</TT> has a nasty bug that can cause access violations whenever a lookup
+object is destroyed.
+</P>
+<P>
+The problem resides in the <TT>Destroy</TT> method of <TT>TDBLookupControl</TT>.
+</P>
+<PRE>
+<B>destructor</B> TDBLookupControl.Destroy;
+<B>begin</B>
+  FListFields.Free;
+  FListLink.FDBLookupControl := <B>nil</B>;
+  FListLink.Free;
+  FDataLink.FDBLookupControl := <B>nil</B>;
+  FDataLink.Free;
+  inherited Destroy;
+<B>end</B>;
+</PRE>
+<P>
+<TT>Destroy</TT> is responsible for deleting two datalink objects called <TT>FListLink</TT> and <TT>FDataLink</TT>. Notice
+that neither object is set to <TT>nil</TT> after being deleting. This causes problems in the <TT>Notification</TT> method,
+which gets called when control passes to the base class <TT>Destroy</TT> methods via the <TT>inherited</TT> call. The
+<TT>Notification</TT> method looks like this.
+</P>
+<PRE>
+<B>procedure</B> TDBLookupControl.Notification(AComponent: TComponent;
+  Operation: TOperation);
+<B>begin</B>
+  <B>inherited</B> Notification(AComponent, Operation);
+  <B>if</B> Operation = opRemove <B>then</B>
+  begin
+    <B>if</B> (FDataLink <> <B>nil</B>) <B>and</B> (AComponent = DataSource) <B>then</B> DataSource := nil;
+    <B>if</B> (FListLink <> <B>nil</B>) <B>and</B> (AComponent = ListSource) <B>then</B> ListSource := nil;
+  <B>end</B>;
+<B>end</B>;
+</PRE>
+<P>
+Observe how the <TT>Notification</TT> method first checks to see if the datalink objects are <TT>nil</TT> before it
+attempts to dereference them. The problem is that the destructor does not set the datalink objects to <TT>nil</TT>
+after it destroys them. This causes the <TT>if</TT> statement to pass even after the datalink objects have been deleted.
+As a result, the <TT>Notification</TT> method makes an assigment to deleted memory, which can cause access violations.
+</P>
+<P>
+To work around this bug, you must either not use the lookup controls, or you will have to find a way to recode
+<TT>TLookupControl::Destroy</TT> so that it sets the datalink objects to <TT>nil</TT> after deleting them. If you
+heeded the advice about <A HREF="#dataaware">not using the built in data aware controls</A>, then you can fix the
+<TT>Destroy</TT> function by changing it as shown below.
+</P>
+<PRE>
+<B>destructor</B> TDBLookupControl.Destroy;
+<B>begin</B>
+  FListFields.Free;
+  FListLink.FDBLookupControl := <B>nil</B>;
+  FListLink.Free;
+  FListLink := <B>nil</B>;
+
+  FDataLink.FDBLookupControl := <B>nil</B>;
+  FDataLink.Free;
+  FDataLink := <B>nil</B>;
+
+  inherited Destroy;
+<B>end</B>;
+</PRE>
+<P><B>Note:</B> Borland is aware of this bug.</P>
+<HR>
+<BR>
+<H3>
+<A NAME="active">Don't set the Active property of a dataset to true at design time</A>
+</H3>
+In my database projects, I have a large number of <TT>TQuery</TT> controls that function as lookup datasets for
+combo boxes and lookup fields. These controls usually perform a <TT>select *</TT> out of some lookup table. For these
+lookup datasets, it is often convenient to set <TT>Active</TT> to true at design time. However, you should avoid this
+temptation.
+</P>
+<P>
+Here is the problem that I have witnessed. Whenever I open a data module in the IDE that contains a dataset where
+<TT>Active</TT> is true, the dataset attempts to perform the query against that database. What happens if the server is
+down, or a connection cannot be made to the database? If the dataset cannot be opened, C++Builder silently sets the
+<TT>Active</TT> property of the control back to false. This is bad. No warning is given that the control is being
+modified, and you won't notice the problem until you run your program. Lookup fields will appear to be blank, and
+lookup combo boxes will be empty.
+</P>
+<P>
+To avoid this problem, especially in a large project, make the assignment to <TT>Active</TT> in code. The constructor
+of a data module is a good place to do this.
+</P>
+
+
+<HR>
+<BR>
+<H3>
+<A NAME="filteredit">Don't change the Filter property of a dataset while the dataset is in edit mode</A>
+</H3>
+<P>
+When you change the <TT>Filter</TT> or <TT>Filtered</TT> property of a dataset, the VCL calls the
+<TT>CheckBrowseMode</TT> function. This function posts any changes if the dataset was in insert or edit mode.
+This may or may not cause problems in your projects, but it is something to be aware of. Messing with the filter
+of a dataset takes the dataset out of edit mode.
+</P>
+
+
+<HR>
+<BR>
+<H3>
+<A NAME="updatestatus">Don't look at the value of UpdateStatus in the OnUpdateRecord handler of a dataset</A>
+</H3>
+<P>
+<TT>UpdateStatus</TT> returns the cached update record status of the current record. When you apply cached updates,
+the VCL loops through and calls your <TT>OnUpdateRecord</TT> handler for each record that was modified, inserted, or
+deleted. However, the VCL does not navigate from record to record as it calls your handler. The record pointer, or
+cursor, does not move. As such, <TT>UpdateStatus</TT> does not change to reflect the status of the record being
+updated. It reflects the status of the current record, and not the record that is being updated.
+</P>
+
+<HR>
+<BR>
+<H3>
+<A NAME="disablecontrols">Don't call Post after calling DisableControls on a dataset</A>
+</H3>
+<P>
+The dataset classes in BCB provide two methods called <TT>DisableControls</TT> and <TT>EnableControls</TT> that come in
+handy when you have to perform some processing on the dataset. Calling <TT>DisableControls</TT> effectively disconnects the dataset
+from all of its data aware controls. The benefit of doing this is that you can work with a dataset without having the data-aware controls
+refreshing themselves all of the time.
+</P>
+<P>
+There is something you should be aware of though. You never want to call the <TT>Post</TT> method after calling <TT>DisableControls</TT>.
+Why is this? Well, let's say that a user has entered something into a <TT>DBEdit</TT> control. A <TT>DBEdit</tt> control updates its field
+whenever you tab to a new control, or if you call the <TT>Post</TT> method. However, if you call <TT>DisableControls</TT> before
+calling <TT>Post</TT>, the changes that were made in the <TT>DBEdit</TT> control do not get posted to the dataset.
+</P>
+<P>
+<B>Note:</B> This bug will only show up if the <TT>DBEdit</TT> retains the input focus during the entire time that <TT>DisableControls</TT>
+and <TT>Post</TT> are called. Well, how likely is that? More likely than you might think. If you call <TT>Post</TT> from a menu click event,
+or from the <TT>OnClick</TT> event of a toolbar button, then the <TT>DBEdit</TT> will keep the focus. If you call <TT>DisableControls</TT>
+before calling post, then changes that were made to the <TT>DBEdit</tt> control will be lost.
+</P>
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2002 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

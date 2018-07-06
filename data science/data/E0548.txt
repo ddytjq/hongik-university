@@ -1,0 +1,453 @@
+ID=E0548
+URL=http://www.gotw.ca/gotw/054.htm
+SIZE=31435
+DATE=12/07/02
+TIME=19:22:09
+DATASET=C
+HTML=
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+
+
+<title>GotW #54: Using Vector and Deque</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<link rel="stylesheet" type="text/css" href="../gotw.css">
+<meta name="Microsoft Theme" content="gotw 111, default">
+<meta name="Microsoft Border" content="tlb, default">
+</head>
+
+<body background="../_themes/gotw/glabkgnd.jpg" bgcolor="#CCFFFF" text="#000000" link="#008080" vlink="#008080" alink="#0000FF"  ><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><table border="0" cellspacing="0" width="100%">
+  <tr>
+    <td colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="6"><strong>
+    GotW #54</strong></font> <!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+
+
+
+<p align="left" style="margin-top: 0; margin-bottom: 0">
+
+<script language="JavaScript"><!--
+MSFPhover = 
+  (((navigator.appName == "Netscape") && 
+  (parseInt(navigator.appVersion) >= 3 )) || 
+  ((navigator.appName == "Microsoft Internet Explorer") && 
+  (parseInt(navigator.appVersion) >= 4 ))); 
+function MSFPpreload(img) 
+{
+  var a=new Image(); a.src=img; return a; 
+}
+// --></script><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav1n=MSFPpreload("../_derived/home_cmp_gotw110_hbtn.gif"); MSFPnav1h=MSFPpreload("../_derived/home_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1h.src" onmouseout="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1n.src"><img src="../_derived/home_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Home" align="middle" name="MSFPnav1"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav2n=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn.gif"); MSFPnav2h=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../news.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2h.src" onmouseout="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2n.src"><img src="../_derived/news.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="News &amp; Events" align="middle" name="MSFPnav2"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav3n=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav3h=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../resources/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3h.src" onmouseout="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3n.src"><img src="../resources/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Community Resources" align="middle" name="MSFPnav3"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav4n=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn.gif"); MSFPnav4h=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../consulting.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4h.src" onmouseout="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4n.src"><img src="../_derived/consulting.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Consulting Services" align="middle" name="MSFPnav4"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav5n=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn.gif"); MSFPnav5h=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../presentations.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5h.src" onmouseout="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5n.src"><img src="../_derived/presentations.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Presentations" align="middle" name="MSFPnav5"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav6n=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav6h=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../publications/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6h.src" onmouseout="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6n.src"><img src="../publications/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Publications" align="middle" name="MSFPnav6"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav7n=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav7h=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7h.src" onmouseout="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7n.src"><img src="_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Guru of the Week" align="middle" name="MSFPnav7"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav8n=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav8h=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../conv/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8h.src" onmouseout="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8n.src"><img src="../conv/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Conversations" align="middle" name="MSFPnav8"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav9n=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn.gif"); MSFPnav9h=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../search.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9h.src" onmouseout="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9n.src"><img src="../_derived/search.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Search GotW.ca" align="middle" name="MSFPnav9"></a>
+</p>
+
+
+
+
+    <!--mstheme--></font></td>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 0">
+      <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav10n=MSFPpreload("../_derived/back_cmp_gotw110_back.gif"); MSFPnav10h=MSFPpreload("../_derived/back_cmp_gotw110_back_a.gif"); }
+// --></script><a href="053.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10h.src" onmouseout="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10n.src"><img src="../_derived/back_cmp_gotw110_back.gif" width="100" height="20" border="0" alt="Prev" name="MSFPnav10"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav11n=MSFPpreload("../_derived/up_cmp_gotw110_up.gif"); MSFPnav11h=MSFPpreload("../_derived/up_cmp_gotw110_up_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11h.src" onmouseout="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11n.src"><img src="../_derived/up_cmp_gotw110_up.gif" width="100" height="20" border="0" alt="Up" name="MSFPnav11"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav12n=MSFPpreload("../_derived/next_cmp_gotw110_next.gif"); MSFPnav12h=MSFPpreload("../_derived/next_cmp_gotw110_next_a.gif"); }
+// --></script><a href="055.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12h.src" onmouseout="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12n.src"><img src="../_derived/next_cmp_gotw110_next.gif" width="100" height="20" border="0" alt="Next" name="MSFPnav12"></a><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td height="5" background="../images/bar.gif" colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td></tr><!--msnavigation--></table><!--msnavigation--><table dir="ltr" border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td valign="top" width="1%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<!--mstheme--></font><table border="0" cellspacing="0" bgcolor="#000000" cellpadding="0">
+  <tr>
+    <td><!--mstheme--><font face="Arial, Arial, Helvetica">
+    <!--mstheme--></font><table border="0" cellpadding="2" cellspacing="1" width="100%" height="483">
+        <tr>
+          <td align="center" bgcolor="#000000" colspan="2" height="16"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-top: 0; margin-bottom: 0"><a href="../news.htm"><b><font color="#FFFF00">News</font></b></a><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <font size="1" color="#0000FF">J<br>
+          U<br>
+          L<br>
+          Y</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-left: 3; margin-right: 3; margin-top: 0" align="center"><font size="1" color="#0000FF">
+            Print articles newly available online</font><!--mstheme--></font><table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%" id="AutoNumber1" bgcolor="#FFFFCC" bordercolordark="#006666" bordercolorlight="#99CCCC">
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill20.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 1&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000" bgcolor="#FFFFCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mxc++-item-4.htm">
+                <font color="#0000FF">Excerpt from MXC++, &quot;Extensible Templates: 
+                Via Inheritance or Traits?&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mcd_review.htm"><font color="#0000FF">
+                Book Review: Modern C++ Design</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill21.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 2: Namespaceops and 
+                Library Versioning&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+            </table><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;A Pragmatic Look at Exception Specifications&quot;<br>
+            </font><font size="1" color="#000080">The usefulness, or lack 
+            thereof, of exception specifications, and how results can vary 
+            across real-world compilers</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <a target="_blank" href="http://www.cuj.com/experts/2007/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;Getting to the Point&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">The Boost library has five 
+            smart pointers that provide a rich array [sic] of useful behaviors.</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font color="#0000FF" size="1">A<br>
+            U<br>
+          G<br>
+          U<br>
+          S<br>
+          T</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin:0 3; ">
+            <a target="_blank" href="http://www.cuj.com/experts/2008/sutter.htm"><i><b><font size="1" color="#0000FF">The New C++</font></b></i> <font size="1" color="#0000FF">
+            column, &quot;Smart(er) Pointers&quot;</font></a><font size="1" color="#000080"><br>
+            A closer look at one of the proposed new standard C++ library 
+            features -- smart pointers, particularly those in Boost and Loki, 
+            and a sneak peek at the usefulness of the proposed typedef templates</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin:0 3; ">
+          <a target="_blank" href="http://www.cuj.com/experts/2008/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;A Midsummer Night's Madness&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">A brew that mixes pointers, 
+          typedefs, and const</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin-top: 0; margin-bottom: 0">
+          <font size="1" color="#0000FF">S<br>
+          E<br>
+          P<br>
+          T<br>
+          E<br>
+          M<br>
+          B<br>
+          E<br>
+          R</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <font size="1" color="#0000FF">&quot;Standard C++ Meets Managed C++&quot;<br>
+            </font><font size="1" color="#000080">A survey of the main (in)compatibilities 
+            between Standard C++ and Microsoft’s managed extensions for C++, and 
+            how the two could converge</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;Export Restrictions, Part 1&quot;<br>
+            </font><font size="1" color="#000080">The scoop on export -- what 
+            some people think it does, what it actually does, and why it’s the 
+            most widely-ignored feature in the C++ standard</font><!--mstheme--></font></td>
+        </tr>
+      </table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p style="margin-top: 0; margin-bottom: 0">
+<img border="0" src="../images/140.gif" width="140" height="1"></p>
+
+<!--mstheme--></font></td><td valign="top" width="24"></td><!--msnavigation--><td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica">
+<!--mstheme--></font><table border="1" cellpadding="6" cellspacing="0" width="100%" bgcolor="#CCCCFF" bordercolordark="#006666" bordercolorlight="#99CCCC">
+  <tr>
+    <td width="100%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p align="center">This is the original GotW problem and solution
+      substantially as posted to Usenet. See the book <i><a href="../publications/mxc++.htm"><b>More
+      Exceptional C++</b></a></i> (Addison-Wesley, 2002) for the most current
+      solution to this GotW issue. The solutions in the book have been revised
+      and expanded since their initial appearance in GotW. The book versions
+      also incorporate corrections, new material, and conformance to the final
+      ANSI/ISO C++ standard.</p>
+    <!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <h2><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Using Vector and Deque&nbsp;<font size="3"><br>
+      Difficulty: 8 / 10</font><!--mstheme--></font></h2>
+<p><i>What is the difference between vector and deque? When should you use each
+one? And how can you properly shrink such containers when you no longer need
+their full capacity? These answers and more, as we consider news updates from
+the standards front.</i></p>
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Problem<!--mstheme--></font></h3>
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">JG Question<!--mstheme--></font></h4>
+<p><b><font size="4">1.</font></b>   In the standard library, vector and deque
+provide similar services. Which should you typically use? Why? Under what
+circumstances would you use the other?</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Guru Questions<!--mstheme--></font></h4>
+<p><b><font size="4">2.</font></b>   What does the following code do?</p>
+<!--mstheme--></font><pre>    vector&lt;C&gt; c( 10000 );
+    c.erase( c.begin()+10, c.end() );
+    c.reserve( 10 );</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p><b><font size="4">3.</font></b>   A vector or deque typically reserves extra
+internal storage as a hedge against future growth, to prevent too-frequent
+reallocation as new elements are added. Is it possible to completely clear a
+vector or deque (that is, remove all contained elements AND free all internally
+reserved storage)? Demonstrate why or why not.</p>
+<p>Warning: Answers 2 and 3 may be subtle. Each has a facile answer, but don't
+stop at the surface; try to be as detailed as possible.</p>
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a name="Solution"></a>Solution<!--mstheme--></font></h3>
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">In Most Cases, Prefer Using deque (Controversial)<!--mstheme--></font></h4>
+
+<p><font color="#999933"><b><font size="4">1.</font></b>   In the standard
+library, vector and deque provide similar services. Which should you typically
+use? Why? Under what circumstances would you use the other?</font></p>
+<p>The C++ Standard, in section 23.1.1, offers some advice on which containers
+to prefer. It says:</p>
+<blockquote>
+  <p><i>vector is the type of sequence that should be used by default... deque
+  is the data structure of choice when most insertions and deletions take place
+  at the beginning or at the end of the sequence.</i></p>
+</blockquote>
+<p>I'd like to present an amiably dissenting point of view: I recommend that you
+consider preferring deque by default instead of vector, especially when the
+contained type is a class or struct and not a builtin type, unless you really
+need the container's memory to be contiguous.</p>
+<p>vector and deque offer nearly identical interfaces and are generally
+interchangeable. deque also offers push_front() and pop_front(), which vector
+does not. (True, vector offers capacity() and reserve(), which deque does not,
+but that's no loss -- those functions are actually a weakness of vector, as I'll
+demonstrate in a moment.)</p>
+<p>The main structural difference between vector and deque lies in the way the
+two containers organize their internal storage: Under the covers, a deque
+allocates its storage in pages, or &quot;chunks,&quot; with a fixed number of
+contained elements in each page; this why a deque is often compared to (and
+pronounced as) a &quot;deck&quot; of cards, although its name originally came
+from &quot;double-ended queue&quot; because of is ability to insert elements
+efficiently at either end of the sequence. On the other hand, a vector allocates
+a contiguous block of memory, and can only insert elements efficiently at the
+end of the sequence.</p>
+<p>The paged organization of a deque offers significant benefits:</p>
+<p>1. A deque offers constant-time insert() and erase() operations at the front
+of the container, whereas a vector does not -- hence the note in the Standard
+about using a deque if you need to insert or erase at both ends of the sequence.</p>
+<p>2. A deque uses memory in a more operating system-friendly way, particularly
+on systems without virtual memory. For example, a 10-megabyte vector uses a
+single 10-megabyte block of memory, which is usually less efficient in practice
+than a 10-megabyte deque that can fit in a series of smaller blocks of memory.</p>
+<p>3. A deque is easier to use, and inherently more efficient for growth, than a
+vector. The only operations supplied by vector that deque doesn't have are
+capacity() and reserve() -- and that's because deque doesn't need them! For
+vector, calling reserve() before a large number of push_back()s can eliminate
+reallocating ever-larger versions of the same buffer every time it finds out
+that the current one isn't big enough after all. A deque has no such problem,
+and having a deque::reserve() before a large number of push_back()s would not
+eliminate any allocations (or any other work) because none of the allocations
+are redundant; the deque has to allocate the same number of extra pages whether
+it does it all at once or as elements are actually appended.</p>
+<p>Interestingly, the Standard stack adapter, which can only grow in one
+direction and so never needs insertion in the middle or at the other end, has
+its default implementation as a deque:</p>
+<!--mstheme--></font><pre>    template &lt;class T, class Container = deque&lt;T&gt; &gt;
+    class stack {
+      // ...
+    };</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Aside: For Those Concerned About the Above<!--mstheme--></font></h4>
+<p>Some readers are going to be concerned about my advice to prefer deque,
+saying perhaps: &quot;But deque is a more complex container than vector, and so
+deque must be very inefficient compared to vector, right?&quot; As always,
+beware premature optimization before you actually measure: I have found the
+&quot;deque must be inefficient&quot; assumption to be generally untrue on
+popular implementations. Using MSVC 5.0 SP3 with the current patches for its
+bundled Dinkumware C++ Standard Library implementation (probably by far the most
+widely-used compiler and library configuration), I tested the performance of the
+following operations, in order:</p>
+<!--mstheme--></font><pre>  Operation   Description
+  ----------- -------------------------------------------
+  grow        first, perform 1,000,000 push_back()s
+  traverse    then traverse, simply incrementing
+                iterators, from begin() to end()
+  at          then access each element in turn using at()
+  shuffle     then random_shuffle() the entire container
+  sort        then sort() the entire container (for list,
+                uses list::sort())</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>I tested each operation against several standard containers including deque.
+I expected vector to outperform deque in &quot;traverse&quot; and
+&quot;at&quot;, and deque to win in &quot;grow&quot; for reason #3 above. In
+fact, note that deque did outperform vector on the &quot;grow&quot; test even
+though in fairness I gave vector special treatment by calling
+vector::reserve(1000000) first to avoid any reallocations. All timings varied
+less than 5% across multiple runs, and all runs executed fully in-memory without
+paging or other disk accesses.</p>
+<p>First, consider what happened for containers of a simple builtin type, int:</p>
+<!--mstheme--></font><pre>  Times in ms     grow traverse      at  shuffle    sort
+  ------------ ------- -------- ------- -------- -------
+  vector&lt;int&gt;     1015       55     219      621    3624
+  deque&lt;int&gt;       761      265     605     1370    7820
+  list&lt;int&gt;       1595      420     n/a      n/a   16070</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>Here list was always the slowest, and the difference between vector and deque
+wasn't as great as several people had led me to expect. Of course, the
+performance differences between the containers will fade when you use a
+contained type that is more expensive to manipulate. What's interesting is that
+most of the differences go away even when the contained type is as simple (and
+common) as a struct E { int i; char buf[100]; };:</p>
+
+<!--mstheme--></font><pre>  Times in ms     grow traverse      at  shuffle    sort
+  ------------ ------- -------- ------- -------- -------
+  vector&lt;E&gt;       3253       60     519     3825   17546
+  deque&lt;E&gt;        3471      274     876     4950   21766
+  list&lt;E&gt;         3740      497     n/a      n/a   15134</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Now deque's performance disadvantage for even an intensive operation like
+sort is less than 25%.</p>
+<p>Finally, note that the popular library implementation that I tested has since
+been revised and now includes a streamlined version of deque with simplified
+iterators. I do not yet have a copy of that library, but it will be interesting
+to see how much of the deque disadvantage in even the raw iterator
+&quot;traverse&quot; and element-accessing &quot;at&quot; tests will remain
+compared to vector.</p>
+<p>So, for the three reasons cited earlier: Consider preferring deque by default
+in your programs, especially when the contained type is a class or struct and
+not a builtin type, unless the actual performance difference in your situation
+is known to be important or you specifically require the contained elements to
+be contiguous in memory (which typically means that you intend to pass the
+contents to a function that expects an array).</p>
+<p>NOTE: If you think that relying on vector storage to be contiguous is a Bad
+Thing, in light of recent newsgroup discussions, see my <a href="../publications/mill10.htm">upcoming
+article</a> in the July/August 1999 C++ Report... I give reasons why doing so is
+arguably okay, safe, and even portable.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">The Incredible Shrinking vector<!--mstheme--></font></h4>
+<p>One of std::vector's most endearing features, at least compared to C-style
+arrays, is its encapsulated storage management. As we push elements onto a
+vector it just grows its storage automatically, and we can even give the vector
+hints about how much capacity to keep ready under the covers as it grows (by
+first calling reserve()) and only incur at most a single reallocation hit. This
+allows optimally efficient growth.</p>
+<p>But what if we're doing the opposite? What if we're using a vector that's
+pretty big, and then we remove elements that we no longer need and want the
+vector to shrink to fit; that is, we want it to get rid of the now-unneeded
+extra capacity? You might think that the following would work:</p>
+<p><font color="#999933"><b><font size="4">2.</font></b>   What does the
+following code do?</font></p>
+<!--mstheme--></font><pre><font color="#999933">    vector&lt;C&gt; c( 10000 );</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Line 1 creates a vector&lt;C&gt; object named c that initially contains
+10,000 default-constructed C objects. At this point, we know that c.capacity()
+&gt;= 10,000.</p>
+
+<!--mstheme--></font><pre><font color="#999933">    c.erase( c.begin()+10, c.end() );</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>Line 2 erases all but the first 10 elements in c. At this point, c's capacity
+is probably unchanged.</p>
+
+<!--mstheme--></font><pre><font color="#999933">    c.reserve( 10 );</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Alas, line 3 does NOT shrink c's internal buffer to fit! Now c.capacity() is
+still &gt;= 10000 as before.</p>
+<p>This example doesn't do what you might expect because calling reserve() will
+never shrink the vector's capacity; it can only increase the capacity, or do
+nothing if the capacity is already sufficient.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">The Right Way To &quot;Shrink-To-Fit&quot; a vector or deque<!--mstheme--></font></h4>
+<p>So, can we write code that does shrink a vector &quot;to fit&quot; so that
+its capacity is just enough to hold the contained elements? Obviously reserve()
+can't do the job, but fortunately there is indeed a way:</p>
+<!--mstheme--></font><pre>    vector&lt;Customer&gt;( c ).swap( c );</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    // ...now c.capacity() == c.size(), or
+    // perhaps a little more than c.size()</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Do you see how the shrink-to-fit statement works? It's a little subtle:</p>
+<p>1. First, we create a temporary (unnamed) vector&lt;Customer&gt; and
+initialize it to hold the same contents as c. The salient difference between the
+temporary vector and c is that, while c still carries around a lot of extra
+capacity in its oversize internal buffer, the temporary vector has just enough
+capacity to hold its copy of c's contents. (Some implementations may choose to
+round up the capacity slightly to their next larger internal &quot;chunk
+size,&quot; with the result that the capacity actually ends up being slightly
+larger than the size.)</p>
+<p>2. Next, we call swap() to exchange the internals of c with the temporary
+vector. Now the temporary vector owns the oversize buffer with the extra
+capacity that we're trying to get rid of, and c owns the &quot;rightsized&quot;
+buffer with the just-enough capacity.</p>
+<p>3. Finally, the temporary vector goes out of scope, carrying away the old
+oversize buffer with it; the old buffer is deleted when the temporary vector is
+destroyed. Now all we're left with is c itself, but now c has a
+&quot;rightsized&quot; capacity.</p>
+<p>Note that this procedure is not needlessly inefficient. Even if vector had a
+special-purpose shrink_to_fit() member function, it would have to do pretty much
+all of the same work just described above.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">The Right Way To Completely Clear a vector or deque<!--mstheme--></font></h4>
+<p><font color="#999933"><b><font size="4">3.</font></b>   A vector or deque
+typically reserves extra internal storage as a hedge against future growth, to
+prevent too-frequent reallocation as new elements are added. Is it possible to
+completely clear a vector or deque (that is, remove all contained elements AND
+free all internally reserved storage)? Demonstrate why or why not.</font></p>
+<p>Again, the answer is Yes, it is possible. If you want to completely clear a
+vector, so that it has no contents and no extra capacity at all, the code is
+nearly identical to the shrink-to-fit code... you just initialize the temporary
+vector to be empty instead of making it a copy of c:</p>
+
+<!--mstheme--></font><pre>    vector&lt;Customer&gt;().swap( c );</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    // ...now c.capacity() == 0, unless the
+    // implementation happens to enforce a
+    // minimum size even for empty vectors</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Again, note that the vector implementation you're using may choose to make
+even empty vectors have some slight capacity, but now you're guaranteed that c's
+capacity will be the smallest possible allowed by your implementation: it will
+be the same as the capacity of an empty vector.</p>
+<p>These techniques work for deque, too, but you don't need to do this kind of
+thing for list, set, map, multiset, or multimap because they allocate storage on
+an &quot;exactly-as-needed&quot; basis and so should never have excess capacity
+lying around.<!--mstheme--></font><!--msnavigation--></td></tr><!--msnavigation--></table><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><h4 align="right"><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a href="../copyright.htm"><font size="2">Copyright ©
+2002 Herb Sutter</font></a><!--mstheme--></font></h4>
+
+<!--mstheme--></font></td></tr><!--msnavigation--></table></body>
+</html>
+

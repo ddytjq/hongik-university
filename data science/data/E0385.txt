@@ -1,0 +1,189 @@
+ID=E0385
+URL=http://www.le.ac.uk/cc/iss/tutorials/cprog/ccccarry.html
+SIZE=8160
+DATE=12/07/02
+TIME=19:20:26
+DATASET=C
+HTML=<!-- Filename: ccccfanp.html -->
+<!-- Author: mc39/rjm1 -->
+<!-- Supplied by: Richard Mobbs -->
+<!-- Created: 02-09-95 -->
+<!-- Expires: 02-09-96 -->
+
+<HTML>
+
+<HEAD>
+
+<TITLE>Computer Centre: Introduction to C Programming Course</TITLE>
+
+</HEAD> 
+
+<BODY>
+
+<H1><IMG ALT="[CWC logo]" ALIGN=middle SRC="http://www.le.ac.uk/images/compcen.gif" > Arrays</H1>
+     
+<P>
+<HR>
+
+<H2>Objectives</H2>
+<P>Having read this section you should have a good understanding of the use
+of arrays in <B>C</B>.
+
+<HR>
+<P>
+
+<H3>Advanced Data Types</H3>
+
+Programming in any language takes a quite significant leap forwards as soon as you learn about more <I>advanced data types</I>
+- <I>arrays</I> and <I>strings of characters</I>. In <B>C</B> there is also a third more general and even more powerful advanced data type - the <B><TT>pointer</TT></B> but more about that later. In this section we introduce the <B><TT>array</TT></B>, but the first question is, why bother?
+
+<P>There are times when we need to store a complete <I>list</I> of numbers or other data items. You could do this by creating
+as many individual variables as would be needed for the job, but this is a hard and tedious process. For example, suppose
+you want to read in five numbers and print them out in reverse order. You could do it the hard way as:
+
+<P>
+<PRE>
+<B>main()
+{
+ int al,a2,a3,a4,a5;
+ scanf("%d %d %d %d %d",&a1,&a2,&a3,&a4,&a5);
+ printf("%d %d %d %d %d'',a5,a4,a3,a2,a1);
+}
+</B>
+</PRE>
+
+<P>Doesn't look very pretty does it, and what if the problem was to read in 100 or more values and print them in reverse order? 
+Of course the clue to the solution is the use of the regular variable names <B><TT>a1</TT></B>, <B><TT>a2</TT></B> and so on. What we would really like to do is to use a name like <B><TT>a[i]</TT></B> where <TT><B>i</B></TT> is a variable which specifies which particular value we are working with. This is the basic idea of an <B>array</B> and nearly all programming languages provide this sort of facility - only the details alter.
+
+<P>In the case of <B>C</B> you have to declare an <B>array</B> before you use it - in the same way you have to declare any sort of variable. For example,
+
+<P><B><TT>int a[5];</TT></B>
+
+<P>declares an array called <TT><B>a</B></TT> with five elements. Just to confuse matters a little the first element is <B><TT>a[0]</TT></B> and the last <TT><B>a[4]</B></TT>. <B>C</B> programmer's always start counting at zero! Languages vary according to where they start numbering arrays. Less technical, i.e. simpler, languages start counting from 1 and more technical ones usually start counting from 0. Anyway, in the case of <B>C</B> you have to remember that
+
+<P><B><TT>type array[size]</TT></B>
+
+<P>declares an <TT><B>array</B></TT> of the specified type and with size elements. The first <B><TT>array</TT></B> element is <B><TT>array[0]</TT></B> and the last is <B><TT>array[size-1]</TT></B>.
+
+<P>Using an <B><TT>array</TT></B>, the problem of reading in and printing out a set of values in reverse order becomes simple:
+
+<P>
+<PRE>              
+<B>
+ main()
+  {
+   int a[5];
+   int i;
+   for(i =0;i < 5; ++i) scanf("%d",&a[i]);
+   for(i =4;i> =0;--i) printf("%d",a[i]);
+  }
+</B>
+</PRE>
+
+<P>[<A HREF="array1.c">program</A>]
+
+<P>Well we said simple but I have to admit that the pair of <B><TT>for</TT></B> loops looks a bit intimidating. The <B><TT>for</TT></B> loop and the array data type were more or less made for each other. The <B><TT>for</TT></B> loop can be used to generate a sequence of values to pick out and process each element in an array in turn. Once you start using arrays, <B><TT>for</TT></B> loops like:
+
+<P><B><TT>for (i=0 ; i<5 ; ++i)</TT></B>
+
+<P>to generate values in the order 0,1,2 and so forth, and
+
+<P><B>for(i=4;i><TT>=0;--i)</TT></B>
+
+<P>to generate values in the order 4,3,2... become very familiar.
+
+<P>
+<HR>
+<P>
+
+<H3>In Dis-array</H3>
+An array of character variables is in no way different from an array of numeric variables, but programmers often like to think about them in a different way. For example, if you want to read in and reverse five characters you could use:
+
+<P>
+<PRE>
+<B>
+ main()
+  {
+   char a[5];
+   int i;
+   for(i=0; i<5; ++i) scanf("%c",&a[i]);
+   for(i=4;i>=0;--i) printf("%c",a[i]);
+  }
+</B>
+</PRE>
+
+
+<P>Notice that the only difference, is the declared type of the array and the <B><TT>%c</TT></B> used to specify that the data is to be interpreted as a character in <B><TT>scanf</TT></B> and <B><TT>printf</TT></B>. The trouble with character arrays is that to use them as if they were text strings you have to remember how many characters they hold. In other words, if you declare a character array 40 elements long and store H E L L O in it you need to remember that after element 4 the array is empty. This is such a nuisance that <B>C</B> uses the simple convention that the end of a string of characters is marked by a <B><I>null</I></B> character. A <B><I>null</I></B> character is, as you might expect, the character with ASCII code 0. If you want to store the <B><I>null</I></B> character in a character variable you can use the notation <B><TT>\0</TT></B> - but most of the time you don't have to actually use the <B><I>null</I></B> character. The reason is that <B>C</B> will automatically add a <B><I>null</I></B> character and store each character in a separate element when you use a string constant. A string constant is indicated by double quotes as opposed to a character constant which is indicated by a single quote. For example:
+
+<P><TT><B>&QUOT;A&QUOT</B></TT>
+
+<P>is a string constant, but
+
+<P><B>'A'</B>
+
+<P>is a character constant. The difference between these two superficially similar types of text is confusing at first and the source of many errors. All you have to remember is that &QUOTA&QUOT consists of two characters, the letter <B><TT>A</TT></B> followed by <B><TT>\0</TT></B>
+whereas 'A' is just the single character A. If you are familiar with other languages you might think that you could assign string constants to character arrays and work as if a string was a built-in data type. In <B>C</B> however the fundamental data type is the <I>array</I> and <I>strings</I> are very much grafted on. For example, if you try something like:
+
+<P>
+<PRE>
+<B>
+char name[40];
+name="Hello"
+</B>
+</PRE>
+
+<P>it will not work. However, you can print strings using <B><TT>printf</TT></B> and read them into character arrays using <B><TT>scanf</TT></B>. For example,
+
+<P>
+<PRE>
+<B>
+ main()
+  {
+
+    static char name[40] ="hello";
+
+    printf("%s",name);
+    scanf("%s",name);
+    printf("%s",name);
+   }
+</B>
+</PRE>
+
+<P>[<A HREF="array2.c">program</A>]
+
+<P>This program reads in the text that you type, terminating it with a <I>null</I> and stores it in the character array <B><TT>name</TT></B>. It then prints the character array treating it as a string, i.e. stopping when it hits the first <I>null</I></B> string. Notice the use of the "<TT><B>%s</B></TT>" format descriptor in <B><TT>scanf</TT></B> and <B><TT>printf</TT></B> to specify that what is being printed is a string.
+
+<P>At this point the way that strings work and how they can be made a bit more useful and natural depends on understanding <B><TT>pointers</TT></B> which is covered in the next section. 
+
+<P>
+<HR>
+
+<A HREF="http://www.le.ac.uk/">
+
+<IMG ALT="[Leicester University]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/lhomebut.gif"></A>
+
+
+
+
+
+
+
+
+<A HREF="http://www.le.ac.uk/CWIS/AS/CC/cc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/ccbut.gif">
+ Computer Centre</A>   
+
+<A HREF="cccc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/backbut.gif">
+Introduction C Programming</A>
+
+<HR>
+<ADDRESS>Information Suppliers: <A HREF="http://www.le.ac.uk/rjm1.html">Richard Mobbs</A>, Head of Information Services, Leicester University Computer
+ Centre and Marina Carter, Postgraduate Student, Loughborough University.
+</ADDRESS>
+
+<ADDRESS>Last Updated: September 1995</ADDRESS>
+</BODY>
+</HTML>
+
+

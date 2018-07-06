@@ -1,0 +1,433 @@
+ID=D0312
+URL=http://www.javaworld.com/javaworld/jw-12-1999/jw-12-performance.html
+SIZE=55299
+DATE=16/07/02
+TIME=14:42:49
+DATASET=Java
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title> Java performance programming, Part 2: The cost of casting</title>
+<!-- ssilog 7814 -->
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<meta name="keywords" content=" Java performance, type-safe code">
+<meta name="description" content="
+
+Type-specific code is not just faster than code with type casts; it's also cleaner and safer. Unfortunately, Java sometimes makes it difficult to avoid the use of casting. In this first of two articles focusing on casting, Dennis looks first at the costs of casting (in terms of both program complexity and performance), and then at techniques you can use in your code to reduce the need for casting. (3,000 words)
+
+">
+<meta name="date" content="1999-12-29">
+<META NAME="DC.Date" CONTENT="1999-12-29">
+<basefont face="verdana, arial, helvetica" size="3" />
+<style type="text/css">
+            code {font-size: 90%; font-family: monospace;}
+            pre {font-size: 90%; font-family: monospace;}
+            td {font-size: 90%;}
+</style>
+<script language="javascript">
+<!--// IDG.net Scripts
+            function mail2Friend () {
+                window.parent.location = "/MailToFriend?url=" + escape(document.location);
+            }
+
+            function openBrWindow() {
+                win=window.open("http://www.javaworld.com/channel_content/jw-story-feedback.shtml",'Feedback','width=600,height=330,toolbar=no,location=no,directories=no,menubar=no,scrollbars=yes,resizable=yes');
+            }
+            //-->
+        </script>
+    </head>
+<body bgcolor="#ffffff" text="#000000" link="#990033" vlink="#990033" alink="#990033" topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" marginheight="0" marginwidth="0">
+<table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td colspan="2" width="186" bgcolor="#006699"><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0 ></a></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- START TOP 468x60 BANNER -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=309320?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=309320?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=309320?" border="0" height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer1" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- END TOP 468x60 BANNER --></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="26" valign="top" align="left" bgcolor="#ffffff"><img height=8 src="http://www.javaworld.com/images/c_whtbottom.gif" width=8 border=0 ></td>
+                <td width="100%"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.global/idgpixel7.18.00;sz=1x1;ord=309320?" border=0 height="1" width="1"><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.usa.jw/usajw.081501;sz=1x1;ord=309320?" border=0 height="1" width="1"></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160" align="middle" valign="center" nowrap><nobr><font face="Verdana, Arial, Sans-serif" color="#ffffff" size="2">December 1999</font></nobr><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="8" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltlft.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="100%" align="middle" valign="center">    <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">HOME</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/features/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FEATURED TUTORIALS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/columns/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">COLUMNS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/news-reviews/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">NEWS & REVIEWS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://forums.idg.net/webx?13@@.ee6b802"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FORUM</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/resources/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">JW RESOURCES</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/info/jw-about-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">ABOUT JW</font></a></td>
+        </tr>
+    </table></td>
+                <td bgcolor="#006699" width="8" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltrt.gif" width=8 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr valign="top">
+                <td bgcolor="#006699" width="160" align="middle" valign="top">
+                    <table width="160" border="0" cellspacing="0" cellpadding="0" bgcolor="#006699" summary="">
+                        <tr>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                            <td align="center">
+                                <form action="http://www.javaworld.com/isearch" method="GET" name="search">
+                                    <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /><br />
+                                    <input type="text" name="qt" size="12" maxlength="2047" /><br />
+                                    <input type="image" value="search" src="http://www.javaworld.com/images/button_blue.gif" border="0" width="97" height="18" alt="GO" /><br />
+                                    <input type="hidden" name="site" value="javaworld"><br />
+                                   <!-- <a href="http://www.google.com/"><img src="http://www.javaworld.com/images/google-power-fp.gif" width="108" height="45" border="0" alt="Google.com"></a>-->
+                                    <input type="hidden" name="ms" value="1">
+                                    <input type="hidden" name="tid" value="1">
+                                    <input type="hidden" name="st" value="1">
+                                    <input type="hidden" name="rf" value="0">
+                                   
+                                </form>
+                            </td>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                        </tr>
+                        <tr>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td><img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <a href="http://www.javaworld.com/archives/index-year.html"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>ARCHIVE</strong></font></a><br>
+                                <img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <strong><a href="http://www.javaworld.com/channel_content/jw-topical-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff">TOPICAL INDEX</font></a></strong></font><br><table cellspacing="0" cellpadding="0" border="0" summary="">
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/channel_content/jw-core-index.shtml"><font color="#ffffff">Core Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-enterprise-index.shtml"><font color="#ffffff">Enterprise Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-micro-index.shtml"><font color="#ffffff">Micro Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-applied-index.shtml"><font color="#ffffff">Applied Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-community-index.shtml"><font color="#ffffff">Java Community</font></a></strong></font><br /></td>
+                        </tr>
+                    </table><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-qna-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA Q&A INDEX</strong></font></a><br /><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-tips-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA TIPS INDEX</strong></font></a><br /> <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br /><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#CCCCCC"><strong>JavaWorld Services</strong></font><br /><img alt="" height="4" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /><table cellspacing="0" cellpadding="0" border="0" summary=""><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /><img alt="" height="7" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /></td><td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/subscribe"><font color="#ffffff">Free JavaWorld newsletters</font></a></strong></font></td></tr><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://javaworld.pricegrabber.com"><font color="#ffffff">ProductFinder </font></a></strong></font></td></tr><tr> <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/white-paper/index.shtml"><font color="#ffffff">White Paper Library</font></a></strong></font></td></tr>
+</table>
+<img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br />
+</td>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                        </tr>
+                        <tr valign="bottom">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_gryblbottom.gif" width=8 ></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr>
+                       <td width="8" bgcolor="#cccccc"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                           <td align="middle" bgcolor="#cccccc"><!-- SKYSCRAPER AD START HERE -->
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=309320?" width="120" height="600" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=skyscraper;sz=120x600;tile=3;ord=309320?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;skyscraper=med;sz=120x600;tile=3;ord=309320?" border=0 height="600" width="120"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer3" visibility="hidden" width=120 height=600></ILAYER>
+<!-- SKYSCRAPER AD ENDS HERE -->
+</td>
+                       <td width="8" bgcolor="#cccccc"><img height=8 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr valign="top">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_grybltop.gif" width=8 ></td>
+                        </tr>
+                    </table>
+                    <img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                    <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                <td width="100%">
+                    <!-- ## MAIN CONTENT STARTS HERE ### -->
+                    <font face="verdana, arial, helvetica" size="3">
+                        <strong></strong>
+                        <p>
+                            <h1 align="CENTER"> Java performance programming, Part 2: The cost of casting</h1>
+                            <h3 align="CENTER"> Reduce overhead and execution errors through type-safe code</h3>
+                        </p>
+                        <!--<BLOCKQUOTE><STRONG>Summary</STRONG><BR>-->
+                        <BLOCKQUOTE>
+<STRONG>Summary</STRONG><BR>
+
+
+Type-specific code is not just faster than code with type casts; it's also cleaner and safer. Unfortunately, Java sometimes makes it difficult to avoid the use of casting. In this first of two articles focusing on casting, Dennis looks first at the costs of casting (in terms of both program complexity and performance), and then at techniques you can use in your code to reduce the need for casting. <em>(3,000 words)</em>
+
+</BLOCKQUOTE>
+                        <!--</BLOCKQUOTE>-->
+                        <a href="http://www.javaworld.com/feedback" target="Feedback"><STRONG>By   Dennis M. Sosnoski</STRONG></a>
+                        <p><img src="http://www.javaworld.com/images/rule_ltblue.gif" width="100%" height="2"><br />
+                           <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                           <a href="/javaworld/jw-12-1999/jw-12-performance_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><br /></p>
+                         <font size=-1>  Page 1 of 2</font>
+                        <p><!-- START BIG AD (336x280) -->
+<table align="right" border="0" cellpadding="0" cellspacing="0"><tr valign="bottom" align="center"><td><font face="verdana, arial, geneva, sans-serif" color="#999999" size="-2">Advertisement</font></td></tr><tr><td><table border=1 bordercolor="#cccccc" cellspacing="5" cellpadding="0"><tr><td>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=309320" width="336" height="280" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=309320"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=309320" border=0 height="280" width="336"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer5" visibility="hidden" width=336 height=280></ILAYER>
+</td></tr></table></td></tr></table>
+<!-- END BIG AD (336x280) --></p>
+                        <p><P>
+<IMG ALIGN="LEFT" width="21" height="29" SRC="/javaworld/abcs/F.gif" ALT="F">or this second article in our series on Java performance, the focus shifts to casting -- what it is, what it costs, and how we can (sometimes) avoid it. This month, we start off with a quick review of the basics of classes, objects, and references, then follow up with a look at some hardcore performance figures (in a <a href="#sidebar1">sidebar</a>, so as not to offend the squeamish!) and guidelines on the types of operations that are most likely to give your Java Virtual Machine (JVM) indigestion. Finally, we finish off with an in-depth look at how we can avoid common class-structuring effects that can cause casting. <P>
+<!--start textbox--><P>
+<TABLE BGCOLOR="#990033" WIDTH="175" hspace="5" ALIGN="right" CELLPADDING="2" CELLSPACING="0" BORDER="0"><P>
+<TR><P>
+<TH><P>
+<FONT COLOR="#FFFFFF" FACE="Arial,Helvetica,Sans-serif"><P>
+&nbsp; Java performance programming: Read the whole series! &nbsp;<P>
+</FONT><P>
+</TH><P>
+</TR><P>
+<TR><P>
+<TD><P>
+<TABLE WIDTH="100%" BGCOLOR="#cccccc" CELLPADDING="5" CELLSPACING="0" BORDER="0"><P>
+<TR><P>
+<TD><P>
+<FONT SIZE="-1" FACE="Arial,Helvetica,Sans-serif"><P>
+<P>
+<LI><a href="/javaworld/jw-11-1999/jw-11-performance.html">Part 1. Learn how to reduce program overhead and improve performance by controlling object creation and garbage collection</a> <P>
+<LI><a href="/javaworld/jw-12-1999/jw-12-performance.html">Part 2. Reduce overhead and execution errors through type-safe code</a> <P>
+<LI><a href="/javaworld/jw-02-2000/jw-02-performance.html">Part 3. See how collectionsalternatives measure up in performance, and find out how to get the most out of each type</a> <P>
+</FONT><P>
+</TD><P>
+</TR><P>
+</TABLE><P>
+</TD><P>
+</TR><P>
+</TABLE><P>
+<!--end textbox--><P><FONT SIZE="+1"><STRONG> Object and reference types in Java </STRONG></FONT><BR>
+<a href="/javaworld/jw-11-1999/jw-11-performance.html">Last month</a>, we discussed the basic distinction between primitive types and objects in Java. Both the number of primitive types and the relationships between them (particularly conversions between types) are fixed by the language definition. Objects, on the other hand, are of unlimited types and may be related to any number of other types. <P>
+Each class definition in a Java program defines a new type of object. This includes all the classes from the Java libraries, so any given program may be using hundreds or even thousands of different types of objects. A few of these types are specified by the Java language definition as having certain special usages or handling (such as the use of <code>java.lang.StringBuffer</code> for <code>java.lang.String</code> concatenation operations). Aside from these few exceptions, however, all the types are treated basically the same by the Java compiler and the JVM used to execute the program. <P>
+If a class definition does not specify (by means of the <code>extends</code> clause in the class definition header) another class as a parent or superclass, it implicitly extends the <code>java.lang.Object</code> class. This means that every class ultimately extends <code>java.lang.Object</code>, either directly or via a sequence of one or more levels of parent classes. <P>
+Objects themselves are always instances of classes, and an object's <em>type</em> is the class of which it's an instance. In Java, we never deal directly with objects, though; we work with references to objects. For example, the line: <P>
+<CODE><P>
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;java.awt.Component myComponent;<BR>
+</CODE><P>
+does not create an <code>java.awt.Component</code> object; it creates a reference variable of type <code>java.lang.Component</code>. Even though references have types just as objects do, there is not a precise match between reference and object types -- a reference value may be <code>null</code>, an object of the same type as the reference, or an object of any subclass (i.e., class descended from) the type of the reference. In this particular case, <code>java.awt.Component</code> is an abstract class, so we know that there can never be an object of the same type as our reference, but there can certainly be objects of subclasses of that reference type. <P><STRONG> Polymorphism and casting </STRONG><BR>
+The type of a reference determines how the <em>referenced object</em> -- that is, the object that is the value of the reference -- can be used. For instance, in the example above, code using <code>myComponent</code> could invoke any of the methods defined by the class <code>java.awt.Component</code>, or any of its superclasses, on the referenced object. <P>
+However, the method actually executed by a call is determined not by the type of the reference itself, but rather by the type of the referenced object. This is the basic principle of <em>polymorphism</em> -- subclasses can override methods defined in the parent class in order to implement different behavior. In the case of our example variable, if the referenced object was actually an instance of <code>java.awt.Button</code>, the change in state resulting from a <code>setLabel("Push Me")</code> call would be different from that resulting if the referenced object were an instance of <code>java.awt.Label</code>. <P>
+Besides class definitions, Java programs also use interface definitions. The difference between an interface and a class is that an interface only specifies a set of behaviors (and, in some cases, constants), while a class defines an implementation. Since interfaces do not define implementations, objects can never be instances of an interface. They can, however, be instances of classes that implement an interface. References <em>can</em> be of interface types, in which case the referenced objects may be instances of any class that implements the interface (either directly or through some ancestor class). <P>
+<em>Casting</em> is used to convert between types -- between reference types in particular, for the type of casting operation in which we're interested here. <em>Upcast operations</em> (also called <em>widening conversions</em> in the Java Language Specification) convert a subclass reference to an ancestor class reference. This casting operation is normally automatic, since it's always safe and can be implemented directly by the compiler. <P>
+<em>Downcast operations</em> (also called <em>narrowing conversions</em> in the Java Language Specification) convert an ancestor class reference to a subclass reference. This casting operation creates execution overhead, since Java requires that the cast be checked at runtime to make sure that it's valid. If the referenced object is not an instance of either the target type for the cast or a subclass of that type, the attempted cast is not permitted and must throw a <code>java.lang.ClassCastException</code>. <P>
+The <code>instanceof</code> operator in Java allows you to determine whether or not a specific casting operation is permitted without actually attempting the operation. Since the performance cost of a check is much less than that of the exception generated by an unpermitted cast attempt, it's generally wise to use an <code>instanceof</code> test anytime you're not sure that the type of a reference is what you'd like it to be.  Before doing so, however, you should make sure that you have a reasonable way of dealing with a reference of an unwanted type -- otherwise, you may as well just let the exception be thrown and handle it at a higher level in your code. <P><STRONG> Casting caution to the winds </STRONG><BR>
+Casting allows the use of generic programming in Java, where code is written to work with all objects of classes descended from some base class (often <code>java.lang.Object</code>, for utility classes). However, the use of casting causes a unique set of problems. In the next section we'll look at the impact on performance, but let's first consider the effect on the code itself. Here's a sample using the generic <code>java.lang.Vector</code> collection class: <P>
+<CODE><P>
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private Vector someNumbers;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public void doSomething() {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int n = ...<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Integer number = (Integer) someNumbers.elementAt(n);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+</CODE><P>
+This code presents potential problems in terms of clarity and maintainability. If someone other than the original developer were to modify the code at some point, he might reasonably think that he could add a <code>java.lang.Double</code> to the <code>someNumbers</code> collections, since this is a subclass of <code>java.lang.Number</code>. Everything would compile fine if he tried this, but at some indeterminate point in execution he'd likely get a <code>java.lang.ClassCastException</code> thrown when the attempted cast to a <code>java.lang.Integer</code> was executed for his added value. <P>
+The problem here is that the use of casting bypasses the safety checks built into the Java compiler; the programmer ends up hunting for errors during execution, since the compiler won't catch them. This is not disastrous in and of itself, but this type of usage error often hides quite cleverly while you're testing your code, only to reveal itself when the program is put into production. <P>
+Not surprisingly, support for a technique that would allow the compiler to detect this type of usage error is one of the more heavily requested enhancements to Java. There's a project now in progress in the Java Community Process that's investigating adding just this support: project number JSR-000014, Add Generic Types to the Java Programming Language (see the <a href="#resources">Resources</a> section below for more details.) In the continuation of this article, coming next month, we'll look at this project in more detail and discuss both how it's likely to help and where it's likely to leave us wanting more. <P><STRONG> The performance issue </STRONG><BR>
+It's long been recognized that casting can be detrimental to performance in Java, and that you can improve performance by minimizing casting in heavily used code. Method calls, especially calls through interfaces, are also often mentioned as potential performance bottlenecks. The current generation of JVMs have come a long way from their predecessors, though, and it's worth checking to see how well these principles hold up today. <P>
+For this article, I developed a series of tests to see how important these factors are to performance with current JVMs. The test results are summarized into two tables in the <a href="#sidebar1">sidebar</a>, Table 1 showing method call overhead and Table 2 casting overhead. The full source code for the test program is also available online (see the <a href="#resources">Resources</a> section below for more details). <P>
+To summarize these conclusions for readers who don't want to wade through the details in the tables, certain types of method calls and casts are still fairly expensive, in some cases taking nearly as long as a simple object allocation. Where possible, these types of operations should be avoided in code that needs to be optimized for performance. <P>
+In particular, calls to overridden methods (methods that are overridden in any loaded class, not just the actual class of the object) and calls through interfaces are considerably more costly than simple method calls. The HotSpot Server JVM 2.0 beta used in the test will even convert many simple method calls to inline code, avoiding any overhead for such operations. However, HotSpot shows the worst performance among the tested JVMs for overridden methods and calls through interfaces. <P>
+For casting (downcasting, of course), the tested JVMs generally keep the performance hit to a reasonable level. HotSpot does an exceptional job with this in most of the benchmark testing, and, as with the method calls, is in many simple cases able to almost completely eliminate the overhead of casting. For more complicated situations, such as casts followed by calls to overridden methods, all the tested JVMs show noticeable performance degradation. <P>
+The tested version of HotSpot also showed extremely poor performance when an object was cast to different reference types in succession (instead of always being cast to the same target type). This situation regularly arises in libraries such as Swing that use a deep hierarchy of classes. <P>
+In most cases, the overhead of both method calls and casting is small in comparison with the object-allocation times looked at in last month's article. However, these operations will often be used far more frequently than object allocations, so they can still be a significant source of performance problems. <P>
+In the remainder of this article, we'll discuss some specific techniques for reducing the need for casting in your code. Specifically, we'll look at how casting often arises from the way subclasses interact with base classes, and explore some techniques for eliminating this type of casting. Next month, in the second part of this look at casting, we'll consider another common cause of casting, the use of generic collections. <P>
+<!-- break --><br /></p>
+                        <font size=-1><a href=jw-12-performance-p2.html>Next page ></a><br>Page 1  Java performance programming, Part 2: The cost of casting<br>Page 2 <a href=jw-12-performance-p2.html>Base classes and casting </a><br> </font>
+                        <p>
+                            <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                            <a href="/javaworld/jw-12-1999/jw-12-performance_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><!-- REPLACE BIO --><br /></p>
+                        <p><ul><A NAME="resources"></a><STRONG>Resources</STRONG>
+<BR>
+
+<LI>"Smart object-management saves the day," Dennis Sosnoski (<em>JavaWorld,</em> November 1999) is the first article in this performance series: <BR><A HREF="http://www.javaworld.com/javaworld/jw-11-1999/jw-11-performance.html">http://www.javaworld.com/javaworld/jw-11-1999/jw-11-performance.html
+</A><BR>
+
+
+<LI>The benchmark program used for measuring the performance of various types of method calls and casting operations, along with more details on the results, are available online: <BR><A HREF="http://www.sosnoski.com/Performance/Casting.html">http://www.sosnoski.com/Performance/Casting.html
+</A><BR>
+
+
+<LI>Add Generic Types to the Java Programming Language, project JSR-000014 at the Java Community Process: <BR><A HREF="http://www.javasoft.com/aboutJava/communityprocess/jsr/jsr_014_gener.html">http://www.javasoft.com/aboutJava/communityprocess/jsr/jsr_014_gener.html
+</A><BR>
+
+
+<LI>Bug 4144488, from the Java Developer Connection database, is a request to allow refining the return type of a method in a subtype: <BR><A HREF="http://developer.java.sun.com/developer/bugParade/bugs/4144488.html ">http://developer.java.sun.com/developer/bugParade/bugs/4144488.html 
+</A><BR>
+
+
+<LI> <em>Thinking in Java,</em> Bruce Eckel (1999) is an excellent all-around Java reference which includes detailed discussions of object typing and polymorphism. It's available online: <BR><A HREF="http://www.BruceEckel.com/TIJ2/index.html">http://www.BruceEckel.com/TIJ2/index.html
+</A><BR>
+
+
+<LI>"Designing with interfaces," Bill Venners (<em>JavaWorld,</em> December 1998) provides a good overview of interfaces and polymorphism in Java: <BR><A HREF="http://www.javaworld.com/jw-12-1998/jw-12-techniques.html">http://www.javaworld.com/jw-12-1998/jw-12-techniques.html
+</A><BR>
+
+
+<LI>The <em>Java Language Specification</em> is the definitive source for all Java language features and requirements, including the use of classes, types, references, and casting: <BR><A HREF="http://java.sun.com/docs/books/jls/index.html">http://java.sun.com/docs/books/jls/index.html
+</A><BR>
+
+
+
+
+</ul><br /></p>
+                        <BR><BR>
+<DIV ALIGN="CENTER">
+<A NAME="sidebar1">
+<A NAME="sidebar">
+<TABLE CELLPADDING="3" CELLSPACING="0" BORDER="0">
+<TR>
+<TD BGCOLOR="#336699" ROWSPAN="1" COLSPAN="1">
+</TR>
+<TR>
+<TD BGCOLOR="#CCCCCC">
+<BR>
+ <font face="verdana, arial, helvetica" size="2"><P><P><H2 ALIGN="CENTER"> Casting issues and JVM performance </H2><P><P><P><P><FONT SIZE="+1"><STRONG> Interfaces and method calls </STRONG></FONT><BR><P><P><P>Table 1 shows how different method-call types affect performance of several JVMs. The values in this table were obtained by running a test program that executes a small calculation (integer multiply and add) with various method-call wrappers. By comparing the times for the test execution using a particular type of method call with the basic calculation time, we can get an idea of the overhead involved in that type of method call. <P><CENTER> <TABLE BORDER="1"   CELLSPACING="0" CELLPADDING="3" WIDTH="80%" BGCOLOR="#FFFFCC"> <CAPTION ALIGN="BOTTOM"><font size=-1><strong>Table 1. Method call performance (time in seconds; lower scores are better)</strong></font></CAPTION> <TR>     <TH WIDTH="24%">&nbsp;</TH>     <TH WIDTH="19%">JRE 1.1.8 (Sun)</TH>     <TH WIDTH="19%">JRE 1.1.8 (IBM)</TH>     <TH WIDTH="19%">JRE 1.2.2 (Classic)</TH>     <TH WIDTH="19%">JRE 1.2.2 (HotSpot 2.0 beta)</TH> </TR> <TR>     <TH WIDTH="24%" ALIGN="LEFT">1. Inline calculation</TH>     <TD WIDTH="19%"><P ALIGN="CENTER">0.6</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">0.3</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">0.3</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">0.6</TD> </TR> <TR>     <TH WIDTH="24%" ALIGN="LEFT">2. Called calculation method</TH>     <TD WIDTH="19%"><P ALIGN="CENTER">0.9</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">1.7</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">0.9</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">0.8</TD> </TR> <TR>     <TH WIDTH="24%" ALIGN="LEFT">3. Accessor method call</TH>     <TD WIDTH="19%"><P ALIGN="CENTER">2.0</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">2.8</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">2.1</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">0.7</TD> </TR> <TR>     <TH WIDTH="24%" ALIGN="LEFT">4. Overridden method call</TH>     <TD WIDTH="19%"><P ALIGN="CENTER">3.2</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">3.7</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">3.2</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">5.6</TD> </TR> <TR>     <TH WIDTH="24%" ALIGN="LEFT">5. Interface method call</TH>     <TD WIDTH="19%"><P ALIGN="CENTER">5.5</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">5.2</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">5.5</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">6.5</TD> </TR> <TR>     <TH WIDTH="24%" ALIGN="LEFT">6. Object allocation time</TH>     <TD WIDTH="19%"><P ALIGN="CENTER">51.4</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">8.6</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">34.0</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">16.1</TD> </TR> </TABLE> </CENTER> <P>Line 1 gives the time for the calculation loop (executed 20 million times in this test) executed as a direct loop using a local variable, while line 2 gives the time for a simple method call with the initial value passed as a parameter and the result value returned. Given the simple nature of the calculation step, it's not surprising that adding a method call around it can slow the loop considerably. Only the IBM JVM shows a dramatic decrease in speed for this change, though, suggesting that it may not optimize this type of method call as well as the other alternatives. <P>Line 3 adds a twist to the simple method-call test of line 2, adding <code>get</code> and <code>set</code> method accesses to a variable in an object for each calculation step. This again slows the calculation, but not by a large amount. <P>These first three lines show almost identical times when using the HotSpot Server JVM, suggesting that it's converting the method calls into inline code. In the test on line 4, this breaks down, though. For this test, <code>get</code> and <code>set</code> methods that are overridden in a subclass are used. Even though the test uses the parent class implementation (and not the subclass with the overriding method defined), this form of call runs slower on all JVMs than calls to methods that are never overridden. The performance degradation is especially marked for the HotSpot version tested. <P>Line 5 shows the results of using an interface for the <code>get</code> and <code>set</code> method calls, rather than class-method calls. An interface method call requires more work by the JVM than a class-method call, and this shows in the test results. All JVMs tested ran this test slower than either a base or overridden class-method call, and, for all but HotSpot, the difference was substantial even compared to the slower overridden class-method call. <P>To offer some perspective on these results, the last line of the table shows the time taken to allocate the equivalent of one object (a <code>java.lang.Integer</code> instance, in this case) for each calculation step in the other tests. These times show that, although method-call overhead can slow performance considerably in high-usage code, its impact is in most cases much smaller than the object allocation overhead discussed in last month's article. <P><P><FONT SIZE="+1"><STRONG> The costs of casting </STRONG></FONT><BR><P><P><P>JVMs use a variety of special techniques to minimize the overhead of the runtime checks required for downcasting, but there will always be situations where these techniques fail. Table 2 lists some results of an investigation into this issue with current JVMs, showing how various casting operations effect performance. <P><CENTER> <TABLE BORDER="1" CELLSPACING="0" CELLPADDING="3"  WIDTH="80%" BGCOLOR="#FFFFCC"> <CAPTION ALIGN="BOTTOM"><font size=-1><strong>Table 2. Casting performance (time in seconds; lower scores are better)</strong></font></CAPTION> <TR>     <TH WIDTH="24%">&nbsp;</TH>     <TH WIDTH="19%">JRE 1.1.8 (Sun)</TH>     <TH WIDTH="19%">JRE 1.1.8 (IBM)</TH>     <TH WIDTH="19%">JRE 1.2.2 (Classic)</TH>     <TH WIDTH="19%">JRE 1.2.2 (HotSpot 2.0 beta)</TH> </TR> <TR>     <TH WIDTH="24%" ALIGN="LEFT">1. Method call</TH>     <TD WIDTH="19%"><P ALIGN="CENTER">0.9</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">1.7</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">0.9</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">0.8</TD> </TR> <TR>     <TH WIDTH="24%" ALIGN="LEFT">2. Direct member variable</TH>     <TD WIDTH="19%"><P ALIGN="CENTER">1.2</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">1.2</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">0.7</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">0.7</TD> </TR> <TR>     <TH WIDTH="24%" ALIGN="LEFT">3. Downcast member variable</TH>     <TD WIDTH="19%"><P ALIGN="CENTER">2.4</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">2.2</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">2.4</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">1.3</TD> </TR> <TR>     <TH WIDTH="24%" ALIGN="LEFT">4. Downcast parent member variable</TH>     <TD WIDTH="19%"><P ALIGN="CENTER">5.2</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">2.2</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">8.7</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">1.3</TD> </TR> <TR>     <TH WIDTH="24%" ALIGN="LEFT">5. Downcast method call</TH>     <TD WIDTH="19%"><P ALIGN="CENTER">3.0</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">3.5</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">3.1</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">1.3</TD> </TR> <TR>     <TH WIDTH="24%" ALIGN="LEFT">6. Downcast parent method call</TH>     <TD WIDTH="19%"><P ALIGN="CENTER">5.9</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">3.4</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">9.6</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">1.3</TD> </TR> <TR>     <TH WIDTH="24%" ALIGN="LEFT">7. Downcast parent overridden method call</TH>     <TD WIDTH="19%"><P ALIGN="CENTER">7.5</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">4.1</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">10.3</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">6.0</TD> </TR> <TR>     <TH WIDTH="24%" ALIGN="LEFT">8. Downcast to interface method call</TH>     <TD WIDTH="19%"><P ALIGN="CENTER">9.6</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">5.6</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">9.7</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">7.0</TD> </TR> <TR>     <TH WIDTH="24%" ALIGN="LEFT">9. Tested downcast to interface method call</TH>     <TD WIDTH="19%"><P ALIGN="CENTER">9.7</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">6.2</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">9.9</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">7.7</TD> </TR> <TR>     <TH WIDTH="24%" ALIGN="LEFT">10. Mixed cast parent method call</TH>     <TD WIDTH="19%"><P ALIGN="CENTER">6.2</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">3.5</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">8.8</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">23.1</TD> </TR> <TR>     <TH WIDTH="24%" ALIGN="LEFT">11. Object allocation time</TH>     <TD WIDTH="19%"><P ALIGN="CENTER">51.4</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">8.6</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">34.0</TD>     <TD WIDTH="19%"><P ALIGN="CENTER">16.1</TD> </TR> </TABLE> </CENTER> <P>Line 1 gives the time for the calculation step executed as a simple method call with the initial value passed as a parameter and the result value returned (the same as Line 2 in the prior table). These times are the basic comparison values for this set of test results, since all the other tests are build around this method call form. <P>Lines 2, 3, and 4 show different variations of accessing a member variable of an object. In line 2, the access is without casting. In line 3, an object reference is passed as a generic <code>java.lang.Object</code> and then downcast to the actual class of the object. In line 4, a generic object reference is passed and then downcast to a parent class of the object. <P>For these member-variable accesses, the adaptive JVMs (IBM JRE 1.1.8 and HotSpot) do a very good job of minimizing the overhead of a cast. In the last of these cases, where the cast is not to the actual class of the object, the standard JVMs (Sun JRE 1.2.2 and 1.1.8) are starting to show high levels of overhead for the cast operation. <P>Lines 5, 6, and 7 show different casting variations combined with method calls. In line 5, this is a simple downcast of a generic object reference to the actual class of the object. In line 6 the cast is to a parent class of the object, and in line 7 the method being called is one which is overridden by a loaded class. All the tested JVMs except HotSpot show fairly high overhead for the cast to the parent class of the object, and, for the case in which the called method is overridden, HotSpot shows fairly high overhead as well (though not nearly as high as the base Sun JRE 1.2.2). <P>Lines 8 and 9 show casting to an interface with method calls through the interface. These are again high-overhead operations, though less so for the adaptive JVMs. The difference between these two lines is a test before the cast in line 9, duplicating the common coding idiom of a check before a cast: <P><CODE><P><BR><P><P>&nbsp;&nbsp;&nbsp;&nbsp;if (obj instanceof IValue) {<BR><P><P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IValue iobj = (IValue) obj;<BR><P><P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...<BR><P><P>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><P><P><P></CODE><P><P><P>This test was specifically designed to determine if the JVMs were able to translate this coding idiom efficiently. Since the cast operation is checked before it's executed, the hope was that there would be no need to check it again when actually performing the cast. Unfortunately, judging from the test times, it looks like the JVMs aren't able to make full use of this information in the generated code and do go through some duplicated effort. On the brighter side, however, the duplicated effort isn't as much as for the equivalent cast operation. <P>Line 10 shows the results of a test that used a different usage pattern. All the other tests used a single target type for the casts. In this test, two target types (one a subclass of the other) were used in alternation, with calls to a method inherited by both target types. This test only presented a problem for the HotSpot JVM, but in this case the problem was a substantial one, giving by far the worse performance of any of the tests. <P>It appears from these tests that part of HotSpot's performance advantage for casting operations is some type of caching of the cast last performed for an object. If the same cast is done repeatedly on an object, the performance is very good, but if a cast to another type is done, there's a large performance hit. This trade-off is probably good in general, but can result in unexpected performance bottlenecks when usage does not fit the expected pattern. <P>Finally, the last line of the table shows the time taken to allocate the equivalent of one object for each calculation step in the other tests. As with the Table 1 times for method call tests, these times show that casting is generally not as significant a performance factor as object allocations. <P><P>
+<P ALIGN="RIGHT"><A HREF="#return1">Return to article</A></P>
+</FONT></TD>
+</TR>
+</TABLE>
+</A>
+</DIV>
+
+                    </font>
+                    <!-- ## MAIN CONTENT ENDS HERE ### -->
+                </td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="168" nowrap><nobr><img src="http://www.javaworld.com/images/spacer.gif" width=160 height=8 border=0 ><img src="http://www.javaworld.com/images/c_bllftbottom.gif" width=8 height=8 border=0 ></nobr></td>
+                <td width="100%"><img src="http://www.javaworld.com/images/spacer.gif" width=1 height=1 border=0 ></td>
+                <td width="8"><img src="http://www.javaworld.com/images/spacer.gif" width=8 height=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="186" bgcolor="#006699" align="middle"><nobr><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2"></font></nobr><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0></a></td>
+                <td bgcolor="#cccccc" width="8" valign="bottom"><img height=8 src="http://www.javaworld.com/images/c_blgrylftbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- BOTTOM 468x60 AD STARTS HERE -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=309320?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=309320?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=309320?" border=0 height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer4" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- BOTTOM 468x60 AD ENDS HERE -->
+</td>
+                <td width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table bgcolor="#006699" align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="100%" align="middle" valign="center">    <font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">
+        <p>
+            <br />
+            <a href="http://www.javaworld.com"><font color="#ffffff">HOME</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/features/index.shtml"><font color="#ffffff">FEATURED TUTORIALS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/columns/index.shtml"><font color="#ffffff">COLUMNS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/news-reviews/index.shtml"><font color="#ffffff">NEWS & REVIEWS</font></a>&nbsp;|&nbsp;
+            <a href="http://forums.idg.net/webx?13@@.ee6b802"><font color="#ffffff">FORUM</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/resources/index.shtml"><font color="#ffffff">JW RESOURCES</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/info/jw-about-index.shtml"><font color="#ffffff">ABOUT JW</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/feedback"><font color="#ffffff">FEEDBACK</font></a>
+        </p>
+        <p>
+
+            <a href="http://www.javaworld.com/javaworld/common/jw-copyright.html"><font color="#ffffff">Copyright © 2002</font></a> JavaWorld.com, an IDG Communications company
+        </p>
+    </font>
+</td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+            <tr>
+                <td width="100%" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_blrtbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <!--TOP_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=309320?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer1.pageX,layer1.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--125x125-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=med;sz=125x125;tile=2;ord=309320?" width=125 height=125 visibility="hidden" onLoad="moveToAbsolute(layer2.pageX,layer2.pageY);clip.height=125;clip.width=125;visibility='show';">
+</LAYER>
+
+<!--SKYSCRAPER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=309320?" width=120 height=600 visibility="hidden" onLoad="moveToAbsolute(layer3.pageX,layer3.pageY);clip.height=600;clip.width=120;visibility='show';">
+</LAYER>
+
+<!--BOTTOM_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=309320?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer4.pageX,layer4.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--Big AD-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=309320" width=336 height=280 visibility="hidden" onLoad="moveToAbsolute(layer5.pageX,layer5.pageY);clip.height=280;clip.width=336;visibility='show';">
+</LAYER>
+    </body>
+<!-- stories1 -->
+<!-- DOCID 665594 -->
+</html>
+

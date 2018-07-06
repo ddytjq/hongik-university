@@ -1,0 +1,1449 @@
+ID=D0017
+URL=http://www-2.cs.cmu.edu/~jch/java/microbench.html
+SIZE=60198
+DATE=16/07/02
+TIME=14:34:59
+DATASET=Java
+HTML=<html>
+<head>
+<title>Java Microbenchmark Applet</title>
+<meta name="author" content="Jonathan Hardwick">
+<meta name="description" content="Benchmark applet and results showing the performance of Java operations on different platforms.">
+<meta name="keywords" content="speed, comparison, optimization, optimisation">
+</head>
+
+<body>
+<h1 align=center>Java Microbenchmark Applet</h1>
+<p align=center><font face="Helvetica" size="-1">
+[ <a href="optimization.html">index</a>
+ | <a href="benchmarks.html">benchmarks</a>
+ | <a href="speed.html">speed</a>
+ | <a href="size.html">size</a>
+ | <a href="maintainability.html">maintainability</a>
+ | <a href="rules.html">rules</a>
+ | <a href="tools.html">tools</a>
+ | <a href="compilers.html">compilers</a> ]
+</font></p>
+<hr size=1 noshade>
+
+<h2>Run the microbenchmarks</h2>
+
+<b>Note:</b> now that Doug Bell's more comprehensive
+<a href="http://www.javaworld.com/javaworld/jw-04-1997/jw-04-optimize.html">Benchmark
+applet</a> is out, I'm no longer recording times for these microbenchmarks.
+You can get a lot more information from Doug's applet -- but it takes a while
+longer :-).
+<p>
+
+This applet runs the last version of the <a href="benchmarks.html">Java
+Microbenchmarks</a>.  Make sure that your machine is idle before starting the
+applet; it will take about 45 seconds to run.  Each of the microbenchmarks is
+run three times for one second at a time, and the maximum number of operations
+completed within a second is used to calculate the time per operation.
+
+<p>
+<center>
+<applet code="MicrobenchApplet.class" width=500 height=355>
+[Your browser doesn't run Java]
+</applet>
+</center>
+<p>
+
+For an analysis of the results for a range of Java implementations on a single
+machine, see <a href="benchmarks.html">Java Microbenchmarks</a>.
+
+<p> The tables below show results in microseconds contributed by <a
+href="#contributors">other users</a> for v1.1 of the Java microbenchmarks (see
+also <a href="microbenchold.html">older results</a> for previous versions).
+Lower times are better.  I've separated the results into x86 and non-x86
+architectures, grouped results for similar platforms, and put them in rough
+order of speed.  Browser names are abbreviated:
+<ul>
+  <li>NN = <a href="http://www.netscape.com/comprod/products/navigator/">Netscape
+      Navigator</a>
+  <li>IE = <a href="http://www.microsoft.com/ie/">Internet Explorer</a>.
+  <li>JDK = Java Development Kit
+  <li>MRJ = Macintosh Runtime for Java
+  <li>CW = Metrowerks Java (CodeWarrior)
+</ul>
+
+I've highlighted the names of browsers that use a just-in-time compiler.  <p>
+
+<h2>Results for x86 architectures</h2>
+
+<!--
+<tr align=right>
+  <td align=center><font size="-1"><br></font></td>
+  <td align=center><font size="-1"><a href=""><br> MHz</a></font></td>
+  <td><font size="-1"></font></td>
+  <td><font size="-1"></font></td>
+  <td><font size="-1"></font></td>
+  <td><font size="-1"></font></td>
+  <td><font size="-1"></font></td>
+  <td><font size="-1"></font></td>
+  <td><font size="-1"></font></td>
+  <td><font size="-1"></font></td>
+  <td><font size="-1"></font></td>
+  <td><font size="-1"></font></td>
+  <td><font size="-1"></font></td>
+  <td><font size="-1"></font></td>
+  <td><font size="-1"></font></td>
+  <td><font size="-1"></font></td>
+  <td><font size="-1"></font></td>
+  <td><font size="-1"></font></td>
+</tr>
+-->
+
+<div align=center>
+<table cellpadding=2>
+  <tr>
+  <th><font size="-1">Browser</font></th>
+  <th><font size="-1">CPU<br>&amp;&nbsp;speed</font></th>
+  <th><font size="-1">Null<br>Loop</font></th>
+  <th><font size="-1">Local<br>i=n</font></th>
+  <th><font size="-1">this.<br>i=n</font></th>
+  <th><font size="-1">Array<br>a[0]=n</font></th>
+  <th><font size="-1">Byte<br>b++</font></th>
+  <th><font size="-1">Short<br>s++</font></th>
+  <th><font size="-1">Int<br>i++</font></th>
+  <th><font size="-1">Long<br>l++</font></th>
+  <th><font size="-1">Float<br>f++</font></th>
+  <th><font size="-1">Doub.<br>d++</font></th>
+  <th><font size="-1">New<br>obj.</font></th>
+  <th><font size="-1">int<br>[10]</font></th>
+  <th><font size="-1">Call<br>f()</font></th>
+  <th><font size="-1">Sync<br>f()</font></th>
+  <th><font size="-1">Math<br>abs()</font></th>
+  <th><font size="-1">Inline<br>abs()</font></th>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+
+<tr align=right>
+  <td align=center><font size="-1"><b>NN 2.02<br>(OS/2)</b></font></td>
+  <td align=center><font size="-1"><a href="#Kaz_Okuda">486<br>66 MHz</a></font></td>
+  <td><font size="-1">0.170</font></td>
+  <td><font size="-1">0.017</font></td>
+  <td><font size="-1">0.069</font></td>
+  <td><font size="-1">0.150</font></td>
+  <td><font size="-1">0.110</font></td>
+  <td><font size="-1">0.110</font></td>
+  <td><font size="-1">0.037</font></td>
+  <td><font size="-1">0.170</font></td>
+  <td><font size="-1">0.560</font></td>
+  <td><font size="-1">0.660</font></td>
+  <td><font size="-1">23.0</font></td>
+  <td><font size="-1">27.0</font></td>
+  <td><font size="-1">1.200</font></td>
+  <td><font size="-1">88.0</font></td>
+  <td><font size="-1">2.800</font></td>
+  <td><font size="-1">0.380</font></td>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+
+<tr align=right>
+  <td align=center><font size="-1"><b>IE<br>3.01</b></font></td>
+  <td align=center><font size="-1"><a href="#Peter_Caven">486<br>100 MHz</a></font></td>
+  <td><font size="-1">0.079</font></td>
+  <td><font size="-1">0.010</font></td>
+  <td><font size="-1">0.190</font></td>
+  <td><font size="-1">0.310</font></td>
+  <td><font size="-1">0.070</font></td>
+  <td><font size="-1">0.067</font></td>
+  <td><font size="-1">0.010</font></td>
+  <td><font size="-1">0.390</font></td>
+  <td><font size="-1">0.570</font></td>
+  <td><font size="-1">0.770</font></td>
+  <td><font size="-1">55.0</font></td>
+  <td><font size="-1">51.0</font></td>
+  <td><font size="-1">0.600</font></td>
+  <td><font size="-1">21.0</font></td>
+  <td><font size="-1">2.300</font></td>
+  <td><font size="-1">0.600</font></td>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+
+<tr align=right>
+  <td align=center><font size="-1">NN 3.0<br>(Linux)</font></td>
+  <td align=center><font size="-1"><a href="#Matthias_Suencksen">486<br>133 MHz</a></font></td>
+  <td><font size="-1">1.200</font></td>
+  <td><font size="-1">0.580</font></td>
+  <td><font size="-1">0.930</font></td>
+  <td><font size="-1">1.200</font></td>
+  <td><font size="-1">1.400</font></td>
+  <td><font size="-1">1.400</font></td>
+  <td><font size="-1">0.270</font></td>
+  <td><font size="-1">1.700</font></td>
+  <td><font size="-1">1.300</font></td>
+  <td><font size="-1">1.300</font></td>
+  <td><font size="-1">22.0</font></td>
+  <td><font size="-1">28.0</font></td>
+  <td><font size="-1">2.400</font></td>
+  <td><font size="-1">12.0</font></td>
+  <td><font size="-1">5.1</font></td>
+  <td><font size="-1">0.630</font></td>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+
+<tr align=right>
+  <td align=center><font size="-1">NN 3.0<br>(Linux)</font></td>
+  <td align=center><font size="-1"><a href="#Jonathan_McPhillips">Pentium<br>OD&nbsp;83MHz</a></font></td>
+  <td><font size="-1">1.300</font></td>
+  <td><font size="-1">0.680</font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">1.500</font></td>
+  <td><font size="-1">1.600</font></td>
+  <td><font size="-1">1.700</font></td>
+  <td><font size="-1">0.290</font></td>
+  <td><font size="-1">1.600</font></td>
+  <td><font size="-1">1.200</font></td>
+  <td><font size="-1">1.300</font></td>
+  <td><font size="-1">21.0</font></td>
+  <td><font size="-1">27.0</font></td>
+  <td><font size="-1">2.500</font></td>
+  <td><font size="-1">12.0</font></td>
+  <td><font size="-1">5.300</font></td>
+  <td><font size="-1">0.760</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1">IE<br>3.0b2</font></td>
+  <td align=center><font size="-1"><a href="#Jonathan_McPhillips">Pentium<br>OD 83MHz</a></font></td>
+  <td><font size="-1">1.400</font></td>
+  <td><font size="-1">0.440</font></td>
+  <td><font size="-1">0.800</font></td>
+  <td><font size="-1">1.000</font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">1.000</font></td>
+  <td><font size="-1">0.260</font></td>
+  <td><font size="-1">0.970</font></td>
+  <td><font size="-1">0.860</font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">16.0</font></td>
+  <td><font size="-1">13.0</font></td>
+  <td><font size="-1">3.300</font></td>
+  <td><font size="-1">4.7</font></td>
+  <td><font size="-1">5.800</font></td>
+  <td><font size="-1">0.580</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1"><b>NN<br>3.0</b></font></td>
+  <td align=center><font size="-1"><a href="#Jonathan_McPhillips">Pentium<br>OD 83MHz</a></font></td>
+  <td><font size="-1">0.049</font></td>
+  <td><font size="-1">0.006</font></td>
+  <td><font size="-1">0.110</font></td>
+  <td><font size="-1">0.110</font></td>
+  <td><font size="-1">0.076</font></td>
+  <td><font size="-1">0.076</font></td>
+  <td><font size="-1">0.012</font></td>
+  <td><font size="-1">0.037</font></td>
+  <td><font size="-1">0.086</font></td>
+  <td><font size="-1">0.086</font></td>
+  <td><font size="-1">23.0</font></td>
+  <td><font size="-1">45.0</font></td>
+  <td><font size="-1">0.200</font></td>
+  <td><font size="-1">11.0</font></td>
+  <td><font size="-1">0.530</font></td>
+  <td><font size="-1">0.120</font></td>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+
+<tr align=right>
+  <td align=center><font size="-1"><b>NS<br>4.0b1</b></font></td>
+  <td align=center><font size="-1"><a href="#Matthew_Mung">Pentium<br>60 MHz</a></font></td>
+  <td><font size="-1">0.069</font></td>
+  <td><font size="-1">0.020</font></td>
+  <td><font size="-1">0.110</font></td>
+  <td><font size="-1">0.086</font></td>
+  <td><font size="-1">0.100</font></td>
+  <td><font size="-1">0.100</font></td>
+  <td><font size="-1">0.017</font></td>
+  <td><font size="-1">0.049</font></td>
+  <td><font size="-1">0.120</font></td>
+  <td><font size="-1">0.120</font></td>
+  <td><font size="-1">31.0</font></td>
+  <td><font size="-1">69.0</font></td>
+  <td><font size="-1">0.270</font></td>
+  <td><font size="-1">16.0</font></td>
+  <td><font size="-1">1.000</font></td>
+  <td><font size="-1">0.140</font></td>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+
+<tr align=right>
+  <td align=center><font size="-1">JDK<br>1.0.2</font></td>
+  <td align=center><font size="-1"><a href="#Robert_Crosbie">Pentium<br>75 MHz</a></font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">0.540</font></td>
+  <td><font size="-1">0.980</font></td>
+  <td><font size="-1">1.200</font></td>
+  <td><font size="-1">1.400</font></td>
+  <td><font size="-1">1.400</font></td>
+  <td><font size="-1">0.250</font></td>
+  <td><font size="-1">1.300</font></td>
+  <td><font size="-1">1.200</font></td>
+  <td><font size="-1">1.300</font></td>
+  <td><font size="-1">8.8</font></td>
+  <td><font size="-1">2.6</font></td>
+  <td><font size="-1">2.000</font></td>
+  <td><font size="-1">19.0</font></td>
+  <td><font size="-1">4.400</font></td>
+  <td><font size="-1">0.550</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1"><b>NN<br>3.0</b></font></td>
+  <td align=center><font size="-1"><a href="#Robert_Crosbie">Pentium<br>75 MHz</a></font></td>
+  <td><font size="-1">0.055</font></td>
+  <td><font size="-1">0.013</font></td>
+  <td><font size="-1">0.089</font></td>
+  <td><font size="-1">0.069</font></td>
+  <td><font size="-1">0.080</font></td>
+  <td><font size="-1">0.080</font></td>
+  <td><font size="-1">0.013</font></td>
+  <td><font size="-1">0.039</font></td>
+  <td><font size="-1">0.097</font></td>
+  <td><font size="-1">0.100</font></td>
+  <td><font size="-1">26.0</font></td>
+  <td><font size="-1">51.0</font></td>
+  <td><font size="-1">0.220</font></td>
+  <td><font size="-1">19.0</font></td>
+  <td><font size="-1">0.600</font></td>
+  <td><font size="-1">0.092</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1"><b>IE<br>3.0</b></font></td>
+  <td align=center><font size="-1"><a href="#Robert_Crosbie">Pentium<br>75 MHz</a></font></td>
+  <td><font size="-1">0.055</font></td>
+  <td><font size="-1">0.007</font></td>
+  <td><font size="-1">0.088</font></td>
+  <td><font size="-1">0.054</font></td>
+  <td><font size="-1">0.067</font></td>
+  <td><font size="-1">0.068</font></td>
+  <td><font size="-1">0.006</font></td>
+  <td><font size="-1">0.041</font></td>
+  <td><font size="-1">0.096</font></td>
+  <td><font size="-1">0.220</font></td>
+  <td><font size="-1">12.0</font></td>
+  <td><font size="-1">11.0</font></td>
+  <td><font size="-1">0.180</font></td>
+  <td><font size="-1">3.6</font></td>
+  <td><font size="-1">0.700</font></td>
+  <td><font size="-1">0.190</font></td>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+
+<tr align=right>
+  <td align=center><font size="-1">NN 3.01<br>(FreeBSD)</font></td>
+  <td align=center><font size="-1"><a href="#James_Robinson">Pentium<br>100 MHz</a></font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">0.510</font></td>
+  <td><font size="-1">0.860</font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">1.300</font></td>
+  <td><font size="-1">1.300</font></td>
+  <td><font size="-1">0.240</font></td>
+  <td><font size="-1">1.300</font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">17.0</font></td>
+  <td><font size="-1">21.0</font></td>
+  <td><font size="-1">2.100</font></td>
+  <td><font size="-1">10.00</font></td>
+  <td><font size="-1">4.400</font></td>
+  <td><font size="-1">0.570</font></td>
+</tr>
+<!-- <tr align=right>
+  <td align=center><font size="-1"><b>NN<br>3.0b</b></font></td>
+  <td align=center><font size="-1"><a href="#John_Cowan">Pentium<br>100 MHz</a></font></td>
+  <td><font size="-1">0.047</font></td>
+  <td><font size="-1">0.010</font></td>
+  <td><font size="-1">0.077</font></td>
+  <td><font size="-1">0.077</font></td>
+  <td><font size="-1">0.071</font></td>
+  <td><font size="-1">0.071</font></td>
+  <td><font size="-1">0.012</font></td>
+  <td><font size="-1">0.033</font></td>
+  <td><font size="-1">0.083</font></td>
+  <td><font size="-1">0.083</font></td>
+  <td><font size="-1">22.0</font></td>
+  <td><font size="-1">42.0</font></td>
+  <td><font size="-1">0.190</font></td>
+  <td><font size="-1">11.0</font></td>
+  <td><font size="-1">0.520</font></td>
+  <td><font size="-1">0.079</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1"><b>IE<br>3.0b</b></font></td>
+ <td align=center><font size="-1"><a href="#John_Cowan">Pentium<br>100 MHz</a></font></td>
+  <td><font size="-1">0.048</font></td>
+  <td><font size="-1">0.006</font></td>
+  <td><font size="-1">0.077</font></td>
+  <td><font size="-1">0.048</font></td>
+  <td><font size="-1">0.060</font></td>
+  <td><font size="-1">0.059</font></td>
+  <td><font size="-1">0.006</font></td>
+  <td><font size="-1">0.036</font></td>
+  <td><font size="-1">0.084</font></td>
+  <td><font size="-1">0.160</font></td>
+  <td><font size="-1">12.0</font></td>
+  <td><font size="-1">9.2</font></td>
+  <td><font size="-1">0.210</font></td>
+  <td><font size="-1">2.8</font></td>
+  <td><font size="-1">1.300</font></td>
+  <td><font size="-1">0.140</font></td>
+</tr> -->
+<tr align=right>
+  <td align=center><font size="-1"><b>NN<br>3.0</b></font></td>
+  <td align=center><font size="-1"><a href="#John_Simpson">Pentium<br>100 MHz</a></font></td>
+  <td><font size="-1">0.041</font></td>
+  <td><font size="-1">0.005</font></td>
+  <td><font size="-1">0.038</font></td>
+  <td><font size="-1">0.052</font></td>
+  <td><font size="-1">0.062</font></td>
+  <td><font size="-1">0.064</font></td>
+  <td><font size="-1">0.011</font></td>
+  <td><font size="-1">0.029</font></td>
+  <td><font size="-1">0.073</font></td>
+  <td><font size="-1">0.073</font></td>
+  <td><font size="-1">19.0</font></td>
+  <td><font size="-1">33.0</font></td>
+  <td><font size="-1">0.160</font></td>
+  <td><font size="-1">11.0</font></td>
+  <td><font size="-1">0.450</font></td>
+  <td><font size="-1">0.051</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1"><b>IE<br>3.0</b></font></td>
+  <td align=center><font size="-1"><a href="#John_Simpson">Pentium<br>100 MHz</a></font></td>
+  <td><font size="-1">0.043</font></td>
+  <td><font size="-1">0.005</font></td>
+  <td><font size="-1">0.037</font></td>
+  <td><font size="-1">0.040</font></td>
+  <td><font size="-1">0.052</font></td>
+  <td><font size="-1">0.050</font></td>
+  <td><font size="-1">0.005</font></td>
+  <td><font size="-1">0.030</font></td>
+  <td><font size="-1">0.074</font></td>
+  <td><font size="-1">0.140</font></td>
+  <td><font size="-1">8.6</font></td>
+  <td><font size="-1">7.5</font></td>
+  <td><font size="-1">0.140</font></td>
+  <td><font size="-1">2.8</font></td>
+  <td><font size="-1">0.540</font></td>
+  <td><font size="-1">0.079</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1"><b>NN 3b2<br>(OS/2)</b></font></td>
+  <td align=center><font size="-1"><a href="#Ed_Tomlinson">Pentium<br>100 MHz</a></font></td>
+  <td><font size="-1">0.041</font></td>
+  <td><font size="-1">0.008</font></td>
+  <td><font size="-1">0.067</font></td>
+  <td><font size="-1">0.062</font></td>
+  <td><font size="-1">0.041</font></td>
+  <td><font size="-1">0.041</font></td>
+  <td><font size="-1">0.010</font></td>
+  <td><font size="-1">0.031</font></td>
+  <td><font size="-1">0.095</font></td>
+  <td><font size="-1">0.096</font></td>
+  <td><font size="-1">21.0</font></td>
+  <td><font size="-1">22.0</font></td>
+  <td><font size="-1">0.360</font></td>
+  <td><font size="-1">46.0</font></td>
+  <td><font size="-1">0.810</font></td>
+  <td><font size="-1">0.066</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1"><b>NN 2.02GA<br>(OS/2)</b></font></td>
+  <td align=center><font size="-1"><a href="#Ed_Tomlinson_2">Pentium<br>100 MHz</a></font></td>
+  <td><font size="-1">0.041</font></td>
+  <td><font size="-1">0.010</font></td>
+  <td><font size="-1">0.067</font></td>
+  <td><font size="-1">0.066</font></td>
+  <td><font size="-1">0.041</font></td>
+  <td><font size="-1">0.041</font></td>
+  <td><font size="-1">0.012</font></td>
+  <td><font size="-1">0.031</font></td>
+  <td><font size="-1">0.096</font></td>
+  <td><font size="-1">0.095</font></td>
+  <td><font size="-1">6.4</font></td>
+  <td><font size="-1">12.0</font></td>
+  <td><font size="-1">0.420</font></td>
+  <td><font size="-1">16.0</font></td>
+  <td><font size="-1">0.910</font></td>
+  <td><font size="-1">0.067</font></td>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+
+<tr align=right>
+  <td align=center><font size="-1"><b>NN<br>4.0b1</b></font></td>
+  <td align=center><font size="-1"><a href="#Christophe_Boulange">Pentium<br>120 MHz</a></font></td>
+  <td><font size="-1">0.034</font></td>
+  <td><font size="-1">0.011</font></td>
+  <td><font size="-1">0.077</font></td>
+  <td><font size="-1">0.043</font></td>
+  <td><font size="-1">0.051</font></td>
+  <td><font size="-1">0.051</font></td>
+  <td><font size="-1">0.009</font></td>
+  <td><font size="-1">0.023</font></td>
+  <td><font size="-1">0.059</font></td>
+  <td><font size="-1">0.060</font></td>
+  <td><font size="-1">16.0</font></td>
+  <td><font size="-1">27.0</font></td>
+  <td><font size="-1">0.130</font></td>
+  <td><font size="-1">7.4</font></td>
+  <td><font size="-1">0.390</font></td>
+  <td><font size="-1">0.073</font></td>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+
+<tr align=right>
+  <td align=center><font size="-1">NN 2.02<br>(OS/2)</font></td>
+  <td align=center><font size="-1"><a href="#Philippe_Huybrechts">Pentium<br>133 MHz</a></font></td>
+  <td><font size="-1">0.031</font></td>
+  <td><font size="-1">0.006</font></td>
+  <td><font size="-1">0.083</font></td>
+  <td><font size="-1">0.039</font></td>
+  <td><font size="-1">0.031</font></td>
+  <td><font size="-1">0.032</font></td>
+  <td><font size="-1">0.008</font></td>
+  <td><font size="-1">0.025</font></td>
+  <td><font size="-1">0.071</font></td>
+  <td><font size="-1">0.072</font></td>
+  <td><font size="-1">3.9</font></td>
+  <td><font size="-1">5.4</font></td>
+  <td><font size="-1">0.280</font></td>
+  <td><font size="-1">9.1</font></td>
+  <td><font size="-1">0.064</font></td>
+  <td><font size="-1">0.049</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1"><b>NN<br>3.0</b></font></td>
+  <td align=center><font size="-1"><a href="#Graham_Nicholls">Pentium<br>133 MHz</a></font></td>
+  <td><font size="-1">0.031</font></td>
+  <td><font size="-1">0.004</font></td>
+  <td><font size="-1">0.039</font></td>
+  <td><font size="-1">0.038</font></td>
+  <td><font size="-1">0.046</font></td>
+  <td><font size="-1">0.046</font></td>
+  <td><font size="-1">0.008</font></td>
+  <td><font size="-1">0.021</font></td>
+  <td><font size="-1">0.053</font></td>
+  <td><font size="-1">0.053</font></td>
+  <td><font size="-1">14.0</font></td>
+  <td><font size="-1">25.0</font></td>
+  <td><font size="-1">0.130</font></td>
+  <td><font size="-1">8.0</font></td>
+  <td><font size="-1">0.320</font></td>
+  <td><font size="-1">0.040</font></td>
+</tr>
+<!-- <tr align=right>
+  <td align=center><font size="-1"><b>NN<br>3.01</b></font></td>
+  <td align=center><font size="-1"><a href="#Noam_Sadot">Pentium<br>133 MHz</a></font></td>
+  <td><font size="-1">0.030</font></td>
+  <td><font size="-1">0.004</font></td>
+  <td><font size="-1">0.039</font></td>
+  <td><font size="-1">0.043</font></td>
+  <td><font size="-1">0.047</font></td>
+  <td><font size="-1">0.047</font></td>
+  <td><font size="-1">0.007</font></td>
+  <td><font size="-1">0.022</font></td>
+  <td><font size="-1">0.055</font></td>
+  <td><font size="-1">0.053</font></td>
+  <td><font size="-1">14.0</font></td>
+  <td><font size="-1">24.0</font></td>
+  <td><font size="-1">0.120</font></td>
+  <td><font size="-1">7.6</font></td>
+  <td><font size="-1">0.320</font></td>
+  <td><font size="-1">0.038</font></td>
+</tr> -->
+<tr align=right>
+  <td align=center><font size="-1"><b>NN<br>4.0b1</b></font></td>
+  <td align=center><font size="-1"><a href="#Mathew_Mung">Pentium<br>133 MHz</a></font></td>
+  <td><font size="-1">0.030</font></td>
+  <td><font size="-1">0.011</font></td>
+  <td><font size="-1">0.086</font></td>
+  <td><font size="-1">0.070</font></td>
+  <td><font size="-1">0.044</font></td>
+  <td><font size="-1">0.046</font></td>
+  <td><font size="-1">0.007</font></td>
+  <td><font size="-1">0.022</font></td>
+  <td><font size="-1">0.053</font></td>
+  <td><font size="-1">0.055</font></td>
+  <td><font size="-1">15.0</font></td>
+  <td><font size="-1">24.0</font></td>
+  <td><font size="-1">0.120</font></td>
+  <td><font size="-1">7.9i</font></td>
+  <td><font size="-1">0.340</font></td>
+  <td><font size="-1">0.086</font></td>
+</tr>
+
+<tr align=right>
+  <td align=center><font size="-1">NN 2.02<br>(OS/2)</font></td>
+  <td align=center><font size="-1"><a href="#Joe_Maziasz">Pentium<br>166 MHz</a></font></td>
+  <td><font size="-1">0.025</font></td>
+  <td><font size="-1">0.005</font></td>
+  <td><font size="-1">0.040</font></td>
+  <td><font size="-1">0.040</font></td>
+  <td><font size="-1">0.025</font></td>
+  <td><font size="-1">0.025</font></td>
+  <td><font size="-1">0.006</font></td>
+  <td><font size="-1">0.019</font></td>
+  <td><font size="-1">0.058</font></td>
+  <td><font size="-1">0.058</font></td>
+  <td><font size="-1">9.0</font></td>
+  <td><font size="-1">14.0</font></td>
+  <td><font size="-1">0.210</font></td>
+  <td><font size="-1">8.0</font></td>
+  <td><font size="-1">0.049</font></td>
+  <td><font size="-1">0.040</font></td>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+
+<tr align=right>
+  <td align=center><font size="-1">NN 3.01<br>(FreeBSD)</font></td>
+  <td align=center><font size="-1"><a href="#Ron_Bolin">PPro<br>200 MHz</a></font></td>
+  <td><font size="-1">0.650</font></td>
+  <td><font size="-1">0.350</font></td>
+  <td><font size="-1">0.550</font></td>
+  <td><font size="-1">0.710</font></td>
+  <td><font size="-1">0.910</font></td>
+  <td><font size="-1">0.890</font></td>
+  <td><font size="-1">0.060</font></td>
+  <td><font size="-1">0.870</font></td>
+  <td><font size="-1">0.750</font></td>
+  <td><font size="-1">0.780</font></td>
+  <td><font size="-1">6.5</font></td>
+  <td><font size="-1">8.8</font></td>
+  <td><font size="-1">1.000</font></td>
+  <td><font size="-1">3.7</font></td>
+  <td><font size="-1">2.500</font></td>
+  <td><font size="-1">0.410</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1"><b>NN<br>3.0</b></font></td>
+  <td align=center><font size="-1"><a href="#Edwin_Chan">PPro<br>200 MHz</a></font></td>
+  <td><font size="-1">0.015</font></td>
+  <td><font size="-1">0.003</font></td>
+  <td><font size="-1">0.007</font></td>
+  <td><font size="-1">0.021</font></td>
+  <td><font size="-1">0.008</font></td>
+  <td><font size="-1">0.006</font></td>
+  <td><font size="-1">0.004</font></td>
+  <td><font size="-1">0.014</font></td>
+  <td><font size="-1">0.009</font></td>
+  <td><font size="-1">0.014</font></td>
+  <td><font size="-1">6.0</font></td>
+  <td><font size="-1">9.4</font></td>
+  <td><font size="-1">0.046</font></td>
+  <td><font size="-1">3.6</font></td>
+  <td><font size="-1">0.120</font></td>
+  <td><font size="-1">0.025</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1"><b>IE<br>3.0</b></font></td>
+  <td align=center><font size="-1"><a href="#Edwin_Chan">PPro<br>200 MHz</a></font></td>
+  <td><font size="-1">0.010</font></td>
+  <td><font size="-1">0.003</font></td>
+  <td><font size="-1">0.005</font></td>
+  <td><font size="-1">0.011</font></td>
+  <td><font size="-1">0.007</font></td>
+  <td><font size="-1">0.007</font></td>
+  <td><font size="-1">0.002</font></td>
+  <td><font size="-1">0.022</font></td>
+  <td><font size="-1">0.013</font></td>
+  <td><font size="-1">0.011</font></td>
+  <td><font size="-1">3.0</font></td>
+  <td><font size="-1">3.9</font></td>
+  <td><font size="-1">0.046</font></td>
+  <td><font size="-1">1.2</font></td>
+  <td><font size="-1">0.100</font></td>
+  <td><font size="-1">0.011</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1"><b>NN 2.02GA<br>(OS/2)</b></font></td>
+  <td align=center><font size="-1"><a href="#Chua_Thiam">PPro<br>200 MHz</a></font></td>
+  <td><font size="-1">0.015</font></td>
+  <td><font size="-1">0.001</font></td>
+  <td><font size="-1">0.018</font></td>
+  <td><font size="-1">0.023</font></td>
+  <td><font size="-1">0.010</font></td>
+  <td><font size="-1">0.010</font></td>
+  <td><font size="-1">0.004</font></td>
+  <td><font size="-1">0.021</font></td>
+  <td><font size="-1">0.014</font></td>
+  <td><font size="-1">0.009</font></td>
+  <td><font size="-1">5.1</font></td>
+  <td><font size="-1">6.2</font></td>
+  <td><font size="-1">0.180</font></td>
+  <td><font size="-1">7.7</font></td>
+  <td><font size="-1">0.029</font></td>
+  <td><font size="-1">0.018</font></td>
+</tr>
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+</table>
+</div>
+
+<br>
+<h2>Results for non-x86 architectures</h2>
+
+<div align=center>
+<table cellpadding=2>
+  <tr>
+  <th><font size="-1">Browser</font></th>
+  <th><font size="-1">CPU<br>&amp;&nbsp;speed</font></th>
+  <th><font size="-1">Null<br>Loop</font></th>
+  <th><font size="-1">Local<br>i=n</font></th>
+  <th><font size="-1">this.<br>i=n</font></th>
+  <th><font size="-1">Array<br>a[0]=n</font></th>
+  <th><font size="-1">Byte<br>b++</font></th>
+  <th><font size="-1">Short<br>s++</font></th>
+  <th><font size="-1">Int<br>i++</font></th>
+  <th><font size="-1">Long<br>l++</font></th>
+  <th><font size="-1">Float<br>f++</font></th>
+  <th><font size="-1">Doub.<br>d++</font></th>
+  <th><font size="-1">New<br>obj.</font></th>
+  <th><font size="-1">int<br>[10]</font></th>
+  <th><font size="-1">Call<br>f()</font></th>
+  <th><font size="-1">Sync<br>f()</font></th>
+  <th><font size="-1">Math<br>abs()</font></th>
+  <th><font size="-1">Inline<br>abs()</font></th>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+
+<tr align=right>
+  <td align=center><font size="-1">NN<br>3.0b7</font></td>
+  <td align=center><font size="-1"><a href="#Chris_Kelly">68040<br>25 MHz</a></font></td>
+  <td><font size="-1">72.0</font></td>
+  <td><font size="-1">22.0</font></td>
+  <td><font size="-1">40.0</font></td>
+  <td><font size="-1">41.0</font></td>
+  <td><font size="-1">60.0</font></td>
+  <td><font size="-1">59.0</font></td>
+  <td><font size="-1">24.0</font></td>
+  <td><font size="-1">71.0</font></td>
+  <td><font size="-1">59.0</font></td>
+  <td><font size="-1">81.0</font></td>
+  <td><font size="-1">220.0</font></td>
+  <td><font size="-1">180.0</font></td>
+  <td><font size="-1">66.0</font></td>
+  <td><font size="-1">140.0</font></td>
+  <td><font size="-1">220.0</font></td>
+  <td><font size="-1">37.0</font></td>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+
+<tr align=right>
+  <td align=center><font size="-1">NN<br>3.0</font></td>
+  <td align=center><font size="-1"><a href="#Mike_Salim">RS/6000<br>40 MHz</a></font></td>
+  <td><font size="-1">5.900</font></td>
+  <td><font size="-1">0.890</font></td>
+  <td><font size="-1">2.400</font></td>
+  <td><font size="-1">2.700</font></td>
+  <td><font size="-1">3.200</font></td>
+  <td><font size="-1">3.100</font></td>
+  <td><font size="-1">0.340</font></td>
+  <td><font size="-1">4.000</font></td>
+  <td><font size="-1">2.300</font></td>
+  <td><font size="-1">2.600</font></td>
+  <td><font size="-1">61.0</font></td>
+  <td><font size="-1">71.0</font></td>
+  <td><font size="-1">7.800</font></td>
+  <td><font size="-1">45.0</font></td>
+  <td><font size="-1">16.00</font></td>
+  <td><font size="-1">1.200</font></td>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+
+<tr align=right>
+  <td align=center><font size="-1">NN<br>3.0</font></td>
+  <td align=center><font size="-1"><a href="#Jonathan_Hardwick_hp">PA7100<br>60 MHz</a></font></td>
+  <td><font size="-1">1.800</font></td>
+  <td><font size="-1">0.700</font></td>
+  <td><font size="-1">1.200</font></td>
+  <td><font size="-1">1.900</font></td>
+  <td><font size="-1">1.900</font></td>
+  <td><font size="-1">1.800</font></td>
+  <td><font size="-1">0.43</font></td>
+  <td><font size="-1">2.300</font></td>
+  <td><font size="-1">1.600</font></td>
+  <td><font size="-1">2.300</font></td>
+  <td><font size="-1">15.0</font></td>
+  <td><font size="-1">16.0</font></td>
+  <td><font size="-1">4.000</font></td>
+  <td><font size="-1">24.0</font></td>
+  <td><font size="-1">9.100</font></td>
+  <td><font size="-1">1.200</font></td>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+
+<!-- <tr align=right>
+  <td align=center><font size="-1">NN<br>3.0</font></td>
+  <td align=center><font size="-1"><a href="#William_Saphir">PPC601<br>66 MHz</a></font></td>
+  <td><font size="-1">1.900</font></td>
+  <td><font size="-1">0.870</font></td>
+  <td><font size="-1">1.400</font></td>
+  <td><font size="-1">2.100</font></td>
+  <td><font size="-1">2.200</font></td>
+  <td><font size="-1">2.200</font></td>
+  <td><font size="-1">0.530</font></td>
+  <td><font size="-1">3.300</font></td>
+  <td><font size="-1">1.800</font></td>
+  <td><font size="-1">2.300</font></td>
+  <td><font size="-1">34.0</font></td>
+  <td><font size="-1">41.0</font></td>
+  <td><font size="-1">4.700</font></td>
+  <td><font size="-1">27.0</font></td>
+  <td><font size="-1">9.000</font></td>
+  <td><font size="-1">1.200</font></td>
+</tr> -->
+<tr align=right>
+  <td align=center><font size="-1">NN<br>3.0</font></td>
+  <td align=center><font size="-1"><a href="#Jonathan_McPhillips_Mac">PPC601<br>66 MHz</a></font></td>
+  <td><font size="-1">1.700</font></td>
+  <td><font size="-1">0.770</font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">1.800</font></td>
+  <td><font size="-1">1.900</font></td>
+  <td><font size="-1">2.000</font></td>
+  <td><font size="-1">0.460</font></td>
+  <td><font size="-1">2.900</font></td>
+  <td><font size="-1">1.500</font></td>
+  <td><font size="-1">1.900</font></td>
+  <td><font size="-1">29.0</font></td>
+  <td><font size="-1">37.0</font></td>
+  <td><font size="-1">4.600</font></td>
+  <td><font size="-1">24.0</font></td>
+  <td><font size="-1">7.800</font></td>
+  <td><font size="-1">0.870</font></td>
+</tr>
+<!-- <tr align=right>
+  <td align=center><font size="-1">NN<br>3.0b7</font></td>
+  <td align=center><font size="-1"><a href="#Jean_Brouwers">PPC601<br>80 MHz</a></font></td>
+  <td><font size="-1">1.300</font></td>
+  <td><font size="-1">0.570</font></td>
+  <td><font size="-1">0.960</font></td>
+  <td><font size="-1">1.300</font></td>
+  <td><font size="-1">1.500</font></td>
+  <td><font size="-1">1.500</font></td>
+  <td><font size="-1">0.340</font></td>
+  <td><font size="-1">2.200</font></td>
+  <td><font size="-1">1.200</font></td>
+  <td><font size="-1">1.500</font></td>
+  <td><font size="-1">26.0</font></td>
+  <td><font size="-1">31.0</font></td>
+  <td><font size="-1">3.200</font></td>
+  <td><font size="-1">18.0</font></td>
+  <td><font size="-1">6.200</font></td>
+  <td><font size="-1">0.750</font></td>
+</tr> -->
+<tr align=right>
+  <td align=center><font size="-1">NN<br>3.0</font></td>
+  <td align=center><font size="-1"><a href="#Jonathan_Hardwick_ibm">PPC601<br>80 MHz</a></font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">0.450</font></td>
+  <td><font size="-1">0.900</font></td>
+  <td><font size="-1">0.950</font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">0.260</font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">0.890</font></td>
+  <td><font size="-1">0.950</font></td>
+  <td><font size="-1">18.0</font></td>
+  <td><font size="-1">22.0</font></td>
+  <td><font size="-1">2.700</font></td>
+  <td><font size="-1">14.0</font></td>
+  <td><font size="-1">4.800</font></td>
+  <td><font size="-1">0.560</font></td>
+</tr>
+<!-- <tr align=right>
+  <td align=center><font size="-1">NN<br>3.0</font></td>
+  <td align=center><font size="-1"><a href="#He_Dankon">PPC 601<br>120 MHz</a></font></td>
+  <td><font size="-1">0.820</font></td>
+  <td><font size="-1">0.380</font></td>
+  <td><font size="-1">0.600</font></td>
+  <td><font size="-1">0.870</font></td>
+  <td><font size="-1">0.980</font></td>
+  <td><font size="-1">1.000</font></td>
+  <td><font size="-1">0.210</font></td>
+  <td><font size="-1">1.400</font></td>
+  <td><font size="-1">0.760</font></td>
+  <td><font size="-1">0.960</font></td>
+  <td><font size="-1">17.0</font></td>
+  <td><font size="-1">21.0</font></td>
+  <td><font size="-1">2.300</font></td>
+  <td><font size="-1">12.0</font></td>
+  <td><font size="-1">4.100</font></td>
+  <td><font size="-1">0.490</font></td>
+</tr> -->
+<tr align=right>
+  <td align=center><font size="-1">NN<br>3.0</font></td>
+  <td align=center><font size="-1"><a href="#Andrew_Begel">PPC 604<br>120 MHz</a></font></td>
+  <td><font size="-1">0.660</font></td>
+  <td><font size="-1">0.290</font></td>
+  <td><font size="-1">0.470</font></td>
+  <td><font size="-1">0.630</font></td>
+  <td><font size="-1">0.740</font></td>
+  <td><font size="-1">0.740</font></td>
+  <td><font size="-1">0.170</font></td>
+  <td><font size="-1">1.400</font></td>
+  <td><font size="-1">0.610</font></td>
+  <td><font size="-1">0.700</font></td>
+  <td><font size="-1">11.0</font></td>
+  <td><font size="-1">15.0</font></td>
+  <td><font size="-1">1.400</font></td>
+  <td><font size="-1">7.8</font></td>
+  <td><font size="-1">2.800</font></td>
+  <td><font size="-1">0.350</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1">NN<br>3.0</font></td>
+  <td align=center><font size="-1"><a href="#Ronaldo_Nascimento">PPC 604<br>120 MHz</a></font></td>
+  <td><font size="-1">0.540</font></td>
+  <td><font size="-1">0.250</font></td>
+  <td><font size="-1">0.360</font></td>
+  <td><font size="-1">0.490</font></td>
+  <td><font size="-1">0.570</font></td>
+  <td><font size="-1">0.570</font></td>
+  <td><font size="-1">0.120</font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">0.470</font></td>
+  <td><font size="-1">0.540</font></td>
+  <td><font size="-1">14.0</font></td>
+  <td><font size="-1">37.0</font></td>
+  <td><font size="-1">1.500</font></td>
+  <td><font size="-1">7.2</font></td>
+  <td><font size="-1">2.800</font></td>
+  <td><font size="-1">0.270</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1">NN<br>3.01</font></td>
+  <td align=center><font size="-1"><a href="#Brian_Griffith">PPC 603e<br>180 MHz</a></font></td>
+  <td><font size="-1">0.430</font></td>
+  <td><font size="-1">0.180</font></td>
+  <td><font size="-1">0.310</font></td>
+  <td><font size="-1">0.450</font></td>
+  <td><font size="-1">0.460</font></td>
+  <td><font size="-1">0.460</font></td>
+  <td><font size="-1">0.100</font></td>
+  <td><font size="-1">0.720</font></td>
+  <td><font size="-1">0.390</font></td>
+  <td><font size="-1">0.430</font></td>
+  <td><font size="-1">11.0</font></td>
+  <td><font size="-1">13.0</font></td>
+  <td><font size="-1">1.900</font></td>
+  <td><font size="-1">7.500</font></td>
+  <td><font size="-1">2.0</font></td>
+  <td><font size="-1">0.210</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1">MRJ<br>1.0</font></td>
+  <td align=center><font size="-1"><a href="#Brian_Griffith">PPC 603e<br>180 MHz</a></font></td>
+  <td><font size="-1">0.690</font></td>
+  <td><font size="-1">0.300</font></td>
+  <td><font size="-1">0.490</font></td>
+  <td><font size="-1">0.680</font></td>
+  <td><font size="-1">0.750</font></td>
+  <td><font size="-1">0.750</font></td>
+  <td><font size="-1">0.160</font></td>
+  <td><font size="-1">0.700</font></td>
+  <td><font size="-1">0.600</font></td>
+  <td><font size="-1">0.640</font></td>
+  <td><font size="-1">6.1</font></td>
+  <td><font size="-1">8.6</font></td>
+  <td><font size="-1">1.200</font></td>
+  <td><font size="-1">7.0</font></td>
+  <td><font size="-1">2.300</font></td>
+  <td><font size="-1">0.320</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1">CW<br>1.03</font></td>
+  <td align=center><font size="-1"><a href="#Brian_Griffith">PPC 603e<br>180 MHz</a></font></td>
+  <td><font size="-1">0.290</font></td>
+  <td><font size="-1">0.110</font></td>
+  <td><font size="-1">0.170</font></td>
+  <td><font size="-1">0.230</font></td>
+  <td><font size="-1">0.270</font></td>
+  <td><font size="-1">0.270</font></td>
+  <td><font size="-1">0.070</font></td>
+  <td><font size="-1">0.260</font></td>
+  <td><font size="-1">0.220</font></td>
+  <td><font size="-1">0.270</font></td>
+  <td><font size="-1">6.1</font></td>
+  <td><font size="-1">11.0</font></td>
+  <td><font size="-1">0.410</font></td>
+  <td><font size="-1">16.0</font></td>
+  <td><font size="-1">0.910</font></td>
+  <td><font size="-1">0.130</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1"><b>CW<br>1.04b1</b></font></td>
+  <td align=center><font size="-1"><a href="#Brian_Griffith">PPC 603e<br>180 MHz</a></font></td>
+  <td><font size="-1">0.079</font></td>
+  <td><font size="-1">0.012</font></td>
+  <td><font size="-1">0.056</font></td>
+  <td><font size="-1">0.096</font></td>
+  <td><font size="-1">0.024</font></td>
+  <td><font size="-1">0.024</font></td>
+  <td><font size="-1">0.004</font></td>
+  <td><font size="-1">0.041</font></td>
+  <td><font size="-1">0.047</font></td>
+  <td><font size="-1">0.072</font></td>
+  <td><font size="-1">6.9</font></td>
+  <td><font size="-1">14.0</font></td>
+  <td><font size="-1">0.400</font></td>
+  <td><font size="-1">13.0</font></td>
+  <td><font size="-1">0.610</font></td>
+  <td><font size="-1">0.034</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1">NN<br>3.0</font></td>
+  <td align=center><font size="-1"><a href="#Dieter">PPC 604e<br>180 MHz</a></font></td>
+  <td><font size="-1">0.370</font></td>
+  <td><font size="-1">0.160</font></td>
+  <td><font size="-1">0.260</font></td>
+  <td><font size="-1">0.350</font></td>
+  <td><font size="-1">0.410</font></td>
+  <td><font size="-1">0.410</font></td>
+  <td><font size="-1">0.097</font></td>
+  <td><font size="-1">0.800</font></td>
+  <td><font size="-1">0.340</font></td>
+  <td><font size="-1">0.390</font></td>
+  <td><font size="-1">6.3</font></td>
+  <td><font size="-1">9.8</font></td>
+  <td><font size="-1">0.780</font></td>
+  <td><font size="-1">4.4</font></td>
+  <td><font size="-1">1.600</font></td>
+  <td><font size="-1">0.200</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1">NN<br>3.0</font></td>
+  <td align=center><font size="-1"><a href="#Blake_Sullivan">PPC604e<br>225 MHz</a></font></td>
+  <td><font size="-1">0.290</font></td>
+  <td><font size="-1">0.130</font></td>
+  <td><font size="-1">0.210</font></td>
+  <td><font size="-1">0.280</font></td>
+  <td><font size="-1">0.340</font></td>
+  <td><font size="-1">0.340</font></td>
+  <td><font size="-1">0.079</font></td>
+  <td><font size="-1">0.630</font></td>
+  <td><font size="-1">0.270</font></td>
+  <td><font size="-1">0.320</font></td>
+  <td><font size="-1">5.2</font></td>
+  <td><font size="-1">6.9</font></td>
+  <td><font size="-1">0.620</font></td>
+  <td><font size="-1">3.6</font></td>
+  <td><font size="-1">1.200</font></td>
+  <td><font size="-1">0.160</font></td>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+
+<tr align=right>
+  <td align=center><font size="-1">NN<br>3.0</font></td>
+  <td align=center><font size="-1"><a href="#Jonathan_Hardwick_alpha">A21064<br>133 MHz</a></font></td>
+  <td><font size="-1">0.990</font></td>
+  <td><font size="-1">0.470</font></td>
+  <td><font size="-1">0.750</font></td>
+  <td><font size="-1">1.000</font></td>
+  <td><font size="-1">1.300</font></td>
+  <td><font size="-1">1.300</font></td>
+  <td><font size="-1">0.270</font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">1.000</font></td>
+  <td><font size="-1">1.200</font></td>
+  <td><font size="-1">25.0</font></td>
+  <td><font size="-1">20.0</font></td>
+  <td><font size="-1">2.200</font></td>
+  <td><font size="-1">15.0</font></td>
+  <td><font size="-1">4.800</font></td>
+  <td><font size="-1">0.640</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1">NN<br>3.01</font></td>
+  <td align=center><font size="-1"><a href="#Richard_Tomasso">21064A<br>233 MHz</a></font></td>
+  <td><font size="-1">0.670</font></td>
+  <td><font size="-1">0.270</font></td>
+  <td><font size="-1">0.430</font></td>
+  <td><font size="-1">0.580</font></td>
+  <td><font size="-1">0.670</font></td>
+  <td><font size="-1">0.670</font></td>
+  <td><font size="-1">0.160</font></td>
+  <td><font size="-1">0.590</font></td>
+  <td><font size="-1">0.590</font></td>
+  <td><font size="-1">0.630</font></td>
+  <td><font size="-1">12.0</font></td>
+  <td><font size="-1">11.0</font></td>
+  <td><font size="-1">1.400</font></td>
+  <td><font size="-1">9.4</font></td>
+  <td><font size="-1">3.800</font></td>
+  <td><font size="-1">0.320</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1">IE<br>3.0</font></td>
+  <td align=center><font size="-1"><a href="#Sam_Felton">A21164<br>500 MHz</a></font></td>
+  <td><font size="-1">0.430</font></td>
+  <td><font size="-1">0.110</font></td>
+  <td><font size="-1">0.180</font></td>
+  <td><font size="-1">0.200</font></td>
+  <td><font size="-1">0.250</font></td>
+  <td><font size="-1">0.270</font></td>
+  <td><font size="-1">0.087</font></td>
+  <td><font size="-1">0.270</font></td>
+  <td><font size="-1">0.220</font></td>
+  <td><font size="-1">0.320</font></td>
+  <td><font size="-1">6.100</font></td>
+  <td><font size="-1">5.200</font></td>
+  <td><font size="-1">0.370</font></td>
+  <td><font size="-1">1.200</font></td>
+  <td><font size="-1">1.200</font></td>
+  <td><font size="-1">0.150</font></td>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+
+<tr align=right>
+  <td align=center><font size="-1">NN<br>3.0</font></td>
+  <td align=center><font size="-1"><a href="#vanderMost">R4600<br>100 MHz</a></font></td>
+  <td><font size="-1">1.000</font></td>
+  <td><font size="-1">0.500</font></td>
+  <td><font size="-1">0.790</font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">0.260</font></td>
+  <td><font size="-1">1.000</font></td>
+  <td><font size="-1">0.920</font></td>
+  <td><font size="-1">1.000</font></td>
+  <td><font size="-1">17.0</font></td>
+  <td><font size="-1">25.0</font></td>
+  <td><font size="-1">2.000</font></td>
+  <td><font size="-1">11.0</font></td>
+  <td><font size="-1">4.800</font></td>
+  <td><font size="-1">0.520</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1">NN<br>2.01S</font></td>
+  <td align=center><font size="-1"><a href="#Myche_McAuley">R4400<br>150 MHz</a></font></td>
+  <td><font size="-1">0.770</font></td>
+  <td><font size="-1">0.380</font></td>
+  <td><font size="-1">0.760</font></td>
+  <td><font size="-1">0.850</font></td>
+  <td><font size="-1">0.910</font></td>
+  <td><font size="-1">0.920</font></td>
+  <td><font size="-1">0.220</font></td>
+  <td><font size="-1">0.900</font></td>
+  <td><font size="-1">0.800</font></td>
+  <td><font size="-1">0.940</font></td>
+  <td><font size="-1">11.0</font></td>
+  <td><font size="-1">37.0</font></td>
+  <td><font size="-1">1.800</font></td>
+  <td><font size="-1">15.0</font></td>
+  <td><font size="-1">3.800</font></td>
+  <td><font size="-1">0.490</font></td>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+
+<tr align=right>
+  <td align=center><font size="-1">NN<br>3.0</font></td>
+  <td align=center><font size="-1"><a href="#Jonathan_Hardwick_sparc">Sparc5<br>85 MHz</a></font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">0.550</font></td>
+  <td><font size="-1">0.880</font></td>
+  <td><font size="-1">1.200</font></td>
+  <td><font size="-1">1.400</font></td>
+  <td><font size="-1">1.400</font></td>
+  <td><font size="-1">0.310</font></td>
+  <td><font size="-1">1.300</font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">1.400</font></td>
+  <td><font size="-1">19.0</font></td>
+  <td><font size="-1">23.0</font></td>
+  <td><font size="-1">2.500</font></td>
+  <td><font size="-1">19.0</font></td>
+  <td><font size="-1">6.400</font></td>
+  <td><font size="-1">0.690</font></td>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+
+<tr align=right>
+  <td align=center><font size="-1">JDK<br>1.1</font></td>
+  <td align=center><font size="-1"><a href="#Achim_Gratz_5">Sparc5<br>110 MHz</a></font></td>
+  <td><font size="-1">0.390</font></td>
+  <td><font size="-1">0.180</font></td>
+  <td><font size="-1">0.300</font></td>
+  <td><font size="-1">0.400</font></td>
+  <td><font size="-1">0.420</font></td>
+  <td><font size="-1">0.420</font></td>
+  <td><font size="-1">0.100</font></td>
+  <td><font size="-1">0.450</font></td>
+  <td><font size="-1">0.360</font></td>
+  <td><font size="-1">0.480</font></td>
+  <td><font size="-1">7.100</font></td>
+  <td><font size="-1">9.400</font></td>
+  <td><font size="-1">1.100</font></td>
+  <td><font size="-1">3.700</font></td>
+  <td><font size="-1">2.500</font></td>
+  <td><font size="-1">0.260</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1">JDK<br>1.1</font></td>
+  <td align=center><font size="-1"><a href="#Achim_Gratz">Ultra 1<br>170 MHz</a></font></td>
+  <td><font size="-1">0.330</font></td>
+  <td><font size="-1">0.150</font></td>
+  <td><font size="-1">0.250</font></td>
+  <td><font size="-1">0.340</font></td>
+  <td><font size="-1">0.410</font></td>
+  <td><font size="-1">0.410</font></td>
+  <td><font size="-1">0.097</font></td>
+  <td><font size="-1">0.370</font></td>
+  <td><font size="-1">0.320</font></td>
+  <td><font size="-1">0.360</font></td>
+  <td><font size="-1">3.5</font></td>
+  <td><font size="-1">4.9</font></td>
+  <td><font size="-1">0.490</font></td>
+  <td><font size="-1">2.100</font></td>
+  <td><font size="-1">1.200</font></td>
+  <td><font size="-1">0.180</font></td>
+</tr>
+<!-- <tr align=right>
+  <td align=center><font size="-1">NN<br>3.0</font></td>
+  <td align=center><font size="-1"><a href="#Tony_Sweeny">UltraSPARC<br>167MHz</a></font></td>
+  <td><font size="-1">0.540</font></td>
+  <td><font size="-1">0.300</font></td>
+  <td><font size="-1">0.460</font></td>
+  <td><font size="-1">1.500</font></td>
+  <td><font size="-1">0.740</font></td>
+  <td><font size="-1">0.740</font></td>
+  <td><font size="-1">0.170</font></td>
+  <td><font size="-1">0.650</font></td>
+  <td><font size="-1">0.590</font></td>
+  <td><font size="-1">0.860</font></td>
+  <td><font size="-1">5.2</font></td>
+  <td><font size="-1">8.4</font></td>
+  <td><font size="-1">1.000</font></td>
+  <td><font size="-1">4.0</font></td>
+  <td><font size="-1">2.500</font></td>
+  <td><font size="-1">0.330</font></td>
+</tr> -->
+<tr align=right>
+  <td align=center><font size="-1">NN<br>3.0</font></td>
+  <td align=center><font size="-1"><a href="#Jeremy_Fitzhardinge">UltraSPARC<br>167 MHz</a></font></td>
+  <td><font size="-1">0.540</font></td>
+  <td><font size="-1">0.300</font></td>
+  <td><font size="-1">0.450</font></td>
+  <td><font size="-1">0.630</font></td>
+  <td><font size="-1">0.750</font></td>
+  <td><font size="-1">0.740</font></td>
+  <td><font size="-1">0.170</font></td>
+  <td><font size="-1">0.650</font></td>
+  <td><font size="-1">0.600</font></td>
+  <td><font size="-1">0.850</font></td>
+  <td><font size="-1">6.2</font></td>
+  <td><font size="-1">7.6</font></td>
+  <td><font size="-1">1.200</font></td>
+  <td><font size="-1">4.4</font></td>
+  <td><font size="-1">2.500</font></td>
+  <td><font size="-1">0.330</font></td>
+</tr>
+<tr align=right>
+  <td align=center><font size="-1"><b><a href="http://guava.softway.com.au/">Guava</a><br>(proto)</b></font></td>
+  <td align=center><font size="-1"><a href="#Jeremy_Fitzhardinge">UltraSPARC<br>167 MHz</a></font></td>
+  <td><font size="-1">0.024</font></td>
+  <td><font size="-1">0.005</font></td>
+  <td><font size="-1">0.006</font></td>
+  <td><font size="-1">0.036</font></td>
+  <td><font size="-1">0.024</font></td>
+  <td><font size="-1">0.024</font></td>
+  <td><font size="-1">0.003</font></td>
+  <td><font size="-1">0.030</font></td>
+  <td><font size="-1">0.150</font></td>
+  <td><font size="-1">0.280</font></td>
+  <td><font size="-1">22.0</font></td>
+  <td><font size="-1">9.9</font></td>
+  <td><font size="-1">0.170</font></td>
+  <td><font size="-1">3.8</font></td>
+  <td><font size="-1">0.960</font></td>
+  <td><font size="-1">0.740</font></td>
+</tr>
+
+<tr><td colspan=18><hr size=1 noshade></td></tr>
+</table>
+</div>
+
+
+<h2><a name="contributors">Contributors</a></h2>
+
+<!--
+<tr align=right>
+  <td align=center><font size="-1">NN<br>3.01</font></td>
+  <td align=center><font size="-1"><a href="#Magnus_W">PPro<br>180 MHz</a></font></td>
+  <td><font size="-1">0.017</font></td>
+  <td><font size="-1">0.003</font></td>
+  <td><font size="-1">0.008</font></td>
+  <td><font size="-1">0.024</font></td>
+  <td><font size="-1">0.007</font></td>
+  <td><font size="-1">0.009</font></td>
+  <td><font size="-1">0.003</font></td>
+  <td><font size="-1">0.016</font></td>
+  <td><font size="-1">0.016</font></td>
+  <td><font size="-1">0.071</font></td>
+  <td><font size="-1">7.1</font></td>
+  <td><font size="-1">12.0</font></td>
+  <td><font size="-1">0.051</font></td>
+  <td><font size="-1">4.0</font></td>
+  <td><font size="-1">0.140</font></td>
+  <td><font size="-1">0.017</font></td>
+</tr>
+
+-->
+
+<ul>
+  <li><a href="mailto:abegel@media.mit.edu">Andrew Begel</a>: <a
+      name="Andrew_Begel">Power Mac 7500/120</a>, System 7.5.5, 32MB, 0kB.
+  <li><a href="http://www.mindspring.com/~rlb/">Ron Bolin</a>: <a
+      name="Ron_Bolin">SuperMicro PP 200</a>, FreeBSD 3.0, 128MB, 256kB.
+  <li><!-- "http://www.worldnet.fr/~cboulang" -->Christophe Boulange: <a
+      name="Christophe_Boulange">Pentium 120</a>, Windows NT 4.0, 32MB, 256kB.
+  <li><a href="mailto:mrjean@best.com">Jean Brouwers</a>: <a
+      name="Jean_Brouwers">Power Mac 7100/80</a>, System 7.5, 40MB, 256kB.
+  <li><a href="mailto:pne@globalserve.net">Peter Caven</a>: <a
+      name="Peter_Caven">AMD DX4-100</a>, Windows 95, 32MB, 256kB.
+  <li><a href="http://www.cs.cmu.edu/~chance/">Edwin Chan</a>: <a
+      name="Edwin_Chan">Micron Millenia Pro</a>, Windows NT 4.0, 64MB, 256kB.
+  <li><a href="http://www.ccil.org/~cowan">John Cowan</a>: <a
+      name="John_Cowan">IBM PC 750-P90</a>, Windows NT 4.0 b2, 32MB.
+  <li><a href="http://web.cs.mun.ca/~rcrosbie/">Robert Crosbie</a>: <a
+      name="Robert_Crosbie">Pentium 75</a>, Windows 95, 16MB, 256kB.
+  <li><a href="mailto:he.dankon@asia.apple.com">He Da-ke</a>: <a
+      name="He_Dankon">PowerMac 7200/120</a>, System 7.5.5, 40MB, 256kB.
+  <li><a href="mailto:openfxm@access.ch">Dieter</a>: <a name="Dieter">PowerMac
+      8500</a>, System 7.6, 80MB, 256kB.
+  <li><a href="mailto:samfe@microsoft.com">Sam Felton</a>: <a
+      name="Sam_Felton">DEC Rebel AVL</a>, WinNT 4.0, 32MB, 512kB.
+  <li><a href="mailto:jeremy@suede.sw.oz.au">Jeremy Fitzhardinge</a>: <a
+      name="Jeremy_Fitzhardinge">Sun Ultra Enterprise 1</a>, Solaris 2.5.1.
+  <li><a href="mailto:gratz@ite.inf.tu-dresden.de">Achim Gratz</a>: <a
+      name="Achim_Gratz">Sun Ultra 1/170E</a>, Solaris 2.5.
+  <li><a href="mailto:gratz@ite.inf.tu-dresden.de">Achim Gratz</a>: <a
+      name="Achim_Gratz_5">Sun SparcStation 5/110</a>, Solaris 2.5.
+  <li><a href="mailto:bagrif@mbay.net">Brian Griffith</a>: <a
+      name="Brian_Griffith">PowerComputing PowerBase 180</a>, System 7.6,
+      48MB, 256kB.
+  <li><a href="http://www.cs.cmu.edu/~jch/">Jonathan Hardwick</a>: <a
+      name="Jonathan_Hardwick_alpha">DEC 3000/400</a>, OSF 3.2, 64MB, 512kB.
+  <li><a href="http://www.cs.cmu.edu/~jch/">Jonathan Hardwick</a>: <a
+      name="Jonathan_Hardwick_hp">HP 712/60</a>, HP-UX 9.03, 32MB, 96kB.
+  <li><a href="http://www.cs.cmu.edu/~jch/">Jonathan Hardwick</a>: <a
+      name="Jonathan_Hardwick_ibm">IBM 25T</a>, AIX 3.2.5, 32MB, 0kB.
+  <li><a href="http://www.cs.cmu.edu/~jch/">Jonathan Hardwick</a>: <a
+      name="Jonathan_Hardwick_sparc">SPARCstation 5/85</a>, Solaris 2.5, 32MB,
+      24kB.
+  <li><a href="mailto:phuybre@ibm.net">Philippe Huybrechts</a>: <a
+      name="Philippe_Huybrechts">Pentium 133</a>, OS/2 Warp 4 (IBM JDK), 64MB,
+      512kB.
+  <li><a href="http://home.earthlink.net/~samizdat">Chris Kelly</a>: <a
+      name="Chris_Kelly">Macintosh Centris 650</a>, System 7.5.1, 8MB, 0kB.
+  <li><a href="mailto:joemaz@execpc.com">Joe Maziasz</a>: <a
+      name="Joe_Maziasz">Pentium 166</a>, OS/2 v4.0, 64MB, 512kB.
+  <li><a href="mailto:jmm@mipl7.jpl.nasa.gov">Myche McAuley</a>: <a
+      name="Myche_McAuley">SGI Indy</a>, Irix 5.3, 160MB, 1MB.
+  <li><a href="mailto:matthew@econnect.net">Matthew Mung</a>: <a
+      name="Matthew_Mung">Pentium 60</a>, Windows NT 4.0, 32MB, 256kB.
+  <li><a href="mailto:jrm@citray.caltech.edu">Jonathan McPhillips</a>: <a
+      name="Jonathan_McPhillips">Pentium Overdrive 83</a>, Linux 2.0.18, 16MB,
+      128kB.
+  <li><a href="mailto:jrm@citray.caltech.edu">Jonathan McPhillips</a>: <a
+      name="Jonathan_McPhillips_Mac">Power Mac 6100/66</a>, System 7.5.3,
+      24MB, 256 Kb.
+  <li><a href="mailto:matthew@econ2.econnect.net">Matthew Mung</a>: <a
+      name="Matthew_Mung">Digital Venturis 5133</a>, Windows 95, 32MB, 256kB.
+  <li><a href="mailto:ronaldo@npark.com">Ronaldo Nascimento</a>: <a
+      name="Ronaldo_Nascimento">Power Mac 9500/120</a>, System 7.5.3, 132MB,
+      512kB.
+  <li><a href="mailto:grahamj@mail.xvi.com">Graham Nicholls</a>: <a
+      name="Graham_Nicholls">Dell XPS P133C</a>, Windows 95, 32MB, 512kB.
+  <li><a href="mailto:kokuda@express.ca">Kaz Okuda</a>: <a
+      name="Kaz_Okuda">486 DX2-66</a>, OS/2 v4.0 (using IBM's JDK 1.02), 20MB,
+      128kB.
+  <li><a href="http://sofa.cs.uncc.edu/">James Robinson</a>: <a
+      name="James_Robinson">Pentium 100</a>, FreeBSD 2.1.6, 48MB, 256kB.
+  <li><a href="mailto:Sadot@pcsoft.co.il">Noam Sadot</a>: <a
+      name="Noam_Sadot">Pentium 133</a>, Windows 95, 32 MB.
+  <li><a href="mailto:wcs@nas.nasa.gov">William Saphir</a>: <a
+      name="William_Saphir">Power Mac 7100/66</a>, System 7.5.3, 16MB, 256kB.
+  <li><a href="http://www.localweb.com/">Mike Salim</a>: <a
+      name="Mike_Salim">IBM RS/6000 model 530</a>, AIX 3.2.5, 64MB.
+  <li><a href="mailto:simpson@polaris.net">John Simpson</a>: <a
+      name="John_Simpson">Dell Pentium 100</a>, Windows 95, 32MB, 256kB.
+  <li><a href="mailto:elsuenck@HRZ.Uni-Bielefeld.DE">Matthias Suencksen</a>:
+      <a name="Matthias_Suencksen">AMD DX4-133</a>, Linux, 32MB, 256kB.
+  <li><a href="mailto:btsulliv@us.oracle.com">Blake Sullivan</a>: <a
+      name="Blake_Sullivan">PowerTower Pro 225</a>, System 7.5.5, 64MB, 1MB.
+  <li>Richard Tomasso: <a name="Richard_Tomasso">AlphaStation 400 4/233</a>,
+      Digital Unix 4.0b, 144MB, 512kB.
+  <li><a href="mailto:sweeney@informix.com">Tony Sweeney</a>: <a
+      name="Tony_Sweeny">Sun Ultra 2</a>, Solaris 2.5.1, 64MB.
+  <li><a href="mailto:ttc@post1.com">Chua Teng Thiam</a>: <a
+      name="Chua_Thiam">Pentium Pro 200</a>, OS/2 v4.0, 64MB, 256kB.
+  <li><a href="http://www.cam.org/~tomlins/">Ed Tomlinson</a>: <a
+      name="Ed_Tomlinson">Pentium 100</a>, OS/2 v4.0.
+  <li><a href="http://www.cam.org/~tomlins/">Ed Tomlinson</a>: <a
+      name="Ed_Tomlinson_2">Pentium 100</a>, OS/2 v4.0 (using IBM's JDK 1.02
+      ESV).
+  <li><a href="mailto:jvdmost@wi.leidenuniv.nl">Jeroen van der Most</a>: <a
+      name="vanderMost">SGI Indy</a>, Irix 5.3, 32MB, 32kB.
+  <li><a href="mailto:magnusw@intv.se">Magnus Walldal</a>: <a
+      name="Magnus_W">Compaq Deskpro 6000</a>, Windows NT 4.0, 32MB, 256kB.
+</ul>
+
+See also <a href="microbenchold.html">older results</a> for previous versions
+of the microbenchmarks.
+
+
+<!-- <h2>Submit your results!</h2>
+
+If you've got results for a new browser, a new platform, or two or more
+browsers on the same platform, please email them to me, together with details
+of:
+
+
+<ul>
+  <li>Computer make and model, if it's not a PC clone (e.g., SPARCstation 5)
+  <li>Browser name and version (e.g., Netscape 3.0, Internet Explorer 3.0b2)
+  <li>Processor and clock speed (e.g., Pentium 133, 85 MHz MicroSPARC2)
+  <li>Operating system (e.g., Windows 95, System 7.5, Solaris 2.4)
+  <li>Memory and L2 cache sizes (e.g., 32MB and 256kB cache)
+</ul> -->
+
+Source code is available on request.
+
+<hr size=1 noshade>
+<center><table width="100%" cellspacing=0 cellpadding=0 border=0>
+  <tr>
+    <td align=left><font size="-1">http://www.cs.cmu.edu/~jch/java/microbench.html</font></td>
+    <td align=right><font size="-1">Java Microbenchmark Applet</font></td>
+  </tr>
+  <tr>
+    <td align=left><font size="-1"><!-- hhmts start -->Last modified: Wed 21 May 1997<!-- hhmts end --></font></td>
+    <td align=right><font size="-1">Copyright &#169 1996, 1997 <a
+    href="http://www.cs.cmu.edu/~jch/">Jonathan Hardwick</a></font></td>
+  </tr>
+</table></center>
+</body>
+</html>
+

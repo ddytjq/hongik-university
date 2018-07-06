@@ -1,0 +1,360 @@
+ID=E0867
+URL=http://www.research.att.com/~bs/3rd_printing7.html
+SIZE=8125
+DATE=12/07/02
+TIME=19:25:17
+DATASET=C
+HTML=<html>
+<head>
+<title>Stroustrup: Errata for 6th printing of The C++ Programming Language</title>
+</head>
+<body bgcolor="FFFBFB">
+enter>
+<h1>Errata for 6th printing of The C++ Programming Language</h1>
+</center>
+Errata for
+<a href="homepage.html">
+Bjarne Stroustrup</a>:
+<a href="3rd.html">
+The C++ Programming Language (3rd edition)</a>,
+Addison-Wesley, 1997. ISBN0-201-88954-4.
+Errata for the 6th printing yielding the 7th.
+<hr>
+<h2>Errors and Clarifications</h2>
+<p>
+Preface:
+<p>
+Chapter 1:
+<p>
+Chapter 2:
+<p>
+pg 35	s/bad_stack()/Bad_pop()/
+<p>
+pg 36	s/s_set/s_ref/
+<p>
+Chapter 3:
+<p>
+pg 49	s/20.4.1/20.3.7/
+<p>
+Chapter 4:
+<p>
+Chapter 5:
+<p>
+Chapter 6:
+<p>
+pg 129	s/throws a bad_alloc exception./
+	throws a bad_alloc exception (see 19.4.5 for an alternative)./
+<p>
+Chapter 7:
+<p>
+Chapter 8:
+<p>
+pg 180	s/::fill()/::fill(char c)/ twice
+<p>
+Chapter 9:
+<p>
+pg 199 s/these are not errors/the call of f() is not an error/
+<p>
+pg 212	s/expr()/prim()/ twice
+<p>
+pg 212	s/expr.c/prim.c/
+<p>
+Chapter 10:
+<p>
+pg 231 s/*const/*/ twice and replace the sentence "The const makes it clear ..."
+	by  "However, this
+	is not an ordinary variable; it is not possible to take the address of
+	this or to assign to this."
+	(this is a change in formulation to match a standards change - which
+	has no effect on any code)
+<p>
+Chapter 11:
+<p>
+pg 262	s/pointer to function/pointer to member/
+<p>
+pg 262	After "[Stroustrup,1994]." add "The ternary conditional expression
+	operator, ?: cannot be overloaded either."
+<p>
+Chapter 12:
+<p>
+pg 311	s/mem_fct/mem_fun/	(standards change)
+<p>
+Chapter 13:
+<p>
+pg 347	s/c.re/c.real()/ and s/c.im/c.imag()/
+<p>
+pg 348	s/c.re/c.real()/ and s/c.im/c.imag()/ twice
+<p>
+Chapter 14:
+<p>
+pg 368	To simplify, replace the bodies of the copy constructors
+	and assignment operators by "; // copy, then a.ptr=0"
+<p>
+Chapter 15:
+<p>
+pg 407	add "public:" before the using-declarations in class BB.
+<p>
+Chapter 16:
+<p>
+pg 457	replace the suggestion to change capacity through assignment by:
+	To give memory back to the system, a small trick is needed:
+<pre>
+	vector tmp = v;	// copy of v with default capacity 
+	v.swap(tmp);	// now v has the default capacity
+</pre>
+Chapter 17:
+<p>
+pg 476	s/stack< int >/stack< int,vector< int> >/
+<p>
+pg 478	s/{ }/{ make_heap(c.begin(),c.end(),cmp); } // see 18.8/
+<p>
+pg 479	s/priority_queue< string, Nocase> pq;/priority_queue< string, vector< string>, Nocase> pq;/
+<p>
+pg 479 replace g() by:
+<pre>
+typedef priority_queue< string, vector< string>, String_cmp> Pqueue;
+
+void g(Pqueue& pq)	// pq uses String_cmp() for comparisons
+{
+	Pqueue pq2(String_cmp(nocase));
+	pq = pq2;	// ok: pq and pq2 are of the same type, pq now also uses String_cmp(nocase)
+}
+</pre>
+<p>
+pg 501	s/max_load< /max_load<= /
+<p>
+Chapter 18:
+<p>
+pg 520	s/public binder2nd< less< T>, T>/public binder2nd< less< T> >/
+<p>
+pg 522	s/, const Record&/, const char*/
+<p>
+pg 522	s/, const Record&/, long/
+<p>
+pg 526	change the first example tp
+<pre>
+void f(vector< string>& text)
+{
+	vector< string>::iterator p = adjacent_find(text.begin(),text.end());
+	if (p!=text.end() && *p=="the") { // I duplicated "the" again!
+		text.erase(p);
+		// ...
+	}
+}
+</pre>
+<p>
+pg 526	add "typename" before iterator_traits< In>" twice
+<p>
+pg 538	change the call of random_shuffle to:
+<pre>
+Urand r(52);
+random_shuffle(dc.begin(),dc.end(),r);
+</pre>
+Chapter 19:
+<p>
+pg 568	s/out_of_memory/std::bad_alloc/
+<p>
+pg 569	s/v = p/v = p-size()/
+<p>
+pg 576	a better version of temporary_dup():
+<pre>
+template< class T, class A> T* temporary_dup(vector< T,A>& v)
+{
+        pair< T*,ptrdiff_t> p = get_temporary_buffer< T>(v.size());
+        if (p.second != v.size()) {	// check that enough memory was available
+		if (p.first != 0) return_temporary_buffer(p.first);
+		return 0;
+	}
+        copy(v.begin(),v.end(),raw_storage_iterator< T*,T>(p));
+        return p.first;
+}
+</pre>
+<p>
+pg 576	s/destroy_temporary_buffer/return_temporary_buffer/
+<p>
+pg 576	replace the last paragraph by:
+	"An operator new() or operator new[]() with an empty
+	exception-specification (14.6) cannot signal memory exhaustion
+	by throwingstd::bad_alloc. Instead, if allocation fails they return
+	0. A new-expression (6.2.6.2) tests the value returned by an allocator 	with an empty exception-specification; if the returned value is
+	0, no constructor is invoked and the new-expression returns 0.
+	In particular, the nothrow allocators return 0
+	to indicate failure to allocate rather than throwing bad_alloc.
+	For example:" (late standards change)
+<p>
+Chapter 20:
+<p>
+Chapter 21:
+<p>
+pg 619	the getline() example would be better written like this:
+<pre>
+	char word[MAX_WORD][MAX_LINE];	// MAX_WORDS arrays of MAX_LINE char each
+	int i = 0;
+	while(cin.getline(word[i++],MAX_LINE,'\n') && i< MAX_WORD);
+	// ...
+</pre>
+<p>
+pg 643	s/file[8]/file[9]/
+<p>
+pg 643	After "(see 21.10[13])." add
+	"Attempting to seek beyond the beginning or the end of a file
+	puts the stream into the bad() state."
+<p>
+pg 644 add
+	"A sync() on a buffer attached to an ostream
+	flushes the buffer to output." to the end of the paragraph
+	starting "Flushing an istream".
+<p>
+pg 647	s/rdbuf().in_avail()/rdbuf()->in_avail()/
+<p>
+Chapter 22:
+<p>
+pg 671	s/void operator*=(const valarray< T>& val)/void operator*=(const T& val)/
+<p>
+pg 680	s/a.re/a.real()/ and s/a.im/a.imag()/
+<p>
+pg 681	Change the last example to:
+
+	Curiously, the assignments don't offer the same protection as the
+	constructors. For example:
+<p>
+<pre>
+	void f(complex< float> cf, complex< double> cd, complex< long double> cld, complex< int> ci)
+	{
+		complex< double> c1 = cf;	// fine
+		complex< double> c2 = cd;	// fine
+		complex< double> c3 = cld;	// error: possible truncation
+		complex< double> c4(cld);	// ok: explicit conversion
+		complex< double> c5 = ci;	// error: no cnversion
+
+		c1 = cld;			// ok, but beware: possible truncation
+		c1 = cf;			// ok
+		c1 = ci;			// ok
+	}
+</pre>
+(recent standards change)
+<p>
+Chapter 23:
+<p>
+Chapter 24:
+<p>
+pg 749	s/p[sz-1]/p[sz]/
+<p>
+Appendix A:
+<p>
+Appendix B:
+<p>
+pg 818	s/several times/several times in a single translation unit/
+<p>
+pg 819	Add as the 3rd paragraph:
+	" The implicit conversion of string literal to a (non-const)
+	char* is deprecated. Use named arrays of char
+	or avoid assignment of string literals to char*s (5.2.2)."
+<p>
+Appendix C:
+<p>
+pg 853	s/void f1(int)/int f1(int)/
+<p>
+pg 853	s/int f2()/void f2()/
+<hr>
+<h2>Typos</h2>
+<p>
+Preface:
+<p>
+Chapter 1:
+<p>
+Chapter 2:
+<p>
+pg 42	swap "next input" and "next output" in comments
+<p>
+Chapter 3:
+<p>
+pg 63	s/to read strings from input/for each string read from input/
+<p>
+Chapter 4:
+<p>
+Chapter 5:
+<p>
+Chapter 6:
+<p>
+Chapter 7:
+<p>
+pg 145	s/initialized n times/initialized in each call of f()/
+<p> 
+pg 151	s/and sec8.2.9.2//
+<p>
+Chapter 8:
+<p>
+Chapter 9:
+<p>
+pg 210	s/driver.c/main.c/
+<p>
+pg 212	s/driver.c/main.c/
+<p>
+pg 215	s/is it/it is/ second paragraph
+<p>
+Chapter 10:
+<p>
+pg 222	s/nicollo/niccolo/ with an accent grave over the last o.
+<p>
+pg 250	s/There is no way/
+	Except by using an initializer list (5.2.1, 18.6.7), there is no way/
+<p>
+pg 256	s/destructor class/destructor calls/
+<p>
+Chapter 11:
+<p>
+pg 279	s/or a friend/or a nonmember friend/
+<p>
+Chapter 12:
+<p>
+Chapter 13:
+<p>
+Chapter 14:
+<p>
+Chapter 15:
+<p>
+Chapter 16:
+<p>
+Chapter 17:
+<p>
+pg 495	s/to_string< char >/to_string< char,char_traits< char >,allocator< char > >/
+<p>
+pg 501	s/and Rehash/and Resize/
+<p>
+Chapter 18:
+<p>
+Chapter 19:
+<p>
+Chapter 20:
+<p>
+pg 586	s/at any give time/at any given time/
+<p>
+pg 602	s/rather to/to/ in [14]
+<p>
+Chapter 21:
+<p>
+pg 633	s/cladd/class/
+<p>
+pg 633	s/io_base/ios_base/
+<p>
+pg 640	s/are called a stringstreams/are called stringstreams/
+<p>
+Chapter 22:
+<p>
+Chapter 23:
+<p>
+Chapter 24:
+<p>
+Chapter 25:
+<p>
+Appendix A:
+<p>
+Appendix B:
+<p>
+Appendix C:
+<p>
+</body>
+</html>
+
+

@@ -1,0 +1,406 @@
+ID=E0707
+URL=http://gcc.gnu.org/onlinedocs/gccint/
+SIZE=24236
+DATE=12/07/02
+TIME=19:23:39
+DATASET=C
+HTML=<html lang="en">
+<head>
+<title>GNU Compiler Collection (GCC) Internals</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=description content="GNU Compiler Collection (GCC) Internals">
+<meta name=generator content="makeinfo 4.1">
+<link href="http://texinfo.org/" rel=generator-home>
+</head>
+<body>
+<h1>GNU Compiler Collection (GCC) Internals</h1>
+This file documents the internals of the GNU compilers.
+
+<br><p>
+<p>Published by the Free Software Foundation<br>
+59 Temple Place - Suite 330<br>
+Boston, MA 02111-1307 USA
+
+<br><p>
+<p>Copyright &copy; 1988, 1989, 1992, 1993, 1994, 1995, 1996, 1997, 1998,
+1999, 2000, 2001, 2002 Free Software Foundation, Inc.
+
+<br><p>
+<p>Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1 or
+any later version published by the Free Software Foundation; with the
+Invariant Sections being "GNU General Public License" and "Funding
+Free Software", the Front-Cover texts being (a) (see below), and with
+the Back-Cover Texts being (b) (see below).  A copy of the license is
+included in the section entitled "GNU Free Documentation License".
+
+<p>(a) The FSF's Front-Cover Text is:
+
+<p>A GNU Manual
+
+<p>(b) The FSF's Back-Cover Text is:
+
+<p>You have freedom to copy and modify this GNU Manual, like GNU
+     software.  Copies published by the Free Software Foundation raise
+     funds for GNU development.
+
+
+<h2>Short Contents</h2>
+<ul>
+<li><a href="index.html#toc_Top">Introduction</a>
+<li><a href="index.html#toc_Contributing">Contributing to GCC Development</a>
+<li><a href="index.html#toc_Portability">GCC and Portability</a>
+<li><a href="index.html#toc_Interface">Interfacing to GCC Output</a>
+<li><a href="index.html#toc_Languages">Language Front Ends in GCC</a>
+<li><a href="index.html#toc_Source%20Tree">Source Tree Structure and Build System</a>
+<li><a href="index.html#toc_Passes">Passes and Files of the Compiler</a>
+<li><a href="index.html#toc_Trees">Trees: The intermediate representation used by the C and C++ front ends</a>
+<li><a href="index.html#toc_RTL">RTL Representation</a>
+<li><a href="index.html#toc_Machine%20Desc">Machine Descriptions</a>
+<li><a href="index.html#toc_Target%20Macros">Target Description Macros and Functions</a>
+<li><a href="index.html#toc_Host%20Config">Host Configuration Headers</a>
+<li><a href="index.html#toc_Fragments">Makefile Fragments</a>
+<li><a href="index.html#toc_Collect2"><code>collect2</code></a>
+<li><a href="index.html#toc_Header%20Dirs">Standard Header File Directories</a>
+<li><a href="index.html#toc_Type%20Information">Memory Management and Type Information</a>
+<li><a href="index.html#toc_Funding">Funding Free Software</a>
+<li><a href="index.html#toc_GNU%20Project">The GNU Project and GNU/Linux</a>
+<li><a href="index.html#toc_Copying">GNU GENERAL PUBLIC LICENSE</a>
+<li><a href="index.html#toc_GNU%20Free%20Documentation%20License">GNU Free Documentation License</a>
+<li><a href="index.html#toc_Contributors">Contributors to GCC</a>
+<li><a href="index.html#toc_Option%20Index">Option Index</a>
+<li><a href="index.html#toc_Index">Index</a>
+</ul>
+
+
+<h2>Table of Contents</h2>
+<ul>
+<li><a name="toc_Top"></a>
+    <a href="index.html#Top">Introduction</a>
+<li><a name="toc_Contributing"></a>
+    <a href="Contributing.html#Contributing">Contributing to GCC Development</a>
+<li><a name="toc_Portability"></a>
+    <a href="Portability.html#Portability">GCC and Portability</a>
+<li><a name="toc_Interface"></a>
+    <a href="Interface.html#Interface">Interfacing to GCC Output</a>
+<li><a name="toc_Languages"></a>
+    <a href="Languages.html#Languages">Language Front Ends in GCC</a>
+<li><a name="toc_Source%20Tree"></a>
+    <a href="Source-Tree.html#Source%20Tree">Source Tree Structure and Build System</a>
+<ul>
+<li><a href="Configure-Terms.html#Configure%20Terms">Configure Terms and History</a>
+<li><a href="Top-Level.html#Top%20Level">Top Level Source Directory</a>
+<li><a href="gcc-Directory.html#gcc%20Directory">The <code>gcc</code> Subdirectory</a>
+<ul>
+<li><a href="Subdirectories.html#Subdirectories">Subdirectories of <code>gcc</code></a>
+<li><a href="Configuration.html#Configuration">Configuration in the <code>gcc</code> Directory</a>
+<ul>
+<li><a href="Config-Fragments.html#Config%20Fragments">Scripts Used by <code>configure</code></a>
+<li><a href="System-Config.html#System%20Config">The <code>config.gcc</code> File</a>
+<li><a href="Configuration-Files.html#Configuration%20Files">Files Created by <code>configure</code></a>
+</ul>
+<li><a href="Build.html#Build">Build System in the <code>gcc</code> Directory</a>
+<li><a href="Makefile.html#Makefile">Makefile Targets</a>
+<li><a href="Library-Files.html#Library%20Files">Library Source Files and Headers under the <code>gcc</code> Directory</a>
+<li><a href="Headers.html#Headers">Headers Installed by GCC</a>
+<li><a href="Documentation.html#Documentation">Building Documentation</a>
+<ul>
+<li><a href="Texinfo-Manuals.html#Texinfo%20Manuals">Texinfo Manuals</a>
+<li><a href="Man-Page-Generation.html#Man%20Page%20Generation">Man Page Generation</a>
+<li><a href="Miscellaneous-Docs.html#Miscellaneous%20Docs">Miscellaneous Documentation</a>
+</ul>
+<li><a href="Front-End.html#Front%20End">Anatomy of a Language Front End</a>
+<ul>
+<li><a href="Front-End-Directory.html#Front%20End%20Directory">The Front End <code><var>language</var></code> Directory</a>
+<li><a href="Front-End-Config.html#Front%20End%20Config">The Front End <code>config-lang.in</code> File</a>
+</ul>
+<li><a href="Back-End.html#Back%20End">Anatomy of a Target Back End</a>
+</ul>
+<li><a href="Test-Suites.html#Test%20Suites">Test Suites</a>
+<ul>
+<li><a href="Test-Idioms.html#Test%20Idioms">Idioms Used in Test Suite Code</a>
+<li><a href="C-Tests.html#C%20Tests">C Language Test Suites</a>
+</ul>
+</ul>
+<li><a name="toc_Passes"></a>
+    <a href="Passes.html#Passes">Passes and Files of the Compiler</a>
+<li><a name="toc_Trees"></a>
+    <a href="Trees.html#Trees">Trees: The intermediate representation used by the C and C++ front ends</a>
+<ul>
+<li><a href="Deficiencies.html#Deficiencies">Deficiencies</a>
+<li><a href="Tree-overview.html#Tree%20overview">Overview</a>
+<ul>
+<li><a href="Macros-and-Functions.html#Macros%20and%20Functions">Trees</a>
+<li><a href="Identifiers.html#Identifiers">Identifiers</a>
+<li><a href="Containers.html#Containers">Containers</a>
+</ul>
+<li><a href="Types.html#Types">Types</a>
+<li><a href="Scopes.html#Scopes">Scopes</a>
+<ul>
+<li><a href="Namespaces.html#Namespaces">Namespaces</a>
+<li><a href="Classes.html#Classes">Classes</a>
+</ul>
+<li><a href="Declarations.html#Declarations">Declarations</a>
+<li><a href="Functions.html#Functions">Functions</a>
+<ul>
+<li><a href="Function-Basics.html#Function%20Basics">Function Basics</a>
+<li><a href="Function-Bodies.html#Function%20Bodies">Function Bodies</a>
+<ul>
+<li><a href="Function-Bodies.html#Function%20Bodies">Statements</a>
+</ul>
+</ul>
+<li><a href="Attributes.html#Attributes">Attributes in trees</a>
+<li><a href="Expression-trees.html#Expression%20trees">Expressions</a>
+</ul>
+<li><a name="toc_RTL"></a>
+    <a href="RTL.html#RTL">RTL Representation</a>
+<ul>
+<li><a href="RTL-Objects.html#RTL%20Objects">RTL Object Types</a>
+<li><a href="RTL-Classes.html#RTL%20Classes">RTL Classes and Formats</a>
+<li><a href="Accessors.html#Accessors">Access to Operands</a>
+<li><a href="Flags.html#Flags">Flags in an RTL Expression</a>
+<li><a href="Machine-Modes.html#Machine%20Modes">Machine Modes</a>
+<li><a href="Constants.html#Constants">Constant Expression Types</a>
+<li><a href="Regs-and-Memory.html#Regs%20and%20Memory">Registers and Memory</a>
+<li><a href="Arithmetic.html#Arithmetic">RTL Expressions for Arithmetic</a>
+<li><a href="Comparisons.html#Comparisons">Comparison Operations</a>
+<li><a href="Bit-Fields.html#Bit-Fields">Bit-Fields</a>
+<li><a href="Vector-Operations.html#Vector%20Operations">Vector Operations</a>
+<li><a href="Conversions.html#Conversions">Conversions</a>
+<li><a href="RTL-Declarations.html#RTL%20Declarations">Declarations</a>
+<li><a href="Side-Effects.html#Side%20Effects">Side Effect Expressions</a>
+<li><a href="Incdec.html#Incdec">Embedded Side-Effects on Addresses</a>
+<li><a href="Assembler.html#Assembler">Assembler Instructions as Expressions</a>
+<li><a href="Insns.html#Insns">Insns</a>
+<li><a href="Calls.html#Calls">RTL Representation of Function-Call Insns</a>
+<li><a href="Sharing.html#Sharing">Structure Sharing Assumptions</a>
+<li><a href="Reading-RTL.html#Reading%20RTL">Reading RTL</a>
+</ul>
+<li><a name="toc_Machine%20Desc"></a>
+    <a href="Machine-Desc.html#Machine%20Desc">Machine Descriptions</a>
+<ul>
+<li><a href="Overview.html#Overview">Overview of How the Machine Description is Used</a>
+<li><a href="Patterns.html#Patterns">Everything about Instruction Patterns</a>
+<li><a href="Example.html#Example">Example of <code>define_insn</code></a>
+<li><a href="RTL-Template.html#RTL%20Template">RTL Template</a>
+<li><a href="Output-Template.html#Output%20Template">Output Templates and Operand Substitution</a>
+<li><a href="Output-Statement.html#Output%20Statement">C Statements for Assembler Output</a>
+<li><a href="Constraints.html#Constraints">Operand Constraints</a>
+<ul>
+<li><a href="Simple-Constraints.html#Simple%20Constraints">Simple Constraints</a>
+<li><a href="Multi-Alternative.html#Multi-Alternative">Multiple Alternative Constraints</a>
+<li><a href="Class-Preferences.html#Class%20Preferences">Register Class Preferences</a>
+<li><a href="Modifiers.html#Modifiers">Constraint Modifier Characters</a>
+<li><a href="Machine-Constraints.html#Machine%20Constraints">Constraints for Particular Machines</a>
+</ul>
+<li><a href="Standard-Names.html#Standard%20Names">Standard Pattern Names For Generation</a>
+<li><a href="Pattern-Ordering.html#Pattern%20Ordering">When the Order of Patterns Matters</a>
+<li><a href="Dependent-Patterns.html#Dependent%20Patterns">Interdependence of Patterns</a>
+<li><a href="Jump-Patterns.html#Jump%20Patterns">Defining Jump Instruction Patterns</a>
+<li><a href="Looping-Patterns.html#Looping%20Patterns">Defining Looping Instruction Patterns</a>
+<li><a href="Insn-Canonicalizations.html#Insn%20Canonicalizations">Canonicalization of Instructions</a>
+<li><a href="Expander-Definitions.html#Expander%20Definitions">Defining RTL Sequences for Code Generation</a>
+<li><a href="Insn-Splitting.html#Insn%20Splitting">Defining How to Split Instructions</a>
+<li><a href="Including-Patterns.html#Including%20Patterns">Including Patterns in Machine Descriptions.</a>
+<ul>
+<li><a href="Including-Patterns.html#Including%20Patterns">RTL Generation Tool Options for Directory Search</a>
+</ul>
+<li><a href="Peephole-Definitions.html#Peephole%20Definitions">Machine-Specific Peephole Optimizers</a>
+<ul>
+<li><a href="define_peephole.html#define_peephole">RTL to Text Peephole Optimizers</a>
+<li><a href="define_peephole2.html#define_peephole2">RTL to RTL Peephole Optimizers</a>
+</ul>
+<li><a href="Insn-Attributes.html#Insn%20Attributes">Instruction Attributes</a>
+<ul>
+<li><a href="Defining-Attributes.html#Defining%20Attributes">Defining Attributes and their Values</a>
+<li><a href="Expressions.html#Expressions">Attribute Expressions</a>
+<li><a href="Tagging-Insns.html#Tagging%20Insns">Assigning Attribute Values to Insns</a>
+<li><a href="Attr-Example.html#Attr%20Example">Example of Attribute Specifications</a>
+<li><a href="Insn-Lengths.html#Insn%20Lengths">Computing the Length of an Insn</a>
+<li><a href="Constant-Attributes.html#Constant%20Attributes">Constant Attributes</a>
+<li><a href="Delay-Slots.html#Delay%20Slots">Delay Slot Scheduling</a>
+<li><a href="Processor-pipeline-description.html#Processor%20pipeline%20description">Specifying processor pipeline description</a>
+<ul>
+<li><a href="Old-pipeline-description.html#Old%20pipeline%20description">Specifying Function Units</a>
+<li><a href="Automaton-pipeline-description.html#Automaton%20pipeline%20description">Describing instruction pipeline characteristics</a>
+<li><a href="Comparison-of-the-two-descriptions.html#Comparison%20of%20the%20two%20descriptions">Drawbacks of the old pipeline description</a>
+</ul>
+</ul>
+<li><a href="Conditional-Execution.html#Conditional%20Execution">Conditional Execution</a>
+<li><a href="Constant-Definitions.html#Constant%20Definitions">Constant Definitions</a>
+</ul>
+<li><a name="toc_Target%20Macros"></a>
+    <a href="Target-Macros.html#Target%20Macros">Target Description Macros and Functions</a>
+<ul>
+<li><a href="Target-Structure.html#Target%20Structure">The Global <code>targetm</code> Variable</a>
+<li><a href="Driver.html#Driver">Controlling the Compilation Driver, <code>gcc</code></a>
+<li><a href="Run-time-Target.html#Run-time%20Target">Run-time Target Specification</a>
+<li><a href="Per-Function-Data.html#Per-Function%20Data">Defining data structures for per-function information.</a>
+<li><a href="Storage-Layout.html#Storage%20Layout">Storage Layout</a>
+<li><a href="Type-Layout.html#Type%20Layout">Layout of Source Language Data Types</a>
+<li><a href="Escape-Sequences.html#Escape%20Sequences">Target Character Escape Sequences</a>
+<li><a href="Registers.html#Registers">Register Usage</a>
+<ul>
+<li><a href="Register-Basics.html#Register%20Basics">Basic Characteristics of Registers</a>
+<li><a href="Allocation-Order.html#Allocation%20Order">Order of Allocation of Registers</a>
+<li><a href="Values-in-Registers.html#Values%20in%20Registers">How Values Fit in Registers</a>
+<li><a href="Leaf-Functions.html#Leaf%20Functions">Handling Leaf Functions</a>
+<li><a href="Stack-Registers.html#Stack%20Registers">Registers That Form a Stack</a>
+</ul>
+<li><a href="Register-Classes.html#Register%20Classes">Register Classes</a>
+<li><a href="Stack-and-Calling.html#Stack%20and%20Calling">Stack Layout and Calling Conventions</a>
+<ul>
+<li><a href="Frame-Layout.html#Frame%20Layout">Basic Stack Layout</a>
+<li><a href="Exception-Handling.html#Exception%20Handling">Exception Handling Support</a>
+<li><a href="Stack-Checking.html#Stack%20Checking">Specifying How Stack Checking is Done</a>
+<li><a href="Frame-Registers.html#Frame%20Registers">Registers That Address the Stack Frame</a>
+<li><a href="Elimination.html#Elimination">Eliminating Frame Pointer and Arg Pointer</a>
+<li><a href="Stack-Arguments.html#Stack%20Arguments">Passing Function Arguments on the Stack</a>
+<li><a href="Register-Arguments.html#Register%20Arguments">Passing Arguments in Registers</a>
+<li><a href="Scalar-Return.html#Scalar%20Return">How Scalar Function Values Are Returned</a>
+<li><a href="Aggregate-Return.html#Aggregate%20Return">How Large Values Are Returned</a>
+<li><a href="Caller-Saves.html#Caller%20Saves">Caller-Saves Register Allocation</a>
+<li><a href="Function-Entry.html#Function%20Entry">Function Entry and Exit</a>
+<li><a href="Profiling.html#Profiling">Generating Code for Profiling</a>
+<li><a href="Tail-Calls.html#Tail%20Calls">Permitting tail calls</a>
+</ul>
+<li><a href="Varargs.html#Varargs">Implementing the Varargs Macros</a>
+<li><a href="Trampolines.html#Trampolines">Trampolines for Nested Functions</a>
+<li><a href="Library-Calls.html#Library%20Calls">Implicit Calls to Library Routines</a>
+<li><a href="Addressing-Modes.html#Addressing%20Modes">Addressing Modes</a>
+<li><a href="Condition-Code.html#Condition%20Code">Condition Code Status</a>
+<li><a href="Costs.html#Costs">Describing Relative Costs of Operations</a>
+<li><a href="Scheduling.html#Scheduling">Adjusting the Instruction Scheduler</a>
+<li><a href="Sections.html#Sections">Dividing the Output into Sections (Texts, Data, <small>...</small>)</a>
+<li><a href="PIC.html#PIC">Position Independent Code</a>
+<li><a href="Assembler-Format.html#Assembler%20Format">Defining the Output Assembler Language</a>
+<ul>
+<li><a href="File-Framework.html#File%20Framework">The Overall Framework of an Assembler File</a>
+<li><a href="Data-Output.html#Data%20Output">Output of Data</a>
+<li><a href="Uninitialized-Data.html#Uninitialized%20Data">Output of Uninitialized Variables</a>
+<li><a href="Label-Output.html#Label%20Output">Output and Generation of Labels</a>
+<li><a href="Initialization.html#Initialization">How Initialization Functions Are Handled</a>
+<li><a href="Macros-for-Initialization.html#Macros%20for%20Initialization">Macros Controlling Initialization Routines</a>
+<li><a href="Instruction-Output.html#Instruction%20Output">Output of Assembler Instructions</a>
+<li><a href="Dispatch-Tables.html#Dispatch%20Tables">Output of Dispatch Tables</a>
+<li><a href="Exception-Region-Output.html#Exception%20Region%20Output">Assembler Commands for Exception Regions</a>
+<li><a href="Alignment-Output.html#Alignment%20Output">Assembler Commands for Alignment</a>
+</ul>
+<li><a href="Debugging-Info.html#Debugging%20Info">Controlling Debugging Information Format</a>
+<ul>
+<li><a href="All-Debuggers.html#All%20Debuggers">Macros Affecting All Debugging Formats</a>
+<li><a href="DBX-Options.html#DBX%20Options">Specific Options for DBX Output</a>
+<li><a href="DBX-Hooks.html#DBX%20Hooks">Open-Ended Hooks for DBX Format</a>
+<li><a href="File-Names-and-DBX.html#File%20Names%20and%20DBX">File Names in DBX Format</a>
+<li><a href="SDB-and-DWARF.html#SDB%20and%20DWARF">Macros for SDB and DWARF Output</a>
+<li><a href="VMS-Debug.html#VMS%20Debug">Macros for VMS Debug Format</a>
+</ul>
+<li><a href="Floating-Point.html#Floating%20Point">Cross Compilation and Floating Point</a>
+<li><a href="Mode-Switching.html#Mode%20Switching">Mode Switching Instructions</a>
+<li><a href="Target-Attributes.html#Target%20Attributes">Defining target-specific uses of <code>__attribute__</code></a>
+<li><a href="MIPS-Coprocessors.html#MIPS%20Coprocessors">Defining coprocessor specifics for MIPS targets.</a>
+<li><a href="Misc.html#Misc">Miscellaneous Parameters</a>
+</ul>
+<li><a name="toc_Host%20Config"></a>
+    <a href="Host-Config.html#Host%20Config">Host Configuration Headers</a>
+<li><a name="toc_Fragments"></a>
+    <a href="Fragments.html#Fragments">Makefile Fragments</a>
+<ul>
+<li><a href="Target-Fragment.html#Target%20Fragment">Target Makefile Fragments</a>
+<li><a href="Host-Fragment.html#Host%20Fragment">Host Makefile Fragments</a>
+</ul>
+<li><a name="toc_Collect2"></a>
+    <a href="Collect2.html#Collect2"><code>collect2</code></a>
+<li><a name="toc_Header%20Dirs"></a>
+    <a href="Header-Dirs.html#Header%20Dirs">Standard Header File Directories</a>
+<li><a name="toc_Type%20Information"></a>
+    <a href="Type-Information.html#Type%20Information">Memory Management and Type Information</a>
+<ul>
+<li><a href="GTY-Options.html#GTY%20Options">The Inside of a <code>GTY(())</code></a>
+<li><a href="GGC-Roots.html#GGC%20Roots">Marking Roots for the Garbage Collector</a>
+<li><a href="Files.html#Files">Source Files Containing Type Information</a>
+</ul>
+<li><a name="toc_Funding"></a>
+    <a href="Funding.html#Funding">Funding Free Software</a>
+<li><a name="toc_GNU%20Project"></a>
+    <a href="GNU-Project.html#GNU%20Project">The GNU Project and GNU/Linux</a>
+<li><a name="toc_Copying"></a>
+    <a href="Copying.html#Copying">GNU GENERAL PUBLIC LICENSE</a>
+<ul>
+<li><a href="Copying.html#Copying">Preamble</a>
+<li><a href="Copying.html#Copying">How to Apply These Terms to Your New Programs</a>
+</ul>
+<li><a name="toc_GNU%20Free%20Documentation%20License"></a>
+    <a href="GNU-Free-Documentation-License.html#GNU%20Free%20Documentation%20License">GNU Free Documentation License</a>
+<ul>
+<li><a href="GNU-Free-Documentation-License.html#GNU%20Free%20Documentation%20License">ADDENDUM: How to use this License for your documents</a>
+</ul>
+<li><a name="toc_Contributors"></a>
+    <a href="Contributors.html#Contributors">Contributors to GCC</a>
+<li><a name="toc_Option%20Index"></a>
+    <a href="Option-Index.html#Option%20Index">Option Index</a>
+<li><a name="toc_Index"></a>
+    <a href="Index.html#Index">Index</a>
+</ul>
+
+<p>
+Node:<a name="Top">Top</a>,
+Next:<a rel=next href="Contributing.html#Contributing">Contributing</a>,
+Up:<a rel=up href="../index.html#DIR">(DIR)</a>
+<hr><br>
+
+<h2>Introduction</h2>
+
+<p>This manual documents the internals of the GNU compilers, including
+how to port them to new targets and some information about how to
+write front ends for new languages.  It corresponds to GCC version
+3.2.  The use of the GNU compilers is documented in a
+separate manual.  See <a href="../gcc/index.html#Top">Introduction</a>.
+
+<p>This manual is mainly a reference manual rather than a tutorial.  It
+discusses how to contribute to GCC (see <a href="Contributing.html#Contributing">Contributing</a>), the
+characteristics of the machines supported by GCC as hosts and targets
+(see <a href="Portability.html#Portability">Portability</a>), how GCC relates to the ABIs on such systems
+(see <a href="Interface.html#Interface">Interface</a>), and the characteristics of the languages for
+which GCC front ends are written (see <a href="Languages.html#Languages">Languages</a>).  It then
+describes the GCC source tree structure and build system, some of the
+interfaces to GCC front ends, and how support for a target system is
+implemented in GCC.
+
+<p>Additional tutorial information is linked to from
+<a href="http://gcc.gnu.org/readings.html">http://gcc.gnu.org/readings.html</a>.
+
+<ul>
+<li><a href="Contributing.html#Contributing">Contributing</a>:     How to contribute to testing and developing GCC. 
+<li><a href="Portability.html#Portability">Portability</a>:      Goals of GCC's portability features. 
+<li><a href="Interface.html#Interface">Interface</a>:        Function-call interface of GCC output. 
+<li><a href="Languages.html#Languages">Languages</a>:        Languages for which GCC front ends are written. 
+<li><a href="Source-Tree.html#Source%20Tree">Source Tree</a>:      GCC source tree structure and build system. 
+<li><a href="Passes.html#Passes">Passes</a>:           Order of passes, what they do, and what each file is for. 
+<li><a href="Trees.html#Trees">Trees</a>:            The source representation used by the C and C++ front ends. 
+<li><a href="RTL.html#RTL">RTL</a>:              The intermediate representation that most passes work on. 
+<li><a href="Machine-Desc.html#Machine%20Desc">Machine Desc</a>:     How to write machine description instruction patterns. 
+<li><a href="Target-Macros.html#Target%20Macros">Target Macros</a>:    How to write the machine description C macros and functions. 
+<li><a href="Host-Config.html#Host%20Config">Host Config</a>:      Writing the <code>xm-<var>machine</var>.h</code> file. 
+<li><a href="Fragments.html#Fragments">Fragments</a>:        Writing the <code>t-<var>target</var></code> and <code>x-<var>host</var></code> files. 
+<li><a href="Collect2.html#Collect2">Collect2</a>:         How <code>collect2</code> works; how it finds <code>ld</code>. 
+<li><a href="Header-Dirs.html#Header%20Dirs">Header Dirs</a>:      Understanding the standard header file directories. 
+<li><a href="Type-Information.html#Type%20Information">Type Information</a>:  GCC's memory management; generating type information.
+
+<p>
+</p><li><a href="Funding.html#Funding">Funding</a>:          How to help assure funding for free software. 
+<li><a href="GNU-Project.html#GNU%20Project">GNU Project</a>:      The GNU Project and GNU/Linux.
+
+<p>
+</p><li><a href="Copying.html#Copying">Copying</a>:          GNU General Public License says
+                     how you can copy and share GCC. 
+<li><a href="GNU-Free-Documentation-License.html#GNU%20Free%20Documentation%20License">GNU Free Documentation License</a>:  How you can copy and share this manual. 
+<li><a href="Contributors.html#Contributors">Contributors</a>:     People who have contributed to GCC.
+
+<p>
+</p><li><a href="Option-Index.html#Option%20Index">Option Index</a>:     Index to command line options. 
+<li><a href="Index.html#Index">Index</a>: 	    Index of concepts and symbol names. 
+</ul>
+
+</body></html>
+

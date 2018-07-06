@@ -1,0 +1,1397 @@
+ID=E0015
+URL=http://www.delorie.com/djgpp/doc/eli-m17n99.html
+SIZE=74658
+DATE=12/07/02
+TIME=19:16:25
+DATASET=C
+HTML=<html><head><title>The DJGPP Project</title>
+<base href="http://www.delorie.com/djgpp/doc/eli-m17n99.html">
+</head><body><center><!-- BEGIN RICH-MEDIA BURST! CODE --> 
+     <script language="JavaScript"> 
+     <!-- /* (C) 1997-1999 BURST! Media, LLC. All Rights Reserved.*/ 
+     var TheAdcode = 'ad1954a'; 
+     var bN = navigator.appName; 
+     var bV = parseInt(navigator.appVersion); 
+     var base='http://www.burstnet.com/'; 
+     var Tv='/5364'; 
+     var agt=navigator.userAgent.toLowerCase(); 
+     if (bN=='Netscape'){ 
+          if ((bV>=4)&&(agt.indexOf("mac")==-1))
+     {  document.write('<s'+'cript src="'+ 
+           base+'cgi-bin/ads/'+TheAdcode+'.cgi/RETURN-CODE/JS' 
+           +Tv+'">'); 
+          document.write('</'+'script>');    
+     } 
+          else if (bV>=3) {document.write('<'+'a href="'+base+'ads/'+ 
+             TheAdcode+'-map.cgi'+Tv+'"target=_top>'); 
+             document.write('<img src="' + base + 'cgi-bin/ads/' + 
+             TheAdcode + '.cgi' + Tv + '" ismap width=468 height=60' + 
+             ' border=0 alt="Click Here"></a>');} 
+      } 
+     if (bN=='Microsoft Internet Explorer') 
+      document.write('<ifr'+'ame id=BURST src="'+base+'cgi-bin/ads/'
+     + 
+       TheAdcode + '.cgi' + Tv + '/RETURN-CODE" width=468 height=60' + 
+       'marginwidth=0 marginheight=0 hspace=0 vspace=0 ' + 
+       'frameborder=0 scrolling=no></ifr'+'ame>'); 
+     // --> 
+     </script> 
+     <noscript><a href="http://www.burstnet.com/ads/ad1954a-map.cgi" target=_top> 
+     <img src="http://www.burstnet.com/cgi-bin/ads/ad1954a.cgi" 
+      width=468 height=60 border=0 alt="Click Here"></a> 
+     </noscript> 
+     <!-- END BURST CODE --> 
+<table width=100% border=0 cellspacing=0 cellpadding=3><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">www.delorie.com</a>/<a href="/djgpp/" target="_top">djgpp</a>/<a href="/djgpp/doc/" target="_top">doc</a>/eli-m17n99.html</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/search/">search</a> &nbsp;
+</b></font></small></td>
+</tr></table><a href="bulktrap.html"></a><big><big><b>The DJGPP Project</b></big></big></td></p></center>
+
+
+<p><i>Note from DJ: This is a copy of a presentation Eli Zaretskii
+gave during a trip to Japan.</i></p>
+
+<p>This file describes the <small>DJGPP</small> project, its goals, current status,
+and future perspectives.
+
+<ul>
+<li><a href="#Introduction">Introduction</a>: :       What is this all about?
+
+<li><a href="#History">History</a>: :            Why and how was <small>DJGPP</small> developed?
+
+<li><a href="#Extending%20DOS">Extending DOS</a>: :      How to run protected-mode programs on top of DOS?
+
+<li><a href="#Features">Features</a>: :           Important features of <small>DJGPP</small>.
+
+<li><a href="#I18N">I18N</a>: :               Internationalization aspects of <small>DJGPP</small>.
+
+<li><a href="#Outlook">Outlook</a>: :            What's been achieved and what's in the future.
+
+<li><a href="#Index">Index</a>: :
+</ul>
+
+<p><hr>
+Node:Introduction, Next:<a rel=next href="#History">History</a>, Previous:<a rel=previous href="#Top">Top</a>, Up:<a rel=up href="#Top">Top</a>
+<p>
+
+<h1><a name="Introduction">Introduction</a></a></h1>
+
+<p><smaLL>DJGPP</small>, an acronym for <dfn>DJ's GNU Programming Platform</dfn><a rel=footnote href="#fn-1"><sup>1</sup></a>, is a project which brings the GNU
+development tools to MS-DOS and MS-Windows systems.  Its originator and
+principal maintainer is <a href="mailto:dj@delorie.com">DJ Delorie</a>; that's
+where the <small>"DJ"</small> in <small>DJGPP</small> comes from.
+
+<p><smaLL>DJGPP</small> is about <em>Free Software</em>.  The ported GNU packages are,
+of course, free; however, the library and utilities developed
+specifically for <small>DJGPP</small> are also distributed under the GNU license. 
+Since <small>DJGPP</small> supports platforms which have such a huge installed
+base, and since it is highly popular among MS-DOS/MS-Windows users, the
+project is a very important member of the Free Software movement. 
+Significantly, a large proportion of <small>DJGPP</small> users are young
+programmers at the very beginning of their careers.  Teaching those
+young people about the <em>importance of free software</em> and free
+sharing of ideas is in itself a worthy goal.  <small>DJGPP</small> is in a unique
+position to perform this important community service because it usually
+is the first serious compiler used by young programmers.
+
+<p>But <small>DJGPP</small> is also about <em>fun</em>.  It is fun to port
+industry-strength applications to MS-DOS and have them running
+seamlessly on top of a 16-bit "toy operating system".  It is fun to
+see how these applications change the way your system looks and feels,
+to a point that you can almost think it is a Unix box.  It is fun to
+have all the source code, down to the darkest corners of the library
+internals, free for reading and hacking.  It is fun to be able to find
+and fix bugs no matter whether they occurred in the application code, in
+the library, or in the compiler.  And it is fun to discuss all these
+matters with other users and developers all over the world, and to join
+forces to make the free software better and more powerful.  More about
+this later.
+
+<p>This article presents an overview of the <small>DJGPP</small> project. 
+<strong>Section 1</strong> briefly tells the history of the project development. 
+<strong>Section 2</strong> explains how protected-mode <small>DJGPP</small> programs
+manage to run on top of MS-DOS even though MS-DOS and protected mode are
+incompatible.  <strong>Section 3</strong> describes several important features
+that <small>DJGPP</small> brings to MS-DOS and MS-Windows.  Internationalization
+(a.k.a. <dfn>I18N</dfn>) aspects specific to <small>DJGPP</small> are discussed in
+<strong>Section 4</strong>.  Finally, <strong>Section 5</strong> summarizes the
+achievements of 10 years of <small>DJGPP</small> development, and attempts to
+predict its future.
+
+<p><hr>
+Node:History, Next:<a rel=next href="#Extending%20DOS">Extending DOS</a>, Previous:<a rel=previous href="#Introduction">Introduction</a>, Up:<a rel=up href="#Top">Top</a>
+<p>
+
+<h1><a name="History">The History of <small>DJGPP</small></a></a></h1>
+
+<p>"In the beginning was the Word<small>...</small>", says the Bible.
+
+<p>Like every other human endeavor, <small>DJGPP</small> also started with a Word. 
+And like it happens with almost everything else in the free software
+world, that word belonged to Richard Stallman.  Here's how DJ Delorie
+himself describes the genesis of <small>DJGPP</small><a rel=footnote href="#fn-2"><sup>2</sup></a>:
+
+<blockquote>
+<small>DJGPP</small> was born around 1989 [<small>...</small>], when Richard Stallman spoke
+at a meeting of the Northern New England Unix Users Group (<small>NNEUUG</small>)
+at Data General, where I then worked.  I asked if the FSF ever planned
+on porting gcc to MS-DOS [<small>...</small>], and he said it couldn't be done
+because gcc was too big and MS-DOS was a 16-bit operating system. 
+Challenge in hand, I began. 
+</blockquote>
+
+<p>Consequently, we should consider Richard Stallman a progenitor of
+<small>DJGPP</small>, or at least its godfather.  Had it not be for his
+scepticism, it's possible that <small>DJGPP</small> would not have
+existed<small>...</small>.
+
+<p>The first version of GCC ported by DJ was 1.35.  It was compiled on a
+386 machine running ISC Unix, linked with a hacked <code>libc.a</code> taken
+from that machine which had DOS-compatible replacements for system calls
+such as <code>open</code>, <code>read</code>, <code>stat</code>, etc. and converted to a
+DOS executable format with a custom program written by DJ: a first
+version of <small>DJGPP</small>, originally called <dfn>djgcc</dfn>, was born.  It
+required Phar Lap's <dfn>DOS Extender</dfn> to run protected-mode code on top
+of real-mode DOS.  See <a href="#Extending%20DOS"><small>DJGPP</small> Programs and MS-DOS</a>, for more about DOS extender's role.
+
+<p>To compile itself, gcc needs lots of memory, which PCs didn't have at
+that time.  Since the DOS extender used to run gcc didn't support
+virtual memory, DJ wrote his own DOS extender called <code>go32</code>.  GCC
+version 1.37 was the first version built on a DOS platform using
+<code>go32</code>.
+
+<p>Next came the library.  The first version was based on the BSD library
+whose sources were free'd at that time, and augmented with many custom
+DOS-specific functions that interfaced with the OS.  The header files
+were based on those distributed with gcc.
+
+<p>The name was changed from <small>DJGCC</small> to <small>DJGPP</small> when C++ support
+was added.  Initially, the name stood for <cite>DJ's G++</cite>, with the
+<code>+</code> characters replaced by <code>p</code>s because DOS doesn't allow
+<code>+</code> in file names.  However, since the C++ compiler is integral
+to gcc distribution, <small>DJGPP</small> now probably stands for something like
+<cite>DJ's GNU Programming Platform</cite><a rel=footnote href="#fn-3"><sup>3</sup></a>.
+
+<p><smaLL>DJGPP</small> version 1.05 was the first one available commercially, and it
+was a big success.  Version 1.11 supported all DOS configurations, had
+somewhat limited support for running on MS-Windows (e.g., graphics and
+floating-point emulation didn't work), and appeared on the <cite>GNU
+Compiler Binaries</cite> CD-ROM.
+
+<p>This was in 1992, and around that time I myself began using <small>DJGPP</small>. 
+I have just bought a brand-new 486-DX/33 and got an email account, and
+<small>DJGPP</small> v1.11m5 was the first version I downloaded and installed. 
+Exposed to Unix-style tools by the excellent book <cite>Software Tools</cite>
+by B.W.&nbsp;Kernighan and P.J.&nbsp;Plauger, I was for years porting GNU
+programs to MS-DOS using 16-bit proprietary compilers.  I became tired
+of dealing with missing headers, like <code>&lt;unistd.h&gt;</code>, missing
+functions, like <code>popen</code> and <code>alloca</code>, and missing
+functionality, like long command lines in a <code>Makefile</code>.  <small>DJGPP</small>
+solved all these and many other problems, and I became instantly hooked.
+
+<p>By the end of 1994 <small>DJGPP</small> became so popular and the traffic on its
+mailing list became so intensive, that a FAQ list was sorely needed; the
+first version of the FAQ was released in February 1995.  Today, in its
+7th edition, the DJGPP FAQ list includes answers to 200 questions, its
+Texinfo source totals 540K bytes, and its printed version is more than
+200 pages long.
+
+<p><smaLL>DJGPP</small> v1.x could not bootstrap itself: it required Borland's
+compiler to build the <code>go32</code> extender.  Cygnus, a big user of
+<small>DJGPP</small> for their DOS-based products, requested a self-bootstrapping
+version, so <small>DJGPP</small> v2 was born.  Version 2 moves some parts of
+<code>go32</code> into the C library, other parts into a stub loader produced
+by a special-purpose assembler capable of producing 16-bit code, and it
+relies on <dfn>DPMI services</dfn> to run on top of DOS; more about this in
+the next section.
+
+<p>Meantime, in response to the growing interest and user base, a news
+group dedicated to <small>DJGPP</small>, &lt;<code>comp.os.msdos.djgpp</code>&gt;, was created in
+June 1995.  Nowadays, the traffic on the news group averages about 70
+messages per day.
+
+<p>Version 2.0 of <small>DJGPP</small> was shipped in February 1996, after more than
+two years of development and testing.  The v2 library is
+Posix-compliant, the only library that offers Posix compliance on
+MS-DOS, and one of the two available for MS-Windows.  It also introduced
+transparent and automatic support of long file names on Windows 9X.
+
+<p>Version 2.01 was released in October 1996.  The <cite>GNU Software for
+MS-Windows and MS-DOS</cite> CD-ROM, based on <small>DJGPP</small> v2.01 ports of many
+GNU packages, was released in the last quarter of 1998, and its first
+edition out-sold all other GNU CD-ROMs.
+
+<p>The latest version 2.02 of <small>DJGPP</small> was released in December 1998.
+
+<p><hr>
+Node:Extending DOS, Next:<a rel=next href="#Features">Features</a>, Previous:<a rel=previous href="#History">History</a>, Up:<a rel=up href="#Top">Top</a>
+<p>
+
+<h1><a name="Extending%20DOS"><small>DJGPP</small> Programs and MS-DOS</a></a></h1>
+
+<p>GCC generates 32-bit code, so <small>DJGPP</small> programs are 32-bit programs. 
+GCC also doesn't know anything about segmented architecture of the x86
+processors, so its code effectively enforces the data, stack and code
+segments to be constant during the program execution.  However,
+real-mode segments of x86 CPUs are only 64KB-long.  Therefore, to be
+able to compile large programs, like GCC itself, <small>DJGPP</small> <em>must
+run in protected mode</em>.  This section describes the tricks pulled by
+<small>DJGPP</small> to make this possible.
+
+<ul>
+<li><a href="#Protected%20Mode%20and%20DOS">Protected Mode and DOS</a>: :   Why can't they live together.
+
+<li><a href="#DOS%20Extender">DOS Extender</a>: :             How the extender solves it.
+
+<li><a href="#v1%20and%20go32">v1 and go32</a>: :              The extender used by <small>DJGPP</small> v1.x.
+
+<li><a href="#v2%20and%20DPMI">v2 and DPMI</a>: :              DPMI is used by <small>DJGPP</small> v2.x.
+
+<li><a href="#Startup">Startup</a>: :                  What the startup code does in v2.x.
+
+<li><a href="#Library">Library</a>: :                  Low-level v2.x library functionality. 
+</ul>
+
+<p><hr>
+Node:Protected Mode and DOS, Next:<a rel=next href="#DOS%20Extender">DOS Extender</a>, Previous:<a rel=previous href="#Extending%20DOS">Extending DOS</a>, Up:<a rel=up href="#Extending%20DOS">Extending DOS</a>
+<p>
+
+<h2><a name="Protected%20Mode%20and%20DOS">DOS Cannot Run in Protected Mode</a></a></h2>
+
+<p>Switching the CPU into protected mode is easy, but you cannot call DOS
+and BIOS services while the CPU is in protected mode.  Why?  Because DOS
+and BIOS code was written for execution in real mode, and so it
+constantly violates the rules of protected-mode programming.  For
+example, DOS code loads many different values into segment registers, to
+overcome the 64KB limitation of a real-mode segment.  But in protected
+mode, a segment register can only be loaded with a value that
+corresponds to one of the existing selectors; any other value causes a
+<dfn>General Protection Fault</dfn> (<dfn>GPF</dfn> in short).
+
+<p>So, if a program switches the CPU into protected mode and then calls
+DOS, e.g. to print a message, it will immediately crash the system.  You
+can't write even the simplest <cite>Hello World</cite> program without hitting
+this brick wall!
+
+<p>It gets worse.  DOS and BIOS code needs to be run even if the
+application program doesn't call any of their services.  For example,
+18 times a second there's a <dfn>timer tick</dfn>, a hardware interrupt
+issued by the timer chip that's supposed to advance the system clock. 
+But the handler for the timer tick interrupt is part of BIOS, and it
+employs real-mode code.
+
+<p>So even if a program does nothing to call any real-mode code, some
+asynchronous system events will do that anyway, and the machine will
+still crash very promptly.  Can the conflict between DOS/BIOS and the
+protected mode be solved?  Yes; read on.
+
+<p><hr>
+Node:DOS Extender, Next:<a rel=next href="#v1%20and%20go32">v1 and go32</a>, Previous:<a rel=previous href="#Protected%20Mode%20and%20DOS">Protected Mode and DOS</a>, Up:<a rel=up href="#Extending%20DOS">Extending DOS</a>
+<p>
+
+<h2><a name="DOS%20Extender">DOS Extender Allows DOS and Protected Mode to Co-exist</a></a></h2>
+
+<p>The solution to this conflict, if you don't want to write a
+protected-mode operating system which replaces DOS and BIOS
+completely<a rel=footnote href="#fn-4"><sup>4</sup></a>, is to add a layer of software between your
+program and DOS/BIOS code that would switch the CPU from protected to
+real mode and back, as appropriate.  This software layer is called
+<dfn>DOS extender</dfn>.
+
+<p>With a DOS extender, when a protected-mode program calls a real-mode
+service, the extender traps the call, switches the CPU to real mode,
+reissues the call, waits for the service to do its thing, then switches
+the CPU back into protected mode, and returns to the application code
+that called the real-mode service.  Hardware interrupts, such as the
+timer tick and the keyboard interrupt, are also trapped by the extender,
+and also cause a switch to real mode and back.
+
+<p>You might think that these mode switches would considerably slow down
+the application.  However, in practice, most programs don't call the OS
+services too often, and even when they do, the peripheral devices
+accessed by most of these services, such as the hard disk, are so much
+slower than modern CPUs, that the overhead of the mode switch is hardly
+ever noticed.
+
+<p><hr>
+Node:v1 and go32, Next:<a rel=next href="#v2%20and%20DPMI">v2 and DPMI</a>, Previous:<a rel=previous href="#DOS%20Extender">DOS Extender</a>, Up:<a rel=up href="#Extending%20DOS">Extending DOS</a>
+<p>
+
+<h2><a name="v1%20and%20go32"><small>DJGPP</small> v1.x Setup with the <code>go32</code> Extender</a></a></h2>
+
+<p>In <small>DJGPP</small> v1.x, <code>go32</code> was such a DOS extender.  It was loaded
+automatically by every program during its startup.  In addition to the
+usual functions performed by DOS extenders, it also handled some unique
+<small>DJGPP</small>-related tasks:
+
+<ul>
+<li>Loading the application and setting it up for execution.
+
+<p>Since <small>DJGPP</small> executables use COFF format, which DOS doesn't
+understand, <code>go32</code> was responsible to read the COFF header and set
+up the code, data, and other segments as recorded in the header.
+
+</p><li>Unix-style command-line expansion.
+
+<p>This is required to overcome deficiencies in stock DOS shells which
+prevent even the simple task of compiling GCC without extensive hacking
+of its <code>Makefile</code>s.  See <a href="#Globbing">Features Provided by <small>DJGPP</small></a>, for more details about this.
+
+</p><li>Floating-point emulation in protected mode.
+
+<p>FP emulation needs special handling in protected mode.  <small>DJGPP</small>
+supplies an FP emulator which <code>go32</code> would load and set up.
+
+</p><li>Graphics support.
+
+<p>To facilitate graphics programs, <code>go32</code> allowed to load a driver
+suitable for the installed video hardware, and worked with the VGA bank
+switching features to create an illusion of a linear video memory. 
+</ul>
+
+<p>Using an extender had an important advantage of being able to run on any
+DOS configuration, since <code>go32</code> had special code to adapt itself to
+all known methods of switching into protected mode and managing extended
+memory.  But it did have a significant drawback as well: the extender
+was loaded into conventional memory and each instance used about 130KB
+of that memory.  Since most DOS systems had about 500 to 600 KBytes of
+free conventional memory, this means you couldn't have more than 3-4
+nested levels of <small>DJGPP</small> programs.  This was a grave limitation: for
+example, you couldn't build programs whose <code>Makefile</code>s required
+more than 2 recursive levels of <code>make</code> invocation (because GCC and
+the compiler passes it invokes require 2 additional levels of program
+nesting).  <small>DJGPP</small> v2 solves this problem, as described below.
+
+<p><hr>
+Node:v2 and DPMI, Next:<a rel=next href="#Startup">Startup</a>, Previous:<a rel=previous href="#v1%20and%20go32">v1 and go32</a>, Up:<a rel=up href="#Extending%20DOS">Extending DOS</a>
+<p>
+
+<h2><a name="v2%20and%20DPMI"><small>DJGPP</small> v2.x Setup with the DPMI services</a></a></h2>
+
+<p><smaLL>DJGPP</small> v2.x gets rid of the extender, and instead requires DPMI
+services to run.  DPMI, an acronym for <dfn>DOS Protected-Mode
+Interface</dfn>, is a special API that allows protected-mode programs to run
+on top of DOS.  It defines several functions that a protected-mode
+program (called <dfn>a DPMI client</dfn>) can use to perform such tasks as
+entering protected mode, allocating memory and segment descriptors,
+calling real-mode services, hooking interrupts, etc.  Many modern
+operating systems for Intel CPUs include the DPMI services; all versions
+of MS-Windows, OS/2, and Linux DOS emulator are notable examples.  There
+are also several proprietary DPMI servers for DOS, usually bundled with
+DOS memory managers such as <small>QEMM</small> and <small>386MAX</small>; and
+FreeDOS includes a DPMI server as part of the default setup.  For those
+systems which don't have a DPMI server, <small>DJGPP</small> v2.x comes with a
+free server called <small>CWSDPMI</small>; not surprisingly, <small>CWSDPMI</small> reuses a
+lot of code from <code>go32</code>.  The <small>DJGPP</small> startup code checks for
+DPMI services, and if they aren't available, automatically looks for and
+loads <code>cwsdpmi.exe</code>, the <small>CWSDPMI</small> server.
+
+<p>The DPMI server (a.k.a. <dfn>the DPMI host</dfn>) solves most of the
+problems of running a protected-mode program on top of real-mode DOS. 
+The rest of the functionality, which in v1.x was the responsibility of
+<code>go32</code>, is handled in v2.x by the <small>DJGPP</small> startup code and
+low-level library functions.  Let me now briefly describe these two
+aspects of <small>DJGPP</small> operation.
+
+<p><hr>
+Node:Startup, Next:<a rel=next href="#Library">Library</a>, Previous:<a rel=previous href="#v2%20and%20DPMI">v2 and DPMI</a>, Up:<a rel=up href="#Extending%20DOS">Extending DOS</a>
+<p>
+
+<h2><a name="Startup"><small>DJGPP</small> v2.x Startup Code</a></a></h2>
+
+<p>The <small>DJGPP</small> v2.x startup code includes two parts: the stub loader and
+the library startup module.  The former is a single assembly-language
+module which is compiled by a special-purpose assembler, called
+<code>djasm</code>, that is capable of producing 16-bit DOS executables.  This
+stub loader is prepended to every <small>DJGPP</small> program during linking, and
+is the only part that DOS understands; all the rest--the COFF
+executable--is just some weird data, as far as DOS is concerned.
+
+<p>The second part of the startup is in the library.  It consists of
+several modules written part in C and part in assembly.  Here's where
+the COFF image entry point is, and that is where the stub passes the
+execution after it loads the program and sets it up.
+
+<p>Here's the short description of what the stub does:
+
+<ul>
+<li>Allocate memory for the transfer buffer.
+
+<p>This buffer is required for passing data to and from real-mode services. 
+Its role is described in <a href="#Transfer%20buffer">Library Interface with DOS and BIOS</a>, below.
+
+</p><li>Check whether a DPMI server is already loaded.
+
+<p>DPMI services would already be available if either (1) a resident DPMI
+server, such as the one built into MS-Windows, is installed; or (2) if
+this is a nested <small>DJGPP</small> program, and its parent already loaded
+<small>CWSDPMI</small>.
+
+<p>If DPMI services are not available, the stub loads
+<code>cwsdpmi.exe</code><a rel=footnote href="#fn-5"><sup>5</sup></a>.  It looks for
+<code>cwsdpmi.exe</code> in the same directory where this program's executable
+is kept, and inside directories listed by the <code>PATH</code> environment
+variable.
+
+</p><li>Read the COFF executable header into memory.
+
+<p>This is required to know how much memory needs to be allocated for the
+various sections of the <small>DJGPP</small> program.
+
+</p><li>Switch the CPU into protected mode, by calling the entry point
+provided by the DPMI host.
+
+<p>Note that the rest of the stub runs in protected mode.
+
+</p><li>Allocate memory for the program's code and data segments.
+
+<p>This is done by calling the DPMI functions to allocate segment
+descriptors and memory for code and data, and set their base address,
+limit, and privileges.
+
+</p><li>Read the COFF executable into memory.
+
+<p>The code, data, and BSS sections are read into the memory allocated
+above, by calling DOS via the DPMI service which allows to call
+real-mode functions from protected-mode programs.
+
+</p><li>Jump to the COFF image entry point.
+
+<p>This entry point is inside the library startup module, described next. 
+</ul>
+
+<p>Here's what the library startup code does:
+
+<ul>
+<li>Make the null page uncommitted.
+
+<p>This causes a frequent programmatic error known as the <dfn><code>NULL</code>
+pointer dereference</dfn> to trigger an exception, and the offending program
+gets the <code>SIGSEGV</code> signal.  The DPMI function required for this is
+not part of the basic DPMI 0.9 spec, and is unsupported by Windows and
+many other proprietary DPMI servers; but <small>CWSDPMI</small> does support it.
+
+</p><li>Set up the <code>sbrk</code> memory-allocation mechanism.
+
+<p>This might sound simple, but is actually quite complicated, due to some
+peculiarities of DPMI memory allocation.  For example, it requires a
+special 16-bit code that runs in real mode to be loaded into a buffer of
+conventional memory.
+
+</p><li>Set up the run-time stack for the program.
+
+<p>The stack size of <small>DJGPP</small> programs is 512KB by default, but it can be
+changed both by the application and using the <code>stubedit</code> program.
+
+</p><li>Allocate a selector for accessing conventional memory.
+
+<p>Many DOS programs need to access conventional memory, either to pass
+data to and from DOS/BIOS functions, or to access memory-mapped devices
+such as the video memory of the graphics adapter.  Since the
+conventional memory is by default not mapped into the program's data
+segment, a special selector, known as <code>_dos_ds</code>, is provided for
+these purposes.
+
+</p><li>Set up the signal handling.
+
+<p>This requires to hook some hardware interrupts, e.g. to generate
+<code>SIGINT</code> when <kbd>Ctrl-&lt;C&gt;</kbd> is pressed, or to generate
+<code>SIGPROF</code> on a timer tick.
+
+</p><li>Copy the program environment into the <code>environ[]</code> array.
+
+<li>Read a special file which defines additional <small>DJGPP</small>-specific
+environment variables.
+
+<li>Get and expand the command-line arguments.
+
+<p>This includes getting long command lines from parent <small>DJGPP</small> program
+and Unix-style expansion of file-name wildcards.  See <a href="#Command%20line">Long command lines</a>, and also see <a href="#Globbing">Unix-style file-name globbing</a>, for more details.
+
+</p><li>Set up the x87 FPU and load the FP emulator, if needed.
+
+<li>Call the static constructors.
+
+<li>Call the application's <code>main</code> function. 
+</ul>
+
+<p><hr>
+Node:Library, Previous:<a rel=previous href="#Startup">Startup</a>, Up:<a rel=up href="#Extending%20DOS">Extending DOS</a>
+<p>
+
+<h2><a name="Library">Library Interface with DOS and BIOS</a></a></h2>
+
+<p>Since <small>DJGPP</small> programs use DOS and BIOS for system calls, many
+library functions need to actually issue various real-mode DOS/BIOS
+calls.  I already described above how this is done in principle: by
+calling a special DPMI service provided for that.
+
+<p>However, many real-mode services require some data to be passed.  For
+example, when you write the contents of a buffer to a file, the
+corresponding DOS function requires a pointer to the buffer to be put
+into the <code>DS:DX</code> pair of registers.  Moreover, the buffer whose
+pointer is passed to DOS must reside in the first Megabyte of the
+address space, because real-mode addresses use only 20 bits.  In
+contrast, protected-mode programs use the full 32 bits for addressing,
+and all the data is always <em>above</em> the 1MB mark<a rel=footnote href="#fn-6"><sup>6</sup></a>.  Now, how do we pass such addresses to DOS?
+
+<a name="Transfer%20buffer"></a>
+<p>This is where the so-called <dfn>transfer buffer</dfn> comes to our help.  As
+we saw, this buffer is allocated in conventional memory during the
+program startup.  The buffer is 16KB long by default, but its size can
+be changed to any value between 2KB and 64KB using the <code>stubedit</code>
+program.  Every library function that needs to pass data to, or retrieve
+data from, DOS/BIOS, needs to move that data between the transfer buffer
+and the protected-mode memory.  For example, to write a buffer to a
+file, the contents of that buffer are copied to the transfer buffer, and
+the real-mode <code>segment:offset</code>-style address of the transfer buffer
+is passed to DOS; to read data from a file, the address of the transfer
+buffer is passed to DOS, and the data put there by DOS is then copied
+from the transfer buffer to the buffer in protected-mode memory whose
+address was passed by the calling application.
+
+<p>The startup code stores the real-mode address of the transfer buffer and
+its size in global variables, which are used by the library function to
+move data to and from the transfer buffer.  The library also provides
+special functions to move the data between protected-mode memory and the
+transfer buffer as fast as possible, and thus to make this overhead
+smaller.
+
+<p>As long as the application calls relatively high-level library
+functions, such as <code>open</code>, <code>read</code>, <code>write</code>, <code>stat</code>
+etc., all of the special processing just described is done automatically
+and transparently by the library; the application doesn't need to know
+anything about the transfer buffer and data copying that goes on under
+the hood.
+
+<p>Library functions also provide other specialized processing in some
+cases.  For example, DOS cannot read or write more than 64K bytes in one
+call, so the library breaks large requests into smaller chunks, each one
+the size of the transfer buffer, and feeds them to DOS one by one.  As
+another example, consider memory-allocation functions such as
+<code>malloc</code>.  Instead of allocating blocks off the conventional memory
+by calling DOS, like real-mode programs do, <small>DJGPP</small> issues DPMI calls
+to allocate extended memory and provide demand-paged virtual memory, so
+that all of the available memory and swap space can be used by the
+application via standard function calls.
+
+<p><hr>
+Node:Features, Next:<a rel=next href="#I18N">I18N</a>, Previous:<a rel=previous href="#Extending%20DOS">Extending DOS</a>, Up:<a rel=up href="#Top">Top</a>
+<p>
+
+<h1><a name="Features">Features provided by <small>DJGPP</small></a></a></h1>
+
+<p>This section describes some advanced features provided by <small>DJGPP</small>. 
+Most of these features are built into the C library, but some are
+provided by the basic development utilities which are part of the
+<small>DJGPP</small> development environment.  Since <small>DJGPP</small> is a
+Posix-compliant environment, many of these features are motivated by
+Unix compatibility.
+
+<ul>
+<li>Compatible headers and libraries.
+
+<p>The <small>DJGPP</small> header files and library functions are highly compatible
+with other popular environments.  In addition to full ANSI and Posix
+compliance, <small>DJGPP</small> also offers compatibility to many PC and Unix
+libraries.  For example, <small>DJGPP</small> provides library functions that are
+usually absent from other DOS- and Windows-based libraries, like
+<code>popen</code>, <code>glob</code>, <code>statfs</code>, <code>getmntent</code>,
+<code>getpwnam</code>, <code>select</code>, and <code>ftw</code>.  Other functions,
+although they exist in DOS/Windows libraries, are incompatible with
+Posix in subtle ways.  For example, the ANSI-standard function
+<code>rename</code> typically fails in DOS/Windows implementations if the
+target file already exists (because the underlying OS call fails). 
+<small>DJGPP</small> makes a point of sticking to Posix or Unix behavior in such
+cases, even if it means more processing (like removing the target file
+in the case of <code>rename</code>).
+
+<p>A case in point is library functions <code>stat</code> and <code>fstat</code>.  Unix
+programs make extensive use of the inode number and the mode bits
+returned by these functions.  For example, GNU <code>diff</code> examines the
+inode numbers of the files it is about to compare, and if they are
+equal, exits immediately on the assumption that both file names point to
+the same file.  However, DOS and Windows don't support inodes, and most
+other DOS/Windows implementations return zero in the <code>st_inode</code>
+member of <code>struct stat</code>, which of course breaks <code>diff</code>.  Also,
+the mode bits returned by <code>fstat</code> are usually incorrect.  In
+contrast, the <small>DJGPP</small> implementation of these functions goes out of
+its way to provide compatible implementations for these functions, and
+in particular returns meaningful inode numbers<a rel=footnote href="#fn-7"><sup>7</sup></a>, even though it takes quite a lot
+of code (for example, <code>stat</code> code compiled totals about 17KB,
+together with other library functions it calls).
+
+<p>Such high compatibility makes porting programs very easy.
+
+<a name="Command%20line"></a>
+</p><li>Long command lines.
+<p>When DOS invokes programs, it limits the length of the command line to
+126 characters (excluding the program's name).  This is a ridiculously
+small limit; it doesn't even allow to compile GCC, since many commands
+in GCC <code>Makefile</code>s are much longer.
+
+<p>Therefore, <small>DJGPP</small> provides a mechanism to pass long command lines to
+child programs.  The actual command is stored in the transfer buffer,
+and a pointer to that buffer is passed to the child program instead of
+the command line itself.  The startup code of the child program then
+retrieves the actual command-line arguments and puts them into the
+<code>argv[]</code> array passed to <code>main</code>.
+
+<p><smaLL>DJGPP</small> also supports the so-called <dfn>response file</dfn> method of
+passing long command lines, whereby the command line is stored on a disk
+file, and the name of that file is passed as <code>@response-file</code>. 
+For example:
+
+<pre> ar cq libmylib.a @files-list
+</pre>
+
+<a name="Globbing"></a>
+</p><li>Unix-style file-name globbing.
+
+<p>All Unix programs assume that any file-name wildcards on their command
+line were already expanded by the shell, to yield normal file names. 
+But DOS shells don't provide this functionality, so the wildcards would
+wind up verbatim in the <code>argv[]</code> array.  To avoid the need to have
+special code in every ported program that expands the wildcards, the
+<small>DJGPP</small> startup code expands the wildcards automatically.  The
+expansion follows the Unix conventions, so <code>*</code> expands to all file
+names, unlike the DOS conventions where it excludes file names with
+extensions.
+
+<p>The globbing code supports Unix-style quoting with the <code>'</code> and
+<code>"</code> characters (most other DOS/Windows compilers and shells only
+support <code>"</code>).  Escaping special characters with <code>\</code> is limited
+to the quote characters themselves, since <code>\</code> serves as a directory
+separator in DOS/Windows file names.
+
+<p><smaLL>DJGPP</small> also provides a special extension: the <code>...</code> wildcard
+expands recursively to all the subdirectories.  Thus, the following
+command would search all files in all the subdirectories, recursively:
+
+<pre> grep foo .../*
+</pre>
+
+<p>(This was hard to achieve even on Unix, until the recent release of the
+GNU Grep package introduced the <code>--recursive</code> option.)
+
+</p><li>Extending the shell via the <code>system</code> function.
+
+<p>Traditionally, the <code>system</code> library function calls the shell to
+process its argument.  However, stock DOS shell <code>COMMAND.COM</code> is
+too dumb to be useful in many cases.  For example, it doesn't support
+long command lines, even though <small>DJGPP</small> programs do; it doesn't
+understand forward slashes in file names; and it doesn't return the exit
+code of the child program to the parent.
+
+<p>Therefore, the <small>DJGPP</small> version of <code>system</code> usually doesn't call
+<code>COMMAND.COM</code> at all.  Instead, it internally emulates its
+functionality, including redirection and pipes, and invokes the programs
+directly.  This allows to provide the following important features:
+
+<ul>
+<li>Long command lines.
+
+<p>See <a href="#Command%20line">Command line</a>, but here it means that shell commands can have
+arbitrary length, even though the shell itself doesn't support that!
+
+</p><li>Unix-style file names.
+
+<p>File names which are targets of redirection can be given in the Unix
+<code>/foo/bar</code> style.  Unix devices, such as <code>/dev/null</code>, are also
+supported (see <a href="#Unix%20devices">Unix devices</a>).
+
+</p><li>Multiple commands in a single command line.
+
+<p>The emulation code supports the <code>foo ; bar</code> feature of several
+commands separated by a semi-colon.
+
+</p><li>Improved emulation of internal shell commands.
+
+<p>The emulation of the shell command <code>cd</code> allows Unix-style forward
+slashes in its argument, and also changes the drive if the argument
+includes the drive letter.
+
+</p><li>Support for Unix-style shells.
+
+<p>If the environment variable <code>SHELL</code> points to a name like <code>sh</code>
+or <code>bash</code>, <code>system</code> invokes the shell to do everything, since
+the internal shell emulation is not sophisticated enough to cover Unix
+shell functionality.
+
+</p><li>Direct invocation of Unix shell scripts.
+
+<p>Shell scripts can be invoked even if the <code>SHELL</code> environment
+variable doesn't point to a Unix-style shell, provided that the
+interpreter whose name appears on the first script line after the
+<code>#!</code> signature can be found somewhere along the <code>PATH</code>.
+
+</p><li>Exit code of the child program is returned to the caller. 
+</ul>
+
+<p><code>COMMAND.COM</code> is only invoked by <code>system</code> to run batch files
+or commands internal to the shell.  However, <code>system</code> always looks
+for external programs first, so if you have e.g. a port of the GNU
+<code>echo</code> program installed, <code>system</code> will call it even though
+<code>COMMAND.COM</code> has an internal (and very much inferior) command by
+that name.
+
+<p>These features come in especially handy in the <small>DJGPP</small> port of GNU
+<code>make</code>.  Where the original Unix code of <code>make</code> invokes the
+shell, the <small>DJGPP</small> port simply calls <code>system</code> to execute the
+commands in rules, and automatically gets support for long command lines
+and Unix-style shells required to run many <code>Makefile</code>s of Unix
+origin.
+
+<p>The above extended functionality also means that whenever a Unix program
+calls <code>system</code>, in most cases the same call will work without any
+changes when compiled with <small>DJGPP</small>.  The result is not only ease of
+porting, but also less probability to leave subtle bugs in the ported
+program due to an overlooked fragment which assumes a Unix shell.
+
+<a name="Unix%20devices"></a>
+</p><li>Transparent conversion of special file names.
+
+<p>All <small>DJGPP</small> library functions pass file names to DOS via a single
+low-level function.  This allows to remap some special file names to
+their DOS equivalents.  For example, Unix-standard device names
+<code>/dev/null</code> and <code>/dev/tty</code> are converted to their DOS
+equivalents <code>NUL</code> and <code>CON</code>, respectively.  File names which
+begin with <code>/dev/<var>x</var>/</code>, where <var>x</var> is a drive letter, are
+converted to the DOS <code><var>x</var>:/</code> form; this is required for running
+some Unix shell scripts which take apart the <code>PATH</code> variable where
+colons separate directories.  The implementation of the <code>chroot</code>
+functionality, which isn't supported directly by DOS and Windows, also
+uses this file-name conversion.
+
+</p><li>Filesystem extensions.
+
+<p>This feature is built into the low-level file-oriented library
+functions.  It allows the application to install a handler for certain
+filesystem calls, like <code>open</code>, <code>read</code>, <code>fstat</code>,
+<code>dup</code>, <code>close</code>, etc.  If installed, such a handler is called
+just before the appropriate primitive is invoked to pass the call to
+DOS.  If the handler returns a non-zero value, it is assumed to have
+handled the call, and the usual primitive call is bypassed.  Otherwise,
+the library proceeds with calling DOS as usual.
+
+<p>This facility provides an easy way of handling special files and devices
+which DOS and Windows don't support directly.  For example, a program
+can install a handler for special file names like <code>/dev/ptyp0</code> and
+emulate these non-existent devices via an async communications library.
+
+<p>Another way of putting filesystem extensions to a good use is when
+there's a need to emulate functionality that DOS file I/O doesn't
+support, even though the associated devices do exist.  For example,
+suppose you need to port code which sends special commands to the
+terminal device via <code>termcap</code> functions.  DOS supports a terminal
+device, but doesn't support <code>termcap</code>.  However, it is possible to
+achieve the same effects if direct screen writes are used instead of
+file I/O.  By installing a filesystem extension handler for the standard
+output handle, you could redirect all terminal I/O to direct screen
+writes and implement all the necessary <code>termcap</code> functionality,
+without any changes to the program's source code.  This is how the
+<small>DJGPP</small> port of GNU <code>ls</code> supports the <code>--color</code> option
+without forcing users to install a special terminal driver that
+interprets ANSI escape sequences.
+
+<a name="8+3%20file%20names"></a>
+</p><li>Support for long file names.
+
+<p>DOS system calls are limited to file names in the so-called <dfn>8+3
+format</dfn>: maximum 8 characters for the basename and maximum 3 characters
+for the extension.  Therefore, it is impossible to access the long file
+names, offered by Windows 9X and Windows NT, via the DOS system calls. 
+However, Windows 9X provides a special API (a bunch of special functions
+of software interrupt 21h) that allows DOS programs to access long file
+names.  This API is widely known as the <dfn>LFN API</dfn>, where <dfn>LFN</dfn>
+is an acronym for <dfn>Long File Names</dfn>.  For each file-oriented DOS
+system call, the LFN API includes a replacement that supports long file
+names.  For example, there are functions to open files, list the files
+in a directory, create a directory, etc. using long names.  The LFN API
+also adds several functions to access extended functionality supported
+by the Windows filesystems.  For example, it is possible to get and set
+3 times for each file, like on Unix, instead of only one time supported
+by DOS.
+
+<p>The <small>DJGPP</small> library features transparent and automatic support for
+long file names on Windows 9X<a rel=footnote href="#fn-8"><sup>8</sup></a>.  The <small>DJGPP</small> startup code queries the system for the
+availability of the LFN API, and if it's available, all low-level
+file-oriented primitives are automatically switched to using the special
+LFN-aware functions.  This run-time detection of the LFN support means
+that the same executable will run on DOS and on Windows, and will
+automatically support long file names when it runs on Windows 9X.
+
+</p><li>Emulation of links.
+
+<p>DOS doesn't support hard and symbolic links.  However, <small>DJGPP</small>
+emulates them to some extent.  The <code>link</code> library function
+simulates hard links by copying.  The <code>symlink</code> library function
+simulates a symbolic link for executable programs only, by creating a
+2KB stub which is set up to run the COFF image from the target of the
+link.  Thus, <code>ln -s grep fgrep</code> does what you'd expect.
+
+</p><li>Emacs compatibility.
+
+<p>Emacs is special because when it dumps itself during the build process,
+static and global variables are frozen in the dumped image with the last
+value they had at the time the program was dumped.  <small>DJGPP</small> has a
+special facility in the library through which library functions can
+detect that the program was dumped and restarted.  All library functions
+that need static variables, use this facility to reinitialize them. 
+This allows Emacs to be built with <small>DJGPP</small> without the need to
+analyze whether each library function called by Emacs is dump-safe.
+
+</p><li>Special-purpose utilities.
+
+<p>In addition to relying on GNU development tool-chain, <small>DJGPP</small>
+introduces several utilities written specifically for the project. 
+These utilities are meant to assist the developer in solving specific
+tasks common for the <small>DJGPP</small> environment.  Some of these utilities
+are listed below:
+
+<ul>
+<li><b>djtar</b>
+
+<p><code>djtar</code> is a program that unpacks archives (but cannot create
+them).  It was originally written to unpack files created by <code>tar</code>,
+because DOS and Windows lack standard programs for that.  Since the
+original release, <code>djtar</code> functionality was significantly extended,
+and now it can unpack <code>.tar.gz</code> and <code>.zip</code> files as well.  It
+also can unpack archives from floppy disks written as raw
+<code>/dev/rfd0a</code> devices on Unix systems, and it uncompresses and
+untars <code>.tar.gz</code> files on the fly, by feeding the untar code with
+output of the unzip code.  The latter feature is very important when
+unpacking large distributions, such as <code>emacs-XX.YY.tar.gz</code>,
+because pipes are implemented as temporary disk files on DOS/Windows,
+and so on-the-fly decompression avoids creating huge temporary disk
+files.
+
+<p>The ability to unzip <code>.zip</code> archives makes <code>djtar</code> the only
+free program which does that, since it turns out that InfoZip's
+<code>UnZip</code> license does not comply with FSF's definition of free
+software (according to Richard Stallman).
+
+<p>In addition, <code>djtar</code> offers several features designed to prevent
+problems due to DOS/Windows file-name restrictions, see <a href="#DOS%20file%20names%20handling">DOS file names handling</a>, below.
+
+</p><li><b>djsplit</b> and <b>djmerge</b>
+
+<p>These two programs come in handy when you need to carry a large file
+(usually, a compressed archive of a large distribution) on floppies. 
+<code>djsplit</code> splits a file into smaller chunks whose size is
+user-defined, and <code>djmerge</code> splices the chunks back together.
+
+</p><li><b>dtou</b> and <b>utod</b>
+
+<p>These programs are close cousins of <code>dos2unix</code> and <code>unix2dos</code>,
+respectively, but they have several clever tricks up their sleeve. 
+First, they take file names from the command-line arguments and rewrite
+each file, instead of reading <code>stdin</code> and writing <code>stdout</code>;
+thus, they can convert many files in a single run.  And second, they
+preserve the time stamps of the converted files, to keep utilities like
+<code>make</code> happy.  With these programs, I can convert the entire
+directory tree of C source files to the DOS CR-LF format with a single
+command:
+
+<pre> utod .../*.[ch]
+</pre>
+
+<p>This uses the <small>DJGPP</small> wildcard expansion and the special <code>...</code>
+wildcard mentioned above.
+
+</p><li><b>update</b>
+
+<p>This is a replacement for the well-known <code>move-if-changed</code> shell
+script.  It is very handy in <code>Makefile</code>s which should run on
+systems that don't have Bash installed.  Since it understands Unix-style
+forward slashes (like all <small>DJGPP</small> programs do), it is also widely
+used in <code>Makefile</code>s for copying files, instead of the shell's
+internal <code>COPY</code> command, since <code>make</code> doesn't live well with
+backslashes in file names.
+
+</p><li><b>redir</b>
+
+<p>As its name implies, <code>redir</code> redirects standard handles.  It was
+originally written to allow redirection of <code>stderr</code>, which stock
+DOS shell <code>COMMAND.COM</code> cannot do.  You need this redirection,
+e.g., when GCC spits out a long list of error messages which scroll off
+the screen.  <code>redir</code> can also append redirected handled (a-la
+<code>&gt;&gt;</code>) and redirect <code>stderr</code> to the same place as <code>stdout</code>
+or vice versa, like what <code>&gt;&amp;</code> does.
+
+<p>In addition, <code>redir</code> reports the exit status of the program it
+runs, and print the elapsed time used by the child.  These features are
+provided because, unlike on Unix, there are no standard utilities to do
+that.
+
+</p><li><b>symify</b>
+
+<p><smaLL>DJGPP</small> debugging support doesn't include Unix-style core files which
+allow post-mortem debugging of a crashed program.  To compensate for
+this deficiency, when a program crashes, a special library module prints
+the values stored in the CPU registers and the traceback of the function
+calls that led to the crash, as stored in the call frames pushed onto
+the stack.
+
+<p>However, the stack traceback, as printed, is hard to interpret, because
+it only includes numeric addresses of the functions.  The <code>symify</code>
+program solves this problem.  It reads the traceback directly from the
+video memory, and uses the debug info recorded in the program's
+executable file to convert the addresses into file names and line
+numbers of the source files.  It then adds the file names and line
+numbers information near the corresponding addresses, thus making the
+traceback easy to comprehend. 
+</ul>
+
+</p><li><small>DJGPP</small>-specific extensions to GNU utilities.
+
+<p>Besides the library functions and <small>DJGPP</small>-specific programs, a lot of
+special code went into the utilities ported or written for <small>DJGPP</small>,
+so that these utilities could work together smoothly and have the effect
+a user would expect.  Some of these extensions are listed below:
+
+<ul>
+<li>Bash supports Unix-style <code>PATH</code> format. 
+Unix uses <code>:</code> to separate directory names in the value of
+environment variables such as <code>PATH</code>.  Many shell scripts rely on
+this feature to look for programs along the <code>PATH</code>.  For example,
+the GNU-standard <code>configure</code> scripts do that to find <code>gcc</code>,
+<code>ranlib</code> and other programs, as part of the auto-configuration
+process.
+
+<p>However, DOS and Windows use <code>;</code> to separate directories in
+<code>PATH</code> (because absolute file names include a drive letter, like in
+<code>d:/foo/bar</code>).  This breaks shell scripts which search along the
+<code>PATH</code>.
+
+<p>To allow these scripts to run without changes, the <small>DJGPP</small> port of
+Bash introduces a special variable <code>PATH_SEPARATOR</code>.  If this
+variable is set to <code>:</code>, Bash converts the value of <code>PATH</code> to
+pseudo-Unix form.  For example, if the original value of <code>PATH</code> is
+like this:
+
+<pre> PATH=c:\djgpp\bin;d:\gnu\emacs\bin
+</pre>
+
+<p>then setting <code>PATH_SEPARATOR=:</code> converts it to this:
+
+<pre> PATH=/dev/c/djgpp/bin:/dev/d/gnu/emacs/bin
+</pre>
+
+<p>This lets Unix shell scripts run unaltered.  However, to prevent the
+external commands from breaking (because they don't know anything about
+<code>PATH_SEPARATOR</code>), Bash converts the value of <code>PATH</code> back to
+its usual DOS style in the environment it passes to child programs.
+
+<p>The <small>DJGPP</small> library supports the special <code>/dev/x/</code> file names by
+converting them to the usual DOS <code>x:/</code> format, before it issues DOS
+calls, so all <small>DJGPP</small>-compiled utilities can be safely run by a
+script when <code>PATH_SEPARATOR</code> is set to <code>:</code>.
+
+</p><li><code>test -x foo</code> looks for <code>foo.exe</code>, <code>foo.com</code>,
+<code>foo.bat</code>, etc.  This is important e.g. in GNU <code>configure</code>
+scripts which look for programs along the <code>PATH</code>.
+
+<li><code>install foo /bin/foo</code> actually installs <code>foo.exe</code> in
+the target directory.  Similarly, <code>gcc -o foo</code> creates both
+<code>foo</code> and <code>foo.exe</code>; the first causes <code>make</code> to be happy
+when Unix <code>Makefile</code> is in use (since the target names are usually
+extension-less on Unix), while the second can be run from the DOS
+command prompt, since stock DOS shell refuses to run a program without
+one of the executable extensions (<code>.exe</code>, <code>.com</code> or
+<code>.bat</code>) it knows about.  Both of these features are intended for
+using Unix <code>Makefile</code>s without changes.
+
+<li>Shell specifications such as <code>/bin/sh</code> cause the shell to be
+looked for along the <code>PATH</code> as well, so that users won't need to
+have a <code>/bin</code> directory.
+
+<li>Programs which should pipe text to <code>lpr</code>, write to the local
+printer device instead, if <code>lpr</code> could not be located.  Emacs and
+<code>dvips</code> are two examples of programs that offer this feature.
+
+<a name="DOS%20file%20names%20handling"></a>
+<li>DOS file names handling: programs which unpack file archives
+rename files whose names are invalid on DOS/Windows.  The <small>DJGPP</small>
+ports of GNU <code>tar</code> and <code>cpio</code> programs, and the <code>djtar</code>
+utility supplied with the <small>DJGPP</small> development kit are examples of
+such programs.  They replace characters which aren't allowed in file
+names, like <code>+</code> on MS-DOS or <code>"</code> on MS-Windows, and rename
+files whose names are reserved on DOS/Windows by character devices (and
+therefore writing to them could have unexpected results).
+
+<p>Another potential problems in unpacking file archives is that several
+different file names can map to the same name after truncation to the
+DOS 8+3 limits (see <a href="#8+3%20file%20names">8+3 file names</a>) or as result of the automatic
+renaming I just described.  For this reason, <code>djtar</code> refuses to
+overwrite existing files, and requires the user to type in another name
+under which the file will be extracted.  If the user presses &lt;RET&gt;,
+the file is skipped.
+
+<p>This interactive, one-by-one renaming might be tedious and error-prone,
+when there's a lot of files to rename.  A case in point is the test
+suite in the GNU Textutils distribution with a lot of names like
+<code>n+4b2l10f-0FF</code>, <code>njml17f-lmlmlo</code>, etc.  For these cases,
+<code>djtar</code> has a command-line option which can be used to submit a
+file with a mapping between original and DOS names; <code>djtar</code> will
+automatically rename every file mentioned there and will leave all other
+file names intact.  An example of putting this feature to use can be
+seen in the latest versions of Textutils (look for the file
+<code>djgpp/fnchange.lst</code> and the instructions to use it in
+<code>djgpp/README</code>). 
+</ul>
+
+<p>The features mentioned above are mostly small niceties.  But can you
+imagine the amount of hacking needed to get Unix Makefiles and shell
+scripts to work on DOS and Windows machines, if these tidbits didn't
+exist? 
+</ul>
+
+<p><hr>
+Node:I18N, Next:<a rel=next href="#Outlook">Outlook</a>, Previous:<a rel=previous href="#Features">Features</a>, Up:<a rel=up href="#Top">Top</a>
+<p>
+
+<h1><a name="I18N"><small>DJGPP</small> and Internationalization</a></a></h1>
+
+<p>Modern development environments support internationalization by
+providing facilities to read, write, and display text on languages other
+than English and character sets other than US-ASCII.  For example, most
+GNU packages support the <code>gettext</code> library and proprietary
+facilities similar to it, which allow the messages printed by programs
+be in any of the supported native languages.
+
+<p><smaLL>DJGPP</small>, being a DOS/Windows-based environment which uses lots of
+software ported from Unix, faces several unique challenges on its way to
+internationalization.  This section briefly outlines the problems and
+their possible solutions.
+
+<p>First, some background on international aspects of the operating systems
+supported by <small>DJGPP</small>.
+
+<p>The international features of MS-DOS rely on so-called <dfn>DOS
+codepages</dfn>.  A codepage is a particular mapping between 128 non-ASCII
+characters and their 8-bit codes in the range [128..255] (the lower 128
+codes in every codepage are always occupied by the usual 7-bit ASCII
+characters).  IBM defined several codepages, each one identified with a
+unique number, to support certain character sets, and these codepages
+are included with each version of DOS.  Every codepage roughly
+corresponds to one of the ISO-8859 character sets, but the mapping of
+the high 128 characters is different.  For example, codepage 850
+corresponds to ISO-8859-1 (a.k.a. Latin-1) character set, codepage 862
+corresponds to the ISO-8859-8 (Hebrew) set, etc.
+
+<p>In the default text-mode operation, the DOS terminal is a character
+terminal which can display a single set of 256 glyphs at a time.  This
+set is determined by the current DOS codepage.  The default set of
+glyphs which corresponds to the native locale is usually burnt into the
+video hardware; to install a different codepage, you need to edit the
+system configuration files and reboot.  This loads the glyphs of the
+character set supported by the new codepage into memory, and also
+updates other devices; for example, it downloads the corresponding font
+into the local printer.
+
+<p>Windows defines additional codepages, many of them similar or identical
+to the ISO-8859 character sets for the same locale (e.g., codepage 1252
+is identical to the Latin-1 set).  However, Windows doesn't allow DOS
+programs to use these new codepages, and it still requires a system
+reboot to replace the single supported DOS codepage.  So <small>DJGPP</small>
+programs can still support only one codepage at a time, even when they
+run on Windows.
+
+<p>Therefore, to use i18n facilities such as the GNU <code>gettext</code>
+package, <small>DJGPP</small> programs need an additional layer of recoding
+characters, because the DOS codepage for a given locale maps characters
+differently from the corresponding ISO-8859 character set.  One solution
+to this problem is to convert the existing <code>*.po</code> files supplied
+with GNU packages to corresponding DOS codepages.  Such conversion can
+be performed automatically by the GNU <code>recode</code> utility, which
+supports many of the existing codepages.
+
+<p>The <small>DJGPP</small> version of Emacs 20.4 employs similar technique to
+display the character set supported by the current DOS codepage. 
+However, unlike <code>gettext</code>, Emacs performs the conversion from the
+ISO charset to the codepage and back in real time, by defining a special
+<dfn>coding system</dfn>, which is driven by a table that maps the ISO
+charset into the DOS codepage.  The same coding system is also used to
+read and write files produced by other DOS-based software.  This
+solution avoids introducing new character sets into Emacs, which would
+be extremely undesirable, as Emacs already has too many
+partially-overlapping character sets.
+
+<p>Conversion of a single character set might be the way to cause a program
+speak your native language, but what about programs that need to display
+more than a single character set at a time, like Emacs 20?  Well, one
+solution is to simulate the glyphs that cannot be displayed with similar
+glyphs from other character sets.  Thus, some Cyrillic characters can be
+simulated by glyphs of similarly-looking ASCII characters.  Where no
+single glyph can reasonably stand for a non-ASCII character, it could be
+simulated with strings of several characters.  For example, the Latin-1
+character <code>&ccedil;</code> (a small <code>c</code> with a cedilla) could be
+displayed as the string <code>{c,}</code>, where the braces serve as a
+visual indication that this is a single character.  Emacs makes this
+solution based on glyph remapping possible by providing a facility known
+as a <dfn>display table</dfn>, whereby each character can be mapped either to
+a code of a single glyph, or to a string.  If a character is mapped to a
+string, Emacs redisplay code knows that this string stands for a single
+character, and so commands which e.g. move point and count columns still
+work correctly.  This is how the <small>DJGPP</small> version of Emacs 20.4
+manages to display character sets beyond the one supported by the
+current codepage.
+
+<p>Solutions are also required for printing multi-lingual text from Emacs. 
+Currently, the only solution available is via the <code>ps-print</code>
+package, which requires a printer with PostScript support or a
+PostScript interpreter such as Ghostscript.  Other printing commands,
+like <code>lpr-buffer</code>, currently support only one character set: the
+one which corresponds to the installed DOS codepage.
+
+<p>In sum, as far as i18n is concerned, <small>DJGPP</small> is certainly more
+limited than modern GUI environments such as X Windows, but current
+solutions are quite adequate for most needs of a typical user.
+
+<p><hr>
+Node:Outlook, Next:<a rel=next href="#Index">Index</a>, Previous:<a rel=previous href="#I18N">I18N</a>, Up:<a rel=up href="#Top">Top</a>
+<p>
+
+<h1><a name="Outlook">Summary and Perspective</a></a></h1>
+
+<p>The <small>DJGPP</small> project exists for 10 years.  This might seem like not
+too long, but it is.  Consider this: in 1989, when DJ Delorie began
+porting GCC, MS-DOS v4.00 was just released and became the hottest issue
+in the trade press, MS-Windows was not yet heard of outside Microsoft,
+Linux was still several years away, the latest version of GCC was 1.35,
+and Emacs was in version 18.5x.  We might also reflect on what each one
+of us did around that year, to get a feeling how much water went under
+the bridge since then<small>...</small>.
+
+<p>So what has <small>DJGPP</small> achieved during this time?  This section offers a
+retrospective summary, and then attempts to outline future developments.
+
+<p>I think the most important achievement is that <small>DJGPP</small> brought the
+free software to the large community of DOS/Windows users.  We may not
+like the reasons why these systems are so widespread, and we might
+resent the quality of the software which they run, but the fact remains
+that there is a huge installed base of such systems.  <small>DJGPP</small> brings
+many users of these systems in touch with free software.  It teaches
+them the value of free access to the sources and free exchange of
+knowledge and ideas about software internals.  It also shows them how
+this freedom helps to make their software much better than proprietary
+tools, haunted by software patents, undocumented behavior, and
+non-disclosure agreements, ever could.  Thanks to <small>DJGPP</small>, many young
+programmers have learned these lessons at the very beginning of their
+careers, and these are lessons they will not forget easily.
+
+<p>On a more practical note, consider the large body of free software
+successfully ported to DOS/Windows as part of <small>DJGPP</small> during the
+years.  Besides GCC and Binutils, more than 50 GNU and free software
+packages were ported, including Emacs, Bash, GDB, Make, Gawk, Perl,
+TeX, Ghostscript, RCS, CVS, Tar, and many others.  The document you
+are reading now was written in Texinfo using Emacs 20.3, spell-checked
+with Ispell, converted into Info and HTML with <code>makeinfo</code>, typeset
+with TeX, previewed as a PDF file produced with <code>dvipdfm</code>, and
+printed with <code>dvips</code>, all of them <small>DJGPP</small> ports.  The <cite>GNU
+Software for MS-Windows and MS-DOS</cite> CD-ROM, first released by the FSF in
+the last quarter of 1998, holds 400MB of GNU software ported to
+<small>DJGPP</small>; people who bought that CD sometimes write to me that using
+the software makes them forget what OS did they boot in the morning. 
+All of these ports are in active maintenance, and new versions are
+ported as the GNU maintainers release them.  Many GNU packages already
+include <small>DJGPP</small> support as part of the official distribution, and
+work is under way to add such support to other packages.
+
+<p>This abundance of free, high-quality, actively-maintained software which
+runs on platforms found in each household and in every office really
+makes a difference.  It certainly makes the GNU project and its goals
+known and popular among users who could have never heard about GNU were
+it not for <small>DJGPP</small>.  To me, it is no surprise that the GNU
+DOS/Windows CD-ROM instantly became such a big hit and sold more disks
+than all other GNU CD-ROMs together (200 copies sold during the first 2
+months, which brought FSF about $9600).  Thus, <small>DJGPP</small> not only makes
+GNU popular, it also helps to raise funds for the GNU project. 
+Ironically, a project which began because the FSF thought it was
+impossible, ended up supporting the FSF.  History made a full circle.
+
+<p>I know I promised to try to predict the future of <small>DJGPP</small>.  But now,
+that we have done all this way and came to the end of this document, I
+must confess: <em>I lied</em>.  I don't want to set my feet on the
+slippery path of predicting the future, first, because I'm not good at
+that, but mostly because <small>DJGPP</small> defies all predictions.  <small>DJGPP</small>
+produces DOS executables, so it doesn't support native Windows
+programming (although <small>DJGPP</small> programs still make very good console
+applications when they run on Windows).  Microsoft declared DOS dead and
+actively tries to retire all DOS-based software by deliberately
+preventing DOS programs running on Windows from accessing some lucrative
+and useful Windows services.  In theory, this should have killed
+<small>DJGPP</small>.  Nevertheless, many people not only use <small>DJGPP</small>, they
+even choose to run it not on Windows, but in plain DOS.  All the hype
+about Windows being "the way of the future" notwithstanding, users
+prefer the stability and reliability of DOS-based <small>DJGPP</small> environment
+to a fancy GUI.
+
+<p>One thing I can be positive about: we will certainly see <small>DJGPP</small>
+ports of more free software.  Several packages, like <code>egcs</code>,
+<code>inetutils</code>, <code>recode</code>, and <code>UCB Logo</code> are being ported as
+we speak.
+
+<p>As for the core of <small>DJGPP</small>, its development depends on too many
+factors unbeknownst to me.  One obvious direction is to add support for
+creating native Windows programs.  But this is a large project which
+requires several dedicated volunteers to work on it for several months. 
+It is not clear whether such a team could be assembled, given that many
+potential candidates either switch to Linux or use one of the existing
+free Windows development environments, like <code>Mingw32</code> and
+<code>Cygwin</code>.
+
+<p>So the truth is, I don't know what the future of <small>DJGPP</small> will look
+like.  Instead, let me tell what I hope the free software movement will
+learn from the <small>DJGPP</small> experience.  I hope we could learn that free
+software projects should not ignore popular platforms just because we
+don't like their operating system.  By supporting enthusiasts that are
+ready to bring free software to those platforms, we could do much
+better: we could expose a much larger audience to our projects, and we
+can raise money for continuing our projects by selling software ported
+to those platforms and support services for them.
+
+<p><hr>
+Node:Index, Previous:<a rel=previous href="#Outlook">Outlook</a>, Up:<a rel=up href="#Top">Top</a>
+<p>
+
+<h1><a name="Index">Index</a></a></h1>
+
+<h4>Menu</h4>
+<ul compact>
+<li><code>PATH</code> separator, Unix-style: <a href="#Features">Features</a>
+<li><code>chroot</code> support: <a href="#Features">Features</a>
+<li><code>ioctl</code>, emulation: <a href="#Features">Features</a>
+<li><code>make</code>, support for Unix features: <a href="#Features">Features</a>
+<li><code>system</code> function, extended functionality: <a href="#Features">Features</a>
+<li><small>DJGPP</small> FAQ list: <a href="#History">History</a>
+<li><small>DJGPP</small> utilities: <a href="#Features">Features</a>
+<li><small>DJGPP</small>, history of development: <a href="#History">History</a>
+<li><small>DJGPP</small>, news group: <a href="#History">History</a>
+<li><small>DJGPP</small>, what it is: <a href="#Introduction">Introduction</a>
+<li>Codepages: <a href="#I18N">I18N</a>
+<li>Codepages, and Emacs: <a href="#I18N">I18N</a>
+<li>Command lines, longer than 126 characters: <a href="#Features">Features</a>
+<li>Converting text files: <a href="#Features">Features</a>
+<li>Core dumps: <a href="#Features">Features</a>
+<li>DJ Delorie, author of <small>DJGPP</small>: <a href="#Introduction">Introduction</a>
+<li>DOS codepage: <a href="#I18N">I18N</a>
+<li>DPMI services: <a href="#v2%20and%20DPMI">v2 and DPMI</a>
+<li>Debugging, post-mortem: <a href="#Features">Features</a>
+<li>Device I/O, emulation: <a href="#Features">Features</a>
+<li>Device names, Unix: <a href="#Features">Features</a>
+<li>Emacs and DOS codepages: <a href="#I18N">I18N</a>
+<li>Emacs dumping, and library functions: <a href="#Features">Features</a>
+<li>Exit status reporting: <a href="#Features">Features</a>
+<li>FAQ list for <small>DJGPP</small>: <a href="#History">History</a>
+<li>Filesystem extensions facility: <a href="#Features">Features</a>
+<li>Globbing: <a href="#Features">Features</a>
+<li>Header files, compatibility: <a href="#Features">Features</a>
+<li>LFN API: <a href="#Features">Features</a>
+<li>Library, compatibility: <a href="#Features">Features</a>
+<li>Links, emulation: <a href="#Features">Features</a>
+<li>Long command lines: <a href="#Features">Features</a>
+<li>Long file name support: <a href="#Features">Features</a>
+<li>News group for <small>DJGPP</small>: <a href="#History">History</a>
+<li>Post-mortem debugging: <a href="#Features">Features</a>
+<li>Printing, multi-lingual: <a href="#I18N">I18N</a>
+<li>Redirecting stderr: <a href="#Features">Features</a>
+<li>Richard Stallman, and <small>DJGPP</small> development: <a href="#History">History</a>
+<li>Splitting large files: <a href="#Features">Features</a>
+<li>Symlinks, emulation: <a href="#Features">Features</a>
+<li>Timing programs: <a href="#Features">Features</a>
+<li>Transfer buffer: <a href="#Library">Library</a>
+<li>Unix compatibility: <a href="#Features">Features</a>
+<li>Unix device names: <a href="#Features">Features</a>
+<li>Unpacking compressed archives: <a href="#Features">Features</a>
+<li>Updating files: <a href="#Features">Features</a>
+<li>Wildcards: <a href="#Features">Features</a>
+<li>utilities, <small>DJGPP</small>-specific: <a href="#Features">Features</a>
+</ul>
+
+<hr><h4>Footnotes</h4>
+<ol type="1">
+<li><a name="fn-1"></a>
+<p>
+This is not what <small>DJGPP</small> originally stood for, see <a href="#History">The History of <small>DJGPP</small></a>.</p>
+
+<li><a name="fn-2"></a>
+<p>See the
+<a href="http://www.delorie.com/djgpp/history.html"><small>DJGPP</small> history page</a> on DJ's Web server, for more details.</p>
+
+<li><a name="fn-3"></a>
+<p>There is no official
+interpretation of the acronym <small>DJGPP</small>.  A contest for the best name
+was held more than a year ago; the results can be found by searching the
+<a href="http://www.delorie.com/djgpp/mail-archives/"><small>DJGPP</small> mail archives</a>.</p>
+
+<li><a name="fn-4"></a>
+<p>This is exactly what Linux, Hurd, and latest
+versions of MS-Windows do.  Interestingly enough, the original reason
+for DJ Delorie's interest in porting GCC was that he wanted to use it to
+write a 32-bit OS for PCs.</p>
+
+<li><a name="fn-5"></a>
+<p>The name of the default DPMI server program
+is recorded in the stub and can be changed by editing the stub with a
+special program called <code>stubedit</code>.</p>
+
+<li><a name="fn-6"></a>
+<p>
+Theoretically, memory below 1MB <em>could</em> be used by <small>DJGPP</small>
+programs.  However, since this memory is usually at a premium, all DPMI
+servers leave it alone; <small>CWSDPMI</small> uses it only if there's not enough
+memory above 1MB.</p>
+
+<li><a name="fn-7"></a>
+<p>My personal
+involvement with the <small>DJGPP</small> library development began when I wrote
+the first version of <code>stat</code> and <code>fstat</code> which returned
+meaningful inode numbers and also corrected some other frequent blunders
+in DOS versions of these functions.</p>
+
+<li><a name="fn-8"></a>
+<p>Windows NT does not include this
+API, therefore <small>DJGPP</small> programs cannot access long file names on NT
+systems.  However, a beta version of a free LFN driver for NT is
+available.</p>
+
+</ol>
+
+
+
+
+<br clear=both></p>
+<a href="bulktrap.html"></a><table width=100% border=0 cellspacing=0 cellpadding=3><tr>
+<td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/users/dj/" target="_top">webmaster</a> &nbsp;
+<a href="/donations.html" target="_top">donations</a> &nbsp;
+<a href="/store/books/" target="_top">bookstore</a> &nbsp;
+</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">delorie software</a> &nbsp;
+<a href="/privacy.html" target="_top">privacy</a> &nbsp;
+</b></font></small></td>
+</tr><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/copyright.html" target="_top">Copyright © 1999</a> &nbsp;
+<a href="/users/eliz/" target="_top">by Eli Zaretskii</a> &nbsp;
+</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+Updated Jul 1999 &nbsp;
+</b></font></small></td>
+</tr></table>
+<center><iframe
+ SRC="http://www.burstnet.com/cgi-bin/ads/ba1954a.cgi/RETURN-CODE/if/5364/"
+ scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"
+ width="468" height="60"><A target="_top"
+ HREF="http://www.burstnet.com/ads/ba1954a-map.cgi/5364"><IMG SRC="http://www.burstnet.com/cgi-bin/ads/ba1954a.cgi/5364"
+ border="0" width="468" height="60" alt="Please support our sponsor."></A></iframe><br><small><i>Please take a moment to fill out
+this <a href="http://survey.burstmedia.com/cgi-win/client.exe?Burst,welcome,ad1954a,2000">visitor survey</a></i></small>
+<br><small><i>You can help support this site by
+visiting the advertisers that sponsor it! (only once each, though)</i></small>
+</center>
+</body></html>
+
+

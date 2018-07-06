@@ -1,0 +1,283 @@
+ID=F0036
+URL=http://www.chez.com/scribe/en/directx/ddraw.htm
+SIZE=17335
+DATE=09/07/2002
+TIME=13:12:44
+DATASET=Visual Basic
+HTML=<HTML>
+<HEAD>
+<LINK rel="stylesheet" type="text/css" href="../..//global.css">
+</HEAD>
+<BODY class="legacy">
+<TABLE class="menu" width="100%"><TR><TD class="header">
+<A href="../dotnet/index.htm">.NET</A> - <A href="../index.htm">Home</A> - <A href="../about/index.htm">About</A> - <A href="../assembly/index.htm">Assembly</A> - <A href="../directx/index.htm">DirectX</A> - <A href="../opengl/index.htm">OpenGL</A> - <A href="../psdk/index.htm">Platform SDK</A> - <A href="../downloads/index.htm">Downloads</A> - <A href="../links/index.htm">Links</A></TD>
+<TD class="header" style="text-align:right">January 1, 1980</TD></TR></TABLE><TABLE align="right"><TR><TD><!-- BEGIN WEBSIDESTORY CODE -->
+<!-- COPYRIGHT 1997-2001 WEBSIDESTORY, INC. ALL RIGHTS RESERVED. U.S.PATENT PENDING. Privacy notice at: http://websidestory.com/privacy -->
+<!-- webbot bot="HTMLMarkup" startspan -->
+<script language="javascript">
+var _pn="en - DirectDraw"; //page name
+var _acct="WQ5909151KCE94EN7";   //account number
+var _pndef="title";var _hcv=65;var _mn="wf200";
+var _lp=location.protocol.indexOf('https')==0?"https://":"http://";
+var _gn="hg1.hitbox.com";function _ps(_h){if(_h.indexOf("en - DirectDraw")==0) {
+if (_pndef=="title"){return document.title?document.title:_pndef;}else{
+var _g=location.pathname;_h=_g.substring(_g.lastIndexOf("/")+1,_g.length);
+if(_h==""){return _pndef};}};return _h;}var _sv=10;var _bn=navigator.appName;
+if(_bn.substring(0,9)=="Microsoft"){_bn="MSIE";};var _bv=Math.round(parseFloat(navigator.appVersion)*100);
+if((_bn=="MSIE")&&(parseInt(_bv)==2))_bv=301;var _rf=escape(document.referrer);_pn=_ps(_pn);
+var _hbfa="<a href='http://rd1.hitbox.com/rd?acct="+_acct+"' target=_top><img src='";
+var _hbfc="' border=0 width=125 height=125></a><div><font face='MS Sans Serif,Arial,Helvetica '"+
+"size=1><a href='http://counter.hitbox.com/a/hitboxfree.cgi' target='_blank'>privacy</a></font></div>";
+var _hbfb="";</script><script language="javascript1.1" id="_hbc">_sv=11;</script><script
+language="javascript1.1" src="http://stats.hitbox.com/js/hbf.js"></script><script language="javascript">
+if(_hbfb.length!=0){document.write(_hbfa+_hbfb+_hbfc);}else{if((_rf=="undefined")||(_rf=="")){
+_rf="bookmark";};document.write(_hbfa+_lp+_gn+"/HG?hc="+_mn+"&hb="+_acct+"&n="+escape(_pn)+
+"&cd=1&hv=6"+"&bn="+escape(_bn)+"&bv="+_bv+"&ss=na&sc=na&dt=&sv="+_sv+"&ja=na&ln=na&pl=&rf="+_rf+_hbfc);}
+</script><noscript><a href="http://rd1.hitbox.com/rd?acct=WQ5909151KCE94EN7" target=_top><img
+src = "http://hg1.hitbox.com/HG?hc=wf200&cd=1&hv=6&ce=u&hb=WQ5909151KCE94EN7&n=en - DirectDraw"
+border="0" width=125 height=125></a><div><font face="MS Sans Serif,Arial,Helvetica" size=1><a
+href="http://counter.hitbox.com/a/hitboxfree.cgi" target="_blank">privacy</a></font></div>
+</noscript><!--//-->
+
+<!-- webbot bot="HTMLMarkup" endspan -->
+<!-- END WEBSIDESTORY CODE  -->
+</TD></TR></TABLE>
+<TABLE align="center"><TR><TD align="right" class="header" width="45%"><A href="directx_tlb.htm">Upgrading from type libraries to DirectX 7.0</A>&nbsp;&lt;&lt;</TD>
+<TD align="center" class="header" width="10%"><A href="index.htm">Up</A></TD><TD align="left" class="header" width="45%">&gt;&gt;&nbsp;<A href="dsound.htm">DirectSound</A></TD></TR></TABLE>
+<H1>DirectDraw</H1>
+<ul>
+<li><a href="#Overview">Overview</a>
+<li><a href="#Cooperative level">Cooperative level</a>
+<LI><A href="#Drivers Enumeration">Drivers Enumeration</A>
+<li><a href="#Primary surface">Primary surface</a>
+<LI><A href="#Accessing DirectDraw Surfaces">Accessing DirectDraw Surfaces</A>
+</ul>
+<hr>
+<H2><A name="Overview">Overview</A></h2>
+The DirectDraw object is at the root of the DirectDraw hierarchy. This object represents the video card you're working with. By using the methods of this object, you can deal with your video card and create other DirectDraw objects such as :
+<ul>
+<li>DirectDrawSurface - This is a piece of memory that holds graphics data. This includes the primary surface (what is currently shown on screen), the back buffer (where you construct the next frame to be able to display quickly the image once constructed in order to avoid display artifacts) and other off-screen surfaces (where graphics data such as bitmap files are stored, to be used for constructing the final scene in the back buffer surface).
+<li>DirectDrawClipper - This object is used in windowed mode and will take care of the display when a window is partially or totally obscured (to avoid overwriting foreground windows) so that you don't need to manage this yourself.
+<li>Other misc. objects
+</ul>
+<hr>
+<H2><a name="#Cooperative level">Cooperative level</A></H2>
+Let's see now our first DirectDraw source code.
+<DIV class="code"><PRE>
+<SPAN class="comment">' DDraw01</SPAN>
+Option Explicit
+
+Private Sub Main()
+    Dim DirectDraw As IDirectDraw4
+    frmDDraw01.Show
+    DirectDrawCreate ByVal 0&, DirectDraw, Nothing
+    DirectDraw.SetCooperativeLevel frmDDraw01.hWnd, DDSCL_EXCLUSIVE Or DDSCL_FULLSCREEN
+    DirectDraw.SetDisplayMode 640, 480, 16, 0, 0
+    Do While DoEvents()
+    Loop
+    Set DirectDraw = Nothing
+End Sub
+</PRE></DIV>
+Run this program. Notice that you can minimize DDraw01 and launch another application. In this case the desktop uses the previous display mode. When maximizing DDraw01, you are back into your 640x480 display mode. What have we done ?</p>
+<p>First we just shown a regular Visual Basic form. We created then the DirectDraw object using the default display device (first parameter). The last parameter is not used and should reference no object (that is "Nothing"). Remember that in a Windows environment, you have sometimes to collaborate with other applications. What if a user wants to deal with several DirectX applications at the same time ? SetCooperativeLevel allows us to inform DirectX that we want to go to full screen mode and exclusive mode is required to go to full screen mode. It makes sense as there can be obviously only one full screen mode application at any given time. Giving DirectX the hWnd of our main form allows also DirectX to keep track of the life of our window and, as you saw, to take appropriate actions when the window is minimized/restored.</p>
+The hard part is over. What's left is just setting the display mode giving the resolution, the color depth (8 bits, that is 256 colors). The other parameters are not used. We're entering then in our game loop (not very interesting at this time, I'm afraid). DoEvents return the count of displayed forms. Additionaly it allows also to let Windows treat events (so that we can still move, resize... our form). Using such a loop is much better than using a Visual Basic timer as it allows to give Windows the time it really needs rather than letting Windows give you the time he wants. This way, it allows to take advantage of all available time, allowing to run as quick as possible on any given machine.</p>
+When the loop is done (i.e. you closed the form), we have to destroy the DirectDraw object by setting the object to Nothing. <strong>Note that you must absolutely destroy every DirectX objects before ending your application, or you application will crash !</strong> In fact, removing this line should still work but doing so is really a good practice, especially regarding DirectDraw...</p>
+<p>Congratulations, you have just wrote your first DirectDraw application...</p>
+
+<H2><A name="Drivers Enumeration">Drivers Enumeration</A></H2>
+Using "ByVal 0&" uses the default display driver. If you have several cards installed on your computer, you may want to enumerate drivers to select the most capable. This can be done such a snippet of code :
+<DIV class="code"><PRE>
+Option Explicit
+
+Private Declare Sub CopyMemory Lib "Kernel32" Alias "RtlMoveMemory" (hpvDest As Any, hpvSource As Any, ByVal cbCopy As Long)
+Private Declare Function lstrcpy Lib "Kernel32" (lpszString1 As Any, lpszString2 As Any) As Long
+Private Declare Function lstrlen Lib "Kernel32" (lpszString As Any) As Long
+
+Private LastGUID As Guid
+
+Private Sub Main()
+    DirectDrawEnumerateEx AddressOf Callback, ByVal 0&, DDENUM_ATTACHEDSECONDARYDEVICES Or DDENUM_DETACHEDSECONDARYDEVICES Or DDENUM_NONDISPLAYDEVICES
+End Sub
+
+Private Function Callback(ByVal lpGUID As Long, ByVal lpDriverDescription As Long, ByVal lpDriverName As Long, ByVal lpContext As Long, ByVal hMonitor As Long) As Long
+    Dim DriverDescription As String
+    Dim DriverName As String
+    DriverDescription = Space$(lstrlen(ByVal lpDriverDescription))
+    CopyMemory ByVal DriverDescription, ByVal lpDriverDescription, Len(DriverDescription)
+    DriverName = Space$(lstrlen(ByVal lpDriverName))
+    CopyMemory ByVal DriverName, ByVal lpDriverName, Len(DriverName)
+    If lpGUID <> 0 Then
+        <SPAN class="comment">' Save the last GUID</SPAN>
+        CopyMemory LastGUID, ByVal lpGUID, Len(LastGUID)
+    End If
+    Debug.Print lpGUID, hMonitor, DriverDescription, DriverName
+    Callback = DDENUMRET_OK
+End Function
+</PRE></DIV>
+The parameters are passed to Visual Basic using a pointer (the memory location for the data). It is then necessary to copy data from this location to Visual Basic variables to simplify further use of those data. Notice that lpGUID <strong>must</strong> must be checked as there is no GUID value for the default display (lpGUID is then 0). LastGUID receives the last encountered GUID value. You could also create a DirectDraw object for those values and check the capabilities flag to select the appropriate driver...
+<H2><A name="Primary surface">Primary surface</A></H2>
+<DIV class="code"><PRE>
+Private Sub Main()
+    Dim DirectDraw As IDirectDraw
+    Dim SurfaceDesc As DDSURFACEDESC
+    Dim PrimarySurface As IDirectDrawSurface
+    Dim fx As DDBLTFX
+    Dim DestRect As RECT
+    <SPAN class="comment">' Create the root DirectDraw object</SPAN>
+    DirectDrawCreate ByVal 0&, DirectDraw, Nothing
+    DirectDraw.SetCooperativeLevel 0, DDSCL_NORMAL
+    <SPAN class="comment">' Fill the surface description structure</SPAN>
+    With SurfaceDesc
+        <SPAN class="comment">' Widely used in DirectX to make sure the structure is
+        ' properly initialized (and to check version)</SPAN>
+        .dwSize = Len(SurfaceDesc)
+        <SPAN class="comment">' Indicates what members are valid</SPAN>
+        .dwFlags = DDSD_CAPS
+        <SPAN class="comment">' This is the primary surface (what is shown on screen)</SPAN>
+        .DDSCAPS.dwCaps = DDSCAPS_PRIMARYSURFACE
+    End With
+    <SPAN class="comment">' Create the surface</SPAN>
+    DirectDraw.CreateSurface SurfaceDesc, PrimarySurface, Nothing
+    <SPAN class="comment">' Same as SurfaceDesc : fill dwSize</SPAN>
+    fx.dwSize = Len(fx)
+    Form1.Show
+    Do While DoEvents()
+        <SPAN class="comment">' Construct a random rectangle</SPAN>
+        With DestRect
+            .Left = Rnd * (Screen.Width / Screen.TwipsPerPixelX - 40)
+            .Top = Rnd * (Screen.Height / Screen.TwipsPerPixelY - 40)
+            .Right = .Left + 40
+            .Bottom = .Top + 40
+        End With
+        <SPAN class="comment">' Use a random color</SPAN>
+        fx.dwFillColor = Rnd * &H7FFFFFFF
+        <SPAN class="comment">' Fill a rectangle with this color</SPAN>
+        PrimarySurface.Blt DestRect, Nothing, ByVal 0&, DDBLT_COLORFILL Or DDBLT_WAIT, fx
+    Loop
+    <SPAN class="comment">' Clear DirectX objects (or your app will crash !)</SPAN>
+    Set PrimarySurface = Nothing
+    Set DirectDraw = Nothing
+End Sub
+</PRE></DIV>
+<p>Whole screen quickly filled with random colored rectangles :</p>
+<img src="../../gif/ddraw01.gif" width=160 height=120>
+<hr>
+<H1><a name="old">DirectDraw - Old content</a></h1>
+DirectDraw is the part of DirectX that let you manage 2D graphics...
+<ul>
+<li><font size=4><a href="#Accessing DirectDraw surfaces">Accessing DirectDraw surfaces</a></font>
+<li><font size=4><a href="#AVI onto DirectDraw surface">AVI onto DirectDraw surface</a></font> 
+<li><font size=4><a href="#Color keying">Color keying</a></font>
+<li><font size=4><a href="#ranslucency">Translucency</a></font>
+</ul>
+For more information about DirectDraw, check out :<ul><li><a href="http://www.microsoft.com/DirectX">Microsoft DirectX Site</a>
+<ul>
+<li><a href="http://www.microsoft.com/DirectX/Resources/downloads/idx5docs.exe">Download DirectX 5 documentation (5.6 Mo)</a>
+<li><a href="http://www.premium.com/msdn/library/techart/klopf.htm" target="_top">Basics of DirectDraw Game Programming</a> (now on MSDN, needs to register first, free)
+</ul>
+</ul>
+<hr>
+<h2><a name="Accessing DirectDraw surfaces">Accessing DirectDraw surfaces</a></h2>
+Once a DirectDraw surface is initialized, you can blit from or to this surface. But how to draw simple drawings or text to these surfaces ? You must gain direct access to this surface. There is two different way to do this :
+<ul>
+<li>Access through the regular GDI API
+<br>By using the GetDC method, you can get a "Device Context". All the regular Win32 API can then apply : DrawText, TextOut, Rectangle...<br>
+The following code could be used to draw some text on a DirectDraw surface. Or check the <a href="dxsam_us.htm#Donuts">Donuts</a> sample.
+<DIV class="code"><PRE>
+Dim hDC As Long
+Dim str As String
+str = "Score " & lngScore
+dixuBackBuffer.GetDC hDC          <SPAN class="comment">' Get a device context</SPAN>
+TextOut hDC, 0, 0, str, Len(str)  <SPAN class="comment">' Regular Win32 API</SPAN>
+dixuBackBuffer.ReleaseDC hDC      <SPAN class="comment">' Release the device context</SPAN>
+</PRE></DIV>
+For more information about the GDI, go to the <a href="http://premium.microsoft.com/msdn/library">MSDN Online Library</a> and then choose "SDK Documentation", "Graphics and Multimedia Services", "GDI". You need first to register (free).
+<li>Memory direct access
+<br>By using the Lock method of a DirectDraw surface, you can get a pointer to the memory allocated to this surface. You can then change the surface by modifying directly the contents of the memory either by using the regular Win32 API (FillMemory, CopyMemory, MoveMemory...) or, by using a tip exposed in VBPJ, by making a VB array point to this same area memory. Check "DirectDrawSurface exposed !" at <a href="http://www.advantage.co.nz/ur" target="_top">Unlimited Realities</a> for a sample using this last method.
+</ul>
+</ul>
+<hr>
+<h2><a name="AVI onto DirectDraw surface">AVI onto DirectDraw surface</a></h2>
+<img src="../../gif/avi.gif" width=134 height=153 align="left" alt="AVI on a DirectDraw surface">AVI file on a DirectDraw surface. I guess you noticed the bug for this first try !<br clear="all">
+Based on <a href="http://premium.microsoft.com/support/kb/articles/q154/7/89.asp" target="_top">SAMPLE: AVI Playback (Streaming) onto DirectDraw surface - Q154789</a>.
+<P>You can also use the higher-level <A href="dshow_us.htm">DirectShow</A> API to perform such a task...</P>
+<hr>
+<h2><a name="Color keying">Color keying</a></h2>
+A source color key is a color that is not copied to the destination surface during a blit, allowing to achieve a "transparent" effect. The color key to specify is either an index in the palette (in palettized mode) or the "true" color to be used as a color key. As colors are stored in a dependant way, the more straightforward solution to define the color key is probably to take a particular color with some full color components such as magenta (full red and full blue). This allows to use directly the "color masks" (that describes the way each color component is stored by the card) to compute easily the color key value...<br>
+Here is a code excerpt :
+<DIV class="code"><PRE>
+<SPAN class="comment">' Read pixel format</SPAN>
+ddpf.dwSize = Len(ddpf)
+dixuBackBuffer.GetPixelFormat ddpf
+
+<SPAN class="comment">' Fill color key
+' Color key is full red and blue (magenta)</SPAN>
+ddck.dwColorSpaceLowValue = ddpf.dwRBitMask + ddpf.dwBBitMask
+ddck.dwColorSpaceHighValue = ddck.dwColorSpaceLowValue
+dx.SetColorKey DDCKEY_SRCBLT, ddck
+</PRE></DIV>
+If you want to use whatever color key you want, you'll have also to use these mask to extract both position and length for each color component.
+<img src="../../gif/ck.gif" width=120 height=129 align="left"><i>DirectX color keyed logo blitted on a background. 20 fps with a 256x256 window on a 486DX 66 Mhz with a 1 Mo Cirrus Logic GL-5426 card.</i><br clear="all">
+<H3>Another method</H3>
+Another method to read the color key is just to read the physical value stored in the surface for a given RGB color. This is shown by this snippet of code. Though this method is probably slower, this is not really a problem if this code is called once. If the color key is supposed to be in the top left corner, you could also skip the "SetPixel" phase and read back directly this pixel. This way, you can use whatever color key is used in this surface...
+<DIV class="code"><PRE>
+Private Function auColorKey(ByVal rgbColor As Long) As Long
+    Dim hDC As Long
+    Dim Color As Long
+    Dim SurfaceDesc As DDSURFACEDESC2
+    Dim Value As Long
+    auBackBuffer.GetDC hDC
+    <SPAN class="comment">' Save previous color</SPAN>
+    Color = GetPixel(hDC, 0, 0)
+    <SPAN class="comment">' Write colored pixel</SPAN>
+    SetPixelV hDC, 0, 0, rgbColor
+    auBackBuffer.ReleaseDC hDC
+    <SPAN class="comment">' Lock DirectDraw surface</SPAN>
+    SurfaceDesc.dwSize = Len(SurfaceDesc)
+    auBackBuffer.Lock ByVal 0&, SurfaceDesc, 0, DDLOCK_WAIT
+    <SPAN class="comment">' Read memory value</SPAN>
+    CopyMemory Value, ByVal SurfaceDesc.lpSurface, Len(Value)
+    auBackBuffer.Unlock ByVal 0&
+    auColorKey = Value And ((2 ^ SurfaceDesc.ddpfPixelFormat.dwRGBBitCount) - 1)
+    auBackBuffer.GetDC hDC
+    <SPAN class="comment">' Restore previous color</SPAN>
+    SetPixelV hDC, 0, 0, Color
+    auBackBuffer.ReleaseDC hDC
+End Function
+</PRE></DIV>
+
+<hr>
+<h2><a name="Translucency">Translucency</a></h2>
+In 24 bit mode, each byte from the source images is a color component (Red, Green or Blue). These color components are added using the C1 * A + (1 - A) * C2 formula where C1 and C2 are the source components and A is the "Alpha" factor (1 for full image 1, 0 for full image 2). In other words, the color result is just a proportion of the two source components. This result is written to the back buffer surface resulting in a translucency effect of the two source images...<br>
+<img src="../../gif/ddtrans1.gif" width=160 height=120 align="left"><img src="../../gif/ddtrans2.gif" width=160 height=120 align="left"><img src="../../gif/ddtrans3.gif" width=160 height=120 align="left"><i>Two source images and final result.</i>
+<HR>
+<DIV class="copyright"><A href="../mail.htm">Patrice Scribe</A></DIV>
+</BODY>
+</HTML>
+<!-- -->
+</noscript>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+<!--
+var rnd = Math.floor(Math.random() * 9) + 1 ; 
+if (rnd <= 4) { 
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl//default','pub','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=470,height=120');
+} else if(rnd == 5) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl//autre4','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+} else if(rnd == 6) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl//autre2','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+} else if(rnd >= 7) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl//autre','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+}
+// -->
+</SCRIPT>
+
+<script language="javascript">
+WEBO_ZONE=122;
+WEBO_PAGE=1;
+weboplus_ok=0;
+</script>
+<script language="javascript"
+src="http://js.libertysurf.fr/chez/weborama/weboscopeplus.js"></SCRIPT>
+<SCRIPT>if(weboplus_ok==1){weboplus_zp(WEBO_ZONE,WEBO_PAGE);}
+</script>
+

@@ -1,0 +1,341 @@
+ID=E0517
+URL=http://www.research.att.com/~bs/nantes-interview-english.html
+SIZE=14452
+DATE=12/07/02
+TIME=19:21:48
+DATASET=C
+HTML=<html>
+<base href="http://www.research.att.com/~bs/homepage.html">
+<head>
+<title>Stroustrup Interview by "Developpeur Reference"</title>
+</head>
+<body bgcolor="FFFBFB">
+<center>
+<a href="homepage.html">homepage</a>
+|
+<a href="C++.html">C++ links</a>
+|
+<a href="bs_faq.html">FAQ</a>
+|
+<a href="bs_faq2.html">technical FAQ</a>
+|
+<a href="glossary.html">glossary</a>
+|
+<a href="compilers.html">compilers</a>
+|
+<a href="papers.html">publications</a>
+|
+<a href="3rd.html">TC++PL</a>
+|
+<a href="dne.html">D&E</a>
+|
+<a href="bio.html">bio</a>
+|
+<a href="interviews.html">interviews</a>
+|
+<a href="applications.html">applications</a>
+|
+<a href="http://www.research.att.com">AT&T Research</a>
+</center>
+<center>
+<h1>Interview of
+<href="http://www.research.att.com/~bs/homepage.html">Bjarne Stroustrup</a>
+by "Developpeur Reference"</h1>
+</center>
+Interviewer Pierre Tran (tran@idg.fr).
+<p>
+<b>
+1. The ANSI/ISO standardization of C++ was a long process which ended
+only in 1998. Don't you regret that it wasn't done more quickly ? 
+<p>
+Do you think that it had slowed down the penetration of C++ (for example
+in education, many continue to teach C language and claiming that C++ is
+not yet standardized, its an infuriating situation!)?
+<p>
+Do you think that it had slowed down the evolution of C++ (better
+evolution of standard libraries, taking care about distributed computing...)?
+</b>
+<p>
+Bjarne Stroustrup: Of course it would have been nice if the C++ standard had been completed
+sooner, but the C++ standards process didn't actually take much longer
+than other standards. Formal standardization takes longer than most
+people think because the needs of so many people and organizations
+need to be met. 
+<p>
+Many people taught - and some continue to teach - C++ as either a very
+low level language with a focus on features shared with C, or as a
+language for expressing class hierarchies. Both approaches fail to
+emphasize C++'s greatest strengths. Worse: such approaches often spend
+so much time on parts of C++ that are not very supportive of programmers
+that they fail to tech facilities and techniques critical to effective
+use of C++. The standard library containers and algorithms and the use
+of exceptions in resource management are examples of key topics that
+are often neglected, or wrongly considered advanced.
+<p>
+I think that such failures of teaching has done more harm to C++ use
+than the lengthy ISO standardization process. Clearly, it would have
+been much, much better if we had had the standard library ready for
+use in 1985, but we didn't and then we simply didn't know how to
+design and implement something that general, elegant, and efficient.
+<p>
+It is indeed very sad to hear people claiming that C++ isn't standardized.
+The ISO standard was ratified in 1998 and no significant new features have
+been added to the language or the standard library since 1996. In computing,
+that's a long time.
+<p>
+And as for the speed of evolution. That's limited by our understanding
+of problems and - even more so - by our ability to teach good use of
+the language. I don't think the language could or should evolve much
+faster than it does. Experimental languages can evolve rapidly because
+they have few users, mainstream languages - such as C++ - cannot move
+faster that their user community and must emphasize stability.
+<p>
+<b>
+2. For the next versions of C++, you seem to prefer to expand
+the standard libraries to an evolution of the syntax of the
+language. Can you explain you position ?
+<p>
+Which libraries would you like to see standardize : multi-threading,
+distributed computing? Do you want to go as far as Java and provide a
+standard library for GUI?
+</b>
+<p>
+Bjarne Stroustrup: It is my proposal that the work on the next revision of the ISO C++
+standard focus on the standard library. The language is already
+powerful enough to express most of what we need to express and
+stability is of major importance. Consequently, I propose that we
+be conservative and cautious with language extensions, focusing on
+generalizations and of things that help teaching rather than on major
+new features. On the other hand, we should be aggressive and
+opportunistic when it comes to standard library extensions.
+<p>
+I think that libraries for making C++ better as a tool for systems
+development will be key: resource management, threading, physical
+distribution, TCP/IP, etc. are obvious candidates. We'll almost
+certainly also see useful facilities such as hash_maps and pattern
+matching. I fear that GUI is too complex and too controversial topic
+for the standards committee. The committee consists of volunteers
+and we don't have the resources to build a major GUI library. Also,
+a standards committee can't compete with commercial (and non-commercial)
+vendors. It has to try to serve the complete community.
+<p>
+<b>
+3. Linux an Open Source communities did not really welcome
+for C++, most of developments are still done in C. Some claim a
+performance advantage for the C language (as for the Linux kernel), some
+reinvent the wheel reimplementing an object layer in C. What do
+you think?
+<p>
+Do you consider the success of KDE (written in C++) and the speed of
+his development, against Gnome (written in C) which stagnates, as a
+demonstration of the superiority of C++? have you other examples?
+</b>
+<p>
+Bjarne Stroustrup: I think that reinventing the wheel is silly and that use of C too
+often shows ignorance of what C++ can do for systems builders. It is
+a sign of the immaturity of our field that people resists adopting
+more advanced tools and prefer to spend their energies reinventing
+things using primitive tools rather than taking the time to learn
+more powerful ones.
+<p>
+<b>
+4. In mind of many programmers, especially Java programmers, C++ remains
+an object oriented version of C language. What could you say to convince
+them that C++ is more than that?
+</b>
+<p>
+Bjarne Stroustrup: It is hard to convince people who do not want to be convinced.
+<pre>
+	#include&lt;string>
+	#include&lt;vector>
+	#include&lt;iostream>
+	#include&lt;algorithm>
+	using namespace std;
+
+	int main()
+	{
+		vector&lt;string> v;
+		string s;
+		while (cin>>s) v.push_back(s); // read a file of words
+		sort(v.begin(),v.end());		// sort the words
+		ostream_iterator&lt;string> os(cout,"\n");
+		unique_copy(v.begin(),v.end(),os);	// output unique words
+	}
+</pre>
+Write that in C and compare. Be sure not to introduce buffer overflows
+or memory leaks.
+<p>
+<b>
+5. In response to a question about C#, you said that it's a proprietary
+language on a a proprietary platform. But C# was standardized by ECMA
+and goes to ISO standardization and you can find some implementation
+on other platform (Mono on Linux). If tomorrow C# pass the ISO
+certification, do you change your mind ?
+</b>
+<p>
+Bjarne Stroustrup: Probably not, and I consider that unlikely. I'd look carefully at
+the standardization process to see if there had been real input from
+many interested parties and that the evolution of the language wasn't
+in the hands of a single company. There is more to proper standardization
+than producing a piece of paper.
+<p>
+<b>
+6. C# as Java take the way of single inheritance unlike C++ which
+implements multiple inheritance. Do you think that multiple inheritance
+is always the best solution ?
+</b>
+<p>
+Bjarne Stroustrup: Multiple inheritance is not always the best solution, but sometimes
+the best solution to a problem involves multiple inheritance. Please
+note that even Java includes a limited form of multiple inheritance:
+inheritance of interfaces. I'm very comfortable with multiple
+inheritance and I know many example that - in my opinion - cannot
+be done elegantly without multiple inheritance. My book
+<a href="3rd.html">The C++ Programming Language</a>
+contains more than a dozen such examples. One key technique is to
+separately inherit an interface (typically an abstract class) and
+a partial implementation.
+<p>
+You can always re-write an example using multiple inheritance into
+on the uses single inheritance only (by using forwarding functions).
+However, the result is often an example that is longer, reflect the
+design less directly, and is harder to maintain. Note that you can
+also rewrite every example using single inheritance to an example
+using no inheritance using the same technique and with the same
+negative impact on code clarity. A language that does not support
+multiple inheritance is simply less expressive than one that
+supports multiple inheritance and thereby forces the programmer
+to occasionally complicate code.
+<p>
+<b>
+7. These days people are talking much more about frameworks rather
+languages, for example J2EE for Java where language is strongly
+bound to platform, or .NET where Microsoft advances the framework
+to the detriment of languages. What do you think about this approach?
+Do C++ need a framework for its evolution?
+</b>
+<p>
+Bjarne Stroustrup: People talk a lot about frameworks, but history is littered with
+frameworks that didn't live up to their expectations. I have seen
+successful frameworks, but they were generally limited in scope.
+I'm skeptical of "universal" frameworks, and even more so when such
+frameworks are products of a platform vendor competing with similar
+frameworks from other vendors. As a user, I prefer to maintain my
+independence from vendors as far as possible.
+<p>
+I'd like to seen libraries providing cleaner and more general access
+to frameworks - as opposed to languages intimately tied to a single framework.
+<p>
+<b>
+8. In an interview with C/C++ Journal, you said that one of your goals
+for C++ is to increase the level of abstraction.
+Was it always your objective ?
+<p>
+Can you really implement a strong level of abstraction without impacting
+the performance (Java made a lot of concessions for example)?
+<p>
+Which mechanisms would you like to see integrated in C++ (garbage
+collector... )?
+Which mechanisms would you like to see improved?
+</b>
+<p>
+Bjarne Stroustrup: It was always my aim to make it possible to express the intent of the
+programmer more clearly and directly in code, so yes, increasing
+the level of abstraction was always my goals for C++.
+<p>
+Yes, you can significantly increase the level of abstraction without
+sacrificing efficiency. The key is a flexible and extensible static
+(compile time) type system. The STL part of the standard library is
+a good example. For example, a vector is defined so that it can take
+elements of any type (both built-in and user-defined) without overheads.
+To compare with Java, note that a C++ vector holds values of a
+user-defined type, rather than references to objects of user
+defined types. This saves both in memory (you don't have to have
+memory for references or memory management information for individual
+elements on the heap) and in access costs (no cost of indirection
+through a reference and no run-time type checking of elements extracted
+from a vector). The lack of a need for run-time type checking (casting)
+also lead to significantly cleaner and shorter code. Another example
+is the standard algorithms (such as sort), which can be applied to
+any suitable container and parameterized with a comparison criteria,
+yet are significantly faster than their C counterparts (such as qsort()).
+<p>
+I'd like to see the C++ standards committee explicitly acknowledge
+that garbage collection is a valid implementation technique for C++,
+but I don't want to make the C++ semantics dependent on a garbage
+collector. There are application areas (such as device drivers and
+some other kernel code) for which garbage collection isn't suitable,
+and if you want garbage collection in C++ you can use one of the
+existing garbage collectors. The work very well for the kinds of
+applications for which automatic garbage collection is a reasonable
+technique.
+<p>
+<b>
+9. You describe C++ as a multiple paradigms language, mainly object
+oriented and generic. Which are the next paradigms could be find
+their place in a next version of C++ ?
+</b>
+<p>
+Bjarne Stroustrup: I think that "paradigm" is an overused word, and I prefer the less
+pretentious "programming style". Also, one should not forget the use
+of simple free-standing classes (i.e. that are not part of a hierarchy).
+They are crucial for the flexibility and efficiency of many modern C++
+techniques and are examples of classical data abstraction.
+<p>
+I don't think that C++ will support a new paradigm anytime soon, but
+maybe I'm too conservative in what I call a paradigm. I hope that the
+next C++ standard will support distributed programming, but that it
+will do so primarily through the standard library.
+<p>
+<b>
+10. Have you some plan to integrate Aspect Oriented programming?
+</b>
+<p>
+Bjarne Stroustrup: I don't. I'm still not sure exactly how "Aspect-Oriented Programming"
+fits with my guiding principles of representing independent concepts
+independently in code and combining them freely (and only) when needed.
+Nor am I sure how general and generally useful the notion of
+aspect-oriented programming is. Please remember that adding new
+features to a large and widely-used programming language is
+something you do only after considering alternatives.
+<p>
+Please note that many frequently asked
+questions about C++ can be found on
+<a href="http://www.research.att.com/~bs">my home pages</a>
+together with answers.
+There, you can also find
+<a href="http://www.research.att.com/~bs/papers.html">many articles</a>
+and some
+<a href="http://www.research.att.com/~bs/C++.html">useful C++ links</a>.
+<p>
+<center>
+<a href="homepage.html">homepage</a>
+|
+<a href="C++.html">C++ links</a>
+|
+<a href="bs_faq.html">FAQ</a>
+|
+<a href="bs_faq2.html">technical FAQ</a>
+|
+<a href="glossary.html">glossary</a>
+|
+<a href="compilers.html">compilers</a>
+|
+<a href="papers.html">publications</a>
+|
+<a href="3rd.html">TC++PL</a>
+|
+<a href="dne.html">D&E</a>
+|
+<a href="bio.html">bio</a>
+|
+<a href="interviews.html">interviews</a>
+|
+<a href="applications.html">applications</a>
+|
+<a href="http://www.research.att.com">AT&T Research</a>
+</center>
+</body>
+</html>
+
+

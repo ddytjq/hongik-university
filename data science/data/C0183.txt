@@ -1,0 +1,454 @@
+ID=C0183
+URL=http://www.1st-on-line.com/publicans/publicans_form.asp
+SIZE=8803
+DATE=10/07/2002
+TIME=13:19:49
+DATASET=Insurance Agencies
+HTML=
+<html>
+<head>
+<title>FIRSTONLINE INSURANCE BROKERS</title>
+<script language="javascript">
+<!-- 
+
+
+function trimString (str) 
+{//trims away leading & trailing spaces
+  while (str.charAt(0) == ' ')
+    str = str.substring(1);
+  while (str.charAt(str.length - 1) == ' ')
+    str = str.substring(0, str.length - 1);
+  return str;
+}
+
+function checkData(checkfield,fieldname,type)
+{
+//function checks 'checkfield' for 'type' of data
+//displays error with relation to 'fieldname'
+//types are: alpha,digit,ralpha,rdigit
+//if r is placed in front of type field is required
+var checkOK='';
+var typeString='';
+var checkStr = trimString(new String(checkfield));//trim the string
+var allValid = true;
+var requiredValid = true;
+var decPoints = 0;
+var allNum = "";
+
+	//if r is first letter of type check the strip it off
+	var typeCheck = (type.substring(0,1)=='r') ? type.substring(1,type.length) : type;
+	
+	//what type of check are we doing
+	if (typeCheck == "alpha")
+	{
+		var checkOK="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ'.,*/+-_;:@'\"0123456789";
+		var typeString="alphanumeric";
+	}
+	else if (typeCheck =="digit")
+	{
+		var checkOK = "0123456789-.,";
+		var typeString="numeric";		
+	}
+	else if (typeCheck =="email" && RegExp) //object detect RegeExp
+	{
+		//var emailReg = "^[\\w-_\.]*[\\w-_\.]\@[\\w]\.+[\\w]+[\\w]$";
+    	//var regex = new RegExp(emailReg);     	
+		var regex = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+		if (!regex.test(checkStr) && checkStr.length != 0)
+		{
+			alert(fieldname+" is not a vaild email address.");
+			requiredValid = false;
+		}
+	}
+	//end of what type of check are we doing
+		
+	if (type.substring(0,1)=="r"  && checkStr.length==0)
+	{
+		alert(fieldname + " is a required field");
+		requiredValid = false
+	}
+    
+  	if (checkStr == ".")
+ 	{
+  	allValid = false
+	}
+
+	if (checkOK != '')
+	{	
+  		for (i = 0;  i < checkStr.length;  i++)
+  		{
+    		ch = checkStr.charAt(i);
+    		for (j = 0;  j < checkOK.length;  j++)
+      			if (ch == checkOK.charAt(j))
+        			break;
+    		if (j == checkOK.length)
+    		{
+      			allValid = false;
+      			break;
+    		}
+    		if (ch == ".")
+    		{
+      			allNum += ".";
+      			decPoints++;
+    		}
+    		else if (ch != ",")
+      			allNum += ch;
+  		}
+	}	  
+
+  	if (!allValid)
+  	{
+    	alert("Please enter only "+typeString+" characters in the "+fieldname);
+    	return (false);
+  	}
+
+  	if (decPoints > 1)
+  	{
+    	alert("Please enter a valid number in "+fieldname);
+    	return (false);
+  	}
+	
+  	return true && requiredValid;
+ }
+ 
+ function radioValidator(theRadio,radioName,limit)
+ {
+ 	//chech the radio or check box group
+ 	//the radio group is represented by an array
+ 	//of radio button
+	if (!limit)
+		var limit = 1;
+ 	var valid = true;
+	var checkedNumber = 0;
+ 	var radioChecked=false; //used to check if any of the radio buttons checked
+ 	//loop through radio buttons
+ 	for (var index=0;index<theRadio.length;index++)
+ 	{	
+ 		if (theRadio[index].checked)
+		{
+			radioChecked=true;
+			checkedNumber++;
+		}
+ 	}
+ 	if (!radioChecked) // have they filled it out
+ 	{
+		alert("Please answer " + radioName);
+		valid = false;
+ 	}
+	if (checkedNumber > limit) // have they checked too many
+	{
+		alert("Please select only " + limit + " value(s) for " + radioName);
+		valid = false;
+	}
+
+	return valid;
+ }
+ 
+ function formValidator(theForm,elementsArray,nameArray,typeArray)
+ {
+ 	var ok = true;
+ 	for (var index=0;index<elementsArray.length;index++)
+	{
+		if (typeArray[index].substring(0,5) == "radio")
+		{
+			var limit = typeArray[index].substring(5,7);
+			if (!limit)
+				limit=1;
+			evalString = "radioValidator(theForm."+elementsArray[index]+",'"+nameArray[index]+"',"+limit+")";
+		}
+		else
+			evalString = "checkData(theForm."+elementsArray[index]+".value,"+"'"+nameArray[index]+"','"+typeArray[index]+"')";
+			
+		if ( eval(evalString) )
+			ok=ok && true		
+		else
+			ok=ok && false		
+	}
+	return ok;		
+ }
+
+function checkForm(theForm)
+{
+	var fieldArray = new Array("password","fullName","email");
+	var nameArray = new Array("Password","Name","Email");
+	var typeArray = new Array("ralpha","alpha","r");
+	return formValidator(theForm,fieldArray,nameArray,typeArray);
+}
+//-->
+</script>
+</head>
+<BODY   BGCOLOR="#ffcc00"  TEXT="#333366" LINK="#333366" VLINK="#333366" ALINK="#66CCCC" marginwidth=0 marginheight=0>
+<!---outer table-----><table cellpadding=0 cellspacing=0 border=0 width="100%">
+<tr valign=top><td height=1><img src=../pics/line.gif width=610 height=1 border=0></td></tr>
+
+<tr valign=top><td align=LEFT>
+
+<!---home table----->
+<table cellpadding=0 cellspacing=0 border=0>
+
+
+<tr><td>
+
+
+
+<table border=0 cellpadding=5 width=500><!---FORM FIELDS TABLE--->
+
+<tr valign=top>
+<td align=right width=200></td>
+<td>
+<font size=3 face=arial,helvetica><b>
+ONLINE PUBLICANS INSURANCE QUOTATION REQUEST</b>
+</font></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right width=200>
+<form name="carForm" action="publicans_process_form.asp" method="POST">
+<input type=hidden name="recipient" value="markmitchell@waveney-insurance.co.uk,macrae@cqm.co.uk">
+
+<font face=arial,helvetica></font></td><td></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Password</b></font><br>
+<font size=1 face=arial,helvetica>You will use this to access your on-line proposal after we notify you that it is ready.<br>(One word, use letters; a-z and numbers; 0-9 only.)</font></td><td><input type="text" name="password" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Name/Trading Name</b></font></td><td><input type="text" name="fullName" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Email Address(s)</b></font></td><td><input type="text" name="email" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Public House Address</b></font></td><td><input type="text" name="pubadd" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Postcode</b></font></td><td><input type="text" name="postcode" size=50></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Telephone No.</b></font></td><td><input type="text" name="telephone" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Describe your business<br>
+or trade in full:</b></font></td><td><TEXTAREA NAME="description" ROWS=4 COLS=46></TEXTAREA></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Current Insurers</b></font></td><td><input type="text" name="currins" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Current Premium</b></font></td><td><input type="text" name="currprem" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Renewal Date</b></font></td><td><input type="text" name="renewalDate" size=50></td>
+</tr>
+
+<tr valign=top> <td></td>
+<td align=righ><font size=2 face=arial,helvetica><b>
+VALUES TO BE INSURED</b></font></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Buildings</b></font></td><td><input type="text" name="valbuild" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Value of all contents<br>
+fixtures & fittings and<br>
+Tenant's improvements<br></b></font></td><td><input type="text" name="valcon" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Wines & Spirits<br></b></font></td><td><input type="text" name="valwines" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Tobacco & Cigarettes<br></b></font></td><td><input type="text" name="valtobacco" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+All other Stock</b></font></td><td><input type="text" name="valstock" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Do you require Cover<br>for Frozen Food?</b></font></td>
+<td><SELECT NAME='frozen'> 
+<OPTION VALUE=0 >If yes, please select . . . 
+<OPTION VALUE=0 >----------------------
+<option value=500>£500 Sum Insured
+<option value=1000>£1000 Sum Insured
+<option value=1500>£1500 Sum Insured
+<option value=2000>£2000 Sum Insured
+<option value=2000+>More than £2,000
+<OPTION VALUE=0 >----------------------
+</select></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Do you require Cover<br>for Goods in Transit<br>in your own vehicles?</b></font></td>
+<td><SELECT NAME='goodstransit'> 
+<OPTION VALUE=0 >If yes, please select . . . 
+<OPTION VALUE=0 >----------------------
+<option value=500>£500 Sum Insured
+<option value=1000>£1000 Sum Insured
+<option value=1500>£1500 Sum Insured
+<option value=2000>£2000 Sum Insured
+<option value=2000+>More than £2,000
+<OPTION VALUE=0 >----------------------
+</select></td>
+</tr>
+
+<tr valign=top> <td></td>
+<td align=righ><font size=3 face=arial,helvetica><b>
+ABOUT YOUR BUSINESS</b></font></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+How long have you<br>
+been trading at<br>
+these premises?</b></font></td><td><input type="text" name="trading" size=50></td>
+</tr>
+
+<tr valign=top>
+	<td  align=right><font face=arial,helvetica size="2"><b>
+Do you live on the premises?</td>
+	<td>
+   <INPUT TYPE=radio NAME=live VALUE="yes">Yes <br>
+   <INPUT TYPE=radio NAME=live VALUE="no">No  <br>
+</td>
+</tr>
+
+<tr valign=top>
+	<td  align=right><font face=arial,helvetica size="2"><b>
+Do you have a deep fat<br>frying range?</td>
+	<td><font face=arial,helvetica size="2">
+   <INPUT TYPE=radio NAME=deepfat VALUE="yes">Yes <br>
+   <INPUT TYPE=radio NAME=deepfat VALUE="no">No  <br>
+</font></td>
+</tr>
+
+<tr valign=top>
+	<td  align=right><font face=arial,helvetica size="2"><b>
+Do you have regular<br>live entertainment?<br>
+(Bands, Discos etc.)</td>
+	<td><font face=arial,helvetica size="2">
+   <INPUT TYPE=radio NAME=entertain VALUE="yes">Yes <br>
+   <INPUT TYPE=radio NAME=entertain VALUE="no">No  <p>
+<p>
+If "Yes", please state nature & frequency:<p>
+<TEXTAREA NAME="liability_desc" ROWS=4 COLS=46></TEXTAREA>
+</font>
+</td>
+</tr>
+
+
+
+<tr valign=top>
+<td align=left colspan=2><font face=arial,helvetica size="2"><b>
+If you have had a loss or made a claim in the past 3 years,<br>
+whether insured or not, please give details.<br>
+(Include date of claim, brief details and amount of claim.)</b></font></td>
+</tr>
+
+<tr valign=top>
+<td colspan=2 align=right><TEXTAREA NAME="claims" ROWS=4 COLS=66></TEXTAREA></td>
+</tr>
+
+<tr valign=top>
+<td align=left colspan=2><font face=arial,helvetica size="2"><b>
+The quotation provided will assume that your business is trading from premises that are built of standard non-combustible materials, have their own lockable entrance and are in your sole occupancy.<p>
+If this is not the case, please provide details below.<p></b></font></td>
+</tr>
+
+<tr valign=top>
+<td colspan=2 align=right><TEXTAREA NAME="premdetails" ROWS=4 COLS=66></TEXTAREA></td>
+</tr>
+
+<tr valign=top>
+<td align=left colspan=2><font face=arial,helvetica size="2"><b>
+The terms will be subject to your premises being compliant with a certain level of security,<br>
+which will be clearly stated.</b></font></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right></td>
+<td><font face=arial,helvetica size="2">
+<b>How did you hear about 1st-on-line.com?</b><br>
+<select NAME="howDidYouFindUs">
+	<option value="">Please select...</option>
+	<option value="advert">Advertisement?</option>
+	<option value="link">Link from other web site?</option>
+	<option value="letter">Letter?</option>
+	<option value="recommendation">Recommendation?</option>
+	<option value="searchEngine">Search Engine. If so which one?</option>
+</select><p>
+
+<b>Which Search Engine?</b>&nbsp;<input type=text name="whichSearchEngine">
+
+</font></td>
+</tr>
+
+
+
+<tr valign=top>
+<td align=right>
+<input type="checkbox" name="mailing" value="NO"></td>
+<td><font face=arial,helvetica size="1">
+We send a monthly e-mail update of news and special offers to our customers.<br>
+Please tick if you do not wish to receive this email.
+</font></td>
+</tr>
+
+
+<tr valign=top>
+<td></td>
+<td> 
+<input type="button" value="Send this form" onclick="if (checkForm(document.carForm)) submit()">
+<INPUT NAME="Clear" TYPE=Reset VALUE="Clear">
+<input type="button" value="Check this form" onclick="checkForm(document.carForm)">
+<br></form></td> </tr>
+</table><!---END FORM FIELDS TABLE--->
+
+
+
+</td></tr>
+
+</table>
+<!---end home table----->
+
+
+</td></tr></table><!---end outer table----->
+</BODY>
+</html>
+

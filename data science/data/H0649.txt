@@ -1,0 +1,880 @@
+ID=H0649
+URL=http://www.lecb.ncifcrf.gov/~toms/atchange.html
+SIZE=26825
+DATE=11/07/2002
+TIME=17:06:54
+DATASET=Biology
+HTML=<DOCUMENT>
+<TITLE>The atchange program</TITLE>
+
+<body bgcolor="#ffffff"
+ text="#000000"
+ link="#0000ff"
+alink="#00ff00"
+vlink="#ff0000">
+
+<H1>The <B>atchange</B> Program</H1>
+
+<IMG border=0 src="icons/nobrownmouse.gif" ALIGN="LEFT">
+<b>
+When the atchange program is running, it watches
+one or more files.  When any of those files changes,
+the atchange program will wake up and
+do any actions you want.
+Tasks such as
+modifying and compiling a program,
+modifying a data file and using it,
+or
+editing a text and typesetting it
+can be automated with a single typed command
+such as:<br>
+<font color = blue>
+atchange myprogram "compile myprogram"<br>
+</font>
+By setting up atchange once before starting a repetitive task,
+one can avoid hundreds of mouse movements.
+</b>
+<br clear = all>
+
+<p>
+<A HREF="ftp://ftp.ncifcrf.gov/pub/delila/atchange"><B>atchange</B></a>,
+which stands for "At Change",
+is a
+
+<a href =
+"http://www.perl.com/"
+>Perl</a>
+(<a href =
+"http://www.cpan.org/"
+>CPAN</a>)
+
+script that runs in a window and watches a single file
+or a set of files.  When any of the files change,
+<B>atchange</B> performs whatever you would like it to do.
+
+<p>
+For example, if you are editing a program, <B>atchange</B>
+can compile (or 'make') the program when you write it to disk.
+In one window (set to a particular directory) I would type:<br>
+<pre>
+atchange  hello.c   "cc hello"
+</pre>
+In another window I would edit hello.c.  Whenever I save the program,
+it will automatically be compiled.  There will be about a 1 second
+delay since that is the resolution that <B>atchange</B> looks at the file.
+(As described in the technical paper,
+<A HREF = "atchange.paper/atchangepaper.html#change.timing">this
+can be changed.</A>
+<A HREF = "http://www.perl.com/pub/v/faqs">The
+Perl FAQ</A> provides more information on this topic.
+Currently this information is
+at <a href =
+"http://language.perl.com/newdocs/pod/perlfaq8.html#How_can_I_sleep_or_alarm_for">How
+can I sleep() or alarm() for under a second?</a>.  If the FAQ has changed,
+search for:  "If you want finer granularity than 1 second".
+
+<!--
+link dead as of 2000 Aug 17
+<A HREF = "http://www.perl.com/perl/faq/All.html#Q4.7">
+(Note:
+as of 2000 Aug 17 the original link did change, but I haven't
+located the new place.  If you find it, please
+<a href="mailto:toms@ncifcrf.gov?subject=atchange.html time granularity">tell
+me</a>.)
+-->
+
+<p>
+Actually, <b>atchange</b> only watches
+the modification date of the file,
+so if you just do a unix <b>touch</b>,
+it will wake up.  This could be used to
+trigger a series of responses.
+
+<p>
+In the ancient but venerable (and still highly useful) Unix editor vi,
+one normally saves a program with the command ":w[cr]".  However,
+if you add the line
+<pre>
+map , :w^M
+</pre>
+to your ~/.exrc file
+(~/.vimrc for
+<a href = "http://www.vim.org/">Vi Improved,
+vim</a>), then a single "," will write the file out, saving
+even more time.
+([cr] means "carriage return" key that you type and "^M" is control
+M that must be in the .exrc file.  To create a control M in vi,
+type control-v followed by control-m.)
+
+<p>
+If I want to do several things at once, I type them on one line:
+
+<pre>
+atchange  hello.c   "cc hello; hello"
+</pre>
+
+This would first compile and then run the hello program.  (The semicolon
+";" separates commands in Unix.)
+
+This could also be put into a file, I often name it "automate":
+
+<pre>
+hello.c  cc hello
+         hello
+</pre>
+
+Then <B>atchange</B> is started in its own window with:
+
+<pre>
+atchange automate
+</pre>
+
+One can have several compilations in the automate file:
+
+<pre>
+hello.c  cc hello
+         hello
+
+bello.c  cc bello
+         bello
+</pre>
+
+They MUST be separated by a blank line, to tell
+atchange to treat them separately.
+<font color = red>
+NO SPACES ARE ALLOWED ON THE BLANK LINE!!!
+</font>
+If you use spaces the item will become part of the previous item
+and executed along with that.
+You can use the
+<a href = "http://www.lecb.ncifcrf.gov/~toms/delila/rembla.html">rembla.p</a>
+program to remove the extra blanks.
+You could also use the Unix version that works with pipes:
+<a href = "http://www.lecb.ncifcrf.gov/~toms/delila/rb.html">rb.p</a>.
+
+<P>
+<HR>
+<p>
+<H1>Papers about <b>atchange</b></H1>
+<B>atchange</B> was originally written as a C shell by Tom Schneider
+in December 1995.  He told his friend Jeff Haemer about it and
+Jeff rewrote the program in Perl in early 1996.
+Jeff Haemer and Jeffrey Copeland have written
+<A HREF = "atchange.paper/atchangepaper.html">
+three papers about <B>atchange</B></a>.
+
+<p>
+<hr>
+<h1>PostScript on the fly</h1>
+
+<p>
+It's even more fun to have a program compile,
+run to make a PostScript file,
+and then to pop that up with
+<A HREF="http://www.lecb.ncifcrf.gov/~toms/postscript.html">ghostview</A>!
+One can immediately see the function of the program without lots
+of mousing around.
+Here's one way:
+<pre>
+hello.c  cc hello
+         hello > graphic.ps
+         ghostview graphic.ps
+</pre>
+When you decide to test the hello.c program,
+touch the "," key and sit back.
+Three steps occur sequentially:
+the hello program is compiled,
+hello writes some postscript graphics into a file (graphic.ps)
+and then ghostview shows the file.
+Now if you've arranged the windows just-so,
+the display will appear over the editor window.
+All you need to type is "q" to destroy the ghostview,
+and you then fall right back to the editor for another round.
+
+<p>
+Doing the same thing in several atchange stages has some advantages:
+<pre>
+hello.c    cc hello
+
+hello      hello > graphic.ps
+
+graphic.ps ghostview graphic.ps
+
+parameters hello
+</pre>
+One has two windows in vi, one on hello.c and the other on
+a parameter file that controls how hello will run.
+Then one can switch between the two editors with a single key stroke
+(on a Sun workstation, the "Front" key does that).
+When either the program or the paramter file change,
+the graphic appears.
+
+<p>
+<hr>
+<h1>Shell Scripts</h1>
+
+I automate directories so frequently that I have made a shell script for it,
+called
+<A HREF="ftp://ftp.ncifcrf.gov/pub/delila/au">au</a>.
+If you already have an automate file in the current directory,
+<B>au</B> will run <B>atchange</B> on it.
+If there is no automate file,
+<B>au</B> will allow you to write one (by
+dropping you into vi) and then it will run <B>atchange</B>.
+If there are any parameters on the call line, <B>au</B> will run vi
+on the automate file, allowing you to update it.
+The <B>au</B> script calls two other scripts, <B>atc</B> and <B>nw</B>.
+The scripts and files are:
+
+<p>
+<ul>
+
+<li>
+<A HREF="ftp://ftp.ncifcrf.gov/pub/delila/au"><b>au</b></a>
+automates a directory.
+
+<li>
+<A HREF="ftp://ftp.ncifcrf.gov/pub/delila/atc"><b>atc</b></a>
+first changes the name of the window and then
+calls <B>atchange</B>.
+
+<li>
+<A HREF="ftp://ftp.ncifcrf.gov/pub/delila/nw"><b>nw</b></a>
+changes the name of the window.  It is designed for Sun Solaris,
+but you should be able to substitute code for your own window system.
+
+<li>
+<A HREF="ftp://ftp.ncifcrf.gov/pub/delila/atchange"><B>atchange</B></a>
+The <B>atchange</B> program (in perl).
+
+</ul>
+
+To use these,
+<ll>
+<li>
+Download each file and
+put a copy of each in a directory.
+<li>
+Permit the files to be executable.
+<li>
+Set your path to use the directory.
+</ll>
+
+<p>
+<hr>
+
+<a name = latex>
+<p>
+<H1>LaTeX with Atchange: A Typesetting WYSIWYG!</H1>
+
+<p>
+The big selling point for WYSIWYG (it stands for What
+You Want Is Not What You Get ;-)
+is the immediate text feedback.
+But the price you pay is that the file formats are unreadable.
+This means that if the company ever goes out of buisness, you will
+have a tough time converting to another format.
+
+<p>
+In contrast, typesetting languages such as
+<a href="http://www.tex.ac.uk/CTAN/latex/">LaTeX</a>
+store the text in pure ASCII.  This means that they can always
+be edited in the future (an example is the
+<A HREF = "atchange.paper/atchangepaper.html">
+technical paper for atchange</a>
+which started out in ASCII in the older troff typesetting language.
+It was easy to convert it to HTML, yet another typesetting language.)
+Also, it means that it's easy to write programs that create documents
+or modify them.
+
+<p>
+If you haven't tried it yet,
+LaTeX does a FANTASTIC job at mathematical
+and scientific notation.
+An example is the
+<A HREF="ftp://ftp.ncifcrf.gov/pub/delila/primer.ps">Primer on Information Theory</A>.
+
+<p>
+If you are editing a LaTeX
+document, <B>atchange</B> can typeset your document
+and display the current version using
+<b>xdvi</b>
+As computers become faster,
+this approaches a WYSIWYG.
+Now LaTeX completely beats word processors!
+(As if there was ever any comparison.)
+
+<p>
+Just the other day I was writing a LaTeX document in one window,
+with <b>atchange</b> typesetting it in another window and
+atchange telling me the current length of the abstract in a third
+window.
+
+<p>
+With more than one page of text, 
+one would like to keep the viewer on one page
+and "tickle" it to update.
+
+<p>
+Here my trick for getting <b>xdvi</b>
+to update its display of a page automatically
+(warning: it's not pretty!).
+I use various scripts:
+
+<p>
+<ul>
+<li>
+The
+<A HREF="ftp://ftp.ncifcrf.gov/pub/delila/l"><b>l</b></a> program
+runs LaTeX on a file.  If there are missing references, it runs
+BiBTeX.  When it's done it calls <b>popwindow</b>.
+It's rather neat to watch a reference appear in the text,
+first as "(?)" (meaning it's not there) and then
+as (Smith et al., 1997) - and to know that the bibliography
+was fully updated at the same time!
+(Sometimes I watch for the new bibliography entry to
+appear - without touching the computer at all ...)
+
+<li>
+<A HREF="ftp://ftp.ncifcrf.gov/pub/delila/popcross"><b>popcross</b></a>,
+<A HREF="ftp://ftp.ncifcrf.gov/pub/delila/popvertical"><b>popvertical</b></a>
+and
+<A HREF="ftp://ftp.ncifcrf.gov/pub/delila/pophorizontal"><b>pophorizontal</b></a>
+These will put a window up on the screen briefly.
+If one is looking at a paper with <b>xdvi</b>, <b>xdvi</b> will wake up
+and refresh.
+I keep one window on the LaTeX document and another open
+to the page I'm working on.  The computer is fast enough to typeset
+30 pages in only a few seconds!  (And things can only get better.)
+
+<li>
+<A HREF="ftp://ftp.ncifcrf.gov/pub/delila/sss"><b>sss</b></a>
+runs <b>xdvi</b> on a paper in a very compact window.
+
+<li>
+<A HREF="ftp://ftp.ncifcrf.gov/pub/delila/atp"><b>atp</b></a>
+runs all the above (it uses
+<A HREF="ftp://ftp.ncifcrf.gov/pub/delila/atp.script"><b>atp.script</b></a>
+).  Typically I create a
+<A HREF="ftp://ftp.ncifcrf.gov/pub/delila/right"><b>right</b></a>
+type window and then just say <b>atp</b> in it.
+This sets up the
+xdvi and will trigger LaTeX and BiBTeX at the appropriate
+times using the <b>l</b> script.
+I then use my favorate editor (vi of course! ;-) in a
+<A HREF="ftp://ftp.ncifcrf.gov/pub/delila/left"><b>left</b></a>
+type window.  This way I edit the language on the left and see
+the results on the right.  Although one doesn't work directly on the
+text, it doesn't take long to get used to it.  (A similar effect
+occurs in getting used to the mouse pointer moving on the screen
+in correlation with one's hand on the table.)
+
+</ul>
+
+Here are instructions on how we
+<a href = "usinglatex.html">use latex in the Schneider Lab</a>.
+
+<p>
+<hr>
+<p>
+
+<p>
+<h3>
+The editor emacs can run LaTeX directly, and can have parts
+typeset.
+This is an alternative solution if you like emacs.
+</h3>
+
+On 1997 Jan 13,
+Stephen Eglen (stephene@cogs.susx.ac.uk)
+wrote to me:
+<blockquote>
+
+I notice one of your applications of atchange is for Latex.  This is a
+good solution.  I was just wondering if you had seen another solution:
+that provided by emacs.  Not only can it can do similar things to what
+you show here, but the big advantage I find is that you can get it to
+just run latex on a region rather than the whole file or collection of
+files that you are editing.  Rather than wait for latex to run through
+a thirty page doc, it can just be run on the couple of paras that Im
+interested on at the moment, cutting down even more on the delay
+between editing and seeing what the result is.
+
+<p>
+Furthermore, if you are using a lot of maths in your docs, you can get
+it to display most of the maths symbols in the editor window as you
+type.  (But I don't use this aspect.)
+
+<p>
+If you are interested, look at
+<a href = "http://sunsite.auc.dk/auctex/">http://sunsite.auc.dk/auctex/</a>
+
+<p>
+But if you don't emacs (or don't like using it) then no worries!
+</blockquote>
+<h6>(Reprinted with permission.)</h6>
+
+<p>
+Thanks for the tip!
+
+<p>
+<hr>
+<p>
+
+<a name="html-wysiwyg"></a>
+
+<p>
+<H1>HTML as a WYSIWYG!</H1>
+
+<p>
+There is even a way to "tickle" Netscape,
+so writing HTML can be done without mousing around!
+<pre>
+% netscape -remote 'openURL(http://www.cogs.susx.ac.uk)'
+</pre>
+Further information about this is available from
+<a href = "http://home.netscape.com/newsref/std/x-remote.html">
+Netscape</a>.
+(Thanks to Stephen Eglen (stephene@cogs.susx.ac.uk) for the tip.)
+
+These are the automate lines I've been using to write this text:
+
+<font size = 2>
+<pre>
+atchange.html
+  netscape -noraise -remote 'openURL(http://www.lecb.ncifcrf.gov/~toms/atchange.html)'
+</pre>
+</font>
+
+EVEN BETTER THAN THAT, one can
+refresh the page, so Netscape won't keep going to the top of the document:
+<pre>
+atchange.html netscape -noraise -remote 'reload'
+</pre>
+
+
+<a name="eh"></a>
+<H3>The eh shell script</H3>
+
+Tom Schneider wrote a script called
+<A HREF="vh.html"><b>vh</b></a>
+that starts vi on an html file and makes netscape refresh to that file.
+Jeff Haemer took the idea of <b>vh</b> and made a better script
+that solves various problems.
+It is called
+<A HREF="ftp://ftp.ncifcrf.gov/pub/delila/eh"><b>eh</b></a>.
+
+You use it by typing:
+<blockquote>
+eh myfilename
+</blockquote>
+or
+<blockquote>
+eh myfilename.html
+</blockquote>
+
+<b>eh</b> will point Netscape to 'myfilename.html' and then run your editor
+(vi by default) on 'myfilename.html'.
+If myfilename.html does
+not exist, <b>eh</b> will create a small starter html for you.
+
+<b>eh</b> is written in Standard shell (e.g., bash or ksh),
+so you have to have one to make it work.
+
+<p>
+If you type
+<blockquote>
+  eh -long
+</blockquote>
+it will give longer instructions.
+</p>
+
+<p>
+Jeffreys Copeland and Haemer describe this program
+in their paper,
+<a href = "atchange.paper/25.html">"We Use vi to Edit Web Pages:
+How to turn vi into a WYSIWYG
+HTML editor"</a>.
+</p>
+
+<p>
+<HR>
+<H1>Automating Medline to BiBTeX Conversion</H1>
+</p>
+<p>
+The program
+<a href =
+"http://www.lecb.ncifcrf.gov/~toms/delila/medlinebib.html">medlinebib</a>
+will convert from Medline bibliography format to BiBTeX.
+Atchange can be used to automate the process.
+<img src = "icons/new.gif">
+(New as of 1999 September 3)
+</p>
+
+<P>
+<HR>
+<H1>Running Atchange</H1>
+<font color = red>
+<b>Atchange</b>
+will NOT WORK
+with earlier versions of Perl.
+</font>
+It will fail with perl v4.000.
+With 5.004_03 it works fine.
+Please upgrade to the latest Perl before contacting
+us about problems you have.
+See the next section on how to obtain Perl.
+</p>
+
+<p>
+To set up atchange, first make sure the atchange script is in your
+execution path.
+Then just run it as in the examples given on this page.
+Unix reads the first line of the Perl code and will
+automatically start.  There is no need to 'compile' the code.
+</p>
+
+<p>
+<font color = red>
+If atchange does not work and you get this message:
+<pre>
+stty: standard input: Invalid argument
+</pre>
+</font>
+then you need to do the following.
+</p>
+
+<p>
+The problem is that atchange launches a csh, but if you have a .csh
+that calls stty this will cause trouble for stty.
+In the current version of atchange
+is some code that sets an environmental variable
+called
+PERLCSH.
+This allows the .cshrc to know that atchange has called it.
+To tell your .cshrc not to execute the stty when called from atchange,
+you need to add two lines to your code:
+<pre><font color = blue>if ( (! $?PERLCSH ) && $?prompt) then</font>
+   stty erase '^H'
+   set prompt = "`uname -n` \!% "
+<font color = blue>endif
+</font></pre>
+The top and bottom (<font color = blue>blue</font>)
+lines test whether the .cshrc is being called from perl and
+if it is an interactive shell.  If so, the stty and set prompt
+are called.  You may have other lines in between these two,
+but the important thing is that the two lines surround the stty call.
+<font color = purple>
+(Thanks to 
+James W. Haefner
+(Department of Biology,
+Utah State University,
+Logan, UT,
+jhaefner@biology.usu.edu)
+for the tip!
+</font>
+</p>
+
+<P>
+<HR>
+<H1>Atchange "Bug" Under Linux</H1>
+
+<p>
+Atchange could use a slight tweek to run more smoothly under Linux.
+We will absorb this problem into the code when we have a general solution.
+</p>
+
+<p>
+The problem is that
+under some operating situations, atchange will give this message:
+
+<blockquote>
+stty: standard input: Invalid argument
+</blockquote>
+
+However atchange seems to function fine anyway.
+We have eliminated this effect from Solaris but it still appears under Linux.
+A "correction" for Linux is noted in a comment
+in the current version of atchange.
+Here is some more information about what is happening:
+
+<blockquote>
+I have the Redhat 6.0
+distribution and am using bash.  SHELL is defined as "/bin/bash" and
+redhat has apparently linked "/bin/sh" to "/bin/bash".  With the perl
+code as originally written $shell gets set to "/bin/bash" (as expected)
+and (apparently) ".cshrc" is not opened inside the perl script.  I
+removed my fix and still get the error.  Since you mentioned errors, I
+further changed atchange to test if the current shell is bash.  if true,
+then $shell is set to "/bin/sh", if false, the original in-line
+conditional is used to set $shell. It works now, but I can't claim to
+fully understand why because of the link between "/bin/sh" and
+"/bin/bash".
+<pre>
+James W. Haefner
+Department of Biology   Email: jhaefner@biology.usu.edu
+Utah State University   Voice: 435-797-3553
+Logan, UT 84322-5305      Fax: 435-797-1575
+</pre>
+</blockquote>
+</p>
+
+You will have no problems if you leave the code alone and just put up
+with the message until we have learned how to eliminate it.
+
+<P>
+<HR>
+<H1>Obtaining Perl</H1>
+CPAN
+(<a href = "http://www.perl.com/CPAN/">http://www.perl.com/CPAN/</a>)
+or Comprehensive Perl Archive Network
+is the best source to obtain the language Perl
+that atchange runs in.  It's free!
+
+<p>
+<hr>
+
+<p>
+<H1>Summary</H1>
+
+<p>
+Of course nothing
+(other than silly non-multitasking operating systems)
+prevents you from having many <B>atchange</B> programs running
+at the same time in different windows all doing different complex things
+and all set up "on the fly" as you need them.
+
+<p>
+There are many other uses of the program.  It allows one to
+"automate" many things one does.  Rather than mouse and type repeatedly,
+<B>atchange</B> allows one to concentrate on the job at hand.
+
+<p>
+<IMG SRC="http://www.lecb.ncifcrf.gov/~toms/icons/colorbar.gif" width = 100% height =11>
+
+<p>
+<H1>More about Atchange</H1>
+
+<p>
+<H3>Fam:
+"file alteration monitor" daemon
+</H3>
+(New as of 1997 April 17)
+
+<p>
+On Silicon Graphics machines there is a built-in system command
+similar to atchange.
+It is not clear yet how widely available this
+command is, but it seems to be specific to SGIs.
+
+<a href = "fam.html">The fam manual pages</a>.
+
+<p>
+<hr>
+
+<p>
+<H3>Atchange Scripts </H3>
+<img src = "icons/new.gif">
+(New as of 1998 March 13)
+
+Alan Zaslavsky
+(zaslavsk@hcp.med.harvard.edu)
+has kindly
+sent two scripts
+that use atchange.
+I have not tried them yet, but will point to them:
+
+<a href = "atchange.scripts/atchanges">atchanges</a>
+and
+<a href = "atchange.scripts/mailprint.atc">mailprint.atc</a>.
+His
+<a href = "atchange.scripts/zaslavsky.html">
+letter</a>
+introduces them.  Here is the help information:
+
+<p>
+
+<font size=2>
+<pre>
+atchanges : utilities using the atchange command
+Usage: atchanges [-s|-p] option [file | extension] ...
+   atchanges help: print this message
+   atchanges show: print a list of currently running atchange processes, 
+        with PID and arguments.
+   atchanges kill: print list as above, then kill all of those processes
+        (after a brief pause to let you interrupt).  Then runs start.
+   atchanges start: run atchange to start up all files named in the environment
+        variable ATCHANGEFILES.
+   atchanges backup <filenames>: start up atchange to watch the named files
+        and create a backup each time it is modified so filename is
+        copied to filename.0, filename.0 to filename.1, etc.  If the
+        first argument after 'backup' is a digit 1-9, it is
+        interpreted as the number of the oldest (highest numbered)
+        backup that may be created; default value is 5.
+   atchanges make <files,extensions>: start up atchange to watch all files 
+        that now exist in the current directory with the given extensions
+        (.c and .f by default if no extensions are specified) or filenames
+        (anything not beginning with '.').  atchange will run 'make',
+        without arguments, whenever one of the files is modified.  
+        For example:    atchanges make .c
+        will run 'make' each time any .c file is modified.
+   atchanges html <filename>: load filename (a single browsable file, 
+        typically HTML) into an already-running netscape browser, 
+        then start up atchange to watch filename and reload into browser 
+        whenever modified
+   atchanges latex <filename>: start up atchange to watch filename.tex
+        where filename is empty (indicating all .tex files) or one or
+        more basenames (without the .tex extension).  Whenever one of
+        the files is modified, latex is run on the file and if a 
+        display is open, a window is briefly popped up to force xdvi
+        to redisplay.
+   -s: save the command file for make, latex, or backup options,
+        so it will be left after exit as /tmp/atchanges-make.nnnn, etc.
+   -p: print (do not run) command file for make, latex, or backup options.
+For other file watching functionality, use the atchange command directly.
+</pre>
+</font>
+
+<p>
+(The previous version is now kept at
+<a href = "atchange.scripts/atchanges.1997may27">atchanges.1997may27</a>.)
+
+<p>
+<hr>
+
+<p>
+<H3>Other Tools</H3>
+
+<H4>Webrowse</H4>
+<img src = "icons/new.gif"> (New as of 1998 August 31)<br>
+Steve Kinzler (kinzler@cs.indiana.edu) writes:
+
+<blockquote>
+Also, you might want to check out webrowse(1) -- a generalized, enhanced
+and simplified front-end for things like "netscape -remote ...".  Can be
+really handy in conjunction with atchange(1).
+<br>
+<a href = "http://www.cs.indiana.edu/hyplan/kinzler/home.html#binp/webrowse">
+  http://www.cs.indiana.edu/hyplan/kinzler/home.html#binp/webrowse</a>
+<br>
+<a href = "http://www.cs.indiana.edu/hyplan/kinzler/home/doc/webrowse.pdf">
+  http://www.cs.indiana.edu/hyplan/kinzler/home/doc/webrowse.pdf</a>
+
+</blockquote>
+
+<hr>
+<a name = atchange_computer></a>
+<H3>General Computer with Atchange</H3>
+Phil Gendreau
+(phil_gendreau@yahoo.com)
+suggested that it might be possible to use atchange
+to build a virtual computer.
+It turns out that this was pretty easy to do!
+I just built a set of Boolean variables, a to e and a set of nodes,
+node1, node2 and node3.  When the Booleans change, they touch the nodes.
+Within a node the logic is performed (using csh language) and then they
+touch the resulting Booleans.  It is incredibly slow but does the sequential
+logic.  I built such an
+<a href =
+"http://www.lecb.ncifcrf.gov/~toms/atchange.scripts/atchange-computer/atchange-computer"
+>atchange-computer</a>.
+The computer simulates OR, AND and finally
+one of the components is a NAND gate.
+Since one can do ANY Boolean logic
+with NAND,
+any computer could be constructed this way.
+The
+<a href =
+"atchange.scripts/atchange-computer"
+>entire directory</a> is also available for your inspection.
+Naturally, the thing already shows signs of timing conflicts,
+where one part of the circuit races and affects another!
+I found I had to put in a 2 second delay before the final negation.
+An example result:
+<pre>
+|---------|
+| a = 0 --|
+| b = 1 --|
+| c = 1 --| a+b 
+| d = 0 --| a*b 
+| e = 1 --| ~d  
+|---------|
+</pre>
+
+<hr>
+<a name = atchange_macosx></a>
+<H3>Atchange on Mac OS X</H3>
+
+<p>
+Atchange will run on on Mac OS X if you set
+the location of perl.  To determine this
+type in a terminal:
+<blockquote>
+which perl
+</blockquote>
+It should come back with
+<blockquote>
+/usr/bin/perl
+</blockquote>
+The first line of Atchange is
+<blockquote>
+#!/usr/local/bin/perl
+</blockquote>
+so just change it to
+<blockquote>
+#!/usr/bin/perl
+</blockquote>
+Put the revised atchange in your path and it should work immediately.
+
+ALTERNATIVELY, just grab this version:
+<table border = 3>
+<tr><td>
+<a href =
+"ftp://ftp.ncifcrf.gov/pub/delila/atchange.macosx"
+>atchange.macosx</a>
+</td></tr>
+</table>
+change the name to 'atchange' and put it in your path.
+
+</p>
+
+<!-- not sosure this is useful ...
+<hr>
+<a name = atchange_other_sources></a>
+<H3>Atchange Elsewwere</H3>
+<p>
+<ul>
+<li>
+at GNU:
+<a href=
+"http://www.gnu.org/directory/atchange.html"
+>http://www.gnu.org/directory/atchange.html</a>
+</ul>
+</p>
+-->
+
+<p>
+<IMG SRC="http://www.lecb.ncifcrf.gov/~toms/icons/colorbar.gif" width = 100% height =11>
+This page is
+<a href = "http://www.lecb.ncifcrf.gov/~toms/atchange.html">
+http://www.lecb.ncifcrf.gov/~toms/atchange.html</a>
+
+
+<p>
+<IMG SRC="http://www.lecb.ncifcrf.gov/~toms/icons/colorbar.gif" width = 100% height =11>
+<A HREF="http://www.lecb.ncifcrf.gov/~toms/"><IMG border=0 SRC =
+"http://www.lecb.ncifcrf.gov/~toms/icons/tinyround.gif" align =
+"left"><br><br><br>Schneider Lab</A><br>
+origin: 1997 January 1 <br>
+updated: 2002 May 6
+<br clear = all>
+<IMG SRC="http://www.lecb.ncifcrf.gov/~toms/icons/colorbar.gif" width = 100% height =11>
+
+
+<br>
+Visits to this page since 1997 November 18:
+<IMG SRC="http://www.lecb.ncifcrf.gov/cgi-bin/Count.cgi?df=toms3.dat&dd=B" align=absmiddle">
+
+<IMG SRC="http://www.lecb.ncifcrf.gov/~toms/icons/colorbar.gif" width = 100% height =11>
+</DOCUMENT>
+

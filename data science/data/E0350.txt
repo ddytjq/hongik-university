@@ -1,0 +1,454 @@
+ID=E0350
+URL=http://www.delorie.com/djgpp/doc/ug/asm/calling.html
+SIZE=13981
+DATE=12/07/02
+TIME=19:20:08
+DATASET=C
+HTML=<html><head><title>Guide: Function Calling Conventions</title>
+<base href="http://www.delorie.com/djgpp/doc/ug/asm/calling.html">
+</head><body><center><!-- BEGIN RICH-MEDIA BURST! CODE --> 
+     <script language="JavaScript"> 
+     <!-- /* (C) 1997-1999 BURST! Media, LLC. All Rights Reserved.*/ 
+     var TheAdcode = 'ad1954a'; 
+     var bN = navigator.appName; 
+     var bV = parseInt(navigator.appVersion); 
+     var base='http://www.burstnet.com/'; 
+     var Tv='/5940'; 
+     var agt=navigator.userAgent.toLowerCase(); 
+     if (bN=='Netscape'){ 
+          if ((bV>=4)&&(agt.indexOf("mac")==-1))
+     {  document.write('<s'+'cript src="'+ 
+           base+'cgi-bin/ads/'+TheAdcode+'.cgi/RETURN-CODE/JS' 
+           +Tv+'">'); 
+          document.write('</'+'script>');    
+     } 
+          else if (bV>=3) {document.write('<'+'a href="'+base+'ads/'+ 
+             TheAdcode+'-map.cgi'+Tv+'"target=_top>'); 
+             document.write('<img src="' + base + 'cgi-bin/ads/' + 
+             TheAdcode + '.cgi' + Tv + '" ismap width=468 height=60' + 
+             ' border=0 alt="Click Here"></a>');} 
+      } 
+     if (bN=='Microsoft Internet Explorer') 
+      document.write('<ifr'+'ame id=BURST src="'+base+'cgi-bin/ads/'
+     + 
+       TheAdcode + '.cgi' + Tv + '/RETURN-CODE" width=468 height=60' + 
+       'marginwidth=0 marginheight=0 hspace=0 vspace=0 ' + 
+       'frameborder=0 scrolling=no></ifr'+'ame>'); 
+     // --> 
+     </script> 
+     <noscript><a href="http://www.burstnet.com/ads/ad1954a-map.cgi" target=_top> 
+     <img src="http://www.burstnet.com/cgi-bin/ads/ad1954a.cgi" 
+      width=468 height=60 border=0 alt="Click Here"></a> 
+     </noscript> 
+     <!-- END BURST CODE --> 
+<table width=100% border=0 cellspacing=0 cellpadding=3><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">www.delorie.com</a>/<a href="/djgpp/" target="_top">djgpp</a>/<a href="/djgpp/doc/" target="_top">doc</a>/ug/asm/calling.html</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/search/">search</a> &nbsp;
+</b></font></small></td>
+</tr></table><a href="bulktrap.html"></a><big><big><b>Guide: Function Calling Conventions</b></big></big></td></p></center>
+
+
+<p>GCC follows certain rules in generating and calling its functions.
+If you are writing portable C or C++ code, you never need to know
+about these rules.  However, if you are writing assembly language or
+nonportable code that depends on these rules, you need to know what
+they are.  This document attemps to describe them, and gives some
+examples.</p>
+
+<h2>Notes</h2>
+
+<p>This document assumes a familiarity with assembly language.  The
+assembler code used here is written in the AT&amp;T syntax, as used by
+GNU <tt>as</tt>.  If you're using an Intel-syntax assembler, like
+<tt>nasm</tt>, you'll have to translate appropriately.</p>
+
+<p>What's described here are GCC's standard calling conventions.  Many
+can be changed by using options like <tt>-mregparm</tt>, but that's
+outside the scope of this document.</p>
+
+<p>These conventions apply to C.  C++ introduces several additional
+complications (such as class pointers and name mangling), some of
+which can change between compiler versions.  Thus, I suggest that asm
+functions called from C++ code be declared as <tt>extern &quot;C&quot;</tt>.
+This will cause C calling conventions to be used.</p>
+
+<h2>Writing Assembly-Language Functions</h2>
+
+<h3>Naming</h3>
+
+<p>In DJGPP, a function's assembly-language name is the same as its C
+name, with an underscore (&quot;<tt>_</tt>&quot;) prepended.  Thus,
+the C function <tt>foo</tt> would be named <tt>_foo</tt> in assembly
+language.  (This is in fact true for all symbol names, such as
+variables.)  C++ has some much more complicated rules.</p>
+
+<h3>Registers</h3>
+
+<p>GCC requires that some registers not change across a function
+call.  If you want to use these registers in an assembly function, you
+must save and restore their values.  They are:</p>
+
+<ul>
+
+<li><tt>%ebx</tt>
+
+<li><tt>%esi</tt>
+
+<li><tt>%edi</tt>
+
+<li><tt>%ebp</tt> <a name="footnote-ref-ebp" href="#footnote-ebp">(Footnote)</a>
+
+<li>The segment registers <tt>%ds</tt>, <tt>%es</tt> and <tt>%ss</tt>
+
+<!-- FPU register overflow?? -->
+
+</ul>
+
+<p>Other registers are available for your use (though some have other
+special uses; read on).</p>
+
+<h3><a name="retval">Return Value</a></h3>
+
+<ul>
+
+<li>Integers (of any size up to 32 bits) and pointers are returned in
+the <tt>%eax</tt> register.
+
+<li>Floating point values are returned in the 387 top-of-stack
+register, <tt>st(0)</tt>.
+
+<li>Return values of type <tt>long long int</tt> are returned in
+<tt>%edx:%eax</tt> (the most significant word in <tt>%edx</tt> and the
+least significant in <tt>%eax</tt>).
+
+<li>Returning a structure is complicated and rarely useful; try to
+avoid it.  (Note that this is different from returning a pointer to a
+structure.)
+
+</ul>
+
+<p>If your function returns <tt>void</tt> (e.g. no value), the
+contents of these registers are not used.</p>
+
+<h3>Memory Model</h3>
+
+<p>Very simple; all pointers and addresses are near.  You need not
+worry about segments (unless your asm code has a specific need to do
+so).  Your function should end with a simple <tt>ret</tt>.</p>
+
+<h3>Stack Layout</h3>
+
+<p>When GCC calls your function, it pushes all its arguments onto the
+stack, starting with the last one, then issues a <tt>call</tt>.  This
+means that, on entry to your function, the stack is laid out like
+this: </p>
+
+<pre>
+          Last argument
+	  ...
+4(%esp)	  First argument
+(%esp)    Return address
+</pre>
+
+
+<p><a name="layouts">Sizes and layouts of individual arguments are as follows:</a></p>
+
+<ul>
+
+<li>Integers up to 32 bits and pointers are pushed as a single
+longword.
+
+<li><tt>long long int</tt> is pushed as two longwords; the least
+significant is pushed last (and so is located first in memory).
+
+<li><tt>float</tt> and <tt>double</tt> are pushed as a
+double-precision value, occupying 8 bytes.
+
+<li><tt>long double</tt> is pushed as an extended-precision value
+followed by 2 bytes of padding, totalling 12 bytes.
+
+<li>As before, structures are more complicated and best avoided.
+
+</ul>
+
+<p>These rules also apply to functions which take a variable number of
+arguments (like <tt>printf</tt>).  As with any variadic function, the
+function must find its own way of determining how many arguments were
+actually passed (usually based on one of the required args).</p>
+
+<p>The stack below the return address is available for temporary
+storage, but be sure to decrement <tt>%esp</tt> appropriately.  Memory
+below <tt>%esp</tt> may be overwritten asynchronously, by interrupt
+handlers and such.  Restore its value when exiting, so that the return
+works correctly.  You may also <tt>push</tt> and <tt>pop</tt> at
+will.</p>
+
+<p>You may modify your arguments in place if you wish; they will not
+be reused by the caller.  Do not, however, attempt to pop them; the
+caller handles this.</p>
+
+<h2>Calling C Functions From Assembly Language</h2>
+
+<p>An assembly language function may wish to call a function written
+in C, either your own or one from the standard library.  The same
+rules already explained apply; you just see them from the other
+side.</p>
+
+<p>First, you push the function's arguments (if any) onto the stack,
+last argument first.  <a href="#layouts">See above</a> for the formats
+used.  (Floating point values are usually most easily handled by
+making space on the stack and then executing a store instruction;
+i.e. <tt>subl $8,%esp; fstpl (%esp)</tt>.)</p>
+
+<p>Use a simple <tt>call</tt> instruction to call the function.</p>
+
+<p>You are responsible for removing the arguments you have pushed.
+They may have changed, so you may not reuse them.  You need not,
+however, discard them at once; it may be more convenient when calling
+several functions to leave the arguments on the stack and pop them all
+together at the end.  <tt>addl n,%esp</tt> is an efficient way to do
+this.  It may also be convenient in this case to use <tt>%ebp</tt> as
+a frame pointer, since it need not change all the time.  (The C
+compiler does this.)</p>
+
+<p>The return value may be found as detailed <a href="#retval">above</a>.</p>
+
+<p>Expect the registers <tt>%eax</tt>, <tt>%ecx,</tt> and
+<tt>%edx</tt>, as well as the floating-point stack, to have changed.
+Standard library functions may modify the <tt>%gs</tt> register, and
+the <tt>_far*</tt> functions may modify <tt>%fs</tt>.  Other registers
+will be preserved.</p>
+
+<h2>Conclusion</h2>
+
+<p>These are the basic calling conventions used by GCC; however, there
+are special cases, optional modifications, etc. that can apply in
+situations not covered here.  In this case, <tt>gcc -S</tt> is your
+best friend - from assembly output, you can usually figure out the
+rules.  Also helpful is the GCC source: see <tt>i386.h</tt> and
+<tt>i386.md</tt> in <tt>config/i386</tt>.  They are well
+commented.</p>
+
+<h2>Examples</h2>
+
+<p>These examples show how some C functions might be rewritten in
+assembly language.  While the functions here are pretty useless
+themselves, hopefully they demonstrate the principles involved.</p>
+
+<h3>i_avg</h3>
+
+<p>This function finds the average of two <tt>int</tt>s.</p>
+
+<h4>In C:</h4>
+
+<pre>
+int i_avg (int a, int b)
+{
+  return (a + b) / 2;
+}
+</pre>
+
+<h4>In assembler:</h4>
+
+<pre>
+# Stack layout on entry:
+#
+# 8(%esp)  b
+# 4(%esp)  a
+# (%esp)   return address
+
+.globl _i_avg
+_i_avg:
+        movl 4(%esp), %eax
+	addl 8(%esp), %eax    # Add the args
+	sarl $1, %eax	      # Divide by 2
+	ret		      # Return value is in %eax
+</pre>
+
+<h3>ull_avg</h3>
+
+<p>This function finds the average of two <tt>unsigned long
+long</tt>s.  (The unsigned-ness is a cop-out to make the division
+easier, since there is no <tt>sard</tt> instruction.)</p>
+
+<h4>In C:</h4>
+
+<pre>
+unsigned long long ull_avg (unsigned long long a, unsigned long long b)
+{
+  return (a + b) / 2;
+}
+</pre>
+
+<h4>In assembler:</h4>
+
+<pre>
+# Stack layout on entry:
+#
+#          (high half of b)
+# 12(%esp) b
+#          (high half of a)
+# 4(%esp)  a
+# (%esp)   return address
+
+.globl _ull_avg
+_ull_avg:
+        movl 4(%esp), %eax
+	movl 8(%esp), %edx
+	addl 12(%esp), %eax    # Add low halves
+	adcl 16(%esp), %edx    # Add high halves, with carry
+	shrdl $1, %edx, %eax
+	shrl $1, %edx	       # Divide by 2
+	ret		       # Return value is in %edx:%eax
+</pre>
+
+<h3>ld_avg</h3>
+
+<p>This function finds the average of two <tt>long double</tt>s.</p>
+
+<h4>In C:</h4>
+
+<pre>
+long double ld_avg (long double a, long double b)
+{
+  return (a + b) / 2.0;
+}
+</pre>
+
+<h4>In assembler:</h4>
+
+<pre>
+# Stack layout on entry:
+#
+# 16(%esp) b (12 bytes)
+# 4(%esp)  a (12 bytes)
+# (%esp)   return address
+
+two:
+        .double 0f2.0  # The number 2.0
+
+.globl _ld_avg
+_ld_avg:
+        fldt 4(%esp)
+	fldt 16(%esp)
+	faddp %st(1), %st(0) # Add
+	fdivl two            # Divide %st(0) by 2.0
+	ret                  # Result is in %st(0)
+</pre>
+
+<h3>array_of_42</h3>
+
+<p>This function prints a message, allocates an array of a given size,
+and fills it with 42.</p>
+
+<h4>In C:</h4>
+
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int *array_of_42 (int n)
+{
+  int *p;
+  int i;
+  printf(&quot;Creating array of %d elements\n&quot;, n);
+  p = malloc(n * sizeof(int));
+  if (!p)
+      return NULL;
+  for (i = 0; i &lt; n; i++)
+      p[i] = 42;
+  return p;
+}
+
+</pre>
+
+<h4>In assembler:</h4>
+
+<pre>
+# Stack layout:
+#
+# 8(%ebp)  n
+# 4(%ebp)  return address
+# (%ebp)   pushed %ebp
+format:
+        .string &quot;Creating array of %d elements\n&quot;
+
+.globl _array_of_42
+_array_of_42:
+        # We will use a frame pointer, since %esp will be changing.
+	pushl %ebp
+	movl %esp, %ebp
+        pushl %edi           # Save %edi, since we'll be using it.
+	# First, print the message.
+	pushl 8(%ebp)
+	pushl $format
+	call _printf
+	addl $8, %esp        # Remove printf args from the stack
+	# Allocate the array.
+	movl 8(%ebp), %ecx
+	shll $2, %ecx        # Multiply by 4, which is sizeof(int)
+	pushl %ecx
+	call _malloc
+	popl %ecx            # Remove malloc args from stack
+	orl %eax, %eax	     # Test return value
+	jz finished
+	# Fill the array, using stosl.
+	movl %eax, %edi      # Address
+	movl %eax, %edx	     # and save a copy
+	movl 8(%ebp), %ecx   # Count
+	movl $42, %eax	     # Fill value
+	rep
+	stosl
+	movl %edx, %eax      # Return value
+finished:
+        popl %edi            # Restore it
+	popl %ebp
+	ret
+</pre>
+
+<h2>Footnotes</h2>
+
+<p><a name="footnote-ebp" href="#footnote-ref-ebp">About using
+<tt>%ebp</tt>:</a> Note that using <tt>-fomit-frame-pointer</tt> does
+<em>not</em> release you from the requirement to preserve
+<tt>%ebp</tt>.  With this option enabled, the compiler may use
+<tt>%ebp</tt> for something else, but it still expects it to be saved
+across function calls.  Furthermore, some functions cannot be compiled
+by GCC without a frame pointer.
+
+
+
+
+<br clear=both></p>
+<a href="bulktrap.html"></a><table width=100% border=0 cellspacing=0 cellpadding=3><tr>
+<td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/users/dj/" target="_top">webmaster</a> &nbsp;
+<a href="/donations.html" target="_top">donations</a> &nbsp;
+<a href="/store/books/" target="_top">bookstore</a> &nbsp;
+</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">delorie software</a> &nbsp;
+<a href="/privacy.html" target="_top">privacy</a> &nbsp;
+</b></font></small></td>
+</tr><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/copyright.html" target="_top">Copyright © 1999</a> &nbsp;
+<a href="/users/dj/" target="_top">by DJ Delorie</a> &nbsp;
+</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+Updated Jun 1999 &nbsp;
+</b></font></small></td>
+</tr></table>
+<center><iframe
+ SRC="http://www.burstnet.com/cgi-bin/ads/ba1954a.cgi/RETURN-CODE/if/5940/"
+ scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"
+ width="468" height="60"><A target="_top"
+ HREF="http://www.burstnet.com/ads/ba1954a-map.cgi/5940"><IMG SRC="http://www.burstnet.com/cgi-bin/ads/ba1954a.cgi/5940"
+ border="0" width="468" height="60" alt="Please support our sponsor."></A></iframe><br><small><i>Please take a moment to fill out
+this <a href="http://survey.burstmedia.com/cgi-win/client.exe?Burst,welcome,ad1954a,2000">visitor survey</a></i></small>
+<br><small><i>You can help support this site by
+visiting the advertisers that sponsor it! (only once each, though)</i></small>
+</center>
+</body></html>
+
+

@@ -1,0 +1,237 @@
+ID=E0379
+URL=http://home.att.net/~robertdunn/FAQs/BCB5TRichEdit.html
+SIZE=11974
+DATE=12/07/02
+TIME=19:20:24
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<TITLE>Yet Another Code Site - TRichEdit Changes In BCB5</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice/5.1 (Win32)">
+	<META NAME="AUTHOR" CONTENT="Robert Dunn">
+	<META NAME="CREATED" CONTENT="20000223;18122066">
+	<META NAME="CHANGEDBY" CONTENT="Robert Dunn">
+	<META NAME="CHANGED" CONTENT="20000223;19405163">
+	<META NAME="Template" CONTENT="C:\Program Files\Microsoft Office\Templates\Web Pages\Web Page Wizard.wiz">
+</HEAD>
+<BODY>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0 STYLE="page-break-before: always">
+	<COL WIDTH=256*>
+	<TR>
+		<TD WIDTH=100% VALIGN=TOP BGCOLOR="#000080">
+			<H1 ALIGN=CENTER STYLE="margin-top: 0in"><A NAME="TopOfPage"></A><FONT COLOR="#ffffff">Yet
+			Another Code Site</FONT></H1>
+		</TD>
+	</TR>
+</TABLE>
+<H2 ALIGN=CENTER>Changes To TRichEdit In BCB5</H2>
+<P ALIGN=CENTER STYLE="border: 1px solid #000000; padding: 0.02in; font-weight: medium">
+<I>What follows is an analysis of what changed between BCB v4 and v5
+based strictly upon a comparison of the comctrls.hpp and comctrls.pas
+source code.&nbsp; It does *not* include possible changes in ancestor
+classes which may have introduced further changes.</I></P>
+<P STYLE="font-weight: medium">Very little changed for the TRichEdit
+component between Borland C++ Builder versions 4 and 5.&nbsp; It
+still implements Rich Edit 1.0, it adds one new event
+(OnContextPopup), and it adds one bug fix.&nbsp; Here is a summary of
+changes followed by the specific changes to the source code for the
+TRichEdit class.</P>
+<H3 STYLE="font-weight: medium">Summary Of Changes</H3>
+<P STYLE="font-weight: medium">The detailed changes are below.&nbsp;
+To summarize the changes for those uninterested in minutiae:</P>
+<OL>
+	<LI><P STYLE="font-weight: medium">In BCB4, each instance of
+	TRichEdit loaded and freed riched32.dll.&nbsp; In BCB5, the DLL is
+	loaded by the first instance of TRichEdit only.&nbsp; The
+	WMNCDestroy() method no longer frees the DLL.&nbsp; Net result?&nbsp;
+	Once loaded, the Rich Edit DLL will stay in memory until the program
+	terminates.</P>
+	<LI><P STYLE="font-weight: medium">A new event, OnContextPopup, was
+	added to simplify responding to right-click messages.&nbsp; A new
+	message handler, WMRButtonUp, was added to support OnContextPopup
+	events.</P>
+	<LI><P STYLE="font-weight: medium">When loading text into the
+	TRichEdit component using the TRichEdit::Lines::LoadFromFile()
+	method, the method now ends by trying to set the maximum length of
+	text in the control to 0x7FFFFFF0.&nbsp; This value is hard-coded
+	and used regardless of the value of MaxLength.&nbsp; (This may not
+	solve the problem for all versions of the Rich Edit control.&nbsp;
+	<A HREF="Faqs.html#Bmk015" TARGET="_top">See the related FAQ</A>.)</P>
+	<LI><P STYLE="font-weight: medium">The TRichEdit CreateWnd() method
+	now uses a local variable to establish whether the component has
+	been modified.&nbsp; The new local variable (WasModified) is used to
+	save and re-establish the Modified property state.&nbsp; Modified
+	should now return the correct value after changing properties that
+	cause the control to be destroyed and recreated, e.g., changing the
+	ScrollBars property.&nbsp; See the paper on <A HREF="../Papers/TRichEditHandles.html" TARGET="_top">Window
+	handles vs. TRichEdit and other VCL controls</A> for an explanation
+	of this oblique comment.</P>
+</OL>
+<H3 STYLE="font-weight: medium">Details Of Changes</H3>
+<P STYLE="font-weight: medium">Here are the declarations, methods,
+etc., that changed between BCB4 and BCB5.&nbsp; &quot;<SPAN STYLE="background: #ffff00">&lt;!</SPAN>&quot;
+means removed in BCB5.&nbsp; &quot;<SPAN STYLE="background: #ffff00">!&gt;</SPAN>&quot;
+means added to BCB5.&nbsp; &quot;...&quot; (ellipsis) indicates that
+code was omitted for brevity.</P>
+<H4>BCB header (comctrls.hpp)</H4>
+<PRE>    class PASCALIMPLEMENTATION TCustomRichEdit : public Stdctrls::TCustomMemo 
+    {
+        typedef Stdctrls::TCustomMemo inherited;
+        
+    private:
+<SPAN STYLE="background: #ffff00"> &lt;!     unsigned FLibHandle;</SPAN>
+        bool FHideScrollBars;
+        TTextAttributes* FSelAttributes;
+        ...
+        HIDESBASE MESSAGE void __fastcall WMPaint(Messages::TWMPaint &amp;Message);
+        HIDESBASE MESSAGE void __fastcall WMSetFont(Messages::TWMSetFont &amp;Message);
+<SPAN STYLE="background: #ffff00"> !&gt;     HIDESBASE MESSAGE void __fastcall WMRButtonUp(Messages::TWMMouse &amp;Message);</SPAN>
+        
+    protected:
+        virtual void __fastcall CreateParams(Controls::TCreateParams &amp;Params);
+        ...
+    };</PRE><H4>
+TRichEdit implementation (comctrls.pas)</H4>
+<PRE>    class PASCALIMPLEMENTATION TRichEdit : public TCustomRichEdit 
+    {
+        typedef TCustomRichEdit inherited;
+        
+    __published:
+        __property Align ;
+        __property Alignment ;
+        ...
+        __property WordWrap ;
+        __property OnChange ;
+<SPAN STYLE="background: #ffff00"> !&gt;     __property OnContextPopup ;</SPAN>
+        __property OnDragDrop ;
+        ...     
+    };</PRE><P STYLE="font-weight: medium">
+The following is a global variable added in BCB5.</P>
+<PRE STYLE="margin-bottom: 0.2in"><SPAN STYLE="background: #ffff00">!&gt;   FRichEditModule: THandle;</SPAN>
+
+    procedure TRichEditStrings.LoadFromFile(const FileName: string);
+    var
+      Ext: string;
+      Convert: PConversionFormat;
+    begin
+      Ext := AnsiLowerCaseFileName(ExtractFileExt(Filename));
+      System.Delete(Ext, 1, 1);
+      Convert := ConversionFormatList;
+      while Convert &lt;&gt; nil do
+        with Convert^ do
+          if Extension &lt;&gt; Ext then Convert := Next
+          else Break;
+      if Convert = nil then
+        Convert := @TextConversionFormat;
+      if FConverter = nil then FConverter := Convert^.ConversionClass.Create;
+      try
+        inherited LoadFromFile(FileName);
+      except
+        FConverter.Free;
+        FConverter := nil;
+        raise;
+      end;
+<SPAN STYLE="background: #ffff00"> !&gt;   RichEdit.DoSetMaxLength($7FFFFFF0);</SPAN>
+    end;
+
+    procedure TCustomRichEdit.CreateParams(var Params: TCreateParams);
+    const
+      RichEditModuleName = 'RICHED32.DLL';
+      HideScrollBars: array[Boolean] of DWORD = (ES_DISABLENOSCROLL, 0);
+      HideSelections: array[Boolean] of DWORD = (ES_NOHIDESEL, 0);
+<SPAN STYLE="background: #ffff00"> &lt;! var</SPAN>
+<SPAN STYLE="background: #ffff00"> &lt;!   OldError: Longint;</SPAN>
+<SPAN STYLE="background: #ffff00"> &lt;! begin</SPAN>
+<SPAN STYLE="background: #ffff00"> &lt;!   OldError := SetErrorMode(SEM_NOOPENFILEERRORBOX);</SPAN>
+<SPAN STYLE="background: #ffff00"> &lt;!   FLibHandle := LoadLibrary(RichEditModuleName);</SPAN>
+<SPAN STYLE="background: #ffff00"> &lt;!   if (FLibHandle &gt; 0) and (FLibHandle &lt; HINSTANCE_ERROR) then FLibHandle := 0;</SPAN>
+<SPAN STYLE="background: #ffff00"> &lt;!   SetErrorMode(OldError);</SPAN>
+<SPAN STYLE="background: #ffff00"> !&gt; begin</SPAN>
+<SPAN STYLE="background: #ffff00"> !&gt;   if FRichEditModule = 0 then</SPAN>
+<SPAN STYLE="background: #ffff00"> !&gt;   begin</SPAN>
+<SPAN STYLE="background: #ffff00"> !&gt;     FRichEditModule := LoadLibrary(RichEditModuleName);</SPAN>
+<SPAN STYLE="background: #ffff00"> !&gt;     if FRichEditModule &lt;= HINSTANCE_ERROR then FRichEditModule := 0;</SPAN>
+<SPAN STYLE="background: #ffff00"> !&gt;   end;</SPAN>
+      inherited CreateParams(Params);
+      CreateSubClass(Params, 'RICHEDIT');
+      with Params do
+      begin
+        Style := Style or HideScrollBars[FHideScrollBars] or
+          HideSelections[HideSelection];
+        WindowClass.style := WindowClass.style and not (CS_HREDRAW or CS_VREDRAW);
+      end;
+    end;
+
+    procedure TCustomRichEdit.CreateWnd;
+    var
+<SPAN STYLE="background: #ffff00"> &lt;!   Plain, DesignMode: Boolean;</SPAN>
+<SPAN STYLE="background: #ffff00"> !&gt;   Plain, DesignMode, WasModified: Boolean;</SPAN>
+    begin
+<SPAN STYLE="background: #ffff00"> !&gt;   WasModified := inherited Modified;</SPAN>
+      inherited CreateWnd;
+      if (SysLocale.FarEast) and not (SysLocale.PriLangID = LANG_JAPANESE) then
+        Font.Charset := GetDefFontCharSet;
+      SendMessage(Handle, EM_SETEVENTMASK, 0,
+        ENM_CHANGE or ENM_SELCHANGE or ENM_REQUESTRESIZE or
+        ENM_PROTECTED);
+      SendMessage(Handle, EM_SETBKGNDCOLOR, 0, ColorToRGB(Color));
+      if FMemStream &lt;&gt; nil then
+      begin
+        Plain := PlainText;
+        FMemStream.ReadBuffer(DesignMode, sizeof(DesignMode));
+        PlainText := DesignMode;
+        try
+          Lines.LoadFromStream(FMemStream);
+          FMemStream.Free;
+          FMemStream := nil;
+        finally
+          PlainText := Plain;
+        end;
+      end;
+<SPAN STYLE="background: #ffff00"> &lt;!   Modified := FModified;</SPAN>
+<SPAN STYLE="background: #ffff00"> !&gt;   Modified := WasModified;</SPAN>
+    end;
+
+    procedure TCustomRichEdit.WMNCDestroy(var Message: TWMNCDestroy);
+    begin
+      inherited;
+<SPAN STYLE="background: #ffff00"> &lt;!   if FLibHandle &lt;&gt; 0 then FreeLibrary(FLibHandle);</SPAN>
+    end;
+
+<SPAN STYLE="background: #ffff00"> !&gt; procedure TCustomRichEdit.WMRButtonUp(var Message: TWMRButtonUp);</SPAN>
+<SPAN STYLE="background: #ffff00"> !&gt; begin</SPAN>
+<SPAN STYLE="background: #ffff00"> !&gt;   // RichEd20 does not pass the WM_RBUTTONUP message to defwndproc,</SPAN>
+<SPAN STYLE="background: #ffff00"> !&gt;   // so we get no WM_CONTEXTMENU message.  Simulate message here.</SPAN>
+<SPAN STYLE="background: #ffff00"> !&gt;   if Win32MajorVersion &lt; 5 then</SPAN>
+<SPAN STYLE="background: #ffff00"> !&gt;     Perform(WM_CONTEXTMENU, Handle, LParam(PointToSmallPoint(</SPAN>
+<SPAN STYLE="background: #ffff00"> !&gt;       ClientToScreen(SmallPointToPoint(Message.Pos)))));</SPAN>
+<SPAN STYLE="background: #ffff00"> !&gt;   inherited;</SPAN>
+<SPAN STYLE="background: #ffff00"> !&gt; end;</SPAN></PRE><P>
+<BR><BR>
+</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
+	<COL WIDTH=128*>
+	<COL WIDTH=128*>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50% BGCOLOR="#e6e6e6">
+			<P><A HREF="../Yacs.html" NAME="Home"><B><FONT SIZE=2 STYLE="font-size: 9pt">Home</FONT></B></A><B><FONT SIZE=2 STYLE="font-size: 9pt">
+			| </FONT></B><A HREF="#TopOfPage" NAME="Top Of Page"><B><FONT SIZE=2 STYLE="font-size: 9pt">Top
+			Of Page</FONT></B></A><B><FONT SIZE=2 STYLE="font-size: 9pt"> |
+			</FONT></B><A HREF="../Yacs.html#CodeSection" NAME="Code Section"><B><FONT SIZE=2 STYLE="font-size: 9pt">Code</FONT></B></A><B><FONT SIZE=2 STYLE="font-size: 9pt">
+			| </FONT></B><A HREF="../Yacs.html#Papers"><B><FONT SIZE=2 STYLE="font-size: 9pt">Papers</FONT></B></A><B><FONT SIZE=2 STYLE="font-size: 9pt">
+			| </FONT></B><A HREF="../Yacs.html#FAQs" NAME="Frequently Asked Questions"><B><FONT SIZE=2 STYLE="font-size: 9pt">FAQs</FONT></B></A><B><FONT SIZE=2 STYLE="font-size: 9pt">
+			| </FONT></B><A HREF="../Links.html" NAME="Links To Other Sites"><B><FONT SIZE=2 STYLE="font-size: 9pt">Links</FONT></B></A><B><FONT SIZE=2 STYLE="font-size: 9pt">
+			| <FONT SIZE=2 STYLE="font-size: 9pt"><A HREF="../Yacs.html#SiteSearch" TARGET="_top">Search</A>
+			|</FONT> </FONT></B><A HREF="../Yacs.html#ContactMe" NAME="Contacting Me"><B><FONT SIZE=2 STYLE="font-size: 9pt">Feedback</FONT></B></A></P>
+		</TD>
+		<TD WIDTH=50% BGCOLOR="#e6e6e6">
+			<P ALIGN=RIGHT><FONT SIZE=2 STYLE="font-size: 9pt">Page updated <SDFIELD TYPE=DOCINFO SUBTYPE=CHANGE FORMAT=DATE SDNUM="1033;1033;MMMM D, YYYY">February 23, 2000</SDFIELD></FONT></P>
+		</TD>
+	</TR>
+</TABLE>
+<P ALIGN=CENTER STYLE="font-style: normal"><FONT SIZE=2 STYLE="font-size: 9pt"><B>Copyright
+&copy; 2000 Thin Air Enterprises and Robert Dunn.&nbsp; All rights
+reserved.</B></FONT></P>
+</BODY>
+</HTML>

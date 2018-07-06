@@ -1,0 +1,156 @@
+ID=D0419
+URL=http://www.geocities.com/lkp550/java/lesson7.htm
+SIZE=7260
+DATE=16/07/02
+TIME=14:45:49
+DATASET=Java
+HTML=<html>
+<body background="notepad.gif">
+<table width=90% align=right><tr><td>
+<font face="arial">
+<center><h2><u>Lesson Seven</u></h2></center>
+
+<p>Arrays can be very useful when it comes to sorting. If you are sorting from the lowest value to the highest, you are sorting in <b>ascending</b> order. If you are sorting the highest value to the lowest, you are sorting in <b>descending</b> order. Another sorting method called <b>bubble sort</b> sorts an unsorted array by swapping values until they are from lowest to highest. For instance, the values 88, 33, 99, 22, 54 will be swapped until they read 22, 33 54, 88, 99. Below is a program showing how bubble sorting works.<br>
+
+<br>
+<tt>
+public class SortCharArray<br>
+{<br>
+  public static void main(String[] args) throws Exception<br>
+  {<br>
+    // Declaring a character array that can hold 10 characters, and int x as subscript<br>
+    char[] someChars = new char[10];<br>
+    int x;<br>
+<br>
+    // for loop that allows user to enter 10 characters<br>
+    for(x = 0; x < someChars.length; ++x)<br>
+    {<br>
+      System.out.print("Enter a character ");<br>
+      someChars[x] = (char)System.in.read();<br>
+      System.in.read(); System.in.read();<br>
+    }<br>
+<br>
+    //for loop that displays characters as entered<br>
+    System.out.println("Before sorting");<br>
+    for(x = 0; x < someChars.length; ++x)<br>
+      System.out.print(someChars[x] + " ");<br>
+<br>
+    // Call method named bubbleSort and pass two arguments<br>
+    bubbleSort(someChars, someChars.length);<br>
+<br>
+    // for loop that prints sorted characters<br>
+    System.out.println("\nAfter sorting");<br>
+    for(x = 0; x < someChars.length; ++x)<br>
+      System.out.print(someChars[x] + " ");<br>
+<br>
+    // Final print statement<br>
+    System.out.println();<br>
+  }<br>
+<br>
+  public static void bubbleSort(char[] array, int len)<br>
+  {<br>
+    // Declaring int a and b for looping and char temp variable<br>
+    int a, b;<br>
+    char temp;<br>
+<br>
+    // Nested for loops to sort array<br>
+    int highSubscript = len - 1;<br>
+    // Declaring variable for comparisons<br>
+    int compsToMake = len - 1;<br>
+    for(a = 0; a < highSubscript; ++a)<br>
+    {<br>
+      for(b = 0; b < compsToMake; ++b)<br>
+        if(array[b] > array[b + 1])<br>
+        {<br>
+          temp = array[b];<br>
+          array[b] = array[b + 1];<br>
+          array[b + 1] = temp;<br>
+        }<br>
+      --compsToMake;<br>
+    }<br>
+  }<br>
+}<br>
+</tt>
+
+<p>Characters and numbers are a simple form of sorting. You can also sort Strings. One important point to remember with Strings is that the names are memory addresses. In this sense, you must use the <b>compareTo()</b> method.<br>
+
+<br>
+<tt>
+public class SortStrings<br>
+{<br>
+  public static void main(String[] args)<br>
+  {<br>
+    String[] students = {"Kim", "Ken", "Tom", "Kathy", "Brad"};<br>
+    int x;<br>
+    System.out.println("Before sorting");<br>
+    for(x = 0; x < 5; ++x)<br>
+      System.out.println(students[x]);<br>
+    sortStrings(students, students.length);<br>
+    System.out.println("\nAfter sorting");<br>
+    for(x = 0; x < 5; ++x)<br>
+      System.out.println(students[x]);<br>
+  }<br>
+  public static void sortStrings(String[] array, int len)<br>
+  {<br>
+    int a, b;<br>
+    String temp;<br>
+    int highSubscript = len - 1;<br>
+    for(a = 0; a < highSubscript; ++a)<br>
+      for(b = 0; b < highSubscript; ++b)<br>
+        if(array[b].compareTo(array[b + 1]) > 0)<br>
+        {<br>
+          temp = array[b];<br>
+          array[b] = array[b + 1];<br>
+          array[b + 1] = temp;<br>
+        }<br>
+  }<br>
+}
+</tt>
+
+<p>As you may have noticed, these arrays print in the form of a single column. These are called <b>single-dimensional</b> arrays. To achieve the effect of a table, you need more than one column. This is what we call a <b>two-dimensional</b> array (also known as a <b>matrix</b> or a <b>spreadsheet</b>). The way you create a two-dimensional array is:<br>
+
+<br>
+<tt>
+int[][] someNumbers =<br>
+{    {2, 4, 6, 8},<br>
+     {4, 16, 36, 64},<br>
+     {3, 13, 31, 57}    };
+</tt>
+
+<p>One problem with Strings is that you cannot have <i>myName = "John"</i> and <i>myName = "Smith"</i> at the same time. One thing you can do is use the <b>StringBuffer</b> to join two strings. If you typed <i>StringBuffer myName = new StringBuffer("John");</i>, and then typed <i>myName.append(" Smith");</i>, you'd end up with the String "John Smith". The <b>append()</b> method adds a String to a String similar to the way concatenation works. Along with these methods is the <b>insert()</b> that you can use to insert a String. For instance, if you wanted to add your middle name to the String. You would then type <i>myName.insert(5, "Alexander ");</i>. Seeing as Strings work the same way as arrays, the letter "J" in John is in the [0] position of the entire String. The number "5" means go to the [5] element and insert "Alexander". If you just wanted to add "A", you would type <i>myName.setCharAt(5, "A");</i> instead of the insert() method. Then, put a space inside the parenthesis after John.
+
+<p>If you're not too sure about what you've learned so far, or if you seem to be having problems in the future, there are some newsgroups you can attend:<br>
+
+<br>
+<tt>
+comp.lang.java.advocacy<br>
+comp.lang.java.announce<br>
+comp.lang.java.api<br>
+comp.lang.java.beans<br>
+comp.lang.java.gui<br>
+comp.lang.java.help<br>
+comp.lang.java.misc<br>
+comp.lang.java.programmer<br>
+comp.lang.java.security<br>
+comp.lang.java.setup<br>
+comp.lang.java.softwaretools<br>
+comp.lang.java.tech<br>
+</tt>
+
+<p>If you can't find the answer you're looking for at any sites, you can always take a look at Frequently Asked Questions or the Help file at the <a href="http://java.sun.com">Sun Microsystems</a> Web site.
+
+<p><b><u>Question:</u></b> Ok, I've learned a great deal coming here. The only thing I want to know is how I can apply all this knowledge to my Web page. Is there a way?
+
+<p><b><u>Answer:</u></b> Well, I'm glad to hear that you've learned something besides patience. Now, to be able to transfer what you've learned to the Internet, you need to create an <b>applet</b>.
+<br>
+
+<hr>
+<center><a href="lesson6.htm">Lesson Six</a> | <a href="http://www.geocities.com/lkp550/JAVAHUT.htm">Home</a> | <a href="lesson8.htm">Lesson Eight</a><br>
+<br>
+If you have any questions or comments about this lesson, feel free to <a href="http://expertprofile.yahoo.com/lkp550?.tpid=383000187">click here</a> and leave me your message.</center>
+</td></tr></table>
+</body>
+</html>
+<!-- text below generated by server. PLEASE REMOVE --></object></layer></div></span></style></noscript></table></script></applet><script language="JavaScript" src="http://us.i1.yimg.com/us.yimg.com/i/mc/mc.js"></script><script language="JavaScript" src="http://us.geocities.com/js_source/geov2.js"></script><script language="javascript">geovisit();</script><noscript><img src="http://visit.geocities.com/visit.gif?1026499831" border=0 width=1 height=1></noscript>
+<IMG SRC="http://geo.yahoo.com/serv?s=76001068&t=1026499831" ALT=1 WIDTH=1 HEIGHT=1>
+

@@ -1,0 +1,1305 @@
+ID=E0025
+URL=http://www.le.ac.uk/cc/iss/tutorials/cprog/ccccdbas.html
+SIZE=29182
+DATE=12/07/02
+TIME=19:16:29
+DATASET=C
+HTML=<!-- Filename: cccc.html -->
+<!-- Author: mc39/rjm1 -->
+<!-- Supplied by: Richard Mobbs -->
+<!-- Created: 02-09-95 -->
+<!-- Expires: 02-09-96 -->
+
+<HTML>
+
+<HEAD>
+
+<TITLE>Introduction to C Programming Course</TITLE>
+
+</HEAD> 
+
+<BODY>
+
+<H1><IMG ALT="[CWC logo]" ALIGN=middle SRC="http:/images/compcen.gif" > C Example Programs</H1>
+
+
+<HR>
+<P>
+This document contains numerous example programs to provide a practical aid for learning <B>C </B>programming language. 
+
+<P>
+<HR>
+<P>
+
+<A NAME="input"></A>
+<H2>Input and Output programs</H2>
+
+This section contains example programs demonstrating the input and output functions.<P>
+
+This program  uses the <B><TT>scanf</TT></B> function.<P>
+
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+main()
+{
+    float a , b , c;
+    printf("Input two numbers... \n");
+    scanf("%f%f" , &a , &b);
+    c  =  a * b ;
+    printf("%f times %f = %f\n" , a , b , c);
+}</B></PRE>
+
+This program combines <B><TT>printf</TT></B> and <B><TT>scanf</TT></B> whereby <B><TT>printf</TT></B> displays the input from <B><TT>scanf</TT></B>.<P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+main()
+{
+    int i;
+    printf("%c\n",scanf("%i",i));
+}</B>
+</PRE>
+
+This program demonstrates the use of <B><TT>getchar</TT></B> and <B><TT>putchar</TT></B>.<P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+main()
+{
+    char ch;
+
+    printf("Enter some text (type a period to quit)...\n");
+
+    do {
+        ch = getchar();
+        putchar(ch+1);
+       } while (ch != '.');
+
+    printf("\n\n");
+
+    printf("Enter some text (type a period to quit)...\n");
+
+    while ( (ch = getchar()) != '.')  putchar(ch-1);
+
+    printf("\n\n");
+
+}</B></PRE>
+
+<P>
+<HR>
+<P>
+<A NAME="loops"></A>
+<H2>Control Loop programs</H2>
+
+This section contains example programs demonstrating the loop construction.<P>
+
+Program using <B><TT>char</TT></B> data type and simple <B><TT>for loop</TT></B>:<P>
+
+<PRE><B>#include &lt;stdio.h&gt;  /* library header */
+
+main()
+{
+    char ch;
+
+    for (ch = 'A' ; ch <= 'z' ; ch++) printf("%c\n" , ch);
+}</B></PRE>
+
+This program demonstrates the <TT><B>while loop</B></TT>.<P>
+
+<PRE>
+<B>#include &lt;stdio.h&gt;
+
+main()
+{
+    int lower , upper , step;
+    float fahr , celsius;
+
+    lower = 0  ;
+    upper = 300;
+    step  = 20 ;
+
+    fahr  = lower;
+
+    while ( fahr <= upper ) {
+      celsius = (5.0 / 9.0) * (fahr - 32.0);
+      printf("%4.0f %6.1f\n" , fahr , celsius);
+      fahr = fahr + step;
+    }
+}</B></PRE>
+
+This program uses <B><TT>do-while</TT></B> and <B><TT>for loop</TT></B> constructions and standard library mathematical functions.<P>
+ 
+<PRE><B>#include &lt;stdio.h&gt;
+#include <math.h>
+
+main()
+{
+    int i , j , k;
+    double a=10.0 , b=.0;
+
+    do {
+         printf("%f\n" , pow(a,b));  /* standard function */
+         b++;
+       } while (b<100);
+
+    i = 2;
+
+    for (j=2 ; j<100 ; j=j+2) {
+      i=i*j ;
+      printf("%d\n" , i);
+    }
+}</B></PRE>
+
+<P>
+<HR>
+<P><A NAME="condition"></A>
+<H2>Conditional Execution programs</H2>
+This section contains example programs demonstrating <B><TT>if else</TT></B> and <B><TT>select</TT></B> statements (also <B><TT>break</TT></B> and <B><TT>continue </TT></B>statements).<P>
+
+This program demonstrates the <B><TT>if else</TT></B> statement.<P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+main()
+{
+    int a , b;
+
+        printf("Enter two numbers: ");
+        scanf("%d%d" , &a , &b);
+
+        if (b) printf("%d\n" , a/b);
+        else   printf("... cannot divide by zero\n");
+}</B></PRE>
+
+Another example of <B><TT>if else</TT></B>  statement.<P>
+
+<PRE><B>#include &lt;stdio&gt;
+#include &lt;conio&gt;
+
+main()
+
+{
+  int a,b;
+  char ch;
+  printf("Do you want to: \n");
+  printf"Add, subtract, Multiply, or Divide?\n");
+
+  /* force user to enter valid response */
+  do {
+       printf("Enter first letter:  ");
+       ch=getchar();
+       printf("\n");
+     } while (ch!='A' &amp;&amp; ch!='S' &amp;&amp; ch!='M'         &amp;&amp; ch!='D');
+     printf("Enter first number: ");
+     scanf("%d", &amp;a);
+     printf("Enter second number:  ");
+     scanf("%d", &amp;b);
+
+  if (ch=='A') printf("%d", a+b);
+  else if (ch=='S') printf("%d", a-b);
+  else if (ch=='M') printf("%d", a*b);
+  else if (ch=='D' &amp;&amp; b!=0) printf("%d", a/b);
+}</B></PRE>
+
+The <TT><B>switch</B></TT> statement is often used to process menu commands. <P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+#include &lt;conio.h&gt;
+
+main()
+{
+  int a,b;
+  char ch;
+
+  printf("Do you want to:\n");
+  printf("Add, Subtract, Multipy, or Divide\n");
+  /* force user to enter valid response */
+  do (
+       printf("Enter first letter:  ");
+       ch =getchar();
+       printf("\n");
+      } while (ch!='A' &amp;&amp; ch!='S' &amp;&amp; ch!='M'         &amp;&amp; ch!='D');
+  printf("Enter first number: ");
+  scanf("%d", &amp;a);
+  printf("Enter second number:  ");
+  scanf("%d", &amp;b);
+
+  switch (ch) {
+     case 'A'  : printf("%d", a+b);
+                 break;
+     case 'S'  : printf("%d", a-b);
+                 break;
+     case 'M'  : printf("%d", a*b);
+                 break;
+     case 'D'  : if (b!=0) printf("%d", a/b);
+                 break;
+  }
+}          </B>     
+</PRE>
+
+The statement sequence associated with a <B><TT>case</TT></B> may be empty allowing two or more cases to share a common statement sequence. <P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+#include &lt;conio.h&gt;
+
+main()
+{
+  char ch;
+  printf("Enter the letter:  ");
+  ch=getchar();
+
+  switch(ch)  {
+     case 'a' :
+     case 'e' :
+     case 'i' :
+     case 'o' :
+     case 'u' :
+        printf(" is a vowel \n");
+        break;
+     default:
+        printf(" is a consonant");
+  }
+}</B></PRE>
+
+A simple program to show the use of the <TT><B>continue</B></TT> statement.<P>
+
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+main()
+{
+    int x ;
+
+    for ( x=0 ; x<=100 ; x++) {
+     if (x%2) continue;  /* using modulus operation */
+        printf("%d\n" , x);
+                          
+}</B></PRE>
+
+This program jumps out of an infinite loop using the <B><TT>break</TT> </B>statement.<P>
+
+<PRE>
+<B>#include &lt;stdio.h&gt;
+
+main()
+{
+    int t ;
+
+    for ( ; ; ) {
+      scanf("%d" , &t)   ;
+      if ( t==10 ) break ;
+    }
+    printf("End of an infinite loop...\n");
+
+}</B>
+</PRE>
+<HR>
+<A NAME="nest"></A>
+<H2>Structure and Nesting programs</H2>
+
+This section contains example programs demonstrating nested block structures.<P>
+
+This program uses nested <B><TT>for loop</TT></B> construction.<P> 
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+main()
+{
+    int i , j;
+
+    for (i=2 ; i<1000 ; i++) {
+       for (j=2 ; j<= i/2 ; j++) 
+         if (!(i%j)) break;
+       if (j>i/2) printf("%d is a prime\n" , i);
+    }
+}</B>
+</PRE>
+
+This example program uses a <B><TT>do-while</TT></B> and nested <B><TT>if else</TT></B> construction.<P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+main()
+{
+    int a , b;
+
+    do {
+
+         printf("Enter first number: ");
+         scanf("%d" , &a);
+         printf("Enter second number: ");
+         scanf("%d" , &b);
+
+         if (a&lt;b)
+           printf("First number is less than second\n\n");
+         if (b&lt;a)
+           printf("Second number is less than first\n\n");
+
+        } while (a &lt; 999);
+}</B></PRE>
+
+This program uses nested <B><TT>for loop</TT></B> and <B><TT>if else</TT></B> construction.<P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+#include &lt;conio.h&gt;
+
+main()
+{
+  int answer, count, chances, right;
+  for (count=1; count&lt;11; count++) {
+    printf("What is %d + %d?", count, count);
+    scanf("%d", &amp;answer);
+    if (answer == count+count) printf("Right!\n");
+    else {
+           printf("Sorry, you're wrong \n");
+           printf("Try again\n");
+           right = 0;
+           /* nested for *?
+           for (chances=0; chances&lt;3 &amp;&amp; ! right;              chances++){
+              printf("\nWhat is %d + %d?",count, count);
+              scanf("%d", &amp;answer);
+              if (answer == count+count){
+                printf("Right!\n");
+                right=1;
+              }
+            }
+            /* if answer still wrong, tell user */
+            if (!right)
+               printf("the answer is %d.\n", count+count);
+         } /* end of else part */
+  }   /* end of outter for loop */
+}</B></PRE>
+      
+
+
+<HR>
+<A NAME="func"></A>
+<H2>Functions and Prototype programs</H2>
+
+This section contains example programs to demonstrate the use of <TT><B>functions</B></TT>.<P>
+
+This is a program to demonstrate the use of <B><TT>functions</TT</B><P>
+<OL>
+<LI> with no parameters
+<LI> with parameters
+</OL>
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+main()
+{
+    int number;
+
+    prompt();  /*function call no parameters */
+    scanf( "%d" , &number );
+
+    factor(number);  /* function call with parameters */
+}
+
+prompt()   /* function */
+{
+    printf("Input a number... ");
+}
+
+factor(int t)   /* function */
+{
+    int sum = 1;
+    int i ;
+
+    for (i = 1 ; i <= t ; i++)
+      sum = sum*i;
+    printf("Factorial %d is %d\n" , t , sum);
+}</B></PRE>
+
+Here is a volume computing program using a function prototype.<P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+/* this is volume()'s prototype */
+double volume(double s1, double s2, double s3);
+
+void main()
+{
+  double vol;
+  vol = volume(12.2, 5.67. 9.03);
+  printf("Volume: %f", vol);
+}
+
+/* compute the volume of a cube. */
+double volume(double s1, doublbe s2, double s3)
+{
+  return s1*s2*s3;
+}</B></PRE>
+
+Recursion when applied to a computer language means that a function can call itself. An example follows:<P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+void recurse(int i);
+
+void main(void)
+{
+  recurse(0);
+}
+
+void recurse(int i)
+{
+  if (i&lt;10) {
+    recurse(i+1);
+    printf("%d ",i);
+  }
+}</B></PRE>
+
+This program prints<P>
+
+<B><TT>9876543210</TT></B><P>
+
+on the screen.
+<HR>
+<A NAME="array"></A>
+<H2>Array programs</H2>
+
+This section contains example programs demonstrating the use of arrays.<P>
+
+A simple program to demonstrate the definition and use of an array.<P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+main()
+{
+    int i[10],j;
+
+    for ( j=0 ; j<10 ; j++) 
+      i[j] = j ;
+
+    for ( j=0 ; j<10 ; j++) 
+      printf("%d\n" , i[j]) ;
+}</B>
+</PRE>
+
+A program to demonstrate the use of an array.<P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+main()
+{
+    int i , min_value , max_value ;
+    int list[10] ;
+
+    for ( i=0 ; i<10 ; i++) 
+      list[i] = rand() ;
+
+/* Find the minimum value  */
+
+    min_value = 32767 ;
+
+    for ( i=0 ; i&lt;10 ; i++) 
+      if (list[i]&lt;min_value) 
+        min_value=list[i] ;
+    printf("Minimum value generated is %d\n" , min_value) ;
+
+/*  Find the maximum value  */
+
+    max_value = 0 ;
+
+    for ( i=0 ; i&lt;10 ; i++) 
+      if (list[i]&gt;max_value) 
+        max_value=list[i];
+    printf("Maximum value generated is %d\n" , max_value) ;
+
+}</B></PRE>
+
+This program uses a bubble sort.<P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+include &lt;stdlib.h&gt;
+
+main()
+{
+  int item[100];
+  int a,b,t;
+  int count;
+  /* read in numbers */
+  printf("How many numbers ?");
+  scanf("%d", &amp;count);
+  for (a=0;a&lt;count;a++) scanf("%d", &amp;item[a]);
+
+  /* now sort using bubble sort */
+  for (a=1; a&lt;count; a++)
+    for (b=count-1; b&gt;=a; --b) {
+      /* compare adjacent elements */
+      if (item[b-1] &gt; item[b]) {
+        /* exchange elements */
+        t= item[b-1];
+        item[b-1] - item[b];
+        item[b] = t;
+      }
+     }
+     /* display sorted list */
+     for (t=0; t&lt;count; t++)  printf("%d ", item[t]);
+}</B></PRE>
+
+An example program using a two-dimensional array now follows.<P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+main()
+{
+  int twod[4][5];
+  int i,j;
+
+  for(i=0; i&lt;4; i++)
+    for(j=0; j&lt;5; j++)
+       twod[i][j] = i*j;
+
+  for (i=0; i&lt;4; i++)  {
+    for (j=0; j&lt;5; j++)
+      printf("%d !, twod[i][j]);
+    printf("\n");
+  }
+}</B>
+</PRE>
+
+The program output looks like this:<P>
+
+<PRE><B>
+00000
+01234
+02468
+036912</B></PRE>
+
+<HR>
+<A NAME="point"></A>
+<H2>Pointer programs</H2>
+
+This section contains example programs demonstrating the use of pointers.<P>
+
+
+An example program using simple pointers.<P>
+
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+main()
+{
+    int balance;
+    int *address;
+    int value;
+
+    balance = 5000;
+
+    address = &balance;
+    value   = *address;
+
+    printf("Balance is : %d\n" , value);
+}</B></PRE>
+
+Another example using pointers.<P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+main()
+{
+    int *p , num;
+
+    p = &num;
+
+    *p = 100;
+
+    printf("%d\n" , num);
+    (*p)++;
+    printf("%d\n" , num);
+    (*p)--;
+    printf("%d\n" , num);
+
+}</B></PRE>
+
+An example program demonstrating pointer Arithmetic.<P>
+
+<PRE>
+<B>#include &lt;stdio.h&gt;
+
+main()
+{
+    char *c , ch[10];
+    int  *i , j[10];
+    float *f , g[10];
+    int x;
+
+    c = ch;
+    i = j;
+    f = g;
+
+    for ( x=0 ; x<10 ; x++ )
+      printf("%p %p %p\n" , c+x , i+x , f+x);
+
+}</B></PRE>
+
+An example program using pointers and arrays.<P>
+
+<PRE>
+<B>#include &lt;stdio.h&gt;
+
+main()
+{
+    char str[80];
+    char token[10];
+    char  *p , *q;
+
+    printf("Enter a sentence: ");
+    gets(str);
+
+    p = str;
+
+    while (*p) {
+      q = token;
+      while (*p != ' ' && *p) {
+        *q = *p;
+        q++ ; p++;
+      }
+      if (*p) p++;
+      *q = '\0';
+      printf("%s\n" , token);
+    }
+}</B></PRE>
+<HR>
+<A NAME="string"></A>
+<H2>String programs</H2>
+
+This section contains example programs to demonstrate the use of strings.<P>
+
+A simple string example.<P>
+
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+main()
+{
+    char str[80] ;
+
+    printf("Enter a string: ") ;
+    gets(str) ;
+    printf("%s" , str);
+
+    printf("\n");
+}</B></PRE>
+
+The follow program requests the input of two strings, then demonstrates the four string functions with them.<P>
+
+<PRE><B>#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+
+main()
+{
+  char str1[80], str2[80];
+  int i;
+
+  printf("Enter the first string:  ");
+  getstr(str1);
+  printf("Enter the second string:  ");
+  getstr(str2);
+
+  /* see how long the strings are */
+  printf("%s is %d chars long\n", str1, strlen(str1));
+  printf("%s is %d chars long\n", str2, strlen(str2));
+
+  /* compare the strings */
+  i= strcmp(str1, str2);
+  if (!i) printf("The strings are equal.\n");
+  else if (i&lt;0) printf ("%s is less than %s\n", str1,str2);
+  else printf("%s is greater than %s\n", str1, str2);
+
+/* concatenate str2 to end of str1 if there is enough room*/
+  if (strlen(str1)+ strlen(str2) &lt; 80) {
+    strcat(str1, str2);
+    printf("%s\n", str1);
+  }
+
+  /* copy str2 to str1 */
+  strcpy(str1, str1);
+  printf("%s %s\n", str1, str2);
+}</B></PRE>
+
+<HR>
+<A NAME="struct"></A>
+<H2>Structure programs</H2>
+
+This section contains example programs to demonstrate the use of structures.<P>
+
+This program stores data in a structure and displays the values.<P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+void main(void)
+{
+  struct s_type {
+    int i;
+    int j;
+  } s;
+
+  int i;
+
+  i=10;
+  s.i=100;
+  s.j=101;
+
+  printf("%d %d %d", i, s.i, s.j);
+}</B>
+</PRE>
+The variable <B>i</B> and the structure element <B>i</B> have no relationship to each other.<P>
+
+A function may return a structure to the calling procedure. <P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+struct s_type {
+   int i;
+   double d;
+} var1;
+
+struct s-type f(void);
+
+void main(void)
+{
+  var1=f();
+  printf("%d %1f", var1.i, var1.d);
+}
+
+struct s_type f(void)
+{
+  struct s_type temp;
+
+  temp.i=100;
+  temp.d = 123.23;
+
+  return temp;
+} </B></PRE>
+
+This program passes a structure to a function.<P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+struct s_type {
+   int i;
+   double d;
+} var1;
+
+void f(struct s_type temp);
+
+void main(void)
+{
+  var1.i=99;
+  var1.d = 98.6;
+  f(var1);
+}
+
+void f(struct s_type temp)
+{
+  printf("%d %1f", temp.i, temp.d);
+}</B></PRE>
+
+The following program illustrates how to use a pointer to a structure.<P>
+
+<B><PRE>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+strct s_type {
+  int i;
+  char str[80];
+} s, *p;
+
+void main(void)
+{
+  p= &amp;s;
+
+  s.i = 10; /* this is functionally the same */
+  p -&gt;i=10; /* as this */
+  strcpy(p-&gt;str, "I like structures");
+
+  printf("%d %d %s", s.i, p-&gt;1, p-&gt;str);
+}</PRE></B>
+<HR>
+<A NAME="file"></A>
+<H2>File Handling programs</H2>
+
+This section contains programs demonstrating file handling and command line arguments.<P>
+
+The following program reads a text file and counts how many times each letter from 'A' to 'Z' occurs and displays the results.<P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+#include &lt;stdlib&gt;
+#include &lt;ctype.h&gt;
+
+int count[26];
+
+void main(int argc, char *argv[])
+{
+  FILE *fp;
+  char ch;
+  int i;
+  /* see if file name is specified */
+  if (argc!=2) {
+    printf("File name missing");
+    exit(1);
+  }
+
+  if ((fp= fopen(agv[1], "r")) == NULL) {
+     printf("cannot open file");
+     exit(1);
+  }
+
+  while ((ch=fgetchar(fp)) !=EOF) {
+    ch = toupper(ch);
+    if (ch&gt;='A' &amp;&amp; ch&lt;='Z') count[ch-'A']++;
+  }
+
+  for (i=0; i&lt;26; i++)
+    printf("%c occurred %d times\n", i+'A', count[i]);
+
+  fclose(fp);
+}</B>
+</PRE>
+This program uses command line arguments to read and display the contents of a file supplied as an argument.<P>
+
+<PRE><B>#include &lt;stdio.h&gt;
+
+#define CLEARS 12   /* constant */
+
+main(int argc , char *argv[])
+{
+     FILE *fp , *fopen();
+     int c;
+
+     putchar(CLEARS);  
+
+     while ( --argc > 0 )
+         if ((fp=fopen(argv[1], "r"))==NULL)       
+           {
+             printf("I can't open %s\n", argv[1]);
+             break;
+           }
+         else
+           {
+             while ((c= getc(fp)) !=EOF) 
+               putc(c,stdout);  /* display to the screen */
+             fclose(fp);
+           }
+}</B></PRE>
+
+This program gives a further example of the use of argc & argv<P>
+
+
+<PRE><B>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+main(int argc , char *argv[])
+{
+    double a , b;
+
+    if (argc != 3) {
+     printf("Usage: add number number ...\n");
+     exit(1);
+    }
+
+    a = atof(argv[1]);
+    b = atof(argv[2]);
+
+    printf("%lf\n" , a + b);
+}</B></PRE>
+<HR>
+
+<A NAME="complex"></A>
+<H2>Complex programs combining sections</H2>
+
+
+This example program creates and accesses a simple database.<P>
+<PRE>
+
+<B>
+/**********************************************************/
+/*          A simple Data Base Program                    */
+/**********************************************************/
+
+# include &lt;stdio.h&gt;
+# include &lt;stdlib.h&gt;
+# include &lt;string.h&gt;
+
+# define MAX 100  /* constant*/
+
+struct addr {                  /*struct called list*/
+             char name[30]   ;
+             char street[40] ;
+             char town[20]   ;
+             char county[20] ;
+             char code[10]   ;
+            } list[MAX];       /* 100 records*/
+
+main()
+{
+    int choice;
+
+    init_list();      /* initialze the list */
+
+    for(;;) {
+      choice = menu_select();    /* get user's selection*/        switch(choice) {
+        case 1: enter();         /* enter a new entry */
+                break;
+        case 2: del();           /* delete an entry */
+                break;
+        case 3: show_list();     /* display the list */
+                break;
+        case 4: search();        /* find an entry */
+                break;
+        case 5: save();          /* save to disk */
+                break;
+        case 6: load();          /* read from disk */
+                break;
+        case 7: exit(0);
+      }
+    }
+}
+
+/*********************************************************/
+/*         Function del                                  */
+/*********************************************************/
+del()
+{
+    int i;
+    char str[255];
+
+    inputs("enter name: " , str , 30);
+    i = find(str);
+    if (i>=0) *list[i].name = '\0'   ;
+    else      printf("not found\n")  ;
+}
+
+
+/**********************************************************/
+/*                   Function display                     */
+/**********************************************************/
+display(int i)
+{
+    printf("%s\n" , list[i].name);
+    printf("%s\n" , list[i].street);
+    printf("%s\n" , list[i].town);
+    printf("%s\n" , list[i].county);
+    printf("%s\n" , list[i].code);
+}
+
+/**********************************************************/
+/*                     Function enter                     */
+/**********************************************************/
+enter()
+{
+    int i;
+
+    for(;;) {
+      i = find_free();        /* find a free structure */
+      if(i<0) {
+        printf("list full\n");
+        return;
+      }
+      inputs("enter name: ", list[i].name,30);        if(!*list[i].name) break;      /* stop entering */
+      inputs("enter street: ", list[i].street, 40);
+      inputs("enter town: ", list[i].town, 20);
+      inputs("enter county: ", list[i].county, 20);
+      inputs("enter Postal code: ", list[i].code, 10);
+    }
+}
+
+/**********************************************************/
+/*                       Function find                    */
+/**********************************************************/
+find(char *name)
+{
+    int i;  
+    for(i=0 ; i<MAX ; i++) 
+      if(!strcmp(name ,list[i].name)) break;
+    if(i==MAX) return -1;
+    else return i;
+}
+
+/**********************************************************/
+/*                   Function find_free                   */
+/**********************************************************/
+find_free()
+{
+    register int i;   
+    for(i=0; i<MAX; i++) 
+      if(!*list[i].name) return i;  
+    return -1;
+}
+
+/**********************************************************/
+/*                      Function init_list                */
+/**********************************************************/
+init_list()
+{
+    register int i;   
+    for (i=0 ; i<MAX ; i++) 
+      *list[i].name = '\0';
+}
+
+/**********************************************************/
+/*                    Function inputs                     */
+/**********************************************************/
+inputs( char *prompt , char *s , int count)
+{
+    char str[255];
+
+    do {
+        printf(prompt);
+        gets(str);
+        if(strlen(str)>=count) printf("\ntoo long\n");
+       } while(strlen(str)>=count);
+
+    strcpy(s , str);
+}
+
+/**********************************************************/
+/*                         Function load                  */
+/**********************************************************/
+load()
+{
+    FILE *fp;
+
+    if ( (fp=fopen("mlist" , "rb")) == NULL) {
+       printf("cannot open file\n");
+       return;
+    }
+    printf("\nloading file\n");
+    fread(list , sizeof list , 1 , fp);
+    if (ferror(fp)) 
+       printf("An error occurred while reading file.\n");
+    fclose(fp);
+}
+
+/**********************************************************/
+/*                          Function menu_select          */
+/**********************************************************/
+
+menu_select()
+{
+    char s[80];
+    int c;
+    printf("1. Enter a name\n")  ;
+    printf("2. Delete a name\n") ;
+    printf("3. List the File \n");
+    printf("4. Search\n")        ;
+    printf("5. Save the file\n") ;
+    printf("6. Load the file\n") ;
+    printf("7. Quit\n")          ;
+
+    do {
+        printf("\nEnter your choice: ");
+        gets(s);
+        c = atoi(s);
+       } while(c<0 || c>7);
+
+    return c;
+}
+
+/**********************************************************/
+/*                      Function save                     */
+/**********************************************************/
+save()
+{
+    FILE *fp;
+
+    if ( (fp=fopen("mlist" , "wb")) == NULL) {
+      printf("cannot open file\n");
+      return;
+    }
+    printf("\nsaving file\n");
+    fwrite(list , sizeof list , 1 , fp);
+    if (ferror(fp)) 
+      printf("An error occurred while writing file.\n");
+    fclose(fp);
+}
+
+/**********************************************************/
+/*                        Function search                 */
+/**********************************************************/
+search()
+{
+    int i;
+    char name[30];
+
+    inputs("enter name to find: " , name , 30);
+    if ((i=find(name))<0) 
+      printf("not found\n");
+    else display(i);
+}
+
+/**********************************************************/
+/*                         Function show_list             */
+/**********************************************************/
+show_list()
+{
+    int i;
+
+    for(i=0 ; i&lt;MAX ; i++) {
+      if(*list[i].name) {
+        display(i);
+        printf("\n\n");
+      }
+    }
+
+    printf("\n\n");
+}</B>
+</PRE>
+
+[<A HREF="database.c">program</A>]
+
+<P>The second example program uses functions to play a simple game of tic tac toe.<P>
+
+
+<PRE>
+<B>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+char matrix[3][3];
+
+main()
+{
+     char done;
+
+     printf("This is the game of tic tac toe...\n");
+     printf("You will be playing against the computer.\n") ;
+
+     done = ' ';
+
+     init_matrix();
+
+     do {
+         disp_matrix();
+         get_player_move();
+         done = check();
+         if (done != ' ') break;
+         get_computer_move();
+         done = check();
+        } while (done == ' ');
+
+     if    (done == 'X') printf("\n\nYou won!!!\n");
+     else  printf("I won!!!\n");
+
+     disp_matrix();
+}
+
+/**********************************************************/
+/*            fuction to initialise matrix                */
+/**********************************************************/     
+init_matrix()
+{
+    int i , j ;
+
+    for (i=0 ; i<3 ; i++)
+        for (j=0 ; j<3 ; j++) 
+          matrix[i][j] = ' ';
+}
+
+/**********************************************************/
+/*            fuction to get players move                 */
+/**********************************************************/ 
+get_player_move()
+{
+    int x , y ;
+
+    printf("Enter coordinates of your X:  ");
+    scanf("%d%d" , &x , &y);
+
+    x--;   y--;
+
+    if (matrix[x][y] != ' ') {
+       printf("Invalid move, try again...\n");
+       get_player_move();
+    }
+    else  matrix[x][y] = 'X';
+}
+
+/**********************************************************/
+/*            fuction to get computer move                */
+/**********************************************************/ 
+get_computer_move()
+{
+    int i , j ;
+
+    for (i=0 ; i<3 ; i++) {
+       for (j=0 ; j<3 ; j++) 
+          if(matrix[i][j]==' ') break;
+       if (matrix[i][j] == ' ') break;
+    }
+    if (i*j == 9) {
+       printf("draw....\n");
+       exit(0);
+    }
+    else   matrix[i][j] = 'O';
+}
+
+/**********************************************************/
+/*            fuction to display matrix                   */
+/**********************************************************/ 
+disp_matrix()
+{
+    int t ;
+
+    printf(" 1   2   3\n");
+
+    for (t=0 ; t<3 ; t++) {
+       printf(" %c | %c | %c  %d" , matrix[t][0],
+                matrix[t][1], matrix[t][2] , t+1);
+       if (t!=2) printf("\n---|---|---\n");
+    }
+    printf("\n");
+}
+
+/**********************************************************/
+/*            fuction to check matrix                     */
+/**********************************************************/ 
+check()
+{
+    int i ;
+
+    for (i=0 ; i<3 ; i++)
+       if(matrix[i][0] == matrix[i][1] && matrix[i][0] ==        matrix[i][2])
+          return matrix[i][0];
+
+    for (i=0 ; i<3 ; i++)
+       if(matrix[0][i] == matrix[1][i] && matrix[0][i] ==        matrix[2][i])
+          return matrix[0][i];
+
+    if(matrix[0][0] == matrix[1][1] && matrix[1][1] ==     matrix[2][2])
+          return matrix[0][0];
+
+    if(matrix[0][2] == matrix[1][1] && matrix[1][1] ==     matrix[2][0])
+          return matrix[0][2];
+
+    return ' ';
+}</B></PRE>
+
+[<A HREF="game.c">program</A>]
+
+<P>
+<HR>
+<A HREF="http:/">
+<IMG ALT="[Leicester University]" ALIGN=middle SRC="http:/buttons/lhomebut.gif"></A>
+
+
+
+<A HREF="http:/CWIS/AS/CC/cc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http:/buttons/ccbut.gif">
+ Computer Centre</A>   
+
+<HR>
+<ADDRESS>Information Suppliers: <A HREF="http:/rjm1.html">Richard Mobbs</A>, Head of Information Services, Leicester University Computer
+ Centre and Marina Carter, Postgraduate Student, Loughborough University.
+</ADDRESS>
+
+<ADDRESS>Last Updated: September 1995</ADDRESS>
+
+</BODY>
+
+</HTML>
+

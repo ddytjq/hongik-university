@@ -1,0 +1,649 @@
+ID=E0075
+URL=http://www.rit.edu/~jpw9607/gne/gneproto.htm
+SIZE=39802
+DATE=12/07/02
+TIME=19:17:10
+DATASET=C
+HTML=<html>
+<head>
+<title>GNE Protocol Version 1</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<style type="text/css">
+<!--
+.heading1 {  font-size: large; font-weight: bold; font-family: Georgia, "Times New Roman", Times, serif}
+.heading2 {  font-size: medium; font-weight: bold; font-family: Georgia, "Times New Roman", Times, serif}
+.heading3 {  font-size: small; font-weight: bold; font-family: Georgia, "Times New Roman", Times, serif}
+body {  font-family: Verdana, Arial, Helvetica, sans-serif; color: #FFFFFF; background-color: #333333; font-size: x-small}
+a:link {  color: #0099CC}
+a:visited {  color: #0099CC}
+a:active {  color: #0099FF}
+a:hover {  color: #00FFCC}
+.sectionHeader {  font-size: large; border-color: black black #CCCCCC; border-style: solid; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 1px; border-left-width: 0px; font-weight: bold; color: #FFFFCC; font-family: Georgia, "Times New Roman", Times, serif}
+.subSectionHeader {  font-size: medium; font-weight: bold; color: #CCCC99; font-family: Arial, Helvetica, sans-serif; border-color: black black #666666; border-style: solid; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 1px; border-left-width: 0px}
+.linkToTop {  text-align: center; font-weight: bold; font-size: larger}
+.packetTable {  font-size: x-small; background-color: #505050; border: 1px #FFFFFF solid; margin-top: 2em}
+.packetNameCell {  font-size: larger; border-color: #FFFFFF black #FFFFFF #FFFFFF; background-color: #666666; border-style: solid; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 1px; border-left-width: 0px}
+.packetIdCell {  text-align: right; font-weight: bold; font-size: larger; background-color: #666666; border-color: #FFFFFF #FFFFFF #FFFFFF black; border-style: solid; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 1px; border-left-width: 0px}
+.packetName {  font-weight: bold}
+.packetDataHeaderCell {  font-weight: bold; border-color: black black #CCCCCC; padding-left: 1em; border-style: solid; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 1px; border-left-width: 0px}
+.packetDescHeaderCell {  font-weight: bold; border-color: #000000 black #CCCCCC; border-style: solid; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 1px; border-left-width: 0px; background-color: #666666}
+.packetDataCell {  border-color: black #999999 #999999; border-style: solid; border-top-width: 0px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; padding-left: 1em}
+.packetDescCell {  }
+.listHeader {  color: #CCCC99; font-weight: bold}
+.group {  border: 1px #666666 solid; padding-top: 0px; padding-right: 2px; padding-bottom: 0px; padding-left: 2px}
+-->
+</style>
+</head>
+<body bgcolor="#333333" link="#0099FF" text="#FFFFFF" vlink="#0099FF" alink="#0099FF">
+<p><span class="heading1"><a name="toc"></a>The GNE Protocol</span><br>
+  <span class="heading2">Version 1</span><br>
+  <span class="heading3">Fifth Draft, 
+  <!-- #BeginDate format:Am1 -->May 8, 2002<!-- #EndDate -->
+  </span></p>
+<p>The draft is complete except for the fact that more packet types will be added 
+  for the end-programmer's benefit, but this will not effect the actual protocol, 
+  since only Packet and ExitPacket are absolutely required.</p>
+<ul>
+  <li><span class="listHeader">Changes since the first draft:</span> Among minor 
+    clarifications and changes, I forgot to mention bandwith throttling.</li>
+  <li><span class="listHeader">Changes since the second draft:</span> Added in 
+    ability to turn off throttling, fixed small errors/typos, and changed some 
+    notes about the handling of ExitPacket by the implementation.</li>
+  <li><span class="listHeader">Changes since the third draft:</span> Added notes 
+    about HawkNL's NL_RELIABLE_PACKETS protocol.</li>
+  <li><span class="listHeader">Changes since the fourth draft:</span> Modified 
+    CAP and refusal to allow server to refuse unreliable connection and modified 
+    the connection process to be more error-safe and better discover the identity 
+    of the remote peer.</li>
+</ul>
+<p>Please review this draft and send any comments and suggestions to gillius AT 
+  mail DOT rit DOT edu.</p>
+<p class="linkToTop"><a href="http://www.rit.edu/%7Ejpw9607/gne/">Return to GNE 
+  Homepage </a></p>
+<p class="heading1">Table of Contents</p>
+<ul>
+  <li><a href="#intro">Introduction and Document Notes/Terminology</a></li>
+  <li><a href="#relpacket">HawkNL's Reliable Packets Format</a></li>
+  <li><a href="#data">Data Formats</a></li>
+  <li><a href="#newconn">Starting a New Connection</a> 
+    <ul>
+      <li><a href="#firstpacket">The First Packet -- Client to Server</a></li>
+      <li><a href="#secondpacket">The Second Packet -- Server to Client</a></li>
+      <li><a href="#finalpacket">The Final Packets -- Client to Server</a></li>
+      <li><a href="#furtherconn">Further Connection Processes</a></li>
+    </ul>
+  </li>
+  <li><a href="#midconn">Transferring Data</a> 
+    <ul>
+      <li><a href="#bandwidth">Bandwidth Control</a></li>
+      <li><a href="#gnepacket">GNE-Level Packet Specification</a></li>
+      <li><a href="#userpacket">User-level Packet Sepcification</a></li>
+    </ul>
+  </li>
+  <li><a href="#packets">Packet Listings</a> ('User-level' packets) 
+    <ul>
+      <li><a href="#packet"></a>0 - <a href="#packet"> Packet</a></li>
+      <li><a href="#packet"></a>1 - <a href="#custompacket">CustomPacket</a></li>
+      <li><a href="#packet"></a>2 - <a href="#exitpacket">ExitPacket</a></li>
+      <li>3 - <a href="#rateadjustpacket">RateAdjustPacket</a></li>
+      <li>4 - <a href="#pingpacket">PingPacket</a></li>
+    </ul>
+  </li>
+  <li><a href="#endconn">Ending a Connection</a></li>
+  <li><a href="#future">Future Additions</a></li>
+</ul>
+<p class="sectionHeader"><a name="intro"></a>Introduction and Document Notes/Terminology</p>
+<p>This document describes the method by which GNE communicates between a client 
+  and a server. More information about the GNE library can be found at <a href="http://www.rit.edu/%7Ejpw9607/">http://www.rit.edu/~jpw9607/</a>. 
+  Note that when this document refers to client and server it applies these concepts 
+  only at the low-level. A server is simply the computer that is listening for 
+  new connections and a client is the computer that is initiating them. These 
+  terms do not refer to any role the two peers play in communicating data for 
+  the networking application.</p>
+<p>This document should be adequate enough by itself to allow another programmer 
+  to write a compatible interface that can interact transparently with a peer 
+  using the GNE library, potentially to write a compatible C version of the library 
+  or to write utilities to interact with game servers using GNE (like Gamespy, 
+  etc.).</p>
+<p>This document will also make references to TCP and UDP. Since GNE uses <a href="http://www.hawksoft.com/hawknl/">HawkNL</a>, 
+  GNE can work over any network type, so when TCP is mentioned it can mean TCP 
+  or any other similarly reliable protocol, and for UDP it means any unreliable 
+  datagram protocol. More precisely, TCP means a HawkNL socket of type NL_RELIABLE_PACKETS 
+  and UDP of type NL_UNRELIABLE.</p>
+<p>Also, this document will make references to the term &quot;user.&quot; User 
+  meaning the programmer that will be using GNE to develop their game. This term 
+  is also used interchangably with the term &quot;end-programmer.&quot;</p>
+<p class="linkToTop"><a href="#toc">Return to the Table of Contents</a></p>
+<p class="sectionHeader"><a name="relpacket"></a>HawkNL's Reliable Packets Format</p>
+<p>GNE always performs its transfers using a packet-based method, and never a 
+  stream method -- however TCP is used to transfer reliable packets now. The method 
+  of transfering packets over a stream socket is the NL_RELIABLE_PACKETS socket 
+  type in HawkNL, because HawkNL is the network library that the C++ implementation 
+  of GNE uses to encapsulate the OS's socket functions.</p>
+<p>Breaking a stream socket into packets was chosen not only for its convience, 
+  but to allow for additional communications methods to the GNE protocol (in version 
+  2), an example might be where the two sockets might be combined into a single 
+  UDP or IPX socket sending both unreliable and reliable packets together at the 
+  same time.</p>
+<p>The format in the TCP stream consists of the two bytes 'N', and 'L', and a 
+  16 bit packet content length in big-endian format followed by the content. The 
+  content length does not include the 4 byte packet header. So where TCP is mentioned 
+  in this document, NL_RELIABLE_PACKETS is what is meant.</p>
+<p class="sectionHeader"><a name="data"></a>Data Formats</p>
+<p>Because GNE will be running on multiple platforms and architectures, it is 
+  necessary to define several common variable types. All of the data types will 
+  be in little-endian format -- <b><i>This is different from most portable networking 
+  libraries</i></b> which usually send data in big-endian format. The reason for 
+  this is because I expect the library to be used almost exclusively on the Intel 
+  x86-based architecture, rather than the other main supported architectures, 
+  PPC (Macintosh) and UltraSparc (Sun), which are both big-endian processors.</p>
+<p>As a refresher, in little-endian format the least-significant byte comes first, 
+  and is in memory with an opposite byte order than how we write it on paper. 
+  In big-endian the most-significant byte is first. So the number 45,682 is 0xB272 
+  in hex. If we assign this number to a 32-bit integer, in memory for a little 
+  endian processor we will see the bytes <b><i>72, B2, 00, 00</i></b> and in the 
+  big-endian processor we will see the bytes as <b><i>00, 00, B2, 72</i></b>. 
+  x86 CPUs are little-endian but Macs and UltraSparc machines are big-endian.</p>
+<p>GNE sends all of its data in little-endian format, but of course this does 
+  not force the GNE user to send inner-packet data as little-endian, but it is 
+  suggested that they do so. The RawPacket class's stream operators in the C++ 
+  implementation automatically convert from the host format into little-endian.</p>
+<p><span class="subSectionHeader">gbyte, gint8, gint16, gint32, guint8, guint16, 
+  guint32</span><br>
+  These are integer types. The number specifies their width in bits, and the u 
+  denotes unsigned types. gbyte is a synonym for guint8. gint64 and guint64 might 
+  be added in a future revision of the GNE protocol.</p>
+<p><span class="subSectionHeader">gbool</span><br>
+  A gbool is the same as a guint8 variable. Any non-zero value is considered &quot;true&quot; 
+  and a value containing all zero bits is considered false.</p>
+<p><span class="subSectionHeader">gsingle, gdouble<br>
+  </span>These are single-precision (32 bit -- float in most compilers) and double-precision 
+  (64 bit -- double in most compilers) floating point numbers, as implemented 
+  by the <a href="http://www.research.microsoft.com/%7Ehollasch/cgindex/coding/ieeefloat.html">IEEE 
+  754-1985 standard</a> (<a href="http://standards.ieee.org/">official site</a>). 
+  From what I can tell x86, Mac, and UltraSparc platforms all use and understand 
+  these numbers natively, so luckily it seems no conversion other than endian 
+  is required. If in the future it is found that conversion is needed, the RawPacket 
+  operators will handle this conversion, always converting to and from the network 
+  format. </p>
+<p><span class="subSectionHeader">std::string, const char*</span><br>
+  GNE can read and write strings. A string used by GNE cannot be larger than 255 
+  characters long. If a longer string is required, it is suggested that a new 
+  packet type is created which holds only the string in the format the user chooses 
+  (a packet that does this MIGHT be added in the future). The reason for this 
+  is packets shouldn't be much larger than 250 bytes and with the other data, 
+  a larger string should not be needed.</p>
+<p>The string format is a guint8 byte specifying a string size x from 0 to 255. 
+  The next x bytes of the packet are the string. This method was chosen over C-style 
+  strings for two reasons:</p>
+<ol>
+  <li>Since a string can't be larger than 255 bytes, this is one way of preventing 
+    buffer-overruns and therefore crashing by corrupted data or exploits.</li>
+  <li>Compatibility with std::string, which can contain null-characters in the 
+    middle of the string, therefore nulls are also allowed within GNE strings.</li>
+</ol>
+<p>At the moment, 8-bit strings are assumed. But in the future 16-bit or higher 
+  strings will likely be supported through std::wstring. In this case, the format 
+  will be the same. A size byte will specify the number of bytes the string consists 
+  of, and then that number of bytes will be copied into memory, so it will be 
+  hopefully format-transparent. This change might be made before protocol 1 is 
+  finalized, or it might be added into protocol version 2, depending both on the 
+  demand and the difficulty of the support.</p>
+<p class="linkToTop"><a href="#toc">Return to the Table of Contents</a></p>
+<p class="sectionHeader"><a name="newconn"></a>Starting a New Connection</p>
+<p class="subSectionHeader"><a name="firstpacket"></a>The First Packet -- Client 
+  to Server</p>
+<p>The start of the connection process works as usual for the reliable protocol 
+  that is in use (such as TCP). Once the low-level connection has been established, 
+  the client (connecting machine) sends a packet with the following information 
+  called the connection request packet (CRP) with an exact size of 48 bytes. The 
+  CRP starts with a header so that the client can more easily tell if the returned 
+  packet came from GNE rather or some random client.</p>
+<ul>
+  <li><span class="listHeader">gbyte</span>: First byte of header: ASCII 'G'</li>
+  <li><span class="listHeader">gbyte</span>: Second byte of header: ASCII 'N'</li>
+  <li><span class="listHeader">gbyte</span>: Third byte of header: ASCII 'E'<span class="listHeader"></span></li>
+  <li><span class="listHeader">guint8</span>: GNE protocol version number (in 
+    this case, 1).</li>
+  <li><span class="listHeader">guint8</span>: GNE protocol sub-version number 
+    (in this case, 0).</li>
+  <li><span class="listHeader">guint16</span>: GNE protocol build number (used 
+    only for development, should be 0 in final releases).</li>
+  <li>A <a href="#gameString">32-byte game name string</a>.</li>
+  <li><span class="listHeader">guint32</span>: User protocol version number (that 
+    was given by the user code).</li>
+  <li><span class="listHeader">guint32</span>: Maximum incoming data rate in bytes 
+    per second (bandwith control discussed <a href="#bandwidth">later</a>).</li>
+  <li><span class="listHeader">gbool</span>: True if the client is requesting 
+    an additional unreliable connection type (like UDP).</li>
+</ul>
+<p><a name="gameString"></a><span class="listHeader">Game string notes</span>: 
+  The 32-byte game string is used because it is possible for one GNE program to 
+  connect to another program and not be the same program without this string, 
+  because it is expected that many users will use a user protocol version number 
+  of 0, 1, 2 ... and such. Therefore if one was running a GNE game &quot;A&quot; 
+  and a GNE game &quot;B&quot; they are likely to have the same GNE protocol versions, 
+  and somewhat likely to have the same user versions, so the way chosen to differentiate 
+  between the two games is to send the game name or some other unique identifier 
+  string. <span class="listHeader">Format</span>: of this string is a NULL-terminated 
+  ASCII string of length no greater 31 characters. Any unused space in the buffer 
+  shall consist of bytes with the value of 0.</p>
+<p>The build number is used only as a convenience for development and can be used 
+  during the development process because the implementation may only be partially 
+  completed. The version number of the connecting GNE client should match exactly 
+  to what the server expects, and therefore the number should only change when 
+  changes make communication incompatible. This version protocol number is not 
+  related to the version number of the GNE code itself.</p>
+<p>The protocol version number is read as version.sub.build. So the version number 
+  for a final production GNE implementation of this protocol should be 1.0.0. 
+  Non-released development versions (as you will see if you get GNE from CVS), 
+  will have the previous GNE version number with a non-zero build, so the first 
+  attempt at implementing 1.0.0 will be versioned 0.0.1, 0.0.2, ... and so on. 
+  Only CVS versions should have a non-zero build number.</p>
+<p>The user version is supplied by the user code and its contents is a number 
+  which should match exactly between both ends of the connection. It is unsigned 
+  so that nothing is implied by the bits in the memory. One can note that the 
+  user version number uses the same amount of space (32 bits) as the GNE version 
+  number and therefore a user could implement a similar version numbering scheme 
+  to GNE's.</p>
+<p>The first two version numbers are picked as guint8 values rather than gint32 
+  or guint32 because they are endian and signed-number-format independent and 
+  thus are forwards compatible. Even if the default endian format, or the signed 
+  number format of GNE changes, these values will remain compatable and comparable.</p>
+<p class="linkToTop"><a href="#toc">Return to the Table of Contents</a></p>
+<p class="subSectionHeader"><a name="secondpacket"></a>The Second Packet -- Server 
+  to Client</p>
+<p>Once the server receives the CRP, it can choose to accept or refuse the connection. 
+  It must refuse the connection if any of the versions do not match. If can also 
+  refuse the connection for any other reason it wishes (i.e. a server may choose 
+  to allow only IP adresses in its subnet or maybe it is too busy). Both the refusal 
+  and the acceptance starts with a header so that the client can more easily tell 
+  if the returned packet came from GNE rather or some random server.</p>
+<p>If the server decides to refuse, it sends a refusal packet with the server's 
+  version information with a size of exactly 44 bytes:</p>
+<ul>
+  <li><span class="listHeader">gbyte</span>: First byte of header: ASCII 'G'</li>
+  <li><span class="listHeader">gbyte</span>: Second byte of header: ASCII 'N'</li>
+  <li><span class="listHeader">gbyte</span>: Third byte of header: ASCII 'E'</li>
+  <li><span class="listHeader">gbool</span>: Connection accepted flag (this will 
+    be false).</li>
+  <li><span class="listHeader">guint8</span>: GNE protocol version number.</li>
+  <li><span class="listHeader">guint8</span>: GNE protocol sub-version number.</li>
+  <li><span class="listHeader">guint16</span>: GNE protocol build number.</li>
+  <li>A <a href="#gameString">32-byte game name string</a>.</li>
+  <li><span class="listHeader">guint32</span>: User protocol version number.</li>
+</ul>
+<p>The information in the refusal packet gives some more information to the client 
+  to know what the version mismatch was. If the versions do not mismatch then 
+  the client cannot tell why they were refused.</p>
+<p>If the server accepts, it sends a connection accepted packet (CAP) of exactly 
+  8 or more bytes, or exactly 12 when using the TCP/UDP or IPX/SPX protocols:</p>
+<ul>
+  <li><span class="listHeader">gbyte</span>: First byte of header: ASCII 'G'</li>
+  <li><span class="listHeader">gbyte</span>: Second byte of header: ASCII 'N'</li>
+  <li><span class="listHeader">gbyte</span>: Third byte of header: ASCII 'E'</li>
+  <li><span class="listHeader">gbool</span>: Connection accepted flag (this will 
+    be true).</li>
+  <li><span class="listHeader">guint32</span>: Max incoming data rate in bytes 
+    per second (discussed <a href="#bandwidth">later</a>).</li>
+  <li>Unreliable connection information: 
+    <ul>
+      <li>For UDP and IPX, this will be a <span class="listHeader">gint32</span> 
+        of a port. If the port is a negative number, then a unreliable connection 
+        was not requested, or the server refused the request for a UDP or IPX 
+        socket. The port number shall not greater than 65535, the maximum port 
+        number.</li>
+    </ul>
+  </li>
+</ul>
+<p>The last part of the CAP is defined depending on the low-level protocol in 
+  use to actually connect the peers. For internet and other port-based protocols, 
+  a port number is sent in the form of a gint32. The address should be the same 
+  and therefore is not sent. The client requests an unreliable port by sending 
+  a value of true in appropriate field of the CRP.</p>
+<p class="linkToTop"><a href="#toc">Return to the Table of Contents</a></p>
+<p class="subSectionHeader"><a name="finalpacket"></a>The Final Packets -- Client 
+  to Server</p>
+<p>If the client did not request an unreliable connection, or the server refused 
+  it, then the client considers the connection complete as soon as it receives 
+  the CAP. The server considers the connection complete as soon as it sends the 
+  CAP.</p>
+<div class="group"> 
+  <p>If a unreliable connection was successfully negotiated, then once the client 
+    receives the CAP, it will send a packet over its reliable connection with 
+    only the data needed for the server to be able to respond to the client, in 
+    the nearly same format that the server sent.</p>
+  <p>For UDP and IPX this shall be a gint32 from 0 to 65535, inclusive.</p>
+  <p>The client may optionally send a packet over the unreliable connection at 
+    this time to the server if that will help in opening up a firewall or gateway. 
+    This optional packet is a <a href="#gnepacket">GNE-level packet</a> consisting 
+    of zero user-level packets, meaning it should send a single packet of a single 
+    guint8 with a value of 255.</p>
+  <p>Once the client has sent the one or two packets it can consider the connection 
+    process completed and start to send data. The server will consider the connection 
+    complete once it receives the packet sent over the reliable connection.</p>
+</div>
+<p class="linkToTop"><a href="#toc">Return to the Table of Contents</a></p>
+<p class="subSectionHeader"><a name="furtherconn"></a>Further Connection Processes</p>
+<p>Very likely the user will want to perform further transfers of information 
+  to start their connection. Any extra connection communication is dependant on 
+  the user and is the reason for the user version number. This process will be 
+  handled through the onNewConn and onConnect events in the GNE library.</p>
+<p class="linkToTop"><a href="#toc">Return to the Table of Contents</a></p>
+<p class="sectionHeader"><a name="midconn"></a>Transferring Data</p>
+<p>Reliable or unreliable, streaming or non-streaming there are two layers of 
+  packets for GNE. User-level and GNE-level. A GNE-level packet is a low-level 
+  packet that cannot be fragmented (and is small). If there can be fragmentation, 
+  the networking layer will take care of this (like HawkNL's NL_RELIABLE_PACKETS 
+  for packet based transmission over TCP).</p>
+<p>The user-level packets are the only thing the user can see. From the user's 
+  perspective, the packets are comming and going in a stream through the PacketStream 
+  class. The end-programmer chooses to send a packet reliably or not, sending 
+  it reliably guarantees order, reception, and uniqueness (no duplicated packets). 
+  Without sending it reliably, packets might be lost, might be out of order, excessively 
+  late, or duplicated. In the default C++ implementation, all packets come in 
+  from the same place -- the client cannot tell how it got there so the reliable 
+  and unreliable connections both feed into the same packet stream. If the client 
+  did not request an unreliable connection, it is suggested that a GNE implementation 
+  sends packets marked for the unreliable connection over the reliable one, or 
+  at least generate an error. It is suggested that implementations of the GNE 
+  protocol treat reliable packets as having a higher priority than unreliable 
+  packets and send reliable packets first, or implement an interface that allows 
+  the end-programmer to specify priority levels (the default C++ implementation 
+  does not have one at this time, but treats reliable packets as having the highest 
+  priority).</p>
+<p>Note: Only the user-level packets follow these guarantees, not GNE-level packets. 
+  Therefore, a future revision of the GNE protocol might specify a way to internally 
+  reorder packets, combine the reliable and unreliable data into a single UDP 
+  or TCP connection, or various other methods to optimize network usage, as long 
+  as by the time the packets reach the user the guaranteed conditions are met.</p>
+<p>The user is meant to create their packets to be as small as possible, so even 
+  a packet containing 5 bytes is perfectly acceptable. This is because GNE is 
+  expected to optimize the connection and combine these packets.</p>
+<p class="linkToTop"><a href="#toc">Return to the Table of Contents</a></p>
+<p class="subSectionHeader"><a name="bandwidth"></a>Bandwidth Control</p>
+<p>When connecting, the client and server sent each other their max incoming data 
+  rates. This means that the peer should not transmit more than approximately 
+  that many bytes per second. This can be used to better cooperate and adjust 
+  for modem users, or to reserve some bandwith on a broadband connection for other 
+  uses. On a server it can be used to control the amount of incoming data for 
+  various reasons. Thus if the client requests an incoming maximum of 3200 bytes 
+  per second, the server in any particular second should not send out more than 
+  approximately 3200 bytes to that client. It is stated as approximately because 
+  the protocol does not have to (nor can, given the unreliable connection), send 
+  EXACTLY 3200 or less but the bandwith cap should be honored as much as is reasonable.</p>
+<p>Note that the value of zero sent in the connection process means that no rate 
+  limiting is requested, so that the other side can feel free to send as much 
+  data as it wants. The value can still be changed through RateAdjustPackets to 
+  or from this &quot;unlimited&quot; value.</p>
+<p>Note that if no data is sent for a time a &quot;deficit&quot; does not build 
+  up. This is consistant to how modems or low bandwidth conncetions work. The 
+  average sent over a second should still match the requested rate or less.</p>
+<p>In the default C++ implementation of GNE, the end-programmer also gets to specify 
+  outgoing data rates as well, and when connecting the implementation picks the 
+  minimum of the two rates, but this is implementation dependent as the peer is 
+  free to select an actual data transfer rate equal to or less than the requested.</p>
+<p>The peer is also allowed to change this rate up and down at any time by sending 
+  a <a href="#rateadjustpacket">RateAdjustPacket</a> over the reliable connection. 
+  The other end of the connection should start to honor this new rate &quot;soon,&quot; 
+  where soon is defined as within a second after receiving the RateAdjustPacket, 
+  but as before, you can't &quot;unsend&quot; sent packets and a burt of unreliable 
+  packets might arrive late so the exact results are still fuzzy. The rate change 
+  ability can be useful to servers, espically if they are low bandwith, to allow 
+  clients to send them more when few people are playing but to have them reduce 
+  their sending when the server becomes loaded with extra players. This can also 
+  be used by advanced programmers in their attempt to tweak the connection and 
+  throttle it up and down depending on changing conditions.</p>
+<p>If the programmer is sending more packets to the implementation than can be 
+  sent out, the implementation may do one or more of the following:</p>
+<ul>
+  <li>Let the packets build up in some kind of queue.</li>
+  <li>Arbitrarily drop unreliable packets, using a priority-based system if the 
+    implementation has one.</li>
+  <li>Send a warning or error to the user that packets are being dropped or the 
+    queue is growing excessively large.</li>
+</ul>
+<p>The implementation is NOT allowed to drop reliable packets. If the bottleneck 
+  becomes large enough that reliable packets cannot be sent any longer, the connection 
+  should be considered broken and/or timed out and should be terminated. At what 
+  point this occurs is decided by the implementation and possibly the end-programmer.</p>
+<p class="linkToTop"><a href="#toc">Return to the Table of Contents</a></p>
+<p class="subSectionHeader"><a name="gnepacket"></a>GNE-Level packet specification</p>
+<p>Each GNE-level packet consists of zero or more user-level packets. The format 
+  is as follows:</p>
+<ul>
+  <li>zero or more user-level packets 
+    <ul>
+      <li><span class="listHeader">guint8:</span> packet id</li>
+      <li>packet-specific, data length specified by packet type</li>
+    </ul>
+  </li>
+  <li><span class="listHeader">guint8</span>: termination id (255)</li>
+</ul>
+<p>A GNE-level packet will contain zero user-level packets in the case of the 
+  client choosing to send its optional UDP packet to open up a firewall or gateway.</p>
+<p>So in other terms, each packet's first byte is an id identifing the type of 
+  packet that it is, followed by a set of packet-defined data which is parsed 
+  by code in the class the resembles the packet, so ANYTHING can exist in there, 
+  and a packet does not have to be of set size for its ID (a common example is 
+  CustomPacket and packets with strings). The id 255 represents the end of the 
+  GNE-level packet and parsing stops at that point.</p>
+<p>If an error occurs during parsing, the implementation defines what happens. 
+  It could throw out the current packet and all other packets left unparsed in 
+  this GNE-level packet. It could also attempt to recover data in the current 
+  packet and any others left unparsed. In either case the implementation should 
+  warn the client code that an error occured and data was lost.</p>
+<p><b>Note that this means even reliable data can be lost to earlier, corrupted, 
+  reliable packets!</b> Since the network layer guarantees the the data inside 
+  of our packets will always arrive correctly, errors during parsing can only 
+  represent programmer errors or a hacked client sending improper packets (which 
+  is really a subset of programming errors).</p>
+<p class="linkToTop"><a href="#toc">Return to the Table of Contents</a></p>
+<p class="subSectionHeader"><a name="userpacket"></a>User-Level Packet Specification</p>
+<p>By user-level, this refers to packets that are placed into the packet stream, 
+  and those packets that are contained inside the GNE-level packets that are sent 
+  between the peers. The end-programmer will see almost all of these packets enter 
+  their packet stream. The exceptions are:</p>
+<ul>
+  <li><a href="#exitpacket">ExitPacket</a></li>
+  <li><a href="#rateadjustpacket">RateAdjustPacket</a></li>
+</ul>
+<p>It is highly suggested that the underlying GNE implementation handle these 
+  packets. In the C++ implementation, it completely hides the existance of RateAdjustPackets, 
+  and the interaction with ExitPacket is known only through an onExit event.</p>
+<p>GNE defines many user-level packets, espically the 'Packet' packet which all 
+  packets must be derived from.</p>
+<p>Packets are considered to &quot;derive&quot; from each other. Derive used in 
+  this document means just what it does in C++: a packet that is derived from 
+  another is adding on to its attributes. Users of GNE are meant to create their 
+  own derivations of the packets that GNE provides. A packet that is derived from 
+  another is called &quot;the child&quot; and the packet it was derived from is 
+  called &quot;the parent.&quot; The notation that GNE uses is a colon, starting 
+  with the base packet and going to the final child, in the form grandparent:parent:child.</p>
+<p>The order of data in the serialized form of the user-level packet is strictly 
+  defined. All of the parent's data comes before the child's. Since Packet is 
+  always the first in the derivation, its data goes first, and its data consists 
+  of a packet ID which the child should define to be its own. Therefore the packet 
+  ID always comes first, which forms valid GNE-level packets.</p>
+<p>In the default C++ implementation, each packet class parses its own data. So 
+  a parsing function for a packet which resides in a child first calls the parent's 
+  parsing function, then parses its own data. If it has a child, then its parsing 
+  function was called.</p>
+<p class="linkToTop"><a href="#toc">Return to the Table of Contents</a></p>
+<p class="sectionHeader"><a name="packets"></a>Packet Listings</p>
+<p>The packet listings here use the same names as their class names in the standard 
+  C++ implementation of GNE, but at the network level their names have no significance, 
+  only their guint8 id. The last packet (the new child) of the derivation defines 
+  the packet ID of the whole packet. The data listed for each packet is only for 
+  that packet -- all of the parent's data is assumed and is not stated again.</p>
+<p>A GNE implementation is required to be able to understand and parse all of 
+  these packets so that end-programmers can derive their own packet types from 
+  them. <a href="#packet">Packet</a>, <a href="#custompacket">CustomPacket</a>, 
+  <a href="#rateadjustpacket">RateAdjustPacket</a>, and <a href="#exitpacket">ExitPacket</a> 
+  provide the base functionality, the rest are more suited to GNE being a protocol 
+  for gaming engines.</p>
+<table width="100%" border="0" cellspacing="0" cellpadding="5" class="packetTable">
+  <tr> 
+    <td colspan="3" class="packetNameCell"><a name="packet"></a><span class="packetName">Packet</span></td>
+    <td class="packetIdCell">ID: 0</td>
+  </tr>
+  <tr> 
+    <td class="packetDataHeaderCell" width="20%">Data Type</td>
+    <td class="packetDataHeaderCell" width="20%">Symbolic Name</td>
+    <td class="packetDataHeaderCell">Description</td>
+    <td class="packetDataHeaderCell">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td class="packetDataCell">guint8</td>
+    <td class="packetDataCell">Packet ID</td>
+    <td class="packetDataCell" colspan="2">An ID which is defined by child packets 
+      that is written when serialized into a GNE-Level packet.</td>
+  </tr>
+  <tr> 
+    <td colspan="4" class="packetDescHeaderCell">Packet Description</td>
+  </tr>
+  <tr> 
+    <td colspan="4" class="packetDescCell">This packet serves as a base packet 
+      for all of the other packets and contains the ID.</td>
+  </tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="5" class="packetTable">
+  <tr> 
+    <td colspan="3" class="packetNameCell"><a name="custompacket"></a><a href="#packet">Packet</a>:<span class="packetName">CustomPacket</span></td>
+    <td class="packetIdCell">ID: 1</td>
+  </tr>
+  <tr> 
+    <td class="packetDataHeaderCell" width="20%">Data Type</td>
+    <td class="packetDataHeaderCell" width="20%">Symbolic Name</td>
+    <td class="packetDataHeaderCell">Description</td>
+    <td class="packetDataHeaderCell">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td class="packetDataCell">guint8</td>
+    <td class="packetDataCell">length</td>
+    <td class="packetDataCell" colspan="2">The length of the encapsulated raw 
+      packet.</td>
+  </tr>
+  <tr> 
+    <td class="packetDataCell">undefined</td>
+    <td class="packetDataCell">raw packet</td>
+    <td class="packetDataCell" colspan="2">The raw packet of the previously given 
+      length.</td>
+  </tr>
+  <tr> 
+    <td colspan="4" class="packetDescHeaderCell">Packet Description</td>
+  </tr>
+  <tr> 
+    <td colspan="4" class="packetDescCell">This packet allows the client to send 
+      some information without having to define a packet to encapsulate it, which 
+      is useful when sending once-only data. It is mostly meant for end-programmers 
+      to use with a SyncConnection to do the connection handshaking for their 
+      own game or to send things like maps or other large binary data during connection 
+      time. </td>
+  </tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="5" class="packetTable">
+  <tr> 
+    <td colspan="2" class="packetNameCell"><a name="exitpacket"></a><a href="#packet">Packet</a>:<span class="packetName">ExitPacket</span></td>
+    <td class="packetIdCell">ID: 2</td>
+  </tr>
+  <tr> 
+    <td colspan="3" class="packetDescHeaderCell">Packet Description</td>
+  </tr>
+  <tr> 
+    <td colspan="3" class="packetDescCell">This packet contains no actual data. 
+      It is used by GNE to signify a graceful disconnect.</td>
+  </tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="5" class="packetTable">
+  <tr> 
+    <td colspan="3" class="packetNameCell"><a name="rateadjustpacket"></a><a href="#packet">Packet</a>:<span class="packetName">RateAdjustPacket</span></td>
+    <td class="packetIdCell">ID: 3</td>
+  </tr>
+  <tr> 
+    <td class="packetDataHeaderCell" width="20%">Data Type</td>
+    <td class="packetDataHeaderCell" width="20%">Symbolic Name</td>
+    <td class="packetDataHeaderCell">Description</td>
+    <td class="packetDataHeaderCell">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td class="packetDataCell">guint32</td>
+    <td class="packetDataCell">rate</td>
+    <td class="packetDataCell" colspan="2">The maximum incoming data rate in bytes 
+      per second. Zero for &quot;unlimited&quot; rates allowed (turn off throttling).</td>
+  </tr>
+  <tr> 
+    <td colspan="4" class="packetDescHeaderCell">Packet Description</td>
+  </tr>
+  <tr> 
+    <td colspan="4" class="packetDescCell">RateAdjustPacket's functionality is 
+      discussed in the <a href="#bandwidth">bandwidth control</a> section of this 
+      document. Sending this packet will tell the other side the maximum amount 
+      of data to send to this side. The programmer does not send this packet explicitly 
+      -- it is sent as a result of requesting a rate change in the implementation.</td>
+  </tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="5" class="packetTable">
+  <tr> 
+    <td colspan="3" class="packetNameCell"><a name="pingpacket"></a><a href="#packet">Packet</a>:<span class="packetName">PingPacket</span></td>
+    <td class="packetIdCell">ID: 4</td>
+  </tr>
+  <tr> 
+    <td class="packetDataHeaderCell" width="20%">Data Type</td>
+    <td class="packetDataHeaderCell" width="20%">Symbolic Name</td>
+    <td class="packetDataHeaderCell">Description</td>
+    <td class="packetDataHeaderCell">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td class="packetDataCell">gbool</td>
+    <td class="packetDataCell">isRequest</td>
+    <td class="packetDataCell" colspan="2">True if this is a ping request, false 
+      if this is a ping reply.</td>
+  </tr>
+  <tr> 
+    <td class="packetDataCell">guint32</td>
+    <td class="packetDataCell">reqId</td>
+    <td class="packetDataCell" colspan="2">A session-unique request ID.</td>
+  </tr>
+  <tr> 
+    <td colspan="4" class="packetDescHeaderCell">Packet Description</td>
+  </tr>
+  <tr> 
+    <td colspan="4" class="packetDescCell">This packet can be send by the programmer 
+      or by the GNE implementation. The ID in the packet is used to match a request 
+      to its reply and should be unique for a given connection whether sent by 
+      GNE or the user. A GNE implementation is encouraged to reply to the ping. 
+      A reply packet is the same as the request except the flag will be set to 
+      false. Using the PingPacket is one way to measure ping. Other methods exist 
+      to find ping and latency (latency is one-way time, whereas ping is two-way). 
+      The end-programmer might use other methods depending on if data sent in 
+      the game is an implied response (and therefore a &quot;built-in&quot; ping), 
+      or if the peers are time-syncronized and timestamps are sent on game packets 
+      this can be used to measure latency with every incoming packet.</td>
+  </tr>
+</table>
+<p>More packets will be created in a separate document, with the high-level game 
+  engine features of GNE, which will be an additional specifiation on top of this 
+  protocol. For this purpose, the packet IDs from 5 to 15 inclusive are reserved.</p>
+<p class="linkToTop"><a href="#toc">Return to the Table of Contents</a></p>
+<p class="sectionHeader"><a name="endconn"></a>Ending a Connection</p>
+<p>When a client disconnects, it should send a valid GNE-level packet consisting 
+  of a ExitPacket over the reliable connection as its last data if possible then 
+  close its sockets. A GNE implementation has the option of ignoring any packets 
+  that arrive after an ExitPacket (because late unreliable packets might still 
+  come).</p>
+<p class="linkToTop"><a href="#toc">Return to the Table of Contents</a></p>
+<p class="sectionHeader"><a name="future"></a>Future Additions (for GNE 2.0)</p>
+<p>More types of connections might be added in the future. Right now there is 
+  reliable TCP data and unreliable UDP data. TCP guarantees order and single reception 
+  and UDP guarantees neither. It might be possible to provide an implementation 
+  over UDP to allow guaranteed reception but not guarantee order or multiple reception 
+  which would be more efficient that using TCP and UDP. Since GNE abstracts the 
+  low-level and only asks what it needs to guarantee, optimizations such as this 
+  are transparent to the user and therefore could be done later.</p>
+<p>As mentioned earlier, the capability to send wide character formats will likely 
+  be added into GNE.</p>
+<p class="linkToTop"><a href="#toc">Return to the Table of Contents</a></p>
+</body>
+</html>
+

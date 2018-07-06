@@ -1,0 +1,1076 @@
+ID=F0045
+URL=http://www.geocities.com/SiliconValley/Campus/9449/keyboard.htm
+SIZE=38100
+DATE=09/07/2002
+TIME=13:12:56
+DATASET=Visual Basic
+HTML=<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Pablo Alvim">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.01 [en] (Win95; U) [Netscape]">
+   <TITLE>Key Detection</TITLE>
+</HEAD>
+<BODY TEXT="#FFCC00" BGCOLOR="#000000" LINK="#999900" VLINK="#999900" ALINK="#999900">
+<B><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=+1>Key
+Detection - using flags and the keyboard</FONT></FONT></FONT></B>
+<BR><IMG SRC="Line1.jpg" HEIGHT=2 WIDTH=400><B><FONT FACE="Trebuchet MS"><FONT SIZE=-1></FONT></FONT></B>
+
+<P><B><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Index</FONT></FONT></B>
+<BR><A NAME="0"></A>
+<BR><B><FONT FACE="Trebuchet MS"><FONT SIZE=-1><A HREF="#1">1. Introduction</A></FONT></FONT></B>
+<BR><B><FONT FACE="Trebuchet MS"><FONT SIZE=-1><A HREF="#2">2. Describing
+Bits</A></FONT></FONT></B>
+<BR><B><FONT FACE="Trebuchet MS"><FONT SIZE=-1><A HREF="#3">3. Setting
+a Bit</A></FONT></FONT></B>
+<BR><B><FONT FACE="Trebuchet MS"><FONT SIZE=-1><A HREF="#4">4. Clearing
+a Bit</A></FONT></FONT></B>
+<BR><B><FONT FACE="Trebuchet MS"><FONT SIZE=-1><A HREF="#5">5. Checking
+the value of a Bit</A></FONT></FONT></B>
+<BR><B><FONT FACE="Trebuchet MS"><FONT SIZE=-1><A HREF="#6">6. Detecting
+Key Presses</A></FONT></FONT></B><B><FONT FACE="Trebuchet MS"><FONT SIZE=-1></FONT></FONT></B>
+
+<P><IMG SRC="Line2.jpg" HEIGHT=2 WIDTH=200>
+<BR><A NAME="1"></A><B><I><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000">Introduction</FONT></FONT></I></B><B><I><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"></FONT></FONT></I></B>
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>This is one of the most important
+things you should know. Almost every game needs key detection so that it
+can respond to some actions like, for example, a fire key pressing. Most
+game programmers use one integer for each key being pressed. The problem
+is that, if you press 3 or 4 keys at a time, the computer can't detect
+them all. So here we'll explain how to use just one integer to handle multiple
+flags at a time.</FONT></FONT><FONT FACE="Trebuchet MS"><FONT SIZE=-1></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>An integer consists in 16 bits.
+Bits are numbered from right to left, starting at 0, and each one represents
+2 raised to its positional number.</FONT></FONT><FONT FACE="Trebuchet MS"><FONT SIZE=-1></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>15 14 13 12 11 10&nbsp; 9&nbsp;
+8&nbsp; 7&nbsp; 6&nbsp; 5&nbsp; 4&nbsp; 3&nbsp; 2&nbsp; 1&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Bit position</FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>&nbsp;0&nbsp;&nbsp; 0&nbsp;&nbsp;
+0&nbsp; 0&nbsp;&nbsp; 0&nbsp;&nbsp; 0&nbsp; 0&nbsp; 0&nbsp; 0&nbsp; 0&nbsp;&nbsp;
+0&nbsp; 0&nbsp; 0 0&nbsp; 0&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Bit value</FONT></FONT><FONT FACE="Trebuchet MS"><FONT SIZE=-1></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>As you've seen, one integer
+can store 16 flags that can be active (value=1) or not (value=0).</FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-2><A HREF="#0">[Back
+to Top]</A></FONT></FONT></FONT>
+<BR><IMG SRC="Line2.jpg" HEIGHT=2 WIDTH=200>
+<BR><A NAME="2"></A><B><I><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000">Describing
+bits</FONT></FONT></I></B><I><FONT FACE="Trebuchet MS"><FONT SIZE=-1></FONT></FONT></I>
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>As it was explained earlier,
+a bit represents 2 raised to its position number. So we would use the following
+to declare constants that describe each bit:</FONT></FONT><FONT FACE="Trebuchet MS"><FONT SIZE=-1></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Global Const BIT_0 = 1 ' 2^0
+= 1</FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Global Const BIT_1 = 2 ' 2^1
+= 2</FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Global Const BIT_2 = 4 ' 2^2
+= 4</FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Global Const BIT_3 = 8 ' 2^3
+= 8</FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>...</FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Global Const BIT_14 = 16384
+' 2^14 = 16384</FONT></FONT><FONT FACE="Trebuchet MS"><FONT SIZE=-1></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>You can use it like above, but
+the constants aren't describing what they represent. In your program you
+can use constants such as:</FONT></FONT><FONT FACE="Trebuchet MS"><FONT SIZE=-1></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Global Const Left_Key = 1</FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Global Const Right_Key = 2</FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Global Const Down_Key = 4</FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Global Const Up_Key = 8</FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Global Const Fire_Key = 16</FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-2><A HREF="#0">[Back
+to Top]</A></FONT></FONT></FONT>
+<BR><IMG SRC="Line2.jpg" HEIGHT=2 WIDTH=200>
+<BR><A NAME="3"></A><B><I><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000">Setting
+a bit</FONT></FONT></I></B><I><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1></FONT></FONT></FONT></I>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>To set
+a bit value, you should use the 'OR' operator in VB.</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>0 OR 0
+= 0</FONT></FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>0 OR
+1 = 1</FONT></FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>1 OR
+0 = 1</FONT></FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>1 OR
+1 = 1</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>As you
+see, if either bit is set (value=1), then the corresponding bit in the
+result is set. OR'ing with a set bit will always set that bit in the result.
+So if you want to set a flag in a variable, use:</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1><I>variable</I>
+= <I>variable</I> OR <I>flag</I></FONT></FONT></FONT><I><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT></I>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>Suppose
+that the integer that holds the key flags in our game is named <I>Keys</I>.
+We have an Up_key&nbsp; = 8 constant, too (bit position = 3&nbsp; -&nbsp;
+2^3 = 8).</FONT></FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#3366FF"><FONT SIZE=-1></FONT></FONT></FONT>&nbsp;
+<CENTER><TABLE CELLSPACING=3 CELLPADDING=0 COLS=17 >
+<TR>
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#3366FF"><FONT SIZE=-1>Bit
+Position:</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>15</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>14</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>13</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>12</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>11</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>10</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>9</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>8</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>7</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>6</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>5</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>4</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>3</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>2</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>1</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>0</FONT></FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#3366FF"><FONT SIZE=-1>Keys:</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#3366FF"><FONT SIZE=-1>Up_Key:</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#3366FF"><FONT SIZE=-1>Result
+of OR:</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+</TR>
+</TABLE></CENTER>
+<FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>'x' represents
+either 0 or 1 - it makes no difference.</FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-2><A HREF="#0">[Back
+to Top]</A></FONT></FONT></FONT>
+<BR><IMG SRC="Line2.jpg" HEIGHT=2 WIDTH=200>
+<BR><A NAME="4"></A><B><I><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000">Clearing
+a bit</FONT></FONT></I></B><B><I><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"></FONT></FONT></I></B>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>To clear
+a bit (set its value to 0), we use two operators = 'NOT' and 'AND'.</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1><FONT COLOR="#FFCC00"><I>NOT</I>
+requires only one argument and is used like </FONT><FONT COLOR="#CCCCCC">NOT
+{expression}</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>Not 0
+= 1</FONT></FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>Not 1
+= 0</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>If you
+NOT the flag Up_Key, see what happens:</FONT></FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>&nbsp;
+<TABLE BORDER=0 CELLSPACING=3 CELLPADDING=0 COLS=17 WIDTH="100%" >
+<TR>
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>Bit
+Position:</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>15</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>14</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>13</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>12</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>11</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>10</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>9</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>8</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>7</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>6</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>5</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>4</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>3</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>2</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>1</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>0</FONT></FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#3366FF"><FONT SIZE=-1>Up_Key</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#3366FF"><FONT SIZE=-1>Result
+of NOT:</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+</TR>
+</TABLE>
+<FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>'AND'
+only sets the result if both source bits are set:</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>0 AND
+0 = 0</FONT></FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>0 AND
+1 = 0</FONT></FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>1 AND
+0 = 0</FONT></FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>1 AND
+1 = 1</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>AND'ing
+with 1 will result in an unchanged bit, and AND'ing with 0 will clear the
+bit.</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>To clear
+a flag, use:</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1><I>variable
+</I>= <I>variable</I> AND (NOT <I>flag</I>)</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>E.g.:&nbsp;&nbsp;&nbsp;&nbsp;
+Keys = Keys AND (NOT Up_Key)</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>Looking
+in binary:</FONT></FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>&nbsp;
+<TABLE BORDER=0 CELLSPACING=3 CELLPADDING=0 COLS=17 WIDTH="100%" >
+<TR>
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>Bit
+Position:</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>15</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>14</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>13</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>12</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>11</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>10</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>9</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>8</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>7</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>6</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>5</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>4</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>3</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>2</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>1</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"><FONT SIZE=-1>0</FONT></FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#3366FF"><FONT SIZE=-1>NOT
+Up_Key:</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>1</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#3366FF"><FONT SIZE=-1>Keys:</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+</TR>
+
+<TR>
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT COLOR="#3366FF"><FONT SIZE=-1>Result:</FONT></FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>0</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+
+<TD>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-1>x</FONT></FONT></CENTER>
+</TD>
+</TR>
+</TABLE>
+<FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>'x' is
+either 0 and 1.</FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-2><A HREF="#0">[Back
+to Top]</A></FONT></FONT></FONT>
+<BR><IMG SRC="Line2.jpg" HEIGHT=2 WIDTH=200>
+<BR><A NAME="5"></A><B><I><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000">Checking
+the Value of a Bit</FONT></FONT></I></B><B><I><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"></FONT></FONT></I></B>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>Use the
+AND operator to check if an individual bit is set. Like in the following:</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>If <I>variable
+</I>AND <I>flag</I> Then</FONT></FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>procedures
+to do if the flag is set</FONT></FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>Else</FONT></FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>if the
+flag isn't set...</FONT></FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>End If</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>In our
+example:</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>If Keys
+AND Up_Key Then</FONT></FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>character.Jump</FONT></FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>End If</FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-2><A HREF="#0">[Back
+to Top]</A></FONT></FONT></FONT>
+<BR><IMG SRC="Line2.jpg" HEIGHT=2 WIDTH=200>
+<BR><A NAME="6"></A><B><I><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000">Detecting
+Key Presses</FONT></FONT></I></B><B><I><FONT FACE="Trebuchet MS"><FONT COLOR="#FF0000"></FONT></FONT></I></B>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>First,
+set the KeyPreview property of your main form to True.</FONT></FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>When
+you do this, you receive two events: KeyDown and KeyUp. Both receive a
+KeyCode, that represents the key being pressed or released. All keys have
+constants in VB, like VbKeyUp, VbKeyDown, VbKeySpace, VbKeyA etc.</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>Once you've
+assigned flags to all the key constants and declared an integer to store
+them, you should use something like:</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1>Private
+Sub Form_KeyDown (KeyCode As Integer, Shift As Integer)</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1>' At this
+event, you should set the appropriate flag</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1>Select
+Case KeyCode</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1>Case VbKeyUp&nbsp;&nbsp;&nbsp;&nbsp;
+' Up arrow</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1>Keys =
+Keys OR Key_Up&nbsp;&nbsp;&nbsp; ' Set flag</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1>Case VbKeyDown</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1>Keys =
+Keys OR Key_Down</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1>Case VbKeySpace</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1>Keys =
+Keys Or Key_Fire</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1>End Select</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1>End Sub</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>You should
+do the opposite in the KeyUp event - it's fired when the user releases
+a key.</FONT></FONT></FONT><B><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT></B>
+
+<P><B><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1>Private
+Sub Form_KeyUp (KeyCode As Integer, Shift As Integer)</FONT></FONT></FONT></B><B><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1></FONT></FONT></FONT></B>
+
+<P><B><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1>Select
+Case KeyCode</FONT></FONT></FONT></B><B><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1></FONT></FONT></FONT></B>
+
+<P><B><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1>Case
+VbKeyLeft</FONT></FONT></FONT></B><B><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1></FONT></FONT></FONT></B>
+
+<P><B><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1>Keys
+= Keys AND (NOT Key_Left)</FONT></FONT></FONT></B><B><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1></FONT></FONT></FONT></B>
+
+<P><B><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1>' And
+so on...</FONT></FONT></FONT></B><B><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1></FONT></FONT></FONT></B>
+
+<P><B><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1>End
+Select</FONT></FONT></FONT></B><B><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1></FONT></FONT></FONT></B>
+
+<P><B><FONT FACE="Trebuchet MS"><FONT COLOR="#CCCCCC"><FONT SIZE=-1>End
+Sub</FONT></FONT></FONT></B><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>...And
+that's what you need to detect keys in VB!</FONT></FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1>--->
+Download Keys.bas if you want some routines such as CheckFlag, AddKey,
+RemKey and much more!</FONT></FONT></FONT><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-1></FONT></FONT></FONT>
+
+<P><IMG SRC="Line1.jpg" HEIGHT=2 WIDTH=400>
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#FFCC00"><FONT SIZE=-2><A HREF="#0">[Back
+to Top]</A>&nbsp;&nbsp; <A HREF="game_prog.htm">[Back to the Games Programming
+Section]</A></FONT></FONT></FONT>
+</BODY>
+</HTML>
+<!-- text below generated by server. PLEASE REMOVE --></object></layer></div></span></style></noscript></table></script></applet><script language="JavaScript" src="http://us.i1.yimg.com/us.yimg.com/i/mc/mc.js"></script><script language="JavaScript" src="http://us.geocities.com/js_source/geov2.js"></script><script language="javascript">geovisit();</script><noscript><img src="http://visit.geocities.com/visit.gif?1026142939" border=0 width=1 height=1></noscript>
+<IMG SRC="http://geo.yahoo.com/serv?s=76001067&t=1026142939" ALT=1 WIDTH=1 HEIGHT=1>
+

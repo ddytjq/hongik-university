@@ -1,0 +1,470 @@
+ID=H0040
+URL=http://www.bioweb.ch/en/tech/
+SIZE=16920
+DATE=11/07/2002
+TIME=17:00:26
+DATASET=Biology
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+
+<head>
+	<title>Bioweb - So how does it work?</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta name="description" content="This document provides a short overview of the design and technical issues of this site. If you have any questions, comments or interest in the source code for any of the mentioned modules you may contact me by e-mail.">
+	<meta name="keywords" content="Research, Apache, Perl, SQL, Linux">
+	<meta name="author" content="Eric Jain">
+	<meta name="copyright" content="BICS">
+	<link rel="stylesheet" href="/screen.css" type="text/css">
+</head>
+
+<body>
+<table border="0" cellpadding="3" cellspacing="0" width="100%">
+	<tr>
+		<td class="logo">BIOWEB.CH <font color="#CCCCCC">BIOTECHNOLOGY INFORMATION</font></td>
+		<td>&nbsp;</td>
+	</tr>
+	<tr>
+		<td class="navbar"><a class="navbar" href="/en/">Home</a> | <a class="navbar" href="/en/topics">Topics</a> | <a class="navbar" href="/en/news">News</a> | <a class="active" href="/en/articles">Publications</a> | <a class="navbar" href="/en/library">Library</a> | <a class="navbar" href="/en/links">Links</a> | <a class="navbar" href="/en/agenda">Agenda</a> | <a class="navbar" href="/en/glossary">Glossary</a> | <a class="navbar" href="/en/feedback">Feedback</a> | <a class="navbar" href="/en/search">Search</a> | <a class="navbar" href="/en/about">About</a>&nbsp;</td>
+		<td align="right" class="navbar">&nbsp;</td>
+	</tr>
+</table>
+		<table border="0" cellpadding="20" cellspacing="0" width="100%">
+			<tr>
+				<td width="25%" valign="top" class="side">
+					<img src="/logo.gif" alt="">
+				</td>
+				<td width="75%" valign="top">
+					<h1>So how does it work?</h1>
+					<p class="description"><strong>This document provides a short overview of the design and technical issues of this site. If you have any questions, comments or interest in the source code for any of the mentioned modules you may contact me by e-mail.</strong></p>
+				</td>
+			</tr>
+
+			<tr>
+				<td width="25%" valign="top" class="side">
+			
+				<p class="side"><img src="01-a.jpg" /><br /><br /><strong><a href="mailto:eric.jain@stud.unibas.ch">Eric Jain</a></strong> is a 
+				student in molecular biology with some interest 
+				in computers in general and bioinformatics in special.</p>
+				
+			 &nbsp;</td>
+				<td width="75%" valign="top">
+			
+			<h2>Introduction</h2>
+			
+			<br /><h3>Technical objectives of this site:</h3>
+			
+			<ul>
+				<li><p>Organize several hundred articles and different databases into one consistent site.</p></li>
+				<li><p>Let all content be browsable by topic and fully searchable.</p></li>
+				<li><p>Have people with minimal technical skills update contents of databases.</p></li>
+				<li><p>Store all content without any presentational information for optimal reuse.</p></li>
+				<li><p>Build a flexible and easily extensible system.</p></li>
+			</ul>
+			
+			<br /><h3>Conditions:</h3>
+			
+			<ul>
+				<li><p>Site must be suitable for a broad target audience ranging from children to scientists.</p></li>
+				<li><p>Site must support 3 languages: German, French and partially English.</p></li>
+				<li><p>Site must work reasonably with clients with low bandwidth and text-based browsers.</p></li>
+				<li><p>Server must require only minimal technical maintenance.</p></li>
+				<li><p>Do it fast and with minimal expenses.</p></li>
+			</ul>
+			
+			
+			
+		</td>
+			</tr>
+			
+			<tr>
+				<td width="25%" valign="top" class="side"> &nbsp;</td>
+				<td width="75%" valign="top">
+			
+			<h2>Organization</h2>
+			
+			<br /><h3>Keywords</h3>
+			
+			<p>Each piece of content on this site is classified 
+			with a standard set of keywords defined in the Perl module 
+			<i>Bioweb::Keywords</i>.</p>
+			
+			<br /><h3>Topics</h3>
+			
+			<p>For browsing and searching, keywords are organized 
+			into topics with simple boolean logic.</p>
+			
+			<br /><div class="box">
+			
+				<p class="box"><strong>Example:</strong> The topic defined by 
+				+1-3,5+6,7 contains all items with keyword 1 NOT 
+				(3 OR 5) AND (6 OR 7).&nbsp;</p>
+			
+			</div>
+			
+			<p>A standard set of topics is defined in 
+			<i>Bioweb::Topics</i>. Each topic definition includes the 
+			keyword combination by which it is defined, its title, 
+			a short description with optional hyperlinks to 
+			important items, and a list of its subtopics, if any. 
+			To allow for more flexibility, each language has its 
+			own topics defined.</p>
+			
+			<p>This system also allows for user defined topics. 
+			An interface for easily setting and storing topics 
+			has not yet been implemented though.</p>
+			
+		</td>
+			</tr>
+			
+			<tr>
+				<td width="25%" valign="top" class="side"> &nbsp;</td>
+				<td width="75%" valign="top">
+			
+			<h2>Interface</h2>
+			
+			<p>All content is either stored directly in a database or in 
+			XML-files, which have an automatically generated index in the 
+			database. Therefore all content can either be displayed 
+			completely or linked through pages containing embedded Perl 
+			code to query and retrieve content the database.</p>
+			
+			<p>Each different type of content such as <a href="/en/links">links</a> or 
+			<a href="/en/articles">articles</a> has its own page, which handles both browsing and 
+			searching as well as the display of specific items.</p>
+			
+			<p>Two non-type-specific pages exist for <a href="/en/">browsing</a> respectively 
+			<a href="/en/search">searching</a> all content simultaneously.</p>
+			
+			
+			<br /><h3>Browsing and searching</h3>
+			
+			<p>The listing of content on pages serving as an interface to 
+			the database can be manipulated through the following 
+			parameters:</p>
+			
+			<ul>
+				<li><p><strong>topic:</strong> Boolean combination of keywords.</p></li>
+				<li><p><strong>query:</strong> Query string for filtering and scoring displayed items.</p></li>
+				<li><p><strong>language:</strong> ISO language code (de|fr|en)</p></li>
+			</ul>
+			
+			
+			<br /><h3>Displaying content</h3>
+			
+			<p>Content from the database is retrieved by adding id=n to the 
+			query string when requesting a page, where n is an item of the 
+			type the specified page is designed to handle.</p>
+			
+			<p>If no item of the expected type with the specified id is 
+			found, the status returned in the HTTP header is set to 404, 
+			while the page is displayed anyways with an appropriate message 
+			and the default search forms for the appropriate type.</p>
+			
+			<p>Content stored as XML files is converted to HTML on the fly.</p>
+			
+		</td>
+			</tr>
+			
+			<tr>
+				<td width="25%" valign="top" class="side"> &nbsp;</td>
+				<td width="75%" valign="top">
+			
+			<h2>Page Generation</h2>
+			
+			<p>Requested pages are generated on the fly by 
+			<a href="http://www.apache.org/">Apache</a> / 
+			<a href="http://perl.apache.org/">mod_perl</a>. 
+			When a page is requested, the following main steps are 
+			followed:</p>
+			
+			
+				<br /><h3><strong>Bioweb::Rewrite</strong> (PerlPostReadRequestHandler)</h3>
+					<ol>
+						<li><p>Check whether the requested file is available as an 
+						HTML or XML-file, and append the necessary extension. 
+						This permits the use of urls without file extensions 
+						which allows for more flexibility regarding later 
+						changes and looks nicer.</p></li>
+						
+						<li><p>Add data following a ; in the url to the query 
+						string. This allows us to use ; in internal links ; 
+						instead of ? and &amp;. This should get around the problem 
+						with robots ignoring URLs containing ?  and &amp;.</p></li>
+					</ol>
+				
+				
+				<br /><h3><strong>Bioweb::Page</strong> (PerlHandler)</h3>
+					<ol>
+						<li><p>Check if the content-type of the requested 
+						object indicates an XML- or HTML-file. If not, hand 
+						the request on, so it will be processed by the 
+						server in the usual way.</p></li>
+
+						<li><p>Check if the requested object is readable. 
+						Return 404 if not.</p></li>
+
+						<li><p>Create a new <i>Bioweb::ePerl</i> or 
+						<i>Bioweb::XML</i> object. This extracts some 
+						metadata from the requested file, analyzes the 
+						query string if there is one and retrieves data 
+						from the database through <i>Bioweb::SQL</i> 
+						if required.</p></li>
+
+						<li><p>Send HTTP headers using information from the 
+						object (last updated, status...) Content-type is 
+						set to text/html for all responses.</p></li>
+
+						<li><p>Call the object's head method. This passes some 
+						of the previously extracted and queried data 
+						(language, url, title, description, keywords) on to 
+						<i>Bioweb::Sandwich</i>::head, which generates an 
+						appropriate HTML header and navigation bar, checks 
+						if any translations of the current page are 
+						available and adds appropriate links.</p></li>
+
+						<li><p>Call the object's body method. XML-object: Code 
+						is converted to HTML with a set of regular 
+						expressions and sent to the client. ePerl-object: 
+						Embedded Perl statements in the HTML-code are 
+						executed and replaced with their output before 
+						being sent.</p></li>
+
+						<li><p>Call the object's foot method. Document values 
+						for last updated and copyright are passed on to 
+						<i>Bioweb::Sandwich</i>::foot.</p></li>
+
+						<li><p>Return 500 if any of the above steps 
+						failed.</p></li>
+					</ol>
+
+				
+				<br /><h3><strong>Bioweb::Log</strong> (PerlLogHandler)</h3>
+					<ol>
+						<li><p>Log request details to the database.</p></li>
+					</ol>
+				
+			
+			<br /><div class="box">
+			
+				<h2 class="box">Issues</h2>
+				
+				<table cellpadding="5" >
+					<tr>
+						<th valign="top" class="box">Problem</th>
+						<th valign="top" class="box">Solution</th>
+					</tr>
+					
+					<tr>
+						<td valign="top" class="box">High load on server</td>
+						<td valign="top" class="box">
+							<ul class="box">
+								<li class="box">Generate cache-friendly HTTP headers.</li>
+								<li class="box">Cache documents locally with a Squid proxy server in http accelerator mode.*</li>
+								<li class="box">Put database in a separate server.*</li>
+							</ul>
+						</td>
+					</tr>
+				</table>
+				
+				<p class="box">* not implemented so far, left as future reserves...&nbsp;</p>
+				
+			</div>
+			
+		</td>
+			</tr>
+			
+			<tr>
+				<td width="25%" valign="top" class="side"> &nbsp;</td>
+				<td width="75%" valign="top">
+			
+			<h2>XML</h2>
+			
+			<p>Storing content in XML-files offers several advantages:</p>
+			
+			<ul>
+				<li><p>Better separation of content from layout than in standard HTML.</p></li>
+				<li><p>Higher structural flexibility than relational database systems provide.</p></li>
+			</ul>
+			
+			<p>Therefore XML is an ideal choice for storing medium to large 
+			sized text documents which have an internal structure, but 
+			don't always fit into the same scheme.</p>
+			
+			<br /><div class="box">
+			
+				<h2 class="box">Issues</h2>
+				
+				<table cellpadding="5" >
+					<tr>
+						<th valign="top" class="box">Problem</th>
+						<th valign="top" class="box">Solution</th>
+					</tr>
+					
+					<tr>
+						<td valign="top" class="box">Few browsers can display XML-files natively.</td>
+						<td valign="top" class="box">XML-files have to be converted to HTML by the server.</td>
+					</tr>
+					
+					<tr>
+						<td valign="top" class="box">Searching through contents of a large amount of files is slow.</td>
+						<td valign="top" class="box">Documents are indexed in a database. [update_articles.pl]</td>
+					</tr>
+				</table>
+			
+			</div>
+			
+			<br /><h3>Structure</h3>
+			
+			<p>A <a href="/article.dtd">DTD</a> was created in order to provide a clear 
+			definition of which tags and attributes may be used and to 
+			allow the files to be checked not only for well-formedness, but 
+			also for validity.</p>
+			
+			<p>Several tag names and attributes were borrowed from HTML. 
+			This should allow people familiar with HTML to be able to 
+			create valid files without extensive retraining. 
+			Example: <a href="01.xml.txt">Source code of this document</a>.</p>
+			
+			<p>All XML files are validated with 
+			<a href="http://www.cogsci.ed.ac.uk/~richard/rxp.html">RXP</a>, 
+			which provides an simple command line interface and works both 
+			on windows and on linux. XML files stored on the server are 
+			automatically checked before being indexed. [check_xml.pl]</p>
+			
+		</td>
+			</tr>
+			
+			<tr>
+				<td width="25%" valign="top" class="side"> &nbsp;</td>
+				<td width="75%" valign="top">
+			
+			<h2>Database</h2>
+			
+			<p>All content with a clearly defined structure is stored in a 
+			<a href="http://postgresql.lolix.org/">PostgreSQL</a> database. 
+			PostgreSQL is an open source object-relational DBMS.</p>
+			
+			<p>Advantages of a DBMS:</p>
+			
+			<ul>
+				<li><p>Fast retrieval and storage of content.</p></li>
+				<li><p>SQL queries can be performed on all content.</p></li>
+			</ul>
+			
+			<br /><div class="box">
+			
+				<h2 class="box">Issues</h2>
+				
+				<table cellpadding="5" >
+					<tr>
+						<th valign="top" class="box">Problem</th>
+						<th valign="top" class="box">Solution</th>
+					</tr>
+					
+					<tr>
+						<td valign="top" class="box">SQL doesn't have any provisions for scoring matches.</td>
+						<td valign="top" class="box">A <a href="score.sql">PL/Perl function</a> was created for handling scoring.</td>
+					</tr>
+				</table>
+			
+			</div>
+			
+			<br /><h3>Structure</h3>
+			
+			<p><a href="db.gif">UML schema of the database structure.</a></p>
+			
+		</td>
+			</tr>
+			
+			<tr>
+				<td width="25%" valign="top" class="side"> &nbsp;</td>
+				<td width="75%" valign="top">
+			
+			<h2>Administration</h2>
+			
+			<br /><h3>Content</h3>
+			
+			<ul>
+				<li><p>All database contents can be added and updated using a 
+				simple web interface through an SSL connection.</p></li>
+			
+				<li><p>XML-files have to be manually uploaded by FTP, but are 
+				then indexed automatically.</p></li>
+				
+				<li><p>Embedded links are checked regularly and notifications 
+				are automatically sent to the responsible person if any 
+				broken links are found. [check_links.pl]</p></li>
+			</ul>
+			
+			
+			<br /><h3>Security</h3>
+			
+			<ul>
+				<li><p>All software packages are kept up to date. The system 
+				administrator is subscribed to all relevant mailing 
+				lists.</p></li>
+
+				<li><p>Non-essential programs and services were removed from the server.</p></li>
+
+				<li><p>Telnet was replaced with ssh.</p></li>
+
+				<li><p>Shell login was disabled for all except very few accounts. 
+				Accounts which have their 
+				passwords transferred in plain text for FTP or POP 
+				connections are never allowed shell access.</p></li>
+
+				<li><p>All user input from the web is filtered with regular expressions before 
+				being processed.</p></li>
+
+				<li><p>Log files and changes to the system are monitored with 
+				<a href="http://www.tripwire.org/">Tripwire</a> and 
+				<a href="http://www.psionic.com/abacus/logcheck/">Logcheck</a>.</p></li>
+				
+			</ul>
+			
+			<br /><h3>Software</h3>
+			
+			<ul>
+				<li><p>Linux (<a href="http://www.suse.de/">SuSE distribution</a>)</p></li>
+				
+				<li><p><a href="http://www.apache.org/httpd.html">Apache web server</a> with 
+				<a href="http://perl.apache.org/">mod_perl</a> and 
+				<a href="http://www.modssl.org/">mod_ssl</a> extensions</p></li>
+				
+				<li><p><a href="http://www.postgresql.org/">PostgreSQL</a> DBMS</p></li>
+				
+				<li><p><a href="http://www.proftpd.net/">ProFTPD</a> FTP server</p></li>
+				
+				<li><p><a href="http://www.informatik.uni-bonn.de/pub/software/postfix/start.html">Postfix</a> mail server</p></li>
+				
+				<li><p>...</p></li>
+			</ul>
+			
+			
+			<br /><h3>Hardware</h3>
+			
+			<ul>
+				<li><p>MSI MS-6167 mainboard</p></li>
+				<li><p>1 x AMD K7 Athlon 600MHz</p></li>
+				<li><p>2 x 128MB SDRAM</p></li>
+				<li><p>1 x Adaptec 2940 U2W controller</p></li>
+				<li><p>1 x IBM DNES 18ES 10GB U2W HDD</p></li>
+				<li><p>1 x HP SureStore 8GB DAT</p></li>
+				<li><p>1 x 3COM Fast Etherlink XL 10/100Mbit NIC</p></li>
+			</ul>
+			
+		</td>
+			</tr>
+			<tr><td width="25%" valign="top" class="side">&nbsp;</td>
+				 <td width="75%"valign="top" align="right">&nbsp;</td></tr></table>
+
+<table border="0" cellpadding="3" cellspacing="0" width="100%">
+<tr>
+<td class="navbar">&copy 2002 <a class="navbar" href="mailto:info@bics.ch">BICS</a> | Last updated 2000-06-02</td>
+</tr>
+</table>
+
+</body>
+
+</html>
+

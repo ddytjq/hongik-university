@@ -1,0 +1,695 @@
+ID=C0001
+URL=http://www.1st-on-line.com/com_veh/com_veh_form.asp
+SIZE=18695
+DATE=10/07/2002
+TIME=13:15:14
+DATASET=Insurance Agencies
+HTML=
+<html>
+<head>
+<title>FIRSTONLINE INSURANCE</title>
+<script language="javascript">
+<!-- 
+
+
+function trimString (str) 
+{//trims away leading & trailing spaces
+  while (str.charAt(0) == ' ')
+    str = str.substring(1);
+  while (str.charAt(str.length - 1) == ' ')
+    str = str.substring(0, str.length - 1);
+  return str;
+}
+
+function checkData(checkfield,fieldname,type)
+{
+//function checks 'checkfield' for 'type' of data
+//displays error with relation to 'fieldname'
+//types are: alpha,digit,ralpha,rdigit
+//if r is placed in front of type field is required
+var checkOK='';
+var typeString='';
+var checkStr = trimString(new String(checkfield));//trim the string
+var allValid = true;
+var requiredValid = true;
+var decPoints = 0;
+var allNum = "";
+
+	//if r is first letter of type check the strip it off
+	var typeCheck = (type.substring(0,1)=='r') ? type.substring(1,type.length) : type;
+	
+	//what type of check are we doing
+	if (typeCheck == "alpha")
+	{
+		var checkOK="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ'.,*/+-_;:@'\"0123456789";
+		var typeString="alphanumeric";
+	}
+	else if (typeCheck =="digit")
+	{
+		var checkOK = "0123456789-.,";
+		var typeString="numeric";		
+	}
+	else if (typeCheck =="email" && RegExp) //object detect RegeExp
+	{
+		//var emailReg = "^[\\w-_\.]*[\\w-_\.]\@[\\w]\.+[\\w]+[\\w]$";
+    	//var regex = new RegExp(emailReg);     	
+		var regex = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+		if (!regex.test(checkStr) && checkStr.length != 0)
+		{
+			alert(fieldname+" is not a vaild email address.");
+			requiredValid = false;
+		}
+	}
+	//end of what type of check are we doing
+		
+	if (type.substring(0,1)=="r"  && checkStr.length==0)
+	{
+		alert(fieldname + " is a required field");
+		requiredValid = false
+	}
+    
+  	if (checkStr == ".")
+ 	{
+  	allValid = false
+	}
+
+	if (checkOK != '')
+	{	
+  		for (i = 0;  i < checkStr.length;  i++)
+  		{
+    		ch = checkStr.charAt(i);
+    		for (j = 0;  j < checkOK.length;  j++)
+      			if (ch == checkOK.charAt(j))
+        			break;
+    		if (j == checkOK.length)
+    		{
+      			allValid = false;
+      			break;
+    		}
+    		if (ch == ".")
+    		{
+      			allNum += ".";
+      			decPoints++;
+    		}
+    		else if (ch != ",")
+      			allNum += ch;
+  		}
+	}	  
+
+  	if (!allValid)
+  	{
+    	alert("Please enter only "+typeString+" characters in the "+fieldname);
+    	return (false);
+  	}
+
+  	if (decPoints > 1)
+  	{
+    	alert("Please enter a valid number in "+fieldname);
+    	return (false);
+  	}
+	
+  	return true && requiredValid;
+ }
+ 
+ function radioValidator(theRadio,radioName,limit)
+ {
+ 	//chech the radio or check box group
+ 	//the radio group is represented by an array
+ 	//of radio button
+	if (!limit)
+		var limit = 1;
+ 	var valid = true;
+	var checkedNumber = 0;
+ 	var radioChecked=false; //used to check if any of the radio buttons checked
+ 	//loop through radio buttons
+ 	for (var index=0;index<theRadio.length;index++)
+ 	{	
+ 		if (theRadio[index].checked)
+		{
+			radioChecked=true;
+			checkedNumber++;
+		}
+ 	}
+ 	if (!radioChecked) // have they filled it out
+ 	{
+		alert("Please answer " + radioName);
+		valid = false;
+ 	}
+	if (checkedNumber > limit) // have they checked too many
+	{
+		alert("Please select only " + limit + " value(s) for " + radioName);
+		valid = false;
+	}
+
+	return valid;
+ }
+ 
+ function formValidator(theForm,elementsArray,nameArray,typeArray)
+ {
+ 	var ok = true;
+ 	for (var index=0;index<elementsArray.length;index++)
+	{
+		if (typeArray[index].substring(0,5) == "radio")
+		{
+			var limit = typeArray[index].substring(5,7);
+			if (!limit)
+				limit=1;
+			evalString = "radioValidator(theForm."+elementsArray[index]+",'"+nameArray[index]+"',"+limit+")";
+		}
+		else
+			evalString = "checkData(theForm."+elementsArray[index]+".value,"+"'"+nameArray[index]+"','"+typeArray[index]+"')";
+			
+		if ( eval(evalString) )
+			ok=ok && true		
+		else
+			ok=ok && false		
+	}
+	return ok;		
+ }
+
+function checkForm(theForm)
+{
+	var fieldArray = new Array("password","fname","lname","email","noClaimsBonus");
+	var nameArray = new Array("Password","First Name","Last Name","E-mail","No Claims Bonus");
+	var typeArray = new Array("ralpha","alpha","r","remail","r");
+	return formValidator(theForm,fieldArray,nameArray,typeArray);
+}
+//-->
+</script>
+</head>
+<BODY   BGCOLOR="#ffcc00"  TEXT="#000000" LINK="#000000" VLINK="#000000" ALINK="#000000" marginwidth=0 marginheight=0>
+<!---outer table-----><table cellpadding=0 cellspacing=0 border=0 width="100%">
+<tr valign=top><td height=1><img src=../pics/line.gif width=610 height=1 border=0></td></tr>
+<tr valign=top><td align=left>
+
+<!---home table----->
+<table cellpadding=0 cellspacing=0 border=0>
+
+<tr valign=top>
+<td align=right>&nbsp;<br>
+<!-------img src=pics/hdr_mot.jpg border=0-------><p>
+</tr>
+
+<tr><td>
+
+
+
+<table border=0 cellpadding=5 width=500><!---FORM FIELDS TABLE--->
+
+<tr valign=top>
+<td colspan=2>
+<font size=3 face=arial,helvetica color="006699"><b>
+1st-on-line COMMERCIAL MOTOR INSURANCE QUOTATION REQUEST</b>
+</font></td>
+</tr>
+
+
+<tr valign=top>
+<td align=left colspan=2>
+<form name="carForm" action="com_veh_process_form.asp" method="POST">
+<input type=hidden name="recipient" value="markmitchell@waveney-insurance.co.uk,macrae@cqm.co.uk">
+<font face=arial,helvetica size=2>
+
+<b>Competitively priced facility underwritten by one of the UK's leading insurers.</b><p>
+
+Includes the following features:<p>
+<ul>
+<li>Customised for your needs - a choice of Comprehensive, 
+     Third Party Fire & Theft or Third Party Only covers.
+<li> 24 hours a day, 365 days a year - emergency help-lines.
+<li> No Claim Bonus - up to 60% discount.
+<li> Europe-wide cover - covers all EU countries
+<li> Instalment facility - available at a small additional charge
+</ul>
+<p>
+<b>Optional additional protection</b> - for a small additional charge cover can be extended to provide a free hire car or van if one of your vehicles is off the road following an insured claim.
+
+</font></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Password</b></font><br>
+<font size=1 face=arial,helvetica>You will use this to access your on-line proposal after we notify you that it is ready.<br>(One word, use letters; a-z and numbers; 0-9 only.)</font></td><td><input type="text" name="password" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Title</b></font></td><td><input type="text" name="title" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+First Name(s)</b></font></td><td><input type="text" name="fname" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Surname</b></font></td><td><input type="text" name="lname" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Address</b></font></td><td><TEXTAREA NAME="address" ROWS=8 COLS=46></TEXTAREA></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Postcode</b></font></td><td><input type="text" name="postcode" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+E-mail</b></font></td><td><input type="text" name="email" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Telephone No.</b></font></td><td><input type="text" name="telephone" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Fax No.</b></font></td><td><input type="text" name="fax" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Contact me by.:</b></font></td>
+<td>
+<INPUT TYPE=radio NAME=contactMeBy VALUE="email"><font face=arial size=2>E-mail</font><br>
+<INPUT TYPE=radio NAME=contactMeBy VALUE="post"><font face=arial size=2>Post</font><br>
+<INPUT TYPE=radio NAME=contactMeBy VALUE="tel"><font face=arial size=2>Telephone</font><br>
+<INPUT TYPE=radio NAME=contactMeBy VALUE="fax"><font face=arial size=2>Fax</font><br>
+</td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Occupation:</b></font></td><td><input type="text" name="occupation" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Nature of Business:</b></font></td><td><TEXTAREA NAME="natureOfBusiness" ROWS=4 COLS=46></TEXTAREA></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Date of Birth:</b></font></td><td><input type="text" name="dateOfBirth" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Current Insurers:</b></font></td><td><input type="text" name="currentInsurers" size=50></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Date of Cover:</b></font></td><td><input type="text" name="datecover" size=50></td>
+</tr>
+
+<tr valign=top><td></td><td><font face=arial,helvetica size=3><b><i>
+Personal Details</i></b></font></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Licence Type:</b></font></td><td>
+<INPUT TYPE=radio NAME=licenceType VALUE="full"><font face=arial size=2>Full</font><br>
+<INPUT TYPE=radio NAME=licenceType  VALUE="provisional"><font face=arial size=2>Provisional</font><br></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+How long have you held your licence?</b></font></td><td><input type="text" name="licenceHeld" size=25> <font face=arial,helvetica size=2>Years</font></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Are you the registered owner & keeper?	</b></font></td><td>
+<INPUT TYPE=radio NAME=regOwner VALUE="Y"><font face=arial size=2>Yes</font><br>
+<INPUT TYPE=radio NAME=regOwner  VALUE="N"><font face=arial size=2>No</font><br></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Are you the main driver?</b></font></td><td>
+<INPUT TYPE=radio NAME=mainDriver VALUE="Y"><font face=arial size=2>Yes</font><br>
+<INPUT TYPE=radio NAME=mainDriver  VALUE="N"><font face=arial size=2>No</font><br></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+What is your annual mileage?</b></font></td><td><input type="text" name="annualMilage" size=50></td>
+</tr>
+
+
+<tr valign=top><td></td><td><font face=arial,helvetica size=3><b><i>
+Vehicle Details</i></b></font></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Make of Vehicle</b></font></td><td><input type="text" name="carMake" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Model</b></font></td><td><input type="text" name="carModel" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Body Type</b></font></td><td>
+<select NAME="BodyType">
+	<option value="0">Please select
+<option value="Agricultural		">Agricultural					
+<option value="Breakdown/Recovery		">Breakdown/Recovery		
+<option value="Bus	">Bus					
+<option value="Caravanette">Caravanette			
+<option value="Coach">Coach
+<option value="Estate">Estate
+<option value="FarmTractor">Farm Tractor
+<option value="FlatBed">Flat Bed
+<option value="FurnitureRemovalVan">Furniture Removal Van
+<option value="HorseBox">Horse Box
+<option value="LivestockCarrier">Livestock Carrier
+<option value="Lorry">Lorry
+<option value="LowLoader">Low Loader
+<option value="Minibus">Minibus
+<option value="MobileCrane">Mobile Crane
+<option value="MobilePlant">Mobile Plant
+<option value="MobileShop">Mobile Shop
+<option value="MobileSnackBar">Mobile Snack Bar
+<option value="PersonnelCarrier">Personnel Carrier
+<option value="PickUp">Pick Up
+<option value="RefrigeratorVan">Refrigerator Van
+<option value="SkipCarrier">Skip Carrier
+<option value="Tanker">Tanker
+<option value="Tipper">Tipper
+<option value="Utility">Utility (Jeep/Landrover)
+<option value="Van">Van
+<option value="Vehicle Transporter">Vehicle Transporter
+<option value="WasteDisposal">Waste Disposal
+</select>
+
+</td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+CC:</b></font></td><td><input type="text" name="cc" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Fuel:</b></font></td><td>
+<INPUT TYPE=radio NAME=fuelType VALUE="P"><font face=arial size=2>Petrol</font><br>
+<INPUT TYPE=radio NAME=fuelType  VALUE="D"><font face=arial size=2>Diesel</font><br></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Year of Manufacture</b></font></td><td><input type="text" name="year" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Gross Vehicle Weight:</b></font></td><td><input type="text" name="vehicleWeight" size=25> <font face=arial,helvetica size=2>Tonnes</font></td>
+</tr>
+
+
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Value</b> (£)</font></td><td><input type="text" name="vehicleValue" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Reg no.:</b></font></td><td><input type="text" name="regNo" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+No. of Seats</b></font></td><td><input type="text" name="noOfSeats" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Is the vehicle right hand drive?	</b></font></td><td>
+<INPUT TYPE=radio NAME=rightHandDrive VALUE="Yes"><font face=arial size=2>Yes</font><br>
+<INPUT TYPE=radio NAME=rightHandDrive VALUE="NO" ><font face=arial size=2>No</font><br></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Has the vehicle been modified from the manufacturer's
+specification? i.e Alloy Wheels etc</b></font></td><td>
+<INPUT TYPE=radio NAME=modified VALUE="Yes"><font face=arial size=2>Yes</font><br>
+<INPUT TYPE=radio NAME=modified VALUE="NO" ><font face=arial size=2>No</font><br></td>
+</tr>
+
+<tr valign=top>
+<td align=right></td><td><font face=arial,helvetica size=2><b>
+If yes, please give details</b></font><br>
+<TEXTAREA NAME="modifiedDetails" ROWS=4 COLS=46></TEXTAREA></td>
+</tr>
+
+<tr valign=top><td></td><td><font face=arial,helvetica size=3><b><i>
+Additional Drivers</i></b></font></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2>
+<b>Driver 1</b><br>Name</font></td><td><input type="text" name="d1name" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2>
+<b>Driver 1</b><br>Date of Birth</font></td><td><input type="text" name="d1dob" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+<b>Driver 1</b><br>Occupation</font></td><td><input type="text" name="d1occupation" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Driver 1</b><br>Licence Type:</font></td><td>
+<INPUT TYPE=radio NAME=d1LicenceType VALUE="full"><font face=arial size=2>Full</font><br>
+<INPUT TYPE=radio NAME=d1LicenceType  VALUE="provisional"><font face=arial size=2>Provisional</font><br></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Period Held</b></font></td><td><input type="text" name="d1LicenceHeld" size=25> <font face=arial,helvetica size=2>Years/Months</font></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2>
+<b>Driver 2</b><br>Name</font></td><td><input type="text" name="d2name" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2>
+<b>Driver 2</b><br>Date of Birth</font></td><td><input type="text" name="d1dob" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+<b>Driver 2</b><br>Occupation</font></td><td><input type="text" name="d2occupation" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Driver 2</b><br>Licence Type:</font></td><td>
+<INPUT TYPE=radio NAME=d2LicenceType VALUE="full"><font face=arial size=2>Full</font><br>
+<INPUT TYPE=radio NAME=d2LicenceType  VALUE="provisional"><font face=arial size=2>Provisional</font><br></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Period Held</b></font></td><td><input type="text" name="d2LicenceHeld" size=25> <font face=arial,helvetica size=2>Years/Months</font></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2>
+<b>Driver 3</b><br>Name</font></td><td><input type="text" name="d3name" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2>
+<b>Driver 3</b><br>Date of Birth</font></td><td><input type="text" name="d3dob" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+<b>Driver 3</b><br>Occupation</font></td><td><input type="text" name="d3occupation" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Driver 3</b><br>Licence Type:</font></td><td>
+<INPUT TYPE=radio NAME=d3LicenceType VALUE="full"><font face=arial size=2>Full</font><br>
+<INPUT TYPE=radio NAME=d3LicenceType  VALUE="provisional"><font face=arial size=2>Provisional</font><br></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Period Held</b></font></td><td><input type="text" name="d3LicenceHeld" size=25> <font face=arial,helvetica size=2>Years/Months</font></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Do any of the drivers suffer from any physical or mental	
+defect or infirmity or have they suffered from diabetes, fits or any
+heart complaint?	</b></font></td><td>
+<INPUT TYPE=radio NAME=driverDefect VALUE="Yes"><font face=arial size=2>Yes</font><br>
+<INPUT TYPE=radio NAME=driverDefect VALUE="NO" ><font face=arial size=2>No</font><br></td>
+</tr>
+
+<tr valign=top>
+<td align=right></td><td><font face=arial,helvetica size=2><b>
+If yes, please give details</b></font><br>
+<TEXTAREA NAME="driverDefectDetails" ROWS=4 COLS=46></TEXTAREA></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Have any drivers had an accident in the last 5 years?	</b></font></td><td>
+<INPUT TYPE=radio NAME=driverAccident VALUE="Yes"><font face=arial size=2>Yes</font><br>
+<INPUT TYPE=radio NAME=driverAccident VALUE="NO" ><font face=arial size=2>No</font><br></td>
+</tr>
+
+<tr valign=top>
+<td align=right></td><td><font face=arial,helvetica size=2><b>
+If yes, please give details</b></font><br>
+<TEXTAREA NAME="driverAccidentDetails" ROWS=4 COLS=46></TEXTAREA></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Has any driver been convicted of a motoring offence?</b></font></td><td>
+<INPUT TYPE=radio NAME=driverOffence VALUE="Yes"><font face=arial size=2>Yes</font><br>
+<INPUT TYPE=radio NAME=driverOffence VALUE="NO" ><font face=arial size=2>No</font><br></td>
+</tr>
+
+<tr valign=top>
+<td align=right></td><td><font face=arial,helvetica size=2><b>
+If yes, please give details</b></font><br>
+<TEXTAREA NAME="driverOffenceDetails" ROWS=4 COLS=46></TEXTAREA></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Have any drivers been resident outside of the UK or were they born outside of the UK?</b></font></td><td>
+<INPUT TYPE=radio NAME=driverForeign VALUE="Yes"><font face=arial size=2>Yes</font><br>
+<INPUT TYPE=radio NAME=driverForeign VALUE="NO" ><font face=arial size=2>No</font><br></td>
+</tr>
+
+<tr valign=top>
+<td align=right></td><td><font face=arial,helvetica size=2><b>
+If yes, please give details</b></font><br>
+<TEXTAREA NAME="driverForeignDetails" ROWS=4 COLS=46></TEXTAREA></td>
+</tr>
+
+
+<tr valign=top><td></td><td><font face=arial,helvetica size=3><b><i>
+Cover Details</i></b></font></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Cover Type</b></font></td><td>
+<select NAME="CoverType">
+<option value="0">Please select
+<option value="ThirdParty">Third Party	
+<option value="TPF&T">TPF&T
+<option value="Comp">Comprehensive
+</select></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Voluntary Excess:</b></font></td><td><input type="text" name="voluntaryExcess" size=25> <font face=arial,helvetica size=2>£££</font></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+No Claims Bonus:</b></font></td><td><input type="text" name="noClaimsBonus" size=25> <font face=arial,helvetica size=2>Years</font></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Will the vehicle be used for carriage of own goods?</b></font></td><td>
+<INPUT TYPE=radio NAME=ownGoods VALUE="Yes"><font face=arial size=2>Yes</font><br>
+<INPUT TYPE=radio NAME=ownGoods VALUE="NO" ><font face=arial size=2>No</font><br></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size=2><b>
+Will the vehicle be used for haulage?</b></font></td><td>
+<INPUT TYPE=radio NAME=haulageUse VALUE="Yes"><font face=arial size=2>Yes</font><br>
+<INPUT TYPE=radio NAME=haulageUse VALUE="NO" ><font face=arial size=2>No</font><br></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right></td>
+<td><font face=arial,helvetica size="2">
+<b>How did you hear about 1st-on-line.com?</b><br>
+<select NAME="howDidYouFindUs">
+	<option value="">Please select...</option>
+	<option value="advert">Advertisement?</option>
+	<option value="link">Link from other web site?</option>
+	<option value="letter">Letter?</option>
+	<option value="recommendation">Recommendation?</option>
+	<option value="searchEngine">Search Engine. If so which one?</option>
+</select><p>
+
+<b>Which Search Engine?</b>&nbsp;<input type=text name="whichSearchEngine">
+
+</font></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right>
+<input type="checkbox" name="mailing" value="NO"></td>
+<td><font face=arial,helvetica size="1">
+We send a monthly e-mail update of news and special offers to our customers.<br>
+Please tick if you do not wish to receive this email.
+</font></td>
+</tr>
+
+
+<tr valign=top>
+<td></td>
+<td> 
+<input type="button" value="Send this form" onclick="if (checkForm(document.carForm)) submit()">
+<INPUT NAME="Clear" TYPE=Reset VALUE="Clear">
+<input type="button" value="Check this form" onclick="checkForm(document.carForm)">
+<br></form></td> </tr>
+</table><!---END FORM FIELDS TABLE--->
+
+
+
+</td></tr>
+
+</table>
+<!---end home table----->
+
+
+</td></tr></table><!---end outer table----->
+</BODY>
+</html>
+

@@ -1,0 +1,625 @@
+ID=E0246
+URL=http://www.research.att.com/~bs/italian_interview.html
+SIZE=35771
+DATE=12/07/02
+TIME=19:19:08
+DATASET=C
+HTML=<html>
+<head>
+   <title>Interview with Bjarne Stroustrup</title>
+</head>
+<body>
+<BASEFONT SIZE=3>
+<H1> <IMG SRC="../logo.gif" border=0 ALIGN=middle> 
+Dr. Carlo Pescio<BR>Interview with Bjarne Stroustrup</H1> 
+<b>This is the original English text of an interview with Bjarne Stroustrup,
+later translated in Italian and published in Computer Programming No 50,
+September 1996. Follow this link for the <a href="../pub-it/stroustr.html">translated
+version</a>. In the following text, CP stands for Carlo Pescio and BS for
+Bjarne Stroustrup.</b> 
+<p>
+<br></p>
+
+<p><b>CP:</b> Are you satisfied by the results and pace of the C++ standardization
+effort? I mean, on the one hand, it is a proof of the success of the language,
+but on the other hand it is adding a lot of bureaucracy; do you miss the
+initial freedom you had on core language issues? </p>
+
+<p><b>BS:</b> Naturally, my patience has been sorely tested but by and
+large, I'm happy with the outcome of the C++ standardization effort. With
+one minor exceptions, ISO will have the features I feel it really needs
+and none that I find harmful. ISO C++ is a much more powerful and coherent
+language than the early versions of C++ was - and no major features was
+added that I didn't work on and approve of. Some details of ISO C++ may
+show signs of &quot;design by committee,&quot; but the overall set of facilities
+is a better match for my original view of what C++ should be than earlier
+versions of the language. </p>
+
+<p>The primary reason I took part of the standards effort was that the
+committee was convened before I had been able to complete the language.
+C++ without templates and exceptions would have been unacceptable, and
+C++ without namespaces and run-time type information would have left us
+much poorer than we are today. </p>
+
+<p>It is easy to exaggerate my &quot;initial freedom.&quot; I decided early
+on that I wanted my language to be compatible with C and that I wanted
+to support real users. This placed constraints on what I could do. I think
+the alternative would have been to design yet another cult language. I
+can't wait for the standard to become complete. The C++ community needs
+a solid standard and I need the time I have had to devote to the standards
+effort over the last six years or so. I think the language has benefitted
+significantly from my efforts in the standards committee. I was the chair
+of the extensions sub-committee that processed all requests for extensions
+and other major changes to the language and was generally involved in most
+major issues - including the design of the standard library. Standardization
+is necessary for a language with C++'s number of users. However, I wouldn't
+call standardization fun. Much credit - much more credit than is usually
+accorded to &quot;faceless committees&quot; - should go to the dozens of
+people who volunteered their time and very considerable efforts to the
+standard year in and year out. I documented many of their names and efforts
+in my recent book &quot;The Design and Evolution of C++&quot; (usually
+called D&amp;E). 
+<br></p>
+
+<p><b>CP:</b> Lot of readers would like to know if there is a &quot;the
+c++ language - 3<sup>rd</sup> edition&quot; and/or a 2nd edition of the
+ARM under way... </p>
+
+<p><b>BS:</b> I'm working on a 3rd edition and thinking of something to
+replace the ARM. However, I don't see a point in writing a new book unless
+I have a lot of new things to say, so progress is slow. My aim is to make
+the 3rd edition as much an improvement over my 2nd as the 2nd is over the
+1st. In other words, I want to produce something even more approachable
+that the 2nd yet containing information that will be new and exhiting to
+essentially every C++ programmer. I cannot predict when I complete, but
+noone who needs a good textbook should wait for the 3rd edition. The 2nd
+edition is still one of the most complete, thorough, and up-to-date textbooks
+available. Naturally, I cannot publish an ARM replacement until there is
+a standard to annotate. Until I get those books written, D&amp;E is the
+best source for information about new features in particular and the reasons
+behind the design of C++ in general.</p>
+
+<p>
+<br><b>CP: </b>Are there any technical decisions that in retrospective
+you'd like to change in C++ - not something you had no way to get accepted,
+but something that further experience proved to be somehow flawed, and
+that you'd like to change if you had the opportunity to (even if today
+is not possible for compatibility reasons). </p>
+
+<p><b>BS:</b> There are lots of details, I'd like to tinker with, but there
+are no major features I would like to delete (even if I could) or major
+features that I both like and know how to add. When people ask this kind
+of question, they usual have some feature such as MI or RTTI in mind, so
+let me say that C++ without one of those would be a poorer language. I
+use both extensively and the workarounds I would have to use if they weren't
+there are not pretty sights. There are of course examples and explanations
+in D&amp;E.</p>
+
+<p>
+<br><b>CP:</b> Actually I mostly had [changes to] virtual functions in
+mind: for instance, I'm not very fond on the fact that a virtual function
+can be redefined in a *privately* derived class. The function is not accessible
+- yet is redefinable; this conjure a bit on the usefulness and safety of
+private inheritance. </p>
+
+<p>To a larger extent, you probably remember Sakkinen's papers on the &quot;inheritance
+principles of C++&quot;: he made some fine points, and I particularly liked
+the fact that [under more restrictive rules] one would not have to extend
+the liability of invoking the constructor of a virtual base class farther
+than &quot;necessary&quot; in the inheritance graph. In fact, while I understand
+the reasons behind the current rules for VBC in C++, I have to admit that
+in some sense, invoking the constructor of a VBC weakens the encapsulation
+provided by intermediate classes. On the other hand, we know the strong
+and weak points of C++ through years of use - and probably Sakkinen's proposals
+would have lead just to other weak points, although I sort of like them
+as far as &quot;programming style&quot; is concerned. </p>
+
+<p><b>BS:</b> Fundamentally, I consider these these issues purely academic
+and of no interest to practical programming. It is possibly to design a
+constructor to maliciously access information, but a constructor written
+to initialize its own data is fundamentally harmless. Furthermore, if the
+virtual base class is public - as I always recommend - all classes are
+supposed to know it exists and should expect its constructor to be invoked.
+In this, virtual base classes doesn't differ from other bases. If the virtual
+base is declared private somewhere and public elsewhere and if the most
+derived class initializes it in a way that surprises the writer of the
+private virtual base, I guess &quot;the encapsulation provided by intermediate
+classes&quot; has been weakened. However, if that is someone's worst problem
+that someone must be truly blessed. </p>
+
+<p>I see no problem with overriding a virtual function by a private function
+or from a base in which the base is private. If you consider a base class
+an interface, it is of no concern of the users of that interface how its
+implementors (the derived classes) provide their implementations. I find
+it easy to imagine a derived class that makes its overriding functions
+private exactly to prevent use of the derived class except through the
+intended base class interface and to inhibit further derivation. If a base
+is private, it may still be accessible to friends, or the derived class
+may be handing out pointers to its (private) base on request. For example,
+a derived class could return its base class interface as the result of
+an operation that performed system-level acccess control checks. 
+<br></p>
+
+<pre>class A
+  {
+  virtual void f() ;
+  } ;
+
+class B : private A
+  {
+  void f(); // implementation 
+  A* get_A(Rights&amp; r) { /* check rights */ return (*A)this; }
+  } ;
+</pre>
+
+<p><b>CP: </b>On the other hand, private inheritance is not transitive,
+so in a case like: </p>
+
+<pre>class A
+  {
+  virtual void f() ;
+  } ; 
+
+class B : private A
+  {
+  void h() { f() ; }
+  } ; 
+
+class C : public B
+  {
+  virtual void f() ;
+  } 
+</pre>
+
+<p>class A is not an interface for class C, A :: f() is not accessible
+in C, but is redefinable in class C. We could just say that the culprit
+is class C implementor, who based his code on an implementation detail
+of class B (the fact that class B is-implemented-using class A). Some may
+like to have that forbidden from the language... </p>
+
+<p><b>BS:</b> Yes, that's a messy example. However, it is not easy to craft
+a set of rules that outlaws every messy example without also doing damage
+by outlawing examples that some consider messy, yet others deem essential
+for their work. In general, I'm against restrictions for which I don't
+see a practical purpose. I do not consider orthogonality a primary design
+aim, but certainly I prefer it whenever there are no first-order reasons
+for non-ortogonality. The C++ access rules are very orthogonal (with naming
+rules, overriding rules, etc.) and I see no strong reason for them not
+to be. People can be surprised by the rules, but so they could by less
+orthogonal rules. </p>
+
+<p><b>CP:</b> I understand your opinion and I agree to a large extent.
+That's why I said this kind of &quot;rule&quot; may be good as far as &quot;programming
+style&quot; is concerned. There are certainly times when something like
+that may be useful (for instance in reusing a library without source code)
+and in that case one may &quot;violate the rule&quot; and do it, because
+C++ is not a motherly, restrictive language. </p>
+
+<p><b>BS:</b> I would have liked C++ to be more capable of catching logical
+errors made by programmers. After all, many of the C++ features has exactly
+that effect when compared to what you'd have to write in C to perform an
+equivalent action. However, I do not think that safety should be bought
+at the cost of complicating the expression of good solutions to real-life
+problems. This - and compatibility concerns - limits what can be done to
+make the language itself cleaner. I recommend the use libraries to make
+use of C++ safer for specific applications. For example, if someone worry
+about the fact that C arrays aren't range checked, they should use a range-checked
+vector class. I do that most of the time myself, especially for debugging.
+</p>
+
+<p><b>CP:</b> Let's go back to the retrospective on C++... </p>
+
+<p><b>BS:</b> For good and bad, I have maintained a high degrees of C compatibility
+since the earliest days of C++ and the standards committee has followed
+my ``as close to C as possible - but no closer'' policy. Many things in
+C++ could be better from a language-technical point of view, but that is
+not realistic. When I started I decided on compatibility and tried the
+best I could to live with second-order flaws, fixing only problems relating
+to the type system. The alternative would have been to build a yet another
+cult language: Beautiful in the eyes of its adherents and eliciting nothing
+more than ayawn from almost all who program to get results. Had C not been
+there to be compatible with, I would have chosen some other language else
+to be compatible with. I was - and am - convinced that my time would not
+have been well spent inventing yet another way of writing a loop. </p>
+
+<p>Concurrency is an issue that keeps coming up. Most people like some
+form of concurrency and would like to see it directly supported in C++.
+However, there is no one form of concurrency that serves more than a small
+fraction of the C++ programmers who need concurrency really well. OS writers
+needs one form of concurrency, database users another, and network application
+implementers yet another. Thus, I decided not to include specific features
+supporting concurrency in C++. People who wants some form of concurrency
+can - and does - support it through language extensions of (preferably)
+libraries. The standard committee backed me on that issue also; we knew
+many attractive concurrency schemens, but not one that could serve a large
+majority of C++ users. The range of areas where C++ is used it truly amazing.
+</p>
+
+<p>I was asked to write an article on C++ for ACM's second conference on
+the history of programming languages (they have one every 15 years!). For
+that paper, I was asked what I considered my greatest mistake with C++.
+In my mind there was just one candidate for the title of &quot;worst mistake:&quot;
+I failed to produce an acceptable foundation library and ship it with release
+1.0 in 1985. My excuse was that I didn't know how to write a good enough
+library and that I needed templates to provide efficient, flexible, and
+type-safe containers. The result of that mistake is the current mess of
+of incompatible foundation libraries of widely differing philosophies and
+qualities. </p>
+
+<p>Fortunately, the standards committee was able to agree on an excellent
+standard library. We now have what I failed to produce and something that
+I did not know how to design and implement ten years ago. The framework
+of containers and fundamental algorithms that is a major part of the standard
+library was primarily the work of Alex Stepanov. It actually has some roots
+in our search for principles and techniques for good library components
+back in the years before and after release 1.0, so the delay wasn't completely
+wasted. 
+<br></p>
+
+<p><b>CP:</b> As you know there are proposals to add some of the C++ features
+to C9x, for instance a limited support for classes. I had the impression
+of a naive approach, e.g. they don't have constructors, assignment overloading,
+and so on. What's your position on the &quot;new ANSI C&quot;? </p>
+
+<p><b>BS:</b> The features did look naive from my perspective and the explanations
+that acompanied them seems to reflect a lack of appreciation of how C++
+was evolved in response to feedback. I had (and still have) an overall
+view of what the language is supposed to do, but within that overall view,
+I was careful to seek feedback on the language as it evolved to adjust
+its features to real experience and needs. </p>
+
+<p>Attempting to pick a small subset of features from C++ to provide &quot;a
+much simpler language with almost all of the power of C++&quot; is in my
+opinion doomed to failure. Unless very carefully chosen based on real experience,
+the features will only partially support coherent programming styles and
+one feature will lead to another - only when guided by an overall view
+of what design and programming styles are to be directly supported will
+the additions lead to a coherent language. </p>
+
+<p>It would not be reasonable for me to try to tell the C community how
+they should standardize their language. If I did, my advice would probably
+not be wellcome anyway because the people who would value my advice most
+would be programming in C++ anyway. The C committee will do what it wants
+to with C and presumably they know best for their core community. any extensions
+as compatible with C++ as at all possible. The programming community doesn't
+need yet another incompatible C dialect. K&amp;R C isn't dead yet, current
+ANSI C will persist long after an new standard is promulgated, and various
+vintages of C++ will also exists well after the C++ standard becomes official.
+Things always takes longer than we think and that we would like. New features
+in C9x will necessarily become an extra source of instability in the C
+and C++ community. 
+<br></p>
+
+<p><b>CP:</b> Talking of C++'s sons, I cannot avoid to mention Java...
+how big in your opinion is the bandwagon effect, and were (if anywhere)
+you see Java's real strengths. I know that as a language designer, you
+are very careful on criticizing languages - sort of &quot;any language
+has a niche&quot; - but what are your gut feelings? </p>
+
+<p><b>BS:</b> Java has a C++-like syntax, but is a fundamentally different
+language supporting a different culture and a different (rather narrow)
+range of programming styles. Java certainly isn't the C++-like language
+I would have designed in the absence of compatibility constraints. Currently
+Java rides amazingly high on expectation, Sun marketing money, and its
+integration with the Web. Time will tell how it will fare as a general-purpose
+language, and how the majority of programmers and managers will react when
+they discover that the &quot;security&quot; of Java and in particular of
+Javascript leaves much to be desired. People confuse programming language
+type safety (which a correct Java implementation provides) with security;
+that is, the preservation of system integrity and privacy (which can be
+seriously compromised using Java). Our security people jokingly refers
+to Java as &quot;the virus implementation language&quot; and strongly recommend
+that we run with Java and Javascript disabled in our netbrowsers. Back
+to programming language issues: </p>
+
+<p>C++ </p>
+
+<p>- is a better C </p>
+
+<p>- supports data abstraction </p>
+
+<p>- supports object-oriented programming </p>
+
+<p>- supports generic programming </p>
+
+<p>Of these, Java covers the object-oriented part only, and it does so
+in ways that differ significantly from C++. </p>
+
+<p><b>CP:</b> Some of the newest C++ additions have been useful but small
+details - explicit, mutable - or &quot;escape from C&quot; features like
+the new-style casts. Do you see any future for more design-oriented features
+in the language? For instance, maybe there are some valuable inspirations
+in projects like Annotated C++ or Larch-C++, leaning more toward specifications
+and less at the coding level, or some ways to add some more semantics -
+for instance make object-sharing decisions more explicit. Or is your intention
+to strengthen the language were is already strong - in the embedded / system
+programming / performance-critical areas? </p>
+
+<p><b>BS:</b> C++ is part of a general drift towards a more declarative
+styles of programming. However, as far at the official definition of the
+language is concerned changes to the language and standard libray now has
+to stop to give implementers, users, tool builders, teachers, etc. a chance
+to catch up. Naturally, experimentation will continue (though most likely
+not by me), but in my opinion the C++ developer community needs stability
+more than anything else. C++ is now complete and coherent at what it does;
+further work will have to stay in sub-communities (such as academia) for
+a few years now. </p>
+
+<p>I think most people yet have to appreciate the strenghts of the template
+mechanism for various forms of specification. For example, here is the
+outline of how one can define a list so that a single implementation is
+shared by all lists of pointers: 
+<br></p>
+
+<p><tt>// general list&lt;T&gt;: </tt></p>
+
+<p><tt>template&lt;class T&gt; class list { /* ... */ }; </tt>
+<br></p>
+
+<p><tt>// specialization for lists of void*: </tt></p>
+
+<p><tt>template&lt;&gt; class list&lt;void*&gt; { /* ... */ }; </tt>
+<br></p>
+
+<p><tt>// general list of pointers (implemented using list&lt;void*&gt;):
+</tt></p>
+
+<p><tt>template&lt;class T&gt; class list&lt;T*&gt; : list&lt;void*&gt;
+{ /* ... */ }; </tt></p>
+
+<p>The specialization mechanism used here allows different implemetations
+to be chosen (using type deduction) while still providing the user with
+a single general interface. One important aspect of this is that it strengthens
+the declarative nature of C++ programming while simplifying the user's
+interface and improving run-time efficency. Such techniques in the standard
+library allows us to provide a single general sort() routine that for real
+examples have outperformed to C standard library qsort() by a factor of
+seven! 
+<br></p>
+
+<p><b>CP:</b> In IEEE Computer, February 95, Prof. Wirth labeled C++ as
+&quot;a language that discourages structured thinking and disciplined programming
+construction&quot;. I cannot say I agree, or that I find Oberon encouraging
+more structure and discipline than C++, but is there anything you'd like
+to concede to the purists/academics out there, that have to decide between
+teaching C++ because is useful in real world, and not teaching it because
+it is too distant from the formal, specification-based approach often used
+in CS teaching... so they end up teaching Eiffel because of all the &quot;programming
+by contract&quot; promotion or Smalltalk because &quot;is pure OO&quot;...
+</p>
+
+<p><b>BS:</b> Professor Wirth isn't known for being generous with praise
+for languages he hasn't designed himself, so I cannot say I'm surprised
+by his eveluation. On the other hand, I think he is flat wrong. C++ is
+a more-than-adequate tool for good design, for industrial scale programming,
+and for precise thinking about serious problems. I guess this would be
+a good place to express my gratitude to the designers of Simula and C for
+providing a solid base for me to build C++ on and for being such genuine
+nice people. I also learned a fair bit from many other languages. If you
+know where to look, you can find traces of Algol68, ML, Ada, and BCPL in
+C++. There are a lot of great languages around. Everyone should aim at
+being proficient in more than one language - that holds for both programming
+languages and natural languages. Another language adds significantly to
+one's world view and abilities. There are lots that could be better in
+C++. However, that is true for every language in real use. Even those that
+claim to be &quot;pure.&quot; In my experience the problems with C++ are
+not serious for teaching nor for real use. Naturally, a student can fail
+to learn and a teacher can take an approach that makes learning unnecessarily
+painful. However that can and does happen in every language. C++ has the
+advantage that its use scales to real world problems in many diverse application
+areas. Much of the ease of learning cleaner/newer languages comes by simplifications
+that force its users to abandon the language when they hit an application
+outside the domain where the &quot;clean&quot; language is a reasonable
+choice. Naturally, this can happen to C++ users also, but only rarely in
+any field that somehow touches upon systems programming. C++ has clean
+subsets and the complexity comes when people starts playing with features
+and programming styles (``paradigms'') that require more extensive understanding.
+This is where users of &quot;cleaner&quot; languages often has to resort
+to alternative, lower-level, and &quot;unclean&quot; languages - usually
+C or C++. In my opinion, C++ should be taught in stages and with a strong
+emphasis on concepts. </p>
+
+<p><b>CP: </b>Good point, really. Still, one might imagine an even cleaner
+subset, for instance a &quot;student-C++&quot; where an array is not cast
+to a pointer without the user asking for that, and some more limiting factors
+on the same spirit. Do you think it could be a useful teaching tool (and
+perhaps a production tool for peoples less bound by C compatibility), or
+just a source of confusion? </p>
+
+<p><b>BS:</b> Actually, I'd like to see a ``student C++'' where built-in
+arrays wasn't used at all. Instead students would use vector, list, and
+string classes from a teacher-provided library (based on the standard library
+no doubt). That is easily done and easily enforced in a teaching situation
+- even without compiler changes (just decrease the grade given in a built-in
+array was used). Similarly, a teacher would find it easy to ban explicit
+casts; they have no place in the kind of code a beginning student should
+be writing. The difficult part of learning C++ - or any other language
+- is learning the new programming and design techniques, not the language
+features used to express them. </p>
+
+<p>Far too often, people gets obsessed by language features. Far too often,
+programmers get lost in a futile attempt to understand every aspect of
+a rich language without sufficient background to understand the techniques
+the features exist to support. It is worth noting that even C++ is orders
+of magnitudes simpler than the environments, frameworks, and major applications
+</p>
+
+<p>we work with in real-world application development. </p>
+
+<p>In teaching, C++ has been hurt by its close - and valuable - relationship
+with C. Because C++ is (almost) a superset of C, many think that they must
+learn (almost) all C features and techniques before approaching C++. This
+is not so, C++ is in many ways better behaved than C, and libraries can
+be used to avoid having the student face the complexities of C pointer
+manipulation, casting, arrays, etc. until the basics have been learned
+in an environment containing proper vectors, strings, etc. C++ can be -
+and occationally is - an excellent language for teaching programming, programming
+styles, design, etc. However, we must distinguish the teaching of programming
+from the teaching of programming languages. That done, we might make some
+progress and might even avoid many of the silly language wars that too
+often wastes our time. </p>
+
+<p>One strength of C++ as a teaching language is that it lends itself to
+the teaching of a variety of design and programming techniques. The alternative
+is to teach a variety of &quot;cleaner&quot; languages to illustrate the
+same range of techniques. What I consider flat wrong is the present one
+design and programming style - usually embodied in a single programming
+language - as the one and only true style. A professional programmer or
+computer scientist should eventually be comfortable with C++, Smalltalk,
+ML, Lisp, and Eiffel - just to mention a few. Naturally, few people can
+be real experts in more than one or two or those at one time, but the ideal
+must be to be acquainted with all and over time try out every one in some
+real project. 
+<br></p>
+
+<p><b>CP:</b> C++ exceptions have been criticized as hard to use correctly
+- cfr the Koenig's article in C++ Report, the &quot;need&quot; to introduce
+auto_ptr in the standard library to make pointers more manageable under
+the presence of exceptions, the mismatch between templates and exception
+specifications. It also seems to be somehow difficult to implement: Borland
+had serious problems linking together DLLs with and without exception handling.
+Not to mention the &quot;retry&quot; debate, that you covered well in your
+D&amp;E. So, considering that exception will also make the learning curve
+for C++ steeper, do you think that - as they are in C++ - exceptions are
+paying off? </p>
+
+<p><b>BS:</b> Every new feature is deemed hard to use, expensive, and unnecessary
+by some when it first appears. Of the many &quot;problems&quot; pointed
+out, few are real problems in real programs. I find that exceptions significantly
+simplify my code. Like all really worthwhile features, they require some
+new thinking and some new ways of organizing code (if not, how could the
+feature be a significant improvement?), but I think that they are emminently
+worthwhile. I consider the so-called &quot;mismatch between exceptions
+and templates&quot; bogus. Exceptions are for building firewalls against
+error conditions. That is, you choose a specific interface and decide to
+let only a subset of error conditions through. Almost all templates are
+poor candidates for firewalls. Templates are deliberately designed to interact
+very closely with user-defined types and if you have any sense you'd not
+try to build a firewall right through closely interwoven code. If that's
+a mismatch, so be it. However, I see it simply as independence of the concepts.
+They do differnt things and they can be used in combination. </p>
+
+<p><b>CP:</b> to some extent, there is a mismatch between templates and
+*exception specification*; since templates uses the actual arguments in
+some way, it is almost impossible to end up with a correct specification,
+even on innocent-looking, simple code (e.g. a template function for comparison)...
+I'd say in general that if there is any dark side in exceptions, is that
+they makes innocent-looking code not so innocent anymore. </p>
+
+<p><b>BS:</b> Actually, a lot of such &quot;innocent looking code&quot;
+was never so innocent. Such simple code is often full of unchecked error
+conditions and subject to being bypassed by C-style setjmp/longjmp. Thus,
+exceptions focus attention on a problem that many prefer to ignore, but
+the complexity is there already; it is not introduced by exception handling.
+I don't think it makes sense to add exception specifications to template
+functions - at least only to rather unusual template functions. The reason
+is - as you correctly point out - that the exceptions potentially thrown
+are the ones thrown by the template plus the ones thrown by the template
+arguments. That is one reason that I say that templates are usually not
+good candidates for firewalls. I do not believe that it makes sense to
+make every little piece of code bulletproof. Instead, I prefer to express
+systems in terms of sub-systems and make the sub-system boundaries the
+firewalls. That is where I use exception specifications. </p>
+
+<p><b>CP:</b> An area where C++ seems still weak is object persistency...
+there are a number of libraries/tools, but in most cases you end up needing
+a custom preprocessor or some handcoded function. RTTI seems a promising
+way to go, but unless there is some standard, it would be just another
+nonportable extension... </p>
+
+<p><b>BS:</b> I'm not at all sure that persistence belongs in a general-purpose
+programming language. Different people need different types of persistent
+data with radically different requirements on performance, reliability,
+access control, nature of quiries, etc. I think it is right to leave this
+issue to library vendors and database vendors. I prefer to limit the use
+of preprocessors and extra-linguistic tools, but sometime they are needed.
+In my opinion, a programming language should not try to do everything.
+It cannot do everything well anyway. And yes, RTTI can be of considerable
+help to implementors of various persistence and data base services. </p>
+
+<p><b>CP:</b> You are the designer of one of the most successful languages
+ever - do you have any suggestions to the countless peoples in academy
+who crunch out yet-another-language every other day? </p>
+
+<p><b>BS:</b> Be guided by problems. A useful language is a solution to
+a well-understood set of problems rather than simply something that fullfils
+all the currently fashionable criteria for what a programming language
+should look like. If you don't have a serious problem that cannot be handled
+reasonably with any existing language, don't even think of designing yet
+another language. Language design is a field with an almost 100% failure
+rate. No sensible person would enter that field if there was an alternative.
+So, look for serious programming problems without acceptable solutions,
+and try hard not to get involved in language design. If you must design
+a new language, borrow as much as you can - with acknowledgements - from
+an existing language. Be prepared for failure, and for extraordinary amounts
+of work should you beat the odds and succeed. </p>
+
+<p><b>CP:</b> The other most successful language is visual basic. Some
+said that it delivers where OOP/C++ promises, that is, lot of pluggable
+components, true reuse, maybe at the expense of some underengineering.
+Do you feel it right that interoperability between different C++ compilers
+is left to third-party products like SOM, and is not part of the standard?
+Of course any binary standard would limit the freedom of the compilers
+writers, but that's true for *any* standardized issue. One may squeeze
+out some more performance by giving up multiple inheritance support, but
+that's not a good reason to remove MI from C++. Why is a binary standard
+any different? [naturally the binary standard is only one step toward &quot;true&quot;
+software components] </p>
+
+<p><b>BS:</b> C++ delivers what it promised. It cannot be expected to meet
+the hype of every language and system claiming to be object-oriented or
+whatever. C++ is a programming language, not a module specification language
+or an operating system. It - like any other language - cannot be everything
+to everybody. You can build &quot;pluggable components&quot; using C++,
+but that is not the primary aim of C++ and it takes work. Interoperability
+is a hard problem. People generally don't appreciate that only through
+lots of work an lots of agreements between competing organizations can
+even interoperability of C program fragments compiled by different compilers
+be achieved. There has to be agreement on function calling sequences, data
+layout, floating point arithmetic details, etc. C++ is harder than C, but
+not much, because almost all of the hard problems are political rather
+than technical. The issue of multiple inheritance is completely separate
+from any issue of binary standards and interoperability of C++ compilers.
+I believe that the absence of MI in at least early versions of SOM reflects
+nothing but a leaning towards the Smallatlk and Objective C among the initial
+SOM designers. In a language like C++, that relies on static type checking
+of interfaces, some form of multiple inheritance is essential. The alternative
+is warped code, unsafe interfaces, or both. </p>
+
+<p><b>CP:</b> Do you have any new concept, idea, or feature that you are
+thinking of for a &quot;next generation C++&quot; and that you'd like to
+anticipate to us? [I understand you want C++ to be stable for a while;
+I guess that does not stop you from thinking to improvements, maybe even
+improvements on some implementation issues for existing features]. </p>
+
+<p><b>BS:</b> My feeling is that when it comes to programming languages,
+people pay lipservice to experimentation and try to treat the field as
+a branch of mathematics or philosophy. However, I feel that the next generation
+C++ should come from real problems in real applications and from experimentation
+rather than speculation and polishing of the existing language. I find
+it much easier to describe what I have done and what I think of things
+I understand some of than trying to predict the future. I love Science
+Fiction, but not when it masquarades as technical articles. I do think,
+though, that we have too many &quot;true believers&quot; and too few experimentalists
+in our field. To improve our computer systems we must have lots of good
+experiments and tons of reliable data. From that can come the insights
+that allows us to determine what are the real problems and how to solve
+them. Far too often, we just sit around philosophising about our feelings,
+opinions, and theories instead of making real progress. 
+<br></p>
+
+<p>
+<br><b>Biography 
+<br></b>Carlo Pescio holds a doctoral degree in Compuer Science and is
+a freelance consultant in Savona, Italy. He specializes in object oriented
+technologies and is a member of IEEE Computer Society, the ACM, and the
+New York Academy of Sciences. You can contact him at pescio@mbox.vol.it
+
+<br></p>
+
+<IMG SRC="../back.xbm" ALIGN=top><A HREF="../index.html"> Back to the Home Page </A>
+
+</body>
+</html>
+
+

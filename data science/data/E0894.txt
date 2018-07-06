@@ -1,0 +1,83 @@
+ID=E0894
+URL=http://www.hh.se/stud/d98rolb/ansi/exit().html
+SIZE=2938
+DATE=12/07/02
+TIME=19:25:32
+DATASET=C
+HTML=<html>
+<head>
+  <title>exit()</title>
+  <meta name="Generator" content="GuideML V1.6">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+<body>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="div().html"><img src="prev.gif" alt="PREV" border=0></a><a href="exp().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+<hr>
+<pre>
+exit-Terminate program execution
+
+Synopsis
+
+        #include &#060;stdlib.h&#062;
+
+        void exit(code);
+
+        int code;
+
+Description
+
+        This function terminates the current program and returns to the
+        operating system.  Before exiting, any functions specified in a
+        call to the <a href="atexit().html"> atexit </a> function are called.
+        Next, any open level 1 or level 2 files are closed.
+        Finally, all level 1 and level 2 memory is released back
+        to the system.
+
+        Your program must free any memory allocated with AmigaDOS
+        functions and close any file opened with the AmigaDOS functions.
+
+        From within a shared library, you must not call any library
+        functions that terminate your program.        For example, you cannot
+        call exit or <a href="abort().html"> abort </a> from a shared library.  You also
+        cannot use <a href="setjmp().html"> setjmp </a> and <a href="longjmp().html"> longjmp </a> to jump across a call from the
+        program into the library.
+
+
+Example
+
+        /* This example shows how you would abort a program  */
+        /* if it is not called with a valid input file name. */
+
+        #include &#060;stdlib.h&#062;
+        #include &#060;stdio.h&#062;
+
+        void main(int argc, char *argv[])
+        {
+            FILE *f;
+
+            if (argc &#062; 1)
+            {
+                f = fopen(argv[1],&quot;r&quot;);
+                if (f == NULL)
+                {
+                    fprintf(stderr, &quot;Can't open file &quot;%s&quot;n&quot;, argv[1]);
+                    exit(EXIT_FAILURE);
+                }
+                fclose(f);
+            }
+            else
+            {
+                fprintf(stderr,&quot;No file specifiedn&quot;);
+                exit(EXIT_FAILURE);
+            }
+        }
+
+See Also
+
+        <a href="atexit().html"> atexit </a>, <a href="longjmp().html"> longjmp </a>
+</pre>
+<hr>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="div().html"><img src="prev.gif" alt="PREV" border=0></a><a href="exp().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+</body>
+</html>
+

@@ -1,0 +1,372 @@
+ID=E0106
+URL=http://www.le.ac.uk/cc/iss/tutorials/cprog/ccccio.html
+SIZE=23886
+DATE=12/07/02
+TIME=19:17:31
+DATASET=C
+HTML=<!-- Filename: ccccio.html -->
+<!-- Author: mc39/rjm1 -->
+<!-- Supplied by: Richard Mobbs -->
+<!-- Created: 07-08-95 -->
+<!-- Expires: 07-08-96 -->
+
+<HTML>
+
+<HEAD>
+
+<TITLE>Computer Centre: Introduction to C programming Course</TITLE>
+
+</HEAD> 
+
+<BODY>
+
+<H1><IMG ALT="[CWC logo]" ALIGN=middle SRC="http://www.le.ac.uk/images/compcen.gif" > Input and Output Functions</H1>
+
+
+<HR>
+<H2>Objectives</H2>
+<P>Having read this section you should have a clearer idea of <I>one</I> of <B>C</B>'s:
+<OL>
+<LI>input functions, called <B><TT>scanf</TT></B>
+<LI>output functions, called <B><TT>printf</TT></B>
+</OL>
+<HR>
+<P>
+<H3>On The Run</H3>
+
+Even with arithmetic you can't do very much other than write programs that are the equivalent of a pocket calculator. The
+real break through comes when you can read values into variables as the program runs. Notice the important words here: "as the program runs". You can already store values in variables using assignment. That is:<P>
+
+<B><TT>a=100;</TT></B>
+
+<P>stores 100 in the variable <B><TT>a</TT></B> each time you run the program, no matter what you do. Without some sort of input command every program would produce exactly the same result every time it was run. This would certainly make debugging
+easy! But in practice, of course, we need programs to do different jobs each time they are run. There are a number of different <B>C</B> input commands, the most useful of which is the <TT><B>scanf</B></TT> command. To read a single integer value into the variable called <B><TT>a</TT></B> you would use:
+
+<P><B><TT>scanf("%d",&a);</TT></B>
+
+<P>For the moment don't worry about what the <B><TT>%d</TT></B> or the <B<TT>>&</TT>a</B> means - concentrate on the difference between this and:
+
+<P><B><TT>a=100;</TT></B>
+
+<P>When the program reaches the <TT><B>scanf</B></TT> statement it pauses to give the user time to type something on the keyboard and continues only when users press <TT>&lt;Enter&gt;</TT>, or <TT>&lt;Return&gt;</TT>, to signal that he, or she, has finished entering the value. Then the program continues with the new value stored in <TT><B>a</B></TT>. In this way, each time the program is run the user gets a chance to type in a different value to the variable and the program also gets the chance to produce a different result!
+
+<P>The final missing piece in the jigsaw is using the <TT><B>printf</B></TT> function, the one we have already used to print "Hello World", to print the value currently being stored in a variable. To display the value stored in the variable <B><TT>a</TT></B> you would use:
+
+<P><B><TT>printf("The value stored in a is %d",a);</TT></B>
+
+<P>The <TT><B>%d</B></TT>, both in the case of <B><TT>scanf</TT></B> and <TT><B>printf</B></TT>, simply lets the compiler know that the value being read in, or printed out, is a
+<I>decimal integer</I> - that is, a few digits but no decimal point.
+
+<P><B>Note:</B> the <B><TT>scanf</TT></B> function does not prompt for an input. You should get in the habit of always using a <TT><B>printf</B></TT> function, informing the user of the program what they should type, before a <B><TT>scanf</TT></B> function.
+<P>
+<HR>
+<P>
+
+<H3>Input and Output Functions in More Detail</H3>
+
+One of the advantages of <B>C</B> is that essentially it is a <I>small</I> language. This means that you can write a complete description of the language in a few pages. It doesn't have many keywords or data types for that matter. What makes <B>C</B> so powerful is the way that these low-level facilities can be put together to make higher level facilities.
+
+<P>The only problem with this is that <B>C</B> programmers have a tendency to reinvent the wheel each time they want to go for a ride. It is also possible to write <B>C</B> programs in a variety of styles which depend on the particular tricks and devices that a programmer chooses to use. Even after writing <B>C</B> for a long time you will still find the occasionally construction which makes you think, "I never thought of that!" or, "what is that doing?"
+
+<P>One attempt to make <B>C</B> a more uniform language is the provision of standard libraries of functions that perform common tasks. We say standard but until the ANSI committee actually produced a standard there was, and still is, some variation in what the <I>standard</I> libraries contained and exactly how the functions worked. Having said that we had better rush in quickly with the reassurance that in practice the situation isn't that bad and most of the functions that are used frequently really are standard on all implementations. In particular the I/O functions vary very little.
+
+<P>It is now time to look at exactly how <B><TT>scanf</TT></B> and <B><TT>printf</TT></B> work and what they can do - you might be surprised at just how complex they really are!
+
+<P>The original <B>C</B> specification did not include commands for input and output. Instead the compiler writers were supposed to implement library functions to suit their machines. In practice all chose to implement <B><TT>printf</TT></B> and <B><TT>scanf</TT></B> and after a while <B>C</B> programmers started to think of them as if these functions were I/O keywords! It sometimes helps to remember that they are functions on a par with any other functions you may care to define. If you want to you can provide your own implementations of <B><TT>printf</TT></B> or <B><TT>scanf</TT></B> or any of the other standard functions - we'll discover how later.
+
+<A NAME="printf"></A>
+
+<P>
+<HR>
+<P>
+
+<H3><B><TT>printf</TT></B></H3>
+
+The <B><TT>printf</TT></B> (and <B><TT>scanf</TT></B>) functions do differ from the sort of functions that you will created for yourself in that they can take a variable number of <I>parameters</I>. In the case of <B><TT>printf</TT></B> the first parameter is always a string (c.f. "Hello World") but after that you can include as many parameters of any type that you
+want to. That is, the <B><TT>printf</TT></B> function is usually of the form:
+
+<P><B><TT>printf(<I>string,variable,variable,variable...</I>)</TT></B>
+
+<P>where the ... means you can carry on writing a list of variables separated by commas as long as you want to. The
+<I>string</I> is all-important because it specifies the type of each <I>variable</I> in the list and how you want it printed. The string is usually called the <I>control string</I> or the <I>format string</I>. The way that this works is that <B><TT>printf</TT></B> scans the string from left to right and prints on the screen, or any suitable output device, any characters it encounters - except when it reaches a <B><TT>%</TT></B> character. The <B><TT>%</TT></B> character is a signal that what follows it is a specification for how the next variable in the list of variables should be printed. <B><TT>printf</TT></B> uses this information to convert and format the value that was passed to the function by the variable and then moves on to process the rest of the control string and anymore variables it might specify. For
+example:
+
+<P><B><TT>printf("Hello World");</TT></B>
+
+<P>only has a control string and, as this contains no <B><TT>%</TT></B> characters it results in <B><TT>Hello World</TT></B> being displayed and doesn't need to display any variable values. The specifier <B><TT>%d</TT></B> means <I>convert the next value to a signed decimal integer</I> and so:
+
+<P><B><TT>printf("Total = %d",total);</TT></B>
+
+<P>will print <B><TT>Total =</TT></B> and then the value passed by <B<TT>>total</TT></B> as a decimal integer.
+
+<P>If you are familiar other programming languages then you may feel happy about the <B><TT>printf</TT></B> function because something like:<P>
+       
+<B><TT>printf("Total = %d",total);</TT></B><P>
+
+looks like the sort of output command you might have used before. For example, in <B>BASIC</B> you would write:
+
+<P><B>PRINT "Total = ",total</B>
+
+<P>but the <B>C</B> view of output is at a lower level than you might expect. The <TT><B>%d</B></TT> isn't just a format specifier, it is a <I>conversion specifier</I>. It indicates the data type of the variable to be printed and how that data type should be converted to the characters that appear on the screen. That is <B><TT>%d</TT></B> says that the next value to be printed is a signed integer value (i.e. a value that would be stored in a standard <B><TT>int</TT></B> variable) and this should be converted into a sequence of characters (i.e. digits) representing the value in decimal. If by some accident the variable that you are trying to display happens to be a <B><TT>float</TT></B> or a <B><TT>double</TT></B> then you will still see a value displayed - but it will not correspond to the actual value of the <B><TT>float</TT></B> or <B><TT>double</TT></B>.
+
+<P>The reason for this is twofold.
+
+<OL>
+<LI>The first difference is that an <B><TT>int</TT></B> uses two bytes to store its value, while a <B><TT>float</TT></B> uses four and a double uses eight. If you try to display a <B><TT>float</TT></B> or a <B><TT>double</TT></B> using <TT><B>%d</B></TT> then only the first two bytes of the value are actually used.
+
+<LI>The second problem is that even if there wasn't a size difference <B><TT>int</TT></B>s, <B><TT>float</TT></B>s and <B><TT>double</TT></B>s use a different binary representation and <TT><B>%d</B></TT> expects the bit pattern to be a simple signed binary integer.
+</OL>
+
+<P>This is all a bit technical, but that's in the nature of <B>C</B>. You can ignore these details as long as you remember two important facts:<P>
+
+<OL>
+<LI>The specifier following <B><TT>%</TT></B> indicates the type of variable to be displayed as well as the format in which that the value
+should be displayed; 
+<LI> If you use a specifier with the wrong type of variable then you will see some strange things on the screen and the
+error often propagates to other items in the <B><TT>printf</TT></B> list.
+</OL>
+
+If this seems complicated then I would agree but I should also point out that the benefit is being able to treat what is stored in a variable in a more flexible way than other languages allow. Other languages never let on to the programmer that what is in fact stored in a variable is a bit pattern, not the decimal value that appears to be stored there when you use a <B><TT>printf</TT></B> (or whatever) statement. Of course whether you view this as an advantage depends on what you are trying to do. It certainly brings you closer to the way the machine works.
+
+<P>You can also add an '<B><TT>l</TT></B>' in front of a specifier to mean a <I>long</I> form of the variable type and <B><TT>h</TT></B> to indicate a short form (<A HREF="ccccvar2.html"><B><TT>long</TT></B> and <B><TT>short</TT></B> will be covered later in this course</A>). For example, <B><TT>%ld</TT></B> means a long integer variable (usually four bytes) and <B><TT>%hd</TT></B> means short <TT><B>int</B></TT>. Notice that there is no distinction between a four-byte <B><TT>float</TT></B> and
+an eight-byte <B><TT>double</TT></B>. The reason is that a <TT><B>float</B></TT> is automatically converted to a <B><TT>double</TT></B> precision value when passed to <B><TT>printf</TT></B> - so the two can be treated in the same way. (In pre-ANSI all <TT><B>floats</B></TT> were converted to <B><TT>double</TT></B> when passed to a function but this is no longer true.) The only real problem that this poses is how to print the value of a pointer? The answer is that you can use <B><TT>%x</TT></B> to see the address in hex or <TT><B>%o</B></TT> to see the address in octal. Notice that the value printed is the segment offset and not the absolute address - to understand what we am going on about you need to know something about the structure of your processor.
+
+<P>
+<HR>
+<P>
+<A NAME="specifiers"></A>
+
+<H3>The % Format Specifiers</H3>
+
+The <B><TT>%</TT></B> specifiers that you can use in ANSI C are:
+
+<P>
+<PRE>
+      <B>Usual variable type           Display
+
+%c        char                     single character
+%d (%i)   int                      signed integer
+%e (%E)   float or double          exponential format
+%f        float or double          signed decimal
+%g (%G)   float or double          use %f or %e as required
+%o        int                      unsigned octal value
+%p        pointer                  address stored in pointer
+%s        array of char            sequence of characters
+%u        int                      unsigned decimal
+%x (%X)   int                      unsigned hex value
+</B>
+</PRE>
+
+
+<A NAME="modifiers"></A>
+<P>
+<HR>
+<P>
+<H3>Formatting Your Output</H3>
+
+The type conversion specifier only does what you ask of it - it convert a given bit pattern into a sequence of characters that a human can read. If you want to format the characters then you need to know a little more about the <B><TT>printf</TT></B> function's <I>control string</I>.
+
+<P>Each <I>specifier</I> can be preceded by a <I>modifier</I> which determines how the value will be printed. The most general modifier is of the form:
+
+<P><B><TT><I>flag width.precision</I></TT></B>
+
+<P>The <I><B><TT>flag</TT></B></I> can be any of:
+
+<P>
+<PRE>
+<B>flag          meaning
+ 
+   -         left justify
+   +         always display sign
+   space     display space if there is no sign
+   0         pad with leading zeros
+   #         use alternate form of specifier
+</B>
+</PRE>
+
+The <B><I><TT>width</TT></I></B> specifies the number of characters used in total to display the value and <I><B><TT>precision</TT></B></I> indicates the number of
+characters used after the decimal point.
+
+<P>For example, <B><TT>%10.3f</TT></B> will display the <B><TT>float</TT></B> using ten characters with three digits after the decimal point. Notice that the ten characters includes the decimal point, and a <B><TT>-</TT></B> sign if there is one. If the value needs more space than the <I><B><TT>width</TT></B></I> specifies then the additional space is used - <I><B><TT>width</TT></B></I> specifies the smallest space that  will be used to display the value. (This is quiet reassuring, you won't be the first programmer whose program takes hours to run but the 
+output results can't be viewed because the wrong format width has been specified!)
+
+
+<P>The specifier <B><TT>%-1Od</TT></B> will display an <B><TT>int</TT></B> left justified in a ten character space. The specifier <B><TT>%+5d</TT></B> will display an <B><TT>int</TT></B> using the next five character locations and will add a <B><TT>+</TT></B> or <B><TT>-</TT></B> sign to the value.
+
+<P>The only complexity is the use of the <B><TT>#</TT></B> modifier. What this does depends on which type of format it is used with:
+
+<P>
+<PRE>
+<B>
+%#o    adds a leading 0 to the octal value
+%#x    adds a leading 0x to the hex value
+%#f or
+%#e    ensures decimal point is printed
+%#g    displays trailing zeros
+</PRE>
+</B>
+
+<P>Strings will be discussed later but for now remember: if you print a <B><I>string</I></B> using the <B><TT>%s</TT></B> specifier then all of the characters stored in the array up to the first <I>null</I> will be printed. If you use a <I><B><TT>width</TT></B></I> specifier then the <B><I>string</I></B> will be right justified within the space. If you include a <I><B><TT>precision</TT></B></I> specifier then only that number of characters will be printed.
+
+<P>For example:
+
+<P><TT><B>printf("%s,Hello")</B></TT>
+
+<P>will print <B><TT>Hello</TT></B>,
+
+<P><B><TT>printf("%25s ,Hello")</TT></B>
+
+<P>will print 25 characters with <B><TT>Hello</TT></B> right justified and 
+
+<P><TT><B>printf("%25.3s,Hello")</B></TT>
+
+<P>will print <B><TT>Hello</TT></B> right 
+justified in a group of 25 spaces.
+
+<P>Also notice that it is fine to pass a constant value to <B><TT>printf</TT></B> as in <TT><B>printf("%s,Hello")</B></TT>.
+
+<P>Finally there are the <I>control</I> codes:
+
+<P>
+<PRE>
+<B>
+\b       backspace
+\f       formfeed
+\n       new line
+\r       carriage return
+\t       horizontal tab
+\'       single quote
+\0       null
+</B>
+</PRE>
+
+If you include any of these in the control string then the corresponding ASCII control code is sent to the screen, or output device, which
+should produce the effect listed. In most cases you only need to remember <B><TT>\n</TT></B> for new line.
+
+<P>
+<HR>
+<P>
+
+<A NAME="scanf"></A>
+<H3><B><TT>scanf</TT></B></H3>
+
+Now that we have mastered the intricacies of <B><TT>printf</TT></B> you should find <B><TT>scanf</TT></B> very easy. The <B><TT>scanf</TT></B> function works in much the same way as the <B><TT>printf</TT></B>. That is it has the general form:
+
+<P><B><TT>scanf(<I>control string,variable,variable,...</I>)</TT></B>
+
+<P>In this case the <I><B><TT>control string</TT></B></I> specifies how strings of characters, usually typed on the keyboard, should be converted into values and stored in the listed variables. However there are a number of important differences as well as similarities between <B><TT>scanf</TT></B> and <B><TT>printf</TT></B>.
+
+<P>The most obvious is that <B><TT>scanf</TT></B> has to change the values stored in the parts of computers memory that is associated with parameters (variables).
+
+<P>To understand this fully you will have to wait until we have covered functions in more detail. But, just for now, bare with us when we say to do this the <B><TT>scanf</TT></B> function has to have the <I>addresses</I> of the variables rather than just their values. This means that simple variables have to be passed with a preceding <B<TT>>&</TT></B>. <I>(<B>Note for future reference:</B> There is no need to do this for strings stored in arrays because the array name is already a pointer.)</I>
+
+<P>The second difference is that the <I><B><TT>control string</TT></B></I> has some extra items to cope with the problems of reading data in.
+However, all of the conversion specifiers listed in connection with <B><TT>printf</TT></B> can be used with <TT><B>scanf</B></TT>.
+
+<P>The rule is that <TT><B>scanf</B></TT> processes the control string from left to right and each time it reaches a specifier it tries to interpret what has been typed as a value. If you input multiple values then these are assumed to be separated by white space - i.e. spaces, newline or tabs. This means you can type:
+
+<P><B><TT>3 4 5</TT></B>
+
+<P>or
+
+<P>
+<PRE>
+<B>
+3
+4
+5
+</B>
+</PRE>
+
+<P>and it doesn't matter how many spaces are included between items. For example:<P>
+
+<B><TT>scanf("%d %d",&i,&j);</TT></B><P>
+
+will read in two integer values into <B><TT>i</TT></B> and <B><TT>j</TT></B>. The integer values can be typed on the same line or on different lines as long as there is at least one white space character between them.
+
+<P>The only exception to this rule is the <B><TT>%c</TT></B> specifier which always reads in the next character typed no matter what it is. You can also use a <I><B><TT>width</TT></B></I> modifier in <TT><B>scanf</B></TT>. In this case its effect is to limit the number of characters accepted to the <I><B><TT>width</TT></B></I>.
+
+<P>For example:
+
+<P><B><TT>scanf("%lOd",&i)</TT></B>
+
+<P>would use at most the first ten digits typed as the new value for <B><TT>i</TT></B>.
+
+<P>There is one main problem with <TT><B>scanf</B></TT> function which can make it unreliable in certain cases. The reason being is that <TT><B>scanf</B></TT> tends to ignore white spaces, i.e. the space character. If you require your input to contain spaces this can cause a problem. Therefore for <I>string</I> data input the function <B><TT>getstr()</TT></B> may well be more reliable as it records spaces in the input text and treats them as an ordinary characters.
+
+<P>
+<HR>
+<P>
+
+<H3>Custom Libraries</H3>
+
+If you think <B><TT>printf</TT></B> and <TT><B>scanf</B></TT> don't seem enough to do the sort of job that any modern programmer expects to do, you would be right. In the early days being able to print a line at a time was fine but today we expect to be able to print anywhere on the screen at any time.
+
+<P>The point is that as far as standard <B>C</B> goes simple I/O devices are <I>stream-oriented</I> - that is you send or get a stream of characters without any notion of being able to move the current position in the <I>stream</I>. If you want to move backwards and forwards through the data then you need to use a <I>direct access file</I>. In more simple terms, <B>C</B> doesn't have a Tab(X,Y) or Locate(X,Y) function or command which moves the cursor to the specified location! How are you ever going to write your latest block buster game, let alone build your sophisticated input screens?
+
+<P>Well you don't have to worry too much because although <B>C</B> may not define them as standard, all <B>C</B> implementations come with an extensive graphics/text function library that allows you to do all of this and more. Such a library isn't standard, however the principles are always the same. The Borland and Microsoft offerings are usually considered as the two facto standards.
+
+<P>
+<HR>
+<P>
+
+<H3>Summing It Up</H3>
+
+Now that we have arithmetic, a way of reading values in and a way of displaying them, it's possible to write a slightly more interesting program than "Hello World". Not much more interesting, it's true, but what do you expect with two instructions and some arithmetic?
+
+<P>Let's write a program that adds two numbers together and prints the result. (I told you it wasn't that much more interesting!) Of course, if you want to work out something else like fahrenheit to centigrade, inches to centimetres or the size of your bank balance, then that's up to you - the principle is the same.
+
+<P>The program is a bit more complicated than you might expect, but only because of the need to let the user know what is happening:
+
+<P>
+
+<PRE>
+<B>
+#include &LT;stdio.h&GT;
+main()
+ {
+   int a,b,c;
+   printf("\nThe first number is ");
+   scanf("%d",&a);
+   printf("The second number is ");
+   scanf("%d",&b);
+   c=a+b;
+   printf("The answer is %d \n",c);
+ }
+</B>
+</PRE>
+
+<P>[<A HREF="scanf.c">program</A>]
+
+<P>The first instruction declares three integer variables: <B><TT>a</TT></B>, <B><TT>b</TT></B> and <B><TT>c</TT></B>. The first two <B><TT>printf</TT></B> statements simply display message on the screen asking the user for the values. The <TT><B>scanf</B></TT> functions then read in
+the values from the keyboard into <B><TT>a</TT></B> and <B><TT>b</TT></B>. These are added together and the result in <B><TT>c</TT></B> is displayed on the screen with a suitable message. Notice the way that you can include a message in the <TT><B>printf</B></TT> statement along with the value.
+
+<P>Type the program in, compile it and link it  and the result should be your first interactive program. Try changing it so that it works out something a little more adventurous. Try changing the messages as well. All you have to remember is that you cannot store values or work out results greater than the range of an integer variable or with a fractional part.
+
+<P>
+<HR>
+
+<A HREF="http://www.le.ac.uk/">
+<IMG ALT="[Leicester University]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/lhomebut.gif"></A>
+
+
+
+<A HREF="http://www.le.ac.uk/CWIS/AS/CC/cc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/ccbut.gif">
+ Computer Centre</A>   
+
+<A HREF="cccc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/backbut.gif">
+Introduction C Programming</A>
+
+<HR>
+<ADDRESS>Information Suppliers: <A HREF="http://www.le.ac.uk/rjm1.html">Richard Mobbs</A>, Head of Information Services, Leicester University Computer
+ Centre and Marina Carter, Postgraduate Student, Loughborough University.
+</ADDRESS>
+
+<ADDRESS>Last Updated: August 1995</ADDRESS>
+
+</BODY>
+
+</HTML>
+

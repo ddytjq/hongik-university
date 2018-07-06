@@ -1,0 +1,974 @@
+ID=D0252
+URL=http://www.javaworld.com/javaworld/jw-12-1999/jw-12-ssj-jspmvc.html
+SIZE=58421
+DATE=16/07/02
+TIME=14:41:19
+DATASET=Java
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title> Understanding JavaServer Pages Model 2 architecture</title>
+<!-- ssilog 7814 -->
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<meta name="keywords" content=" JavaServer Pages, servlets, JSP, MVC, Model View Controller, JSWDK, JavaServer Web Development Kit, Java Server Pages">
+<meta name="description" content="
+
+By developing a familiar Web-based shopping cart, you'll learn how to utilize the Model-View-Controller (MVC) design pattern and truly separate presentation from content when using JavaServer Pages. Govind Seshadri shows you out how easy it can be. (2,000 words)
+
+">
+<meta name="date" content="1999-12-29">
+<META NAME="DC.Date" CONTENT="1999-12-29">
+<basefont face="verdana, arial, helvetica" size="3" />
+<style type="text/css">
+            code {font-size: 90%; font-family: monospace;}
+            pre {font-size: 90%; font-family: monospace;}
+            td {font-size: 90%;}
+</style>
+<script language="javascript">
+<!--// IDG.net Scripts
+            function mail2Friend () {
+                window.parent.location = "/MailToFriend?url=" + escape(document.location);
+            }
+
+            function openBrWindow() {
+                win=window.open("http://www.javaworld.com/channel_content/jw-story-feedback.shtml",'Feedback','width=600,height=330,toolbar=no,location=no,directories=no,menubar=no,scrollbars=yes,resizable=yes');
+            }
+            //-->
+        </script>
+    </head>
+<body bgcolor="#ffffff" text="#000000" link="#990033" vlink="#990033" alink="#990033" topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" marginheight="0" marginwidth="0">
+<table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td colspan="2" width="186" bgcolor="#006699"><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0 ></a></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- START TOP 468x60 BANNER -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=377506?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=377506?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=377506?" border="0" height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer1" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- END TOP 468x60 BANNER --></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="26" valign="top" align="left" bgcolor="#ffffff"><img height=8 src="http://www.javaworld.com/images/c_whtbottom.gif" width=8 border=0 ></td>
+                <td width="100%"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.global/idgpixel7.18.00;sz=1x1;ord=377506?" border=0 height="1" width="1"><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.usa.jw/usajw.081501;sz=1x1;ord=377506?" border=0 height="1" width="1"></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160" align="middle" valign="center" nowrap><nobr><font face="Verdana, Arial, Sans-serif" color="#ffffff" size="2">December 1999</font></nobr><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="8" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltlft.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="100%" align="middle" valign="center">    <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">HOME</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/features/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FEATURED TUTORIALS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/columns/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">COLUMNS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/news-reviews/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">NEWS & REVIEWS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://forums.idg.net/webx?13@@.ee6b802"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FORUM</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/resources/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">JW RESOURCES</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/info/jw-about-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">ABOUT JW</font></a></td>
+        </tr>
+    </table></td>
+                <td bgcolor="#006699" width="8" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltrt.gif" width=8 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr valign="top">
+                <td bgcolor="#006699" width="160" align="middle" valign="top">
+                    <table width="160" border="0" cellspacing="0" cellpadding="0" bgcolor="#006699" summary="">
+                        <tr>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                            <td align="center">
+                                <form action="http://www.javaworld.com/isearch" method="GET" name="search">
+                                    <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /><br />
+                                    <input type="text" name="qt" size="12" maxlength="2047" /><br />
+                                    <input type="image" value="search" src="http://www.javaworld.com/images/button_blue.gif" border="0" width="97" height="18" alt="GO" /><br />
+                                    <input type="hidden" name="site" value="javaworld"><br />
+                                   <!-- <a href="http://www.google.com/"><img src="http://www.javaworld.com/images/google-power-fp.gif" width="108" height="45" border="0" alt="Google.com"></a>-->
+                                    <input type="hidden" name="ms" value="1">
+                                    <input type="hidden" name="tid" value="1">
+                                    <input type="hidden" name="st" value="1">
+                                    <input type="hidden" name="rf" value="0">
+                                   
+                                </form>
+                            </td>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                        </tr>
+                        <tr>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td><img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <a href="http://www.javaworld.com/archives/index-year.html"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>ARCHIVE</strong></font></a><br>
+                                <img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <strong><a href="http://www.javaworld.com/channel_content/jw-topical-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff">TOPICAL INDEX</font></a></strong></font><br><table cellspacing="0" cellpadding="0" border="0" summary="">
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/channel_content/jw-core-index.shtml"><font color="#ffffff">Core Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-enterprise-index.shtml"><font color="#ffffff">Enterprise Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-micro-index.shtml"><font color="#ffffff">Micro Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-applied-index.shtml"><font color="#ffffff">Applied Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-community-index.shtml"><font color="#ffffff">Java Community</font></a></strong></font><br /></td>
+                        </tr>
+                    </table><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-qna-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA Q&A INDEX</strong></font></a><br /><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-tips-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA TIPS INDEX</strong></font></a><br /> <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br /><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#CCCCCC"><strong>JavaWorld Services</strong></font><br /><img alt="" height="4" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /><table cellspacing="0" cellpadding="0" border="0" summary=""><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /><img alt="" height="7" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /></td><td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/subscribe"><font color="#ffffff">Free JavaWorld newsletters</font></a></strong></font></td></tr><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://javaworld.pricegrabber.com"><font color="#ffffff">ProductFinder </font></a></strong></font></td></tr><tr> <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/white-paper/index.shtml"><font color="#ffffff">White Paper Library</font></a></strong></font></td></tr>
+</table>
+<img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br />
+</td>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                        </tr>
+                        <tr valign="bottom">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_gryblbottom.gif" width=8 ></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr>
+                       <td width="8" bgcolor="#cccccc"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                           <td align="middle" bgcolor="#cccccc"><!-- SKYSCRAPER AD START HERE -->
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=377506?" width="120" height="600" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=skyscraper;sz=120x600;tile=3;ord=377506?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;skyscraper=med;sz=120x600;tile=3;ord=377506?" border=0 height="600" width="120"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer3" visibility="hidden" width=120 height=600></ILAYER>
+<!-- SKYSCRAPER AD ENDS HERE -->
+</td>
+                       <td width="8" bgcolor="#cccccc"><img height=8 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr valign="top">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_grybltop.gif" width=8 ></td>
+                        </tr>
+                    </table>
+                    <img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                    <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                <td width="100%">
+                    <!-- ## MAIN CONTENT STARTS HERE ### -->
+                    <font face="verdana, arial, helvetica" size="3">
+                        <strong></strong>
+                        <p>
+                            <h1 align="CENTER"> Understanding JavaServer Pages Model 2 architecture</h1>
+                            <h3 align="CENTER"> Exploring the MVC design pattern</h3>
+                        </p>
+                        <!--<BLOCKQUOTE><STRONG>Summary</STRONG><BR>-->
+                        <BLOCKQUOTE>
+<STRONG>Summary</STRONG><BR>
+
+
+By developing a familiar Web-based shopping cart, you'll learn how to utilize the Model-View-Controller (MVC) design pattern and truly separate presentation from content when using JavaServer Pages. Govind Seshadri shows you out how easy it can be. <em>(2,000 words)</em>
+
+</BLOCKQUOTE>
+                        <!--</BLOCKQUOTE>-->
+                        <a href="http://www.javaworld.com/feedback" target="Feedback"><STRONG>By   Govind Seshadri</STRONG></a>
+                        <p><img src="http://www.javaworld.com/images/rule_ltblue.gif" width="100%" height="2"><br />
+                           <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                           <a href="/javaworld/jw-12-1999/jw-12-ssj-jspmvc_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><br /></p>
+                         <font size=-1>  <!-- REPLACE PAGECOUNT --></font>
+                        <p><!-- START BIG AD (336x280) -->
+<table align="right" border="0" cellpadding="0" cellspacing="0"><tr valign="bottom" align="center"><td><font face="verdana, arial, geneva, sans-serif" color="#999999" size="-2">Advertisement</font></td></tr><tr><td><table border=1 bordercolor="#cccccc" cellspacing="5" cellpadding="0"><tr><td>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=377506" width="336" height="280" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=377506"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=377506" border=0 height="280" width="336"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer5" visibility="hidden" width=336 height=280></ILAYER>
+</td></tr></table></td></tr></table>
+<!-- END BIG AD (336x280) --></p>
+                        <p><P>
+<IMG width="29" height="29" ALIGN="LEFT" SRC="/javaworld/abcs/D.gif" ALT="D">espite its relatively recent introduction, JavaServer Pages (JSP) technology is well on its way to becoming the preeminent Java technology for building applications that serve dynamic Web content. Java developers love JSP for myriad reasons. Some like the fact that it brings the "write once, run anywhere" paradigm to interactive Web pages; others appreciate the fact that it is fairly simple to learn and lets them wield Java as a server-side scripting language. But most concur on one thing -- the biggest advantage of using JSP is that it helps effectively separate presentation from content. In this article, I provide an in-depth look at how you can gain optimal separation of presentation from content by using the JSP Model 2 architecture. This model can also be seen as a server-side implementation of the popular Model-View-Controller (MVC) design pattern. Please note that you should be familiar with the basics of JSP and servlet programming before continuing on, as I do not address any syntax issues in this article. <P>
+<!--start textbox--><P>
+<TABLE BGCOLOR="#990033" WIDTH="175" hspace="5" ALIGN="right" CELLPADDING="2" CELLSPACING="0" BORDER="0"><P>
+<TR><P>
+<TH><P>
+<FONT COLOR="#FFFFFF" FACE="Arial,Helvetica,Sans-serif"><P>
+&nbsp; Server-Side Java: Read the whole series! &nbsp;<P>
+</FONT><P>
+</TH><P>
+</TR><P>
+<TR><P>
+<TD><P>
+<TABLE WIDTH="100%" BGCOLOR="#cccccc" CELLPADDING="5" CELLSPACING="0" BORDER="0"><P>
+<TR><P>
+<TD><P>
+<FONT SIZE="-1" FACE="Arial,Helvetica,Sans-serif"><P>
+
+<a href="http://www.jguru.com"><IMG SRC="/javaworld/icons/jgurulogo_box.gif" ALIGN="RIGHT" VALIGN="TOP" width="76" height="96" ALT="jGuru" HSPACE="4" VSPACE="10" BORDER="0"></a> <li><a href="/javaworld/jw-12-1999/jw-12-ssj-welcome.html">Welcome to the server-side Java series</a>  <li><a href="/javaworld/jw-12-1999/jw-12-ssj-ejb1.html">Create forward-compatible beans in EJB, Part 1</a> <li><a href="/javaworld/jw-12-1999/jw-12-ssj-jspmvc.html">Understanding JavaServer Pages Model 2 Architecture</a> <P>
+</FONT><P>
+</TD><P>
+</TR><P>
+</TABLE><P>
+</TD><P>
+</TR><P>
+</TABLE><P>
+<!--end textbox--><P><FONT SIZE="+1"><STRONG> So, what's wrong with servlets? </STRONG></FONT><BR>
+
+While JSP may be great for serving up dynamic Web content and separating content from presentation, some may still wonder why servlets should be cast aside for JSP. The utility of servlets is not in question. They are excellent for server-side processing, and, with their significant installed base, are here to stay. In fact, architecturally speaking, you can view JSP as a high-level abstraction of servlets that is implemented as an extension of the Servlet 2.1 API. Still, you shouldn't use servlets indiscriminately; they may not be appropriate for everyone. For instance, while page designers can easily write a JSP page using conventional HTML or XML tools, servlets are more suited for back-end developers because they are often written using an IDE -- a process that generally requires a higher level of programming expertise. When deploying servlets, even developers have to be careful and ensure that there is no tight coupling between presentation and content. You can usually do this by adding a third-party HTML wrapper package like <code>htmlKona</code> to the mix. But even this approach, though providing some flexibility with simple screen changes, still does not shield you from a change in the presentation format itself. For example, if your presentation changed from HTML to DHTML, you would still need to ensure that wrapper packages were compliant with the new format. In a worst-case scenario, if a wrapper package is not available, you may end up hardcoding the presentation within the dynamic content. So, what is the solution? As you shall soon see, one approach would be to use both JSP and servlet technologies for building application systems. <P><FONT SIZE="+1"><STRONG> Differing philosophies </STRONG></FONT><BR>
+
+The early JSP specifications advocated two philosophical approaches for building applications using JSP technology. These approaches, termed the JSP Model 1 and Model 2 architectures, differ essentially in the location at which the bulk of the request processing was performed. In the Model 1 architecture, shown in Figure 1, the JSP page alone is responsible for processing the incoming request and replying back to the client. There is still separation of presentation from content, because all data access is performed using beans. Although the Model 1 architecture should be perfectly suitable for simple applications, it may not be desirable for complex implementations. Indiscriminate usage of this architecture usually leads to a significant amount of scriptlets or Java code embedded within the JSP page, especially if there is a significant amount of request processing to be performed. While this may not seem to be much of a problem for Java developers, it is certainly an issue if your JSP pages are created and maintained by designers -- which is usually the norm on large projects. Ultimately, it may even lead to an unclear definition of roles and allocation of responsibilities, causing easily avoidable project-management headaches. <P>
+<CENTER><P>
+<TABLE CELLPADDING="5" BORDER="0"><TR><TD><P>
+<CENTER><P>
+<IMG VSPACE="3" WIDTH="425" HEIGHT="208" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-12-1999/images/MODEL1_sml.gif"><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+Figure 1: JSP Model 1 architecture </STRONG></FONT></CENTER><P>
+</TD></TR></TABLE><P>
+</CENTER><P>
+The Model 2 architecture, shown in Figure 2, is a hybrid approach for serving dynamic content, since it combines the use of both servlets and JSP. It takes advantage of the predominant strengths of both technologies, using JSP to generate the presentation layer and servlets to perform process-intensive tasks. Here, the servlet acts as the <em>controller</em> and is in charge of the request processing and the creation of any beans or objects used by the JSP, as well as deciding, depending on the user's actions, which JSP page to forward the request to. Note particularly that there is no processing logic within the JSP page itself; it is simply responsible for retrieving any objects or beans that may have been previously created by the servlet, and extracting the dynamic content from that servlet for insertion within static templates. In my opinion, this approach typically results in the cleanest separation of presentation from content, leading to clear delineation of the roles and responsibilities of the developers and page designers on your programming team. In fact, the more complex your application, the greater the benefits of using the Model 2 architecture should be. <P>
+<CENTER><P>
+<TABLE CELLPADDING="5" BORDER="0"><TR><TD><P>
+<CENTER><P>
+<IMG VSPACE="3" WIDTH="425" HEIGHT="208" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-12-1999/images/MODEL2_sml.gif"><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+Figure 2: JSP Model 2 architecture </STRONG></FONT></CENTER><P>
+</TD></TR></TABLE><P>
+</CENTER><P>
+In order to clarify the concepts behind the Model 2 architecture, let's walk through a detailed implementation of it: a sample online music store called Music Without Borders. <P>
+<!-- break --><P><FONT SIZE="+1"><STRONG> Understanding Music Without Borders </STRONG></FONT><BR>
+
+The main <em>view,</em> or presentation, for our Music Without Borders online store is facilitated by the JSP page <code>EShop.jsp</code> (shown in Listing 1). You will notice that the page deals almost exclusively with presenting the main user interface of the application to the client, and performs no processing whatsoever -- an optimal JSP scenario. Also, notice that another JSP page, <code>Cart.jsp</code> (shown in Listing 2), is included within <code>EShop.jsp</code> via the directive <code>&lt;jsp:include page="Cart.jsp" flush="true" /&gt;</code>.
+<P>
+<table border="1" cellspacing="1" cellpadding="7"> <tr><P>
+<th align="left" valign="top">Listing 1:<br><P>
+EShop.jsp<P>
+</th> </tr> <tr align="top">
+<td> <CODE><P>
+<BR>
+
+&lt;%@ page session="true" %&gt;<BR>
+
+&lt;html&gt;<BR>
+
+&lt;head&gt;<BR>
+&lt;title&gt;Music Without Borders&lt;/title&gt;<BR>
+
+&lt;/head&gt;<BR>
+
+&lt;body bgcolor="#33CCFF"&gt;<BR>
+&lt;font face="Times New Roman,Times" size="+3"&gt;<BR>
+
+&nbsp;&nbsp;Music Without Borders<BR>
+&lt;/font&gt;<BR>
+&lt;hr&gt;&lt;p&gt;<BR>
+&lt;center&gt;<BR>
+&lt;form name="shoppingForm" <BR>
+
+&nbsp;&nbsp; action="/examples/servlet/ShoppingServlet" <BR>
+
+&nbsp;&nbsp; method="POST"&gt;<BR>
+&lt;b&gt;CD:&lt;/b&gt; <BR>
+&lt;select name=CD&gt;<BR>
+
+&nbsp;&nbsp;&lt;option&gt;Yuan | The Guo Brothers | China | $14.95&lt;/option&gt;<BR>
+
+&nbsp;&nbsp;&lt;option&gt;Drums of Passion | Babatunde Olatunji | Nigeria | $16.95&lt;/option&gt;<BR>
+
+&nbsp;&nbsp;&lt;option&gt;Kaira | Tounami Diabate| Mali | $16.95&lt;/option&gt;<BR>
+
+&nbsp;&nbsp;&lt;option&gt;The Lion is Loose | Eliades Ochoa | Cuba | $13.95&lt;/option&gt;<BR>
+
+&nbsp;&nbsp;&lt;option&gt;Dance the Devil Away | Outback | Australia | $14.95&lt;/option&gt;<BR>
+
+&nbsp;&nbsp;&lt;option&gt;Record of Changes | Samulnori | Korea | $12.95&lt;/option&gt;<BR>
+
+&nbsp;&nbsp;&lt;option&gt;Djelika | Tounami Diabate | Mali | $14.95&lt;/option&gt;<BR>
+
+&nbsp;&nbsp;&lt;option&gt;Rapture | Nusrat Fateh Ali Khan | Pakistan | $12.95&lt;/option&gt;<BR>
+
+&nbsp;&nbsp;&lt;option&gt;Cesaria Evora | Cesaria Evora | Cape Verde | $16.95&lt;/option&gt;<BR>
+
+&nbsp;&nbsp;&lt;option&gt;Ibuki | Kodo | Japan | $13.95&lt;/option&gt;<BR>
+&lt;/select&gt;<BR>
+&lt;b&gt;Quantity: &lt;/b&gt;&lt;input type="text" name="qty" SIZE="3" value=1&gt;<BR>
+&lt;input type="hidden" name="action" value="ADD"&gt;<BR>
+&lt;input type="submit" name="Submit" value="Add to Cart"&gt;<BR>
+&lt;/form&gt;<BR>
+&lt;/center&gt;<BR>
+&lt;p&gt;<BR>
+&lt;jsp:include page="Cart.jsp" flush="true" /&gt;<BR>
+
+&lt;/body&gt;<BR>
+
+&lt;/html&gt;<BR>
+</CODE><P>
+</td> </tr> </table> <P>
+<table border="1" cellspacing="1" cellpadding="7"> <tr><P>
+<th align="left" valign="top">Listing 2:<br><P>
+Cart.jsp<P>
+</th> </tr> <tr align="top">
+<td> <CODE><P>
+<BR>
+
+&lt;%@ page session="true" import="java.util.*, shopping.CD" %&gt;<BR>
+
+&lt;%<BR>
+Vector buylist = (Vector) session.getValue("shopping.shoppingcart");<BR>
+if (buylist != null && (buylist.size() > 0)) {<BR>
+
+%&gt;<BR>
+
+&lt;center&gt;<BR>
+
+&lt;table border="0" cellpadding="0" width="100%" bgcolor="#FFFFFF"&gt;<BR>
+&lt;tr&gt;<BR>
+&lt;td&gt;&lt;b&gt;ALBUM&lt;/b&gt;&lt;/td&gt;<BR>
+&lt;td&gt;&lt;b&gt;ARTIST&lt;/b&gt;&lt;/td&gt;<BR>
+&lt;td&gt;&lt;b&gt;COUNTRY&lt;/b&gt;&lt;/td&gt;<BR>
+&lt;td&gt;&lt;b&gt;PRICE&lt;/b&gt;&lt;/td&gt;<BR>
+&lt;td&gt;&lt;b&gt;QUANTITY&lt;/b&gt;&lt;/td&gt;<BR>
+&lt;td&gt;&lt;/td&gt;<BR>
+&lt;/tr&gt;<BR>
+&lt;%<BR>
+
+&nbsp;&nbsp;for (int index=0; index < buylist.size();index++) {<BR>
+
+&nbsp;&nbsp; CD anOrder = (CD) buylist.elementAt(index);<BR>
+%&gt;<BR>
+&lt;tr&gt;<BR>
+
+&nbsp;&nbsp;&lt;td&gt;&lt;b&gt;&lt;%= anOrder.getAlbum() %&gt;&lt;/b&gt;&lt;/td&gt;<BR>
+
+&nbsp;&nbsp;&lt;td&gt;&lt;b&gt;&lt;%= anOrder.getArtist() %&gt;&lt;/b&gt;&lt;/td&gt;<BR>
+
+&nbsp;&nbsp;&lt;td&gt;&lt;b&gt;&lt;%= anOrder.getCountry() %&gt;&lt;/b&gt;&lt;/td&gt;<BR>
+
+&nbsp;&nbsp;&lt;td&gt;&lt;b&gt;&lt;%= anOrder.getPrice() %&gt;&lt;/b&gt;&lt;/td&gt;<BR>
+
+&nbsp;&nbsp;&lt;td&gt;&lt;b&gt;&lt;%= anOrder.getQuantity() %&gt;&lt;/b&gt;&lt;/td&gt;<BR>
+
+&nbsp;&nbsp;&lt;td&gt;<BR>
+
+&nbsp;&nbsp; &lt;form name="deleteForm"<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;action="/examples/servlet/ShoppingServlet"<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;method="POST"&gt;<BR>
+
+&nbsp;&nbsp; &lt;input type="submit" value="Delete"&gt;<BR>
+
+&nbsp;&nbsp; &lt;input type="hidden" name= "delindex" value='&lt;%= index %&gt;'&gt;<BR>
+
+&nbsp;&nbsp; &lt;input type="hidden" name="action" value="DELETE"&gt;<BR>
+
+&nbsp;&nbsp;&lt;/form&gt; <BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/td&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tr&gt; <BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;% } %&gt;<BR>
+
+&nbsp;&nbsp;&lt;/table&gt;<BR>
+
+&nbsp;&nbsp;&lt;p&gt;<BR>
+
+&nbsp;&nbsp;&lt;form name="checkoutForm"<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;action="/examples/servlet/ShoppingServlet"<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;method="POST"&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="hidden" name="action" value="CHECKOUT"&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="submit" name="Checkout" value="Checkout"&gt;<BR>
+
+&nbsp;&nbsp;&lt;/form&gt;<BR>
+
+&nbsp;&nbsp;&lt;/center&gt;<BR>
+
+&lt;% } %&gt;<BR>
+</CODE><P>
+</td> </tr> </table> <P>
+Here, <code>Cart.jsp</code> handles the presentation of the session-based shopping  cart, which constitutes the <em>model</em> in our MVC architecture. Observe the  scriptlet at the beginning of <code>Cart.jsp</code>: <P>
+<CODE><P>
+<BR>
+
+&lt;%<BR>
+
+&nbsp;&nbsp;Vector buylist = (Vector) session.getValue("shopping.shoppingcart");<BR>
+
+&nbsp;&nbsp;if (buylist != null && (buylist.size() > 0)) {<BR>
+
+%&gt;<BR>
+</CODE><P>
+Basically, the scriptlet extracts the shopping cart from the session. If the cart is empty or not yet created, it displays nothing; thus, the first time a user accesses the application, she is presented with the view shown in Figure 3. <P>
+<CENTER><P>
+<TABLE CELLPADDING="5" BORDER="0"><TR><TD><P>
+<CENTER><P>
+<IMG VSPACE="3" WIDTH="500" HEIGHT="373" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-12-1999/images/SSJFIG1.gif"><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+Figure 3: Music Without Borders, main view </STRONG></FONT></CENTER><P>
+</TD></TR></TABLE><P>
+</CENTER><P>
+If the shopping cart is not empty, then the selected items are extracted from the cart one at a time, as demonstrated by the following scriptlet: <P>
+<CODE><P>
+<BR>
+
+&lt;%<BR>
+
+&nbsp;&nbsp;for (int index=0; index < buylist.size(); index++) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;CD anOrder = (CD) buylist.elementAt(index);<BR>
+
+%&gt;<BR>
+</CODE><P>
+Once the variables describing an item have been created, they are then simply inserted into the static HTML template using JSP expressions. Figure 4 shows the application view after the user has placed some items in the shopping cart. <P>
+<CENTER><P>
+<TABLE CELLPADDING="5" BORDER="0"><TR><TD><P>
+<CENTER><P>
+<IMG VSPACE="3" WIDTH="500" HEIGHT="373" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-12-1999/images/SSJFIG2.gif"><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+Figure 4: Music Without Borders, shopping cart view </STRONG></FONT></CENTER><P>
+</TD></TR></TABLE><P>
+</CENTER><P>
+The important thing to observe here is that the processing for all actions carried out within either <code>Eshop.jsp</code> or <code>Cart.jsp</code> is handled by the <em>controller</em> servlet, <code>ShoppingServlet.java</code>, which is shown in Listing 3. <P>
+<table border="1" cellspacing="1" cellpadding="7"> <tr><P>
+<th align="left" valign="top">Listing 3:<br><P>
+ShoppingServlet.java<P>
+</th> </tr> <tr>
+<td> <CODE><P>
+<BR>
+
+import java.util.*;<BR>
+
+import java.io.*;<BR>
+
+import javax.servlet.*;<BR>
+
+import javax.servlet.http.*;<BR>
+
+import shopping.CD;<BR>
+
+public class ShoppingServlet extends HttpServlet {<BR>
+
+&nbsp;&nbsp;public void init(ServletConfig conf) throws ServletException&nbsp;&nbsp;{<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;super.init(conf);<BR>
+
+&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;public void doPost (HttpServletRequest req, HttpServletResponse res)<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throws ServletException, IOException {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;HttpSession session = req.getSession(false);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;if (session == null) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;res.sendRedirect("http://localhost:8080/error.html");<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;Vector buylist=<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Vector)session.getValue("shopping.shoppingcart");<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;String action = req.getParameter("action");<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;if (!action.equals("CHECKOUT")) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (action.equals("DELETE")) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String del = req.getParameter("delindex");<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int d = (new Integer(del)).intValue();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;buylist.removeElementAt(d);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} else if (action.equals("ADD")) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//any previous buys of same cd?<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;boolean match=false;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CD aCD = getCD(req);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (buylist==null) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//add first cd to the cart<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;buylist = new Vector(); //first order<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;buylist.addElement(aCD);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} else { // not first buy<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (int i=0; i< buylist.size(); i++) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CD cd = (CD) buylist.elementAt(i);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (cd.getAlbum().equals(aCD.getAlbum())) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cd.setQuantity(cd.getQuantity()+aCD.getQuantity());<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;buylist.setElementAt(cd,i);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;match = true;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} //end of if name matches<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} // end of for<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (!match) <BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;buylist.addElement(aCD);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;session.putValue("shopping.shoppingcart", buylist);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String url="/jsp/shopping/EShop.jsp";<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServletContext sc = getServletContext();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RequestDispatcher rd = sc.getRequestDispatcher(url);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rd.forward(req, res);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;} else if (action.equals("CHECKOUT"))&nbsp;&nbsp;{<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float total =0;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (int i=0; i< buylist.size();i++) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CD anOrder = (CD) buylist.elementAt(i);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;float price= anOrder.getPrice();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int qty = anOrder.getQuantity();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;total += (price * qty);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;total += 0.005;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String amount = new Float(total).toString();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int n = amount.indexOf('.');<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;amount = amount.substring(0,n+3);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;req.setAttribute("amount",amount);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String url="/jsp/shopping/Checkout.jsp";<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServletContext sc = getServletContext();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RequestDispatcher rd = sc.getRequestDispatcher(url);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rd.forward(req,res);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;private CD getCD(HttpServletRequest req) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;//imagine if all this was in a scriptlet...ugly, eh?<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;String myCd = req.getParameter("CD");<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;String qty = req.getParameter("qty");<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;StringTokenizer t = new StringTokenizer(myCd,"|");<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;String album= t.nextToken();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;String artist = t.nextToken();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;String country = t.nextToken();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;String price = t.nextToken();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;price = price.replace('$',' ').trim();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;CD cd = new CD();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;cd.setAlbum(album);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;cd.setArtist(artist);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;cd.setCountry(country);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;cd.setPrice((new Float(price)).floatValue());<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;cd.setQuantity((new Integer(qty)).intValue());<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;return cd;<BR>
+
+&nbsp;&nbsp;}<BR>
+
+}<BR>
+</CODE><P>
+</td> </tr> </table> <P>
+Every time the user adds an item within <code>EShop.jsp</code>, the request is posted to the controller servlet. The servlet in turn determines the appropriate action, and then processes the request parameters for the item to be added. It then instantiates a new CD bean (shown in Listing 4) representing the selection, and goes about updating the shopping cart object before placing it back within the session.
+<P>
+<table border="1" cellspacing="1" cellpadding="7"> <tr><P>
+<th align="left" valign="top">Listing 4:<br><P>
+CD.java<P>
+</th> </tr> <tr>
+<td> <CODE><P>
+<BR>
+
+package shopping;<BR>
+
+public class CD {<BR>
+
+&nbsp;&nbsp;String album;<BR>
+
+&nbsp;&nbsp;String artist;<BR>
+
+&nbsp;&nbsp;String country;<BR>
+
+&nbsp;&nbsp;float price;<BR>
+
+&nbsp;&nbsp;int quantity;<BR>
+
+&nbsp;&nbsp;public CD() {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;album="";<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;artist="";<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;country="";<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;price=0;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;quantity=0;<BR>
+
+&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;public void setAlbum(String title) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;album=title;<BR>
+
+&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;public String getAlbum() {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;return album;<BR>
+
+&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;public void setArtist(String group) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;artist=group;<BR>
+
+&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;public String getArtist() {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;return artist;<BR>
+
+&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;public void setCountry(String cty) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;country=cty;<BR>
+
+&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;public String getCountry() {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;return country;<BR>
+
+&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;public void setPrice(float p) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;price=p;<BR>
+
+&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;public float getPrice() {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;return price;<BR>
+
+&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;public void setQuantity(int q) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;quantity=q;<BR>
+
+&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;public int getQuantity() {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;return quantity;<BR>
+
+&nbsp;&nbsp;}<BR>
+
+}<BR>
+</CODE><P>
+</td> </tr> </table> <P>
+Notice that we have also included additional intelligence within the servlet, so that it understands that, if a previously added CD is reselected, it should simply increase the count for that CD bean within the shopping cart. The controller servlet also processes actions triggered from within <code>Cart.jsp</code>, such as the user deleting items from the shopping cart, or proceeding to the checkout counter. Observe that the controller always has complete control over which resources should be invoked in response to specific actions. For example, changes made to the state of the shopping cart, such as additions or deletions, cause the controller servlet to forward the request after processing to the <code>Eshop.jsp</code> page. This in turn causes the page to redisplay the main view, along with the updated contents of the shopping cart. If the user decides to check out, the request is forwarded after processing to the <code>Checkout.jsp</code> page (shown in Listing 5) by means of the following request dispatcher, as shown below: <P>
+<CODE><P>
+<BR>
+
+String url="/jsp/shopping/Checkout.jsp";<BR>
+
+ServletContext sc = getServletContext();<BR>
+
+RequestDispatcher rd = sc.getRequestDispatcher(url);<BR>
+
+rd.forward(req,res);<BR>
+</CODE><P>
+<table border="1" cellspacing="1" cellpadding="7"> <tr><P>
+<th align="left" valign="top">Listing 5:<br><P>
+Checkout.jsp<P>
+</th> </tr> <tr>
+<td> <CODE><P>
+<BR>
+
+&lt;%@ page session="true" import="java.util.*, shopping.CD" %&gt;<BR>
+
+&lt;html&gt;<BR>
+
+&lt;head&gt;<BR>
+
+&lt;title&gt;Music Without Borders Checkout&lt;/title&gt;<BR>
+
+&lt;/head&gt;<BR>
+
+&lt;body bgcolor="#33CCFF"&gt;<BR>
+&lt;font face="Times New Roman,Times" size=+3&gt;<BR>
+
+&nbsp;&nbsp;Music Without Borders Checkout<BR>
+&lt;/font&gt;<BR>
+&lt;hr&gt;&lt;p&gt;<BR>
+&lt;center&gt;<BR>
+&lt;table border="0" cellpadding="0" width="100%" bgcolor="#FFFFFF"&gt;<BR>
+&lt;tr&gt;<BR>
+&lt;td&gt;&lt;b&gt;ALBUM&lt;/b&gt;&lt;/td&gt;<BR>
+&lt;td&gt;&lt;b&gt;ARTIST&lt;/b&gt;&lt;/td&gt;<BR>
+&lt;td&gt;&lt;b&gt;COUNTRY&lt;/b&gt;&lt;/td&gt;<BR>
+&lt;td&gt;&lt;b&gt;PRICE&lt;/b&gt;&lt;/td&gt;<BR>
+&lt;td&gt;&lt;b&gt;QUANTITY&lt;/b&gt;&lt;/td&gt;<BR>
+&lt;td&gt;&lt;/td&gt;<BR>
+&lt;/tr&gt;<BR>
+&lt;%<BR>
+
+&nbsp;&nbsp;Vector buylist = (Vector) session.getValue("shopping.shoppingcart");<BR>
+
+&nbsp;&nbsp;String amount = (String) request.getAttribute("amount");<BR>
+
+&nbsp;&nbsp;for (int i=0; i < buylist.size();i++) {<BR>
+
+&nbsp;&nbsp; CD anOrder = (CD) buylist.elementAt(i);<BR>
+%&gt;<BR>
+&lt;tr&gt;<BR>
+&lt;td&gt;&lt;b&gt;&lt;%= anOrder.getAlbum() %&gt;&lt;/b&gt;&lt;/td&gt;<BR>
+&lt;td&gt;&lt;b&gt;&lt;%= anOrder.getArtist() %&gt;&lt;/b&gt;&lt;/td&gt;<BR>
+&lt;td&gt;&lt;b&gt;&lt;%= anOrder.getCountry() %&gt;&lt;/b&gt;&lt;/td&gt;<BR>
+&lt;td&gt;&lt;b&gt;&lt;%= anOrder.getPrice() %&gt;&lt;/b&gt;&lt;/td&gt;<BR>
+&lt;td&gt;&lt;b&gt;&lt;%= anOrder.getQuantity() %&gt;&lt;/b&gt;&lt;/td&gt;<BR>
+&lt;/tr&gt;<BR>
+&lt;%<BR>
+
+&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;session.invalidate();<BR>
+%&gt;<BR>
+&lt;tr&gt;<BR>
+&lt;td&gt;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/td&gt;<BR>
+&lt;td&gt;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/td&gt;<BR>
+&lt;td&gt;&lt;b&gt;TOTAL&lt;/b&gt;&lt;/td&gt;<BR>
+&lt;td&gt;&lt;b&gt;$&lt;%= amount %&gt;&lt;/b&gt;&lt;/td&gt;<BR>
+&lt;td&gt;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/td&gt;<BR>
+&lt;/tr&gt;<BR>
+&lt;/table&gt;<BR>
+&lt;p&gt;<BR>
+&lt;a href="/examples/jsp/shopping/EShop.jsp"&gt;Shop some more!&lt;/a&gt;<BR>
+&lt;/center&gt;<BR>
+
+&lt;/body&gt;<BR>
+
+&lt;/html&gt;<BR>
+</CODE><P>
+</td> </tr> </table> <P>
+<code>Checkout.jsp</code> simply extracts the shopping cart from the session and the total amount for the request, and then displays the selected items and their total cost. Figure 5 shows the client view upon checkout.  Once the user goes to the checkout counter, it is equally important to get rid of the session object. That is taken care of by having a <code>session.invalidate()</code> invocation at the end of the page. This process is necessary for two reasons.  First, if the session is not invalidated, the user's shopping cart is not reinitialized; if the user then attempts to commence another round of shopping upon checkout, her shopping cart will continue to hold items that she has already purchased. The second reason is that if the user simply left the site upon checkout, the session object will not be garbage collected and will continue to take up valuable system resources until its lease period expires. Since the default session-lease period is about 30 minutes, this can quickly lead to the system running out of memory in a high-volume system. Of course, we all know what happens to an application that runs out of system resources!
+<P>
+<CENTER><P>
+<TABLE CELLPADDING="5" BORDER="0"><TR><TD><P>
+<CENTER><P>
+<IMG VSPACE="3" WIDTH="425" HEIGHT="315" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-12-1999/images/jw-12-ssjfig3_sml.gif"><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+Figure 5: Music Without Borders, checkout view </STRONG></FONT></CENTER><P>
+</TD></TR></TABLE><P>
+</CENTER><P>
+Notice that all the resources for this application are session aware, since the model here is stored within the session. Consequently, you must ensure that the user does not somehow access the controller directly, even by mistake. You can take care of this by implementing the automatic client redirection to the error page (shown in Listing 6) when the controller detects the absence of a valid session. <P>
+<table border="1" cellspacing="1" cellpadding="7"> <tr><P>
+<th align="left" valign="top">Listing 6:<br><P>
+error.html<P>
+</th> </tr> <tr>
+<td> <CODE><P>
+<BR>
+
+&lt;html&gt;<BR>
+
+&lt;body&gt;<BR>
+
+&lt;h1&gt;<BR>
+
+&nbsp;&nbsp;Sorry, there was an unrecoverable error! &lt;br&gt;<BR>
+
+&nbsp;&nbsp;Please try &lt;a href="/examples/jsp/shopping/EShop.jsp"&gt;again&lt;/a&gt;.<BR>
+
+&lt;/h1&gt;<BR>
+
+&lt;/body&gt;<BR>
+
+&lt;/html&gt;<BR>
+</CODE><P>
+</td> </tr> </table> <P><FONT SIZE="+1"><STRONG> Deploying Music Without Borders </STRONG></FONT><BR>
+
+I will assume that you are using the latest version of JavaServer Web Development Kit (JSWDK) from Sun for running the example. If not, see the <a href="#resources">Resources</a> section to find out where to get it. Assuming that the server is installed in <code>\jswdk-1.0.1</code>, its default location in Microsoft Windows, deploy the Music Without Borders application files as follows: <P>
+<ul> <li>Create shopping directory under <code>\jswdk-1.0.1\examples\jsp</code> <li>Copy <code>EShop.jsp</code> to <code>\jswdk-1.0.1\examples\jsp\shopping</code> <li>Copy <code>Cart.jsp</code> to <code>\jswdk-1.0.1\examples\jsp\shopping</code> <li>Copy <code>Checkout.jsp</code> to <code>\jswdk-1.0.1\examples\jsp\shopping</code> <li>Compile the <code>.java</code> files by typing <code>javac *.java</code> <li>Copy <code>ShoppingServlet.class</code> to <code>\jswdk-1.0.1\webpages\Web-Inf\servlets</code> <li>Create shopping directory under <code>\jswdk-1.0.1\examples\Web-Inf\jsp\beans</code> <li>Copy <code>CD.class</code> to <code>\jswdk-1.0.1\examples\Web-Inf\jsp\beans\shopping</code> <li>Copy <code>error.html</code> to <code>\jswdk-1.0.1\webpages</code> <li>Once your server has been started, you should be able to access the application using <a href="http://localhost:8080/examples/jsp/shopping/EShop.jsp">http://localhost:8080/examples/jsp/shopping/EShop.jsp</a> as the URL </ul> <P><FONT SIZE="+1"><STRONG> Leveraging JSP and servlets </STRONG></FONT><BR>
+
+In this example, we have examined in detail the level of control and flexibility provided by the Model 2 architecture. In particular, we've seen how the best features of servlets and JSP pages can be exploited to maximize the separation of presentation from content. Properly applied, the Model 2 architecture should result in the concentration of all of the processing logic in the hands of the controller servlet, with the JSP pages responsible only for the view or presentation. However, the downside of using the Model 2 approach is its complexity. Consequently, it may be desirable to use the Model 1 approach for simpler applications. 
+<IMG HEIGHT="12" WIDTH="22" SRC="http://www.idg.net/microsites/javaworld/javaworld/icons/jw-dingbat.gif"><P><br /></p>
+                        <font size=-1><!-- REPLACE PAGEURLS --> </font>
+                        <p>
+                            <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                            <a href="/javaworld/jw-12-1999/jw-12-ssj-jspmvc_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><!-- REPLACE BIO --><br /></p>
+                        <p><ul><A NAME="resources"></a><STRONG>Resources</STRONG>
+<BR>
+<LI>Download the latest JavaServer Web Development Kit: <BR><A HREF="http://java.sun.com/products/jsp/download.html">http://java.sun.com/products/jsp/download.html
+</A><BR>
+
+
+<LI>Get the source code for the example: <BR><A HREF="http://www.javaworld.com/jw-12-1999/ssj/ShoppingCart.jar">http://www.javaworld.com/jw-12-1999/ssj/ShoppingCart.jar
+</A><BR>
+
+
+<LI>Discuss this article in a JavaWorld-jGuru forum scheduled for December 9, 1999. To register, go to: <BR><A HREF="http://www.jguru.com/jguru/jwevent/jwRegister.jsp">http://www.jguru.com/jguru/jwevent/jwRegister.jsp
+</A><BR>
+
+
+</ul><br /></p>
+                        <!-- REPLACE SIDEBAR -->
+                    </font>
+                    <!-- ## MAIN CONTENT ENDS HERE ### -->
+                </td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="168" nowrap><nobr><img src="http://www.javaworld.com/images/spacer.gif" width=160 height=8 border=0 ><img src="http://www.javaworld.com/images/c_bllftbottom.gif" width=8 height=8 border=0 ></nobr></td>
+                <td width="100%"><img src="http://www.javaworld.com/images/spacer.gif" width=1 height=1 border=0 ></td>
+                <td width="8"><img src="http://www.javaworld.com/images/spacer.gif" width=8 height=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="186" bgcolor="#006699" align="middle"><nobr><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2"></font></nobr><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0></a></td>
+                <td bgcolor="#cccccc" width="8" valign="bottom"><img height=8 src="http://www.javaworld.com/images/c_blgrylftbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- BOTTOM 468x60 AD STARTS HERE -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=377506?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=377506?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=377506?" border=0 height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer4" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- BOTTOM 468x60 AD ENDS HERE -->
+</td>
+                <td width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table bgcolor="#006699" align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="100%" align="middle" valign="center">    <font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">
+        <p>
+            <br />
+            <a href="http://www.javaworld.com"><font color="#ffffff">HOME</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/features/index.shtml"><font color="#ffffff">FEATURED TUTORIALS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/columns/index.shtml"><font color="#ffffff">COLUMNS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/news-reviews/index.shtml"><font color="#ffffff">NEWS & REVIEWS</font></a>&nbsp;|&nbsp;
+            <a href="http://forums.idg.net/webx?13@@.ee6b802"><font color="#ffffff">FORUM</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/resources/index.shtml"><font color="#ffffff">JW RESOURCES</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/info/jw-about-index.shtml"><font color="#ffffff">ABOUT JW</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/feedback"><font color="#ffffff">FEEDBACK</font></a>
+        </p>
+        <p>
+
+            <a href="http://www.javaworld.com/javaworld/common/jw-copyright.html"><font color="#ffffff">Copyright © 2002</font></a> JavaWorld.com, an IDG Communications company
+        </p>
+    </font>
+</td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+            <tr>
+                <td width="100%" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_blrtbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <!--TOP_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=377506?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer1.pageX,layer1.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--125x125-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=med;sz=125x125;tile=2;ord=377506?" width=125 height=125 visibility="hidden" onLoad="moveToAbsolute(layer2.pageX,layer2.pageY);clip.height=125;clip.width=125;visibility='show';">
+</LAYER>
+
+<!--SKYSCRAPER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=377506?" width=120 height=600 visibility="hidden" onLoad="moveToAbsolute(layer3.pageX,layer3.pageY);clip.height=600;clip.width=120;visibility='show';">
+</LAYER>
+
+<!--BOTTOM_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=377506?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer4.pageX,layer4.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--Big AD-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=377506" width=336 height=280 visibility="hidden" onLoad="moveToAbsolute(layer5.pageX,layer5.pageY);clip.height=280;clip.width=336;visibility='show';">
+</LAYER>
+    </body>
+<!-- stories1 -->
+<!-- DOCID 658274 -->
+</html>
+

@@ -1,0 +1,419 @@
+ID=E0901
+URL=http://cpp.8m.com/cgi-bin/members
+SIZE=4807
+DATE=12/07/02
+TIME=19:25:39
+DATASET=C
+HTML=<!--|17|1026498331|134.225.16.91||-->
+<!-- Area:utility CGI:login Step:NONE Partner:freeservers.com Template:utility/login.html -->
+<HTML>
+<HEAD>
+<TITLE>Freeservers.com -- Member Login</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<LINK REL="stylesheet" HREF="/fs_img/freeservers.css" TYPE="TEXT/CSS">
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000099" LINK="#000099" VLINK="#000099" ALINK="#000099" LEFTMARGIN="4" TOPMARGIN="4" MARGINWIDTH="4" MARGINHEIGHT="4">
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" ALIGN="CENTER">
+<TR>
+<TD>
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="7">
+<TR BGCOLOR="#3366CC"> 
+<TD><A HREF="http://www.freeservers.com/"><IMG SRC="/fs_img/fs2/logo_ma.gif" WIDTH="120" HEIGHT="24" BORDER="0"></A></TD>
+<FORM ACTION="http://www.freeservers.com/search/results.html" TARGET="_blank" METHOD="get">
+</FORM>
+</TR>
+</TABLE>
+</TD>
+</TR>
+<TR>
+<TD>
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="4" CELLPADDING="0">
+<TR VALIGN="TOP"> 
+<TD WIDTH="100%"> 
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="4" CELLPADDING="0">
+<TR> 
+<TD ID=contenttable COLSPAN="2" BGCOLOR="#000099"> 
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="4" CELLPADDING="0">
+<TR> 
+<TD><FONT COLOR="#FFFFFF"><B>Member Login</B></FONT></TD>
+</TR>
+</TABLE>
+</TD>
+</TR>
+<TR> 
+<TD ID=contenttable COLSPAN="2"><!-- include -- Partner "freeservers.com" -- File "members/login_info.txt" -->
+<!--template=utility/login.html-->  
+<SCRIPT>
+var sitelist=cookieVal("sitelist"); //call function to get cookied sitelist
+
+function cookieVal(cookieName){ //function breaks the cookie into name and value pairs
+thisCookie=document.cookie.split("; "); //semi-colon is the delimiter seperating fields
+for(i=0; i<thisCookie.length; i++){ //loop through the entire length of the cookie string
+//alert(thisCookie[i]);
+if(cookieName==thisCookie[i].split("=")[0]){ //check for the value we passed in the function call
+return thisCookie[i].split("=")[1]; //if the value matches then send back what follows the = sign
+}
+}
+return 0;
+}
+sitelistchecked="";
+savepasswordchecked="";
+var sitearray=new Array();
+if (sitelist){
+sitelistchecked=" CHECKED";
+if (sitelist.indexOf('+')){
+sitearr=sitelist.split("+");
+}
+else {
+sitearr[0]=sitelist;
+}
+sitearray=new Array();
+passarray=new Array();
+for (i=0; i<sitearr.length; i++){
+ps=sitearr[i].split("&");
+sitearray[i]=ps[0];
+passarray[i]=ps[1];
+}
+}
+else {
+sitelist="";
+}
+</SCRIPT>
+<FORM METHOD=get ACTION=/cgi-bin/members NAME=a>
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=5>
+<TR>
+<TD VALIGN="top"><TABLE BORDER=0 CELLSPACING=0 CELLPADDING=1 BGCOLOR="CCCCEB" ID=contenttable>
+<TR>
+<TD><TABLE BORDER=0 CELLSPACING=0 CELLPADDING=10 BGCOLOR=White>
+<TR>
+<TD VALIGN=top> <FONT FACE="Arial,Helvetica" SIZE="2" COLOR="#000099">
+<INPUT TYPE=hidden NAME=save_password VALUE=''>
+<INPUT TYPE=hidden NAME=redirect VALUE='/cgi-bin/util/my_member_area'>
+<INPUT TYPE=hidden NAME=avail VALUE=''>
+<B>Site:</B><BR>
+<SCRIPT><!--
+if (sitearray.length>=1){
+document.writeln('<FONT SIZE=3>&nbsp;&nbsp; </FONT><SELECT NAME="sitepick" onchange="selectsite();">');
+document.writeln('<OPTION VALUE="">Choose a site...</OPTION>');
+for(i=0; i<sitearray.length; i++){ 
+if (sitearray[i]){
+document.writeln('<OPTION VALUE="'+sitearray[i]+'">'+sitearray[i]+'</OPTION>');
+}
+}
+document.writeln('<OPTION VALUE="">---------------------</OPTION>');
+document.writeln('<OPTION VALUE="delete">Delete Sites From List</OPTION>');
+document.writeln('</SELECT><BR>...or type one in here:<BR>');
+for(i=0; i<sitearray.length; i++){ 
+document.a.sitepick.options[i+1].password=passarray[i];
+}
+document.a.sitepick.options[0].password="";
+document.a.sitepick.options[i+1].password="";
+document.a.sitepick.options[i+2].password="";
+}
+//--></SCRIPT>
+<FONT SIZE=3> &nbsp;&nbsp; <INPUT NAME=site TYPE=text SIZE=25></FONT></FONT></TD>
+</TR>
+<SCRIPT><!--
+document.writeln('   <TR>');
+document.writeln('      <TD ALIGN=left> ');
+document.writeln('        <TABLE CELLSPACING=0><TR><TD VALIGN=top><INPUT TYPE="checkbox" NAME="sitelist" onclick="if (!this.checked) {document.a.savepassword.checked=false;document.a.savepassword.disabled=true;} else document.a.savepassword.disabled=false;" VALUE="yes"'+sitelistchecked+'></TD>');
+document.writeln('        <TD><FONT FACE="Arial,Helvetica" SIZE="2" COLOR="#000099">Remember ');
+document.writeln('        this site in my list of sites.</FONT></TD></TR></TABLE>');
+document.writeln('    </TD></TR>');
+//--></SCRIPT>
+<TR>
+<TD><FONT FACE="Arial,Helvetica" SIZE="2" COLOR="#000099"><P><B>Password:</B><BR>
+&nbsp;&nbsp; <INPUT NAME=password TYPE=password SIZE=25></FONT></TD>
+</TR>
+<SCRIPT><!--
+document.writeln('   <TR>');
+document.writeln('      <TD ALIGN=left> ');
+document.writeln('        <TABLE CELLSPACING=0><TR><TD VALIGN=top><INPUT TYPE="checkbox" NAME="savepassword" VALUE="yes"'+savepasswordchecked+'></TD>');
+document.writeln('        <TD><FONT FACE="Arial,Helvetica" SIZE="2" COLOR="#000099">Remember ');
+document.writeln('        the password for this site.</FONT></TD></TR></TABLE>');
+document.writeln('    </TD></TR>');
+//--></SCRIPT>
+<TR>
+<TD ALIGN=right>
+<SCRIPT><!--
+document.write("<input type=button value='Login!' onclick=encodeUserPass();>");
+//--></SCRIPT>
+<NOSCRIPT><INPUT TYPE=submit VALUE='Login!'></NOSCRIPT></TD>
+</TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>
+<BR>
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
+<TR VALIGN=top>
+<TD><FONT SIZE="1" FACE="Arial,Helvetica" COLOR="#000099"><LI>Forgot your password?
+<A HREF="http://members.freeservers.com/cgi-bin/forgot"><FONT COLOR="#000099">Click here</FONT></A>
+to get help.</FONT></TD>
+</TR>
+<TR VALIGN=top>
+<TD><FONT SIZE="1" FACE="Arial,Helvetica" COLOR="#000099"><LI>If you don't have a site and password,
+<A HREF="http://signup.8m.com/cgi-bin/signup"><FONT COLOR="#000099">click here to signup</FONT></A> for your
+own free Web site.</FONT></TD>
+</TR>
+</TABLE>
+</TD>
+<TD WIDTH="80%" VALIGN="top"><TABLE WIDTH="100%" BORDER="0" CELLSPACING="5" CELLPADDING="0">
+<TR>
+<TD><TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="3">
+<TR BGCOLOR="CCCCEB" VALIGN="middle">
+<TD><FONT FACE="Arial,Helvetica" SIZE="2" COLOR="000099">&nbsp;&nbsp;<B>Upgrade
+Your Site</B></FONT></TD>
+</TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="5" CELLPADDING="5" ALIGN="center">
+<TR CLASS="content">
+<TD ALIGN="center" WIDTH="1%" VALIGN="top"><A HREF="/cgi-bin/util/upgrade" onclick="document.a.upgbox.checked=true;return false;"><IMG SRC="/cgi-bin/image/images/upgrade/login_blurb.gif" ALIGN="left" HSPACE="10" BORDER=0 ALT="Upgrade to Banner-Be-Gone!"></A></TD>
+</TR>
+<TR>
+<TD><FONT SIZE="2" FACE="Arial,Helvetica" COLOR="#000099">
+<input type=checkbox name=upgbox>Take me to upgrade after logging in.</FONT></TD>
+</TR>
+<TR>
+<TD><FONT SIZE="1" FACE="Arial,Helvetica" COLOR="#000099">*Special Offer: get 1-2 months
+free service when semiannual or annual payment option is selected.</FONT></TD>
+</TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>
+</FORM>
+<FORM METHOD=get ACTION=/cgi-bin/members NAME=b>
+<INPUT TYPE=hidden NAME=site VALUE=''>
+<INPUT TYPE=hidden NAME=redirect VALUE='/cgi-bin/util/my_member_area'>
+<INPUT TYPE=hidden NAME=verify VALUE='1'>
+<INPUT TYPE=hidden NAME=save_password VALUE=''>
+<INPUT TYPE=hidden NAME=userpass VALUE=''>
+</FORM>
+
+
+<SCRIPT><!--
+
+function encodeUserPass(){
+if (!document.a.site.value){ 
+alert("Please enter your Site");
+}
+else if (!document.a.password.value){
+alert("Please enter your Password");
+}
+else{
+newpassword="";
+if(document.a.savepassword.checked) newpassword=escape(document.a.password.value,1);
+if (document.a.upgbox.checked==true) document.b.redirect.value='/cgi-bin/util/upgrade';
+createsitelist();
+document.b.userpass.value=base64(''+document.a.site.value+':'+document.a.password.value);
+document.b.site.value=document.a.site.value;
+document.b.submit();
+}
+}
+
+window.onload=focus_me;
+
+function focus_me(){
+document.a.site.focus();
+}
+
+function base64(str){
+var x=0;
+var Alph='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+var asciiD=new Array();
+var ret='';
+while (x<str.length) {
+var n;
+asciiD[0]=asciiD[1]=asciiD[2]=0;
+for(n=0; n<3; n++){
+if(x++ >= str.length) break;
+asciiD[n]=ascii(str.charAt(x-1));
+}
+if(n > 0){
+ret+=Alph.charAt( asciiD[0] >> 2 );
+ret+=Alph.charAt( ((asciiD[0] & 3) << 4) | (asciiD[1] >> 4) );
+var dig1=Alph.charAt( ((asciiD[1] & 0xF) << 2) | (asciiD[2] >> 6) );
+var dig2=Alph.charAt( asciiD[2] & 0x3F );
+if(n < 3){
+dig2 = '=';
+if (n < 2) dig1 = '=';
+}
+ret+=dig1+dig2;
+}
+}
+return ret;
+}
+
+function ascii(Char){
+var i=' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'.indexOf(Char);
+if(i>-1) return i+32;
+else{
+i='\t\n \r'.indexOf(Char);
+if(i>-1) return i+9;
+}
+return 32;
+}
+//-->
+</SCRIPT>
+<SCRIPT>
+<!--
+function selectsite(){
+if (document.a.sitepick.options[document.a.sitepick.length-1].selected==true){
+sitedeleter();
+}
+else {
+document.a.site.value=document.a.sitepick.options[document.a.sitepick.selectedIndex].value;
+document.a.password.value=unescape(document.a.sitepick.options[document.a.sitepick.selectedIndex].password);
+document.a.savepassword.checked=false;
+if (document.a.password.value!="") document.a.savepassword.checked=true;
+}
+}
+
+function sitedeleter(){
+var ok=navigator.appName.indexOf("cape");
+var x_start=50;
+var y_start=50;
+if (ok==-1){
+var tag_name="";
+var container=document.all.contenttable;
+var x=0;
+var y=0;
+while (tag_name!="BODY"){
+x=x+container.offsetLeft;
+y=y+container.offsetTop;
+tag_name=container.tagName;
+container=container.offsetParent;
+}
+x_start=window.screenLeft+x;
+if (x_start<0) {x_start=0}
+y_start=window.screenTop+y;
+}
+else {
+x_start=window.screenX+100;
+y_start=window.screenY+333;
+}
+winopt="height=250,width=250,screenX="+x_start+",screenY="+y_start+",left="+x_start+",top="+y_start;
+var w=window.open("","",winopt);
+sitedel=w.document.open();
+sitel=document.a.sitepick;
+sitedel.writeln('<HTML><HEAD><TITLE>Delete</TITLE></HEAD><BODY><CENTER>Choose the sites you want to delete:<FORM NAME=x ACTION="">');
+if (sitel.length>=1){
+salen=10;
+if (sitel.length<13) salen=sitel.length-3;
+sitedel.writeln('<FONT SIZE=3>&nbsp;&nbsp; </FONT><SELECT NAME="delpick" SIZE='+salen+' MULTIPLE>');
+for(i=1; i<(sitel.length-2); i++){ 
+if (sitel[i]){
+sitedel.writeln('<OPTION VALUE="'+sitel[i].value+'">'+sitel[i].value+'</OPTION>');
+}
+}
+sitedel.writeln('</SELECT><BR>...and click "Delete."<BR>');
+sitedel.writeln('<INPUT TYPE=button name=deleter VALUE="Delete" onclick="window.opener.deletem();window.close();"><INPUT TYPE=button name=deleter VALUE="Cancel" onclick="window.close();"></FORM></CENTER></BODY></HTML>');
+}
+w.focus();
+w.document.close();
+}
+
+function deletem(){
+del=sitedel.x.delpick;
+sitel=document.a.sitepick;
+for (i=0; i<del.length; i++){
+for (j=0; j<sitel.length; j++){
+if (del[i].selected){
+if (sitel[j].value==del[i].value){
+sitel[j]=null;
+}
+}
+}
+}
+sitel[0].selected=true;
+if (sitel.length<4) sitel.disabled=true;
+slc=document.a.sitelist.checked;
+document.a.sitelist.checked=false;
+createsitelist();
+document.a.sitelist.checked=slc;
+}
+//-->
+</SCRIPT>
+<SCRIPT>
+<!--
+function createsitelist(){
+sitelist=""
+if (document.a.sitelist.checked) sitelist=document.a.site.value+"&"+newpassword;
+if (document.a.sitepick){
+sitel=document.a.sitepick;
+if (sitel.length>3){
+for(i=1; i<(sitel.length-2); i++){ 
+if (sitelist!=""){
+sitelist=sitelist+"+"+sitel[i].value+"&"+sitel[i].password;
+}
+else {
+sitelist=sitel[i].value+"&"+sitel[i].password;
+}
+}
+sa=sitelist.split("+");
+var sl=new Array();
+sl[0]=sa[0];
+k=1;
+for(i=0; i<sa.length; i++){
+dupe=false;
+for(j=0; j<k; j++){
+s1=sa[i].split("&");
+s2=sl[j].split("&");
+if(s1[0]==s2[0]){
+dupe=true; 
+}
+if(!s2[0].indexOf(".")){
+dupe=true; 
+}
+}
+if (dupe==false){
+sl[k]=sa[i];
+k++;	
+}
+}
+sitelist=sl.join("+");
+}
+}
+var expire=-365;
+if (sitelist!="") expire=365;
+expireDate=new Date(); //create variable to store the current date.
+expireDate.setDate(expireDate.getDate()+expire); //set the value to one year from now
+if(navigator.appName.indexOf("cape")){
+document.cookie="sitelist="+sitelist+";expires="+expireDate.toGMTString();
+} else {
+document.cookie="sitelist="+sitelist+";expires="+expireDate.toGMTString()+";path=/;domain=8m.com;";
+document.cookie="sitelist="+sitelist+";expires="+expireDate.toGMTString()+";path=/;domain=freeservers.com;";
+}
+//alert(sitelist);
+}
+//-->
+</SCRIPT>
+</TD>
+</TR>
+</TABLE>
+</TD>
+</TR>
+<TR VALIGN="TOP" BGCOLOR="#D0D0EC"> 
+<TD COLSPAN="3"><IMG SRC="/fs_img/spacer.gif" WIDTH="1" HEIGHT="1"></TD>
+</TR>
+</TABLE>
+</TD>
+</TR>
+<TR>
+<TD>
+<TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="4">
+<TR BGCOLOR="#3366CC" ALIGN="CENTER"> 
+<TD>&nbsp;</TD>
+</TR>
+</TABLE>
+</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>
+

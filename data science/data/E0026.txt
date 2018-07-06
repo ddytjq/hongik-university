@@ -1,0 +1,614 @@
+ID=E0026
+URL=http://www.intap.net/~drw/cpp/cpp03_04.htm
+SIZE=20607
+DATE=12/07/02
+TIME=19:16:30
+DATASET=C
+HTML=
+<html>
+<head> 
+<title>
+online C++ tutorial: Operators
+</title>
+</head>
+
+<body bgcolor="#ffffff"
+       link = "#ff0000"
+      alink = "#00ff00"
+      vlink = "#660000" >
+
+
+<table width="100%" border=0>
+<tr>
+<td align=left>
+<a href="cpp03_01.htm"><img border=0 src="pictures/buttons/prevs.gif" width=51 height=34 alt="&lt;&lt;=="></a>
+<a href="cpp03_03.htm"><img border=0 src="pictures/buttons/prevp.gif" width=37 height=34 alt="&lt;="></a>
+</td>
+<td align=center>
+<a href="index.htm">
+<img border=0 width=122 height=34 src="pictures/buttons/toc.gif"
+    alt="[table of contents]"></a>
+<a href="/cgi-bin/drw/cpp/search.cgi">
+<img border=0 width=46 height=34 src="pictures/buttons/search.gif"
+    alt="[search]"></a>
+<a href="glossary.htm">
+<img border=0 width=61 height=34 src="pictures/buttons/glossary.gif"
+    alt="[glossary]"></a>
+<a href="feedback.htm">
+<img border=0 width=65 height=34 src="pictures/buttons/feedback.gif"
+    alt="[feedback]"></a>
+</td>
+<td align=right>
+
+<a href="cpp03_05.htm"><img border=0 src="pictures/buttons/nextp.gif" width=37 height=34 alt="=&gt;"></a>
+<a href="cpp04_01.htm"><img border=0 src="pictures/buttons/nexts.gif" width=51 height=34 alt="==&gt;&gt;"></a>
+</td>
+</tr>
+</table>
+<hr>
+<table width="100%"><tr><td align=left><img src="pictures/buttons/cppsm.gif" width=143 height=37 alt="[online C++ tutorial]"></td><td align=right><b>Section 3: Variables, Types, and Operators</b></td></tr></table>
+<center><h2>Section 3.4: Operators</h2></center>
+
+<p>
+This page covers the following topics:
+<ul>
+<li><a href="#true_false">Booleans: True and False</a></li>
+<li><a href="#boolean">Boolean operators in C++</a></li>
+<li><a href="#arithmetic">Arithmetic operators in C++</a></li>
+<li><a href="#equality">Equality operators in C++</a></li>
+<li><a href="#assignment">Assignment operators in C++</a></li>
+</ul>
+
+</p>
+
+<h3><a name="true_false"> Booleans: True and False</a> </h3>
+
+<p>
+Before talking about operators, we'll take a quick aside
+into <a href="glossary.htm#boolean">booleans</a>, since
+we'll need to know what a boolean is before discussing
+operators.  A boolean value is one that can be either
+true or false.  No other values are allowed.  Booleans
+and boolean operations are at the heart of programming.
+Many times in a program, you'll want to do one thing
+if a certain <a href="glossary.htm#condition">condition</a>
+is true, and a different thing if the condition is false.
+For example, when processing a series of checkboxes,
+you may want to take an action only if a box is checked,
+and do nothing otherwise.  That's when you'll want to use
+a boolean.
+</p>
+
+<p>
+Most programming languages have a type for booleans,
+usually called "boolean" or "bool".  Some C++ compilers
+recognize the type <code>bool</code>, others do not.  
+For now, assume that your compiler supports the 
+<code>bool</code> type.  We'll discuss what to do
+if your compiler doesn't, in a moment.
+</p>
+
+<p>
+In order to use boolean logic to your advantage, you
+need to learn about the three basic boolean operations.
+They are called <a href="glossary.htm#and">and</a>,
+<a href="glossary.htm#or">or</a>, and 
+<a href="glossary.htm#not">not</a>.  Each operation
+takes either one or two boolean inputs, and returns
+a boolean output.  They are
+often represented by symbols known as "gates", shown
+below.
+
+<center>
+
+<table border=1 width="80%">
+<tr>
+<td width="30%" align=center><img src="pictures/and.gif" alt="[the AND gate symbol]" width=158 height=38><br>and</td>
+<td> The "and" operation takes two inputs and produces
+one output.  If both inputs are true, the output is true;
+in all other cases, the output is false.  It can be interpreted
+as follows: <i>"I will return true if input 1 <b>and</b> input 2
+are true."</i></td>
+</tr>
+<tr>
+<td align=center><img src="pictures/or.gif" alt="[the OR gate symbol]" width=162 height=38><br>or</td>
+<td> The "or" operation takes two inputs and produces 
+one output.  If either of the inputs are true, the output
+is true; otherwise (i.e., if neither input is true), the
+output is false.  It can be interpreted as follows:
+<i>"I will return true if either input 1 <b>or</b> input 2
+is true."</i></td>
+</tr>
+<tr>
+<td align=center><img src="pictures/not.gif" alt="[the NOT gate symbol]" width=147 height=38><br>not</td>
+<td> The "not" operation takes one input and produces
+one output.  If the input is true, the output is false.
+If the input is false, the output is true.  In other words,
+the "not" operation takes the input and returns its opposite. </td>
+</tr>
+
+</table>
+</center>
+
+</p>
+
+
+<h3><a name="boolean">Boolean operators in C++</a></h3>
+<p>
+There are operators in C++ which behave just as the boolean
+gates shown above!  We'll show you an example of how to use
+each one.
+</p>
+
+<h4>and: <code>&&</code></h4>
+<p>
+The "and" operator is used by placing the "and" symbol,
+<code>&&</code>, in between two boolean values.
+
+<pre>
+  //suppose that Fran is tired
+  bool franIsTired = true;
+
+  //but Fran doesn't have to wake up early
+  bool franMustWakeUpEarly = false;
+
+  //will Fran go to sleep now?
+  bool bedTime = franIsTired && franMustWakeUpEarly;
+</pre>
+
+What does this chunk of code do?  It initializes two variables,
+<code>franIsTired</code> and <code>franMustWakeUpEarly</code>, to
+<code>true</code> and <code>false</code>, respectively.  Then, in the
+third line of code (not including comments!), we determine that Fran
+will go to sleep <i>if and only if</i> the "and" operation is true --
+that is, if both inputs to the "and" operation are true.  In this
+case, the first input is true and the second input is false.  Since
+"and" requires both inputs to be true in order for the output to be
+true, but one of the inputs is false, the output will be false.  So,
+the variable <code>bedTime</code> will store the value
+<code>false</code>.
+
+</p>
+<p>
+Also, take note that the variable names used here are lengthy.
+How you decide to program is up to you, but often times it's
+better to have lengthier variable names that are readable,
+rather than short, obfuscated variable names like
+"i" or "zz".  (The names in this example may have gone
+overboard, though.)
+</p>
+
+
+<h4>or: <code>||</code></h4>
+<p>
+The "or" operator is used by placing the "or" symbol,
+<code>||</code>, in between two boolean values.
+
+<pre>
+  //suppose that Graham is tired
+  bool grahamIsTired = true;
+
+  //but Graham doesn't have to wake up early
+  bool grahamMustWakeUpEarly = false;
+
+  //will Graham go to sleep now?
+  bool bedTime = grahamIsTired || grahamMustWakeUpEarly;
+</pre>
+
+This example is very similar to the example involving 
+Fran, except notice the key difference: whether or not
+Graham goes to sleep is determined differently.  Graham
+will go to sleep if he is tired <b>or</b> if he needs
+to wake up early.  Whereas Fran would go to sleep
+only if both conditions were true, Graham will go to sleep
+if either condition (or both) is true.  Therefore,
+the value of <code>bedTime</code> is <code>true</code>.
+
+</p>
+
+<h4>not: <code>!</code></h4>
+<p>
+The "not" operator is used by placing the "not" symbol,
+<code>!</code>, before a boolean value.
+
+<pre>
+  //suppose that Julian stayed up late
+  bool julianStayedUpLate = true;
+
+  //will Julian be peppy tomorrow?
+  bool julianIsPeppy = !julianStayedUpLate;
+</pre>
+
+This example illustrates the "not" operator.  At the end
+of this block of code, the variable <code>julianIsPeppy</code>
+will take on the opposite value of <code>julianStayedUpLate</code>.
+If <code>julianStayedUpLate</code> were <code>false</code>, then
+<code>julianIsPeppy</code> would be <code>true</code>.  In this
+case, the opposite is true, so <code>julianIsPeppy</code> gets 
+a value of <code>false</code>.
+
+</p>
+
+
+<p>
+It is perfectly legal in C++ to use boolean operators on variables
+which are not booleans.  In C++, "0" is false and any non-zero value
+is true.  Let's look at a contrived example.
+
+<pre>
+  int hours = 4;
+  int minutes = 21;
+  int seconds = 0;
+
+  bool timeIsTrue = hours && minutes && seconds;
+</pre>
+
+Since <code>hours</code> evaluates to <code>true</code>, and
+since <code>minutes</code> evaluates to <code>true</code>, and
+since <code>seconds</code> evaluates to <code>false</code>, the
+entire <a href="glossary.htm#expression">expression</a>
+<code>hours && minutes && seconds</code> evaluates to <code>false</code>.
+
+</p>
+
+
+<h3><a name="arithmetic">Arithmetic operators in C++</a></h3>
+
+<p>
+In addition to the boolean operators, C++ has a number
+of arithmetic operators.  Here they are:
+
+<center>
+<table width="100%" border=1>
+<tr><th colspan=3>Arithmetic operators</th></tr>
+
+<tr>
+<th align=left>name</th>
+<th>symbol</th>
+<th align=left>sample usage</th>
+</tr>
+
+<tr>
+<td>addition</td>
+<td width="10%" align=center><code>+</code></td>
+<td><code>int sum = 4 + 7</code></td>
+</tr>
+<tr>
+<td>subtraction</td>
+<td align=center><code>-</code></td>
+<td><code>float difference = 18.55 - 14.21</code></td>
+</tr>
+<tr>
+<td>multiplication</td>
+<td align=center><code>*</code></td>
+<td><code>float product = 5 * 3.5</code></td>
+</tr>
+<tr>
+<td>division</td>
+<td align=center><code>/</code></td>
+<td><code>int quotient = 14 / 3</code></td>
+</tr>
+<tr>
+<td>modulo ("mod")</td>
+<td align=center><code>%</code></td>
+<td><code>int remainder = 10 % 6</code></td>
+</tr>
+
+</table>
+</center>
+
+They all probably look familiar with the exception of
+mod (<code>%</code>).  The mod is simply the remainder
+produced by dividing two integers.  In the example
+shown in the table above, if we treat <code>10 / 6</code>
+as an integer divison, the quotient is 1 (rather than 1.666)
+and the remainder is 4.  Hence, the variable
+<code>remainder</code> will get the value 4.
+
+</p>
+
+
+
+<h3><a name="equality">Equality operators in C++</a></h3>
+
+<p>
+You are undoubtedly familiar with equality operators, even if you
+don't know it.  An equality operator is one that tests a condition
+such as "is less than", "is greater than", and "is equal to".
+You will find it useful to be able to compare two numbers using
+expressions like "x is less than y".
+</p>
+
+<p>
+Let's say you are writing software for a bank ATM (automated teller
+machine).  A customer makes a request for a certain amount of cash,
+and your responsibility is to determine if they should be allowed to
+withdraw that amount.  You could decide to use the following <a
+href="glossary.htm#algorithm">algorithm</a>: <i>
+"if the amount requested
+is less than the account balance, that amount should be withdrawn;
+otherwise, the customer should be notified and no money should be
+withdrawn."</i>  Makes sense, right?  So, the next step is coming up with
+some pseudo-code.  Once you have pseudo-code, writing the C++ code
+will be easy.
+</p>
+
+<p>
+Pseudo-code for the ATM problem might look like this:
+<pre>
+  if the amount requested &lt; account balance then
+    withdraw the amount requested
+  otherwise
+    withdraw nothing and notify the customer
+</pre>
+
+Now that we have pseudo-code, writing the C++ code is as simple
+as "translating" your pseudo-code into C++.  In this case,
+it's easy:
+
+<pre>
+  if (amountRequested &lt; accountBalance) {
+    withdraw(amountRequested);
+  }
+  else {
+    withdraw(0);
+    notifyCustomer();   
+  }
+</pre>
+
+You'll notice some new syntax in this example, but don't worry about
+it too much.  Pay close attention to the very first line, which checks
+to make sure that the amount requested is less than the account
+balance.  The way it works is, if the <a
+href="glossary.htm#expression">expression</a> between parentheses
+(<code>()</code>) evaluates to <code>true</code>, then the first <a
+href="glossary.htm#block">block</a> of code will be read.  That is,
+the code inside the first set of curly braces (<code>{}</code>) will
+be executed.  If the expression in parentheses evaluates to
+<code>false</code>, on the other hand, then the second block of code
+(the code following the word <code>else</code>) will be read.  In this
+case, the first block of code withdraws the amount requested by the
+customer, while the second block of code withdraws nothing, and
+notifies the customer.
+</p>
+
+
+<p>
+That wasn't so hard!  All we did was take the original English
+description of how we would solve the problem, write some pseudo-code
+for the English description, and translate the pseudo-code into C++.
+</p>
+
+<p>
+Once you know how to use one equality operator, you know how to use
+all of them.  They all work the same way: they take the expressions on
+either side of them, and either return <code>true</code> or
+<code>false</code>.  Here they are:
+
+<center>
+<table width="100%" border=1>
+<tr><th colspan=4>Equality operators</th></tr>
+
+<tr>
+<th align=left>name</th>
+<th>symbol</th>
+<th align=left>sample usage</th>
+<th><code>result</code></th>
+</tr>
+
+<tr>
+<td>is less than</td>
+<td align=center><code>&lt;</code></td>
+<td><code>bool result = (4 &lt; 7)</code></td>
+<td align=center><code>true</code></td>
+</tr>
+<tr>
+<td>is greater than</td>
+<td align=center><code>&gt;</code></td>
+<td><code>bool result = (3.1 &gt; 3.1)</code></td>
+<td align=center><code>false</code></td>
+</tr>
+<tr>
+<td>is equal to</td>
+<td align=center><code>==</code></td>
+<td><code>bool result = (11 == 8)</code></td>
+<td align=center><code>false</code></td>
+</tr>
+<tr>
+<td>is less than or equal to</td>
+<td align=center><code>&lt;=</code></td>
+<td><code>bool result = (41.1 &lt;= 42)</code></td>
+<td align=center><code>true</code></td>
+</tr>
+<tr>
+<td>is greater than or equal to</td>
+<td align=center><code>&gt;=</code></td>
+<td><code>bool result = (41.1 &gt;= 42)</code></td>
+<td align=center><code>false</code></td>
+</tr>
+<tr>
+<td>is not equal to</td>
+<td align=center><code>!=</code></td>
+<td><code>bool result = (12 != 12)</code></td>
+<td align=center><code>false</code></td>
+</tr>
+
+</table>
+</center>
+
+</p>
+
+
+
+<h3><a name="assignment">Assignment operators in C++</a></h3>
+
+<p>
+Believe it or not, you've already been using assignment operators!
+Probably the most common assignment operator is the equals sign
+(<code>=</code>).  It is called "assignment" because you are
+"assigning" a variable to a value.  This operator takes
+the expression on its right-hand-side and places it into
+the variable on its left-hand-side.  So, when you write
+<code>x = 5</code>, the operator takes the expression
+on the right, <code>5</code>, and stores it in the
+variable on the left, <code>x</code>.
+</p>
+
+<p>
+Remember how the equality operators, like <code>&lt;</code> and
+<code>!=</code>, returned a value that indicated the result?
+In that case, the return value was either <code>true</code>
+or <code>false</code>.  In fact, almost every expression in
+C++ returns something!  You don't always have to use the
+return value, though -- it's completely up to you.  In the
+case of the assignment operators, the return value is
+simply the value that it stored in the variable on the
+left-hand-side.
+</p>
+
+<p>
+Sometimes your code will use the return value to do something useful.
+In the ATM example, one line of code was executed if the condition was
+true (that is, if the equality operator <i>returned true</i>).  Two
+different lines were executed if the condition was false.
+</p>
+
+<p>
+Other times, you'll completely ignore the return value, because you're
+not interested in it.  Take a look at the following code:
+
+<pre>
+  int x;
+  int y;
+  x = 5;
+  y = 9;
+  cout &lt;&lt; "The value of x is " &lt;&lt; x &lt;&lt; endl;
+  cout &lt;&lt; "The value of y is " &lt;&lt; y &lt;&lt; endl;
+  int sum;
+  sum = x + y;
+  cout &lt;&lt; "The sum of x and y is " &lt;&lt; sum &lt;&lt; endl;
+</pre>
+
+</p>
+
+<p>
+This chunk of code shows why you might want to throw away the return
+value of an operator.  Look at the third line, <code>x = 5</code>.
+We're using the assignment operator here to place the value
+<code>5</code> in the variable <code>x</code>.  Since the expression
+<code>x = 5</code> <i>returns</i> a value, and we're not using it,
+then you could say we are ignoring the return value.  However, note
+that a few of lines down, we are very interested in the return value
+of an operator.  The addition operator in the expression <code>x +
+y</code> <i>returns</i> the sum of its left-hand-side and
+right-hand-side.  That's how we are able to assign a value to
+<code>sum</code>.  You can think of it as <code>sum = (x + y)</code>,
+since that's what it's really doing.  <a href="cpp03_05.htm"> Operator
+precedence</a> is covered on the next page.
+</p>
+
+<p>
+The other assignment operators are all based on the equals sign, so
+make sure you understand that before going on.  Here's another
+assignment operator: <code>+=</code>.  How does it work?  You might
+guess that it has something to do with addition, and something to do
+with assignment.  You'd be absolutely right!  The <code>+=</code>
+operator takes the variable on its left-hand-side and adds the
+expression on its right-hand-side.  Whenever you see a statement that
+looks like the following:
+<pre>
+  myVar += something;
+</pre>
+it is identical to saying the following:
+<pre>
+  myVar = myVar + something;
+</pre>
+That's exactly what it's doing!  It's simply a shortcut.  
+
+<p>
+The other common assignment operators are <code>-=</code>,
+<code>*=</code>, <code>/=</code>, and <code>%=</code>.  They all
+function just like the <code>+=</code> operator, except instead of
+adding the value on the right-hand-side, they subtract, or multiply,
+or divide, or "mod" it.
+
+</p>
+<p>
+Just as the simple assignment operator <code>=</code> returns the
+value that it stored, all of the assignment operators return the value
+stored in the variable on the left-hand-side.  Here's an example of
+how you might take advantage of this return value.  It's not used
+terribly often, but it can sometimes be useful.
+<pre>
+  //these four variables represent the sides of a rectangle
+  int left;
+  int top;
+  int right;
+  int bottom;
+
+  //make it a square whose sides are 4
+  left = top = right = bottom = 4;
+</pre>
+
+All this code does is store the value in each of the four variables
+<code>left, top, right, </code> and <code>bottom</code>.  How does it
+work?  It starts on the far right-hand side.  It sees <code>bottom =
+4</code>.  So it places the value <code>4</code> in the variable
+<code>bottom</code>, and returns the value it stored in
+<code>bottom</code> (which is <code>4</code>).  Since <code>bottom =
+4</code> <a href="#evaluate">evaluates</a> to <code>4</code>, the
+variable <code>right</code> will also get the value <code>4</code>,
+which means <code>top</code> will also get <code>4</code>, which means
+<code>left</code> will also get <code>4</code>.  Phew!  Of course,
+this code could have just as easily been written
+
+<pre>
+  //these four variables represent the sides of a rectangle
+  int left;
+  int top;
+  int right;
+  int bottom;
+
+  //make it a square whose sides are 4
+  left = 4;
+  top = 4;
+  right = 4;
+  bottom = 4;
+</pre>
+
+and it would have done the exact same thing.  The first way is more
+compact, and you're more likely to see it written the first way.  But
+both ways are equally correct, so use whichever you prefer.
+
+</p>
+<hr>
+<table width="100%" border=0>
+<tr>
+<td align=left>
+<a href="cpp03_01.htm"><img border=0 src="pictures/buttons/prevs.gif" width=51 height=34 alt="&lt;&lt;=="></a>
+<a href="cpp03_03.htm"><img border=0 src="pictures/buttons/prevp.gif" width=37 height=34 alt="&lt;="></a>
+</td>
+<td align=center>
+<a href="index.htm">
+<img border=0 width=122 height=34 src="pictures/buttons/toc.gif"
+    alt="[table of contents]"></a>
+<a href="/cgi-bin/drw/cpp/search.cgi">
+<img border=0 width=46 height=34 src="pictures/buttons/search.gif"
+    alt="[search]"></a>
+<a href="glossary.htm">
+<img border=0 width=61 height=34 src="pictures/buttons/glossary.gif"
+    alt="[glossary]"></a>
+<a href="feedback.htm">
+<img border=0 width=65 height=34 src="pictures/buttons/feedback.gif"
+    alt="[feedback]"></a>
+</td>
+<td align=right>
+
+<a href="cpp03_05.htm"><img border=0 src="pictures/buttons/nextp.gif" width=37 height=34 alt="=&gt;"></a>
+<a href="cpp04_01.htm"><img border=0 src="pictures/buttons/nexts.gif" width=51 height=34 alt="==&gt;&gt;"></a>
+</td>
+</tr>
+</table>
+</body>
+</html>
+

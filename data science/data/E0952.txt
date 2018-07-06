@@ -1,0 +1,275 @@
+ID=E0952
+URL=http://www.accu.org/events/public/c_news.htm
+SIZE=11936
+DATE=12/07/02
+TIME=19:26:06
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html><head>
+
+<!-- Page Title -->
+<title>ACCU - C9X News</title>
+<!-- /Page Title -->
+
+<meta name="author" content="Association of C & C++ Users">
+<meta name="url" content="http://www.accu.org/events/public/c_news.htm">
+<meta name="description" content="optimise C for RISC processors">
+<meta name="keywords" content="C RISC optimise">
+<link rev="made" href="mailto:webmaster__at__accu.org" title="ACCU C News">
+</head>
+<body text="#000000" link="#6600cc" vlink="#cc6600" alink="#ff0000"
+ bgcolor="#ffffff">
+
+<table width=600 height=48 cellpadding=0 cellspacing=0 border=0>
+  <tr valign=top align=right><td height=41 width=115 valign=top><a
+  href="/index.htm"><img src="/icons/98/accu-sm.png" height=41 width=115
+  border=0 alt="Home Page"></a></td>
+  <td height=41 width=485><a name="top"><img src="/icons/98/black_l.png"
+  height=3 width=485 vspace=2 align=top border=0
+  alt="-------------------"></a><br>
+  <!-- Links here -->
+
+
+  <!-- /Links here -->
+  </td></tr>
+  <tr><td height=7 width=600 colspan=2><img src="/icons/98/black_l.png"
+  width=600 height=3 align=top alt="-------------------" vspace=2></td></tr>
+</table>
+
+<br>
+<strong><font size=6 face="arial,helvetica">
+<!-- Page Title -->
+
+C9X News
+- Proposals to optimise C for RISC processors
+
+<!-- /Page Title -->
+</font></strong>
+
+<hr>
+<!-- Main Body -->
+
+<h3>Efficiency, Aliasing, and the Proposed C9X restrict Qualifier</h3>
+
+
+<p>C was originally designed for efficiency, but it was designed for PDP-like
+systems, and modern RISC CPUs are very different.  One of the biggest problems
+with using C for many applications is that it is very hard (i.e. impossible)
+for a compiler to optimise memory access in general, and conforming, portable C
+gives very poor efficiencies compared with Fortran.</p>
+
+<p>This does not mean that Fortran is always more efficient, because there are
+some things that it is very bad at and C is much better.  But, when it comes to
+high-performance scientific computation, almost all of the fast codes have to
+be written in either Fortran or highly system-dependent C.  The problem with
+the latter is that it is easy to get wrong and is a long-term drain on
+resources.</p>
+
+<p>The hope must be that C can be extended to allow the same level of optimisation
+that is possible in Fortran 77.  It would be nice to do better, but let's be
+realistic!</p>
+
+
+<h3>What is the problem, and why is it serious?</h3>
+
+<p>A typical modern workstation is capable of executing an instruction every 1-2
+nanoseconds, but takes something like 100 nanoseconds to access a location in
+main memory (i.e. one that is not in the cache).  This means that, for good
+performance, either there must be fewer than 1 main memory access every 100
+instructions or something must be done to avoid the instruction stream blocking
+on memory accesses.</p>
+
+<p>Consider the following example:</p>
+
+<pre>    void fred (double * a, const int * b, int m, int n, int k) {
+        int i;
+        for (i = m; i &lt; n; i += k)
+            a[i] = b[i]*log(b[i])/const_log_2;
+    }</pre>
+
+<p>Any reasonable optimising compiler will convert the body of the loop into:</p>
+
+<ol><li>increment and test i
+<li>load b[i]
+<li>evaluate expression
+<li>write to a[i]</ol>
+
+<p>Steps (1) and (3) are pure CPU operations, and are fairly fast - due to the
+relative CPU speeds, a call to log is typically several times faster than a
+single main memory access.  Because the value of a[i] isn't used later in this
+code, most modern CPUs put the write into a pipeline for later completion, so
+step (4) doesn't hold up the loop.  [Advanced hackers, please note that I am
+simplifying for clarity!]  The important thing to note is that modern hardware
+optimises writes to memory fairly well.</p>
+
+<p>The problem is with step (2).  Step (3) cannot be evaluated until step (2) has
+been completed, and (in general) this needs a main memory access.  An
+increasingly common solution is for the compiler to preload operands.
+Typically, it inserts a non-blocking load that allows b[i+p*k] to be loaded
+during the iteration that calculates a[i], for some suitable value of p; when
+iteration i+p*k is reached, the load is checked for success and the value is
+used.</p>
+
+<p>Unfortunately, this works in Fortran but not C.  const means that the value is
+not changed through THAT pointer, not that it is unchanged through ANY pointer.
+The compiler has to assume that the log function may change any element of b[i]
+(think of errno, for why), and so it cannot preload b[i].  Many compilers DO
+have options to make such assumptions, but are then not conforming and some
+conforming programs will fail.</p>
+
+<p>So we need a way of saying that the data accessed through a particular pointer
+will be unchanged for the duration of the function call.</p>
+
+
+<h3>The draft C9X restrict qualifier</h3>
+
+<p>The restrict qualifier can be applied to pointer declarations to say that,
+during the scope of that pointer declaration, ALL data accessed through that
+pointer will be accessed ONLY through that pointer.  So our example changes
+into:</p>
+
+<pre>    void fred (double * restrict a, const int * restrict b,
+            int m, int n, int k) {
+        int i;
+        for (i = m; i &lt; n; i += k)
+            a[i] = b[i]*log(b[i])/const_log_2;
+    }</pre>
+
+<p>And this solves the problem.  Or does it?  Consider a slight variant:</p>
+
+<pre>    void fred (double * restrict a, const int * restrict b,
+            const int * restrict c, int m, int n, int k) {
+        int i;
+        for (i = m; i &lt; n; i += k)
+            a[i] = log(b[i]/c[i]))/const_log_2;
+    }</pre>
+
+<p>This does something similar, except that it takes two inputs.  The catch here
+is that all data accessed through b must be accessed only through b, and
+similarly for c.  This means that arrays b and c are not allowed to be the same
+or overlap, despite the fact that they are both read-only.  This might not
+matter in this case, but does matter very much when writing libraries for use
+by other people (e.g. LAPACK, NAG and so on.)  For example:</p>
+
+<pre>    double x[100], y[100], z[100];
+    fred(x,y,z,1,100,1);            /* Right, as expected */
+    fred(x,y,x,1,100,1);            /* Wrong, as expected */
+    fred(x,y,y,1,100,1);            /* Wrong, unexpectedly */</pre>
+
+<p>This is actually so deceptive that it has caught out the authors of the C9X
+draft (the proposed new C standard.)  In its first public draft, fopen was
+declared as:</p>
+
+<pre>    FILE *fopen (const char * restrict filename, const char * restrict mode);</pre>
+
+<p>which makes calls like fopen("/tmp/gnurr","r") undefined, as string literals
+may overlap.  This has been fixed by removing restrict from fopen, but there
+are other examples (such as sscanf) which are still wrong.  One might ask, if
+restrict is too limited for use in the standard library and confuses the
+authors of the standard, doesn't that indicate that it needs improvement?</p>
+
+
+<h3>Existing practice and all that</h3>
+
+<p>Since time immemorial (in computing terms), data locking has allowed the
+following:</p>
+
+<p><em>EITHER</em> exclusive access, with no limitation on use (i.e. only one 'owner'
+at one time, and the data may be updated)</p>
+
+<p><em>OR</em> shared access, for reading only (i.e. an arbitrary number of people
+may access the data, but none of them may change it.)</p>
+
+<p>These alternatives are supported by MVS file locking, traditional Unix memory
+management and Fortran array arguments, to name just a few.  Unfortunately, the
+current proposed restrict qualifier allows only the first.  This might not
+matter, if it wasn't for the properties of the hardware mentioned in the
+previous section.  We don't need improvements for writing, but we badly need
+improvements for reading.</p>
+
+<p>As mentioned above, many of the users who are most interested in maximum
+performance use libraries such as LAPACK and NAG.  These libraries are designed
+to call the BLAS as much as possible, so that only the BLAS need hand-tuning.
+But it does mean that the LAPACK code has to call functions from a completely
+separate library, and a conforming compiler cannot do any clever cross-function
+optimisation.</p>
+
+<p>Let's consider an imaginary LAPACK function that takes two matrices, munges
+them together and writes a third - conceptually, this is rather like matrix
+multiplication.  For clarity, we shall omit the array bounds and all other
+ancilliary arguments, and have to choose between:</p>
+
+<pre>    void munge (double * restrict x, double const * y, double const * z);
+
+    void munge (double * restrict x, double const * restrict y,
+        double const * restrict z);</pre>
+
+<p>But, to maintain the existing (Fortran) specification and to simplify life for
+users, we want to support the case when y and z are the same or overlap.  So we
+have to use the first form.  Because the BLAS are a completely separate
+library, the compiler has to assume that any of the the BLAS functions may
+change either or both of y and z, and therefore cannot preload them by very
+much.  Fortran has no such problems.</p>
+
+
+<h3>Towards a solution</h3>
+
+<p>It would seem a good idea to say that const and restrict together mean that the
+data must be read-only, and may be shared, but there turn out to be technical
+problems that are too horrible to describe here.  They don't show up in simple
+examples, such as the above, but only when the arguments are pointers to
+pointers or worse.  The basic problem is that const applies to a single level,
+but restrict applies to all objects accessed through a pointer.</p>
+
+<p>The alternative approach is to modify the specification of restrict to allow
+the conventional read-shared-or-update-exclusive model.  This seems to be
+feasible, and two possible wordings have been suggested.  However, it is a
+significant extension to the draft standard and has not so far been accepted.
+The UK's C panel believes that some improvement to restrict is essential.</p>
+
+<p>People who want to discuss this further and have some expertise in this area
+should look at the newsgroup comp.std.c - but be warned that the posters on
+that group are quite rude to people asking for simple programming advice!
+comp.lang.c or comp.lang.c.moderated are better for that.  The author of this
+is happy to be contacted by people who want to discuss complex problems in this
+area, but is extremely busy at present and cannot help with tuning advice.  C
+experts who feel that this area is very important to them should consider
+joining the UK's C panel - or that of another country if it is more
+appropriate.</p>
+
+<em><a href="/cgi-bin/spamblock.pl?ref=bm1tMUBjYW0uYWMudWs">Nick Maclaren</a> - 5th August 1998</em>
+
+<hr width="30%">
+
+<h3>References</h3>
+
+<dl>
+<dt><strong>LAPACK</strong> - Linear Algebra Package
+<dd>a public-domain collection of very
+high-quality routines to solve most common linear algebra problems.
+
+<dt><strong>NAG</strong> - Numerical Algorithms Group
+<dd>a commercial library of very high-quality
+routines to solve most common numerical problems.
+
+<dt><strong>BLAS</strong> - Basic Linear Algebra Subroutines
+<dd>a set of primitive routines designed
+and used by LAPACK and NAG, intended to be hand-optimised for the particular
+system.</dl>
+
+<hr width="30%">
+
+
+<em>Nick Maclaren can be reached at:
+University of Cambridge Computing Service,<br>
+New Museums Site, Pembroke Street, Cambridge CB2 3QG, England.<br>
+Tel.:  +44 1223 334761    Fax:  +44 1223 334679</em>
+
+<!-- /Main Body -->
+<hr>
+
+<em>Last Update - 9 September 1998.<br><br>
+<a href="/copyright.htm">Copyright</a> &copy; The Association of C & C++
+Users 1998. All rights reserved.</em>
+</body></html>
+

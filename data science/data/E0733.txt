@@ -1,0 +1,488 @@
+ID=E0733
+URL=http://www.gotw.ca/gotw/049.htm
+SIZE=29082
+DATE=12/07/02
+TIME=19:23:54
+DATASET=C
+HTML=
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+
+
+<title>GotW #49: Template Specialization and Overloading</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<link rel="stylesheet" type="text/css" href="../gotw.css">
+<meta name="Microsoft Theme" content="gotw 111, default">
+<meta name="Microsoft Border" content="tlb, default">
+</head>
+
+<body background="../_themes/gotw/glabkgnd.jpg" bgcolor="#CCFFFF" text="#000000" link="#008080" vlink="#008080" alink="#0000FF"  ><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><table border="0" cellspacing="0" width="100%">
+  <tr>
+    <td colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="6"><strong>
+    GotW #49</strong></font> <!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+
+
+
+<p align="left" style="margin-top: 0; margin-bottom: 0">
+
+<script language="JavaScript"><!--
+MSFPhover = 
+  (((navigator.appName == "Netscape") && 
+  (parseInt(navigator.appVersion) >= 3 )) || 
+  ((navigator.appName == "Microsoft Internet Explorer") && 
+  (parseInt(navigator.appVersion) >= 4 ))); 
+function MSFPpreload(img) 
+{
+  var a=new Image(); a.src=img; return a; 
+}
+// --></script><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav1n=MSFPpreload("../_derived/home_cmp_gotw110_hbtn.gif"); MSFPnav1h=MSFPpreload("../_derived/home_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1h.src" onmouseout="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1n.src"><img src="../_derived/home_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Home" align="middle" name="MSFPnav1"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav2n=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn.gif"); MSFPnav2h=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../news.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2h.src" onmouseout="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2n.src"><img src="../_derived/news.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="News &amp; Events" align="middle" name="MSFPnav2"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav3n=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav3h=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../resources/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3h.src" onmouseout="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3n.src"><img src="../resources/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Community Resources" align="middle" name="MSFPnav3"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav4n=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn.gif"); MSFPnav4h=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../consulting.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4h.src" onmouseout="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4n.src"><img src="../_derived/consulting.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Consulting Services" align="middle" name="MSFPnav4"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav5n=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn.gif"); MSFPnav5h=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../presentations.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5h.src" onmouseout="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5n.src"><img src="../_derived/presentations.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Presentations" align="middle" name="MSFPnav5"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav6n=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav6h=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../publications/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6h.src" onmouseout="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6n.src"><img src="../publications/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Publications" align="middle" name="MSFPnav6"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav7n=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav7h=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7h.src" onmouseout="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7n.src"><img src="_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Guru of the Week" align="middle" name="MSFPnav7"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav8n=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav8h=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../conv/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8h.src" onmouseout="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8n.src"><img src="../conv/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Conversations" align="middle" name="MSFPnav8"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav9n=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn.gif"); MSFPnav9h=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../search.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9h.src" onmouseout="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9n.src"><img src="../_derived/search.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Search GotW.ca" align="middle" name="MSFPnav9"></a>
+</p>
+
+
+
+
+    <!--mstheme--></font></td>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 0">
+      <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav10n=MSFPpreload("../_derived/back_cmp_gotw110_back.gif"); MSFPnav10h=MSFPpreload("../_derived/back_cmp_gotw110_back_a.gif"); }
+// --></script><a href="048.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10h.src" onmouseout="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10n.src"><img src="../_derived/back_cmp_gotw110_back.gif" width="100" height="20" border="0" alt="Prev" name="MSFPnav10"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav11n=MSFPpreload("../_derived/up_cmp_gotw110_up.gif"); MSFPnav11h=MSFPpreload("../_derived/up_cmp_gotw110_up_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11h.src" onmouseout="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11n.src"><img src="../_derived/up_cmp_gotw110_up.gif" width="100" height="20" border="0" alt="Up" name="MSFPnav11"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav12n=MSFPpreload("../_derived/next_cmp_gotw110_next.gif"); MSFPnav12h=MSFPpreload("../_derived/next_cmp_gotw110_next_a.gif"); }
+// --></script><a href="050.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12h.src" onmouseout="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12n.src"><img src="../_derived/next_cmp_gotw110_next.gif" width="100" height="20" border="0" alt="Next" name="MSFPnav12"></a><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td height="5" background="../images/bar.gif" colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td></tr><!--msnavigation--></table><!--msnavigation--><table dir="ltr" border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td valign="top" width="1%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<!--mstheme--></font><table border="0" cellspacing="0" bgcolor="#000000" cellpadding="0">
+  <tr>
+    <td><!--mstheme--><font face="Arial, Arial, Helvetica">
+    <!--mstheme--></font><table border="0" cellpadding="2" cellspacing="1" width="100%" height="483">
+        <tr>
+          <td align="center" bgcolor="#000000" colspan="2" height="16"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-top: 0; margin-bottom: 0"><a href="../news.htm"><b><font color="#FFFF00">News</font></b></a><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <font size="1" color="#0000FF">J<br>
+          U<br>
+          L<br>
+          Y</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-left: 3; margin-right: 3; margin-top: 0" align="center"><font size="1" color="#0000FF">
+            Print articles newly available online</font><!--mstheme--></font><table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%" id="AutoNumber1" bgcolor="#FFFFCC" bordercolordark="#006666" bordercolorlight="#99CCCC">
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill20.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 1&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000" bgcolor="#FFFFCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mxc++-item-4.htm">
+                <font color="#0000FF">Excerpt from MXC++, &quot;Extensible Templates: 
+                Via Inheritance or Traits?&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mcd_review.htm"><font color="#0000FF">
+                Book Review: Modern C++ Design</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill21.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 2: Namespaceops and 
+                Library Versioning&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+            </table><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;A Pragmatic Look at Exception Specifications&quot;<br>
+            </font><font size="1" color="#000080">The usefulness, or lack 
+            thereof, of exception specifications, and how results can vary 
+            across real-world compilers</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <a target="_blank" href="http://www.cuj.com/experts/2007/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;Getting to the Point&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">The Boost library has five 
+            smart pointers that provide a rich array [sic] of useful behaviors.</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font color="#0000FF" size="1">A<br>
+            U<br>
+          G<br>
+          U<br>
+          S<br>
+          T</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin:0 3; ">
+            <a target="_blank" href="http://www.cuj.com/experts/2008/sutter.htm"><i><b><font size="1" color="#0000FF">The New C++</font></b></i> <font size="1" color="#0000FF">
+            column, &quot;Smart(er) Pointers&quot;</font></a><font size="1" color="#000080"><br>
+            A closer look at one of the proposed new standard C++ library 
+            features -- smart pointers, particularly those in Boost and Loki, 
+            and a sneak peek at the usefulness of the proposed typedef templates</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin:0 3; ">
+          <a target="_blank" href="http://www.cuj.com/experts/2008/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;A Midsummer Night's Madness&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">A brew that mixes pointers, 
+          typedefs, and const</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin-top: 0; margin-bottom: 0">
+          <font size="1" color="#0000FF">S<br>
+          E<br>
+          P<br>
+          T<br>
+          E<br>
+          M<br>
+          B<br>
+          E<br>
+          R</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <font size="1" color="#0000FF">&quot;Standard C++ Meets Managed C++&quot;<br>
+            </font><font size="1" color="#000080">A survey of the main (in)compatibilities 
+            between Standard C++ and Microsoft’s managed extensions for C++, and 
+            how the two could converge</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;Export Restrictions, Part 1&quot;<br>
+            </font><font size="1" color="#000080">The scoop on export -- what 
+            some people think it does, what it actually does, and why it’s the 
+            most widely-ignored feature in the C++ standard</font><!--mstheme--></font></td>
+        </tr>
+      </table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p style="margin-top: 0; margin-bottom: 0">
+<img border="0" src="../images/140.gif" width="140" height="1"></p>
+
+<!--mstheme--></font></td><td valign="top" width="24"></td><!--msnavigation--><td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica">
+<!--mstheme--></font><table border="1" cellpadding="6" cellspacing="0" width="100%" bgcolor="#CCCCFF" bordercolordark="#006666" bordercolorlight="#99CCCC">
+  <tr>
+    <td width="100%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p align="center">This is the original GotW problem and solution
+      substantially as posted to Usenet. See the book <i><a href="../publications/mxc++.htm"><b>More
+      Exceptional C++</b></a></i> (Addison-Wesley, 2002) for the most current
+      solution to this GotW issue. The solutions in the book have been revised
+      and expanded since their initial appearance in GotW. The book versions
+      also incorporate corrections, new material, and conformance to the final
+      ANSI/ISO C++ standard.</p>
+    <!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+<h2><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Template Specialization and Overloading<font size="3"><br>
+      Difficulty: 6 / 10</font><!--mstheme--></font></h2>
+<p><i>How do you specialize and overload templates? When you do, how do you
+determine which template gets called? Try your hand at analyzing these twelve
+examples.</i></p>
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Problem<!--mstheme--></font></h3>
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">JG Questions<!--mstheme--></font></h4>
+<p><b><font size="4">1.</font></b>   What is template specialization? Give an
+example.</p>
+<p><b><font size="4">2.</font></b>   What is partial specialization? Give an
+example.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Guru Question<!--mstheme--></font></h4>
+<p><b><font size="4">3.</font></b>   Consider the following declarations:</p>
+<!--mstheme--></font><pre>    template&lt;typename T1, typename T2&gt;
+    void f( T1, T2 );                       // 1
+    template&lt;typename T&gt; void f( T );       // 2
+    template&lt;typename T&gt; void f( T, T );    // 3
+    template&lt;typename T&gt; void f( T* );      // 4
+    template&lt;typename T&gt; void f( T*, T );   // 5
+    template&lt;typename T&gt; void f( T, T* );   // 6
+    template&lt;typename T&gt; void f( int, T* ); // 7
+    template&lt;&gt; void f&lt;int&gt;( int );          // 8
+    void f( int, double );                  // 9
+    void f( int );                          // 10</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Which of the above functions are invoked by each of the following? Be
+specific by identifying the template parameter types, where appropriate.</p>
+<!--mstheme--></font><pre>    int             i;
+    double          d;
+    float           ff;
+    complex&lt;double&gt; c;
+
+    f( i );         // a
+    f&lt;int&gt;( i );    // b
+    f( i, i );      // c
+    f( c );         // d
+    f( i, ff );     // e
+    f( i, d );      // f
+    f( c, &amp;c );     // g
+    f( i, &amp;d );     // h
+    f( &amp;d, d );     // i
+    f( &amp;d );        // j
+    f( d, &amp;i );     // k
+    f( &amp;i, &amp;i );    // l</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a name="Solution"></a>Solution<!--mstheme--></font></h3>
+
+<p>Templates provide C++'s most powerful form of genericity. They allow you to
+write generic code that works with many kinds of unrelated objects; for example,
+strings that contain various kinds of characters, containers that can hold
+arbitrary types of objects, and algorithms that can operate on arbitrary types
+of sequences.</p>
+
+<p><font color="#999933"><b><font size="4">1.</font></b>   What is template
+specialization? Give an example.</font></p>
+<p>Template specialization lets templates deal with special cases. Sometimes a
+generic algorithm can work much more efficiently for a certain kind of sequence
+(for example, when given random-access iterators), and so it makes sense to
+specialize it for that case while using the slower but more generic approach for
+all other cases. Performance is a common reason to specialize, but it's not the
+only one; for example, you might also specialize a template to work with certain
+objects that don't conform to the normal interface expected by the generic
+template.</p>
+<p>These special cases can be handled using two forms of template
+specialization: explicit specialization, and partial specialization.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Explicit Specialization<!--mstheme--></font></h4>
+<p>Explicit specialization lets you write a specific implementation for a
+particular combination of template parameters. For example, given the function
+template:</p>
+<!--mstheme--></font><pre>  template&lt;class T&gt; void sort(Array&lt;T&gt;&amp; v) { /*...*/ };</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>If we have a faster (or other specialized) way we want to deal specifically
+with arrays of char*'s, we could explicitly specialize:</p>
+
+<!--mstheme--></font><pre>  template&lt;&gt; void sort&lt;char*&gt;(Array&lt;char*&gt;&amp;);</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>The compiler will then choose the most appropriate template:</p>
+
+<!--mstheme--></font><pre>  Array&lt;int&gt;   ai;
+  Array&lt;char*&gt; apc;
+
+  sort( ai );       // calls sort&lt;int&gt;
+  sort( apc );      // calls specialized sort&lt;char*&gt;</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Partial Specialization<!--mstheme--></font></h4>
+
+<p><font color="#999933"><b><font size="4">2.</font></b>   What is partial
+specialization? Give an example.</font></p>
+<p>For class templates only, you can define partial specializations that don't
+have to fix all of the primary (unspecialized) class template's parameters.</p>
+<p>Here is an example from 14.5.4 [temp.class.spec]. The first template is the
+primary class template:</p>
+<!--mstheme--></font><pre>  template&lt;class T1, class T2, int I&gt;
+  class A             { };             // #1</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>We can specialize this for the case when T2 is a T1*:</p>
+
+<!--mstheme--></font><pre>  template&lt;class T, int I&gt;
+  class A&lt;T, T*, I&gt;   { };             // #2</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>Or for the case when T1 is any pointer:</p>
+
+<!--mstheme--></font><pre>  template&lt;class T1, class T2, int I&gt;
+  class A&lt;T1*, T2, I&gt; { };             // #3</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>Or for the case when T1 is int and T2 is any pointer and I is 5:</p>
+
+<!--mstheme--></font><pre>  template&lt;class T&gt;
+  class A&lt;int, T*, 5&gt; { };             // #4</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>Or for the case when T2 is any pointer:</p>
+
+<!--mstheme--></font><pre>  template&lt;class T1, class T2, int I&gt;
+  class A&lt;T1, T2*, I&gt; { };             // #5</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>Declarations 2 to 5 declare partial specializations of the primary template.
+The compiler will then choose the appropriate template. From 14.5.4.1
+[temp.class.spec.match]:</p>
+
+<!--mstheme--></font><pre>  A&lt;int, int, 1&gt;   a1;  // uses #1
+  A&lt;int, int*, 1&gt;  a2;  // uses #2, T is int,
+                        //          I is 1
+  A&lt;int, char*, 5&gt; a3;  // uses #4, T is char
+  A&lt;int, char*, 1&gt; a4;  // uses #5, T1 is int,
+                        //          T2 is char,
+                        //          I is 1
+  A&lt;int*, int*, 2&gt; a5;  // ambiguous:
+                        // matches #3 and #5</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Function Template Overloading<!--mstheme--></font></h4>
+
+<p>Now let's consider function template overloading. It isn't the same thing as
+specialization, but it's related to specialization.</p>
+<p>C++ lets you overload functions, yet makes sure the right one is called:</p>
+<!--mstheme--></font><pre>  int  f( int );
+  long f( double );
+
+  int    i;
+  double d;
+
+  f( i );   // calls f(int)
+  f( d );   // calls f(double)</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>Similarly, you can also overload function templates, which brings us to the
+final question:</p>
+
+<p><font color="#999933"><b><font size="4">3.</font></b>   Consider the
+following declarations:</font></p>
+<!--mstheme--></font><pre><font color="#999933">    template&lt;typename T1, typename T2&gt;
+    void f( T1, T2 );                       // 1
+    template&lt;typename T&gt; void f( T );       // 2
+    template&lt;typename T&gt; void f( T, T );    // 3
+    template&lt;typename T&gt; void f( T* );      // 4
+    template&lt;typename T&gt; void f( T*, T );   // 5
+    template&lt;typename T&gt; void f( T, T* );   // 6
+    template&lt;typename T&gt; void f( int, T* ); // 7
+    template&lt;&gt; void f&lt;int&gt;( int );          // 8
+    void f( int, double );                  // 9
+    void f( int );                          // 10</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>First, let's simplify things a little by noticing that there are two groups
+of overloaded f's here: Those that take a single parameter, and those that take
+two parameters. [Note: I deliberately didn't muddy the waters by including an
+overload with two parameters where the second parameter had a default. Had there
+been such a function, then for the purposes of determining the correct ordering
+it should be considered in both lists: once as a single-parameter function
+(using the default), and once as a two-parameter funtion (not using the
+default).]</p>
+<!--mstheme--></font><pre>    template&lt;typename T1, typename T2&gt;
+    void f( T1, T2 );                       // 1
+    template&lt;typename T&gt; void f( T, T );    // 3
+    template&lt;typename T&gt; void f( T*, T );   // 5
+    template&lt;typename T&gt; void f( T, T* );   // 6
+    template&lt;typename T&gt; void f( int, T* ); // 7
+    void f( int, double );                  // 9
+
+    template&lt;typename T&gt; void f( T );       // 2
+    template&lt;typename T&gt; void f( T* );      // 4
+    template&lt;&gt; void f&lt;int&gt;( int );          // 8
+    void f( int );                          // 10</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Now let's consider each of the calls in turn:</p>
+<p><font color="#999933">Which of the above functions are invoked by each of the
+following? Be specific by identifying the template parameter types, where
+appropriate.</font></p>
+<!--mstheme--></font><pre><font color="#999933">    int             i;
+    double          d;
+    float           ff;
+    complex&lt;double&gt; c;
+
+    f( i );         // a</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>A. This calls #10, because it's an exact match for #10 and such non-templates
+are always preferred over templates (see 13.3.3).</p>
+
+<!--mstheme--></font><pre><font color="#999933">    f&lt;int&gt;( i );    // b</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>B. This calls #8, because f&lt;int&gt; is being explicitly requested.</p>
+
+<!--mstheme--></font><pre><font color="#999933">    f( i, i );      // c</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>C. This calls #3 (T is int), because that is the best match.</p>
+
+<!--mstheme--></font><pre><font color="#999933">    f( c );         // d</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>D. This calls #2 (T is complex&lt;double&gt;), because no other f can match.</p>
+
+<!--mstheme--></font><pre><font color="#999933">    f( i, ff );     // e</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>E. This calls #1 (T1 is int, T2 is float). You might think that #9 is very
+close -- and it is -- but a nontemplate function is preferred only if it is an
+exact match.</p>
+
+<!--mstheme--></font><pre><font color="#999933">    f( i, d );      // f</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>F. This one does call #9, because now #9 is an exact match and the
+nontemplate is preferred.</p>
+
+<!--mstheme--></font><pre><font color="#999933">    f( c, &amp;c );     // g</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>G. This calls #6 (T is complex&lt;double&gt;), because #6 is the closest
+overload. #6 provides an overload of f where the second parameter is a pointer
+to the same type as the first parameter.</p>
+
+<!--mstheme--></font><pre><font color="#999933">    f( i, &amp;d );     // h</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>H. This calls #7 (T is double), because #7 is the closest overload.</p>
+
+<!--mstheme--></font><pre><font color="#999933">    f( &amp;d, d );     // i</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>I. This calls #5 (T is double). #5 provides an overload of f where the first
+parameter is a pointer to the same type as the second parameter.</p>
+
+<p>Only a few more to go...</p>
+
+<!--mstheme--></font><pre><font color="#999933">    f( &amp;d );        // j</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>J. Clearly (by now), we're asking for #4 (T is double).</p>
+
+<!--mstheme--></font><pre><font color="#999933">    f( d, &amp;i );     // k</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>K. Several other overloads are close, but only #1 fits the bill here (T1 is
+double, T2 is int*).</p>
+
+<p>And finally...</p>
+
+<!--mstheme--></font><pre><font color="#999933">    f( &amp;i, &amp;i );    // l</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>L. This calls #3 (T is int*), which is the closest overload even though some
+of the others explicitly mention a pointer parameter.</p>
+<p>The Good News:</p>
+<blockquote>
+  <p>Compiler vendors will soon be supporting templates better, so that you can
+  make use of features like the above more reliably and portably.</p>
+</blockquote>
+<p>The Bad News:</p>
+<blockquote>
+  <p>If you got all of the above answers right, you probably know the rules
+  better than your current compiler.</p>
+</blockquote>
+&nbsp;<!--mstheme--></font><!--msnavigation--></td></tr><!--msnavigation--></table><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><h4 align="right"><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a href="../copyright.htm"><font size="2">Copyright ©
+2002 Herb Sutter</font></a><!--mstheme--></font></h4>
+
+<!--mstheme--></font></td></tr><!--msnavigation--></table></body>
+</html>
+

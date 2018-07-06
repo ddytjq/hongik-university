@@ -1,0 +1,106 @@
+ID=F0545
+URL=http://www.chez.com/scribe/en/directx/ddraw_pixelformat.htm
+SIZE=4841
+DATE=09/07/2002
+TIME=13:22:15
+DATASET=Visual Basic
+HTML=<HTML>
+<HEAD>
+<LINK rel="stylesheet" type="text/css" href="../..//global.css">
+</HEAD>
+<BODY>
+<TABLE class="menu" width="100%"><TR><TD class="header">
+<A href="../index.htm">Home</A> - <A href="../about/index.htm">About</A> - <A href="../assembly/index.htm">Assembly</A> - <A href="../directx/index.htm">DirectX</A> - <A href="../opengl/index.htm">OpenGL</A> - <A href="../dotnet/index.htm">.NET</A> - <A href="../psdk/index.htm">Platform SDK</A> - <A href="../downloads/index.htm">Downloads</A> - <A href="../links/index.htm">Links</A></TD>
+<TD class="header" style="text-align:right">January 9, 2000</TD></TR></TABLE><TABLE align="right"><TR><TD><!-- BEGIN WEBSIDESTORY CODE -->
+<!-- COPYRIGHT 1997-2001 WEBSIDESTORY, INC. ALL RIGHTS RESERVED. U.S.PATENT PENDING. Privacy notice at: http://websidestory.com/privacy -->
+<!-- webbot bot="HTMLMarkup" startspan -->
+<script language="javascript">
+var _pn="en - Pixel Format"; //page name
+var _acct="WQ5909151KCE94EN7";   //account number
+var _pndef="title";var _hcv=65;var _mn="wf200";
+var _lp=location.protocol.indexOf('https')==0?"https://":"http://";
+var _gn="hg1.hitbox.com";function _ps(_h){if(_h.indexOf("en - Pixel Format")==0) {
+if (_pndef=="title"){return document.title?document.title:_pndef;}else{
+var _g=location.pathname;_h=_g.substring(_g.lastIndexOf("/")+1,_g.length);
+if(_h==""){return _pndef};}};return _h;}var _sv=10;var _bn=navigator.appName;
+if(_bn.substring(0,9)=="Microsoft"){_bn="MSIE";};var _bv=Math.round(parseFloat(navigator.appVersion)*100);
+if((_bn=="MSIE")&&(parseInt(_bv)==2))_bv=301;var _rf=escape(document.referrer);_pn=_ps(_pn);
+var _hbfa="<a href='http://rd1.hitbox.com/rd?acct="+_acct+"' target=_top><img src='";
+var _hbfc="' border=0 width=125 height=125></a><div><font face='MS Sans Serif,Arial,Helvetica '"+
+"size=1><a href='http://counter.hitbox.com/a/hitboxfree.cgi' target='_blank'>privacy</a></font></div>";
+var _hbfb="";</script><script language="javascript1.1" id="_hbc">_sv=11;</script><script
+language="javascript1.1" src="http://stats.hitbox.com/js/hbf.js"></script><script language="javascript">
+if(_hbfb.length!=0){document.write(_hbfa+_hbfb+_hbfc);}else{if((_rf=="undefined")||(_rf=="")){
+_rf="bookmark";};document.write(_hbfa+_lp+_gn+"/HG?hc="+_mn+"&hb="+_acct+"&n="+escape(_pn)+
+"&cd=1&hv=6"+"&bn="+escape(_bn)+"&bv="+_bv+"&ss=na&sc=na&dt=&sv="+_sv+"&ja=na&ln=na&pl=&rf="+_rf+_hbfc);}
+</script><noscript><a href="http://rd1.hitbox.com/rd?acct=WQ5909151KCE94EN7" target=_top><img
+src = "http://hg1.hitbox.com/HG?hc=wf200&cd=1&hv=6&ce=u&hb=WQ5909151KCE94EN7&n=en - Pixel Format"
+border="0" width=125 height=125></a><div><font face="MS Sans Serif,Arial,Helvetica" size=1><a
+href="http://counter.hitbox.com/a/hitboxfree.cgi" target="_blank">privacy</a></font></div>
+</noscript><!--//-->
+
+<!-- webbot bot="HTMLMarkup" endspan -->
+<!-- END WEBSIDESTORY CODE  -->
+</TD></TR></TABLE>
+<TABLE align="center"><TR><TD align="right" class="header" width="45%"><A href="ddraw7.htm">DirectDraw Essentials</A>&nbsp;&lt;&lt;</TD>
+<TD align="center" class="header" width="10%"><A href="index.htm">Up</A></TD><TD align="left" class="header" width="45%">&gt;&gt;&nbsp;<A href="d3d_ddraw.htm">Using Direct3D for 2D applications</A></TD></TR></TABLE>
+<H1>Pixel Format</H1>
+<DIV align="center">
+<IMG src="../../images/pixelformat.gif" alt="PixelFormat snapshot" width="204" height="222">
+<BR clear="all">
+<A href="../../downloads/pixelformat.zip">pixelformat.zip</A> (2 Kb)
+</DIV>
+<P>We saw that surfaces are nothing else than memory areas either in system or video memory, storing graphics data. Those data are available to a DirectDraw application in their native format, as they are stored in your graphic card memory. </P>
+To retrieve the pixel format used by a particular surface, you'll have to use the <CODE>GetPixelFormat</CODE> method. It fills a <CODE>DDPIXELFORMAT</CODE> structure that indicates the size and position of each color component. To better understand the layout of each pixel, it's much better to convert those masks to binary values. Though binary arithmetic is out of the scope of this page, remember that :
+<UL>
+<LI>Shifting a binary value one bit to the right is nothing else than dividing by 2
+<LI>Shifting a binary value one bit to the left is the same as multiplying by 2
+</UL>
+For a 16 bit mode one could find :
+<TABLE border=1>
+<TR><TH></TH><TH>lRBitMask</TH><TH>lGBitMask</TH><TH>lBBitMask</TH></TR>
+<TR><TD>Binary</TD><TD>0111110000000000</TD><TD>0000011111100000</TD><TD>0000000000011111</TD></TR>
+<TR><TD><CODE>OneBitCount</CODE></TD><TD>5</TD><TD>5</TD><TD>5</TD></TR>
+<TR><TD><CODE>ZeroBitCount</CODE></TD><TD>10</TD><TD>5</TD><TD>0</TD></TR>
+</TABLE>
+<P>This mode is know as the "555" mode from the number of bits for each color component but another card could also use a 565 mode. Moreover when using a 24 bits mode, your card will likely use a 888 mode. You'll have to be able to convert a RGB value to whatever pixel format the graphic card is using.</P>
+To convert each of the RGB color component that is stored in a 8 bit value, you'll have :
+<UL>
+<LI>To drop possibly unused lower bits by shifting the value <CODE>8-OneBitCount</CODE> bits to the right, that is dividing by <CODE>2^(8-OneBitCount)</CODE>
+<LI>To store this resulting value at the appropriate location by shifting the value <CODE>ZeroBitCount</CODE> to the left that is multiplying by <CODE>2^ZeroBitCount</CODE>
+<LI>All those individual values are added to compose the final color value
+</UL>
+<STRONG>Note</STRONG> : this will work for non palettized mode only (better than 8 bits per pixel). In palettized mode, the value stored at a pixel location, is the index of the corresponding color. <CODE>DirectX7.CreateColorRGB</CODE> could also be though as being usefull for this purpose but this one just convert a Single color components to a logical color value and is intended for Direct3D).
+<H2>Color Keying</H2>
+<P>When using the pixel format to obtain a color key value, you could also just use something much simpler such as using magenta for your backgrounds. As magenta is just red and blue, the color key value for magenta is just <CODE>PixelFormat.lRBitMask + PixelFormat.lBBitMask</CODE>.</P>
+<HR>
+<DIV class="copyright"><A href="../mail.htm">Patrice Scribe</A></DIV>
+</BODY>
+</HTML>
+<!-- -->
+</noscript>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+<!--
+var rnd = Math.floor(Math.random() * 9) + 1 ; 
+if (rnd <= 4) { 
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/default','pub','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=470,height=120');
+} else if(rnd == 5) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre4','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=200,height=200');
+} else if(rnd == 6) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre2','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=200,height=200');
+} else if(rnd >= 7) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=200,height=200');
+}
+// -->
+</SCRIPT>
+
+<script language="javascript">
+WEBO_ZONE=122;
+WEBO_PAGE=1;
+weboplus_ok=0;
+</script>
+<script language="javascript"
+src="http://js.libertysurf.fr/chez/weborama/weboscopeplus.js"></SCRIPT>
+<SCRIPT>if(weboplus_ok==1){weboplus_zp(WEBO_ZONE,WEBO_PAGE);}
+</script>
+

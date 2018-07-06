@@ -1,0 +1,968 @@
+ID=G0082
+URL=http://aa.usno.navy.mil/murison/FAME/ObservationDensity/AstrometricErrors.html
+SIZE=42669
+DATE=09/07/2002
+TIME=16:15:53
+DATASET=Astronomy
+HTML=<html>
+<head>
+<title>FAME Astrometric Errors Simulation</title>
+<meta name="keywords" content="">
+<meta name="description" content="" >
+<meta name="owner" content="
+    Marc A. Murison
+    U.S. Naval Observatory
+	3450 Massachusetts Ave, NW
+    Washington, DC  20392-5420
+    murison@arnold.usno.navy.mil
+    http://arnold.usno.navy.mil/murison/
+">
+<link rel="stylesheet" href="../../css/default.css" type="text/css">
+<script language="JavaScript" src="../../js/default.js"></script>
+</style>
+</head>
+<body>
+
+<!-------------------------------------------------->
+<!--------------------- header --------------------->
+<!-------------------------------------------------->
+<script language="JavaScript">
+<!--------------
+	WritePageHeader( "<span class=\"xxlarge\">FAME Mission Astrometric Errors</span>", "graphics/home_icon.gif", 84, 100, "http://arnold.usno.navy.mil/murison/", "graphics/bar.gif" );
+//-------------->
+</script>
+
+<!-------------------------------------------------->
+<!--------------------- content -------------------->
+<!-------------------------------------------------->
+<div>
+
+<a href="../"><img src="graphics/2left.gif" width="15" height="15" border="0"></a>&nbsp;Back to <a href="../">my FAME page</a>
+<p>
+<div align="center"><img src="graphics/bar.gif" width="640" height="5" alt="" border="0"></div>
+<br>
+
+<!----------------------------------------------------------------------------->
+<span class="xxlarge">Contents</span>
+<!----------------------------------------------------------------------------->
+<ul>
+	<li><a href="#summary">Summary of Results</a>
+    <ul>
+    	<li><a href="#summary_psi">Variation of Precession Cone Angle</a>
+    	<li><a href="#summary_Ttheta">Variation of Spin Period</a>
+    	<li><a href="#summary_Tphi">Variation of Precession Period</a>
+	    <li><a href="#summary_5yr">5-Year Extended Mission</a>
+    </ul>
+	<li><a href="#sim_details">Simulation Details</a>
+	<li><a href="#cone_angle_variation">Variation of Precession Cone Angle</a>
+    <ul>
+    	<li><a href="#all_sky_images">All-Sky Images (45-degree case)</a>
+    	<li><a href="#histo_behavior">Histogram Characteristics and Behavior</a>
+    	<li><a href="#histograms">Simulation Histograms</a>
+	    <li><a href="#medians">Median Values by Latitude</a>
+    </ul>
+	<li><a href="#Ttheta_variation">Variation of Spin Period</a>
+    <ul>
+    	<li><a href="#allsky_counts_Ttheta">Observation Density</a>
+    	<li><a href="#histograms_Ttheta">Simulation Histograms</a>
+	    <li><a href="#medians_Ttheta">Median Values by Latitude</a>
+    </ul>
+	<li><a href="#precession_variation">Variation of Precession Period</a>
+    <ul>
+    	<li><a href="#allsky_counts_Tphi">Observation Density</a>
+    	<li><a href="#histograms_Tphi">Simulation Histograms</a>
+	    <li><a href="#medians_Tphi">Median Values by Latitude</a>
+    </ul>
+	<li><a href="#5yr">Five-Year Extended Mission</a>
+	<li><a href="#HIPPARCOS">HIPPARCOS</a>
+</ul>
+
+<p><br>
+<div align="center"><img src="graphics/bar.gif" width="640" height="5" alt="" border="0"></div>
+<br>
+
+<!----------------------------------------------------------------------------->
+<a name="summary"></a>
+<span class="xxlarge">Summary of Results</span>
+<!----------------------------------------------------------------------------->
+<p>
+<a name="summary_psi"></a>
+<a href="#cone_angle_variation"><span class="large">Variation of Precession Cone Angle</span></a>
+<ul>
+	<li><a href="#cone_angle_variation">Three cases</a> are shown for precession 
+        cone angles (i.e., nominal Sun angles) of 35, 40, and 45 degrees.  
+        Larger than 45 degrees runs into trouble with shield size (hardware 
+        complexity and cost, in addition to increase of perturbations).  Smaller 
+        than 35 degrees and we won't meet the (most likely definition of the) 
+        mission requirements.
+        <p>
+    <li>In general, the mission astrometric errors degrade as the nominal Sun angle decreases.
+        <p>
+	<li>We do very well in <a href="#latitude_histo">latitude errors</a>: histogram 
+        peaks are around 26-28 uas, and 100 percent of the sky is better than 
+        37 uas even for the worst case.  Hence, with respect to latitude errors, 
+        mission requirements are not affected by nominal Sun angle in the range 35-45 degrees.
+        <p>
+	<li>Nearly 100 percent of the sky is 50 uas or better in both 
+        <a href="#longitude_histo">longitude</a> (99.99%) and 
+        <a href="#parallax_histo">parallax</a> (98.1%) for the 45 degree case.  
+        Going to 40 degrees costs us about 18 percent of the sky at 50 uas in 
+        parallax, and it costs about 14 percent of the sky at 50 uas in position 
+        in longitude.  At 35 degrees nominal Sun angle the requirement of 90 percent
+        of the sky at 50 uas or better is not met. 
+        <p>
+	<li>However, even at 35 degrees, the worst <a href="#parallax_histo">parallax</a> error 
+        is only 69 uas and the worst <a href="#longitude_histo">longitude</a> error is only 67 uas.
+        <p>
+	<li><a href="#vlong_histo">Proper motion in longitude</a> significantly fails 
+        the 90 percent of the sky, &lt;50 uas/yr target for all three precession 
+        cone angles.  
+        <p>
+    <li>The parallax requirement of 90 percent of the sky better than 50 uas restricts
+        the precession cone angle to greater than or equal to 43 degrees.
+        <p>
+	<li>Ratios of errors in the ecliptic region to those in the polar regions get 
+        substantially worse for longitude and parallax as you decrease the nominal 
+        Sun angle from 45 degrees to 35 degrees (see the plot of median values by 
+        latitude, shown in <a href="#medians">Figure 12</a>).  The corresponding 
+        ratios get slightly better for errors in latitude, but the difference is 
+        so small as to not matter.
+        <p>
+	<li>The <a href="#counts_histo">observation count</a> is roughly in the range
+        600-1000 for most areas of the sky.  The dominant histogram peak shifts 
+        towards lower counts as the precession cone angle decreases.
+        <p>
+	<li>A test was run during which normal points were simulated whenever more than
+        one CCD was encountered during a focal plane crossing.  In such cases, the
+        weight of the observation was proportional to the number of CCDs in the
+        given column.  There was almost no difference in the resulting astrometric error
+        distributions.
+        <p>
+	<li>The <a href="#allsky_counts">FAME observation density distribution</a> is 
+        much more uniform than that of <a href="#allsky_counts_HIPPARCOS">HIPPARCOS</a>, 
+        especially with a <a href="#allsky_counts_5yr">5-year extended mission</a>.  
+        It is, however, affected by <a href="#allsky_counts_Tphi">changes in the precession period</a>.
+        <p>
+    <li>The table below shows percentages of the sky for which a 2.5 year FAME mission can meet or do 
+        better than the goals of 50 uas (position, parallax) and 50 uas/yr (proper 
+        motion), for three nominal Sun angles and assuming a 580 uas single-measurement 
+        standard error.
+        <table cellspacing="0" cellpadding="5" border="1">
+        <tr>
+            <td>&nbsp;</td>
+            <td>45&nbsp;degrees</td>
+            <td>40&nbsp;degrees</td>
+            <td>35&nbsp;degrees</td>
+        </tr><tr>
+            <td>parallax</td>
+            <td align="center">98</td>
+            <td align="center">79</td>
+            <td align="center">65</td>
+        </tr><tr>
+            <td>longitude</td>
+            <td align="center">100</td>
+            <td align="center">86</td>
+            <td align="center">58</td>
+        </tr><tr>
+            <td>latitude</td>
+            <td align="center">100</td>
+            <td align="center">100</td>
+            <td align="center">100</td>
+        </tr><tr>
+            <td>pm longitude</td>
+            <td align="center">54</td>
+            <td align="center">43</td>
+            <td align="center">33</td>
+        </tr><tr>
+            <td>pm latitude</td>
+            <td align="center">100</td>
+            <td align="center">100</td>
+            <td align="center">100</td>
+        </tr></table>
+        <p>
+    <li>The following table shows minimum, median, average, and maximum values.  Units
+        are uas and uas/yr.
+        <table cellspacing="0" cellpadding="5" border="1">
+        <tr>
+            <td rowspan="2">&nbsp;</td>
+            <td colspan="4" align="center">45 degrees</td>
+            <td colspan="4" align="center">40 degrees</td>
+            <td colspan="4" align="center">35 degrees</td>
+        </tr><tr>
+            <td>min</td><td>med</td><td>avg</td><td>max</td>
+            <td>min</td><td>med</td><td>avg</td><td>max</td>
+            <td>min</td><td>med</td><td>avg</td><td>max</td>
+        </tr><tr>
+            <td>counts</td>
+            <td>430</td><td>808</td><td>854</td><td>1959</td>
+            <td>370</td><td>799</td><td>854</td><td>2054</td>
+            <td>392</td><td>762</td><td>854</td><td>2362</td>
+        </tr><tr>
+            <td>parallax</td>
+            <td>23.4</td><td>33.8</td><td>36.1</td><td>55.0</td>
+            <td>22.4</td><td>35.9</td><td>38.1</td><td>61.4</td>
+            <td>20.7</td><td>40.3</td><td>41.1</td><td>68.5</td>
+        </tr><tr>
+            <td>longitude</td>
+            <td>15.4</td><td>35.0</td><td>34.0</td><td>51.5</td>
+            <td>15.3</td><td>39.9</td><td>37.8</td><td>60.0</td>
+            <td>14.1</td><td>46.8</td><td>42.8</td><td>67.1</td>
+        </tr><tr>
+            <td>latitude</td>
+            <td>19.1</td><td>27.8</td><td>27.9</td><td>37.8</td>
+            <td>20.1</td><td>26.8</td><td>26.9</td><td>37.7</td>
+            <td>18.6</td><td>25.9</td><td>26.2</td><td>35.2</td>
+        </tr><tr>
+            <td>pm longitude</td>
+            <td>20.0</td><td>47.9</td><td>46.9</td><td>73.2</td>
+            <td>19.1</td><td>55.4</td><td>52.0</td><td>82.0</td>
+            <td>18.4</td><td>64.2</td><td>58.9</td><td>94.1</td>
+        </tr><tr>
+            <td>pm latitude</td>
+            <td>27.5</td><td>38.7</td><td>38.9</td><td>53.6</td>
+            <td>24.3</td><td>37.3</td><td>37.6</td><td>53.0</td>
+            <td>25.6</td><td>36.1</td><td>36.6</td><td>51.1</td>
+        </tr>
+        </table>
+</ul>
+<p>
+<a name="summary_Ttheta"></a>
+<a href="#Ttheta_variation"><span class="large">Variation of Spin Period</span></a>
+<ul>
+    <li>There is almost no discernible difference in the structure of the 
+        <a href="#allsky_counts_Ttheta">observation density distribution</a> as 
+        the spin period changes, at least in the range 35 to 45 minutes.  The 
+        density scales uniformly as a function of the spin period.
+        <p>
+    <li>In general, the mission astrometric errors degrade as the spin period increases.
+        <p>
+	<li><a href="#vlong_histo_Ttheta">Proper motion in longitude</a> significantly fails 
+        the 90 percent of the sky, &lt;50 uas/yr target for all three spin periods.  
+        <p>
+    <li>The parallax requirement of 90 percent of the sky better than 50 uas restricts
+        the spin period to less than or equal to 43 minutes.
+        <p>
+    <li>The table below shows percentages of the sky for which a 2.5 year FAME mission can meet or do 
+        better than the goals of 50 uas (position, parallax) and 50 uas/yr (proper 
+        motion), for three spin periods (35, 40, and 45 minutes), nominal Sun 
+        angle of 45 degrees, and assuming a 580 uas single-measurement standard error.
+        <table cellspacing="0" cellpadding="5" border="1">
+        <tr>
+            <td>&nbsp;</td>
+            <td>35&nbsp;minutes</td>
+            <td>40&nbsp;minutes</td>
+            <td>45&nbsp;minutes</td>
+        </tr><tr>
+            <td>parallax</td>
+            <td align="center">100</td>
+            <td align="center">98</td>
+            <td align="center">86</td>
+        </tr><tr>
+            <td>longitude</td>
+            <td align="center">100</td>
+            <td align="center">100</td>
+            <td align="center">98</td>
+        </tr><tr>
+            <td>latitude</td>
+            <td align="center">100</td>
+            <td align="center">100</td>
+            <td align="center">100</td>
+        </tr><tr>
+            <td>pm longitude</td>
+            <td align="center">62</td>
+            <td align="center">54</td>
+            <td align="center">48</td>
+        </tr><tr>
+            <td>pm latitude</td>
+            <td align="center">100</td>
+            <td align="center">100</td>
+            <td align="center">98</td>
+        </tr></table>
+        <p>
+	<li>The following table shows minimum, median, average, and maximum values for spin periods of 35, 40, 
+        and 45 minutes.  Units are uas and uas/yr. Precession cone angle is 45 degrees.
+        <table cellspacing="0" cellpadding="5" border="1">
+        <tr>
+            <td rowspan="2">&nbsp;</td>
+            <td colspan="4" align="center">35 minutes</td>
+            <td colspan="4" align="center">40 minutes</td>
+            <td colspan="4" align="center">45 minutes</td>
+        </tr><tr>
+            <td>min</td><td>med</td><td>avg</td><td>max</td>
+            <td>min</td><td>med</td><td>avg</td><td>max</td>
+            <td>min</td><td>med</td><td>avg</td><td>max</td>
+        </tr><tr>
+            <td>counts</td>
+            <td>505</td><td>924</td><td>977</td><td>2226</td>
+            <td>430</td><td>808</td><td>854</td><td>1959</td>
+            <td>377</td><td>718</td><td>760</td><td>1750</td>
+        </tr><tr>
+            <td>parallax</td>
+            <td>22.4</td><td>31.6</td><td>33.8</td><td>50.8</td>
+            <td>23.4</td><td>33.8</td><td>36.1</td><td>55.0</td>
+            <td>25.6</td><td>35.9</td><td>38.3</td><td>58.0</td>
+        </tr><tr>
+            <td>longitude</td>
+            <td>14.5</td><td>32.7</td><td>31.8</td><td>47.4</td>
+            <td>15.4</td><td>35.0</td><td>34.0</td><td>51.5</td>
+            <td>16.4</td><td>37.1</td><td>36.1</td><td>54.4</td>
+        </tr><tr>
+            <td>latitude</td>
+            <td>17.9</td><td>26.0</td><td>26.1</td><td>33.2</td>
+            <td>19.1</td><td>27.8</td><td>27.9</td><td>37.8</td>
+            <td>20.2</td><td>29.5</td><td>29.6</td><td>39.0</td>
+        </tr><tr>
+            <td>pm longitude</td>
+            <td>18.9</td><td>44.9</td><td>43.8</td><td>67.6</td>
+            <td>20.0</td><td>47.9</td><td>46.9</td><td>73.2</td>
+            <td>21.2</td><td>50.9</td><td>49.8</td><td>76.8</td>
+        </tr><tr>
+            <td>pm latitude</td>
+            <td>26.0</td><td>36.2</td><td>36.3</td><td>48.9</td>
+            <td>27.5</td><td>38.7</td><td>38.9</td><td>53.6</td>
+            <td>28.9</td><td>41.1</td><td>41.3</td><td>55.6</td>
+        </tr>
+        </table>
+</ul>
+<p>
+<a name="summary_Tphi"></a>
+<a href="#precession_variation"><span class="large">Variation of Precession Period</span></a>
+<ul>
+    <li>The structure of the <a href="#allsky_counts_Tphi">observation density distribution</a>
+        on the sky is sensitive to the precession period.  Coverage is more uniform
+        for smaller precession periods.
+        <p>
+	<li>However, there is almost no difference in the mission astrometric errors for precession 
+        periods in the range 15 to 30 days.
+        <p>
+    <li>Results begin to deteriorate around 30 days, which therefore probably represents
+        a reasonable upper bound on the precession period.
+</ul>
+<p>
+<a name="summary_5yr"></a>
+<a href="#5yr"><span class="large">5-Year Extended Mission</span></a>
+<ul>
+    <li>The observation density is smoother -- longitudinal ribbing effect
+        is lessened (compare the observation density all-sky image of the
+        <a href="#allsky_counts">2.5-year</a> case to that of the 
+        <a href="#allsky_counts_5yr">5-year</a> case).
+        <p>
+    <li>All errors fall <i>well</i> within the 50 uas or uas/yr mission requirements.
+        <p>
+    <li>Position in latitude and both proper motion components are entirely
+        less than 25 uas or uas/yr.
+        <p>
+    <li>The polar cap parallax feature is at about 21 uas.
+        <p>
+    <li>Results from a <a href="#5yr">5-year mission</a> (45 degrees):
+        <table cellspacing="0" cellpadding="5" border="1">
+        <tr>
+            <td rowspan="2">&nbsp;</td>
+            <td colspan="4" align="center">5-year mission</td>
+        </tr><tr>
+            <td>min</td><td>med</td><td>avg</td><td>max</td>
+        </tr><tr>
+            <td>counts</td>
+            <td>1009</td><td>1600</td><td>1709</td><td>3797</td>
+        </tr><tr>
+            <td>parallax</td>
+            <td>16.5</td><td>23.2</td><td>25.2</td><td>37.2</td>
+        </tr><tr>
+            <td>longitude</td>
+            <td>11.0</td><td>23.7</td><td>23.5</td><td>33.6</td>
+        </tr><tr>
+            <td>latitude</td>
+            <td>15.2</td><td>19.2</td><td>19.2</td><td>22.5</td>
+        </tr><tr>
+            <td>pm longitude</td>
+            <td>7.3</td><td>17.1</td><td>16.5</td><td>24.5</td>
+        </tr><tr>
+            <td>pm latitude</td>
+            <td>9.0</td><td>13.6</td><td>13.5</td><td>17.2</td>
+        </tr>
+        </table>
+</ul>
+
+
+<p><br>
+<div align="center"><img src="graphics/bar.gif" width="640" height="5" alt="" border="0"></div>
+<br>
+
+<!----------------------------------------------------------------------------->
+<a name="sim_details"></a>
+<span class="xxlarge">Simulation Details</span>
+<!----------------------------------------------------------------------------->
+<ul>
+	<li>Introduction and geometry are discussed in the Technical Memorandum,
+        <img src="graphics/PDFsmall.gif" align="top" width=15 height=16 alt="PDF document"><a href="../../Papers/ObservationDensity/Geometry.pdf">The 
+        Observation Density and Scan Angle Distributions of a Spin-Stabilized, 
+        Precessing, Scanning Satellite Instrument: I. Geometry</a> (FTM2000-16).
+        <p>
+	<li>1-<span class="sym">s</span> scan-direction single-measurement error = 580 uas.  This sets
+        the units for the results: uas for parallax and position, and uas/yr for 
+        proper motions.
+        <p>
+	<li>grid = [341,171], evenly spaced in [longitude, sin latitude]
+        <p>
+	<li><span class="sym">D</span>t = amount of time to scan across one grid cell at equator 
+        in longitude direction
+        <ul>
+            <li type="disc">determined by the grid size specification and the spin period
+        </ul>
+        <p>
+    <li>spin periods: 35, 40, and 45 minutes
+        <p>
+    <li>precession periods: 15, 20, and 30 days
+        <p>
+    <li>precession cone angles: 35, 40, and 45 deg
+        <p>
+	<li>simulation times: 2.5 years and 5 years
+        <p>
+    <li>2 viewports
+        <p>
+    <li>basic angle = 81.5 deg
+        <p>
+	<li>Observations were performed by between 1 and 4 detectors per viewport.  
+        The number of detectors corresponds to the number of astrometric CCDs in one of the
+        9 CCD columns on the focal plane.  The column was chosen randomly for each
+        focal plane crossing of a grid cell.
+        <p>
+    <li>astrometric CCD count by column: 123242321
+        <p>
+    <li>An option for calculating normal points was available for multiple CCD encounters
+        per focal plane crossing.
+        <p>
+    <li>Least squares solutions for the astrometric parameters and their errors were
+        performed for each grid cell.  A detailed description of the method is 
+        available in the Technical Memorandum,
+        <img src="graphics/PDFsmall.gif" align="top" width=15 height=16 alt="PDF document"><a href="../../Papers/ObservationDensity/ParameterEstimation.pdf">Astrometric 
+        Parameter Estimation Suitable for Simulations</a> (FTM2000-17).
+</ul>
+
+<p><br>
+<div align="center"><img src="graphics/bar.gif" width="640" height="5" alt="" border="0"></div>
+<br>
+
+
+<!----------------------------------------------------------------------------->
+<a name="cone_angle_variation"></a>
+<span class="xxlarge">Variation of Precession Cone Angle</span>
+<!----------------------------------------------------------------------------->
+<p><br>
+
+
+<a name="all_sky_images"></a>
+<span class="xlarge">All-Sky Images (45-degree case)</span>
+<p>
+
+<a name="allsky_counts"></a>
+<img src="matrix_counts_4520.gif" width="615" height="333" alt="" border="0"><br>
+<span style="font-weight: bold;">Figure 1</span>&nbsp;&nbsp;Observation density distribution. 
+Compare 
+with <a href="#allsky_counts_Ttheta">different spin periods</a>, 
+with <a href="#allsky_counts_Tphi">different precession periods</a>, 
+with a <a href="#allsky_counts_5yr">5-year extended mission</a>, 
+and with <a href="#allsky_counts_HIPPARCOS">HIPPARCOS</a>.
+
+<p><br><br>
+<img src="matrix_parallax_4520.gif" width="615" height="331" alt="" border="0"><br>
+<span style="font-weight: bold;">Figure 2</span>&nbsp;&nbsp;<span class="sym">s<sub>p</sub></span>
+
+<p><br><br>
+<img src="matrix_long_4520.gif" width="619" height="331" alt="" border="0"><br>
+<span style="font-weight: bold;">Figure 3</span>&nbsp;&nbsp;<span class="sym">s<sub>l</sub></span>
+
+<p><br><br>
+<img src="matrix_lat_4520.gif" width="615" height="333" alt="" border="0"><br>
+<span style="font-weight: bold;">Figure 4</span>&nbsp;&nbsp;<span class="sym">s<sub>b</sub></span>
+
+<p><br><br>
+
+<a name="histo_behavior"></a>
+<span class="xlarge">Histogram Characteristics and Behavior</span>
+<p>
+<img src="zones.gif" width="450" height="608" alt="" border="0"><br>
+<span style="font-weight: bold;">Figure 5</span>&nbsp;&nbsp;Illustration of 
+contributions to the histograms of the ecliptic band,
+the "trough" regions, and the polar cap regions. (45-degree case used for
+this illustration.)  The trough regions span 6 degrees in latitude, centered on the
+high-density latitude <span class="sym">|b| = p/2 - y</span>, where <span class="sym">y</span> 
+is the precession cone angle (nominal Sun angle).  The polar cap regions are the areas of the sky
+of higher latitude than the troughs, and the ecliptic band is the region of the 
+sky lower in latitude than the troughs.  For smaller precession cone angle, the
+troughs move to higher latitude, the polar cap area shrinks, and the ecliptic
+band grows.  Therefore, we expect the following characteristics and behavior
+of histograms of the astrometric errors as the precession cone angle decreases:
+<ul>
+    <li><span style="font-weight: bold;">parallax</span>
+    <ul>
+        <li>In general, the best parallaxes are obtained in the polar cap regions.  The closer
+            <span class="sym">|b|</span> approaches 90 degrees, the more homogeneous 
+            the scan angle distribution and the more circular the parallactic ellipse.
+            In addition, the observation density is generally higher in the polar regions than
+            in the ecliptic regions.  These conspire to yield better (i.e., smaller) 
+            parallax errors in the polar cap regions.
+        <li>The peak of the distribution moves left toward better accuracy and shrinks in area.
+        <li>The low-accuracy tail moves right toward poorer accuracy and grows in area.
+        <li>The high-accuracy trough "bump" moves left toward better accuracy.
+        <li>The ratio of median errors near the ecliptic to median errors near the poles
+            increases.
+    </ul>
+    <li><span style="font-weight: bold;">longitude</span>
+    <ul>
+        <li>Because of (1) the cone-shaped distribution of scan angle at the ecliptic 
+            and (2) the lower observation density near the ecliptic,
+            longitude errors are at their worst there.
+        <li>The high-accuracy peak moves left toward better accuracy and shrinks in area.
+        <li>The low-accuracy peak moves right toward poorer accuracy and grows in area.
+        <li>The ratio of median errors near the ecliptic to median errors near the poles
+            increases.
+        <li>The peaks due to the high-accuracy trough contribution move left toward better accuracy.
+    </ul>
+    <li><span style="font-weight: bold;">latitude</span>
+    <ul>
+        <li>The latitude errors are largely unaffected by the cone-shaped scan angle distribution 
+            (the cone is oriented along local ecliptic meridians), so the contributions from
+            the three regions overlap, forming a single histogram peak of relatively high
+            accuracy (compared to longitude).  
+        <li>The histogram peak moves slightly left toward better accuracy.
+    </ul>
+    <li><span style="font-weight: bold;">proper motion in longitude</span>
+    <ul>
+        <li>Same as position in longitude.
+    </ul>
+    <li><span style="font-weight: bold;">proper motion in latitude</span>
+    <ul>
+        <li>Same as position in latitude.
+    </ul>
+</ul>
+
+<p><br><br>
+
+<a name="histograms"></a>
+<span class="xlarge">Simulation Histograms</span>
+<p>
+
+<a name="counts_histo"></a>
+<table cellspacing="1" cellpadding="0" border="0">
+<tr>
+    <td><img src="N_histo.gif" width="450" height="434" alt="" border="0"></td>
+    <td><img src="N_cumulative.gif" width="450" height="452" alt="" border="0"></td>
+</tr>
+</table>
+<span style="font-weight: bold;">Figures 6</span>&nbsp;&nbsp;Histograms of observation counts (fraction in each bin).<br>  
+Left: Histograms. (Error bars are 1 <span class="sym">s</span>, assuming Poisson statistics for each bin.) <br>
+Right: Cumulative histograms.
+
+<p><br><br>
+
+<a name="parallax_histo"></a>
+<table cellspacing="1" cellpadding="0" border="0">
+<tr>
+    <td><img src="parallax_histo.gif" width="450" height="438" alt="" border="0"></td>
+    <td><img src="parallax_cumulative.gif" width="450" height="454" alt="" border="0"></td>
+</tr>
+</table>
+<span style="font-weight: bold;">Figures 7</span>&nbsp;&nbsp;Histograms of parallax errors (fraction in each bin).<br>  
+Left: Histograms. (Error bars are 1 <span class="sym">s</span>, assuming Poisson statistics for each bin.) <br>
+Right: Cumulative histograms.
+
+<p><br><br>
+
+<a name="longitude_histo"></a>
+<table cellspacing="1" cellpadding="0" border="0">
+<tr>
+    <td><img src="long_histo.gif" width="450" height="456" alt="" border="0"></td>
+    <td><img src="long_cumulative.gif" width="450" height="458" alt="" border="0"></td>
+</tr>
+</table>
+<span style="font-weight: bold;">Figures 8</span>&nbsp;&nbsp;Histograms of longitude position errors (fraction in each bin).<br>  
+Left: Histograms. (Error bars are 1 <span class="sym">s</span>, assuming Poisson statistics for each bin.) <br>
+Right: Cumulative histograms.
+
+<p><br><br>
+
+<a name="latitude_histo"></a>
+<table cellspacing="1" cellpadding="0" border="0">
+<tr>
+    <td><img src="lat_histo.gif" width="450" height="439" alt="" border="0"></td>
+    <td><img src="lat_cumulative.gif" width="450" height="450" alt="" border="0"></td>
+</tr>
+</table>
+<span style="font-weight: bold;">Figures 9</span>&nbsp;&nbsp;Histograms of latitude position errors (fraction in each bin).<br>  
+Left: Histograms. (Error bars are 1 <span class="sym">s</span>, assuming Poisson statistics for each bin.) <br>
+Right: Cumulative histograms.
+
+<p><br><br>
+
+<a name="vlong_histo"></a>
+<table cellspacing="1" cellpadding="0" border="0">
+<tr>
+    <td><img src="vlong_histo.gif" width="450" height="446" alt="" border="0"></td>
+    <td><img src="vlong_cumulative.gif" width="450" height="457" alt="" border="0"></td>
+</tr>
+</table>
+<span style="font-weight: bold;">Figures 10</span>&nbsp;&nbsp;Histograms of longitude proper motion errors (fraction in each bin).<br>  
+Left: Histograms. (Error bars are 1 <span class="sym">s</span>, assuming Poisson statistics for each bin.) <br>
+Right: Cumulative histograms.
+
+<p><br><br>
+
+<a name="vlat_histo"></a>
+<table cellspacing="1" cellpadding="0" border="0">
+<tr>
+    <td><img src="vlat_histo.gif" width="450" height="443" alt="" border="0"></td>
+    <td><img src="vlat_cumulative.gif" width="450" height="454" alt="" border="0"></td>
+</tr>
+</table>
+<span style="font-weight: bold;">Figures 11</span>&nbsp;&nbsp;Histograms of latitude proper motion errors (fraction in each bin).<br>  
+Left: Histograms. (Error bars are 1 <span class="sym">s</span>, assuming Poisson statistics for each bin.) <br>
+Right: Cumulative histograms.
+
+<p><br><br>
+
+<a name="medians"></a>
+<span class="xlarge">Median Values by Latitude</span>
+<p>
+<img src="medians.gif" width="450" height="613" alt="" border="0"><br>
+<span style="font-weight: bold;">Figure 12</span>&nbsp;&nbsp;Median values of 
+observation counts, parallax errors, longitude position errors, 
+and latitude position errors as a function of ecliptic latitude.
+
+
+<p><br>
+<div align="center"><img src="graphics/bar.gif" width="640" height="5" alt="" border="0"></div>
+<br>
+
+
+<!----------------------------------------------------------------------------->
+<a name="Ttheta_variation"></a>
+<span class="xxlarge">Variation of Spin Period</span>
+<!----------------------------------------------------------------------------->
+<p><br>
+
+<a name="allsky_counts_Ttheta"></a>
+<span class="xlarge">Observation Density</span>
+<p>
+<img src="matrix_counts_452035.gif" width="619" height="337" alt="" border="0"><br>
+<span style="font-weight: bold;">Figure 22</span>&nbsp;&nbsp;Observation density for
+a 35-minute spin period.  Compare 
+with the <a href="#allsky_counts">nominal 40-minute period</a>,
+with <a href="#allsky_counts_Tphi">different precession periods</a>, 
+with a <a href="#allsky_counts_5yr">5-year extended mission</a>, 
+and with <a href="#allsky_counts_HIPPARCOS">HIPPARCOS</a>.
+
+<p><br><br>
+
+<img src="matrix_counts_452045.gif" width="621" height="339" alt="" border="0"><br>
+<span style="font-weight: bold;">Figure 23</span>&nbsp;&nbsp;Observation density for
+a 45-minute spin period.  Compare 
+with the <a href="#allsky_counts">nominal 40-minute period</a>,
+with <a href="#allsky_counts_Tphi">different precession periods</a>, 
+with a <a href="#allsky_counts_5yr">5-year extended mission</a>, 
+and with <a href="#allsky_counts_HIPPARCOS">HIPPARCOS</a>.
+
+<p><br><br>
+
+<a name="histograms_Ttheta"></a>
+<span class="xlarge">Simulation Histograms</span>
+<p>
+
+<a name="counts_histo_Ttheta"></a>
+<table cellspacing="1" cellpadding="0" border="0">
+<tr>
+    <td><img src="N_histo_Ttheta.gif" width="450" height="423" alt="" border="0"></td>
+    <td><img src="N_cumulative_Ttheta.gif" width="450" height="450" alt="" border="0"></td>
+</tr>
+</table>
+<span style="font-weight: bold;">Figures 24</span>&nbsp;&nbsp;Histograms of observation counts (fraction in each bin).<br>  
+Left: Histograms. (Error bars are 1 <span class="sym">s</span>, assuming Poisson statistics for each bin.) <br>
+Right: Cumulative histograms.
+
+<p><br><br>
+
+<a name="parallax_histo_Ttheta"></a>
+<table cellspacing="1" cellpadding="0" border="0">
+<tr>
+    <td><img src="parallax_histo_Ttheta.gif" width="450" height="442" alt="" border="0"></td>
+    <td><img src="parallax_cumulative_Ttheta.gif" width="450" height="454" alt="" border="0"></td>
+</tr>
+</table>
+<span style="font-weight: bold;">Figures 25</span>&nbsp;&nbsp;Histograms of parallax errors (fraction in each bin).<br>  
+Left: Histograms. (Error bars are 1 <span class="sym">s</span>, assuming Poisson statistics for each bin.) <br>
+Right: Cumulative histograms.
+
+<p><br><br>
+
+<a name="longitude_histo_Ttheta"></a>
+<table cellspacing="1" cellpadding="0" border="0">
+<tr>
+    <td><img src="long_histo_Ttheta.gif" width="450" height="453" alt="" border="0"></td>
+    <td><img src="long_cumulative_Ttheta.gif" width="450" height="454" alt="" border="0"></td>
+</tr>
+</table>
+<span style="font-weight: bold;">Figures 26</span>&nbsp;&nbsp;Histograms of longitude position errors (fraction in each bin).<br>  
+Left: Histograms. (Error bars are 1 <span class="sym">s</span>, assuming Poisson statistics for each bin.) <br>
+Right: Cumulative histograms.
+
+<p><br><br>
+
+<a name="latitude_histo_Ttheta"></a>
+<table cellspacing="1" cellpadding="0" border="0">
+<tr>
+    <td><img src="lat_histo_Ttheta.gif" width="450" height="467" alt="" border="0"></td>
+    <td><img src="lat_cumulative_Ttheta.gif" width="450" height="452" alt="" border="0"></td>
+</tr>
+</table>
+<span style="font-weight: bold;">Figures 27</span>&nbsp;&nbsp;Histograms of latitude position errors (fraction in each bin).<br>  
+Left: Histograms. (Error bars are 1 <span class="sym">s</span>, assuming Poisson statistics for each bin.) <br>
+Right: Cumulative histograms.
+
+<p><br><br>
+
+<a name="vlong_histo_Ttheta"></a>
+<table cellspacing="1" cellpadding="0" border="0">
+<tr>
+    <td><img src="vlong_histo_Ttheta.gif" width="450" height="458" alt="" border="0"></td>
+    <td><img src="vlong_cumulative_Ttheta.gif" width="450" height="463" alt="" border="0"></td>
+</tr>
+</table>
+<span style="font-weight: bold;">Figures 28</span>&nbsp;&nbsp;Histograms of longitude proper motion errors (fraction in each bin).<br>  
+Left: Histograms. (Error bars are 1 <span class="sym">s</span>, assuming Poisson statistics for each bin.) <br>
+Right: Cumulative histograms.
+
+<p><br><br>
+
+<a name="vlat_histo_Ttheta"></a>
+<table cellspacing="1" cellpadding="0" border="0">
+<tr>
+    <td><img src="vlat_histo_Ttheta.gif" width="450" height="481" alt="" border="0"></td>
+    <td><img src="vlat_cumulative_Ttheta.gif" width="450" height="454" alt="" border="0"></td>
+</tr>
+</table>
+<span style="font-weight: bold;">Figures 29</span>&nbsp;&nbsp;Histograms of latitude proper motion errors (fraction in each bin).<br>  
+Left: Histograms. (Error bars are 1 <span class="sym">s</span>, assuming Poisson statistics for each bin.) <br>
+Right: Cumulative histograms.
+
+<p><br><br>
+
+<a name="medians_Ttheta"></a>
+<span class="xlarge">Median Values by Latitude</span>
+<p>
+<img src="medians_Ttheta.gif" width="450" height="589" alt="" border="0"><br>
+<span style="font-weight: bold;">Figure 30</span>&nbsp;&nbsp;Median values of 
+observation counts, parallax errors, longitude position errors, 
+and latitude position errors as a function of ecliptic latitude.
+
+
+<p><br>
+<div align="center"><img src="graphics/bar.gif" width="640" height="5" alt="" border="0"></div>
+<br>
+
+
+<!----------------------------------------------------------------------------->
+<a name="precession_variation"></a>
+<span class="xxlarge">Variation of Precession Period</span>
+<!----------------------------------------------------------------------------->
+<p><br>
+
+<a name="allsky_counts_Tphi"></a>
+<span class="xlarge">Observation Density</span>
+<p>
+<img src="matrix_counts_4530.gif" width="617" height="335" alt="" border="0"><br>
+<span style="font-weight: bold;">Figure 13</span>&nbsp;&nbsp;Observation density for
+a 30-day precession period.  Compare 
+with the <a href="#allsky_counts">nominal 20-day period</a>, 
+with <a href="#allsky_counts_Ttheta">different spin periods</a>, 
+with a <a href="#allsky_counts_5yr">5-year extended mission</a>, 
+and with <a href="#allsky_counts_HIPPARCOS">HIPPARCOS</a>.
+
+<p><br><br>
+
+<img src="matrix_counts_4515.gif" width="617" height="331" alt="" border="0"><br>
+<span style="font-weight: bold;">Figure 14</span>&nbsp;&nbsp;Observation density for
+a 15-day precession period.  Compare 
+with <a href="#allsky_counts">nominal 20-day period</a>, 
+with <a href="#allsky_counts_Ttheta">different spin periods</a>, 
+with a <a href="#allsky_counts_5yr">5-year extended mission</a>, 
+and with <a href="#allsky_counts_HIPPARCOS">HIPPARCOS</a>.
+
+<p><br><br>
+
+<a name="histograms_Tphi"></a>
+<span class="xlarge">Simulation Histograms</span>
+<p>
+
+<a name="counts_histo_Tphi"></a>
+<table cellspacing="1" cellpadding="0" border="0">
+<tr>
+    <td><img src="N_histo_Tphi.gif" width="450" height="437" alt="" border="0"></td>
+    <td><img src="N_cumulative_Tphi.gif" width="450" height="454" alt="" border="0"></td>
+</tr>
+</table>
+<span style="font-weight: bold;">Figures 15</span>&nbsp;&nbsp;Histograms of observation counts (fraction in each bin).<br>  
+Left: Histograms. (Error bars are 1 <span class="sym">s</span>, assuming Poisson statistics for each bin.) <br>
+Right: Cumulative histograms.
+
+<p><br><br>
+
+<a name="parallax_histo_Tphi"></a>
+<table cellspacing="1" cellpadding="0" border="0">
+<tr>
+    <td><img src="parallax_histo_Tphi.gif" width="450" height="446" alt="" border="0"></td>
+    <td><img src="parallax_cumulative_Tphi.gif" width="450" height="456" alt="" border="0"></td>
+</tr>
+</table>
+<span style="font-weight: bold;">Figures 16</span>&nbsp;&nbsp;Histograms of parallax errors (fraction in each bin).<br>  
+Left: Histograms. (Error bars are 1 <span class="sym">s</span>, assuming Poisson statistics for each bin.) <br>
+Right: Cumulative histograms.
+
+<p><br><br>
+
+<a name="longitude_histo_Tphi"></a>
+<table cellspacing="1" cellpadding="0" border="0">
+<tr>
+    <td><img src="long_histo_Tphi.gif" width="450" height="449" alt="" border="0"></td>
+    <td><img src="long_cumulative_Tphi.gif" width="450" height="450" alt="" border="0"></td>
+</tr>
+</table>
+<span style="font-weight: bold;">Figures 17</span>&nbsp;&nbsp;Histograms of longitude position errors (fraction in each bin).<br>  
+Left: Histograms. (Error bars are 1 <span class="sym">s</span>, assuming Poisson statistics for each bin.) <br>
+Right: Cumulative histograms.
+
+<p><br><br>
+
+<a name="latitude_histo_Tphi"></a>
+<table cellspacing="1" cellpadding="0" border="0">
+<tr>
+    <td><img src="lat_histo_Tphi.gif" width="450" height="445" alt="" border="0"></td>
+    <td><img src="lat_cumulative_Tphi.gif" width="450" height="456" alt="" border="0"></td>
+</tr>
+</table>
+<span style="font-weight: bold;">Figures 18</span>&nbsp;&nbsp;Histograms of latitude position errors (fraction in each bin).<br>  
+Left: Histograms. (Error bars are 1 <span class="sym">s</span>, assuming Poisson statistics for each bin.) <br>
+Right: Cumulative histograms.
+
+<p><br><br>
+
+<a name="vlong_histo_Tphi"></a>
+<table cellspacing="1" cellpadding="0" border="0">
+<tr>
+    <td><img src="vlong_histo_Tphi.gif" width="450" height="441" alt="" border="0"></td>
+    <td><img src="vlong_cumulative_Tphi.gif" width="450" height="457" alt="" border="0"></td>
+</tr>
+</table>
+<span style="font-weight: bold;">Figures 19</span>&nbsp;&nbsp;Histograms of longitude proper motion errors (fraction in each bin).<br>  
+Left: Histograms. (Error bars are 1 <span class="sym">s</span>, assuming Poisson statistics for each bin.) <br>
+Right: Cumulative histograms.
+
+<p><br><br>
+
+<a name="vlat_histo_Tphi"></a>
+<table cellspacing="1" cellpadding="0" border="0">
+<tr>
+    <td><img src="vlat_histo_Tphi.gif" width="450" height="443" alt="" border="0"></td>
+    <td><img src="vlat_cumulative_Tphi.gif" width="450" height="456" alt="" border="0"></td>
+</tr>
+</table>
+<span style="font-weight: bold;">Figures 20</span>&nbsp;&nbsp;Histograms of latitude proper motion errors (fraction in each bin).<br>  
+Left: Histograms. (Error bars are 1 <span class="sym">s</span>, assuming Poisson statistics for each bin.) <br>
+Right: Cumulative histograms.
+
+<p><br><br>
+
+<a name="medians_Tphi"></a>
+<span class="xlarge">Median Values by Latitude</span>
+<p>
+<img src="medians_Tphi.gif" width="450" height="608" alt="" border="0"><br>
+<span style="font-weight: bold;">Figure 21</span>&nbsp;&nbsp;Median values of 
+observation counts, parallax errors, longitude position errors, 
+and latitude position errors as a function of ecliptic latitude.
+
+
+<p><br>
+<div align="center"><img src="graphics/bar.gif" width="640" height="5" alt="" border="0"></div>
+<br>
+
+
+<!----------------------------------------------------------------------------->
+<a name="5yr"></a>
+<span class="xxlarge">A Five-Year Extended Mission</span>
+<!----------------------------------------------------------------------------->
+<p><br>
+
+<a name="allsky_counts_5yr"></a>
+<span class="xlarge">Observation Density</span>
+<p>
+<img src="matrix_counts_4520_5yr.gif" width="621" height="337" alt="" border="0"><br>
+<span style="font-weight: bold;">Figure 31</span>&nbsp;&nbsp;All-sky image of 5-year observation density.
+Compare 
+with the <a href="#allsky_counts">2.5-year nominal mission</a>, 
+with <a href="#allsky_counts_Ttheta">different spin periods</a>, 
+with <a href="#allsky_counts_Tphi">different precession periods</a>, 
+and with <a href="#allsky_counts_HIPPARCOS">HIPPARCOS</a>.
+
+<p><br><br>
+
+<a name="histograms_Tphi"></a>
+<span class="xlarge">Simulation Histograms</span>
+<p>
+<img src="histograms_5yr.gif" width="450" height="648" alt="" border="0"><br>
+<span style="font-weight: bold;">Figure 32</span>&nbsp;&nbsp;Histograms of 5-year 
+results (fraction in each bin).<br>
+
+<p><br><br>
+
+<img src="cumulative_5yr.gif" width="450" height="619" alt="" border="0"><br>
+<span style="font-weight: bold;">Figure 33</span>&nbsp;&nbsp;Cumulative histograms of 5-year results.<br>
+
+<p><br><br>
+
+<a name="medians_5yr"></a>
+<span class="xlarge">Median Values by Latitude</span>
+<p>
+<img src="medians_5yr.gif" width="450" height="609" alt="" border="0"><br>
+<span style="font-weight: bold;">Figure 34</span>&nbsp;&nbsp;Median values as a function of ecliptic latitude.
+
+
+<p><br>
+<div align="center"><img src="graphics/bar.gif" width="640" height="5" alt="" border="0"></div>
+<br>
+
+
+<!----------------------------------------------------------------------------->
+<a name="HIPPARCOS"></a>
+<span class="xxlarge">HIPPARCOS</span>
+<!----------------------------------------------------------------------------->
+<p><br>
+
+<a name="allsky_counts_HIPPARCOS"></a>
+<span class="xlarge">Observation Density</span>
+<p>
+<img src="matrix_counts_hipparcos.gif" width="617" height="335" alt="" border="0"><br>
+<span style="font-weight: bold;">Figure 35</span>&nbsp;&nbsp;Observation density for
+the HIPPARCOS mission.  Compare 
+with the FAME <a href="#allsky_counts">2.5-year nominal mission</a>, 
+with the FAME <a href="#allsky_counts_5yr">5-year extended mission</a>, 
+with <a href="#allsky_counts_Ttheta">different FAME spin periods</a>, 
+and with <a href="#allsky_counts_Tphi">different FAME precession periods</a>.
+
+<p><br><br>
+
+
+
+<p>
+</div>
+
+<!-------------------------------------------------->
+<!-------------------- Tag Line -------------------->
+<!-------------------------------------------------->
+<script language="JavaScript">
+<!--
+	WriteTagLine("graphics/bar.gif");
+//-->
+</script>
+
+</body>
+</html>
+

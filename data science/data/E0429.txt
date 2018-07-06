@@ -1,0 +1,207 @@
+ID=E0429
+URL=http://home.att.net/~robertdunn/Papers/MethodCallbacks.html
+SIZE=8596
+DATE=12/07/02
+TIME=19:20:51
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+ 
+<HTML>
+ 
+<HEAD>
+<TITLE>Yet Another Code Site - Windows Callbacks to Member
+Functions</TITLE>
+<META NAME="GENERATOR" CONTENT="StarOffice/5.1 (Win32)"> 
+<META NAME="CREATED" CONTENT="19981223;13122542"> 
+<META NAME="CHANGEDBY" CONTENT="Robert Dunn"> 
+<META NAME="CHANGED" CONTENT="19991127;22460102"> 
+<META NAME="Template"
+ CONTENT="C:\Program Files\Microsoft Office\Templates\Web Pages\Web Page Wizard.wiz">
+
+</HEAD>
+
+<BODY>
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="0"
+ CELLSPACING="0"> 
+<TR>
+  <TD WIDTH="100%" VALIGN="TOP" BGCOLOR="#000080">
+	 <H1 ALIGN="CENTER" STYLE="margin-top: 0in"><FONT
+	 COLOR="#ffffff"> <A NAME="TopOfPage"></A> Yet Another Code
+	 Site</FONT></H1>
+  </TD>
+</TR>
+</TABLE> 
+<H2 ALIGN="CENTER">Creating a Windows Callback to a Member
+Function</H2>
+<P>One day, I decided that it would be nice to write my own
+  TMenu and TMenuItem classes to draw bitmaps on menus like
+  Office97 does.&nbsp; So I derived my new classes from TMenu
+  and TMenuItem, added variables here and member functions
+  there.&nbsp; It did not take long to realize that I needed
+  to trap certain Windows messages so that the menu would
+  know when to draw itself.&nbsp; TMenu and TMenuItem do not
+  have a Windows handle and, therefore, do not get Windows
+  messages.&nbsp; Simple enough -- just add message maps to
+  the form to call my class when needed.
+</P> 
+<P>That worked fine until I decided to turn the new classes
+  into components that could be dragged from the IDE control
+  palette and dropped on a form.&nbsp; There was no way for
+  the new components to add the message maps to the form
+  class.&nbsp; I could have required the user to manually add
+  them, but components should not require such things.&nbsp;
+  The solution, it seemed to me, was to have my components
+  subclass the form's WndProc to trap the messages that I
+  needed.
+</P> 
+<P>That turned out to be a bit tougher than I expected.
+</P> 
+<H4 STYLE="margin-right: 0.39in; margin-top: 0in">The
+Problem</H4>
+<P>The problem was that the WndProc replacement was a
+  member function and Windows does not understand C++ class
+  member functions.&nbsp; Class member functions have a
+  &quot;this&quot; pointer as a hidden first parameter which
+  uniquely identifies a class object (keep in mind that an
+  object is a specific instantiation of a class).&nbsp; The
+  API callback does not know how to pass &quot;*this.&quot;
+</P> 
+<P>There are a couple of solutions.&nbsp; First, you can
+  define your callback as a global function.&nbsp; Of course,
+  now your callback has no way to determine which class
+  object was involved.&nbsp; Second, you can declare the
+  callback as a static class member function.&nbsp; Same
+  problem -- static member functions have no
+  &quot;*this.&quot;
+</P> 
+<P>The solution to this problem has been documented
+  elsewhere, but here is the essence of the cure:&nbsp;
+  Allocate a block of memory for each class object, fill it
+  with the machine code necessary to jump to a unique class
+  object member function, and use the address of that block
+  of memory as the callback address.
+</P> 
+<P>Borland has already done the hard part of this for
+  you.&nbsp; Unfortunately, the magic calls,
+  MakeObjectInstance() and FreeObjectInstance(), are
+  undocumented.&nbsp; Borland, therefore, has no obligation
+  to support, maintain, or answer questions about these
+  functions so do not bother asking them.&nbsp; However, they
+  have existed in all versions of Borland C++ Builder and
+  Delphi that I am aware of, so using them seems safe enough
+  for now.
+</P> 
+<P>The functions are declared as follows:
+</P> 
+<P STYLE="margin-left: 0.5in">VCL (Delphi Pascal)
+  Forms.pas:
+</P> <PRE STYLE="margin-left: 0.5in; margin-right: 0.39in">        function MakeObjectInstance(Method: TWndMethod): Pointer;
+        procedure FreeObjectInstance(ObjectInstance: Pointer);</PRE>
+
+<P STYLE="margin-left: 0.5in"> BCB 3.0 Forms.hpp:
+</P> <PRE STYLE="margin-left: 0.5in; margin-right: 0.39in">        extern PACKAGE void * __fastcall MakeObjectInstance(Controls::TWndMethod Method);
+        extern PACKAGE void __fastcall FreeObjectInstance(void * ObjectInstance);</PRE>
+
+<P> The BCB 1.0 declaration should be the same without the
+  &quot;PACKAGE&quot; macro.
+</P> 
+<H4 STYLE="margin-right: 0.39in; margin-top: 0in">How To
+Use MakeObjectInstance()/FreeObjectInstance()</H4>
+<P>Here is the code, stripped down to the essentials.
+</P> <PRE STYLE="margin-left: 0.5in; margin-right: 0.39in">[ The header file ]
+//---------------------------------------------------------------------------
+// note: remove PACKAGE for BCB 1.0 and Delphi 1.0 &amp; 2.0
+//
+class PACKAGE TMyComponent : public TComponent
+{
+protected:
+        void* FNewWndProcInst;
+        void* FOldWndProcInst;
+        virtual void __fastcall MyWndProc(Messages::TMessage&amp; Msg);
+public:
+        __fastcall TMyComponent(TComponent* Owner);
+        __fastcall ~TMyComponent(void);
+};
+//---------------------------------------------------------------------------
+[ End the header file, begin the implementation ]
+//---------------------------------------------------------------------------
+// this is the constructor. create the instance callback and save it
+// to FNewWndProcInst and save the old window proc to FOldWndProcInst.
+// subclass the form.
+//
+__fastcall TMyComponent::TMyComponent(TComponent* Owner)
+        : TComponent(Owner), FOldWndProcInst(0), FNewWndProcInst(0)
+{
+        // if the owner is a form... (your needs may differ)
+        TForm* form = dynamic_cast&lt;TForm*&gt;(Owner);
+        if (form) {
+                FNewWndProcInst = MakeObjectInstance(MyWndProc);
+                FOldWndProcInst = (void*) ::SetWindowLong(form-&gt;Handle, GWL_WNDPROC, 
+                        (LONG) FNewWndProcInst);
+                if (!FOldWndProcInst) { /* error */ };
+                }
+        // other initialization
+}
+//---------------------------------------------------------------------------
+// this is the destructor. restore the original WndProc and free the 
+// instance callback.
+//
+TMyComponent::~TMyComponent(void)
+{
+        if (FNewWndProcInst) {
+                ::SetWindowsLong(form-&gt;Handle, GWL_WNDPROC, (LONG) FOldWndProcInst);
+                FreeObjectInstance(FNewWndProcInst);
+                }
+}
+//---------------------------------------------------------------------------
+// this is the callback method, in this example it is used to filter
+// messages to the underlying Windows control.
+//
+void __fastcall TMyComponent::MyWndProc(Messages::TMessage&amp; msg)
+{
+        // do whatever you want with the message before calling (or not calling) the
+        // the original WndProc() to handle the message
+        // call the original WndProc -- note that, if you have instantiated
+        // multiple objects of this class, then you are actually chaining back
+        // to MyWndProc() in each earlier instantiation until you get back to 
+        // the original WndProc
+        msg.Result = CallWindowProc((int(__stdcall*)()) FOldWndProcInst, form-&gt;Handle, 
+                msg.Msg, msg.WParam, msg.LParam);
+        // do whatever you want after the original WndProc() has handled the message
+}
+//---------------------------------------------------------------------------
+[ End the implementation ]</PRE>
+
+<P> There is a fairly big gotcha here:&nbsp; If you
+  subclass a window more than once, you must un-subclass it
+  in reverse order.
+</P> 
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="2"
+ CELLSPACING="0"> 
+<TR VALIGN="TOP">
+  <TD WIDTH="*" BGCOLOR="#e6e6e6">
+	 <P><FONT SIZE="-1"><B><A HREF="../Yacs.html" TARGET="_top">Home</A> |
+		<A HREF="#TopOfPage" TARGET="_top">Top Of Page</A> |
+		<A HREF="../Yacs.html#CodeSection" TARGET="_top">Code</A> |
+		<A HREF="../Yacs.html#Papers" TARGET="_top">Papers</A> |
+		<A HREF="../Yacs.html#FAQs" TARGET="_top">FAQs</A> |
+		<A HREF="../Links.html" TARGET="_top">Links</A> |
+		<A HREF="../Yacs.html#SiteSearch" TARGET="_top">Search</A> |
+		<A HREF="../Yacs.html#ContactMe" TARGET="_top">Feedback</A></B></FONT>
+	 </P> 
+  </TD>
+  <TD WIDTH="*" BGCOLOR="#e6e6e6">
+	 <P ALIGN="RIGHT"><FONT SIZE="-1">Page updated 
+		<SCRIPT LANGUAGE="javascript" TYPE="text/javascript" SRC="../lstmoddt.js">
+			</SCRIPT> </FONT>
+	 </P> 
+  </TD>
+</TR>
+</TABLE> 
+<P ALIGN="CENTER"><FONT SIZE="-1"><B>Copyright &copy; 1998-2001 Thin Air
+  Enterprises and Robert Dunn.&nbsp; All rights reserved.</B></FONT>
+</P> 
+</BODY>
+</HTML>
+
+

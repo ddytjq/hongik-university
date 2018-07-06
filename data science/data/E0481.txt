@@ -1,0 +1,209 @@
+ID=E0481
+URL=http://www.troubleshooters.com/codecorn/littperl/perlhelo.htm
+SIZE=6372
+DATE=12/07/02
+TIME=19:21:17
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>Hello World in Perl</TITLE>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="description" CONTENT="Debugging and Troubleshooting Source Code including MS Access, C++, Delphi, FoxPro, MFC, SQL, Visual Basic">
+   <META NAME="keywords" CONTENT="debugging, troubleshooting, Source Code, Access, C++, Delphi, FoxPro, MFC, Microsoft Foundation Classes, SQL, Visual Basic">
+   <META NAME="FORMATTER" CONTENT="Microsoft FrontPage 1.1">
+   <META NAME="Author" CONTENT="Steve Litt">
+   <META NAME="Description" CONTENT="Hello World in Perl and CGI">
+   <META NAME="KeyWords" CONTENT="PERL, CGI, Hello World">
+   <META NAME="GENERATOR" CONTENT="Mozilla/3.01Gold (Win95; U) [Netscape]">
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFF0" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000" BACKGROUND="../../tcbk.gif">
+
+<H2 ALIGN=CENTER><A NAME="top"></A><A HREF="../../troubleshooters.htm">Troubleshooters.Com</A>
+and <A HREF="../index.htm">Code Corner</A> Present</H2>
+
+<H1 ALIGN=CENTER><A HREF="index.htm">Steve Litt's PERLs of Wisdom</A>:<BR>
+<FONT SIZE=+4>Hello World in Perl<BR>
+</FONT>(With Snippets)</H1>
+
+<CENTER><P><A HREF="../../cpyright.htm">Copyright (C) 1998 by Steve Litt</A></P></CENTER>
+
+<P>
+<HR></P>
+
+<H1>Hello.pl</H1>
+
+<P>Save a file called hello.pl with this one line:</P>
+
+<PRE>print &quot;Hello World\n&quot;;</PRE>
+
+<P>Make sure the PERL executable is on your path.</P>
+
+<P>Now type the following command at your command prompt:</P>
+
+<PRE>perl hello.pl</PRE>
+
+<P>If everything's OK, you should get the following output:</P>
+
+<PRE>Hello World</PRE>
+
+<P>If not, troubleshoot.</P>
+
+<H1>Hello.cgi</H1>
+
+<H4>
+<HR WIDTH="100%">NOTE! CGI can vary from server to server. Use it at your
+own risk. It may or may not work on your system. Please feel free to contact
+me with any problems or suggestions. 
+<HR WIDTH="100%"></H4>
+
+<P>On your local PC, save a file called hello.cgi with these lines of code:</P>
+
+<PRE>#!/usr/local/bin/perl
+print &quot;Content-type: text/html\n\n&quot;;
+print &quot;&lt;H1&gt;Hello World&lt;/H1&gt;\n&quot;;</PRE>
+
+<P>Note that the top line is the path to perl on your unix host. On your
+pc, make sure the PERL executable is on your path.</P>
+
+<P>Now type the following command at your command prompt:</P>
+
+<PRE>perl hello.cgi</PRE>
+
+<P>If everything's OK, you should get the following output:</P>
+
+<PRE>Content-type: text/html
+
+&lt;H1&gt;Hello World&lt;/H1&gt;</PRE>
+
+<P>If not, troubleshoot.</P>
+
+<P>Next, execute this command:</P>
+
+<PRE>perl hello.cgi &gt; junk.htm</PRE>
+
+<P>Now open file junk.htm in your browser. You should get Hello World in
+very large letters. If not, troubleshoot.</P>
+
+<P>Transfer hello.cgi to the server, and set it as executable. <A HREF="chmod.htm">chmod</A>
+a+x hello.cgi should do it. Now, on the server, type this command:</P>
+
+<PRE>perl ./hello.cgi</PRE>
+
+<P>Your output should look like this:</P>
+
+<PRE>Content-type: text/html
+
+&lt;H1&gt;Hello World&lt;/H1&gt;</PRE>
+
+<P>If it doesn't, check to see if the system administrator has pathed you
+correctly for perl. Try this:</P>
+
+<PRE>perl -v</PRE>
+
+<P>Note the output it produces, and call the sysadmin.</P>
+
+<P>Once you get the <TT>perl ./hello.cgi</TT> command to work correctly,
+try this:</P>
+
+<PRE>./hello.cgi</PRE>
+
+<P>Once again, you should get this output:</P>
+
+<P>Your output should look like this:</P>
+
+<PRE>Content-type: text/html
+
+&lt;H1&gt;Hello World&lt;/H1&gt;</PRE>
+
+<P>If you don't, use the command which perl to see where perl resides on
+the ISP's machine, and change the top line of hello.cgi accordingly. If
+that doesn't fix it, troubleshoot.</P>
+
+<P>Once you get the right output typing just the filename, create this
+hello.htm in the same directory:</P>
+
+<PRE>Content-type: text/html
+
+&lt;P&gt;&lt;A HREF=&quot;hello.cgi&quot;&gt;RUN hello.cgi&lt;/A&gt;.&lt;/P&gt;</PRE>
+
+<P>Now pull up hello.htm in your browser, click on the hyperlink that says
+&quot;RUN hello.cgi. If everything's cool it should come back with a screen
+saying Hello World in large letters. Otherwise, troubleshoot.</P>
+
+<H1>HelloForm.cgi</H1>
+
+<P>Create HelloForm.cgi in a directory on the server, as follows:</P>
+
+<TABLE BORDER=1 >
+<TR>
+<TD COLSPAN="2">HelloForm.cgi</TD>
+</TR>
+
+<TR ALIGN=LEFT VALIGN=TOP>
+<TD>
+<PRE>#!/usr/local/bin/perl
+ print &quot;Content-type: text/html\n\n&quot;;
+ print &quot;Hello World.\n&quot;;
+ print &quot;Heres the form info:&lt;P&gt;\n&quot;;
+ my($buffer);
+ my(@pairs);
+ my($pair);
+ read(STDIN,$buffer,$ENV{'CONTENT_LENGTH'});
+ @pairs = split(/&amp;/, $buffer);
+ foreach $pair (@pairs)
+   {
+   print &quot;$pair&lt;BR&gt;\n&quot;
+   }
+print &quot;&lt;P&gt;Note that further parsing is\n&quot;;
+print &quot;necessary to turn the plus signs\n&quot;;
+print &quot;into spaces and get rid of some\n&quot;;
+print &quot;other web encoding.\n&quot;;
+</PRE>
+</TD>
+
+<TD>
+<PRE>#path to perl
+#so output produces web page
+#we believe in tradition
+
+#various declarations
+
+
+#POST method uses stdin
+#Control/value pairs &amp; delimited
+#print each ctrl/value pair</PRE>
+</TD>
+</TR>
+</TABLE>
+
+<P>Now make it executable with <A HREF="chmod.htm">chmod</A>:</P>
+
+<PRE>chmod a+x HelloForm.cgi</PRE>
+
+<P>Now put the following form in a web page in the same directory as HelloForm.cgi:</P>
+
+<PRE>&lt;form action=&quot;FormHello.cgi&quot; method=&quot;POST&quot;&gt;
+    &lt;P&gt;Text: &lt;input type=&quot;text&quot; size=&quot;20&quot; name=&quot;TextLine&quot;&gt;
+    &lt;input type=&quot;submit&quot; name=&quot;Button&quot; value=&quot;Submit&quot;&gt;&lt;/P&gt;
+&lt;/form&gt;</PRE>
+
+<P>Access the web page, fill in the text line, click the button, and you'll
+see the results come up.</P>
+
+<P>
+<HR></P>
+
+<P>&nbsp;[ <A HREF="../../troubleshooters.htm">Troubleshooters.com</A>
+| <A HREF="../index.htm">Code Corner</A> | <A HREF="mailto:slitt@troubleshooters.com">Email
+Steve Litt</A> ] </P>
+
+<P><A HREF="../../cpyright.htm#top"><IMG SRC="../../images/biglcpyr.gif" BORDER=0 HEIGHT=30 WIDTH=30></A>
+<A HREF="../../cpyright.htm#top">Copyright (C)1998 by Steve Litt</A> --
+<A HREF="../../cpyright.htm#top">Legal</A></P>
+
+<P>&nbsp;</P>
+
+</BODY>
+</HTML>
+

@@ -1,0 +1,282 @@
+ID=F0476
+URL=http://www.stlvbug.org/topics.asp
+SIZE=4970
+DATE=09/07/2002
+TIME=13:21:19
+DATASET=Visual Basic
+HTML=
+<html>
+
+<head>
+<link rel="stylesheet" type="text/css" href="styles.css">
+<title>STLVBUG Topic Vote</title>
+</head>
+
+<body background="images/grytxtr5.jpg" bgcolor="#d5d5d5" BGPROPERTIES=FIXED>
+
+<p><img src="images/vbug.gif" width="576" height="144"></p>
+<!-- begin CoolBar Control -->
+<STYLE TYPE="text/css"><!--
+	
+	A { text-decoration:none; }
+
+	TABLE#tblCoolbar { 
+		background-color:threedface; padding:1px; color:menutext; 
+		border-width:1px; border-style:solid; 
+		border-color:threedhighlight threedshadow threedshadow threedhighlight;
+	}
+
+	TABLE#tblCoolbar TABLE { 
+		font-family:tahoma; font-size:70%; color:menutext; 
+		border:1px solid threedface; cursor:hand; padding:1px; 
+	}
+	
+--></STYLE>
+
+<SCRIPT LANGUAGE="JScript"><!--
+
+	// SET SOME "CONSTANT" VALUES FOR THE SCRIPT
+	// MAKES PLAYING WITH LOOK AND FEEL A LOT EASIER
+
+	var sOffBackColor = "threedface";
+	var sOffTextColor = "menutext"
+	var sOffBorderColor = "threedface";
+	var sOffPadding = "1px 1px 1px 1px";
+
+	var sOverBackColor = "threedface";
+	var sOverTextColor = "menutext"
+	var sOverBorderColor = "threedhighlight threedshadow threedshadow threedhighlight";
+	var sOverPadding = "1px 1px 1px 1px";
+
+	var sDownBackColor = "window"
+	var sDownTextColor = "menutext"
+	var sDownBorderColor = "threedshadow threedhighlight threedhighlight threedshadow";
+	var sDownPadding = "2px 0px 0px 2px";
+
+	var sPaneName = "";
+	var eActiveButton = null;
+
+	// TWO HELPER FUNCTIONS
+	// ONE TO SET BUTTON PADDING AND ONE TO SET BUTTON IMAGE
+
+	function SetButtonPadding(eButton,sPaddingStyle)
+	{
+		eButton.rows[0].cells[0].style.padding = sPaddingStyle;
+		eButton.rows[0].cells[1].style.padding = sPaddingStyle;
+	}
+	
+	function SetButtonImage(eButton,sState)
+	{
+		var eImg = eButton.rows[0].cells[0].children[0];
+		if (eImg) 
+		{
+			var sImgSrc = eImg.src;
+			
+			if (sState == "over")
+			{
+				eImg.src = "../images/minus.gif";
+			}
+			
+			if (sState == "off")
+			{
+				eImg.src = "../images/plus.gif";
+			}
+
+		}
+	}
+	
+	// FOUR EVENT-HANDLER FUNCTIONS
+
+	function button_over(eButton)
+	{
+
+		// IF WE'RE JUST MOUSING ABOUT WITHIN THE BUTTON, THEN BAIL
+
+		if (window.event && eButton.contains(window.event.fromElement)) return false;
+
+		// OTHERWISE CHANGE BUTTON STYLE
+
+		eButton.style.backgroundColor = sOverBackColor;
+		eButton.style.color = sOverTextColor;
+		if (eActiveButton != eButton)
+		{
+			eButton.style.borderColor = sOverBorderColor;
+			SetButtonImage(eButton,"over");
+		}
+	}
+
+
+	function button_out(eButton)
+	{
+		// IF WE'RE JUST MOUSING ABOUT WITHIN THE BUTTON, THEN BAIL
+		
+		if (window.event && eButton.contains(window.event.toElement)) return false;
+
+		// OTHERWISE CHANGE BUTTON STYLE
+
+		if (eActiveButton != eButton)
+		{
+			eButton.style.backgroundColor = sOffBackColor;
+			eButton.style.borderColor = sOffBorderColor;
+			eButton.style.color = sOffTextColor;
+			SetButtonPadding(eButton,sOffPadding);
+			SetButtonImage(eButton,"off")
+		}
+		else
+		{
+			eButton.style.backgroundColor = sDownBackColor;
+			eButton.style.borderColor = sDownBorderColor;
+			eButton.style.color = sDownTextColor;
+		}
+	}
+
+	function button_down(eButton)
+	{
+		eButton.style.borderColor = sDownBorderColor;
+		SetButtonPadding(eButton,sDownPadding);
+	}
+
+	function button_up(eButton)
+	{
+
+		// IF ANOTHER BUTTON IS ACTIVE, RESET IT
+
+		if (null != eActiveButton && eButton != eActiveButton)
+		{
+			eActiveButton.style.backgroundColor = sOffBackColor;
+			eActiveButton.style.borderColor = sOffBorderColor;
+			eActiveButton.style.color = sOffTextColor;
+			SetButtonImage(eActiveButton,"off");
+			SetButtonPadding(eActiveButton,sOffPadding);
+			eActiveButton = null; 
+
+			// insert code here for button hiding 
+			window.status = window.defaultStatus;
+		}
+
+		// IF THE BUTTON WE CLICKED IS NOT THE ACTIVE BUTTON, MAKE IT ACTIVE
+
+		if (eButton != eActiveButton)  
+		{
+			eActiveButton = eButton;
+			eActiveButton.style.borderColor = sDownBorderColor;
+			eActiveButton.style.color = sDownTextColor;
+			SetButtonPadding(eActiveButton,sDownPadding);
+			sPaneName = eActiveButton.id.replace(/tbl(.*)Button/,"$1");
+
+			// insert code here for button showing 
+			//window.status = "Now showing: " + sPaneName;
+		}
+
+		// OTHERWISE, RESET IT
+
+		else  
+		{
+			eActiveButton.style.backgroundColor = sOverBackColor;
+			eActiveButton.style.borderColor = sOverBorderColor;
+			eActiveButton.style.color = sOverTextColor;
+			SetButtonPadding(eActiveButton,sOverPadding);
+			eActiveButton = null;
+
+			// insert code here for button hiding 
+			window.status = window.defaultStatus;
+		}
+
+	}
+
+//--></SCRIPT>
+
+<TABLE ID="tblCoolbar" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONSELECTSTART="return false;">
+<TR VALIGN="middle">
+
+	<TD>
+	<TABLE ID="tblHomeButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="VBUG Home">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><A HREF="default.asp">Home</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>
+
+	<TD>
+	<TABLE ID="tblFeedbackButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="Send Us Feedback">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><A HREF="feedback.asp">Feedback</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>
+
+	<TD>
+	<TABLE ID="tblAppButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="Join VBUG!">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><A HREF="vbugapp.asp">VBUG Application</A>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>	
+	
+	<TD>
+	<TABLE ID="tblMeetingButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="Current Meeting">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><a href="currmtg.asp">Current Meeting</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>
+	
+	<TD>
+	<TABLE ID="tblTipsButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="VBUG Tips and Tricks">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><a href="tips.asp">Tips and Tricks</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>	
+
+	<TD>
+	<TABLE ID="tblNewsButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="VBUG Newsgroup">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><a href="newsgroup.asp">VBUG Online Newsgroup</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>	
+
+	<TD>&nbsp;</TD>
+
+</TR>
+</TABLE>
+
+<P><P>
+
+<!-- End CoolBar Control -->
+
+<P>&nbsp;</P>
+What would you like to see more of at our meetings:
+
+
+<form action=vote.asp?action=count method=post>
+<table border=0 width=600>
+<tr>
+	<td width=30 align=center><strong>Yes</strong></td>
+	<td width=30 align=center><strong>No</strong></td>
+	<td><strong>Topic</strong></td>
+</tr>
+<tr><td align=center><input type=checkbox name=yestopics value=6></td><td align=center><input type=checkbox name=notopics value=6></td><td>Application Design</td></tr>
+<tr><td align=center><input type=checkbox name=yestopics value=3></td><td align=center><input type=checkbox name=notopics value=3></td><td>COM Programming</td></tr>
+<tr><td align=center><input type=checkbox name=yestopics value=1></td><td align=center><input type=checkbox name=notopics value=1></td><td>Data Access</td></tr>
+<tr><td align=center><input type=checkbox name=yestopics value=7></td><td align=center><input type=checkbox name=notopics value=7></td><td>Database Programming (pure SQL)</td></tr>
+<tr><td align=center><input type=checkbox name=yestopics value=4></td><td align=center><input type=checkbox name=notopics value=4></td><td>General Practices (methods, etc)</td></tr>
+<tr><td align=center><input type=checkbox name=yestopics value=5></td><td align=center><input type=checkbox name=notopics value=5></td><td>Language Features</td></tr>
+<tr><td align=center><input type=checkbox name=yestopics value=2></td><td align=center><input type=checkbox name=notopics value=2></td><td>Web Programming</td></tr>
+
+</table><BR>
+<input type=submit value='Cast My Vote'><BR>
+</form>
+
+
+
+</body>
+</html>
+

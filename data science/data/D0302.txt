@@ -1,0 +1,1167 @@
+ID=D0302
+URL=http://www.parnasse.com/java.shtml
+SIZE=39830
+DATE=16/07/02
+TIME=14:42:29
+DATASET=Java
+HTML=<HTML>
+
+<title> Linux Java Tips and Hints Page </title>
+<head>
+</head>
+<body bgcolor="#FFFFFF">
+<h1><a href="net.in.arcadia.html"><img src="java.jpg" align = middle hspace = 10></a>
+<i>Linux Java Tips and Hints Page<br></h1>
+<br>
+</i>Very Informally Maintained by <a
+href="jeffcv.shtml">Jeff Harrington</a><p>
+<h3><a href="javaadd.shtml">Please add your Java hint to this
+collection!</a><br>
+<img src="new.gif"><a href="NetscapeBugs.shtml">Netscape 3.0+ Java Bug
+List</a><br>
+<a href="http://www.blackdown.org/java-linux.html">Blackdown - The 
+Source for Java Linux Binaries and Information!</a><br>
+</h3>
+<h4><a href="net.in.arcadia.html">Net in Arcadia: The Virtual Museum of 
+Contemporary Classicism</a><br>
+<a href="screen.shtml">Net in Arcadia Windows Screen Savers</a><br>
+</h4> <hr>
+ If you're having problems getting java to be 
+found at different 
+directories try modifiying the .java_wrapper file, like this.  I replaced 
+each of the java, javac, javah, etc soft-linked files with the .java_wrapper
+file with the first two lines modified so that it referred specifically 
+to the executable.
+
+So java used to point to .java_wrapper.  Now it has its own shell script
+with the first two lines replaced.
+<hr>
+<b>OLD:</b><br>
+
+
+PRG=`which $0` >/dev/null 2>&1<br>
+J_HOME=`dirname $PRG`/.<br>
+
+<b>NEW:</b><br>
+
+PRG=/usr/local/java/bin/java<br>
+J_HOME=/usr/local/java<br>
+<hr>
+
+Each of the executables, javac, javah, etc. has a similar file.  I know its
+redundant, but it works.  
+
+<hr>
+<a href = "http://sunsite.unc.edu/javafaq/javatutorial.html">Brewing Java: 
+A Tutorial</a> is a good WWW document I found recently for learning Java.
+<hr>
+</A>
+
+
+Adding to the CLASSPATH is easy.  Just:<br>
+<b>
+export CLASSPATH=$CLASSPATH:/usr/local/java/wherever
+</b><br>
+<hr>
+Wrap your Java applets in HTML with this Perl script:<p>
+<a href="wraphtml.txt">Perl Source</a><p>
+
+Call it wraphtml and give it 3 arguments, a classfile, width and height.  
+Re-direct its output to an appropriately named html file.<br><hr>
+
+MD5 encryption has been ported to Java:<p>
+<a href=ftp://java.sun.com/pub/java/cmcmanis/MD5.java>MD5.java</a>
+<i></i><br>
+<hr>
+
+From the Java-Linux List:<br>
+<p>
+1.) You *MUST* obtain the binary distribution of libc, not the source
+distribution. I heard that several other people made the same mistake that I
+did and grabbed the wrong distribution.
+<p>
+2.) The libc.so binary distribution has to be un-tarred from the root
+directory.
+<p>
+3.) Also, I checked the symbolic link in /lib/libc.so.5 -> libc.so.5.2.18,
+and re-did an 'ldconfig' to insure it was working.
+<br>
+<hr>
+Get the Sun Java API docs in HTML format and run them from Netscape while
+you program.<br><b>
+<a href="ftp://ftp.javasoft.com/docs">ftp.javasoft.com</a><br></b>
+<hr>
+To convert .wav files to Java-appropriate .au files use 
+<a href="http://www.spies.com/Sox/">SoX</a>:
+<b><br>
+
+sox infile.wav -r 8012 -U -b outfile.au
+<br></b>
+<hr>
+Adding comments at the bottom of Netscape is easy:<br>
+
+<b>        getAppletContext().showStatus("See me!");
+</b><br>
+<a href="np.html">Demo and Source</a>
+<hr>
+<a href="http://rendezvous.com/java/hierarchy/index.html">
+Postscript Class diagrams to the Beta JDK</a>
+<br>
+<hr>
+Don't nest comments!<i><br>
+ </i><br>
+<hr> Static methods can only make calls to static methods.  This will not work:
+<b>
+<p>
+
+  class TstApp {
+<br>    public static void main (String args[]) {
+<br>   Next_Level(args[0]);
+<br>   }
+<br>
+<br> public void Next_Level(String Incoming_String) {
+<br>    System.out.println(Incoming_String);
+<br> }
+<br> }
+</b>
+<hr>
+Cay Hostman writes in comp.lang.java:<p>
+
+Regarding trapping keystrokes, I was able to do that--I didn't try
+keyDown because I have learned to distrust all but the handleEvent
+procedure, but they do make it until there.
+<p>
+Tip of the day: Put a statement<p><b>
+
+if (evt.id != Event.MOUSE_MOVE)
+<br> System.out.println(evt);</b>
+<p>
+into every handleEvent function.
+<p>
+Tip 2. NEVER return false from an event handler. It propagates the
+event to the parent in the containment hierarchy before the parent in
+the inheritance hierarchy (i.e. Component) has a chance to distribute
+the event to the mouse/keyboard/action functions Instead reissue the
+handler on super.
+<i><br>
+ </i><br>
+<hr>
+Paul Cole writes in comp.lang.java about how to extend the Linux Beta1:<p>
+
+Try grabbing the win95 distribution and steal the TextArea.java from
+the src/java/awt/TextArea.java, javac that sucker, keep an original of
+your classes/awt/TextArea.class and copy the resulting class from your
+compile into it.  Unless there's somethign that 1.0beta2 TextArea.java
+wants to do that java 1.0beta1 can't compile. it should work.  You
+might have to recompile more than one of the classes if the new
+TextArea.java uses an extended interface of TextAreaPeer or
+TextComponent etc, but I do not think that is the case. 
+<i><br>
+ </i><br>
+<hr>
+ Cay Horstmann writes in comp.lang.java about printing doubles:<p>
+The easiest way (i.e. least keystrokes) is
+<p>
+        double x = 3.14;
+<br>        String s = ""+x;
+<p>
+Sure, the purists will tell you to use fromDouble or valueOf or some
+such function that you can't remember for five minutes after you
+looked it up. The ""+ trick works fine and is only marginally less
+efficient.
+<i><br>
+ </i><br>
+<hr>Comment to first hint.
+
+There are more simlier and elegant way to do this:
+
+You may replace:
+
+PRG=`which ...............`
+
+with
+
+PRG=$0
+
+in this case you need not to copy .java_wrapper<i><br>
+Constantine Plotnikov Novosibirsk, Russia</i><br>
+<hr>BUSERRORED Netscape betas.
+Set your X at 8bpp and enjoy JAVA at poor resolutions!<i><br>
+Takashi Kojima Chiba,JAPAN</i><br>
+<hr> 
+Don't forget about the java source when you have a question about
+various methods.  There are often examples in the comments.  The 
+java.awt.image source is especially interesting for understanding the
+ImageObserver and ImageProducer methods.<i><br>
+ </i><br>
+<hr>Lots of source and problem-solving tips at<br><a href = 
+"http://www.digitalfocus.com/digitalfocus/faq/howdoi.html">WWW.DigitalFocus.com
+</a>
+<i><br>
+ </i><br>
+<hr>
+<a href = "http://www.pipex-sa.net/~nic/javac.html">Using the JAVA
+Compiler in Netscape2+ to Compile JAVA Classes</a> 
+<i><br>
+Nic Tjirkalli Johannesburg, South Africa</i><br>
+<hr>
+For linux java beginners: linux java tools are at <a href 
+= "http://www.blackdown.org">www.blackdown.org</a>
+<i><br>
+Kevin Leeds of Proteus, Inc. Atlanta, GA</i><br>
+<hr><p>
+  PLEASE, please !!Please!! don't use K&R indentation style!! It is
+  CONFUSING, and highly unmaintainable! K&R looks like:
+</p>
+<p>
+<pre>
+class HelloWorld { <-- see this brace? it should be on the next line,
+                       at the same "tab stop" as its closing brace.
+
+  public static void main (String args[]) { <-- Same thing. This is K&R.
+
+    System.out.println("Hello World!");
+
+  }
+  
+}
+</pre>
+</p>
+<p>
+  In my (not so) humble opinion, open braces should _always_ be at the same
+  "tab stop" as their matching close brace.
+</p>
+<p>
+  The above should look like this:
+</p>
+<p>
+<pre>
+class HelloWorld 
+{
+  public static void main (String args[]) 
+  {
+    System.out.println("Hello World!");
+  }
+}
+</pre>
+</p>
+<p>
+  By extension, this:
+</p>
+<p>
+<pre>
+if(...) {
+    what.ever();
+} else {
+    what.ever.else{};
+}
+</pre>
+</p>
+<p>
+  Should look more like this:
+</p>
+<p>
+<pre>
+if(...) 
+{
+    what.ever();
+} 
+else 
+{
+    what.ever.else{};
+}
+</pre>
+</p>
+<p>
+  You want your programs to be EASY to read, which K&R style is not.
+</p>
+<p>
+  This tirade written and typed in by Jim Lynch.
+</p><i><br>
+Jim Lynch California</i><br>
+<hr> 
+CLASS2HTML - Another HTML wrapper for Java Class Applets (accomodates Linux's JAVA Binary support)..
+	     I took the original idea from "wraphtml", which appears on this
+             page, and made some more modifications and additions. 
+	     This Perl program will create an HTML file which will allow you
+             to view your Java Applet in either the appletviewer or Netscape.
+	     It accomodates Linux's Java Binary support. Please check it out 
+	     at <a
+href="http://pegasus.cc.ucf.edu/~dsd75511/class2html.pl">CLASS2HTML.PL</a>.
+	     The description in the source code is self explanatory.
+<i><br>
+<a href="http://pegasus.cc.ucf.edu/~dsd75511/">Dominic Da Silva</a> 
+Orlando, FLorida, U.S.A</i><br>
+<hr>
+JAC - This Perl script can be used as a common interface to
+      compile JAVA source files with any one of the following 
+      JAVA compilers:
+
+		1) javac
+		2) guavac
+		3) kaffe
+		4) netscape
+
+      Assuming, of course, that you have one or all of 
+      these JAVA compilers installed on your system.
+      It will prompt the user for the compiler to use.
+      It accomodates Linux's Java Binary support. 
+      You must modify (within the script itself) the path 
+      to each of the compilers and the $CLASSFILE path 
+      to suit your own system's configuration.
+      Please check it out at <a
+href="http://pegasus.cc.ucf.edu/~dsd75511/jac.pl">JAC.PL</a>.
+      The description in the source code is self explanatory.<i><br>
+Dominic Da Silva Orlando, Florida, U.S.A</i><br>
+<hr> 
+Do NOT use netscape to test your applets while re-compiling frequently:
+the netscape-caching is sometimes a horrible feature :-)
+Use the JDK appletviewer instead...
+
+Ricardo. <hammer1@xs4all.nl>
+<i><br>
+Ricardo Kustner Den Haag, The Netherlands</i><br>
+
+<b>Jeff: Unless you flush the cache after every run of the applet.  </b>
+<hr>
+Comment to Jim Lynch's comment.
+
+Jim, I don't agree with you about the old K&R indentation style. In fact, I've
+been using it for more than ten years, and I will explain you why!.
+It happened to me seven years ago, while I was writting a boring accounting
+program. At that time I used the PASCAL style indentation (the one you propose),
+cause I learnt PASCAL before C. I was enjoying C, because I didn't have to think
+about the final ";" anymore (as in PASCAL I used to do). In C, every sentence ends
+with the ";", was my "thumb rule". But, look what happend to me:
+
+	for(i=0; i<100; i++);
+	{
+		*pointer_array[i] = NULL;
+	}
+
+Have you seen the ";" after the for sentence?. I didn't. And the compiler didn't
+too. In fact this is not a nonsense in C, but a set of one sentence
+(a no-body for) and one block of sentences.
+
+Two weeks later I discovered this hidden fault, and that day I promised myself
+not to use anymore this PASCAL indentation style. So this sentences became:
+
+	for(i=0; i<100; i++) {
+		*pointer_array[i] = NULL;
+	}
+
+And one ending ";" at the first line was quickly detected by the compiler as an
+error.
+
+So, PLEASE, learn through my experience!<i><br>
+Eduardo Garcia Madrid, SPAIN</i><br>
+<hr>In java you have a built in class called Object class. This class is at the
+root of java class heirarchy. So you can define an Object type reference variable
+to have the reference of any class instance. In other words you have got the
+universal type reference variable.
+e.g.
+Object refVariable = new AnyClassConstructor(); 
+Also if you want to subclass Object class you can omit the "extends" clause 
+because the compiler will automatically include it. <i><br>
+Harpreet Singh Sandhu 3035, Sector 44 - D , Chandigarh, India.</i><br>
+<hr>
+Here's (finally) some example code for manipulating audio files!<br>
+Billy Donahue's the author.<br>
+<a href="http://www.cooper.edu/~donahu/auFilter/auFilter.html">Digital Filtering lesson
+</a><i><br>
+ </i><br>
+<hr>Mark Wutka sent me this email about how to zip classes and create
+cab files for Java archiving.  
+<p>
+You can zip classes into a single .zip file using a zip archiver like 
+Info-Zip from:<br>
+<a href="http://quest.jpl.nasa.gov/Info-ZIP">http://quest.jpl.nasa.gov/Info-ZIP</a>
+<p>
+
+PKZIP usually doesn't work because it doesn't support long filenames.
+Also, you have to create the .zip file with no compression.  If you
+had all your class files in a single directory, you could zip them
+into a file called SesameStreet.zip this way:<br>
+zip -0 SesameStreet.zip *.class<br>
+The -0 (that's a zero) turns off compression. Although the data is
+not compressed, this still improves download times dramatically,
+because many classes are so small that you spend the bulk of the
+download time actually making the net connection, while with a
+.zip file, there is only one connection.
+<p>
+The .zip files can only be used for Netscape. For Internet Explorer,
+it's even better, because their class archive format, called the Cabinet,
+supports compression, too. You can get the Cabinet development kit for
+free from Microsoft at<br>
+
+<a href="http://www.microsoft.com/workshop/java/cab-f.htm">http://www.microsoft.com/workshop/java/cab-f.htm</a><br>
+<p>
+You could create SesameStreet.cab from the same directory you
+create SesameStreet.zip like this:<br>
+cabarc -r -p n SesameStreet.cab *.class
+<p>
+The neat thing is that you can supply either a .zip file, a .cab file,
+or the original .class files from a single .html file, meaning you
+can give your users whatever they can handle.  You specify a .zip
+file as the archive parameter in the applet tag, while you specify
+the .cab file as a PARAM tag. For example:
+<p>
+
+applet archive="SesameStreet.zip" code="LoadManager.class" width=2
+height=2<br>
+param name="cabbase" value="SesameStreet.cab"
+
+
+
+<p>
+_________________________________________________________<br>
+Mark Wutka        <a href="mailto:wutka@netcom.com">wutka@netcom.com</a><br>
+Author of "Hacking Java: The Java Professional's Resource Kit"<br>
+ISBN: 0-7897-0935-X (formerly titled "Java Expert Solutions")<br>
+
+
+<i><br>
+ </i><br>
+<hr>
+Not a hint per se, rather an observation for C++ programmers
+making the conversion to Java.  Don't bemoan the lack of
+templates in Java - you do NOT need them. IMHO, Templates
+in C++ fulfill the role of allowing container classes to be
+generic without an object-rooted class hierarchy. Java comes
+with a standard class hierarchy that lets you put any object
+into a container, or to easily constrain a container to a
+particular type. (Beware the principles of co- and contra-
+variance when doing so, creating a new container class that
+has more specific formal in-parms <b>and</b> out-parms creates
+a class that loses the ISA nature of class inheritance. But
+this is not a factor in C++ anyway :-)<i><br>
+Terry Kane Atlanta Ga USA</i><br>
+<hr>digital clock
+
+<SCRIPT LANGUAGE="JavaScript">
+
+<!--hide
+
+function time_of_day()
+
+{
+
+this.document.write('<p>');
+
+ctime= new Date;
+
+hours=ctime.getHours();
+
+this.document.write("<ALIGN=LEFT><FORM NAME='clock' onSubmit='0'><INPUT TYPE='text' NAME='face' SIZE=6 VALUE =''></FORM></ALIGN>");
+
+}
+
+function show(tell)
+
+{
+
+window.status=" ";
+
+window.status=tell;
+
+}
+
+var timerID = null
+
+var timerRunning = false
+
+function stopclock()
+
+{
+
+if(timerRunning)
+
+clearTimeout(timerID)
+
+timerRunning = false
+
+}
+
+function startclock()
+
+{
+
+// Make sure the clock is stopped
+
+stopclock()
+
+    showtime()
+
+}
+
+function showtime()
+
+{
+
+var now = new Date()
+
+var hours = now.getHours()
+
+var minutes = now.getMinutes()
+
+var seconds = now.getSeconds()
+
+var timeValue = "" + ((hours < 10) ? "0" : "") + hours
+
+timeValue  += ((minutes < 10) ? ":0" : ":") + minutes
+
+timeValue  += ((seconds < 10) ? ":0" : ":") + seconds
+
+document.clock.face.value = timeValue
+
+timerID = setTimeout("showtime()",1000)
+
+timerRunning = true
+
+}
+
+time_of_day();
+
+startclock();
+
+//End Hiding-->
+
+</script>
+
+<i><br>
+dns adelade south australia australia</i><br>
+<hr> 
+Hi, there is a good Java page (mine...) and i think there would also be applets
+in a few days... so, stay happy and visit me at http://www.pcnews.at/poul/index.html
+
+Thanks ...
+
+ Gerhard
+
+PS: If you want please send me an eMail how i should make a link back to your page... :-) (If you make a link to mine...) 
+<i><br>
+Gerhard Poul Vienna, Austria, Europe, Earth...</i><br>
+<hr> 
+If you are intested in a stock charting Java applet which allows you to do technical analysis on stocks, visit www.dsworld.com. The applet is written in 100% Java. It gives you an idea of what Java can do. 
+<i><br>
+Pravin Gandhi Elk Grove, IL, USA</i><br>
+<hr> 
+<P>Hi!</P>
+<P> I just want to point you to my collection of Java / Linux related links:
+</P>
+<P><A HREF="http://www.kr.tuwien.ac.at/~gernot/java-linux.html">Information
+about Java from the Linux point of view.</A></P>
+<P> It mainly contains descriptions of non-commercial Projects 
+dealing with Java Development on Linux as virtual machines, compilers,
+byte code translators, integrated development environments, visual GUI 
+builders, alternative AWT implementations or extentions, JDBC drivers and
+many more.</P>
+<P>Once again, the Url is: </P>
+<P><A HREF="http://www.kr.tuwien.ac.at/~gernot/java-linux.html">http://www.kr.tuwien.ac.at/~gernot/java-linux.html</A></P>
+<P> By they way, some feedback would be greatly appreciated!! </P>
+<P> Thanks, Gernot 
+<I><FONT SIZE=-1>(<A HREF="mailto:gernot@kr.tuwien.ac.at">gernot@kr.tuwien.ac.at</A>)</FONT></I>.
+<i><br>
+ </i><br>
+<hr>
+An ISAPI or ASP Java Servlet Runner. JRun
+
+http://www.livesoftware.com/products/commercial/jrun/
+<i><br>
+Jim Schaffer San Diego, CA  USA</i><br>
+<hr> 
+If you really want to use Netscape when writing JAVA code, you don't
+have to worry about the cache.  Just SHIFT-click the reload button.  
+It'll force a reload of the program and bypass the cache. 
+<i><br>
+Benjamin Kahn New York, NY, USA</i><br>
+<hr> 
+Bob Leah's got some excellent examples for clean 1.02 code:
+<a href="http://www.mindspring.com/~rcleah">
+http://www.mindspring.com/~rcleah</a>
+<hr> 
+<HTML>
+<HEAD>
+ <TITLE> JDK 1.1x Inner Class Bug Report </TITLE>
+</HEAD>
+
+<BODY>
+</P>If Yuo declare some class as Anonymous Inner (course, to Top Class relative) then don't call methods thats declare in Top Class. Javac don't message it, but as result Yuo get a dead Javac some time late.
+</P>Yuo can solution this by define Inner class as Full Named Inner Class -- not as Anonymous.
+</P>For example the next doesn't compile, but has correct syntax:
+
+class Top
+{
+</P>private void SomeMethod()
+</P>{
+</P></P>// Thats do something
+</P>}
+
+</P>/** The default constructor */
+</P>public Top()
+</P>{
+</P></P>// Make Anonymouse inner class, as button event adaptor
+</P></P>Button.addActionListener{  new ActionListener()
+                                   {
+                                   public void actionPerformed(ActionEvent e)
+                                     {
+                                 // Call of the top method. Result: Javac death:
+                                       SomeMethod();
+                                     }
+                                   }};
+</P>}
+}
+
+
+<drobnich_p@writeme.com>
+</BODY>
+
+
+
+
+
+
+<i><br>
+Paul Drobnich Kosice; Slovak Republic; </i><br>
+<hr>
+ 
+<i><br>
+ </i><br><pre>
+<hr>Hello I'm running the Redhat Linux distribution for the last few months and I
+just downloaded the Linux JDK from the blackdown.org mirror list.
+
+Everything is running okay, except that I'm having something really wierd
+happen when I start up an applet. I'll do:
+
+appletviewer Scum.html &
+
+The applet will start in the upper left hand corner of the screen, and start
+running, but a split second after it starts it shifts its window position
+about 20 pixels or so to the left and about 20 pixels up.  This means that I 
+can't even drag the window around or anything because the title bar is off
+screen.  The applet then runs just like normal.
+
+Anyone have ideas why this could be happening?
+
+If so, please e-mail me. jstanley@up.edu
+Thanks in advance.
+ 
+<i><br>
+Joel Stanley Portland, OR, USA</i><br>
+</pre>
+<hr> 
+The Jikes for Linux compiler is now available on alphaWorks
+<p>
+<a href="http://www.alphaworks.ibm.com/formula/Jikes">
+http://www.alphaworks.ibm.com/formula/Jikes</a>
+<p>
+Jikes is a Java compiler that translates Java source files as defined in The Java Language
+Specification (Addison-Wesley, 1996) into the bytecoded instruction set and binary format defined in
+The Java Virtual Machine Specification (Addison-Wesley, 1996). Unlike other compilers, Jikes
+accepts the Java language only as specified: not as a subset, variant, or superset. 
+
+alphaWorks
+http://www.alphaworks.ibm.com/
+<i><br>
+Frank CArlos Cupertino, California</i><br>
+<hr>
+visit http://www.xelphi.com to pick up a free Integrated Development Environment for Java, written in Java, 
+so all you need to run Xelphi is a JVM. Version 0.9.4 is being given away free for personal use. 
+<i><br>
+Jed Cawthorne Milton Keynes, UK</i><br>
+<hr> 
+Hint: for Emacs fanatics, get JDE - Java Development Environment for emacs.
+
+Question: when using javah to create a native header for a class that imports some
+Swing components, I get a message of the sort: class not found: com/sun/java/swing/JPanel
+and javah fails.  However the swing JAR files are on my classpath, because
+I can type: java com.sun.java.swing.JPanel at the shell prompt and it finds JPanel
+just fine.  Anybody know what's wrong with javah?  I am using the 1.1.6 v2 version of
+JDK from Blackdown.  email: mcvey@cirl.uoregon.edu  Thanks! 
+<i><br>
+Chip Eugene, OR, USA</i><br>
+<hr>
+In regards to the K&R style of coding, and the desperate plea
+not to use it....Foo Bar!  Real programmers don't do that.
+Before speaking up about something you have little experience
+with, do a little research.  I can't even understand a person
+who uses pascal style braces.  Duh. 
+<i><br>
+marc Silicon Valley, Oregon</i><br>
+<hr>Just to further my point about the idiot flaming K&R style coding.
+Why don't you take a look at the source code for jave (since that
+is what this list is about), and explain how sun(tm) has managed
+to maintain their code by *using* K&R style coding.  Hmmmm,
+peculiar...idiot
+
+--flame off--<i><br>
+marc (again) </i><br>
+<hr>I agree with mark.  PASCAL style takes up too much vertical space, and makes the
+code unreadable.  With your white space, you should ONLY be enphasising the 
+important code. 
+<i><br>
+Jhell MI, US</i><br>
+<hr> http://callisto.worldonline.nl/~bvdhucht/J24ned.htm
+<i><br>
+Bart van der Hucht Amsterdam</i><br>
+<hr>my comment to Jim is that non-K&R style is OK for beginners.  But for speed and efficiency {
+this can't be beat }
+<i><br>
+Craig CA</i><br>
+<hr> 
+
+
+
+K&R style is only used because the orininal C books for non-code reasons.
+Obviously, matching braces help guide the eye to blocks of code; K&R style is
+from the old days when we had to save lines on the screen becayse they only 
+had 20 lines and scrolling was painful.  C'mon, enter the modern age.  
+
+dave<i><br>
+David Hanley santa fe,nm</i><br>
+<hr><A HREF="http://www.java-resource.com">http://www.java-resource.com</A> 
+Java source code, games, links, programmer's list, and tutorials.
+<i><br>
+Robert Hurd Toronto, Canada</i><br>
+<hr>
+
+
+
+
+
+
+I have a comment on this "war" over K&R style vs. Pascal style.  I personally
+prefer the Pascal style because it is what I'm used to writing, and therefore,
+I find it easier to read. However, saying that one style is better than another
+is vanity.  They both get the job done, they both can be clear or unclear.  
+Programmers as a whole (watch out, here comes a generalization) believe that 
+whatever they do is the best, and everything else is crap.  While this confidence
+is, at times, nice, it's also counterproductive in many cases.  Arguing over who's style 
+of code writing is the best is ridiculous.  I work with people who code in both
+styles, and I have to read both on a regular basis.  For me to force someone
+to write in a style they aren't comfortable with, just so it's easier for me
+to read is stupid.  If the job gets done quicker and with less bugs when they 
+use their style than everyone wins.  
+
+As far as our friend in Spain, Eduardo.  I'm glad you shared your 
+experience in debugging with us, but it's foolish of you to think that just
+because you had difficulty solving the problem of a "no body for" statement
+(a problem that every first year Computer Science student SHOULD learn to 
+avoid and look for while debugging), that changing to the K&R style will 
+solve that problem for everyone. It is interesting to note, however, that had 
+you written your problem code using the style Jim suggested, rather than a 
+one line style, you should also have been able to avoid such a problem.  
+But, if K&R style now works for you, and helps you avoid the problem again,
+fantastic, code in good health.
+
+Now a comment to our angry friend Marc.  Sir, you seem to find this topic to 
+be a personal attack.  I understand you have a preference but you reveal a 
+great deal of your immaturity with your vengeful comments.  How does one 
+person's preference affect you so greatly?  And while the programmers at Sun may 
+have indeed used the K&R style, this doesn't make it the ONLY right way.
+Bill Gates may code in Japanese, that doesn't mean we all have to, nor would 
+we want to. And who is to say that REAL programmers only code in one way.  
+Apparently they don't, or else we would have gotten this far to begin with.   
+
+So, my programming friends, I beg of you to put an end to this pointless
+arguing over who's way is better.  Share your experiences and solutions as 
+Eduardo did, and as others here do.  But don't attack someone because they 
+did or would do it differently. It's our differences in the way we program 
+that keeps our profession exciting. Variety IS the spice of life. 
+
+I apologize for taking up so much room, but I felt it had to be said. 
+<i><br>
+Will Wash. DC, USA</i><br>
+<hr>Hia' Jim, I've come to comment on your comment here :)
+
+Don't listen to people that say:
+"PLEASE, please !!Please!! don't use K&R indentation style!! It is CONFUSING, and highly unmaintainable!"
+
+Just tell them to get a formatter.
+
+If you want one, try Artistic Style at:
+http://gene.md.huji.ac.il/~tald/astyle/
+or JStyle at:
+http://gene.md.huji.ac.il/~tald/jstyle/
+
+For those who like your code one way, and work with someone writing in another style, Don't get on their case, it just makes you annoying, and is not productive. The code is the code, where ever you like your braces.
+
+Personally, I like my lines of code close together, it lets you see more of it, and reads like a story. Also, it makes it clear where a method is, rather than just another line of code. (One where you might put a ";").
+
+So, K&R to your harts content... the other guy can re-format it... and it will only take him/her a second to do...
+<i><br>
+Brill Pappin Toronto, ON, CA</i><br>
+<hr> 
+
+
+
+
+<A HREF="http://www.internethelpers.com/java">Java Resource</A>
+Java source code, games, links, programmer's list, and tutorials
+ 
+<i><br>
+Robert Hurd Toronto, Canada</i><br>
+<hr> Check out out project site http://www.jpub.de. We're working on an integrated publishing platform for intranets.
+GNU licensed, using Linux as the development platform. Includes goodies like a flexible permissioning system and a powerful API.
+<i><br>
+Martin Farrent Bonn, Germany</i><br>
+<hr>
+
+
+
+
+Java is not an acronym.  Please do not put it in ALL CAPS (i.e. JAVA).
+
+<p>Also, check out my page <a href="http://edens.simplenet.com/aeden/">Java, XML, and the Enterprise</a> for some open source Java applications and programming libraries.<i><br>
+Anthony Eden Miami, Florida, USA</i><br>
+<hr> 
+Commenting on the K&R indentation style:  I'm a first year Computer Science student at Auckland University and we are learning the K&R way.  I don't see what all the big fuss is about.  Whichever way you indent doesn't matter.  You the programer should indent the way you feel most comfortable reading and writing.  The Professors tell us that programing is not a sort of set thing.  Everyone has there own sort of styles etc.  Just get over it.<i><br>
+Richard Hutchinson New Zealand</i><br>
+
+<hr>An extension of what Mike suggested in source styling
+
+for(...)
+{
+   ...
+}
+
+I do a 
+
+for(...)
+   {
+   ...
+   }
+
+While this admittedly takes vertical space, character-wise it is not a 
+large burden as in ASCII, CR is same as SPC. What this achieves is
+making a block out of a nested group of statements. Furthermore,
+by indenting the { and }, all statements in one level of the flow
+appear separately as in
+
+for(...)
+   {
+   ...
+   }
+if (...)
+   {
+   ...
+   }
+
+Here, the for and if are at one level and stand out as such almost as if they
+are bulletted. Since I pay a lot of attention to styling, I have written
+progs as above out of the logic (it is quite catching), and then done it
+the K&R way so that others could read it easily. Also, though I learnt
+Pascal before C, I started using this only after I learnt C. Anyone with
+the psychoanalysis of it?
+
+Cheers to all !<i><br>
+Sandipan Gangopadhyay India</i><br>
+<hr><P>That didnt come out quite right</P>
+I meant:<BR>
+Against<BR>
+for(...)<BR>
+{<BR>
+   ...<BR>
+}<BR>
+<BR>
+I write<BR>
+for(...)<BR>
+   {<BR>
+   ...<BR>
+   }<BR>
+<BR>
+I have added some HTML tags to gobble up some vertical
+space. Sorry, but it wasnt making sense.<i><br>
+Sandipan Gangopadhyay India</i><br>
+<hr>Oops,<BR>
+<PRE>
+for(...)
+   {
+   ...
+   }
+</PRE>
+<i><br>
+Sandipan Gangopadhyay India</i><br>
+<hr>Regarding the indentation style argument: Hasn't anyone read Steve McConnell's 
+book <em>Code Complete</em>? If not, you owe it to yourself to read it cover 
+to cover. Any programmer should, no matter what level you're at. Anyway, 
+it has the best analysis of several different 
+styles of indentation, and basically comes to the conclusion that K&R is best, 
+but is sure to emphasis that it's not worth a holy war to try to convert 
+someone.
+<i><br>
+Greg Vaughn </i><br>
+<hr><a href="http://www.internethelpers.com/">Internet Helpers</a>
+Get FREE help on the Internet, Java, CGI & JavaScript
+
+ 
+<i><br>
+Robert Hurd Toronto, Canada</i><br>
+<hr>This may be getting out of hand, but I would like to add my .02 on the K&R vs. Pascal
+indentation debate. I find K&R to be the best, because it allows me to see the
+maximum number of lines on the screen at once. Some claim that it is unreadable
+because one can't tell as easily where a piece of bracketed code begins and ends.
+But I can't imagine why this is a problem - wasn't this why the code itself was
+indented in the first place? Giving the bracket a line to itself is unnecessary,
+IMNSHO. It's nothing I'd start a flamewar about, but I prefer to code this way.<i><br>
+William Leary Rochester, NY</i><br>
+<hr> 
+<a href="http://www.codecollection.com">Code Collection</a> - FREE Java, CGI & JavaScript Source Code. 
+<i><br>
+Code Collection Toronto, Canada</i><br>
+<hr>
+
+
+Regarding coding style, I use both.  Functions are always Pascal formatted, this allows me to find the beginning and end of classes and functions quickly.  However if/else/for and while statements use K&R.  This is because the braces are not mandatory! But when I want them to be, I explicity put them at the end of the statement.  Also an indication of when a statment block is too long is when you find it hard to match braces.  Then break it up into functions or rethink the logic.  It works for me.<i><br>
+Charles Pack Seaview WA, USA</i><br>
+<hr><a href="http://www.jfind.com">JFind.com</a> Over 700+ Java resources, Articles, Jobs and more.
+<i><br>
+JFind Phoenix, AZ</i><br>
+<hr>
+<pre>
+Someone can call/insert JavaScript methods from/to Java applets by importing
+Netscape's JavaScript package[*]. This could be a good thing for many reasons.
+Since u use cross scripting issues things should work both in ie (ugh really)
+and Nav (except Nav4.6 which has a LiveConnect bug in it). For instance the
+following applet opens a new browser window, then puts some text onto it by
+calling JavaScript methods:
+
+import java.applet.*;
+import netscape.javascript.*;
+
+public class toJavascript extends Applet
+{
+   // decalring JavaScript wrapper:
+   JSObject window;
+
+   public void init()
+   {
+      try
+      {
+         // wrapping the js window object into java object:
+         window  = JSObject.getWindow(this);
+
+         // calling the eval method of the object to open new window:
+         window.eval("winNew=open('','','toolbar=no')");
+
+         // wrapping the new window object via the opener:
+         JSObject winNew = (JSObject) window.getMember("winNew");
+
+         // put some text onto it:
+         winNew.eval("document.open();document.write('hello form second window');document.close();");
+      }
+      catch (Exception e)
+      {
+         java.lang.System.out.println (e + " caught.");
+      }
+    }
+}
+
+Check devedge site (developer.netscape.com) for more info on LiveConnect:
+
+LC reference - http://developer.netscape.com/docs/manuals/js/client/jsref/classint.htm
+LC guide - http://developer.netscape.com/docs/manuals/js/client/jsguide/lc.htm
+LC samples - http://developer.netscape.com/docs/examples/liveconnect.html
+
+[*] the package (java40.jar) should be somewhere in ur Nav distribution, for
+example: /opt/Navigator/Program/Java/Classes/java40.jar
+</pre>
+<i><br>
+Gyula Csom Hungary, Budapest</i><br>
+<hr>
+Flogging the K&R horse: for those who aren't about to drop the cash on <TITLE>Code Complete</TITLE>, here is the gist of why to use this over the "Pascal" method. See, I used to use that, until I was converted by this explanation; suddenly, with understanding, the confusion of opening braces at the ends of lines was lifted. </P>
+
+In Ada, which is the most thoroughly engineered language around, every control construct use the same format, called "pure blocks":<CODE>
+if condition then
+    statement1;
+    statement2;
+end if;
+case variable of
+    when constant1 =>
+        statement1;
+        statement2;
+    when constant2 =>
+        statement3;
+        statement4;
+end case
+</CODE>
+So what you have to see is that, in Java and C, the opening brace is really taking the place of <CODE>then</CODE> or <CODE>of</CODE> and the closing brace takes the place of the <CODE>end</CODE> terminator. So to code an if block as<CODE>
+if (condition)
+{
+    statement1;
+    statement2;
+}
+</CODE>
+would be equivalent to<CODE>
+if condition
+then
+    statement1;
+    statement2;
+end if;
+</CODE>
+which I think you'll agree looks asinine. While I also agree that the whole issue is nothing for anyone to get their panties in a bunch over, I must reiterate that, once I understood the reasoning, this looked far better. Perhaps coincidentally, my coding improved in general, and I have an easier time spotting deeply indented sections that should be removed to a separate method.</P>
+Also, for those who find it difficult to see how things line up without the brackets lining up, a few suggestions: As someone else mentioned, get a programming tool such as Programemr's File Editor (PFE, which is freeware) and stop coding in a flat text editor - let it work for you. PFE in particular will handle indentation and brace matching automatically. Including more whitespace will make reading easier overall, and serve to group related code. If you have so much code in your method that you can't keep track of the braces fairly easily, it is a safe bet that you haven't abstracted enough, and are in danger of writing spaghetti code or worse.</P>
+And one final thing on another topic that hasn't been mentioned here: Java will most quickly access the first 3 variables assigned in a given method, plus <CODE>this</CODE>. Parameters are counted first, then locals. So if you have a method with, say, two parms and five locals, and one parm and one of the locals are going to get hammered while the others are only used once each, it's a good idea to<CODE>
+void method(int hammeredParm, int rareParm) {
+    int hammered1;
+    /* other local defs, code, etc. */
+    ...
+}
+</CODE>
+This way, it only takes a single bytecode to reference <CODE>this, hammeredParm, rareParm, hammered1</CODE> each. Of course, you won't see a difference unless the method itself is intensely complex or run <STRONG>very</STRONG> frequently, but in that case it can make a difference (and I have the benchmarks to prove it).<i><br>
+Keith G. Flippin Malvern, PA, USA</i><br>
+<hr> 
+My apologies - I thought this would recognize the &;lt;code&gt; tag, but it didn't. Here's the code again with &;lt;pre&gt; tags instead:
+
+Ada:
+<PRE>
+if condition then
+    statement1;
+    statement2;
+end if;
+case variable of
+    when constant1 =>
+        statement1;
+        statement2;
+    when constant2 =>
+        statement3;
+        statement4;
+end case
+</PRE>
+"Bad" Java:
+<PRE>
+if (condition)
+{
+    statement1;
+    statement2;
+}
+</PRE>
+would be equivalent to
+<PRE>
+if condition
+then
+    statement1;
+    statement2;
+end if;
+</PRE>
+which I think you'll agree looks asinine.</P>
+I won't bother with the last example - it should be clear enough.<i><br>
+Keith G. Flippin Malvern, PA, USA</i><br>
+<hr>http://java.sun.com/docs/books/tutorial/
+http://java.wiwi.uni-frankfurt.de/
+     Above are two really great sites for all Java programmers, even if you run off of the Linux OS.  I think that it has helped me alot when I was first learning java, and if you're new to it, then it'll probably help you too.<i><br>
+Harry Chmielewski Brunswick, Ga, USA</i><br>
+<hr>Regarding indentation style:
+
+K&R indentation style is used through the Sun code, and as such should be
+considered "the standard" for Java (in the same way that thisKindOfVariableName
+is standard, rather than this_kind_of_variable_name).  This is laid out in
+"Code Conventions for the Java Programming Language" as published by Sun
+(see http://java.sun.com/docs/codeconv/html/CodeConvTOC.doc.html).<i><br>
+William Webber Melbourne, Victoria, Australia</i><br>
+<hr>
+Don't waste time arguing about indentation styles.  There are ways to
+automagically convert between them.  Learn good programming habits instead.
+Check for ALL return values from system functions, program for environments
+that are independent of byte sex and word size.  Use LOTS of comments.
+<i><br>
+Gordon Haverland Edmonton, Alberta, Canada</i><br>
+<hr>Take a break every hour or half hour - helps to avoid brain cramp!
+Maybe play a video game or something...<i><br>
+Hanzo Hattori Samauri Showdown - on a video game chip somewhere</i><br>
+<hr>Hold the shift key and press 'reload' in Netscape to refresh an applet.
+ 
+<i><br>
+Ry Vos Soo, Ont</i><br>
+ i want to get teached my self for hacking
+<i><br>
+ </i><br>
+<hr>got tired of typing:
+javac MyClass.java
+java MyClass
+...
+#!/bin/sh
+
+if [ -f "$1".java ]; then
+        result=`javac "$1".java 2>&1`
+        echo "$result"
+        if [ "$result" ] || [ ! -f "$1".class ]; then
+                echo "############################################"
+                echo "Errors in compiling. Will not attempt to run."
+                exit
+        else
+                java $1 &
+        fi
+else
+        echo "No such source file: $1.java"
+fi
+<i><br>
+zoiks01 US</i><br>
+<hr> 
+<i><br>
+ </i><br>
+<hr> 
+<i><br>
+bong jak boon Subang Jaya, Selangor,Malaysia</i><br>
+<hr> 
+<i><br>
+ </i><br>
+<hr> 
+asdf3<i><br>
+asdf asdf2</i><br>
+<hr> 
+asdf333<i><br>
+asdf3 asdf45</i><br>
+<hr> 
+sdfg<i><br>
+sfg sfg</i><br>
+<hr> fgh
+<i><br>
+rthrth trhrthr</i><br>
+<hr> 
+<i><br>
+ </i><br>
+<hr> 
+http://www.hustler.com<i><br>
+Larry USA</i><br>
+<hr> 
+<a href=http://www.hustler.com>http://www.hustler.com</a><i><br>
+Larry USA</i><br>
+<hr> 
+<a href="http://www.jguru.com/faq/Linux">Linux Java FAQ,</a>.<i><br>
+Me USA</i><br>
+<hr> 
+<i><br>
+ </i><br>
+<hr>The Java anti-pattern is growing rapidly.  I am starting a Java site dedicated to the study of Java anti-patterns, called Bitter Java.  You can find it at www.bitterjava.com.  Check it out.
+
+The most common anti-pattern that I see in my consulting practice is the do-everything JSP.  These can be refactored with model-view-controller, sometimes called model 2.<i><br>
+Bruce Tate Austin, Tx, USA</i><br>
+<hr> 
+<i><br>
+ </i><br>
+<hr> 
+adrian@mcirb.net<i><br>
+Adrian Mexico</i><br>
+<hr> 
+java script<i><br>
+allaoui aziz gagny  etudiant france</i><br>
+<hr> 
+java script<i><br>
+allloaui aziz gagny  etudiant france</i><br>
+<hr> 
+<i><br>
+ </i><br>
+<hr> 
+<i><br>
+atif pakistan</i><br>
+<hr> 
+tips<i><br>
+Muhammad Imran Pakistan</i><br>
+<hr> dsfdsf
+<i><br>
+dsfsdf fddsfd</i><br>
+<hr> 
+<i><br>
+ </i><br>
+<hr>

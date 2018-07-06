@@ -1,0 +1,159 @@
+ID=E0130
+URL=http://www.hh.se/stud/d98rolb/ansi/main().html
+SIZE=5716
+DATE=12/07/02
+TIME=19:17:48
+DATASET=C
+HTML=<html>
+<head>
+  <title>main()</title>
+  <meta name="Generator" content="GuideML V1.6">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+<body>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="__main().html"><img src="prev.gif" alt="PREV" border=0></a><a href="malloc().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+<hr>
+<pre>
+main-Your main or principal function
+
+Synopsis
+
+
+        #include &#060;workbench/startup.h&#062;
+
+        int main(argc,argv);
+
+        int argc;               /* argument count */
+        char *argv[];
+
+Description
+
+        This function does not actually exist in the library; you must
+        supply one of these main programs in each of your applications.
+        If you trace through the two startup modules c.a and _main.c, you
+        will find that the module c.a passes control to the module
+        _main.c, which then calls the function named main. Since the
+        source code for both of these modules is supplied, you are free to
+        change this initialization procedure for special applications.
+        The standard version simulates UNIX's interface with C programs by
+        setting up a vector, which is simply an array of pointers.
+
+        The argv array contains pointers to the command-line arguments,
+        and the argument argc indicates how many pointers are in the
+        array.        For example, you can start the program myprog with the
+        following command:
+
+           myprog abc def &quot;ghi jkl&quot;
+
+        Then, the startup code sets up the argv array as follows:
+
+           argv[0] =&#062; &quot;myprog&quot;
+           argv[1] =&#062; &quot;abc&quot;
+           argv[2] =&#062; &quot;def&quot;
+           argv[3] =&#062; &quot;ghi jkl&quot;
+           argv[4] =&#062; NULL
+
+        The argc argument contains the value 4.
+
+        Under Workbench, there is no command line.  In this case, the
+        argument argc is 0 indicating no command or arguments, and the
+        argument argv is actually a pointer to the Workbench startup
+        message structure.  You can convert it with a simple cast:
+
+           #include &#060;workbench/startup.h&#062;
+
+           struct WBStartup *Wbs;
+
+           Wbs = (struct WBStartup *)argv;
+
+
+Returns
+
+        When the main function returns to its caller (normally the _main.c
+        function), the program exits to AmigaDOS with a termination code
+        of the value returned by main.
+
+        If you want to pass a nonzero termination code back to AmigaDOS,
+        use the <a href="exit().html"> exit </a> function, or return a nonzero return code
+        from your main function.
+
+Example
+
+        /* This program is intended to run only under the    */
+        /* Shell and displays the command and any arguments  */
+
+        #include &#060;stdio.h&#062;
+
+        int main(int argc, char *argv[])
+        {
+            int i;
+
+            printf(&quot;command = %sn&quot;,argv[0]);
+            for (i = 0; argc &#062; 0; i++, argc--)
+                printf(&quot;argument %d = %sn&quot;,i,argv[i]);
+            return(0);
+        }
+
+
+        /* This program is intended to run only under WorkBench and */
+        /* gets its arguments from the WorkBench message structure  */
+
+        #include &#060;stdlib.h&#062;
+        #include &#060;stdio.h&#062;
+        #include &#060;workbench/startup.h&#062;
+
+        int main(int argc, char *argv[])
+        {
+            struct WBStartup *wbs;
+            int i;
+
+            if (argc != 0)
+                exit(EXIT_FAILURE);
+
+            wbs = (struct WBStartup *)argv;
+
+            printf(&quot;command = %sn&quot;, wbs-&#062;sm_ArgList[0].wa_Name);
+            for (i = 1; i &#060; wbs-&#062;sm_NumArgs; i++)
+                printf(&quot;argument %d = %sn&quot;, i, wbs-&#062;sm_ArgList[i].wa_Name);
+            return(0);
+        }
+
+
+        /*  This program runs correctly under either Workbench or */
+        /*  the Shell and can be used with stack or registerized  */
+        /*  parameters.                                           */
+
+        #include &#060;stdio.h&#062;
+        #include &#060;workbench/startup.h&#062;
+
+        int main (int argc, char *argv[])
+        {
+            struct WBStartup *msg;
+            int i;
+
+            if (argc != 0)
+            {
+                printf(&quot;command = %sn&quot;, argv[0]);
+                for (i=0; argc &#062; 0; i++, argc--)
+                    printf(&quot;argument %d = %sn&quot;, i, argv[i]);
+            }
+            else
+            {
+                msg = (struct WBStartup *)argv;
+                printf(&quot;command = %sn&quot;, msg-&#062;sm_ArgList[0].wa_Name);
+                for (i=1; i &#060; msg-&#062;sm_NumArgs; i++)
+                    printf(&quot;argument %d = %sn&quot;, i,
+                           msg-&#062;sm_ArgList[i].wa_Name);
+            }
+            return(0);
+        }
+
+See Also
+
+        <a href="exit().html"> exit </a>, <a href="__main().html"> __main </a>
+</pre>
+<hr>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="__main().html"><img src="prev.gif" alt="PREV" border=0></a><a href="malloc().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+</body>
+</html>
+

@@ -1,0 +1,188 @@
+ID=E0960
+URL=http://www.delorie.com/djgpp/v2faq/faq8_14.html
+SIZE=8734
+DATE=12/07/02
+TIME=19:26:13
+DATASET=C
+HTML=<html><head><title>DJGPP FAQ -- Why are DJGPP '.exe' files so large?</title>
+<base href="http://www.delorie.com/djgpp/v2faq/faq8_14.html">
+</head><body><center><!-- BEGIN RICH-MEDIA BURST! CODE --> 
+     <script language="JavaScript"> 
+     <!-- /* (C) 1997-1999 BURST! Media, LLC. All Rights Reserved.*/ 
+     var TheAdcode = 'ad1954a'; 
+     var bN = navigator.appName; 
+     var bV = parseInt(navigator.appVersion); 
+     var base='http://www.burstnet.com/'; 
+     var Tv='/5297'; 
+     var agt=navigator.userAgent.toLowerCase(); 
+     if (bN=='Netscape'){ 
+          if ((bV>=4)&&(agt.indexOf("mac")==-1))
+     {  document.write('<s'+'cript src="'+ 
+           base+'cgi-bin/ads/'+TheAdcode+'.cgi/RETURN-CODE/JS' 
+           +Tv+'">'); 
+          document.write('</'+'script>');    
+     } 
+          else if (bV>=3) {document.write('<'+'a href="'+base+'ads/'+ 
+             TheAdcode+'-map.cgi'+Tv+'"target=_top>'); 
+             document.write('<img src="' + base + 'cgi-bin/ads/' + 
+             TheAdcode + '.cgi' + Tv + '" ismap width=468 height=60' + 
+             ' border=0 alt="Click Here"></a>');} 
+      } 
+     if (bN=='Microsoft Internet Explorer') 
+      document.write('<ifr'+'ame id=BURST src="'+base+'cgi-bin/ads/'
+     + 
+       TheAdcode + '.cgi' + Tv + '/RETURN-CODE" width=468 height=60' + 
+       'marginwidth=0 marginheight=0 hspace=0 vspace=0 ' + 
+       'frameborder=0 scrolling=no></ifr'+'ame>'); 
+     // --> 
+     </script> 
+     <noscript><a href="http://www.burstnet.com/ads/ad1954a-map.cgi" target=_top> 
+     <img src="http://www.burstnet.com/cgi-bin/ads/ad1954a.cgi" 
+      width=468 height=60 border=0 alt="Click Here"></a> 
+     </noscript> 
+     <!-- END BURST CODE --> 
+<table width=100% border=0 cellspacing=0 cellpadding=3><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">www.delorie.com</a>/<a href="/djgpp/" target="_top">djgpp</a>/<a href="/djgpp/v2faq/" target="_top">v2faq</a>/faq8_14.html</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/search/">search</a> &nbsp;
+</b></font></small></td>
+</tr></table><a href="bulktrap.html"></a></center>
+
+Node:<a name="Large%20executable">Large executable</a>,
+Next:<a rel=next href="faq8_15.html">DJGPP and DLLs</a>,
+Previous:<a rel=previous href="faq8_13.html">Large image</a>,
+Up:<a rel=up href="faq8.html">Compiling</a>
+<br>
+
+<h2>8.14 Why are DJGPP <code>.exe</code> files so large?</h2>
+
+<p><em><strong>Q</strong>: I compiled a trivial "Hello world" program and got a 280KB
+executable file.  That's ridiculously bloated!</em>
+
+<br><p>
+<p><em><strong>Q</strong>: I switched to GCC 2.95.1, and my C<tt>++</tt> executables are
+considerably larger than when compiled with GCC 2.7.2.1!</em>
+
+<br><p>
+<p><strong>A</strong>:  Did you link with <code>-s</code> switch to <code>gcc</code>, or run
+<code>strip</code> on the output of the linker?  If not, the executable
+includes the debugging symbols, which makes it quite a lot larger.  (It
+is not recommended to strip the symbols except when distributing
+production programs, because this makes debugging very hard indeed; that
+is why <code>-s</code> is not passed to gcc by default.)
+
+<p>A stripped "Hello world" program written in C should be about 42KB on
+disk; an analogous program written in C<tt>++</tt> should be about 140KB on
+disk (the additional overhead is due to the C<tt>++</tt> classes that are
+linked in to support <code>cout</code>).
+
+<p>C<tt>++</tt> programs could be further bloated because the release of
+Binutils 2.8.1 was configured in a way that caused the assembler to put
+into the symbol table local labels generated when compiling code that
+uses exceptions.  Later uploads of GNU Binutils should solve this
+problem, so consider upgrading to the latest <code>bnuNNNb.zip</code>.
+
+<p>Some other compilers with which people keep comparing the size of DJGPP
+programs use shared libraries or DLLs, so the size of the executable
+doesn't include the libraries.  If you have an immediate question "Why
+won't DJGPP use DLLs as well", read the following section.
+
+<p>In general, judging code sizes by looking at the size of "Hello"
+programs is meaningless, because such programs consist mostly of the
+startup code.  The DJGPP startup code does many things in preparation
+for running a protected-mode program in a Posix-compliant environment. 
+This includes switching the processor to protected mode (which requires
+a lot of code), wildcard expansion, long command-line support, and
+loading the environment from a disk file; these usually aren't available
+with other DOS compilers.  Exception and signal handling (not available
+at all in v1.x), FPU detection and emulator loading (which were part of
+<code>go32</code> in v1.x), are now also part of the startup code.
+
+<p>Most of the power of all these features goes wasted in "Hello"
+programs.  There is no point in running all that code just to print a
+15-byte  string and exit.  However, the overhead induced by the code
+needed to set up the DJGPP run-time environment is additive; the larger
+the program, the smaller the overhead relative to the program size.  For
+non-trivial programs, the code produced by DJGPP is usually smaller than
+what other compilers produce.  For example, the DJGPP version of the
+<code>Povray</code> program is smaller by about 200KB than the same program
+compiled with the Watcom compiler.
+
+<p>If your program doesn't need parts of the startup code, it can be made
+smaller by defining certain functions with empty bodies.  These
+functions are <code>__crt0_glob_function</code>,
+<code>__crt0_load_environment_file</code>, and <code>__crt0_setup_arguments.</code>
+If you define empty substitutes for all three of these, and compile with
+<code>-O2 -s</code>, you can make the "Hello" program be 31KB on disk. 
+These functions are documented in the DJGPP libc reference, which see. 
+Here's an example of definitions for these functions that will make the
+startup code as small as it gets<a rel=footnote href="faq25.html"><sup>15</sup></a>:
+
+<pre>  #include &lt;crt0.h&gt;
+
+  char **__crt0_glob_function (char *arg) { return 0; }
+  void   __crt0_load_environment_file (char *progname) { }
+  void   __crt0_setup_arguments (void) { }
+</pre>
+
+<p>(To do this in a C<tt>++</tt> program, prepend the <code>extern "C"</code>
+qualifier to each one of the three lines that define the substitute
+functions.)
+
+<p>Note that if you define an empty substitute for
+<code>__crt0_setup_arguments</code>, your program will not be able to access
+its command-line arguments via the <code>argv[]</code> array.  So this is only
+recommended for programs which don't accept any arguments at all.
+
+<p>You can make your program image still smaller by compressing it with
+a compressor called <a href="ftp://ftp.simtel.net/pub/simtelnet/gnu/djgpp/v2misc/mlp107b.zip"><small>DJP</small></a>. <small>DJP</small> is
+a DJGPP-specific executable file compressor.  It is fast and has no
+memory overhead.  It also knows about DJGPP <dfn>Dynamically Loaded
+Modules</dfn> (DLM) technology.  (Note that <small>DJP</small> before version 1.06 was
+incompatible with Binutils 2.8.1 and later<a rel=footnote href="faq25.html"><sup>16</sup></a>, so
+you should always use the latest <small>DJP</small> version available on
+SimTel.NET mirrors.)
+
+<p><small>DJP</small> is not actively developed anymore; its successor is the
+<small>UPX</small> compressor, currently in beta testing.  <small>UPX</small> is written by
+the same people who wrote <small>DJP</small>, compresses better, and supports a
+broader class of executable formats, including DOS <code>.exe</code>,
+<code>.com</code> and <code>.sys</code>, DJGPP's COFF, Watcom's LE, Win32 PE, and
+Linux's ELF.  <small>UPX</small> is available <a href="http://wildsau.idv.uni-linz.ac.at/mfx/upx.html">via the Web</a>.
+
+<p><hr>
+
+
+
+<br clear=both></p>
+<a href="bulktrap.html"></a><table width=100% border=0 cellspacing=0 cellpadding=3><tr>
+<td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/users/dj/" target="_top">webmaster</a> &nbsp;
+<a href="/donations.html" target="_top">donations</a> &nbsp;
+<a href="/store/books/" target="_top">bookstore</a> &nbsp;
+</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">delorie software</a> &nbsp;
+<a href="/privacy.html" target="_top">privacy</a> &nbsp;
+</b></font></small></td>
+</tr><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/copyright.html" target="_top">Copyright © 2001</a> &nbsp;
+<a href="/users/eliz/" target="_top">by Eli Zaretskii</a> &nbsp;
+</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+Updated Apr 2001 &nbsp;
+</b></font></small></td>
+</tr></table>
+<center><iframe
+ SRC="http://www.burstnet.com/cgi-bin/ads/ba1954a.cgi/RETURN-CODE/if/5297/"
+ scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"
+ width="468" height="60"><A target="_top"
+ HREF="http://www.burstnet.com/ads/ba1954a-map.cgi/5297"><IMG SRC="http://www.burstnet.com/cgi-bin/ads/ba1954a.cgi/5297"
+ border="0" width="468" height="60" alt="Please support our sponsor."></A></iframe><br><small><i>Please take a moment to fill out
+this <a href="http://survey.burstmedia.com/cgi-win/client.exe?Burst,welcome,ad1954a,2000">visitor survey</a></i></small>
+<br><small><i>You can help support this site by
+visiting the advertisers that sponsor it! (only once each, though)</i></small>
+</center>
+</body></html>
+
+

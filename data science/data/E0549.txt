@@ -1,0 +1,143 @@
+ID=E0549
+URL=http://home.att.net/~robertdunn/Papers/REPnP4.html
+SIZE=5242
+DATE=12/07/02
+TIME=19:22:09
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+ 
+<HTML>
+ 
+<HEAD>
+<TITLE>Yet Another Code Site - Printing and Previewing Rich
+Edit Controls Part 4</TITLE>
+<META NAME="GENERATOR" CONTENT="StarOffice/5.1 (Win32)"> 
+<META NAME="CREATED" CONTENT="19981221;21461785"> 
+<META NAME="CHANGEDBY" CONTENT="Robert Dunn"> 
+<META NAME="CHANGED" CONTENT="19991127;22445341"> 
+<META NAME="Template"
+ CONTENT="C:\Program Files\Microsoft Office\Templates\Web Pages\Web Page Wizard.wiz">
+
+</HEAD>
+
+<BODY>
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="0"
+ CELLSPACING="0"> 
+<TR>
+  <TD WIDTH="100%" VALIGN="TOP" BGCOLOR="#000080">
+	 <H1 ALIGN="CENTER" STYLE="margin-top: 0in"><FONT
+	 COLOR="#ffffff"> <A NAME="TopOfPage"></A> Yet Another Code
+	 Site</FONT></H1>
+  </TD>
+</TR>
+</TABLE> 
+<H2 ALIGN="CENTER">Printing and Previewing Rich Edit
+Controls </H2>
+<H3 ALIGN="CENTER">Part 4: Page-Breaks in Rich Edit
+Controls</H3>
+<P>Full-featured word processors allow users to insert
+  page-breaks at arbitrary locations in documents.&nbsp;
+  However, you will find no such feature in most applications
+  based Rich Edit controls. 
+</P> 
+<P>The Rich Text Format (RTF) specification does, in fact,
+  contain an RTF code for page-breaks
+  (&quot;\page&quot;).&nbsp; Unfortunately, Rich Edit
+  controls (versions 1.0 - 3.0) simply ignore it.&nbsp; (In
+  fact, I think that version 1.0 actually removes the \page
+  code or changes it to a paragraph.) 
+</P> 
+<P>This part of the paper describes a way to implement
+  page-breaks.&nbsp; It builds on the prior three parts of
+  the paper so, if you have not studied them, you should do
+  so now. 
+</P> 
+<H4>The Technique</H4>
+<P>The technique that I finally implemented is pretty
+  straight-forward -- and more than a bit ugly.&nbsp; To be
+  fair, it is more a &quot;proof of concept&quot; than a
+  polished implementation.&nbsp; It requires the user to type
+  a specific sequence of characters wherever he or she wants
+  a page-break to occur.&nbsp; This marker is: 
+</P> <BLOCKQUOTE><PRE>&lt;&lt; Page Break &gt;&gt;</PRE>
+
+</BLOCKQUOTE>
+<P> Note that the user must key this exactly, spaces and
+  all.&nbsp; However, it is not case sensitive. 
+</P> 
+<P>When printing or previewing the document, we search the
+  text for the marker and build a list of locations where it
+  appears in the document.&nbsp; Then we build the list of
+  pages, limiting the range to be rendered to the sections of
+  text before, between, and after the markers. 
+</P> 
+<P>I will not go into great detail here since it should be
+  fairly clear in the code (available below).&nbsp; However,
+  this technique is, as I mentioned, not pretty.&nbsp; Here
+  are my suggestions on how you might improve it. 
+</P> <UL>
+<LI> Supply a button or key-combination for inserting the
+marker.&nbsp; Format the marker text as protected so that
+the user cannot delete or change it.&nbsp; Add a
+notification handler to trap the EN_PROTECTED
+message.&nbsp; In the handler, select the entire marker
+text or, if it is already selected and the user is trying
+to delete it, delete the marker. </LI>
+<LI> Alternatively, use an embedded bitmap or other
+OLE/ActiveX control instead of a text marker.&nbsp; You can
+use the IRichEditOle interface to insert and delete the
+marker objects and to index through the embedded objects
+(instead of searching for the text marker). </LI>
+<LI> Add code to the file loading and saving process to
+convert the RTF \page code to and from the marker text or
+object.&nbsp; This will allow the document to be shared
+with word processors and retain the page-breaks. </LI>
+</UL>
+<P>If you implement any of these suggestions, please let me
+  know -- I would love to see the results. 
+</P> 
+<P><A HREF="REPnP3.html" TARGET="_top">Back to Part 3:
+  Printing Rich Edit Controls</A> 
+</P> 
+<P>The complete BCB 4.0 project for all four parts of this
+  paper is available for download.&nbsp; If you have BCB 3.0,
+  you can still use the code, but you will need to grab the
+  BCB 3.0 project from Part 3 of this paper and copy parts of
+  the source code from this project back into it.&nbsp; 
+</P> 
+<P>
+  <A HREF="../CodeSamples/RichEditPageBreak.zip"
+	TARGET="_top">Download Project</A>. 
+</P> 
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="2"
+ CELLSPACING="0"> 
+<TR VALIGN="TOP">
+  <TD WIDTH="*" BGCOLOR="#e6e6e6">
+	 <P><FONT SIZE="-1"><B><A HREF="../Yacs.html"
+		TARGET="_top">Home</A> | <A HREF="#TopOfPage"
+		TARGET="_top">Top Of Page</A> |
+		<A HREF="../Yacs.html#CodeSection" TARGET="_top">Code</A> |
+		<A HREF="../Yacs.html#Papers" TARGET="_top">Papers</A> |
+		<A HREF="../Yacs.html#FAQs" TARGET="_top">FAQs</A> |
+		<A HREF="../Links.html" TARGET="_top">Links</A> |
+		<A HREF="../Yacs.html#SiteSearch" TARGET="_top">Search</A>
+		| <A HREF="../Yacs.html#ContactMe"
+		TARGET="_top">Feedback</A></B></FONT> 
+	 </P> 
+  </TD>
+  <TD WIDTH="*" BGCOLOR="#e6e6e6">
+	 <P ALIGN="RIGHT"><FONT SIZE="-1">Page updated 
+		<SCRIPT LANGUAGE="javascript" TYPE="text/javascript" SRC="../lstmoddt.js">
+			</SCRIPT> </FONT> 
+	 </P> 
+  </TD>
+</TR>
+</TABLE> 
+<P ALIGN="CENTER"><FONT SIZE="-1"><B>Copyright &copy;
+  1999-2001 Thin Air Enterprises and Robert Dunn.&nbsp; All
+  rights reserved.</B></FONT> 
+</P> 
+</BODY>
+</HTML>
+
+

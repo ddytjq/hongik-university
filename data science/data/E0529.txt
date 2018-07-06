@@ -1,0 +1,134 @@
+ID=E0529
+URL=http://www.troubleshooters.com/codecorn/littperl/perlspaw.htm
+SIZE=5352
+DATE=12/07/02
+TIME=19:21:54
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>Spawning Other Programs in PERL</TITLE>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="description" CONTENT="Debugging and Troubleshooting Source Code including MS Access, C++, Delphi, FoxPro, MFC, SQL, Visual Basic">
+   <META NAME="keywords" CONTENT="debugging, troubleshooting, Source Code, Access, C++, Delphi, FoxPro, MFC, Microsoft Foundation Classes, SQL, Visual Basic">
+   <META NAME="FORMATTER" CONTENT="Microsoft FrontPage 1.1">
+   <META NAME="Author" CONTENT="Steve Litt">
+   <META NAME="Description" CONTENT="Spawning Other Programs in Perl">
+   <META NAME="KeyWords" CONTENT="Spawning Other Programs in Perl">
+   <META NAME="GENERATOR" CONTENT="Mozilla/3.01Gold (Win95; U) [Netscape]">
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFF0" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000" BACKGROUND="../../tcbk.gif">
+
+<H2 ALIGN=CENTER><A NAME="top"></A><A HREF="../../troubleshooters.htm">Troubleshooters.Com</A>
+and <A HREF="../index.htm">Code Corner</A> Present</H2>
+
+<H1 ALIGN=CENTER><A HREF="index.htm">Steve Litt's PERLs of Wisdom</A>:<BR>
+<FONT SIZE=+4>Spawning Other Programs<BR>
+in PERL<BR>
+</FONT>(With Snippets)</H1>
+
+<CENTER><P><A HREF="../../cpyright.htm">Copyright (C) 1998 by Steve Litt</A></P></CENTER>
+
+<P>
+<HR></P>
+
+<H1>Contents</H1>
+
+<UL>
+<LI><A HREF="#Introduction">Introduction</A></LI>
+
+<LI><A HREF="#Backtick">Backtick: Getting Novell Map Information</A></LI>
+
+<LI><A HREF="#System()">System()</A></LI>
+
+<LI><A HREF="#BeyondtheScope">Beyond the Scope</A></LI>
+</UL>
+
+<H1><A NAME="Introduction"></A>Introduction</H1>
+
+<P>An essential part of every programming language is the ability to run
+(spawn) other programs, whether or not the other programs are written in
+the language. If an already written program can do 90% of what you want
+to do, why re-invent the wheel?</P>
+
+<P>Standard Perl has two syntaxes for spawning other programs: the system()
+command, and the backtick ` operator. The difference is that the backtick
+operator puts stdout from the spawned program into a PERL variable (hopefully
+a list). The system() command returns the exit code of the spawned program.
+Below is an example of each:</P>
+
+<H1><A NAME="Backtick"></A>Backtick: Getting Novell Map Information</H1>
+
+<P>The backtick operator simply places the command (which may include command
+line arguments, pipe symbols, etc) between backticks (key at upper left
+of main key bank in a standard keyboard. The lowercase version of the tilde
+key). Remember that a backtick preceeds the command, and immediately follows
+the command:</P>
+
+<P>Let's say you want to get an unused drive letter, but you don't feel
+like getting into the bowels of the Novell API.</P>
+
+<PRE><B>#** Create hash of all letters above E (which is probably local)
+</B>my(%letters) = ('F'=&gt;'~','G'=&gt;'~','H'=&gt;'~','I'=&gt;'~','J'=&gt;'~','K'=&gt;'~',
+   'L'=&gt;'~','M'=&gt;'~','M'=&gt;'~','O'=&gt;'~','P'=&gt;'~','Q'=&gt;'~','R'=&gt;'~','S'=&gt;'~',
+   'T'=&gt;'~','U'=&gt;'~','V'=&gt;'~','W'=&gt;'~','X'=&gt;'~','Y'=&gt;'~','Z'=&gt;'~');</PRE>
+
+<PRE><B>#** Spawn Novell map command, place stdout into @maplines
+</B>my(@maplines) = `map`;  #NOTE: Backtick, NOT single quote!</PRE>
+
+<PRE><B>#** Loop through all lines looking for used drive letters.
+#** Delete any used drive letters from the hash
+</B>my($mapline);
+my($unused);
+foreach $mapline (@maplines)
+  {
+  <B>#** Any &quot;Drive X :=&quot;, etc, is used
+</B>  if($mapline =~ /^Drive\s+([A-Z])/) {delete($letters{$1))}</PRE>
+
+<PRE>  <B>#**&nbsp;Any &quot;SEARCH= X:\APPS\MYAPP&quot;, etc is used
+</B>  if($mapline =~ /^SEARCH=\s+([A-Z])/) {delete($letters{$1))}
+  }</PRE>
+
+<PRE><B>#** Sort remaining (unused)letters. The first is what you seek.
+</B>@drives = sort(keys(%letters));
+my($UnusedDriveLetter) = $drives[0];</PRE>
+
+<H5>
+<HR WIDTH="100%">NOTE: Although not used in this example, it's perfectly
+permissible to put command line arguments after the executable in the backtick
+operator. 
+<HR WIDTH="100%"></H5>
+
+<H1><A NAME="System()"></A>System()</H1>
+
+<P>Use this if you want to see the output of the spawned program, or if
+you want to access the spawned program's return code, or if you don't want
+to use up a variable or memory to hold the outpuut of the spawned program,
+use system().</P>
+
+<PRE>system(&quot;pkzip myback.zip $treename&quot;);</PRE>
+
+<H1><A NAME="BeyondtheScope"></A>Beyond the Scope</H1>
+
+<P>There are spawning topics beyond the scope of this document. For instance,
+the Win32 PERL module contains methods to spawn programs and immediately
+continue PERL processing (instead of halting until the spawned program
+terminates). A spawned UNIX command line can be made to pipe stderr to
+stdout.</P>
+
+<P>
+<HR></P>
+
+<P>&nbsp;[ <A HREF="../../troubleshooters.htm">Troubleshooters.com</A>
+| <A HREF="../index.htm">Code Corner</A> | <A HREF="mailto:slitt@troubleshooters.com">Email
+Steve Litt</A> ] </P>
+
+<P><A HREF="../../cpyright.htm#top"><IMG SRC="../../images/biglcpyr.gif" BORDER=0 HEIGHT=30 WIDTH=30></A>
+<A HREF="../../cpyright.htm#top">Copyright (C)1998 by Steve Litt</A> --
+<A HREF="../../cpyright.htm#top">Legal</A></P>
+
+<P>&nbsp;</P>
+
+</BODY>
+</HTML>
+

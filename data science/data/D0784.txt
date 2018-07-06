@@ -1,0 +1,445 @@
+ID=D0784
+URL=http://www.javaworld.com/javaworld/jw-04-2001/jw-0420-javadev.html
+SIZE=40265
+DATE=16/07/02
+TIME=14:58:04
+DATASET=Java
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title> Serve clients' specific protocol requirements with Brazil, Part 4</title>
+<!-- ssilog 7814 -->
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<meta name="keywords" content=" Brazil, JRMS">
+<meta name="description" content=" This fourth installment of Rinaldo Di Giorgio's Brazil technology series introduces you to multicast via JRMS (Java Reliable Multicast Service). Multicast is a protocol that supports simultaneous message transmission to multiple recipients, without having a point-to-point connection with each recipient. In this article, Di Giorgio presents some JRMS examples that you can use in your own network, and provides sample code for a Brazil handler that creates a weather multicast channel. (2,400 words)
+
+">
+<meta name="date" content="2001-04-20">
+<META NAME="DC.Date" CONTENT="2001-04-20">
+<basefont face="verdana, arial, helvetica" size="3" />
+<style type="text/css">
+            code {font-size: 90%; font-family: monospace;}
+            pre {font-size: 90%; font-family: monospace;}
+            td {font-size: 90%;}
+</style>
+<script language="javascript">
+<!--// IDG.net Scripts
+            function mail2Friend () {
+                window.parent.location = "/MailToFriend?url=" + escape(document.location);
+            }
+
+            function openBrWindow() {
+                win=window.open("http://www.javaworld.com/channel_content/jw-story-feedback.shtml",'Feedback','width=600,height=330,toolbar=no,location=no,directories=no,menubar=no,scrollbars=yes,resizable=yes');
+            }
+            //-->
+        </script>
+    </head>
+<body bgcolor="#ffffff" text="#000000" link="#990033" vlink="#990033" alink="#990033" topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" marginheight="0" marginwidth="0">
+<table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td colspan="2" width="186" bgcolor="#006699"><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0 ></a></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- START TOP 468x60 BANNER -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=692065?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=692065?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=692065?" border="0" height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer1" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- END TOP 468x60 BANNER --></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="26" valign="top" align="left" bgcolor="#ffffff"><img height=8 src="http://www.javaworld.com/images/c_whtbottom.gif" width=8 border=0 ></td>
+                <td width="100%"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.global/idgpixel7.18.00;sz=1x1;ord=692065?" border=0 height="1" width="1"><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.usa.jw/usajw.081501;sz=1x1;ord=692065?" border=0 height="1" width="1"></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160" align="middle" valign="center" nowrap><nobr><font face="Verdana, Arial, Sans-serif" color="#ffffff" size="2">April 2001</font></nobr><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="8" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltlft.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="100%" align="middle" valign="center">    <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">HOME</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/features/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FEATURED TUTORIALS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/columns/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">COLUMNS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/news-reviews/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">NEWS & REVIEWS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://forums.idg.net/webx?13@@.ee6b802"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FORUM</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/resources/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">JW RESOURCES</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/info/jw-about-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">ABOUT JW</font></a></td>
+        </tr>
+    </table></td>
+                <td bgcolor="#006699" width="8" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltrt.gif" width=8 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr valign="top">
+                <td bgcolor="#006699" width="160" align="middle" valign="top">
+                    <table width="160" border="0" cellspacing="0" cellpadding="0" bgcolor="#006699" summary="">
+                        <tr>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                            <td align="center">
+                                <form action="http://www.javaworld.com/isearch" method="GET" name="search">
+                                    <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /><br />
+                                    <input type="text" name="qt" size="12" maxlength="2047" /><br />
+                                    <input type="image" value="search" src="http://www.javaworld.com/images/button_blue.gif" border="0" width="97" height="18" alt="GO" /><br />
+                                    <input type="hidden" name="site" value="javaworld"><br />
+                                   <!-- <a href="http://www.google.com/"><img src="http://www.javaworld.com/images/google-power-fp.gif" width="108" height="45" border="0" alt="Google.com"></a>-->
+                                    <input type="hidden" name="ms" value="1">
+                                    <input type="hidden" name="tid" value="1">
+                                    <input type="hidden" name="st" value="1">
+                                    <input type="hidden" name="rf" value="0">
+                                   
+                                </form>
+                            </td>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                        </tr>
+                        <tr>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td><img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <a href="http://www.javaworld.com/archives/index-year.html"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>ARCHIVE</strong></font></a><br>
+                                <img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <strong><a href="http://www.javaworld.com/channel_content/jw-topical-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff">TOPICAL INDEX</font></a></strong></font><br><table cellspacing="0" cellpadding="0" border="0" summary="">
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/channel_content/jw-core-index.shtml"><font color="#ffffff">Core Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-enterprise-index.shtml"><font color="#ffffff">Enterprise Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-micro-index.shtml"><font color="#ffffff">Micro Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-applied-index.shtml"><font color="#ffffff">Applied Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-community-index.shtml"><font color="#ffffff">Java Community</font></a></strong></font><br /></td>
+                        </tr>
+                    </table><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-qna-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA Q&A INDEX</strong></font></a><br /><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-tips-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA TIPS INDEX</strong></font></a><br /> <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br /><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#CCCCCC"><strong>JavaWorld Services</strong></font><br /><img alt="" height="4" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /><table cellspacing="0" cellpadding="0" border="0" summary=""><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /><img alt="" height="7" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /></td><td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/subscribe"><font color="#ffffff">Free JavaWorld newsletters</font></a></strong></font></td></tr><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://javaworld.pricegrabber.com"><font color="#ffffff">ProductFinder </font></a></strong></font></td></tr><tr> <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/white-paper/index.shtml"><font color="#ffffff">White Paper Library</font></a></strong></font></td></tr>
+</table>
+<img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br />
+</td>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                        </tr>
+                        <tr valign="bottom">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_gryblbottom.gif" width=8 ></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr>
+                       <td width="8" bgcolor="#cccccc"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                           <td align="middle" bgcolor="#cccccc"><!-- SKYSCRAPER AD START HERE -->
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=692065?" width="120" height="600" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=skyscraper;sz=120x600;tile=3;ord=692065?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;skyscraper=med;sz=120x600;tile=3;ord=692065?" border=0 height="600" width="120"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer3" visibility="hidden" width=120 height=600></ILAYER>
+<!-- SKYSCRAPER AD ENDS HERE -->
+</td>
+                       <td width="8" bgcolor="#cccccc"><img height=8 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr valign="top">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_grybltop.gif" width=8 ></td>
+                        </tr>
+                    </table>
+                    <img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                    <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                <td width="100%">
+                    <!-- ## MAIN CONTENT STARTS HERE ### -->
+                    <font face="verdana, arial, helvetica" size="3">
+                        <strong> Java Developer</strong>
+                        <p>
+                            <h1 align="CENTER"> Serve clients' specific protocol requirements with Brazil, Part 4</h1>
+                            <h3 align="CENTER"> Build multicast-aware apps with JRMS </h3>
+                        </p>
+                        <!--<BLOCKQUOTE><STRONG>Summary</STRONG><BR>-->
+                        <BLOCKQUOTE>
+<STRONG>Summary</STRONG><BR>
+ This fourth installment of Rinaldo Di Giorgio's Brazil technology series introduces you to multicast via JRMS (Java Reliable Multicast Service). Multicast is a protocol that supports simultaneous message transmission to multiple recipients, without having a point-to-point connection with each recipient. In this article, Di Giorgio presents some JRMS examples that you can use in your own network, and provides sample code for a Brazil handler that creates a weather multicast channel. <em>(2,400 words)</em>
+
+</BLOCKQUOTE>
+                        <!--</BLOCKQUOTE>-->
+                        <a href="http://www.javaworld.com/feedback" target="Feedback"><STRONG>By   Rinaldo Di Giorgio</STRONG></a>
+                        <p><img src="http://www.javaworld.com/images/rule_ltblue.gif" width="100%" height="2"><br />
+                           <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                           <a href="/javaworld/jw-04-2001/jw-0420-javadev_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><br /></p>
+                         <font size=-1>  Page 1 of 2</font>
+                        <p><!-- START BIG AD (336x280) -->
+<table align="right" border="0" cellpadding="0" cellspacing="0"><tr valign="bottom" align="center"><td><font face="verdana, arial, geneva, sans-serif" color="#999999" size="-2">Advertisement</font></td></tr><tr><td><table border=1 bordercolor="#cccccc" cellspacing="5" cellpadding="0"><tr><td>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=692065" width="336" height="280" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=692065"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=692065" border=0 height="280" width="336"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer5" visibility="hidden" width=336 height=280></ILAYER>
+</td></tr></table></td></tr></table>
+<!-- END BIG AD (336x280) --></p>
+                        <p><P>
+<img align="left" width="20" height="29" src="/javaworld/abcs/S.gif" alt="S">o far in this series, I have discussed how to meet client protocol requirements utilizing Brazil technology. You have learned how to use Java applets, JavaScript, BSL, plain text, Palm query applications, and WML (Wireless Markup Language) to deliver data to recipients using any browser or device. In Part 4, I'll introduce the Java Reliable Multicast Service (JRMS) API, which allows you to develop multicast-aware applications. <P>
+Read the whole series on Brazil technology:
+<P>
+<ul> <li><a href="/javaworld/jw-08-2000/jw-0811-javadev.html">Part 1: Learn how to build an application server that can deliver data to clients requiring different protocols</a> </li> <li><a href="/javaworld/jw-10-2000/jw-1020-javadev.html">Part 2: How to support XML applications with the Brazil project</a> </li> <li><a href="/javaworld/jw-01-2001/jw-0126-javadev.html">Part 3: Economically sustain PQA, UP.SDK, and J2ME with the Brazil project</a></li> <li><a href="/javaworld/jw-04-2001/jw-0420-javadev.html">Part 4: Build multicast-aware apps with JRMS</a></li>  <li><a href="/javaworld/jw-08-2001/jw-0824-javadev.html">Part 5: Manage users and content with Brazil</a> </li> <li><a href="/javaworld/jw-07-2002/jw-0712-javadev.html">Part 6: Plug Jini, BeanShell, and JAXM into Brazil </a></li> </ul> <P>
+The multicast protocol supports simultaneous message transmission to multiple recipients, without having a point-to-point connection with each recipient. The JRMS from Sun Microsystems provides an implementation for building multicast-aware applications. Multicast decreases bandwidth consumption and, with minimal programming and coordination, allows developers to deploy applications in new ways using channels that have current data. Multicast is particularly valuable for satellite providers that use fast, scarce bandwidth to provide news, stock, video, game, and general replication update feeds over single channels to entire cities.
+<P>
+Technologies like JRMS offer the basis to achieve multicast-aware applications. In this article, I will introduce some examples of JRMS that you can use in your own network. Then I will provide sample code for a Brazil handler that creates a weather multicast channel; users can tune to it and select different sources of weather information.
+<P>
+After understanding these small examples, you should be able to develop applications that are multicast-aware -- network topology permitting. <P><FONT SIZE="+1"><STRONG> What is multicast? </STRONG></FONT><BR>
+As mentioned above, the multicast protocol sends a message to multiple receivers, but does not establish a point-to-point connection with each receiver. For example, you could multicast <em>n</em> radio stations on <em>n</em> ports for a large population of Internet users. <P>
+Multicast scales without packed duplication; unicast does not. Net applications are mostly unicast. For example, most audio and video applications open point-to-point connections between the client and the server. So 1 million users employing a unicast approach require 1 million different ports, and each packet must be duplicated 1 million times. Using the multicast approach, 1 million users could receive that data using only a fraction of those ports.
+<P>
+Some efforts involving multicast protocols have not yet taken off, like Multicast Backbone (MBONE). (See <a href="#resources">Resources</a> for a link.) Many vendors of applications and services in the video, audio, and generic data feed market do not use multicast. Their applications often establish point-to-point connections between the clients and servers. Multicast is not something you just use in your application; multicast protocols require support at the protocol stack level and in the network infrastructure.
+<P>
+Multicast is not yet widely available, so the Internet cannot efficiently deliver the same information to many users. As networking technology improves and bandwidth increases, multicast-aware applications may become more common. <P><FONT SIZE="+1"><STRONG> What is JRMS?  </STRONG></FONT><BR>
+The JRMS developers page states that the JRMS project mission is to: <P>
+<blockquote> Create a network service which enables building multicast-aware applications that distribute information over IP networks. </blockquote> <P>
+Sun Labs technical report #TR-98-68 provides a technical explanation of what multicast is and how it can be used (see <a href="#resources">Resources</a> for link to report).
+<P><FONT SIZE="+1"><STRONG> JRMS examples from Sun JRMS team </STRONG></FONT><BR>
+Download the JRMS API from Sun and try a few of the examples. I suggest testing the examples on two machines, but if you only have one, you can run the code on your computer using two windows. <P>
+Sun's JRMS team provided the examples in the table below. You can run them from various command line shells, such as Unix terminal windows or DOS windows. It can be instructive to see the packets going out on the network; use your favorite TCP/IP analysis tool to display the packets. Windows developers should consider downloading the Cygwin tools to create a more powerful command window-scripting environment. (See <a href="#resources">Resources</a>.) <P>
+The examples in the following table use either lightweight reliable multicast protocol (LRMP) or tree-based reliable multicast protocol (TRAM).<! --  Copy: I know that the acronym doesn't match the name, but that's the way it's spelled. jw --> LRMP is an implementation that provides multipoint-to-multipoint reliable and ordered delivery for multiple senders. TRAM provides large-scale point-to-multipoint delivery for single senders. Consult the JRMS Website for more details on these protocols (see <a href="#resources">Resources</a> for a link). <P>
+<table align="center" width="75%" cellpadding="4" cellspacing="4" bgcolor="#cccccc"> <caption align="bottom"><center><strong><font size="-1">JRMS examples</font></strong></center></caption> <tr align="left"><th>Directory</th><th>Description</th></tr> <tr align="left" valign="top"> <td><code>stock</code></td> <td>Source code for the sample stock ticker application, which uses TRAM to periodically send stock information from one sender (<code>StockServer</code>) to multiple receivers (<code>StockViewer</code>). The server requests information from www.yahoo.com and parses it before multicasting to the receivers.</td> </tr> <tr align="left" valign="top"> <td><code>slingerSwing</code></td> <td>Sample file-transfer application with GUI and command line interfaces.</td> </tr> <tr align="left" valign="top"> <td><code>chat</code></td> <td>This application uses LRMP in a multisender chat application.</td> </tr> <tr align="left" valign="top"> <td><code>testtools</code></td> <td>Testing programs -- start with <code>JRMStest</code>.</td> </tr> <tr align="left" valign="top"> <td><code>msendreceive</code></td> <td>Simple example that provides <code>Sender</code> and <code>Receiver</code> using <code>MulticastSocket</code> and <code>joinGroup</code>.</td> </tr> <tr align="left" valign="top"> <td><code>mctest</code></td> <td>This application uses reliable multicast to stream data from a sender to multiple receivers.</td> </tr> <tr align="left" valign="top"> <td><code>TreeTest</code></td> <td>The <code>TreeTest</code> package is a simple GUI application that simulates a set of network nodes building a TRAM repair tree. <code>TreeTest</code> can be invoked with a configuration file as an argument, or the user can manually add nodes. Once the nodes are in place, TRAM may be started. Multicast messages display on the screen as expanding circles. It is recommended that you turn off the display when simulating large numbers of nodes; it takes up extra processing time.</td>  </tr> </table> <P>
+You can find documentation for the JRMS APIs online. (See <a href="#resources">Resources</a> for a link.) <P>
+<!-- break --><br /></p>
+                        <font size=-1><a href=jw-0420-javadev-p2.html>Next page ></a><br>Page 1  Serve clients' specific protocol requirements with Brazil, Part 4<br>Page 2 <a href=jw-0420-javadev-p2.html>Brazil technology and JRMS</a><br> </font>
+                        <p>
+                            <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                            <a href="/javaworld/jw-04-2001/jw-0420-javadev_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><!-- REPLACE BIO --><br /></p>
+                        <p><ul><A NAME="resources"></a><STRONG>Resources</STRONG>
+<BR>
+
+<li>"Serve Clients' Specific Protocol Requirements with Brazil," Rinaldo Di Giorgio <em>(JavaWorld):</em>
+
+<ul>
+<li><a href="/javaworld/jw-08-2000/jw-0811-javadev.html">Part 1: Learn how to build an application server that can deliver data to clients requiring different protocols</a> (August 2000)</li>
+
+<li><a href="/javaworld/jw-10-2000/jw-1020-javadev.html">Part 2: How to support XML applications with the Brazil project</a> (October 2000)</li>
+
+<li><a href="/javaworld/jw-01-2001/jw-0126-javadev.html">Part 3: Economically sustain PQA, UP.SDK, and J2ME with the Brazil project</a> (January 2001)</li>
+
+<li><a href="/javaworld/jw-04-2001/jw-0420-javadev.html">Part 4: Build multicast-aware apps with JRMS </a> (April 2001)</li>
+
+<li><a href="/javaworld/jw-08-2001/jw-0824-javadev.html">Part 5: Manage users and content with Brazil</a> (August 2001)</li>
+
+<li><a href="/javaworld/jw-07-2002/jw-0712-javadev.html">Part 6: Plug Jini, BeanShell, and JAXM into Brazil </a> (July 2002)</li>
+</ul>
+
+<LI>The support Website for this series: <BR><A HREF="http://www.brazilhandlers.com:9090/">http://www.brazilhandlers.com:9090/
+</A><BR>
+
+
+<LI>"Restricted-Channel Multicast in Java," Jason Scherer with contribution by Rinaldo Di Giorgio (<em>JavaWorld,</em> September 1998): <BR><A HREF="http://www.javaworld.com/jw-09-1998/jw-09-javadev.html">http://www.javaworld.com/jw-09-1998/jw-09-javadev.html
+</A><BR>
+
+
+<LI>Read more from <strong>Java Developer</strong>: <BR><A HREF="http://www.javaworld.com/javaworld/topicalindex/jw-ti-javadev.html">http://www.javaworld.com/javaworld/topicalindex/jw-ti-javadev.html
+</A><BR>
+
+
+<LI>Sign up for the <em>JavaWorld This Week</em> free weekly email newsletter and keep up with what's new at <em>JavaWorld</em>: <BR><A HREF="http://www.idg.net/jw-subscribe">http://www.idg.net/jw-subscribe
+</A><BR>
+
+
+<LI>Discuss technical issues in the Java Forum: <BR><A HREF="http://forums.idg.net/webx?14@@.ee6b802">http://forums.idg.net/webx?14@@.ee6b802
+</A><BR>
+
+
+<p><strong>General multicast information</strong><br>
+<LI>Sun Labs Technical Report on JRMS: <BR><A HREF="http://www.sun.com/research/technical-reports/1998/abstract-68.html ">http://www.sun.com/research/technical-reports/1998/abstract-68.html 
+</A><BR>
+
+
+<LI>One of the best resources on IP multicast: <BR><A HREF="http://www.ipmulticast.com/">http://www.ipmulticast.com/
+</A><BR>
+
+
+<LI>Service providers that support IP multicasting: <BR><A HREF="http://www.ipmulticast.com/isplist.htm">http://www.ipmulticast.com/isplist.htm
+</A><BR>
+
+
+<LI>Tutorial on setting up multicast communication in wide area networks: <BR><A HREF="http://www.cc.gatech.edu/fac/Mostafa.Ammar/tutorial/html/intro/">http://www.cc.gatech.edu/fac/Mostafa.Ammar/tutorial/html/intro/
+</A><BR>
+
+
+<LI>Additional research papers on multicast: <BR><A HREF="http://www.erg.abdn.ac.uk/users/martin/links/links.html">http://www.erg.abdn.ac.uk/users/martin/links/links.html
+</A><BR>
+
+
+<LI>FAQ on MBONE: <BR><A HREF="http://www.cs.columbia.edu/~hgs/internet/mbone-faq.html">http://www.cs.columbia.edu/~hgs/internet/mbone-faq.html
+</A><BR>
+
+</p>
+
+<p><strong>Code resources for this article</strong><br> 
+<LI>Documentation for the JRMS APIs: <BR><A HREF="http://www.experimentalstuff.com/Technologies/JRMS/index.html">http://www.experimentalstuff.com/Technologies/JRMS/index.html
+</A><BR>
+
+
+<LI> <code>WeatherJRMSServer.java</code>: <BR><A HREF="http://www.brazilhandlers.com:9090/JavaWorld/Brazil/Series4/WeatherJRMSServer.java">http://www.brazilhandlers.com:9090/JavaWorld/Brazil/Series4/WeatherJRMSServer.java
+</A><BR>
+
+
+<LI> <code>WeatherJRMSViewer.java</code>: <BR><A HREF="http://www.brazilhandlers.com:9090/JavaWorld/Brazil/Series4/WeatherJRMSViewer.java">http://www.brazilhandlers.com:9090/JavaWorld/Brazil/Series4/WeatherJRMSViewer.java
+</A><BR>
+
+
+<LI> <code>WeatherHandler.java</code>: <BR><A HREF="http://www.brazilhandlers.com:9090/JavaWorld/Brazil/Series4/WeatherHandler.java">http://www.brazilhandlers.com:9090/JavaWorld/Brazil/Series4/WeatherHandler.java
+</A><BR>
+
+
+<LI> <code>WeatherStation.java</code>: <BR><A HREF="http://www.brazilhandlers.com:9090/JavaWorld/Brazil/Series4/WeatherStation.java">http://www.brazilhandlers.com:9090/JavaWorld/Brazil/Series4/WeatherStation.java
+</A><BR>
+
+</p>
+
+
+<p><strong>Some general code signing URLs</strong><br> 
+<LI>General introduction to signing: <BR><A HREF="http://java.sun.com/security/signExample12/">http://java.sun.com/security/signExample12/
+</A><BR>
+
+
+<LI>Plug-in for Netscape: <BR><A HREF="http://java.sun.com/products/plugin/1.3/docs/netscape.html">http://java.sun.com/products/plugin/1.3/docs/netscape.html
+</A><BR>
+
+
+<LI>More details on permissions: <BR><A HREF="http://java.sun.com/j2se/1.3/docs/guide/security/permissions.html">http://java.sun.com/j2se/1.3/docs/guide/security/permissions.html
+</A><BR>
+
+
+<LI>New and improved strategy and tool for deploying Java applets: <BR><A HREF="http://java.sun.com/products/javawebstart/">http://java.sun.com/products/javawebstart/
+</A><BR>
+
+</p>
+
+<LI>The following two URLs provide starting points for understanding coordinate systems. Serious developers should consult XML resources in this area before developing ad hoc solutions:
+
+<ul>
+<li>Latitude/Longitude and Universal Transverse Mercator: <a href="http://www.qldwalking.org.au/bushwalking/utm.htm">http://www.qldwalking.org.au/bushwalking/utm.htm</a></li>
+<li>Conversion program: <a href="http://www.igsb.uiowa.edu/gettrs/inputu.htm">http://www.igsb.uiowa.edu/gettrs/inputu.htm</a></li>
+</ul>
+</p>
+
+<strong>Development tools</strong><br>
+<LI>Make your Windows or NT easier to use for development by downloading the Cygwin tools: <BR><A HREF="http://sources.redhat.com/cygwin/">http://sources.redhat.com/cygwin/
+</A><BR>
+
+</ul><br /></p>
+                        <!-- REPLACE SIDEBAR -->
+                    </font>
+                    <!-- ## MAIN CONTENT ENDS HERE ### -->
+                </td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="168" nowrap><nobr><img src="http://www.javaworld.com/images/spacer.gif" width=160 height=8 border=0 ><img src="http://www.javaworld.com/images/c_bllftbottom.gif" width=8 height=8 border=0 ></nobr></td>
+                <td width="100%"><img src="http://www.javaworld.com/images/spacer.gif" width=1 height=1 border=0 ></td>
+                <td width="8"><img src="http://www.javaworld.com/images/spacer.gif" width=8 height=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="186" bgcolor="#006699" align="middle"><nobr><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2"></font></nobr><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0></a></td>
+                <td bgcolor="#cccccc" width="8" valign="bottom"><img height=8 src="http://www.javaworld.com/images/c_blgrylftbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- BOTTOM 468x60 AD STARTS HERE -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=692065?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=692065?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=692065?" border=0 height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer4" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- BOTTOM 468x60 AD ENDS HERE -->
+</td>
+                <td width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table bgcolor="#006699" align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="100%" align="middle" valign="center">    <font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">
+        <p>
+            <br />
+            <a href="http://www.javaworld.com"><font color="#ffffff">HOME</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/features/index.shtml"><font color="#ffffff">FEATURED TUTORIALS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/columns/index.shtml"><font color="#ffffff">COLUMNS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/news-reviews/index.shtml"><font color="#ffffff">NEWS & REVIEWS</font></a>&nbsp;|&nbsp;
+            <a href="http://forums.idg.net/webx?13@@.ee6b802"><font color="#ffffff">FORUM</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/resources/index.shtml"><font color="#ffffff">JW RESOURCES</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/info/jw-about-index.shtml"><font color="#ffffff">ABOUT JW</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/feedback"><font color="#ffffff">FEEDBACK</font></a>
+        </p>
+        <p>
+
+            <a href="http://www.javaworld.com/javaworld/common/jw-copyright.html"><font color="#ffffff">Copyright © 2002</font></a> JavaWorld.com, an IDG Communications company
+        </p>
+    </font>
+</td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+            <tr>
+                <td width="100%" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_blrtbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <!--TOP_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=692065?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer1.pageX,layer1.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--125x125-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=med;sz=125x125;tile=2;ord=692065?" width=125 height=125 visibility="hidden" onLoad="moveToAbsolute(layer2.pageX,layer2.pageY);clip.height=125;clip.width=125;visibility='show';">
+</LAYER>
+
+<!--SKYSCRAPER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=692065?" width=120 height=600 visibility="hidden" onLoad="moveToAbsolute(layer3.pageX,layer3.pageY);clip.height=600;clip.width=120;visibility='show';">
+</LAYER>
+
+<!--BOTTOM_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=692065?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer4.pageX,layer4.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--Big AD-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=692065" width=336 height=280 visibility="hidden" onLoad="moveToAbsolute(layer5.pageX,layer5.pageY);clip.height=280;clip.width=336;visibility='show';">
+</LAYER>
+    </body>
+<!-- stories1 -->
+<!-- DOCID 658669 -->
+</html>
+

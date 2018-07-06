@@ -1,0 +1,207 @@
+ID=E0459
+URL=http://www.le.ac.uk/cc/iss/tutorials/cprog/ccccsan.html
+SIZE=6841
+DATE=12/07/02
+TIME=19:21:05
+DATASET=C
+HTML=<!-- Filename: ccccdo.html -->
+<!-- Author: mc39/rjm1 -->
+<!-- Supplied by: Richard Mobbs -->
+<!-- Created: 24-08-95 -->
+<!-- Expires: 24-08-96 -->
+
+<HTML>
+
+<HEAD>
+
+<TITLE>Computer Centre: Introduction to C Programming Course</TITLE>
+
+</HEAD> 
+
+
+
+<BODY>
+
+<H1><IMG ALT="[CWC logo]" ALIGN=middle SRC="http://www.le.ac.uk/images/compcen.gif" > Structure and Nesting</H1>
+
+<HR>
+<H2>Objectives</H2>
+<P>This section brings together the various looping mechanisms available to the <B>C</B> programmer with the program control constructs we met in the last section.
+<P>We also demonstrates a neat trick with random numbers.
+<P>
+<HR>
+<P>
+
+It is one of the great discoveries  of programming that you can write any program using just simple <B><TT>while</TT></B> loops and <B><TT>if</TT></B> statements. You don't need any other control statements at all. Of course it might be nice to include some other types of control statement to make life easy - for example, you don't need the <B><TT>for</TT></B> loop, but it is good to have! So as long as you understand the <B><TT>if</TT></B> and the <B><TT>while</TT></B> loop in one form or another you can write any program you want to.
+
+<P>If you think that a loop and an <B><TT>if</TT></B> statement are not much to build programs then you are missing an important point. It's not just the statements you have, but the way you can put them together. You can include an <B><TT>if</TT></B> statement within a loop, loops within loops are also OK, as are loops in <B><TT>if</TT></B>s, and <B><TT>if</TT></B>s in <B><TT>if</TT></B>s and so on. This putting one control statement inside another is called <B>nesting</B> and it is really what allows you to make a program as complicated as you like.
+
+<P>
+<HR>
+<P>
+
+<H3>Think of a number</H3>
+
+Now let's have a go at writing the following program: '<I>It thinks of a number in the range 0 to 99 and then asks the user to guess it</I>'. This sounds complicated, especially the 'thinks of a number' part, but all you need to know is that the statement:
+
+<P><B><TT>r = rand()</TT></B>
+
+<P>will store a random number in the integer variable <B><TT>r</TT></B>. The standard library function <B><TT>rand()</TT></B> randomly picks a number within the range 0 to 32767, but this might vary from machine to machine. Look upon <B><TT>rand()</TT></B> as being a large dice.
+
+<P>Our problem is to select a number between 0 and 99 and not between 0 and 32767. How can we 
+get our random number to within our range? The <B><TT>rand()</TT></B> function will produce numbers such as:
+
+<PRE><B>
+2567
+134
+20678
+15789
+32001
+15987
+etc...
+</B>
+</PRE>
+
+<P>If you look at the last two digits of all of these numbers they would form our random set! To select just these numbers we can use an arithmetic calculation of the following form:
+
+<P><B><TT>r = rand() % 100</TT></B>
+
+<P>That is, to get the number into the right range you simply take the remainder on dividing by 100, ie a value in the range 0 to 99. You should remember this neat programming trick, you'll be surprised how often it is required.
+
+<P>Our solution to the problem is as follows:
+
+<PRE>
+<B>
+#include &LT;stdio.h&GT;
+
+main()
+ {
+   int target;
+   int guess;
+   int again;
+
+   printf("\n Do you want to guess a number 1 =Yes, 0=No ");
+   scanf("%d",&again);
+
+   while (again)
+    {
+      target = rand() % 100;
+      guess  = target + l;
+
+      while(target!=guess)
+       {
+         printf('\n What is your guess ? ");
+         scanf("%d",&guess);
+
+         if (target>guess) printf("Too low");
+         else printf("Too high");
+       }
+
+      printf("\n Well done you got it! \n");
+      printf("\nDo you want to guess a number 1=Yes, 0=No");
+      scanf("%d".&again);
+    }
+ }</B>
+</PRE>
+
+[<A HREF="rand1.c">program</A>]
+
+<P>This looks like a very long and complicated program, but it isn't. Essentially it used two loops and an <B><TT>if/else</TT></B> which in English could be summarised as:<P>
+
+<PRE>
+<B>while(again) {
+<I>  think of a number</I>
+  while (<I>user hasn't guessed it</I>)
+   {
+     <I>get users guess.</I>
+     if (target < guess) <I>tell the user the guess is low</I> 
+     else                <I>tell the user the guess is high</I>
+   }
+}</B>
+</PRE>
+
+The integer variable <B><TT>again</TT></B> is used to indicate that the user wants to carry on playing. If it is 0 then the loop stops so 0 = No, and 1, or any other non-zero value, = Yes.
+
+<P>If you try this program out you will discover that it has a slight flaw - not so much a bug, more a feature. If the user
+guesses the correct value the program still tells the user that the guess is too high and then congratulates them that
+they have the correct value. Such problems with how loops end are common and you have to pay attention to details such as this. There are a number of possible solutions, but the most straight forward is to change the inner loop so that the first guess is asked for before the loop begins. This shifts the test for the loop to stop to before the test for a high or low guess:
+
+<P>
+
+<PRE>
+<B>
+#include &LT;stdio.h&GT;
+
+main()
+ {
+   int target;
+   int guess;
+   int again;
+
+   printf("\n Do you want to guess a number 1 =Yes, 0=No ");
+   scanf("%d",&again);
+
+   while (again)
+    {
+      target = rand() % 100;
+
+      printf('\n What is your guess ? ");
+      scanf("%d",&guess);
+
+      while(target!=guess)
+       {
+         if (target>guess) printf("Too low");
+         else printf("Too high");
+         printf('\n What is your guess ? ");
+         scanf("%d",&guess);
+       }
+
+      printf("\n Well done you got it! \n");
+      printf("\n Do you want to guess a number 1=Yes, 0=No");
+      scanf("%d".&again);
+    }
+ }</B>
+</PRE>
+
+[<A HREF="rand2.c">program</A>]
+
+<P>If you want to be sure that you understand what is going on here, ask yourself why the line:
+
+<P><TT><B>guess = target + 1;</B></TT>
+
+<P>was necessary in the first version of the program and not in the second?
+
+<P>
+<HR>
+
+<A HREF="http://www.le.ac.uk/">
+
+<IMG ALT="[Leicester University]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/lhomebut.gif"></A>
+
+
+
+
+
+
+
+
+<A HREF="http://www.le.ac.uk/CWIS/AS/CC/cc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/ccbut.gif">
+ Computer Centre</A>   
+
+<A HREF="cccc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/backbut.gif">
+Introduction C Programming</A>
+
+<HR>
+<ADDRESS>Information Suppliers: <A HREF="http://www.le.ac.uk/rjm1.html">Richard Mobbs</A>, Head of Information Services, Leicester University Computer
+ Centre and Marina Carter, Postgraduate Student, Loughborough University.
+</ADDRESS>
+
+<ADDRESS>Last Updated: August 1995</ADDRESS>
+
+</BODY>
+
+</HTML>
+
+

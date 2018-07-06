@@ -1,0 +1,143 @@
+ID=D0267
+URL=http://www-2.cs.cmu.edu/~jch/java/maintainability.html
+SIZE=6595
+DATE=16/07/02
+TIME=14:41:41
+DATASET=Java
+HTML=<html>
+<head>
+<title>Optimizing Java for Maintainability</title>
+<base href="http://www.cs.cmu.edu/~jch/java/maintainability.html">
+<meta name="author" content="Jonathan Hardwick">
+<meta name="description" content="How to write Java code so that it's easier to maintain.">
+<meta name="keywords" content="optimization, optimisation, optimising, maintain, coding, standards"> 
+</head>
+
+<body>
+<h1 align=center>Optimizing Java for Maintainability</h1>
+<p align=center><font face="Helvetica" size=-1>
+[ <b><a href="optimization.html">index</a></b> ]
+[ <a href="benchmarks.html">benchmarks</a>
+ | <a href="compilers.html">compilers</a> 
+ | <a href="resources.html">resources</a>
+ | <a href="rules.html">rules</a>
+ | <a href="size.html">size</a>
+ | <a href="speed.html">speed</a>
+ | <a href="tools.html">tools</a> ]
+</font></p>
+<hr size=1 noshade>
+
+<blockquote>
+Being able to understand code is especially important in an object-oriented
+language such as Java, where code should be reused and inherited wherever
+possible.  Note that some of the "optimizations" here can conflict with those
+that make your code faster or smaller.
+
+<dl>
+<dt><b>Use good tools:</b>
+<dd>The less time you spend worrying about editting, compiling, storing, and
+    viewing code, the more time you can spend getting it <i>right</i>.  There
+    are many commercial IDEs available (often with freely-available trial
+    versions), as well as a bunch of free ones, plus assorted tools such as
+    code repositories, class browsers, code decompilers, etc.  There are also 
+    many reviews online (e.g. from <a
+    href="http://www.javaworld.com/javaworld/common/jw-toolstable-bycategory.html">JavaWorld</a>,
+    or <a href="http://www.andromeda.com/people/ddyer/java/Reviews.html">Dave
+    Dyer</a>). <p>
+  
+<dt><b>Coding standards:</b>
+<dd>Use a coding standard: a set of rules for how to package, name,
+    manipulate, and document your classes.  Some possibilities:
+    <ul>
+      <li><a href="http://g.oswego.edu/dl/html/javaCodingStd.html">Draft Java
+	  Coding Standard</a> from <a href="http://g.oswego.edu/dl/">Doug
+	  Lea</a>
+      <li><a href="http://www.javasoft.com/doc/language_specification/6.doc.html#11186">Java
+	  Naming Conventions</a> from Sun.
+      <li><a href="http://reality.sgi.com/employees/sandvik_engr/JavaGuidelines.html">Java 
+	  Coding Style Guidelines</a> from <a
+	  href="http://reality.sgi.com/employees/sandvik_engr/">Kent
+	  Sandvik</a> at SGI.
+      <li><a href="http://www.numeric-quest.com/news/NQ-comments.html">Comments
+	  on Java Programming Style</a> from Numeric Quest.
+      <li><a href="http://www.redbooks.ibm.com/SG247006/codguide.htm">Java
+	  Beans Coding Guidelines</a> from IBM.
+    </ul><p>
+    
+<dt><b>No fancy tricks:</b>
+<dd>Write code to be read by a human, not by a compiler.  Don't use any 
+    other optimizations that make your code harder to read or understand.<p>
+    
+<dt><b>No assumptions:</b>
+<dd>Write for the average programmer.  For example, parenthesize
+    expressions rather than assuming that everyone knows the operator
+    precedence rules.  Similarly, don't rely on implicit superclass
+    constructor calls or default constructors without using comments to make
+    their absence explicit.<p>
+    
+<dt><b>Documentation:</b>
+<dd>Use <tt><a href="http://www.javasoft.com/products/JDK/tools/solaris/javadoc.html">javadoc</a></tt>
+    to produce online documentation for your classes.  Note that some features
+    of <tt>javadoc</tt> are undocumented: <tt>-authors</tt> to generate
+    authors from <tt>@author</tt> tags, <tt>-version</tt> to generate a
+    version number from a <tt>@version</tt> tag, <tt>-noindex</tt> and
+    <tt>-notree</tt> to stop <tt>AllNames.html</tt> and <tt>tree.html</tt>
+    from being generated (see <a href="http://www.ddj.com/">Dr Dobb's
+    Journal</a>, July 1996).  Put a dummy class "zzz.java" in your
+    packages, because javadoc ignores the last class (alphabetically) in each
+    package (tip from <a href="http://www.netaxs.com/~melhaas">Mel Haas</a>).
+    <p>
+    
+<dt><b>Avoid gray areas:</b>
+<dd>Certain areas of the Java spec (especially new 1.1 features) can be
+    <!-- a href="http://www2.vo.lu/homepages/gmid/java.htm" -->unclear or buggy
+    (as currently implemented).  Try to avoid code that depends on a
+    particular interpretation of the spec, or that depends on a buggy
+    implementation.  See also the <a
+    href="http://www.cs.arizona.edu/sumatra/hallofshame/">Java Hall of
+    Shame</a>. <p>
+
+<dt><b>Avoid incompatible code:</b>
+<dd>Java isn't (yet) truly cross-platform, as anyone can attest who has tried
+    to write threaded code that works in appletviewer, Netscape Navigator, and
+    Internet Explorer.  Apart from thread policies <!-- (see also the
+    href="http://home.kinetoscope.com/javasecrets/applets/threadtest/">Kinetoscope
+    Thread Test</a>) -->, the other main area of incompatibility is the AWT.
+    Dave Schultz has <a
+    href="http://www.rt66.com/~piconm/ExpoJava/">summarized the
+    differences</a> between platforms. <p>
+
+<dt><b>Don't use Java:</b>
+<dd>Instead, write in a different language that you can then <a
+    href="http://grunge.cs.tu-berlin.de/~tolk/vmlanguages.html">compile into
+    Java</a>.  This can be especially helpful if you're trying to convert a
+    legacy application.  See also <a
+    href="http://www.cs.cmu.edu/~jch/publications/CMU-CS-96-161.html">Java as
+    an Intermediate Language</a>.<p>
+
+<dt><b>Other resources:</b>
+<dd>Many books describe techniques for making C and C++ code more maintainable
+    that can also be applied to Java.  In particular, I like
+    <a href="http://mspress.microsoft.com/ORDER/bookpage.asp?title_id=1024">Writing
+    Solid Code</a> by Steve Maguire, and
+    <a href="http://mspress.microsoft.com/ORDER/bookpage.asp?title_id=28">Code
+    Complete</a> by Steve McConnell.
+</dl>
+</blockquote>
+
+<hr size=1 noshade>
+<center><table width="100%" cellspacing=0 cellpadding=0 border=0>
+  <tr>
+    <td align=left><font size=-1>http://www.cs.cmu.edu/~jch/java/maintainability.html</font></td>
+    <td align=right><font size=-1>Optimizing Java for
+    Maintainability</font></td>
+  </tr>
+  <tr>
+    <td align=left><font size=-1><!-- hhmts start -->Last modified: Wed 18 Mar 1998<!-- hhmts end --></font></td>
+    <td align=right><font size=-1>Copyright &#169 1996, 1997 <a
+    href="http://www.cs.cmu.edu/~jch/">Jonathan Hardwick</a></font></td>
+  </tr>
+</table></center>
+</body>
+</html>
+

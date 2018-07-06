@@ -1,0 +1,276 @@
+ID=E0755
+URL=http://www.bcbdev.com/articles/bcb6headers.htm
+SIZE=12564
+DATE=12/07/02
+TIME=19:24:05
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: Articles</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2>
+<IMG SRC="../images/articlebuilding.gif" BORDER=0 HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 HSPACE="0" >
+</TD>
+</TR>
+<TR>
+<TD WIDTH="7" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">      <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">         <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">      <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">          <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">       <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+<H1>
+BCB6 Header file fixes
+</H1>
+
+<H2>
+Disclaimer
+</H2>
+<B>
+The download section of this article contains patched BCB6 header files. These header files come
+with no guarantees. The supplied files could introduce bugs into your programs, crash your
+system, corrupt your BCB installation, reformat your hard drive, and/or cause your dog to walk funny.
+If you decide to use the files supplied in the download, you do so at your own risk.
+</B>
+
+<H2>
+Note
+</H2>
+<P>
+This article discusses BCB6 header file problems. Specifically, it covers problems in the initial,
+unpatched version of C++Builder 6.0. If and when Borland issues a patch for BCB6, it will probably
+render this article obsolete.
+</P>
+<H2>
+Summary of header file problems
+</H2>
+<P>
+BCB6 contains a couple of header file problems. They are:
+</P>
+<UL>
+<LI> The header files <TT>pshpack*.h</TT> and <TT>poppack.h</TT> contain
+serious defects regarding structure alignment (originally discovered by Alex Bakaev)
+<LI> The header files <TT>hash_map.h</TT> and <TT>hash_set.h</TT> are missing.
+<LI> <IMG SRC="../images/new.gif" BORDER=0 ALIGN="BOTTOM">cstring.h and oldstl/cstring.h contain preprocessor typos.
+<LI> <IMG SRC="../images/new.gif" BORDER=0 ALIGN="BOTTOM">_str contains a logic error (#ifndef problem found by Arne Weise).
+</UL>
+<P>
+The download for this article includes patched versions of the <TT>pshpack</TT> and <TT>poppack</TT> files, and patched versions of
+<TT>cstring.h</TT> and <TT>_str.h</TT>. It also contains the missing
+files for the hash containers. To patch your system, download the ZIP file and extract the files to a temp directory. Compare the patched
+files with the files in your <TT>$(BCB)\include</TT> directory. If you are satisfied with the changes, copy the patched files over to the
+include directory, overwriting the original files with the same name.
+</P>
+<H3>
+pshpack and poppack bugs
+</H3>
+<P>
+The <TT>pshpack</TT> header files set the structure alignment compiler setting (<TT>-a</TT>) to a specific value. This is done with a
+<TT>#pragma pack()</TT> directive. The file <TT>pshpack1.h</TT> switches to byte alignment (<TT>-a1</TT>). The digit '1' in <TT>pshpack1</TT>
+corresponds to the <TT>-a1</TT> compiler switch. The files <TT>pshpack2.h</TT>, <TT>pshpack4.h</TT>, and <TT>pshpack8.h</TT>, correspond to the
+<TT>-a2</TT>, <TT>-a4</TT>, and <TT>-a8</TT>, switches respectively. The header file <TT>poppack.h</TT> resets the alignment to
+the original compiler setting. Together, these files help ensure that the compiler always aligns API structures the same way, regardless of what
+compiler setting you use to build your program.
+</P>
+<P>
+Unfortunately, the <TT>pshpack</TT> header files that ship with BCB6 contain a flaw. Each <TT>pshpack</TT> file contains two <TT>#pragma</TT>
+directives, one at the beginning and one at the end of the file, that interfere with the <TT>#pragma pack</TT> command. For example, the
+file <TT>pshpack1.h</TT> ends up looking like this when you sift through all of the conditional defines:
+</P>
+<PRE>
+<font color="navy">// contents of $(BCB)\include\pshpack1.h in BCB6</font>
+<font color="green">#pragma option push -b -a8 -pc -A- <font color="navy">/*P_O_Push*/</font></font>
+
+<font color="green">#pragma pack(1)</font>
+
+<font color="green">#pragma option pop <font color="navy">/*P_O_Pop*/</font></font></PRE>
+<P>
+The bug comes from the two <TT>#pragma option</TT> directives that appear at the top and bottom of the file. The first <TT>#pragma option</TT> command
+pushes the original alignment setting onto the compiler's internal stack and then sets the alignment to <TT>-a8</TT>. The <TT>#pragma pack(1)</TT> command
+sets the packing to <TT>-a1</TT> without using the internal stack (it just sets it). However this setting is short lived. When the compiler reaches the
+last <TT>#pragma option pop</TT> directive, it pops from the internal stack and restores the compiler settings that were in force at the beginning of the
+file. The <TT>#pragma pack()</TT> command is essentially wiped out.
+</p>
+<P>
+The code fragment below demonstrates the flaw in the <TT>pshpack</TT> header files.
+</P>
+<PRE>
+<font color="green">#pragma hdrstop</font>
+
+<font color="navy">// To test pshpack.h and poppack.h, compile this file with the -a2 compiler</font>
+<font color="navy">// option. The check below ensures that this was done.</font>
+<font color="green">#pragma checkoption -a2</font>
+
+<font color="navy">// include pshpack1.h and verify that alignment is -a1. If pshpack1.h works</font>
+<font color="navy">// correctly, the checkoption should not generate an error</font>
+<font color="green">#include &lt;pshpack1.h></font>
+<font color="green">#pragma checkoption -a1</font>
+
+<font color="navy">// include poppack.h and verify that alignment is back to -a2. This initially</font>
+<font color="navy">// succeeds in BCB6, but only because pshpack1.h is broken. If you fix</font>
+<font color="navy">// pshpack1.h, then you will see that poppack.h also has the bug.</font>
+<font color="green">#include &lt;poppack.h></font>
+<font color="green">#pragma checkoption -a2</font>
+
+<b>int</b> main<b>(</b><b>)</b>
+<b>{</b>
+    <b>return</b> <font color="blue">0</font><b>;</b>
+<b>}</b></PRE>
+
+<P>
+To fix the problem, delete the <TT>#pragma option</TT> directives from <TT>pshpack1.h</TT>, <TT>pshpack2.h</TT>, <TT>pshpack4.h</TT>, and
+<TT>pshpack8.h</TT>. The header file <TT>poppack.h</TT> contains the same problem, so you should fix it as well. The download for this article
+contains patched versions of each of these files.
+</P>
+<H3>
+Missing includes for hash_map and hash_set
+</H3>
+<P>
+BCB6 includes two STL implementations: STLport and Rogue Wave. You can use either library in your projects. To support both
+libraries, Borland has reorganized the STL header files into various subdirectories. The RW files reside in the <TT>oldstl</TT> subdirectory of
+<TT>$(BCB)\include</TT>. The STLport files are spread out across several subdirectories, but the most important files reside in the <TT>stlport</TT>
+and <TT>stl</TT> subdirectories. The include files in <TT>$(BCB)\include</TT> directory act as wrapper files. They detect which STL you are using,
+and then pull in the correct file from either the RW or STLport subdirectories.
+</P>
+<P>
+The file <TT>vector.h</TT> from the BCB <TT>include</TT> directory demonstrates what these wrapper files look like.
+</P>
+<PRE>
+<font color="navy">// a snippet of code from $(BCB)\include\vector.h</font>
+<font color="green">#ifdef _USE_OLD_RW_STL</font>
+<font color="green"># include &lt;oldstl\vector.h></font>
+<font color="green">#else</font>
+<font color="green"># include &lt;stlport\vector></font>
+<font color="green">#endif</font></PRE>
+<P>
+One of the nice features of STLport is that it provides common, non-standard extensions to the STL. These include hash based containers, a single linked
+list container, and the <TT>rope</TT> string class. Unfortunately, the wrapper header files for the hash containers is missing (the STLport files are
+there, but the wrappers are not). There are two solutions to this problem. First, you could add the directory <TT>$(BCB)\include\stlport</TT> to your
+include path. The second option is to create wrapper files yourself and put them in the <TT>$(BCB)\include</TT> directory with the other wrappers.
+The first option works, but it requires that you violate Borland's guidelines (see <TT>$(BCB)\help\bcb6_stlport.html</TT>). Because the wrapper files
+are so simple, the second option may be the better approach.
+</P>
+<P>
+The download for this article includes wrapper header files for <TT>hash_set</TT> and <TT>hash_map</TT>. Extract them to your <TT>$(BCB)\include</TT>
+directory. The include for <TT>hash_map</TT> looks like this:
+</P>
+<PRE>
+<font color="navy">/**************************************************************************
+ *  Wrapper header file used to select STL via defines.
+ *  Default is STLport.
+ **************************************************************************/</font>
+
+<font color="navy">/* HJH Note: BCB6 did not include a wrapper header file for hash_map
+ *           This file was created to act as one.
+ */</font>
+
+<font color="green">#ifdef _USE_OLD_RW_STL</font>
+<font color="green"># error hash_map is not available with the RW STL.</font>
+<font color="green">#else</font>
+<font color="green"># include &lt;stlport\hash_map></font>
+<font color="green">#endif</font>
+
+
+<font color="green">#if !defined(__USING_STD_NAMES__) && defined(__cplusplus)</font>
+<b>using</b> <b>namespace</b> std<b>;</b>
+<font color="green">#endif <font color="navy">/* __USING_STD_NAMES__ */</font></font></PRE>
+
+<H3>
+Problems with cstring.h and oldstl/cstring.h
+</H3>
+<P>
+The file <TT>$(BCB)\include\cstring.h</TT> contains this set of conditional code:
+</P>
+<PRE>
+<font color="green"># ifdef __USE_OLD_RW_STL</font>
+<font color="green">#  include &lt;oldstl/string.stl></font>
+<font color="green"># else</font>
+<font color="green">#  include &lt;stlport/string></font></PRE>
+<P>
+The file <TT>$(BCB)\include\oldstl\cstring.h</TT> contains a similar conditional. The problem is the
+define for using the old RW STL. In all of the other BCB6 header files, the define is listed as <TT>_USE_OLD_RW_STL</TT>
+(only one underscore in front). <TT>cstring.h</TT> and <TT>oldstl\cstring.h</TT> are the only two files that list the two
+underscore version.
+</P>
+<P>
+The solution to this problem is to remove the first underscore.
+</P>
+
+<P>
+<TABLE >
+<TR>
+<TD WIDTH="5%" valign="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD   valign="top">
+<b>Note:</b>
+<hr size = 1>
+<P>
+This bug will only impact you if you use the old RW STL with BCB6. However, if you do use the RW STL, you should strongly consider making this change.
+</P>
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+<H3>
+_str.h bug
+</H3>
+<P>
+<TT>$(BCB)\include\_str.h</TT> contains this:
+</P>
+<PRE>
+<font color="green">#ifndef _USE_OLD_RW_STL</font>
+<font color="green"># include &lt;oldstl/locale.h></font>
+<font color="green">#else</font>
+<font color="green"># include &lt;locale.h></font>
+<font color="green">#endif</font></PRE>
+<P>
+This logic should be reversed. The code should include <TT>oldstl/locale.h</TT> if RW is detected. The conditional test should be an
+<TT>ifdef</TT> instead of an <TT>ifndef</TT>.
+</P>
+<H2>
+<A NAME="downloads">Downloads</A>
+</H2>
+
+<BR>
+<TABLE  BORDER=1 CELLPADDING=10 CELLSPACING=0 WIDTH="100%">
+<TR> <TD colspan = 2><B>Downloads for this article</B> </TD> </TR>
+<TR> <TD><TT><A HREF="http://www.bcbdev.com/ftp/source/bcb6headers.zip">bcb6headers.zip </A></TT></TD><TD>Supplies patched and missing header files for BCB6</TD> </TR>
+</TABLE>
+
+
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2002 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>

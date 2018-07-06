@@ -1,0 +1,303 @@
+ID=E0133
+URL=http://www.le.ac.uk/cc/iss/tutorials/cprog/ccccpont.html
+SIZE=17044
+DATE=12/07/02
+TIME=19:17:49
+DATASET=C
+HTML=<!-- Filename: ccccpont.html -->
+<!-- Author: mc39/rjm1 -->
+<!-- Supplied by: Richard Mobbs -->
+<!-- Created: 02-09-95 -->
+<!-- Expires: 02-09-96 -->
+
+<HTML>
+
+<HEAD>
+
+<TITLE>Computer Centre: Introduction to C Programming Course</TITLE>
+
+</HEAD> 
+
+<BODY>
+
+<H1><IMG ALT="[CWC logo]" ALIGN=middle SRC="http://www.le.ac.uk/images/compcen.gif" > Pointers</H1>
+     
+<P>
+<HR>
+
+<H2>Objectives</H2>
+<P>Having read this section you should be able to:
+<OL>
+<LI>program using pointers
+<LI>understand how <B>C</B> uses pointers with arrays
+</OL>
+<HR>
+<P>
+
+<A NAME="PP"></A>
+<H3>Point to Point</H3>
+Pointers are a very powerful, but primitive facility contained in the <B>C</B> language. Pointers are a throwback to the days of low-level assembly language programming and as a result they are sometimes difficult to understand and subject to subtle and difficult-to-find errors. Still it has to be admitted that pointers are one of the great attractions of the <B>C</B> language and there will be many an experienced <B>C</B> programmer splutering and fuming at the idea that we would dare to refer to pointers as 'primitive'!
+
+<P>In an ideal world we would avoid telling you about pointers until the very last minute, but without them many of the
+simpler aspects of <B>C</B> just don't make any sense at all. So, with apologies, let's get on with pointers.
+
+<P>A <I>variable</I> is an area of <I>memory</I> that has been given a name. For example:
+
+<P><B><TT>int x;</TT></B>
+
+<P>is an area of memory that has been given the name <TT><B>x</B></TT>. The advantage of this scheme is that you can use the name to specify where to store data. For example:
+
+<P><B><TT>x=lO;</TT></B>
+
+<P>is an instruction to store the data value <TT><B>10</B></TT> in the area of memory named <TT><B>x</B></TT>. The variable is such a fundamental idea that using it quickly becomes second nature, but there is another way of working with memory.
+
+<P>The computer access its own memory not by using variable names but by using a memory map with each location of memory uniquely defined by a number, called the <I>address</I> of that memory location.
+
+<P>A pointer is a variable that stores this location of memory. In more fundamental terms, a pointer stores the <I>address</I> of a variable . In more picturesque terms, a pointer points to a variable.
+
+<P>A pointer has to be declared just like any other variable - remember a pointer is just a variable that stores an address. For example,
+
+<P><B><TT>int *p;</TT></B>
+
+<P>is a pointer to an integer. Adding an asterisk in front of a variable's name declares it to be a pointer to the declared type. Notice that the asterisk applies only to the single variable name that it is in front of, so:
+
+<P><B><TT>int *p , q;</TT></B>
+
+<P>declares a pointer to an <B><TT>int</TT></B> and an <B><TT>int</TT></B> variable, not two pointers.
+
+<P>Once you have declared a pointer variable you can begin using it like any other variable, but in practice you also need to know the meaning of two new operators: <TT><B>&</B></TT> and <TT><B>*</B></TT>.
+
+The <TT><B>&</B></TT> operator returns the address of a variable. You can remember this easily because <TT><B>&</B></TT> is the <B>'A'</B>mpersand character and it gets you the <B>'A'</B>ddress. For example:
+
+<P><B><TT>int *p , q;</TT></B>
+
+<P>declares <TT><B>p</B></TT>, a pointer to <B><TT>int</TT></B>, and <TT><B>q</B></TT> an <B><TT>int</TT></B> and the instruction:
+
+<P><B><TT>p=&q;</TT></B>
+
+<P>stores the address of <TT><B>q</B></TT> in <TT><B>p</B></TT>. After this instruction you can think of <TT><B>p</B></TT> as <I>pointing</I> at <TT><B>q</B></TT>. Compare this to:
+
+<P><B><TT>p=q;</TT></B>
+
+<P>which attempts to store the value in <TT><B>q</B></TT> in the pointer <B><TT>p</TT></B> - something which has to be considered an error.
+
+<P>The second operator <TT><B>*</B></TT> is a little more difficult to understand. If you place <TT><B>*</B></TT> in front of a pointer variable then the result is the value stored in the variable pointed at. That is, <TT><B>p</B></TT> stores the <I>address</I>, or <I>pointer</I>, to another variable and <TT><B>*p</B></TT> is the <I>value</I> stored in the variable that <TT><B>p</B></TT> <I>points</I> at.
+
+<P>The <TT><B>*</B></TT> operator is called the <I>dereferencing</I> operator and it helps not to confuse it with multiplication or with its use in declaring a pointer.
+
+<P>This multiple use of an operator is called <I>operator overload</I>.
+
+<P>Confused? Well most <B>C</B> programmers are confused when they first meet pointers. There seems to be just too much to take in on first acquaintance. However there are only three basic ideas:
+
+<P>
+<OL>
+<LI>To declare a pointer add an <TT><B>*</B></TT> in front of its name.
+<LI>To obtain the address of a variable us <TT><B>&</B></TT> in front of its name.
+<LI>To obtain the value of a variable use <TT><B>*</B></TT> in front of a pointer's name.
+</OL>
+
+<P>Now see if you can work out what the following means:
+
+<P>
+<PRE>
+<B>
+int *a , b , c;
+b = 10;
+a = &b;
+c = *a;
+</B>
+</PRE>
+
+<P>Firstly three variables are declared - <TT><B>a</B></TT> (a pointer to <B><TT>int</TT></B>), and <TT><B>b</B></TT> and <TT><B>c</B></TT> (both standard integers). The instruction stores the value l0 in the varable <TT><B>b</B></TT> in the usual way. The first 'difficult' instruction is <B><TT>a=&b</TT></B> which stores the address of <TT><B>b</B></TT> in <TT><B>a</B></TT>. After this <TT><B>a</B></TT> points to <TT><B>b</B></TT>.
+
+<P>Finally <B><TT>c = *a</TT></B> stores the value in the varable pointed to by <TT><B>a</B></TT> in <TT><B>c</B></TT>. As <TT><B>a</B></TT> points to <TT><B>b</B></TT>, its value i.e. 1O is stored in <TT><B>c</B></TT>. In other words, this is a long winded way of writing
+
+<P><B><TT>c = b;</TT></B>
+
+<P>Notice that if <TT><B>a</B></TT> is an <B><TT>int</TT></B> and <TT><B>p</B></TT> is a pointer to an <B><TT>int</TT></B> then
+
+<P><B><TT>a = p;</TT></B>
+
+<P>is nonsense because it tries to store the <I>address</I> of an <B><TT>int</TT></B>, i.e. a <I>pointer value</I>, in an <B><TT>int</TT></B>. Similarly:
+
+<P><B><TT>a = &p;</TT></B>
+
+<P>tries to store the <I>address</I> of a <I>pointer variable</I> in <B><TT>a</TT></B> and is equally wrong! The only assignment between an <B><TT>int</TT></B> and a pointer to <B><TT>int</TT></B> that makes sense is:
+
+<P><B><TT>a = *p;</TT></B>
+
+<P>
+<HR>
+<P>
+
+<A NAME="SS"></A>
+<H3>Swap Shop</H3>
+
+At the moment it looks as if pointers are just a complicated way of doing something we can already do by a simpler method. However, consider the following simple problem - write a function which swaps the contents of two variables. That is, write <B><TT>swap(a,b)</TT></B> which will swaps over the contents of <TT><B>a</B></TT> and <TT><B>b</B></TT>. In principle this should be easy:
+
+<P>
+<PRE>
+<B>
+function swap(int a , int b);
+ {
+  int temp;
+  temp = a;
+  a    = b;
+  b    = temp;
+ }
+</B>
+</PRE>
+
+<P>the only complication being the need to use a third variable <B><TT>temp</TT></B> to hold the value of <TT><B>a</B></TT> while the value of <TT><B>b</B></TT> overwrites it. However, if you try this function you will find that it doesn't work. You can use it -  <B><TT>swap(a,b)</TT></B>; - until you are blue in the face, but it just will not change the values stored in <TT><B>a</B></TT> and <TT><B>b</B></TT> back in the calling program. The reason is that all parameters in <B>C</B> are <I>passed by value</I>. That is, when you use <B><TT>swap(a,b)</TT></B> function the values in <TT><B>a</B></TT> and <TT><B>b</B></TT> are passed into the function <B><TT>swap</TT></B> via the parameters and any changes that are made to the parameters do not alter <TT><B>a</B></TT> and <TT><B>b</B></TT> back in the main program. The function
+<TT><B>swap</B></TT> does swap over the values in <TT><B>a</B></TT> and <TT><B>b</B></TT> within the function, but doesn't do so in the main program.
+
+<P>The solution to this very common problem is to pass not the <I>values stored</I> in the variables, but the <I>addresses of the
+variables</I>. The function can then use pointers to get at the values in the variables in the main program and modify them. That is, the function should be:
+
+<P>
+<PRE>
+<B>
+ function swap(int *a , int *b);
+ {
+  int temp;
+  temp = *a;
+  *a   = *b;
+  *b   = temp;
+ }
+
+</B>
+</PRE>
+
+<P>Notice that now the two parameters <TT><B>a</B></TT> and <TT><B>b</B></TT> are pointers and the assignments that effect the swap have to use the <I>dereference</I> operator to make sure that it is the <I>values</I> of the <I>variables</I> pointed at that are swapped. You should have no difficulty with:
+
+<P><B><TT>temp = *a;</TT></B>
+
+<P>this just stores the value pointed at by <TT><B>a</B></TT> into <B><TT>temp</TT></B>. However,
+
+<P><B><TT>*a = *b;</TT></B>
+
+<P>is a little more unusual in that it stores that value pointed at by <TT><B>b</B></TT> in place of the value pointed at by <TT><B>a</B></TT>. There is one final complication. When you use <TT><B>swap</B></TT> you have to remember to pass the addresses of the variables that you want to swap. That is not:
+
+<P><B><TT>swap(a,b)</TT></B>
+
+<P>but
+
+<P><B><TT>swap(&a,&b)</TT></B>
+
+<P>The rule is that whenever you want to pass a variable so that the function can modify its contents you have to pass it as
+an address. Equally the function has to be ready to accept an address and work with it. You can't take any old function and
+suddenly decide to pass it the address of a variable instead of its value. If you pass an address to a function that isn't expecting it the result is usually disaster and the same is true if you fail to pass an address to a function that is expecting one.
+
+<P>For example, calling swap as <TT><B>swap(a,b)</B></TT> instead of <TT><B>swap(&a,&b)</B></TT> will result in two arbitrary areas of memory being swapped over, usually with the result that
+the entire system, not just your program, crashes.
+
+<P>The need to pass an address to a function also explains the difference between the two I/O functions that we have been
+using since the beginning of this course. <B><TT>printf</TT></B> doesn't change the values of its parameters so it is called as <B><TT>printf("%d",a)</TT></B> but <B><TT>scanf</TT></B> does, because it is an input function, and so it is called as <B><TT>scanf("%d",&a)</TT></B>.
+
+<P>
+<HR>
+<P>
+<A NAME="PA"></A>
+<H3>Pointers And Arrays</H3>
+
+In <B>C</B> there is a very close connection between pointers and arrays. In fact they are more or less one and the same thing! When you declare an array as:
+
+<P><B><TT>int a[10];</TT></B>
+
+<P>you are in fact declaring a pointer <TT><B>a</B></TT> to the first element in the array. That is, <TT><B>a</B></TT> is exactly the same as <B><TT>&a[0]</TT></B>. The only difference between <TT><B>a</B></TT> and <I>a pointer variable</I> is that the array name is a constant pointer - you cannot change the location it points at. When you write an expression such as <B><TT>a[i]</TT></B> this is converted into a pointer expression that gives the value of the
+appropriate element. To be more precise, <B><TT>a[i]</TT></B> is exactly equivalent to <B><TT>*(a+i)</TT></B> i.e. the value pointed at by <B><TT>a + i</TT></B> . In the same way <B><TT>*(a+ 1)</TT></B> is the same as <B><TT>a[1]</TT></B> and so on.
+
+<P>Being able to add one to a pointer to get the next element of an array is a nice idea, but it does raise the question of what it means to add 'one' to a pointer. For example, in most implementations an <B><TT>int</TT></B> takes two memory locations and a <B><TT>float</TT></B> takes four. So if you declare an <B><TT>int</TT></B> array and add one to a pointer to it, then in fact the pointer will move on by two memory locations. However, if you declare a <B><TT>float</TT></B> array and add one to a pointer to it then the pointer has to move on by four memory locations. In other words, adding one to a pointer moves it on by an amount of storage depending on the type it is a pointer to.
+
+<P>This is, of course, precisely why you have to declare the type that the pointer is to point at! Only by knowing that <TT><B>a</B></TT> is a pointer to <TT><B>int</B></TT> and <TT><B>b</B></TT> is a pointer to <TT><B>float</B></TT> can the compiler figure out that
+
+<P><B><TT>a + 1</TT></B>
+
+<P>means move the pointer on by two memory locations i.e. add 2, and
+
+<P><B><TT>b + 1</TT></B>
+
+<P>means move the pointer on by four memory locations i.e. add 4. In practice you don't have to worry about how much storage a pointer's base type takes up. All you do need to remember is that pointer arithmetic works in units of the data type that the pointer points at. Notice that you can even use <TT><B>++</B></TT> and <TT><B>--</B></TT> with a pointer, but not with an array name because this is a constant pointer and cannot be changed. So to summarise:
+
+<P>
+<OL>
+<LI>An array's name is a <B><I>constant pointer</I></B> to the first element in the array that is <B><TT>a==&a[0]</TT></B> and <B><TT>*a==a[0]</TT></B>.
+
+<LI>Array indexing is equivalent to pointer arithmetic - that is <B><TT>a+i=&a[i]</TT></B> and <B><TT>*(a+i)==a[i]</TT></B>.
+</OL>
+
+It is up to you whether you want to think about an array as an array or an area of storage associated with a <B><I>constant pointer</I></B>. The view of it as an array is the more sophisticated and the further away from the underlying way that the machine works. The view as a pointer and pointer arithmetic is more primitive and closer to the hardware. In most cases the distinction is irrelevant and purely a matter of taste.
+
+<P>One final point connected with both arrays and <B><TT>functions</TT></B> is that when you pass an entire<B> <TT>array</TT> </B>to a <B><TT>function</TT></B> then by default you pass a pointer. This allows you to write functions that process entire arrays without having to pass every single value stored in the array - just a pointer to the first element. However, it also temps you to write some very strange code unless you keep a clear head. Try the following - write a function that will fill an array with random values <B><TT>randdat(a,n)</TT></B> where <TT><B>a</B></TT> is the array and <TT><B>n</B></TT> is its size. Your first attempt might be something like:
+
+<P>
+<PRE>
+<B>
+ void randdat(int *pa , int n)
+  {
+   for (pa = 0 ; pa < n ; pa++ ) *pa = rand()%n + 1;
+  }
+</B>
+</PRE>
+
+<P>Well I hope your first attempt wouldn't be like this because it is wrong on a number of counts! The problem is that the idea of a pointer and the idea of an index have been confused. The pointer <B><TT>pa</TT></B> is supposed to point to the first element of the array, but the <B><TT>for</TT></B> loop sets it to zero and then increments it though a series of memory locations nowhere near the array. A lesser error is to suppose that <TT><B>n-1</B></TT> is the correct final value of the array pointer! As before, you will be lucky if this program doesn't crash the system, let alone itself! The correct way of doing the job is to use a <B><TT>for</TT></B> loop to step from <B><TT>0</TT></B> to <B><TT>n-1</TT></B>, but to use pointer arithmetic to access the correct array element:
+
+<P>
+<PRE>
+<B>
+int randdat(int *pa , int n)
+{
+  int i;
+  for ( i=0 ; i< n ; ++i)
+   {
+     *pa = rand()%n + 1;
+     ++pa;
+   }
+}
+</B>
+</PRE>
+
+<P>Notice the way that the <B><TT>for</TT></B> loop looks just like the standard way of stepping through an array. If you want to make it look even more like indexing an array using a <B><TT>for</TT></B> loop you could write:
+
+<P><B><TT>for(i=0 ; i&lt;n ; ++i) *(pa+i)=rand()%n+1;</TT></B>
+
+<P>or even:
+
+<P><B><TT>for(i=0 ; i&lt;n ; ++i) pa[i]=rand()%n+1;</TT></B>
+
+<P>In otherwords, as long as you define <TT><B>pa</B></TT> as a pointer you can use array indexing notation with it and it looks as if you have actually passed an array. You can even declare a pointer variable using the notation:
+
+<P><B><TT>int pa[];</TT></B>
+
+<P>that is, as an array with no size information. In this way the illusion of passing an array to a function is complete.
+
+<P>
+<HR>
+
+<A HREF="http://www.le.ac.uk/">
+<IMG ALT="[Leicester University]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/lhomebut.gif"></A>
+
+
+
+
+
+<A HREF="http://www.le.ac.uk/CWIS/AS/CC/cc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/ccbut.gif">
+ Computer Centre</A>   
+
+<A HREF="cccc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/backbut.gif">
+Introduction C Programming</A>
+
+<HR>
+<ADDRESS>Information Suppliers: <A HREF="http://www.le.ac.uk/rjm1.html">Richard Mobbs</A>, Head of Information Services, Leicester University Computer
+ Centre and Marina Carter, Postgraduate Student, Loughborough University.
+</ADDRESS>
+
+<ADDRESS>Last Updated: September 1995</ADDRESS>
+
+</BODY>
+
+</HTML>
+
+

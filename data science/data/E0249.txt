@@ -1,0 +1,1544 @@
+ID=E0249
+URL=http://gcc.gnu.org/onlinedocs/g77_news.html
+SIZE=61338
+DATE=12/07/02
+TIME=19:19:10
+DATASET=C
+HTML=<html lang="en">
+<head>
+<title>Using and Porting GNU Fortran</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=description content="Using and Porting GNU Fortran">
+<meta name=generator content="makeinfo 4.1">
+<link href="http://texinfo.org/" rel=generator-home>
+</head>
+<body>
+<p>
+Node:<a name="News">News</a>,
+Next:<a rel=next href="Changes.html#Changes">Changes</a>,
+Previous:<a rel=previous href="Invoking-G77.html#Invoking%20G77">Invoking G77</a>,
+Up:<a rel=up href="index.html#Top">Top</a>
+<hr><br>
+
+<h2>News About GNU Fortran</h2>
+
+<p>Changes made to recent versions of GNU Fortran are listed
+below, with the most recent version first.
+
+<p>The changes are generally listed in order:
+
+<ol type=1 start=1>
+</p><li>Code-generation and run-time-library bug-fixes
+
+<li>Compiler and run-time-library crashes involving valid code
+that have been fixed
+
+<li>New features
+
+<li>Fixes and enhancements to existing features
+
+<li>New diagnostics
+
+<li>Internal improvements
+
+<li>Miscellany
+</ol>
+
+<p>This order is not strict--for example, some items
+involve a combination of these elements.
+
+<p>Note that two variants of <code>g77</code> are tracked below. 
+The <code>egcs</code> variant is described vis-a-vis
+previous versions of <code>egcs</code> and/or
+an official FSF version, as appropriate. 
+Note that all such variants are obsolete <em>as of July 1999</em> -
+the information is retained here only for its historical value.
+
+<p>Therefore, <code>egcs</code> versions sometimes have multiple listings
+to help clarify how they differ from other versions,
+though this can make getting a complete picture
+of what a particular <code>egcs</code> version contains
+somewhat more difficult.
+
+<p>For information on bugs in the GCC-3.2 version of <code>g77</code>,
+see <a href="Known-Bugs.html#Known%20Bugs">Known Bugs In GNU Fortran</a>.
+
+<p><em>Warning:</em> The information below is still under development,
+and might not accurately reflect the <code>g77</code> code base
+of which it is a part. 
+Efforts are made to keep it somewhat up-to-date,
+but they are particularly concentrated
+on any version of this information
+that is distributed as part of a <em>released</em> <code>g77</code>.
+
+<p>In particular, while this information is intended to apply to
+the GCC-3.2 version of <code>g77</code>,
+only an official <em>release</em> of that version
+is expected to contain documentation that is
+most consistent with the <code>g77</code> product in that version.
+
+<p>Nevertheless, information on <em>previous</em> releases of <code>g77</code>, below,
+is likely to be more up-to-date and accurate
+than the equivalent information that accompanied
+those releases,
+assuming the last-updated date of the information below
+is later than the dates of those releases.
+
+<p>That's due to attempts to keep this development version
+of news about previous <code>g77</code> versions up-to-date.
+
+<p>An online, "live" version of this document
+(derived directly from the mainline, development version
+of <code>g77</code> within <code>gcc</code>)
+is available at
+<a href="http://www.gnu.org/software/gcc/onlinedocs/g77_news.html">http://www.gnu.org/software/gcc/onlinedocs/g77_news.html</a>.
+
+<p>The following information was last updated on 2002-04-13:
+
+<h3>In <code>GCC</code> 3.2 versus <code>GCC</code> 3.1:</h3>
+
+<ul>
+<li>Nothing yet. 
+</ul>
+
+<h3>In <code>GCC</code> 3.1 (formerly known as g77-0.5.27) versus <code>GCC</code> 3.0:</h3>
+
+<ul>
+<li>Problem Reports fixed (in chronological order of submission):
+<dl>
+<dt><code>947</code>
+<dd>Data statement initialization with subscript of kind INTEGER*2
+<br><dt><code>3743</code>
+<dd>Reference to intrinsic `ISHFT' invalid
+<br><dt><code>3807</code>
+<dd>Function BESJN(integer,double) problems
+<br><dt><code>3957</code>
+<dd>g77 -pipe -xf77-cpp-input sends output to stdout
+<br><dt><code>4279</code>
+<dd>g77 -h" gives bogus output
+<br><dt><code>4730</code>
+<dd>ICE on valid input using CALL EXIT(%VAL(...)) 
+<br><dt><code>4752</code>
+<dd>g77 -v -c -xf77-version /dev/null -xnone causes ice
+<br><dt><code>4885</code>
+<dd>BACKSPACE example that doesn't work as of gcc/g77-3.0.x
+<br><dt><code>5122</code>
+<dd>g77 rejects accepted use of INTEGER*2 as type of DATA statement loop index
+<br><dt><code>5397</code>
+<dd>ICE on compiling source with 540 000 000 REAL array
+<br><dt><code>5473</code>
+<dd>ICE on BESJN(integer*8,real)
+<br><dt><code>5837</code>
+<dd>bug in loop unrolling
+</dl>
+
+<li><code>g77</code> now has its man page generated from the texinfo documentation,
+to guarantee that it remains up to date.
+
+<li><code>g77</code> used to reject the following program on 32-bit targets:
+<br><pre>PROGRAM PROG
+DIMENSION A(140 000 000)
+END
+</pre>
+with the message:
+<br><pre>prog.f: In program `prog':
+prog.f:2:
+         DIMENSION A(140 000 000)
+                   ^
+Array `a' at (^) is too large to handle
+</pre>
+because 140 000 000 REALs is larger than the largest bit-extent that can be
+expressed in 32 bits.  However, bit-sizes never play a role after offsets
+have been converted to byte addresses.  Therefore this check has been removed,
+and the limit is now 2 Gbyte of memory (around 530 000 000 REALs). 
+Note: On GNU/Linux systems one has to compile and link programs that occupy
+more than 1 Gbyte statically, i.e. <code>g77 -static ...</code>.
+
+<li>Based on work done by Juergen Pfeifer (<a href="mailto:juergen.pfeifer@gmx.net">juergen.pfeifer@gmx.net</a>)
+libf2c is now a shared library.  One can still link in all objects with
+the program by specifying the <code>-static</code> option.
+
+<li>Robert Anderson (<a href="mailto:rwa@alumni.princeton.edu">rwa@alumni.princeton.edu</a>) thought up a two
+line change that enables g77 to compile such code as:
+<br><pre>SUBROUTINE SUB(A, N)
+DIMENSION N(2)
+DIMENSION A(N(1),N(2))
+A(1,1) = 1.
+END
+</pre>
+Note the use of array elements in the bounds of the adjustable array A.
+
+<li>George Helffrich (<a href="mailto:george@geo.titech.ac.jp">george@geo.titech.ac.jp</a>) implemented a change
+in substring index checking (when specifying <code>-fbounds-check</code>)
+that permits the use of zero length substrings of the form
+<code>string(1:0)</code>.
+
+<li>Based on code developed by Pedro Vazquez (<a href="mailto:vazquez@penelope.iqm.unicamp.br">vazquez@penelope.iqm.unicamp.br</a>),
+the <code>libf2c</code> library is now able to read and write files larger than
+2 Gbyte on 32-bit target machines, if the operating system supports this. 
+</ul>
+
+<h3>In 0.5.26, <code>GCC</code> 3.0 versus <code>GCC</code> 2.95:</h3>
+
+<ul>
+<li>When a REWIND was issued after a WRITE statement on an unformatted
+file, the implicit truncation was performed by copying the truncated
+file to /tmp and copying the result back.  This has been fixed by using
+the <code>ftruncate</code> OS function.  Thanks go to the GAMESS developers
+for bringing this to our attention.
+
+<li>Using options <code>-g</code>, <code>-ggdb</code> or <code>-gdwarf[-2]</code> (where
+appropriate for your target) now also enables debugging information
+for COMMON BLOCK and EQUIVALENCE items to be emitted. 
+Thanks go to Andrew Vaught (<a href="mailto:andy@xena.eas.asu.edu">andy@xena.eas.asu.edu</a>) and
+George Helffrich (<a href="mailto:george@geology.bristol.ac.uk">george@geology.bristol.ac.uk</a>) for
+fixing this longstanding problem.
+
+<li>It is not necessary anymore to use the option <code>-femulate-complex</code>
+to compile Fortran code using COMPLEX arithmetic, even on 64-bit machines
+(like the Alpha).  This will improve code generation.
+
+<li>INTRINSIC arithmetic functions are now treated as routines that do not
+depend on anything but their argument(s).  This enables further instruction
+scheduling, because it is known that they cannot read or modify arbitrary
+locations.
+
+<li>Upgrade to <code>libf2c</code> as of 2000-12-05.
+
+<p>This fixes a bug where a namelist containing initialization of LOGICAL
+items and a variable starting with T or F would be read incorrectly.
+
+</p><li>The <code>TtyNam</code> intrinsics now set <var>Name</var> to all spaces (at run time)
+if the system has no <code>ttyname</code> implementation available.
+
+<li>Upgrade to <code>libf2c</code> as of 1999-06-28.
+
+<p>This fixes a bug whereby
+input to a <code>NAMELIST</code> read involving a repeat count,
+such as <code>K(5)=10*3</code>,
+was not properly handled by <code>libf2c</code>. 
+The first item was written to <code>K(5)</code>,
+but the remaining nine were written elsewhere (still within the array),
+not necessarily starting at <code>K(6)</code>. 
+</ul>
+
+<h3>In 0.5.25, <code>GCC</code> 2.95 (<code>EGCS</code> 1.2) versus <code>EGCS</code> 1.1.2:</h3>
+
+<ul>
+<li><code>g77</code> no longer generates bad code for assignments,
+or other conversions,
+of <code>REAL</code> or <code>COMPLEX</code> constant expressions
+to type <code>INTEGER(KIND=2)</code>
+(often referred to as <code>INTEGER*8</code>).
+
+<p>For example, <code>INTEGER*8 J; J = 4E10</code> now works as documented.
+
+</p><li><code>g77</code> no longer truncates <code>INTEGER(KIND=2)</code>
+(usually <code>INTEGER*8</code>)
+subscript expressions when evaluating array references
+on systems with pointers widers than <code>INTEGER(KIND=1)</code>
+(such as Alphas).
+
+<li><code>g77</code> no longer generates bad code
+for an assignment to a <code>COMPLEX</code> variable or array
+that partially overlaps one or more of the sources
+of the same assignment
+(a very rare construction). 
+It now assigns through a temporary,
+in cases where such partial overlap is deemed possible.
+
+<li><code>libg2c</code> (<code>libf2c</code>) no longer loses track
+of the file being worked on
+during a <code>BACKSPACE</code> operation.
+
+<li><code>libg2c</code> (<code>libf2c</code>) fixes a bug whereby
+input to a <code>NAMELIST</code> read involving a repeat count,
+such as <code>K(5)=10*3</code>,
+was not properly handled by <code>libf2c</code>. 
+The first item was written to <code>K(5)</code>,
+but the remaining nine were written elsewhere (still within the array),
+not necessarily starting at <code>K(6)</code>.
+
+<li>Automatic arrays now seem to be working on HP-UX systems.
+
+<li>The <code>Date</code> intrinsic now returns the correct result
+on big-endian systems.
+
+<li>Fix <code>g77</code> so it no longer crashes when compiling
+I/O statements using keywords that define <code>INTEGER</code> values,
+such as <code>IOSTAT=<var>j</var></code>,
+where <var>j</var> is other than default <code>INTEGER</code>
+(such as <code>INTEGER*2</code>). 
+Instead, it issues a diagnostic.
+
+<li>Fix <code>g77</code> so it properly handles <code>DATA A/<var>rpt</var>*<var>val</var>/</code>,
+where <var>rpt</var> is not default <code>INTEGER</code>, such as <code>INTEGER*2</code>,
+instead of producing a spurious diagnostic. 
+Also fix <code>DATA (A(I),I=1,N)</code>,
+where <code>N</code> is not default <code>INTEGER</code>
+to work instead of crashing <code>g77</code>.
+
+<li>The <code>-ax</code> option is now obeyed when compiling Fortran programs. 
+(It is passed to the <code>f771</code> driver.)
+
+<li>The new <code>-fbounds-check</code> option
+causes <code>g77</code> to compile run-time bounds checks
+of array subscripts, as well as of substring start and end points.
+
+<li><code>libg2c</code> now supports building as multilibbed library,
+which provides better support for systems
+that require options such as <code>-mieee</code>
+to work properly.
+
+<li>Source file names with the suffixes <code>.FOR</code> and <code>.FPP</code>
+now are recognized by <code>g77</code>
+as if they ended in <code>.for</code> and <code>.fpp</code>, respectively.
+
+<li>The order of arguments to the <em>subroutine</em> forms of the
+<code>CTime</code>, <code>DTime</code>, <code>ETime</code>, and <code>TtyNam</code>
+intrinsics has been swapped. 
+The argument serving as the returned value
+for the corresponding function forms
+now is the <em>second</em> argument,
+making these consistent with the other subroutine forms
+of <code>libU77</code> intrinsics.
+
+<li><code>g77</code> now warns about a reference to an intrinsic
+that has an interface that is not Year 2000 (Y2K) compliant. 
+Also, <code>libg2c</code> has been changed to increase the likelihood
+of catching references to the implementations of these intrinsics
+using the <code>EXTERNAL</code> mechanism
+(which would avoid the new warnings).
+
+<p>See <a href="Year-2000--Y2K--Problems.html#Year%202000%20(Y2K)%20Problems">Year 2000 (Y2K) Problems</a>, for more information.
+
+</p><li><code>g77</code> now warns about a reference to a function
+when the corresponding <em>subsequent</em> function program unit
+disagrees with the reference concerning the type of the function.
+
+<li><code>-fno-emulate-complex</code> is now the default option. 
+This should result in improved performance
+of code that uses the <code>COMPLEX</code> data type.
+
+<li>The <code>-malign-double</code> option
+now reliably aligns <em>all</em> double-precision variables and arrays
+on Intel x86 targets.
+
+<li>Even without the <code>-malign-double</code> option,
+<code>g77</code> reliably aligns local double-precision variables
+that are not in <code>EQUIVALENCE</code> areas
+and not <code>SAVE</code>'d.
+
+<li><code>g77</code> now open-codes ("inlines") division of <code>COMPLEX</code> operands
+instead of generating a run-time call to
+the <code>libf2c</code> routines <code>c_div</code> or <code>z_div</code>,
+unless the <code>-Os</code> option is specified.
+
+<li><code>g77</code> no longer generates code to maintain <code>errno</code>,
+a C-language concept,
+when performing operations such as the <code>SqRt</code> intrinsic.
+
+<li><code>g77</code> developers can temporarily use
+the <code>-fflatten-arrays</code> option
+to compare how the compiler handles code generation
+using C-like constructs as compared to the
+Fortran-like method constructs normally used.
+
+<li>A substantial portion of the <code>g77</code> front end's code-generation component
+was rewritten. 
+It now generates code using facilities more robustly supported
+by the <code>gcc</code> back end. 
+One effect of this rewrite is that some codes no longer produce
+a spurious "label <var>lab</var> used before containing binding contour"
+message.
+
+<li>Support for the <code>-fugly</code> option has been removed.
+
+<li>Improve documentation and indexing,
+including information on Year 2000 (Y2K) compliance,
+and providing more information on internals of the front end.
+
+<li>Upgrade to <code>libf2c</code> as of 1999-05-10. 
+</ul>
+
+<h3>In 0.5.24 versus 0.5.23:</h3>
+
+<p>There is no <code>g77</code> version 0.5.24 at this time,
+or planned. 
+0.5.24 is the version number designated for bug fixes and,
+perhaps, some new features added,
+to 0.5.23. 
+Version 0.5.23 requires <code>gcc</code> 2.8.1,
+as 0.5.24 was planned to require.
+
+<p>Due to <code>EGCS</code> becoming <code>GCC</code>
+(which is now an acronym for "GNU Compiler Collection"),
+and <code>EGCS</code> 1.2 becoming officially designated <code>GCC</code> 2.95,
+there seems to be no need for an actual 0.5.24 release.
+
+<p>To reduce the confusion already resulting from use of 0.5.24
+to designate <code>g77</code> versions within <code>EGCS</code> versions 1.0 and 1.1,
+as well as in versions of <code>g77</code> documentation and notices
+during that period,
+"mainline" <code>g77</code> version numbering resumes
+at 0.5.25 with <code>GCC</code> 2.95 (<code>EGCS</code> 1.2),
+skipping over 0.5.24 as a placeholder version number.
+
+<p>To repeat, there is no <code>g77</code> 0.5.24, but there is now a 0.5.25. 
+Please remain calm and return to your keypunch units.
+
+<h3>In <code>EGCS</code> 1.1.2 versus <code>EGCS</code> 1.1.1:</h3>
+
+<ul>
+<li>Fix the <code>IDate</code> intrinsic (VXT) (in <code>libg2c</code>)
+so the returned year is in the documented, non-Y2K-compliant range
+of 0-99,
+instead of being returned as 100 in the year 2000.
+
+<p>See <a href="IDate-Intrinsic--VXT-.html#IDate%20Intrinsic%20(VXT)">IDate Intrinsic (VXT)</a>,
+for more information.
+
+</p><li>Fix the <code>Date_and_Time</code> intrinsic (in <code>libg2c</code>)
+to return the milliseconds value properly
+in <var>Values</var>(8).
+
+<li>Fix the <code>LStat</code> intrinsic (in <code>libg2c</code>)
+to return device-ID information properly
+in <var>SArray</var>(7).
+
+<li>Improve documentation. 
+</ul>
+
+<h3>In <code>EGCS</code> 1.1.1 versus <code>EGCS</code> 1.1:</h3>
+
+<ul>
+<li>Fix <code>libg2c</code> so it performs an implicit <code>ENDFILE</code> operation
+(as appropriate)
+whenever a <code>REWIND</code> is done.
+
+<p>(This bug was introduced in 0.5.23 and <code>egcs</code> 1.1 in
+<code>g77</code>'s version of <code>libf2c</code>.)
+
+</p><li>Fix <code>libg2c</code> so it no longer crashes with a spurious diagnostic
+upon doing any I/O following a direct formatted write.
+
+<p>(This bug was introduced in 0.5.23 and <code>egcs</code> 1.1 in
+<code>g77</code>'s version of <code>libf2c</code>.)
+
+</p><li>Fix <code>g77</code> so it no longer crashes compiling references
+to the <code>Rand</code> intrinsic on some systems.
+
+<li>Fix <code>g77</code> portion of installation process so it works
+better on some systems
+(those with shells requiring <code>else true</code> clauses
+on <code>if</code> constructs
+for the completion code to be set properly). 
+</ul>
+
+<h3>In <code>EGCS</code> 1.1 versus <code>EGCS</code> 1.0.3:</h3>
+
+<ul>
+<li>Fix bugs in the <code>libU77</code> intrinsic <code>HostNm</code>
+that wrote one byte beyond the end of its <code>CHARACTER</code>
+argument,
+and in the <code>libU77</code> intrinsics
+<code>GMTime</code> and <code>LTime</code>
+that overwrote their arguments.
+
+<li>Assumed arrays with negative bounds
+(such as <code>REAL A(-1:*)</code>)
+no longer elicit spurious diagnostics from <code>g77</code>,
+even on systems with pointers having
+different sizes than integers.
+
+<p>This bug is not known to have existed in any
+recent version of <code>gcc</code>. 
+It was introduced in an early release of <code>egcs</code>.
+
+</p><li>Valid combinations of <code>EXTERNAL</code>,
+passing that external as a dummy argument
+without explicitly giving it a type,
+and, in a subsequent program unit,
+referencing that external as
+an external function with a different type
+no longer crash <code>g77</code>.
+
+<li><code>CASE DEFAULT</code> no longer crashes <code>g77</code>.
+
+<li>The <code>-Wunused</code> option no longer issues a spurious
+warning about the "master" procedure generated by
+<code>g77</code> for procedures containing <code>ENTRY</code> statements.
+
+<li>Support <code>FORMAT(I&lt;<var>expr</var>&gt;)</code> when <var>expr</var> is a
+compile-time constant <code>INTEGER</code> expression.
+
+<li>Fix <code>g77</code> <code>-g</code> option so procedures that
+use <code>ENTRY</code> can be stepped through, line by line,
+in <code>gdb</code>.
+
+<li>Allow any <code>REAL</code> argument to intrinsics
+<code>Second</code> and <code>CPU_Time</code>.
+
+<li>Use <code>tempnam</code>, if available, to open scratch files
+(as in <code>OPEN(STATUS='SCRATCH')</code>)
+so that the <code>TMPDIR</code> environment variable,
+if present, is used.
+
+<li><code>g77</code>'s version of <code>libf2c</code> separates out
+the setting of global state
+(such as command-line arguments and signal handling)
+from <code>main.o</code> into distinct, new library
+archive members.
+
+<p>This should make it easier to write portable applications
+that have their own (non-Fortran) <code>main()</code> routine
+properly set up the <code>libf2c</code> environment, even
+when <code>libf2c</code> (now <code>libg2c</code>) is a shared library.
+
+</p><li><code>g77</code> no longer installs the <code>f77</code> command
+and <code>f77.1</code> man page
+in the <code>/usr</code> or <code>/usr/local</code> hierarchy,
+even if the <code>f77-install-ok</code> file exists
+in the source or build directory. 
+See the installation documentation for more information.
+
+<li><code>g77</code> no longer installs the <code>libf2c.a</code> library
+and <code>f2c.h</code> include file
+in the <code>/usr</code> or <code>/usr/local</code> hierarchy,
+even if the <code>f2c-install-ok</code> or <code>f2c-exists-ok</code> files exist
+in the source or build directory. 
+See the installation documentation for more information.
+
+<li>The <code>libf2c.a</code> library produced by <code>g77</code> has been
+renamed to <code>libg2c.a</code>. 
+It is installed only in the <code>gcc</code> "private"
+directory hierarchy, <code>gcc-lib</code>. 
+This allows system administrators and users to choose which
+version of the <code>libf2c</code> library from <code>netlib</code> they
+wish to use on a case-by-case basis. 
+See the installation documentation for more information.
+
+<li>The <code>f2c.h</code> include (header) file produced by <code>g77</code>
+has been renamed to <code>g2c.h</code>. 
+It is installed only in the <code>gcc</code> "private"
+directory hierarchy, <code>gcc-lib</code>. 
+This allows system administrators and users to choose which
+version of the include file from <code>netlib</code> they
+wish to use on a case-by-case basis. 
+See the installation documentation for more information.
+
+<li>The <code>g77</code> command now expects the run-time library
+to be named <code>libg2c.a</code> instead of <code>libf2c.a</code>,
+to ensure that a version other than the one built and
+installed as part of the same <code>g77</code> version is picked up.
+
+<li>During the configuration and build process,
+<code>g77</code> creates subdirectories it needs only as it
+needs them. 
+Other cleaning up of the configuration and build process
+has been performed as well.
+
+<li><code>install-info</code> now used to update the directory of
+Info documentation to contain an entry for <code>g77</code>
+(during installation).
+
+<li>Some diagnostics have been changed from warnings to errors,
+to prevent inadvertent use of the resulting, probably buggy,
+programs. 
+These mostly include diagnostics about use of unsupported features
+in the <code>OPEN</code>, <code>INQUIRE</code>, <code>READ</code>, and
+<code>WRITE</code> statements,
+and about truncations of various sorts of constants.
+
+<li>Improve compilation of <code>FORMAT</code> expressions so that
+a null byte is appended to the last operand if it
+is a constant. 
+This provides a cleaner run-time diagnostic as provided
+by <code>libf2c</code> for statements like <code>PRINT '(I1', 42</code>.
+
+<li>Improve documentation and indexing.
+
+<li>The upgrade to <code>libf2c</code> as of 1998-06-18
+should fix a variety of problems, including
+those involving some uses of the <code>T</code> format
+specifier, and perhaps some build (porting) problems
+as well. 
+</ul>
+
+<h3>In <code>EGCS</code> 1.1 versus <code>g77</code> 0.5.23:</h3>
+
+<ul>
+<li>Fix a code-generation bug that afflicted
+Intel x86 targets when <code>-O2</code> was specified
+compiling, for example, an old version of
+the <code>DNRM2</code> routine.
+
+<p>The x87 coprocessor stack was being
+mismanaged in cases involving assigned <code>GOTO</code>
+and <code>ASSIGN</code>.
+
+</p><li><code>g77</code> no longer produces incorrect code
+and initial values
+for <code>EQUIVALENCE</code> and <code>COMMON</code>
+aggregates that, due to "unnatural" ordering of members
+vis-a-vis their types, require initial padding.
+
+<li>Fix <code>g77</code> crash compiling code
+containing the construct <code>CMPLX(0.)</code> or similar.
+
+<li><code>g77</code> no longer crashes when compiling code
+containing specification statements such as
+<code>INTEGER(KIND=7) PTR</code>.
+
+<li><code>g77</code> no longer crashes when compiling code
+such as <code>J = SIGNAL(1, 2)</code>.
+
+<li><code>g77</code> now treats <code>%LOC(<var>expr</var>)</code> and
+<code>LOC(<var>expr</var>)</code> as "ordinary" expressions
+when they are used as arguments in procedure calls. 
+This change applies only to global (filewide) analysis,
+making it consistent with
+how <code>g77</code> actually generates code
+for these cases.
+
+<p>Previously, <code>g77</code> treated these expressions
+as denoting special "pointer" arguments
+for the purposes of filewide analysis.
+
+</p><li>Fix <code>g77</code> crash
+(or apparently infinite run-time)
+when compiling certain complicated expressions
+involving <code>COMPLEX</code> arithmetic
+(especially multiplication).
+
+<li>Align static double-precision variables and arrays
+on Intel x86 targets
+regardless of whether <code>-malign-double</code> is specified.
+
+<p>Generally, this affects only local variables and arrays
+having the <code>SAVE</code> attribute
+or given initial values via <code>DATA</code>.
+
+</p><li>The <code>g77</code> driver now ensures that <code>-lg2c</code>
+is specified in the link phase prior to any
+occurrence of <code>-lm</code>. 
+This prevents accidentally linking to a routine
+in the SunOS4 <code>-lm</code> library
+when the generated code wants to link to the one
+in <code>libf2c</code> (<code>libg2c</code>).
+
+<li><code>g77</code> emits more debugging information when
+<code>-g</code> is used.
+
+<p>This new information allows, for example,
+<kbd>which __g77_length_a</kbd> to be used in <code>gdb</code>
+to determine the type of the phantom length argument
+supplied with <code>CHARACTER</code> variables.
+
+<p>This information pertains to internally-generated
+type, variable, and other information,
+not to the longstanding deficiencies vis-a-vis
+<code>COMMON</code> and <code>EQUIVALENCE</code>.
+
+</p><li>The F90 <code>Date_and_Time</code> intrinsic now is
+supported.
+
+<li>The F90 <code>System_Clock</code> intrinsic allows
+the optional arguments (except for the <code>Count</code>
+argument) to be omitted.
+
+<li>Upgrade to <code>libf2c</code> as of 1998-06-18.
+
+<li>Improve documentation and indexing. 
+</ul>
+
+<h3>In 0.5.23 versus 0.5.22:</h3>
+
+<ul>
+<li>This release contains several regressions against
+version 0.5.22 of <code>g77</code>, due to using the
+"vanilla" <code>gcc</code> back end instead of patching
+it to fix a few bugs and improve performance in a
+few cases.
+
+<p>Features that have been dropped from this version
+of <code>g77</code> due to their being implemented
+via <code>g77</code>-specific patches to the <code>gcc</code>
+back end in previous releases include:
+
+<ul>
+<li>Support for <code>__restrict__</code> keyword,
+the options <code>-fargument-alias</code>, <code>-fargument-noalias</code>,
+and <code>-fargument-noalias-global</code>,
+and the corresponding alias-analysis code.
+
+<p>(<code>egcs</code> has the alias-analysis
+code, but not the <code>__restrict__</code> keyword. 
+<code>egcs</code> <code>g77</code> users benefit from the alias-analysis
+code despite the lack of the <code>__restrict__</code> keyword,
+which is a C-language construct.)
+
+</p><li>Support for the GNU compiler options
+<code>-fmove-all-movables</code>,
+<code>-freduce-all-givs</code>,
+and <code>-frerun-loop-opt</code>.
+
+<p>(<code>egcs</code> supports these options. 
+<code>g77</code> users of <code>egcs</code> benefit from them even if
+they are not explicitly specified,
+because the defaults are optimized for <code>g77</code> users.)
+
+</p><li>Support for the <code>-W</code> option warning about
+integer division by zero.
+
+<li>The Intel x86-specific option <code>-malign-double</code>
+applying to stack-allocated data
+as well as statically-allocate data. 
+</ul>
+
+<p>Note that the <code>gcc/f/gbe/</code> subdirectory has been removed
+from this distribution as a result of <code>g77</code> no longer
+including patches for the <code>gcc</code> back end.
+
+</p><li>Fix bugs in the <code>libU77</code> intrinsic <code>HostNm</code>
+that wrote one byte beyond the end of its <code>CHARACTER</code>
+argument,
+and in the <code>libU77</code> intrinsics
+<code>GMTime</code> and <code>LTime</code>
+that overwrote their arguments.
+
+<li>Support <code>gcc</code> version 2.8,
+and remove support for prior versions of <code>gcc</code>.
+
+<li>Remove support for the <code>--driver</code> option,
+as <code>g77</code> now does all the driving,
+just like <code>gcc</code>.
+
+<li><code>CASE DEFAULT</code> no longer crashes <code>g77</code>.
+
+<li>Valid combinations of <code>EXTERNAL</code>,
+passing that external as a dummy argument
+without explicitly giving it a type,
+and, in a subsequent program unit,
+referencing that external as
+an external function with a different type
+no longer crash <code>g77</code>.
+
+<li><code>g77</code> no longer installs the <code>f77</code> command
+and <code>f77.1</code> man page
+in the <code>/usr</code> or <code>/usr/local</code> hierarchy,
+even if the <code>f77-install-ok</code> file exists
+in the source or build directory. 
+See the installation documentation for more information.
+
+<li><code>g77</code> no longer installs the <code>libf2c.a</code> library
+and <code>f2c.h</code> include file
+in the <code>/usr</code> or <code>/usr/local</code> hierarchy,
+even if the <code>f2c-install-ok</code> or <code>f2c-exists-ok</code> files exist
+in the source or build directory. 
+See the installation documentation for more information.
+
+<li>The <code>libf2c.a</code> library produced by <code>g77</code> has been
+renamed to <code>libg2c.a</code>. 
+It is installed only in the <code>gcc</code> "private"
+directory hierarchy, <code>gcc-lib</code>. 
+This allows system administrators and users to choose which
+version of the <code>libf2c</code> library from <code>netlib</code> they
+wish to use on a case-by-case basis. 
+See the installation documentation for more information.
+
+<li>The <code>f2c.h</code> include (header) file produced by <code>g77</code>
+has been renamed to <code>g2c.h</code>. 
+It is installed only in the <code>gcc</code> "private"
+directory hierarchy, <code>gcc-lib</code>. 
+This allows system administrators and users to choose which
+version of the include file from <code>netlib</code> they
+wish to use on a case-by-case basis. 
+See the installation documentation for more information.
+
+<li>The <code>g77</code> command now expects the run-time library
+to be named <code>libg2c.a</code> instead of <code>libf2c.a</code>,
+to ensure that a version other than the one built and
+installed as part of the same <code>g77</code> version is picked up.
+
+<li>The <code>-Wunused</code> option no longer issues a spurious
+warning about the "master" procedure generated by
+<code>g77</code> for procedures containing <code>ENTRY</code> statements.
+
+<li><code>g77</code>'s version of <code>libf2c</code> separates out
+the setting of global state
+(such as command-line arguments and signal handling)
+from <code>main.o</code> into distinct, new library
+archive members.
+
+<p>This should make it easier to write portable applications
+that have their own (non-Fortran) <code>main()</code> routine
+properly set up the <code>libf2c</code> environment, even
+when <code>libf2c</code> (now <code>libg2c</code>) is a shared library.
+
+</p><li>During the configuration and build process,
+<code>g77</code> creates subdirectories it needs only as it
+needs them, thus avoiding unnecessary creation of, for example,
+<code>stage1/f/runtime</code> when doing a non-bootstrap build. 
+Other cleaning up of the configuration and build process
+has been performed as well.
+
+<li><code>install-info</code> now used to update the directory of
+Info documentation to contain an entry for <code>g77</code>
+(during installation).
+
+<li>Some diagnostics have been changed from warnings to errors,
+to prevent inadvertent use of the resulting, probably buggy,
+programs. 
+These mostly include diagnostics about use of unsupported features
+in the <code>OPEN</code>, <code>INQUIRE</code>, <code>READ</code>, and
+<code>WRITE</code> statements,
+and about truncations of various sorts of constants.
+
+<li>Improve documentation and indexing.
+
+<li>Upgrade to <code>libf2c</code> as of 1998-04-20.
+
+<p>This should fix a variety of problems, including
+those involving some uses of the <code>T</code> format
+specifier, and perhaps some build (porting) problems
+as well. 
+</ul>
+
+<h3>In 0.5.22 versus 0.5.21:</h3>
+
+<ul>
+<li>Fix code generation for iterative <code>DO</code> loops that
+have one or more references to the iteration variable,
+or to aliases of it, in their control expressions. 
+For example, <code>DO 10 J=2,J</code> now is compiled correctly.
+
+<li>Fix a code-generation bug that afflicted
+Intel x86 targets when <code>-O2</code> was specified
+compiling, for example, an old version of
+the <code>DNRM2</code> routine.
+
+<p>The x87 coprocessor stack was being
+mismanaged in cases involving assigned <code>GOTO</code>
+and <code>ASSIGN</code>.
+
+</p><li>Fix <code>DTime</code> intrinsic so as not to truncate
+results to integer values (on some systems).
+
+<li>Fix <code>Signal</code> intrinsic so it offers portable
+support for 64-bit systems (such as Digital Alphas
+running GNU/Linux).
+
+<li>Fix run-time crash involving <code>NAMELIST</code> on 64-bit
+machines such as Alphas.
+
+<li>Fix <code>g77</code> version of <code>libf2c</code> so it no longer
+produces a spurious <code>I/O recursion</code> diagnostic at run time
+when an I/O operation (such as <code>READ *,I</code>) is interrupted
+in a manner that causes the program to be terminated
+via the <code>f_exit</code> routine (such as via <kbd>C-c</kbd>).
+
+<li>Fix <code>g77</code> crash triggered by <code>CASE</code> statement with
+an omitted lower or upper bound.
+
+<li>Fix <code>g77</code> crash compiling references to <code>CPU_Time</code>
+intrinsic.
+
+<li>Fix <code>g77</code> crash
+(or apparently infinite run-time)
+when compiling certain complicated expressions
+involving <code>COMPLEX</code> arithmetic
+(especially multiplication).
+
+<li>Fix <code>g77</code> crash on statements such as
+<code>PRINT *, (REAL(Z(I)),I=1,2)</code>, where
+<code>Z</code> is <code>DOUBLE COMPLEX</code>.
+
+<li>Fix a <code>g++</code> crash.
+
+<li>Support <code>FORMAT(I&lt;<var>expr</var>&gt;)</code> when <var>expr</var> is a
+compile-time constant <code>INTEGER</code> expression.
+
+<li>Fix <code>g77</code> <code>-g</code> option so procedures that
+use <code>ENTRY</code> can be stepped through, line by line,
+in <code>gdb</code>.
+
+<li>Fix a profiling-related bug in <code>gcc</code> back end for
+Intel x86 architecture.
+
+<li>Allow any <code>REAL</code> argument to intrinsics
+<code>Second</code> and <code>CPU_Time</code>.
+
+<li>Allow any numeric argument to intrinsics
+<code>Int2</code> and <code>Int8</code>.
+
+<li>Use <code>tempnam</code>, if available, to open scratch files
+(as in <code>OPEN(STATUS='SCRATCH')</code>)
+so that the <code>TMPDIR</code> environment variable,
+if present, is used.
+
+<li>Rename the <code>gcc</code> keyword <code>restrict</code> to
+<code>__restrict__</code>, to avoid rejecting valid, existing,
+C programs. 
+Support for <code>restrict</code> is now more like support
+for <code>complex</code>.
+
+<li>Fix <code>-fpedantic</code> to not reject procedure invocations
+such as <code>I=J()</code> and <code>CALL FOO()</code>.
+
+<li>Fix <code>-fugly-comma</code> to affect invocations of
+only external procedures. 
+Restore rejection of gratuitous trailing omitted
+arguments to intrinsics, as in <code>I=MAX(3,4,,)</code>.
+
+<li>Fix compiler so it accepts <code>-fgnu-intrinsics-*</code> and
+<code>-fbadu77-intrinsics-*</code> options.
+
+<li>Improve diagnostic messages from <code>libf2c</code>
+so it is more likely that the printing of the
+active format string is limited to the string,
+with no trailing garbage being printed.
+
+<p>(Unlike <code>f2c</code>, <code>g77</code> did not append
+a null byte to its compiled form of every
+format string specified via a <code>FORMAT</code> statement. 
+However, <code>f2c</code> would exhibit the problem
+anyway for a statement like <code>PRINT '(I)garbage', 1</code>
+by printing <code>(I)garbage</code> as the format string.)
+
+</p><li>Improve compilation of <code>FORMAT</code> expressions so that
+a null byte is appended to the last operand if it
+is a constant. 
+This provides a cleaner run-time diagnostic as provided
+by <code>libf2c</code> for statements like <code>PRINT '(I1', 42</code>.
+
+<li>Fix various crashes involving code with diagnosed errors.
+
+<li>Fix cross-compilation bug when configuring <code>libf2c</code>.
+
+<li>Improve diagnostics.
+
+<li>Improve documentation and indexing.
+
+<li>Upgrade to <code>libf2c</code> as of 1997-09-23. 
+This fixes a formatted-I/O bug that afflicted
+64-bit systems with 32-bit integers
+(such as Digital Alpha running GNU/Linux). 
+</ul>
+
+<h3>In <code>EGCS</code> 1.0.2 versus <code>EGCS</code> 1.0.1:</h3>
+
+<ul>
+<li>Fix <code>g77</code> crash triggered by <code>CASE</code> statement with
+an omitted lower or upper bound.
+
+<li>Fix <code>g77</code> crash on statements such as
+<code>PRINT *, (REAL(Z(I)),I=1,2)</code>, where
+<code>Z</code> is <code>DOUBLE COMPLEX</code>.
+
+<li>Fix <code>-fPIC</code> (such as compiling for ELF targets)
+on the Intel x86 architecture target
+so invalid assembler code is no longer produced.
+
+<li>Fix <code>-fpedantic</code> to not reject procedure invocations
+such as <code>I=J()</code> and <code>CALL FOO()</code>.
+
+<li>Fix <code>-fugly-comma</code> to affect invocations of
+only external procedures. 
+Restore rejection of gratuitous trailing omitted
+arguments to intrinsics, as in <code>I=MAX(3,4,,)</code>.
+
+<li>Fix compiler so it accepts <code>-fgnu-intrinsics-*</code> and
+<code>-fbadu77-intrinsics-*</code> options. 
+</ul>
+
+<h3>In <code>EGCS</code> 1.0.1 versus <code>EGCS</code> 1.0:</h3>
+
+<ul>
+<li>Fix run-time crash involving <code>NAMELIST</code> on 64-bit
+machines such as Alphas. 
+</ul>
+
+<h3>In <code>EGCS</code> 1.0 versus <code>g77</code> 0.5.21:</h3>
+
+<ul>
+<li>Version 1.0 of <code>egcs</code>
+contains several regressions against
+version 0.5.21 of <code>g77</code>,
+due to using the
+"vanilla" <code>gcc</code> back end instead of patching
+it to fix a few bugs and improve performance in a
+few cases.
+
+<p>Features that have been dropped from this version
+of <code>g77</code> due to their being implemented
+via <code>g77</code>-specific patches to the <code>gcc</code>
+back end in previous releases include:
+
+<ul>
+<li>Support for the C-language <code>restrict</code> keyword.
+
+<li>Support for the <code>-W</code> option warning about
+integer division by zero.
+
+<li>The Intel x86-specific option <code>-malign-double</code>
+applying to stack-allocated data
+as well as statically-allocate data. 
+</ul>
+
+<p>Note that the <code>gcc/f/gbe/</code> subdirectory has been removed
+from this distribution as a result of <code>g77</code>
+being fully integrated with
+the <code>egcs</code> variant of the <code>gcc</code> back end.
+
+</p><li>Fix code generation for iterative <code>DO</code> loops that
+have one or more references to the iteration variable,
+or to aliases of it, in their control expressions. 
+For example, <code>DO 10 J=2,J</code> now is compiled correctly.
+
+<li>Fix <code>DTime</code> intrinsic so as not to truncate
+results to integer values (on some systems).
+
+<li>Some Fortran code, miscompiled
+by <code>g77</code> built on <code>gcc</code> version 2.8.1
+on m68k-next-nextstep3 configurations
+when using the <code>-O2</code> option,
+is now compiled correctly. 
+It is believed that a C function known to miscompile
+on that configuration
+when using the <code>-O2 -funroll-loops</code> options
+also is now compiled correctly.
+
+<li>Remove support for non-<code>egcs</code> versions of <code>gcc</code>.
+
+<li>Remove support for the <code>--driver</code> option,
+as <code>g77</code> now does all the driving,
+just like <code>gcc</code>.
+
+<li>Allow any numeric argument to intrinsics
+<code>Int2</code> and <code>Int8</code>.
+
+<li>Improve diagnostic messages from <code>libf2c</code>
+so it is more likely that the printing of the
+active format string is limited to the string,
+with no trailing garbage being printed.
+
+<p>(Unlike <code>f2c</code>, <code>g77</code> did not append
+a null byte to its compiled form of every
+format string specified via a <code>FORMAT</code> statement. 
+However, <code>f2c</code> would exhibit the problem
+anyway for a statement like <code>PRINT '(I)garbage', 1</code>
+by printing <code>(I)garbage</code> as the format string.)
+
+</p><li>Upgrade to <code>libf2c</code> as of 1997-09-23. 
+This fixes a formatted-I/O bug that afflicted
+64-bit systems with 32-bit integers
+(such as Digital Alpha running GNU/Linux). 
+</ul>
+
+<h3>In 0.5.21:</h3>
+
+<ul>
+<li>Fix a code-generation bug introduced by 0.5.20
+caused by loop unrolling (by specifying
+<code>-funroll-loops</code> or similar). 
+This bug afflicted all code compiled by
+version 2.7.2.2.f.2 of <code>gcc</code> (C, C++,
+Fortran, and so on).
+
+<li>Fix a code-generation bug manifested when
+combining local <code>EQUIVALENCE</code> with a
+<code>DATA</code> statement that follows
+the first executable statement (or is
+treated as an executable-context statement
+as a result of using the <code>-fpedantic</code>
+option).
+
+<li>Fix a compiler crash that occurred when an
+integer division by a constant zero is detected. 
+Instead, when the <code>-W</code> option is specified,
+the <code>gcc</code> back end issues a warning about such a case. 
+This bug afflicted all code compiled by
+version 2.7.2.2.f.2 of <code>gcc</code> (C, C++,
+Fortran, and so on).
+
+<li>Fix a compiler crash that occurred in some cases
+of procedure inlining. 
+(Such cases became more frequent in 0.5.20.)
+
+<li>Fix a compiler crash resulting from using <code>DATA</code>
+or similar to initialize a <code>COMPLEX</code> variable or
+array to zero.
+
+<li>Fix compiler crashes involving use of <code>AND</code>, <code>OR</code>,
+or <code>XOR</code> intrinsics.
+
+<li>Fix compiler bug triggered when using a <code>COMMON</code>
+or <code>EQUIVALENCE</code> variable
+as the target of an <code>ASSIGN</code>
+or assigned-<code>GOTO</code> statement.
+
+<li>Fix compiler crashes due to using the name of a some
+non-standard intrinsics (such as <code>FTell</code> or
+<code>FPutC</code>) as such and as the name of a procedure
+or common block. 
+Such dual use of a name in a program is allowed by
+the standard.
+
+<li>Place automatic arrays on the stack, even if
+<code>SAVE</code> or the <code>-fno-automatic</code> option
+is in effect. 
+This avoids a compiler crash in some cases.
+
+<li>The <code>-malign-double</code> option now reliably aligns
+<code>DOUBLE PRECISION</code> optimally on Pentium and
+Pentium Pro architectures (586 and 686 in <code>gcc</code>).
+
+<li>New option <code>-Wno-globals</code> disables warnings
+about "suspicious" use of a name both as a global
+name and as the implicit name of an intrinsic, and
+warnings about disagreements over the number or natures of
+arguments passed to global procedures, or the
+natures of the procedures themselves.
+
+<p>The default is to issue such warnings, which are
+new as of this version of <code>g77</code>.
+
+</p><li>New option <code>-fno-globals</code> disables diagnostics
+about potentially fatal disagreements
+analysis problems, such as disagreements over the
+number or natures of arguments passed to global
+procedures, or the natures of those procedures themselves.
+
+<p>The default is to issue such diagnostics and flag
+the compilation as unsuccessful. 
+With this option, the diagnostics are issued as
+warnings, or, if <code>-Wno-globals</code> is specified,
+are not issued at all.
+
+<p>This option also disables inlining of global procedures,
+to avoid compiler crashes resulting from coding errors
+that these diagnostics normally would identify.
+
+</p><li>Diagnose cases where a reference to a procedure
+disagrees with the type of that procedure, or
+where disagreements about the number or nature
+of arguments exist. 
+This avoids a compiler crash.
+
+<li>Fix parsing bug whereby <code>g77</code> rejected a
+second initialization specification immediately
+following the first's closing <code>/</code> without
+an intervening comma in a <code>DATA</code> statement,
+and the second specification was an implied-DO list.
+
+<li>Improve performance of the <code>gcc</code> back end so
+certain complicated expressions involving <code>COMPLEX</code>
+arithmetic (especially multiplication) don't appear to
+take forever to compile.
+
+<li>Fix a couple of profiling-related bugs in <code>gcc</code>
+back end.
+
+<li>Integrate GNU Ada's (GNAT's) changes to the back end,
+which consist almost entirely of bug fixes. 
+These fixes are circa version 3.10p of GNAT.
+
+<li>Include some other <code>gcc</code> fixes that seem useful in
+<code>g77</code>'s version of <code>gcc</code>. 
+(See <code>gcc/ChangeLog</code> for details--compare it
+to that file in the vanilla <code>gcc-2.7.2.3.tar.gz</code>
+distribution.)
+
+<li>Fix <code>libU77</code> routines that accept file and other names
+to strip trailing blanks from them, for consistency
+with other implementations. 
+Blanks may be forcibly appended to such names by
+appending a single null character (<code>CHAR(0)</code>)
+to the significant trailing blanks.
+
+<li>Fix <code>CHMOD</code> intrinsic to work with file names
+that have embedded blanks, commas, and so on.
+
+<li>Fix <code>SIGNAL</code> intrinsic so it accepts an
+optional third <code>Status</code> argument.
+
+<li>Fix <code>IDATE()</code> intrinsic subroutine (VXT form)
+so it accepts arguments in the correct order. 
+Documentation fixed accordingly, and for
+<code>GMTIME()</code> and <code>LTIME()</code> as well.
+
+<li>Make many changes to <code>libU77</code> intrinsics to
+support existing code more directly.
+
+<p>Such changes include allowing both subroutine and
+function forms of many routines, changing <code>MCLOCK()</code>
+and <code>TIME()</code> to return <code>INTEGER(KIND=1)</code> values,
+introducing <code>MCLOCK8()</code> and <code>TIME8()</code> to
+return <code>INTEGER(KIND=2)</code> values,
+and placing functions that are intended to perform
+side effects in a new intrinsic group, <code>badu77</code>.
+
+</p><li>Improve <code>libU77</code> so it is more portable.
+
+<li>Add options <code>-fbadu77-intrinsics-delete</code>,
+<code>-fbadu77-intrinsics-hide</code>, and so on.
+
+<li>Fix crashes involving diagnosed or invalid code.
+
+<li><code>g77</code> and <code>gcc</code> now do a somewhat better
+job detecting and diagnosing arrays that are too
+large to handle before these cause diagnostics
+during the assembler or linker phase, a compiler
+crash, or generation of incorrect code.
+
+<li>Make some fixes to alias analysis code.
+
+<li>Add support for <code>restrict</code> keyword in <code>gcc</code>
+front end.
+
+<li>Support <code>gcc</code> version 2.7.2.3
+(modified by <code>g77</code> into version 2.7.2.3.f.1),
+and remove
+support for prior versions of <code>gcc</code>.
+
+<li>Incorporate GNAT's patches to the <code>gcc</code> back
+end into <code>g77</code>'s, so GNAT users do not need
+to apply GNAT's patches to build both GNAT and <code>g77</code>
+from the same source tree.
+
+<li>Modify <code>make</code> rules and related code so that
+generation of Info documentation doesn't require
+compilation using <code>gcc</code>. 
+Now, any ANSI C compiler should be adequate to
+produce the <code>g77</code> documentation (in particular,
+the tables of intrinsics) from scratch.
+
+<li>Add <code>INT2</code> and <code>INT8</code> intrinsics.
+
+<li>Add <code>CPU_TIME</code> intrinsic.
+
+<li>Add <code>ALARM</code> intrinsic.
+
+<li><code>CTIME</code> intrinsic now accepts any <code>INTEGER</code>
+argument, not just <code>INTEGER(KIND=2)</code>.
+
+<li>Warn when explicit type declaration disagrees with
+the type of an intrinsic invocation.
+
+<li>Support <code>*f771</code> entry in <code>gcc</code> <code>specs</code> file.
+
+<li>Fix typo in <code>make</code> rule <code>g77-cross</code>, used only for
+cross-compiling.
+
+<li>Fix <code>libf2c</code> build procedure to re-archive library
+if previous attempt to archive was interrupted.
+
+<li>Change <code>gcc</code> to unroll loops only during the last
+invocation (of as many as two invocations) of loop
+optimization.
+
+<li>Improve handling of <code>-fno-f2c</code> so that code that
+attempts to pass an intrinsic as an actual argument,
+such as <code>CALL FOO(ABS)</code>, is rejected due to the fact
+that the run-time-library routine is, effectively,
+compiled with <code>-ff2c</code> in effect.
+
+<li>Fix <code>g77</code> driver to recognize <code>-fsyntax-only</code>
+as an option that inhibits linking, just like <code>-c</code> or
+<code>-S</code>, and to recognize and properly handle the
+<code>-nostdlib</code>, <code>-M</code>, <code>-MM</code>, <code>-nodefaultlibs</code>,
+and <code>-Xlinker</code> options.
+
+<li>Upgrade to <code>libf2c</code> as of 1997-08-16.
+
+<li>Modify <code>libf2c</code> to consistently and clearly diagnose
+recursive I/O (at run time).
+
+<li><code>g77</code> driver now prints version information (such as produced
+by <kbd>g77 -v</kbd>) to <code>stderr</code> instead of <code>stdout</code>.
+
+<li>The <code>.r</code> suffix now designates a Ratfor source file,
+to be preprocessed via the <code>ratfor</code> command, available
+separately.
+
+<li>Fix some aspects of how <code>gcc</code> determines what kind of
+system is being configured and what kinds are supported. 
+For example, GNU Linux/Alpha ELF systems now are directly
+supported.
+
+<li>Improve diagnostics.
+
+<li>Improve documentation and indexing.
+
+<li>Include all pertinent files for <code>libf2c</code> that come
+from <code>netlib.bell-labs.com</code>; give any such files
+that aren't quite accurate in <code>g77</code>'s version of
+<code>libf2c</code> the suffix <code>.netlib</code>.
+
+<li>Reserve <code>INTEGER(KIND=0)</code> for future use. 
+</ul>
+
+<h3>In 0.5.20:</h3>
+
+<ul>
+<li>The <code>-fno-typeless-boz</code> option is now the default.
+
+<p>This option specifies that non-decimal-radix
+constants using the prefixed-radix form (such as <code>Z'1234'</code>)
+are to be interpreted as <code>INTEGER(KIND=1)</code> constants. 
+Specify <code>-ftypeless-boz</code> to cause such
+constants to be interpreted as typeless.
+
+<p>(Version 0.5.19 introduced <code>-fno-typeless-boz</code> and
+its inverse.)
+
+<p>See <a href="Fortran-Dialect-Options.html#Fortran%20Dialect%20Options">Options Controlling Fortran Dialect</a>,
+for information on the <code>-ftypeless-boz</code> option.
+
+</p><li>Options <code>-ff90-intrinsics-enable</code> and
+<code>-fvxt-intrinsics-enable</code> now are the
+defaults.
+
+<p>Some programs might use names that clash with
+intrinsic names defined (and now enabled) by these
+options or by the new <code>libU77</code> intrinsics. 
+Users of such programs might need to compile them
+differently (using, for example, <code>-ff90-intrinsics-disable</code>)
+or, better yet, insert appropriate <code>EXTERNAL</code>
+statements specifying that these names are not intended
+to be names of intrinsics.
+
+</p><li>The <code>ALWAYS_FLUSH</code> macro is no longer defined when
+building <code>libf2c</code>, which should result in improved
+I/O performance, especially over NFS.
+
+<p><em>Note:</em> If you have code that depends on the behavior
+of <code>libf2c</code> when built with <code>ALWAYS_FLUSH</code> defined,
+you will have to modify <code>libf2c</code> accordingly before
+building it from this and future versions of <code>g77</code>.
+
+<p>See <a href="Output-Assumed-To-Flush.html#Output%20Assumed%20To%20Flush">Output Assumed To Flush</a>, for more information.
+
+</p><li>Dave Love's implementation of <code>libU77</code> has been
+added to the version of <code>libf2c</code> distributed with
+and built as part of <code>g77</code>. 
+<code>g77</code> now knows about the routines in this library
+as intrinsics.
+
+<li>New option <code>-fvxt</code> specifies that the
+source file is written in VXT Fortran, instead of GNU Fortran.
+
+<p>See <a href="VXT-Fortran.html#VXT%20Fortran">VXT Fortran</a>, for more information on the constructs
+recognized when the <code>-fvxt</code> option is specified.
+
+</p><li>The <code>-fvxt-not-f90</code> option has been deleted,
+along with its inverse, <code>-ff90-not-vxt</code>.
+
+<p>If you used one of these deleted options, you should
+re-read the pertinent documentation to determine which
+options, if any, are appropriate for compiling your
+code with this version of <code>g77</code>.
+
+<p>See <a href="Other-Dialects.html#Other%20Dialects">Other Dialects</a>, for more information.
+
+</p><li>The <code>-fugly</code> option now issues a warning, as it
+likely will be removed in a future version.
+
+<p>(Enabling all the <code>-fugly-*</code> options is unlikely
+to be feasible, or sensible, in the future,
+so users should learn to specify only those
+<code>-fugly-*</code> options they really need for a
+particular source file.)
+
+</p><li>The <code>-fugly-assumed</code> option, introduced in
+version 0.5.19, has been changed to
+better accommodate old and new code.
+
+<p>See <a href="Ugly-Assumed-Size-Arrays.html#Ugly%20Assumed-Size%20Arrays">Ugly Assumed-Size Arrays</a>, for more information.
+
+</p><li>Make a number of fixes to the <code>g77</code> front end and
+the <code>gcc</code> back end to better support Alpha (AXP)
+machines. 
+This includes providing at least one bug-fix to the
+<code>gcc</code> back end for Alphas.
+
+<li>Related to supporting Alpha (AXP) machines, the <code>LOC()</code>
+intrinsic and <code>%LOC()</code> construct now return
+values of <code>INTEGER(KIND=0)</code> type,
+as defined by the GNU Fortran language.
+
+<p>This type is wide enough
+(holds the same number of bits)
+as the character-pointer type on the machine.
+
+<p>On most machines, this won't make a difference,
+whereas, on Alphas and other systems with 64-bit pointers,
+the <code>INTEGER(KIND=0)</code> type is equivalent to <code>INTEGER(KIND=2)</code>
+(often referred to as <code>INTEGER*8</code>)
+instead of the more common <code>INTEGER(KIND=1)</code>
+(often referred to as <code>INTEGER*4</code>).
+
+</p><li>Emulate <code>COMPLEX</code> arithmetic in the <code>g77</code> front
+end, to avoid bugs in <code>complex</code> support in the
+<code>gcc</code> back end. 
+New option <code>-fno-emulate-complex</code>
+causes <code>g77</code> to revert the 0.5.19 behavior.
+
+<li>Fix bug whereby <code>REAL A(1)</code>, for example, caused
+a compiler crash if <code>-fugly-assumed</code> was in effect
+and <var>A</var> was a local (automatic) array. 
+That case is no longer affected by the new
+handling of <code>-fugly-assumed</code>.
+
+<li>Fix <code>g77</code> command driver so that <code>g77 -o foo.f</code>
+no longer deletes <code>foo.f</code> before issuing other
+diagnostics, and so the <code>-x</code> option is properly
+handled.
+
+<li>Enable inlining of subroutines and functions by the <code>gcc</code>
+back end. 
+This works as it does for <code>gcc</code> itself--program units
+may be inlined for invocations that follow them in the same
+program unit, as long as the appropriate compile-time
+options are specified.
+
+<li>Dummy arguments are no longer assumed to potentially alias
+(overlap)
+other dummy arguments or <code>COMMON</code> areas when any of
+these are defined (assigned to) by Fortran code.
+
+<p>This can result in faster and/or smaller programs when
+compiling with optimization enabled, though on some
+systems this effect is observed only when <code>-fforce-addr</code>
+also is specified.
+
+<p>New options <code>-falias-check</code>, <code>-fargument-alias</code>,
+<code>-fargument-noalias</code>,
+and <code>-fno-argument-noalias-global</code> control the
+way <code>g77</code> handles potential aliasing.
+
+<p>See <a href="Aliasing-Assumed-To-Work.html#Aliasing%20Assumed%20To%20Work">Aliasing Assumed To Work</a>, for detailed information on why the
+new defaults might result in some programs no longer working the way they
+did when compiled by previous versions of <code>g77</code>.
+
+</p><li>The <code>CONJG()</code> and <code>DCONJG()</code> intrinsics now
+are compiled in-line.
+
+<li>The bug-fix for 0.5.19.1 has been re-done. 
+The <code>g77</code> compiler has been changed back to
+assume <code>libf2c</code> has no aliasing problems in
+its implementations of the <code>COMPLEX</code> (and
+<code>DOUBLE COMPLEX</code>) intrinsics. 
+The <code>libf2c</code> has been changed to have no such
+problems.
+
+<p>As a result, 0.5.20 is expected to offer improved performance
+over 0.5.19.1, perhaps as good as 0.5.19 in most
+or all cases, due to this change alone.
+
+<p><em>Note:</em> This change requires version 0.5.20 of
+<code>libf2c</code>, at least, when linking code produced
+by any versions of <code>g77</code> other than 0.5.19.1. 
+Use <code>g77 -v</code> to determine the version numbers
+of the <code>libF77</code>, <code>libI77</code>, and <code>libU77</code>
+components of the <code>libf2c</code> library. 
+(If these version numbers are not printed--in
+particular, if the linker complains about unresolved
+references to names like <code>g77__fvers__</code>--that
+strongly suggests your installation has an obsolete
+version of <code>libf2c</code>.)
+
+</p><li>New option <code>-fugly-assign</code> specifies that the
+same memory locations are to be used to hold the
+values assigned by both statements <code>I = 3</code> and
+<code>ASSIGN 10 TO I</code>, for example. 
+(Normally, <code>g77</code> uses a separate memory location
+to hold assigned statement labels.)
+
+<p>See <a href="Ugly-Assigned-Labels.html#Ugly%20Assigned%20Labels">Ugly Assigned Labels</a>, for more information.
+
+</p><li><code>FORMAT</code> and <code>ENTRY</code> statements now are allowed to
+precede <code>IMPLICIT NONE</code> statements.
+
+<li>Produce diagnostic for unsupported <code>SELECT CASE</code> on
+<code>CHARACTER</code> type, instead of crashing, at compile time.
+
+<li>Fix crashes involving diagnosed or invalid code.
+
+<li>Change approach to building <code>libf2c</code> archive
+(<code>libf2c.a</code>) so that members are added to it
+only when truly necessary, so the user that installs
+an already-built <code>g77</code> doesn't need to have write
+access to the build tree (whereas the user doing the
+build might not have access to install new software
+on the system).
+
+<li>Support <code>gcc</code> version 2.7.2.2
+(modified by <code>g77</code> into version 2.7.2.2.f.2),
+and remove
+support for prior versions of <code>gcc</code>.
+
+<li>Upgrade to <code>libf2c</code> as of 1997-02-08, and
+fix up some of the build procedures.
+
+<li>Improve general build procedures for <code>g77</code>,
+fixing minor bugs (such as deletion of any file
+named <code>f771</code> in the parent directory of <code>gcc/</code>).
+
+<li>Enable full support of <code>INTEGER(KIND=2)</code>
+(often referred to as <code>INTEGER*8</code>)
+available in
+<code>libf2c</code> and <code>f2c.h</code> so that <code>f2c</code> users
+may make full use of its features via the <code>g77</code>
+version of <code>f2c.h</code> and the <code>INTEGER(KIND=2)</code>
+support routines in the <code>g77</code> version of <code>libf2c</code>.
+
+<li>Improve <code>g77</code> driver and <code>libf2c</code> so that <code>g77 -v</code>
+yields version information on the library.
+
+<li>The <code>SNGL</code> and <code>FLOAT</code> intrinsics now are
+specific intrinsics, instead of synonyms for the
+generic intrinsic <code>REAL</code>.
+
+<li>New intrinsics have been added. 
+These are <code>REALPART</code>, <code>IMAGPART</code>,
+<code>COMPLEX</code>,
+<code>LONG</code>, and <code>SHORT</code>.
+
+<li>A new group of intrinsics, <code>gnu</code>, has been added
+to contain the new <code>REALPART</code>, <code>IMAGPART</code>,
+and <code>COMPLEX</code> intrinsics. 
+An old group, <code>dcp</code>, has been removed.
+
+<li>Complain about industry-wide ambiguous references
+<code>REAL(<var>expr</var>)</code> and <code>AIMAG(<var>expr</var>)</code>,
+where <var>expr</var> is <code>DOUBLE COMPLEX</code> (or any
+complex type other than <code>COMPLEX</code>), unless
+<code>-ff90</code> option specifies Fortran 90 interpretation
+or new <code>-fugly-complex</code> option, in conjunction with
+<code>-fnot-f90</code>, specifies <code>f2c</code> interpretation.
+
+<li>Make improvements to diagnostics.
+
+<li>Speed up compiler a bit.
+
+<li>Improvements to documentation and indexing, including
+a new chapter containing information on one, later
+more, diagnostics that users are directed to pull
+up automatically via a message in the diagnostic itself.
+
+<p>(Hence the menu item <code>M</code> for the node
+<code>Diagnostics</code> in the top-level menu of
+the Info documentation.) 
+</ul>
+
+<h3>In previous versions:</h3>
+
+<p>Information on previous versions is archived
+in <code>gcc/gcc/f/news.texi</code>
+following the test of the <code>DOC-OLDNEWS</code> macro.
+
+</body></html>
+
+

@@ -1,0 +1,200 @@
+ID=E0436
+URL=http://www.intap.net/~drw/cpp/cpp08_01.htm
+SIZE=6195
+DATE=12/07/02
+TIME=19:20:53
+DATASET=C
+HTML=
+<html>
+<head> 
+<title>
+online C++ tutorial: What is a Pointer?
+</title>
+</head>
+
+<body bgcolor="#ffffff"
+       link = "#ff0000"
+      alink = "#00ff00"
+      vlink = "#660000" >
+
+
+<table width="100%" border=0>
+<tr>
+<td align=left>
+<a href="cpp07_01.htm"><img border=0 src="pictures/buttons/prevs.gif" width=51 height=34 alt="&lt;&lt;=="></a>
+<a href="cpp07_05.htm"><img border=0 src="pictures/buttons/prevp.gif" width=37 height=34 alt="&lt;="></a>
+</td>
+<td align=center>
+<a href="index.htm">
+<img border=0 width=122 height=34 src="pictures/buttons/toc.gif"
+    alt="[table of contents]"></a>
+<a href="/cgi-bin/drw/cpp/search.cgi">
+<img border=0 width=46 height=34 src="pictures/buttons/search.gif"
+    alt="[search]"></a>
+<a href="glossary.htm">
+<img border=0 width=61 height=34 src="pictures/buttons/glossary.gif"
+    alt="[glossary]"></a>
+<a href="feedback.htm">
+<img border=0 width=65 height=34 src="pictures/buttons/feedback.gif"
+    alt="[feedback]"></a>
+</td>
+<td align=right>
+
+<img border=0 src="pictures/buttons/nextpg.gif" width=37 height=34 alt="=&gt;"><img border=0 src="pictures/buttons/nextsg.gif" width=51 height=34 alt=""></td>
+</tr>
+</table>
+<hr>
+<table width="100%"><tr><td align=left><img src="pictures/buttons/cppsm.gif" width=143 height=37 alt="[online C++ tutorial]"></td><td align=right><b>Section 8: Pointers and Memory Management </b></td></tr></table>
+<center><h2>Section 8.1: What is a Pointer?</h2></center>
+
+<p>
+So what is a pointer? A pointer is a way to get
+at another object. Essentially it is a way to
+grab an instance of an object and then either
+pass that instance a message or retreive some
+data from that object. A pointer is actually
+just an address of where an instance is 
+held in memory. 
+
+<p>
+Some piece of your program can either
+possess an instance of an object, or know where an
+instance of an object is. An instance of an object 
+is a chunk of memory that is big enough to store
+all the member data of that object. A pointer is
+an address that explains how to get to where the
+instance is actually held in memory.
+Here's a quick example:
+
+<p> 
+Our Player object has three pieces of data that it
+owns: strength, agility, and health. These are a 
+part of the player object. That makes sense in real
+world terms. The player knows about two other pieces
+of data: the weapon and the armor that the player
+possesses. Here's a diagram for an instance of the 
+player object.
+
+<p>
+<center>
+<img src="pictures/pic08_01fig1.gif" alt="Figure 1">
+</center>
+
+<p>
+So that is how to conceptually think of pointers.
+Now what's really going on? Memory in a computer
+is a complicated thing, but let's reduce it
+to it's simplest form: one large string of slots
+with addresses that data can be put in. 
+As in the following picture:
+
+<p>
+<center>
+<img src="pictures/pic08_01fig2.gif" alt="Figure 2">
+</center>
+
+If we were to access the spot in memory with address
+3, we would get the value 45. If we were to access 
+the spot in memory with address 2 we would get 
+the value "Dave". The previous diagram over 
+simplifies two important concepts, however. First,
+each spot that has an address is the same size as
+every other spot. Second, what's held in memory
+is simply data. That is, the information there
+is just a string of binary data, 1's and 0's.
+The way that the data is viewed gives it meaning. 
+
+<p>
+With these new ideas in mind let's Take a look
+at our previous diagram about the player and
+see what's really going on. Here is the pseudo
+code for the Player in a little more detail than
+we have seen:
+
+<pre>
+class Player {
+  // attributes
+  int     health;
+  int     strength;
+  int     agility;
+
+  // pointers to weapons and armor
+  Pointer weapon;
+  Pointer armor;
+
+  // actions that a player knows how to perform
+  void    move();
+  void    attackMonster();
+  void    getTreasure();
+};
+</pre>
+
+<p>
+What follows could be a view of memory. This will
+seem fairly complex and is not imperative to
+understanding the c++ language. If it does not
+make sense right away, come back to it. 
+
+<p>
+I have 
+translated the actual binary values to their 
+corresponding values in the context of our program.
+In this view an instance of a Player is stored at
+memory address 4098. The first attribute 
+(instance variable) is there:
+health is 12. The second attribute is strength, 14.
+Then agility 16. The next attribute, stored at 
+address 4104 is a pointer to an instance of a weapon 
+object. If we follow that to the bottom of the 
+diagram, there is the name of the weapon, "club"
+stored as ASCII values at address 6144 through 
+address 6148 (the 
+0 ends the string). The next attribute for a weapon
+after name is rating, in this case 2, which means
+"poor" because I have decided that the rating system
+should be:
+<pre>
+1 = very poor
+2 = poor
+3 = average
+4 = good
+5 = very good
+</pre>
+
+<p>
+Notice that all the memory contains is binary data.
+It is how that data is viewed that actually gives 
+it meaning.
+
+<p>
+<center>
+<img src="pictures/pic08_01fig3.gif" alt="Figure 3">
+</center><hr>
+<table width="100%" border=0>
+<tr>
+<td align=left>
+<a href="cpp07_01.htm"><img border=0 src="pictures/buttons/prevs.gif" width=51 height=34 alt="&lt;&lt;=="></a>
+<a href="cpp07_05.htm"><img border=0 src="pictures/buttons/prevp.gif" width=37 height=34 alt="&lt;="></a>
+</td>
+<td align=center>
+<a href="index.htm">
+<img border=0 width=122 height=34 src="pictures/buttons/toc.gif"
+    alt="[table of contents]"></a>
+<a href="/cgi-bin/drw/cpp/search.cgi">
+<img border=0 width=46 height=34 src="pictures/buttons/search.gif"
+    alt="[search]"></a>
+<a href="glossary.htm">
+<img border=0 width=61 height=34 src="pictures/buttons/glossary.gif"
+    alt="[glossary]"></a>
+<a href="feedback.htm">
+<img border=0 width=65 height=34 src="pictures/buttons/feedback.gif"
+    alt="[feedback]"></a>
+</td>
+<td align=right>
+
+<img border=0 src="pictures/buttons/nextpg.gif" width=37 height=34 alt="=&gt;"><img border=0 src="pictures/buttons/nextsg.gif" width=51 height=34 alt=""></td>
+</tr>
+</table>
+</body>
+</html>
+

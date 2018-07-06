@@ -1,0 +1,212 @@
+ID=E0360
+URL=http://www.le.ac.uk/cc/iss/tutorials/cprog/ccccstrg.html
+SIZE=8687
+DATE=12/07/02
+TIME=19:20:10
+DATASET=C
+HTML=<!-- Filename: ccccstrg.html -->
+<!-- Author: mc39/rjm1 -->
+<!-- Supplied by: Richard Mobbs -->
+<!-- Created: 02-09-95 -->
+<!-- Expires: 02-09-96 -->
+
+<HTML>
+
+<HEAD>
+
+<TITLE>Computer Centre: Introduction to C Programming Course</TITLE>
+
+</HEAD> 
+
+<BODY>
+
+<H1><IMG ALT="[CWC logo]" ALIGN=middle SRC="http://www.le.ac.uk/images/compcen.gif" > Strings</H1>
+
+<P>
+<HR>
+
+<H2>Objectives</H2>
+<P>This section brings together the use of two of <B>C</B>'s fundamental data types, ponters and arrays, in the use of handling strings.
+<P>Having read this section you should be able to:
+<OL>
+<LI>handle any string constant by storing it in an array.
+</OL>
+<HR>
+<P>
+
+<A NAME="SA"></A>
+<H3>Stringing Along</H3>
+
+Now that we have mastered pointers and the relationship between arrays and pointers we can take a second look at <I>strings</I>. A <I>string</I> is just a <I>character array</I> with the convention that the end of the valid data is marked by a <I>null</I> '\0'. Now you should be able to see why you can read in a character string using <B><TT>scanf("%s", name)</TT></B> rather than <B><TT>scanf("%s",&name)</TT></B> - <B><TT>name</TT></B> is already a pointer variable. Manipulating strings is very much a matter of pointers and special string functions. For example, the <TT><B>strlen(str)</B></TT> function returns the number of characters in the string <B><TT>str</TT></B>. It does this simply by counting the number of characters up to the first null in the character array - so it is important that you are using a valid null-terminated string. Indeed this is important with all of the <B>C</B> string functions.
+
+<P>You might not think that you need a function to copy strings, but simple assignment between string variables doesn't work. For example:
+
+<P>
+<PRE>
+<B>
+char a[l0],b[10];
+b = a;
+</B>
+</PRE>
+
+<P>does not appear to make a copy of the characters in <TT><B>a</B></TT>, but this is an illusion. What actually happens is that the pointer <TT><B>b</B></TT> is set to point to the same set of characters that <TT><B>a</B></TT> points to, i.e. a second copy of the string isn't created.
+
+<P>To do this you need <TT><B>strcopy(a,b)</B></TT> which really does make a copy of every character in <TT><B>a</B></TT> in the array <TT><B>b</B></TT> up to the first null character. In a similar fashion <TT><B>strcat(a,b)</B></TT> adds the characters in <TT><B>b</B></TT> to the end of the string stored in <TT><B>a</B></TT>. Finally there is the all-important <TT><B>strcmp(a,b)</B></TT> which compares the two strings character by character and returns true - that is 0 - if the results are equal.
+
+<P>Again notice that you can't compare strings using <B><TT>a==b</TT></B> because this just tests to see if the two pointers <TT><B>a</B></TT> and <TT><B>b</B></TT> are pointing to the same memory location. Of
+course if they are then the two strings are the same, but it is still possible for two strings to be the same even if they are stored at different locations.
+
+<P>You can see that you need to understand pointers to avoid making simple mistakes using strings. One last problem is how to initialise a character array to a string. You can't use:
+
+<P><B><TT>a = "hello";</TT></B>
+
+<P>because <TT><B>a</B></TT> is a pointer and <B>"<TT>hello</TT>"</B> is a string constant. However, you can use:
+
+<P><B><TT>strcopy(a,"hello")</TT></B>
+
+<P>because a string constant is passed in exactly the same way as a string variable, i.e. as a pointer. If you are worried where the string constant is stored, the answer is in a special area of memory along with all of the constants that the program uses. The main disadvantage of this method is that many compilers use an optimisation trick that results in only a single version of identical constants being stored. For example:
+
+<P><B><TT>strcopy(b,"hello");</TT></B>
+
+<P>usually ends up with <TT><B>b</B></TT> pointing to the same string as <TT><B>a</B></TT>. In other words, this method isn't particularly safe!
+
+<P>A much better method is to use array initialisation. You can specify constants to be used to initialise any variable when it is declared. For example:
+
+<P><B><TT>int a=10;</TT></B>
+
+<P>declares <TT><B>a</B></TT> to be an integer and initialises it to <TT><B>10</B></TT>. You can initialise an array using a similar notation. For example:
+
+<P><B><TT>int a[5] = {1,2,3,4,5};</TT></B>
+
+<P>declares an integer array and initialises it so that <B><TT>a[0]= 1</TT></B>, <B><TT>a[1] = 2</TT></B> and so on. A character array can be initialised in the same way. For example:
+
+<P><B><TT>char a[5]={'h','e','l','l','o'};</TT></B>
+
+<P>but a much better way is to write:
+
+<P><B><TT>char a[6]="hello";</TT></B>
+
+<P>which also automatically stores a null character at the end of the string - hence <B><TT>a[6]</TT></B> and not <B><TT>a[5]</TT></B>. If you really want to be lazy you can use:
+
+<P><B><TT>char a[] = "hello";</TT></B>
+
+<P>and let the compiler work out how many array elements are needed. Some compilers cannot cope with the idea of initialising a variable that doesn't exist for the entire life of the program. For those compilers to make initialisation work  you need to add the keyword <TT><B>static</B></TT> to the front of the string declaration, therefore:
+
+<P><B><TT>static char a[] = "hello";</TT></B>
+
+<P>
+<HR>
+<P>
+<A NAME="BC"></A>
+<H3>As easy as... B or C?</H3>
+
+A few words of warning. If you are familiar with <B>BASIC</B> then you will have to treat <B>C</B> strings, and even <B>C</B> arrays, with some caution. They are not as easy or as obvious to use and writing a program that manipulates text is harder in <B>C</B> than in <B>BASIC</B>. If you try to use <B>C</B> strings as if it were <B>BASIC</B> strings you are sure to create some very weird and wonderful bugs!
+
+<P>
+<HR>
+<P>
+<A NAME="SB"></A>
+<H3>A Sort Of Bubble Program</H3>
+
+This sections program implements a simple bubble sort - which is notorious for being one of the worst sorting methods known to programmer-kind, but it does have the advantage of being easy and instructive. Some of the routines have already been described in the main text and a range of different methods of passing data in functions have also been used.
+
+<P>The main routine is <B><TT>sort</TT></B> which repeats the <B><TT>scan</TT></B> function on the array until the variable <B><TT>done</TT></B> is set to 0. The <TT><B>scan</B></TT> function simply scans down the array comparing elements that are next door to each other. If they are in the wrong
+order then function <B><TT>swap</TT></B> is called to swap them over.
+
+<P>Study this program carefully with particular attention to the way <I>arrays</I>, <I>array elements</I> and <I>variables</I> are passed. It is worth saying that in some cases there are better ways of achieving the same results. In particular, it would have been easier not to use the variable <B><TT>done</TT></B>, but to have returned the state as the result of the <TT><B>scan</B></TT> function.
+
+<P>
+<PRE>
+<B>
+#include &LT;stdio.h&GT;
+
+
+void randdat(int a[] , int n);
+void sort(int a[] , int n);
+void scan(int a[] , int n , int *done);
+void swap(int *a ,int *b);
+
+main()
+ {
+   int i;
+   int a[20];
+
+   randdat(a , 20);
+   sort(a , 20);
+
+   for(i=0;i<20;++i) printf("%d\n" ,a[i]);
+ }
+
+void randdat(int a[1] , int n)
+ {
+  int i;
+  for (i=0 ; i&lt;n ; ++i)
+   a[i] = rand()%n+1;
+ }
+
+void sort(int a[1] , int n)
+ {
+  int done;
+  done = 1;
+  while(done == 1) scan(a , n , &done);
+ }
+
+void scan(int a[1] , int n , int *done)
+ {
+  int i;
+  *done=0;
+  for(i=0 ; i&lt;n-1 ; ++i)
+   {
+     if(a[i]&lt;a[i+1])
+      {
+       swap(&a[i],&a[i+1]);
+       *done=1;
+      }
+   }
+ }
+
+void swap(int *a ,int *b)
+ {      
+  int temp;
+  temp = *a;
+  *a   = *b;
+  *b   = temp;
+ }
+</B>
+</PRE>
+
+<P>[<A HREF="sort.c">program</A>]
+
+<P>
+<HR>
+
+<A HREF="http://www.le.ac.uk/">
+
+<IMG ALT="[Leicester University]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/lhomebut.gif"></A>
+
+
+
+
+
+
+
+
+<A HREF="http://www.le.ac.uk/CWIS/AS/CC/cc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/ccbut.gif">
+ Computer Centre</A>   
+
+<A HREF="cccc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/backbut.gif">
+Introduction C Programming</A>
+
+<HR>
+<ADDRESS>Information Suppliers: <A HREF="http://www.le.ac.uk/rjm1.html">Richard Mobbs</A>, Head of Information Services, Leicester University Computer
+ Centre and Marina Carter, Postgraduate Student, Loughborough University.
+</ADDRESS>
+
+<ADDRESS>Last Updated: September 1995</ADDRESS>
+
+</BODY>
+</HTML>
+
+

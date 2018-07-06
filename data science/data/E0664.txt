@@ -1,0 +1,312 @@
+ID=E0664
+URL=http://www.delorie.com/djgpp/doc/ug/graphics/vga.html
+SIZE=11628
+DATE=12/07/02
+TIME=19:23:16
+DATASET=C
+HTML=<html><head><title>Guide: VGA mode 13h graphics</title>
+<base href="http://www.delorie.com/djgpp/doc/ug/graphics/vga.html/vga.html.en">
+</head><body><center><!-- BEGIN RICH-MEDIA BURST! CODE --> 
+     <script language="JavaScript"> 
+     <!-- /* (C) 1997-1999 BURST! Media, LLC. All Rights Reserved.*/ 
+     var TheAdcode = 'ad1954a'; 
+     var bN = navigator.appName; 
+     var bV = parseInt(navigator.appVersion); 
+     var base='http://www.burstnet.com/'; 
+     var Tv='/7163'; 
+     var agt=navigator.userAgent.toLowerCase(); 
+     if (bN=='Netscape'){ 
+          if ((bV>=4)&&(agt.indexOf("mac")==-1))
+     {  document.write('<s'+'cript src="'+ 
+           base+'cgi-bin/ads/'+TheAdcode+'.cgi/RETURN-CODE/JS' 
+           +Tv+'">'); 
+          document.write('</'+'script>');    
+     } 
+          else if (bV>=3) {document.write('<'+'a href="'+base+'ads/'+ 
+             TheAdcode+'-map.cgi'+Tv+'"target=_top>'); 
+             document.write('<img src="' + base + 'cgi-bin/ads/' + 
+             TheAdcode + '.cgi' + Tv + '" ismap width=468 height=60' + 
+             ' border=0 alt="Click Here"></a>');} 
+      } 
+     if (bN=='Microsoft Internet Explorer') 
+      document.write('<ifr'+'ame id=BURST src="'+base+'cgi-bin/ads/'
+     + 
+       TheAdcode + '.cgi' + Tv + '/RETURN-CODE" width=468 height=60' + 
+       'marginwidth=0 marginheight=0 hspace=0 vspace=0 ' + 
+       'frameborder=0 scrolling=no></ifr'+'ame>'); 
+     // --> 
+     </script> 
+     <noscript><a href="http://www.burstnet.com/ads/ad1954a-map.cgi" target=_top> 
+     <img src="http://www.burstnet.com/cgi-bin/ads/ad1954a.cgi" 
+      width=468 height=60 border=0 alt="Click Here"></a> 
+     </noscript> 
+     <!-- END BURST CODE --> 
+<table width=100% border=0 cellspacing=0 cellpadding=3><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">www.delorie.com</a>/<a href="/djgpp/" target="_top">djgpp</a>/<a href="/djgpp/doc/" target="_top">doc</a>/ug/graphics/vga.html/vga.html.en</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/search/">search</a> &nbsp;
+</b></font></small></td>
+</tr></table><a href="bulktrap.html"></a><big><big><b>Guide: VGA mode 13h graphics</b></big></big></td></p></center>
+
+
+<p>One of the most widely used PC graphics modes, and certainly the
+easiest to program, is the VGA mode 13h. This is sized 320x200, can
+display up to 256 colors at any one time, and will work on any VGA
+compatible graphics card (it isn't supported by the EGA or CGA boards,
+but very few people are running djgpp on such old hardware :-)</p>
+
+<p> The first step is to select this mode, which is done by calling
+the VGA BIOS interrupt 0x10, eg:</p>
+
+<pre>
+   #include &lt;dpmi.h&gt;
+
+   void set_mode_13h()
+   {
+      __dpmi_regs r;
+
+      r.x.ax = 0x13;
+      __dpmi_int(0x10, &r);
+   }
+</pre>
+
+<p>The important thing here is the number 0x13, which is put into the
+AX register before calling the BIOS function. This value specifies
+want mode you want to set: no prizes for guessing where the name "mode
+13h" came from!</p>
+
+<p>Before quitting from your program, you should of course switch back
+into the normal DOS text mode, which can be done in exactly the same
+way as above but substituting 3 as the mode number, for example:</p>
+
+<pre>
+   void return_to_text_mode()
+   {
+      __dpmi_regs r;
+
+      r.x.ax = 3;
+      __dpmi_int(0x10, &r);
+   }
+</pre>
+
+<p>After setting the video mode, the next step is to draw something
+onto the screen. The VGA memory is located at physical address
+0xA0000, so you will need to use the <tt>&lt;sys/farptr.h&gt;</tt> or
+<tt>dosmemput()</tt> functions to access it: see the DPMI chapter for
+details of this. At the most basic level, a single pixel can be drawn
+onto the screen with the code:</p>
+
+<pre>
+   #include &lt;go32.h&gt;
+   #include &lt;sys/farptr.h&gt;
+
+   void putpixel_13h(int x, int y, int color)
+   {
+      _farpokeb(_dos_ds, 0xA0000+y*320+x, color);
+   }
+</pre>
+
+<p>Displaying graphics as a sequence of single pixels tends to be very
+slow, but the same principle can be applied to more complex and useful
+shapes such as lines, rectangles, and circles. One useful optimization
+is to only call the <tt>_farsetsel(_dos_ds)</tt> function once at the
+start of your routine, and then use the faster <tt>_farns*()</tt>
+functions for the rest of the drawing. Using this method, a rectangle
+fill could be implemented as:</p>
+
+<pre>
+   void rectangle_13h(int x, int y, int w, int h, int color)
+   {
+      int i, j;
+
+      _farsetsel(_dos_ds);
+
+      for (j=y; j&lt;y+h; j++)
+	 for (i=x; i&lt;x+w; i++)
+	    _farnspokeb(0xA0000+j*320+i, color);
+   }
+</pre>
+
+<p>Another handy technique is to write two or four pixels at the same
+time with the <tt>_farnspokew()</tt> or <tt>_farnspokel()</tt>
+functions: this can often give as much as a 4x speed improvement over
+single byte operations!</p>
+
+<p>An alternative approach is to build up your entire picture in a
+memory buffer before copying it across to the screen. This can most
+easily be done with the <tt>dosmemput()</tt> function, for
+example:</p>
+
+<pre>
+   #include &lt;sys/movedata.h&gt;
+
+   char framebuffer[320*200];
+   int i;
+
+   /* clear the framebuffer */
+   memset(framebuffer, 0, sizeof(framebuffer));
+
+   /* draw some diagonal lines */
+   for (i=0; i&lt;200; i++) {
+      framebuffer[i*320+i] = i;
+      framebuffer[i*320+i/2] = i;
+      framebuffer[i*320+i/3] = i;
+   }
+
+   /* copy the buffer across to the screen */
+   dosmemput(framebuffer, 320*200, 0xA0000);
+</pre>
+
+<p>So far these functions have just been drawing colors to the screen
+as numbers ranging from 0 to 255, but for a real program you will
+obviously need some way of knowing what color each these numbers
+represents. This is controlled by a hardware component called the
+palette, which is a table listing the actual color values for each of
+the 256 values that you can display. When you first select a video
+mode the first 16 entries in the palette (colors zero to fifteen) will
+be set to the standard DOS text mode colors (black, blue, green, cyan,
+red, magenta, brown, light grey, dark grey, pale blue, pale green,
+pale cyan, pale red, pale magenta, yellow, and white), but the other
+240 colors may be set to different values depending on the machine. In
+order to use anything more than those 16 default colors, you must set
+the palette to some new values of your own, which is done by writing a
+palette index to hardware port 0x3C8 followed by three color values to
+port 0x3C9, eg:</p>
+
+<pre>
+   #include &lt;pc.h&gt
+
+   void set_color(int color, int red, int green, int blue)
+   {
+      outportb(0x3C8, color);
+      outportb(0x3C9, red);
+      outportb(0x3C9, green);
+      outportb(0x3C9, blue);
+   }
+</pre>
+
+<p>The red, green, and blue color values range from 0 up to 63, so for
+example calling set_color(10, 0, 0, 0) will change color number 10 to
+black, while set_color(10, 63, 63, 63) would change it to white, and
+set_color(10, 63, 40, 0) changes it to a shade of orange.
+
+<p> One nice thing about the palette hardware is that it can be used
+to alter the colors even after you have drawn something onto the
+screen, which can be a very handy way of doing fades and some types of
+animation. For example, color 1 is blue in the default palette, so if
+you drew lots of 1 pixels onto the screen it would be covered in blue
+dots. But if you then called <tt>set_color(1, 0, 63, 0)</tt>, all
+those dots would instantly change to green!  Apart from being a very
+easy way to make some of your graphics flash to a different color,
+this trick can be used to fade the entire display to or from a blank
+screen by gradually changing all 256 palette values to make them
+lighter or darker, and many interesting effects can be achieved by
+making more subtle alterations to your palette colors.</p>
+
+<p> Before you alter any of the palette values, it is a good idea to
+synchronize your program with the vertical retrace. This is the period
+when the electron beam inside your monitor has reached the bottom of
+the screen and is moving back up ready to display another copy of the
+picture, and for this brief interval the graphics card gets a chance
+to rest because there is no need to send any pixel data to the
+monitor. The retrace happens 70 times a second, and most older cards
+will only allow you to alter the palette values at this time. You can
+change the colors whenever you like on many recent cards, and your
+program will still work if you do it at the wrong time on old
+hardware, but it might cause some static or "snow" to be visible on
+the screen, which is ugly and easy to avoid if you take care always to
+sync with the retrace first. The retrace period can be detected by
+checking bit 3 of port 0x3DA, eg:</p>
+
+<pre>
+   void vsync()
+   {
+      /* wait until any previous retrace has ended */
+      do {
+      } while (inportb(0x3DA) & 8);
+
+      /* wait until a new retrace has just begun */
+      do {
+      } while (!(inportb(0x3DA) & 8));
+   }
+</pre>
+
+<p>You should always call this function before you modify any palette
+colors, although it is possible to change many colors within a single
+retrace, so you will only need to call <tt>vsync()</tt> once even if
+you are making several calls to <tt>set_color()</tt> immediately after
+it.</p>
+
+<p>That's it, folks! This should be everything you need to get your
+program up and running in the VGA 320x200 mode 13h, and the same
+techniques can be applied to other VGA modes like the 16 color and
+tweaked mode-X resolutions.  All the djgpp-specific parts of
+programming in these other VGA modes are the same as for mode 13h, so
+you can combine the djgpp material from this document with hardware
+information from the many sources available on the net, and hopefully
+be able to access any VGA graphics mode that you like.</p>
+
+<hr>
+
+<p>References:</p>
+
+<dl>
+
+<dt>x2ftp - <a href="ftp://x2ftp.oulu.fi/pub/msdos/programming/">
+ftp://x2ftp.oulu.fi/pub/msdos/programming/</a>
+
+<dd>The most comprehensive collection of DOS graphics coding
+material on the net.
+
+<dt>PCGPE - <a href="ftp://x2ftp.oulu.fi/pub/msdos/programming/gpe/">
+ftp://x2ftp.oulu.fi/pub/msdos/programming/gpe/</a>
+
+<dd>A good clear introduction to many VGA and general graphics
+coding techniques, although all the example programs are in
+Pascal.
+
+<dt>Abrash in DDJ -
+<a href="ftp://x2ftp.oulu.fi/pub/msdos/programming/docs/graphpro.lzh">
+ftp://x2ftp.oulu.fi/pub/msdos/programming/docs/graphpro.lzh</a><br>
+
+<dd>The "legendary" articles written by Michael Abrash and
+published in DDJ between 91/93, covering mode-X, polygon
+rasterisation, and many other fascinating topics.
+
+</dl>
+
+
+
+
+<br clear=both></p>
+<a href="bulktrap.html"></a><table width=100% border=0 cellspacing=0 cellpadding=3><tr>
+<td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/users/dj/" target="_top">webmaster</a> &nbsp;
+<a href="/donations.html" target="_top">donations</a> &nbsp;
+<a href="/store/books/" target="_top">bookstore</a> &nbsp;
+</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">delorie software</a> &nbsp;
+<a href="/privacy.html" target="_top">privacy</a> &nbsp;
+</b></font></small></td>
+</tr><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/copyright.html" target="_top">Copyright © 2002</a> &nbsp;
+<a href="/users/root/" target="_top">by root</a> &nbsp;
+</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+Updated Jul 12 2002 &nbsp;
+</b></font></small></td>
+</tr></table>
+<center><iframe
+ SRC="http://www.burstnet.com/cgi-bin/ads/ba1954a.cgi/RETURN-CODE/if/7163/"
+ scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"
+ width="468" height="60"><A target="_top"
+ HREF="http://www.burstnet.com/ads/ba1954a-map.cgi/7163"><IMG SRC="http://www.burstnet.com/cgi-bin/ads/ba1954a.cgi/7163"
+ border="0" width="468" height="60" alt="Please support our sponsor."></A></iframe><br><small><i>Please take a moment to fill out
+this <a href="http://survey.burstmedia.com/cgi-win/client.exe?Burst,welcome,ad1954a,2000">visitor survey</a></i></small>
+<br><small><i>You can help support this site by
+visiting the advertisers that sponsor it! (only once each, though)</i></small>
+</center>
+</body></html>
+
+

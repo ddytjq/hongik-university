@@ -1,0 +1,216 @@
+ID=D0177
+URL=http://www-2.cs.cmu.edu/~jch/java/compilers.html
+SIZE=9842
+DATE=16/07/02
+TIME=14:38:59
+DATASET=Java
+HTML=<html>
+<head>
+<title>Java Compilers</title>
+<link rev="made" href="mailto:jchcs.cmu.edu">
+<base href="http://www.cs.cmu.edu/~jch/java/compilers.html">
+<meta name="author" content="Jonathan Hardwick">
+<meta name="description" content="Common code optimizations you'll have to do by hand in Java.">
+<meta name="keywords" content="compiler, optimize, optimise, optimisation, javac, JDK">
+</head>
+
+<body>
+<h1 align=center>Java Compilers</h1>
+<p align=center><font face="Helvetica" size=-1>
+[ <b><a href="optimization.html">index</a></b> ]
+[ <a href="benchmarks.html">benchmarks</a>
+ | <a href="maintainability.html">maintainability</a>
+ | <a href="resources.html">resources</a> 
+ | <a href="rules.html">rules</a>
+ | <a href="size.html">size</a>
+ | <a href="speed.html">speed</a>
+ | <a href="tools.html">tools</a> ]
+</font></p>
+<hr size=1 noshade>
+<blockquote>
+
+If you're used to the optimizing capabilities of modern C/C++ compilers,
+you're in for a shock when you first take a look (via <tt>javap -c</tt>) at
+the output of a Java compiler.  This list of optimizations that currently have
+to be done by hand should get shorter as Java compilers improve.  For each
+optimization I give before-and-after Java code fragments, and the relevant
+bytecode (typically an inner loop) that they compile to.
+<p>
+
+Note that <tt>javac -O</tt> can <!--
+href="http://www.ozemail.com.au/~geoffk/javabug/"--> generate illegal code by
+inlining things that it shouldn't (tip from <a
+href="mailto:Geoff.Keating@anu.edu.au">Geoff Keating</a>).  Running Geoff's
+code through Visual Cafe and Visual J++ shows that Symantec has the same
+problem, but Microsoft doesn't.  See also the excellent <a
+href="http://www.dtai.com/javasig/javacofaq.html">FAQ about <tt>javac -O</tt>
+optimization</a> from <a href="mailto:dbell@shvn.com">Doug Bell</a>.
+<p>
+
+Also, tools such as preEmptive's <a
+href="http://www.preemptive.com/DashO/index.html">DashO</a> will now do most
+of these missing optimizations for you.
+    <img alt="[NEW]" width=31 height=12 src="new.gif">
+<p>
+
+<dl>
+
+<dt><b>Loop invariant code motion:</b>
+<dd>If an expression inside a loop doesn't change after the loop is entered
+    (i.e. it's <i>invariant</i>), calculate the value of the expression
+    outside the loop and assign it to a temporary variable.  Then use the
+    temporary variable within the loop.  Note that we could
+    also treat <tt>a.length</tt> as a loop invariant--<a
+    href="mailto:kerr@wizard.net">Shani Kerr</a> has seen speed improvments of
+    7-11% in tight loops, in both interpreted and JIT-compiled VMs.
+<font size=-1><pre>
+for (i = 0; i &lt; a.length; i++) {     float tmp = c * d;
+  b[i] = a[i] + c * d;               for (i = 0; i &lt; a.length; i++) {
+}                                      b[i] = a[i] + tmp;
+                                     }
+
+ 6 aload_2                           12 aload_2
+ 7 iload 5                           13 iload 6
+ 9 aload_1                           15 aload_1
+10 iload 5                           16 iload 6
+12 faload                            18 faload
+13 fload_3                           19 fload 5
+14 fload 4                           21 fadd
+16 fmul                              22 fastore
+17 fadd                              23 iinc 6 1
+18 fastore                           26 iload 6
+19 iinc 5 1                          28 aload_1
+22 iload 5                           29 arraylength
+24 aload_1                           30 if_icmplt 12
+25 arraylength
+26 if_icmplt 6
+</pre></font><p>
+
+<dt><b><a name="cse">Common subexpression elimination:</a></b>
+<dd>If an expensive expression (for example, the result of a method call) is
+    used more than once within a block of code, calculate it once and
+    put it into a temporary variable for subsequent reuse.
+<font size=-1><pre>
+double d = a * Math.sqrt (c);        double tmp = Math.sqrt (c);
+double e = b * Math.sqrt (c);        double d = a * tmp;
+                                     double e = b * tmp;
+
+ 0 dload_1                            0 dload 5
+ 1 dload 5                            2 invokestatic #5 &lt;Method
+ 3 invokestatic #5 &lt;Method ...        5 dstore 7
+ 6 dmul                               7 dload_1
+ 7 dstore 7                           8 dload 7
+ 9 dload_3                           10 dmul
+10 dload 5                           11 dstore 9
+12 invokestatic #5 &lt;Method ...       13 dload_3
+15 dmul                              14 dload 7
+16 dstore 9                          16 dmul
+                                     17 dstore 11
+</pre></font><p>
+
+<dt><b><a name="compound">Strength reduction:</a></b>
+<dd>Use cheaper operations in place of expensive ones.  For example, use
+    compound assignment operators such as <tt>+=</tt> instead of
+    <tt>...=...+...</tt>, since they result in fewer bytecode instructions.
+    You can also use shifts instead of multiplication by powers of two,
+    multiplication instead of exponentiation, etc, although mathematical
+    optimizations of this type generally have little benefit unless you're
+    using a just-in-time compiler.
+<font size=-1><pre>
+for (i = 0; i &lt; a.length; i++) {     for (i = 0; i &lt; a.length; i++) {
+  a[i] = a[i] + x;                     a[i] += x;
+}                                    }
+
+ 5 aload_1                            5 aload_1
+ 6 iload_3                            6 iload_3
+ 7 aload_1                            7 dup2
+ 8 iload_3                            8 iaload
+ 9 iaload                             9 iload_2
+10 iload_2                           10 iadd
+11 iadd                              11 iastore
+12 iastore                           12 iinc 3 1
+13 iinc 3 1                          15 iload_3
+16 iload_3                           16 aload_1
+17 aload_1                           17 arraylength
+18 arraylength                       18 if_icmplt 5
+19 if_icmplt 5
+</pre></font>
+    Adding extra reference variables to allow the compiler to eliminate
+    opcodes or use faster bytecodes can also be considered a case of strength
+    reduction.  For example, if you're repeatedly accessing elements in a
+    single row of a 2D array, make a 1D array variable that points to that
+    row.  See class <tt>dgefa</tt> in <a href="linpack.html">Linpack</a> for
+    an example of this optimization -- it saves you an <tt>iload</tt> and
+    an <tt>aaload</tt> on each reference.
+    <p>
+    Similarly, if you have a subclass that performs lots of operations on an
+    object defined in its superclass, making a reference to the object in the
+    subclass with <tt>super</tt> and then using that reference directly will
+    enable the compiler to replace <tt>getfield</tt> opcodes with
+    <tt>aload</tt> opcodes (tip from <a
+    href="mailto:alexr@bungie.com">Alexander M. Rosenberg</a>).<p>
+
+<dt><b>Variable allocation:</b>
+<dd><i>For desperate optimizers only</i>.  The first four numeric variables or
+    arguments in a method are accessed using via shorter bytecode
+    instructions, although only three are usable in non-static methods.  If
+    you declare your most frequently-used variables first (e.g., loop
+    indices), the inner bytecode loops of your methods will be marginally
+    shorter and possibly faster.  Note that although the <i>number</i> of
+    bytecodes for the inner loop is the same, the <i>length</i> of the
+    bytecode has decreased.
+<font size=-1><pre>
+int[] a = (int[]) pop ();            int i;
+int[] b = (int[]) pop ();            int[] a = (int[]) pop ();
+int[] dst = new int[a.length];       int[] b = (int[]) pop ();
+int i;                               int[] dst = new int[a.length];
+
+for (i = 0; i &lt; a.length; i++) {      for (i = 0; i &lt; a.length; i++) {
+  dst[i] = a[i] + b[i];                dst[i] = a[i] + b[i];
+}                                    }
+
+27 aload_3                           27 aload 4
+28 iload 4                           29 iload_1
+30 aload_1                           30 aload_2
+31 iload 4                           31 iload_1
+33 iaload                            32 iaload
+34 aload_2                           33 aload_3
+35 iload 4                           34 iload_1
+37 iaload                            35 iaload
+38 iadd                              36 iadd
+39 iastore                           37 iastore
+40 iinc 4 1                          38 iinc 1 1
+43 iload 4                           41 iload_1
+45 aload_1                           42 aload_2
+46 arraylength                       43 arraylength
+47 if_icmplt 27                      44 if_icmplt 27
+</pre></font><p>
+
+<!--
+<dt><b>Dead code elimination:</b>
+<dd>The compiler only eliminates debugging sections that you've protected
+    with an <tt>if</tt> statement if the conditional expression includes a
+    boolean value that is known at compile time (e.g. is <tt>final</tt> and/or
+    <tt>static</tt>).  A comparison against an integer isn't good enough.
+    Thus, <tt>if (DebugLevel &gt; 3)</tt> won't be eliminated, but
+    <tt>if (Debugging &amp;&amp; DebugLevel &gt; 3)</tt> will be (tip from
+    <a href="http://www.nada.kth.se/~d91-pbr/">Peter Brandstr&ouml;m</a>).
+-->
+</dl>
+</blockquote>
+
+<hr size=1 noshade>
+<center><table width="100%" cellspacing=0 cellpadding=0 border=0>
+  <tr>
+    <td align=left><font size=-1>http://www.cs.cmu.edu/~jch/java/compilers.html</font></td>
+    <td align=right><font size=-1>Java Compilers</font></td>
+  </tr>
+  <tr>
+    <td align=left><font size=-1><!-- hhmts start -->Last modified: Wed  1 Apr 1998<!-- hhmts end --></font>
+    <td align=right><font size=-1>Copyright &#169 1996, 1997 <a
+    href="http://www.cs.cmu.edu/~jch/">Jonathan Hardwick</a></font></td>
+  </tr>
+</table></center>
+</body>
+</html>
+

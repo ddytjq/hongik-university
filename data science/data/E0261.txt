@@ -1,0 +1,200 @@
+ID=E0261
+URL=http://www.intap.net/~drw/cpp/cpp07_02.htm
+SIZE=7844
+DATE=12/07/02
+TIME=19:19:14
+DATASET=C
+HTML=
+<html>
+<head> 
+<title>
+online C++ tutorial: Using a Class (Instantiation)
+</title>
+</head>
+
+<body bgcolor="#ffffff"
+       link = "#ff0000"
+      alink = "#00ff00"
+      vlink = "#660000" >
+
+
+<table width="100%" border=0>
+<tr>
+<td align=left>
+<a href="cpp07_01.htm"><img border=0 src="pictures/buttons/prevs.gif" width=51 height=34 alt="&lt;&lt;=="></a>
+<a href="cpp07_01.htm"><img border=0 src="pictures/buttons/prevp.gif" width=37 height=34 alt="&lt;="></a>
+</td>
+<td align=center>
+<a href="index.htm">
+<img border=0 width=122 height=34 src="pictures/buttons/toc.gif"
+    alt="[table of contents]"></a>
+<a href="/cgi-bin/drw/cpp/search.cgi">
+<img border=0 width=46 height=34 src="pictures/buttons/search.gif"
+    alt="[search]"></a>
+<a href="glossary.htm">
+<img border=0 width=61 height=34 src="pictures/buttons/glossary.gif"
+    alt="[glossary]"></a>
+<a href="feedback.htm">
+<img border=0 width=65 height=34 src="pictures/buttons/feedback.gif"
+    alt="[feedback]"></a>
+</td>
+<td align=right>
+
+<a href="cpp07_03.htm"><img border=0 src="pictures/buttons/nextp.gif" width=37 height=34 alt="=&gt;"></a>
+<a href="cpp08_01.htm"><img border=0 src="pictures/buttons/nexts.gif" width=51 height=34 alt="==&gt;&gt;"></a>
+</td>
+</tr>
+</table>
+<hr>
+<table width="100%"><tr><td align=left><img src="pictures/buttons/cppsm.gif" width=143 height=37 alt="[online C++ tutorial]"></td><td align=right><b>Section 7: Class Declarations </b></td></tr></table>
+<center><h2>Section 7.2: Using a Class (Instantiation)</h2></center>
+<p> 
+Just as writing a class declaration was an extension of concepts
+we've already covered, the same is true of the syntax needed to
+<i>instantiate</i> an object.  Instantiating an object is what allows
+you to actually use objects in your program.  You can write hundreds
+and hundreds of class declarations, but none of that code will be used
+until you create an instance of an object.  A class declaration is
+merely a template for what an object should look like.  When you
+instantiate an object, C++ follows the class declaration as if it were
+a blueprint for how to create an instance of that object.
+
+</p>
+
+<h3>Instantiating an object</h3>
+
+<p>
+
+The good news is, you already know how to create an instance of an
+object!  It is exactly the same as using a variable.  Let's say you
+want to have four players in your game, each trying to find their way
+to the end of a maze faster than the others.  You might start by
+creating four instances of your Player object, like this:
+
+<pre>
+Player blueHat;
+Player redHat;
+Player greenHat;
+Player yellowHat;
+</pre>
+
+It's as easy as that.  Although these objects are all
+<code>Player</code>s, they are completely independent of one another.
+They were created from the same template, but they can have different
+attributes.  For example, "blueHat" might be a slow, strong player,
+while "greenHat" might be quick and weak, and "yellowHat" might be a
+well balanced individual, etc.  The thing that makes these objects
+similar is that they all must have values for strength, health, and
+agility, but nothing else.  They can all move, attack monsters, and
+get treasures, but that is all they can do.  So -- they are similar in
+the kinds of things they can do and the attributes they must have, but
+they are different in that they can each have their own values for
+those attributes.
+</p>
+
+
+<h3>Using an object's member functions</h3>
+
+<p>
+
+Now that we can create objects, we need to know how to use them.  That
+is, we need to be able to use their member functions.  Calling an
+object's member functions is similar to calling a regular function,
+with a slight twist.
+</p>
+
+<p>
+
+Suppose someone is playing your adventure game, and they are
+controlling the player with the green hat.  When the person hits the
+key to attack a monster, you need to make sure that the correct code
+gets executed so that the right player attacks the monster.  The code
+would look like this:
+
+<pre>
+greenHat.attackMonster();
+</pre>
+
+It's very similar to the way that a regular function is called,
+preceeded by the name of the object on which the function should be
+called (<code>greenHat</code>), and a period.  So, instead of calling
+the function <code>attackMonster()</code>, we are telling
+<code>greenHat</code> to call the function <code>attackMonster</code>.
+This is the power of C++.  You can very easily "delegate
+responsibility" to the objects you've written, so that what seems like
+an impossible task, writing a video game, becomes much more
+manageable.
+</p>
+
+<p>
+Now let's suppose that <code>greenHat</code> picks up a treasure.  Somewhere in your program, the following will get executed:
+
+<pre>
+greenHat.getTreasure();
+</pre>
+
+This will cause the function <code>getTreasure</code> to be executed <i>for the player with the green hat only</i>.  The other players in the game will not execute this function.  Perhaps you write <code>getTreasure</code> to look like this:
+
+<pre>
+void Player::getTreasure() {
+  health++;  // increments the value of the player's health by one
+}
+
+</pre>
+
+Suppose that before <code>greenHat</code> picked up the treasure, the following were the players' values for their healths:
+
+<blockquote>
+<code>blueHat</code>: 14 <br>
+<code>redHat</code>: 11 <br>
+<code>yellowHat</code>: 8 <br>
+<code>greenHat</code>: 11 <br>
+</blockquote>
+
+After <code>greenHat</code> picked up the treasure, the values would be:
+<blockquote>
+<code>blueHat</code>: 14 <br>
+<code>redHat</code>: 11 <br>
+<code>yellowHat</code>: 8 <br>
+<code>greenHat</code>: 12 <br>
+</blockquote>
+
+Notice that only <code>greenHat</code>'s health increased when the function <code>Player::getTreasure</code> was called; that's because the member function was called on <code>greenHat</code> only.
+
+</p>
+
+<!-- It's important to strike a careful balance when delegating.  At one extreme, if you had one object doing everything, it would be very similar to a procedural program, and you wouldn't gain any of the benefits of an object-oriented approach.  At the other extreme, if you had lots and lots of objects, each of which told another object to do something, you would spend all of your time writing code so that these objects would delegate, and a small percentage of your coding efforts would go towards actually doing something useful in your program.  The number of objects you'll need to use in your programs will vary widely, but it will depend on the size of the program.  Using ten objects in a program with a million lines of code might not be enough; but using one hundred objects in a program with five thousand lines of code might be too many.
+ -->
+<p>
+
+<hr>
+<table width="100%" border=0>
+<tr>
+<td align=left>
+<a href="cpp07_01.htm"><img border=0 src="pictures/buttons/prevs.gif" width=51 height=34 alt="&lt;&lt;=="></a>
+<a href="cpp07_01.htm"><img border=0 src="pictures/buttons/prevp.gif" width=37 height=34 alt="&lt;="></a>
+</td>
+<td align=center>
+<a href="index.htm">
+<img border=0 width=122 height=34 src="pictures/buttons/toc.gif"
+    alt="[table of contents]"></a>
+<a href="/cgi-bin/drw/cpp/search.cgi">
+<img border=0 width=46 height=34 src="pictures/buttons/search.gif"
+    alt="[search]"></a>
+<a href="glossary.htm">
+<img border=0 width=61 height=34 src="pictures/buttons/glossary.gif"
+    alt="[glossary]"></a>
+<a href="feedback.htm">
+<img border=0 width=65 height=34 src="pictures/buttons/feedback.gif"
+    alt="[feedback]"></a>
+</td>
+<td align=right>
+
+<a href="cpp07_03.htm"><img border=0 src="pictures/buttons/nextp.gif" width=37 height=34 alt="=&gt;"></a>
+<a href="cpp08_01.htm"><img border=0 src="pictures/buttons/nexts.gif" width=51 height=34 alt="==&gt;&gt;"></a>
+</td>
+</tr>
+</table>
+</body>
+</html>
+

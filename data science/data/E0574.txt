@@ -1,0 +1,290 @@
+ID=E0574
+URL=http://www.bcbdev.com/faqs/faq73.htm
+SIZE=15134
+DATE=12/07/02
+TIME=19:22:22
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+
+<H3>
+Q: Create forms that miminize or close to the system tray
+</H3>
+<BR>
+<H3>Answer</H3>
+<P>
+Programs don't actually minimize to the system tray. They simply hide their normal
+taskbar icon and add an icon to the system tray. You insert an icon in the system
+tray by calling the <TT>Shell_NotifyIcon</TT> API function, or by using any one of
+the third party tray controls that are out there. You can hide your program's taskbar
+icon by calling the <TT>ShowWindow</TT> API function.
+</P>
+<P>
+If you want your program to minimize to the system tray, create an <TT>OnMinimize</TT>
+event for the global <TT>TApplication</TT> object that hides the mainform of the
+program and hides that program's taskbar icon if it hasn't already been hidden.
+If you want your program to close to the system tray, then move the code into an
+<TT>OnClose</TT> handler.
+</P>
+<P>
+The code example shown below demonstrates a system tray program that closes to the system tray. The program normally
+remains hidden until the user double clicks the tray icon. At that point, the main form appears. You may prefer to have
+a tray program that minimizes to the tray instead of closing to the system tray. The downloads section at the bottom
+of this FAQ contains a project that shows how to make the program minimize to the tray instead of closing to
+the tray.
+</P>
+<P><B>Note:</B> In the project example below, the mainform of the program contains a button and a popup menu. The
+popup menu has a single item called unload. The push button and the unload item share the same <TT>OnClick</TT>
+handler.
+</P>
+<pre>
+<font color="navy">//-------------------------------------------------------</font>
+<font color="navy">// MAINFORM.H</font>
+<font color="navy">//-------------------------------------------------------</font>
+<font color="green">#ifndef mainformH</font>
+<font color="green">#define mainformH</font>
+<font color="navy">//-------------------------------------------------------</font>
+<font color="green">#include &lt;Classes.hpp></font>
+<font color="green">#include &lt;Controls.hpp></font>
+<font color="green">#include &lt;StdCtrls.hpp></font>
+<font color="green">#include &lt;Forms.hpp></font>
+<font color="green">#include &lt;Menus.hpp></font>
+<font color="navy">//-------------------------------------------------------</font>
+
+<font color="green">#define WM_TRAYNOTIFY  (WM_USER + 1001)</font>
+
+<b>class</b> TForm1 <b>:</b> <b>public</b> TForm
+<b>{</b>
+<b>__published</b><b>:</b>	<font color="navy">// IDE-managed Components</font>
+    TPopupMenu <b>*</b>PopupMenu1<b>;</b>
+    TMenuItem <b>*</b>Unload1<b>;</b>
+    TButton <b>*</b>UnloadBtn<b>;</b>
+    <b>void</b> <b>__fastcall</b> UnloadBtnClick<b>(</b>TObject <b>*</b>Sender<b>)</b><b>;</b>
+    <b>void</b> <b>__fastcall</b> FormClose<b>(</b>TObject <b>*</b>Sender<b>,</b> TCloseAction <b>&</b>Action<b>)</b><b>;</b>
+
+<b>private</b><b>:</b>	<font color="navy">// User declarations</font>
+    Graphics<b>:</b><b>:</b>TIcon <b>*</b>TrayIcon<b>;</b>
+    <b>void</b> <b>__fastcall</b> WMTrayNotify<b>(</b>TMessage <b>&</b>Msg<b>)</b><b>;</b>
+    <b>void</b> <b>__fastcall</b> RemoveIcon<b>(</b><b>)</b><b>;</b>
+    <b>void</b> <b>__fastcall</b> AddIcon<b>(</b><b>)</b><b>;</b>
+
+<b>public</b><b>:</b>		<font color="navy">// User declarations</font>
+    <b>__fastcall</b> TForm1<b>(</b>TComponent<b>*</b> Owner<b>)</b><b>;</b>
+    <b>__fastcall</b> <b>~</b>TForm1<b>(</b><b>)</b><b>;</b>
+
+BEGIN_MESSAGE_MAP
+    MESSAGE_HANDLER<b>(</b>WM_TRAYNOTIFY<b>,</b>TMessage<b>,</b>WMTrayNotify<b>)</b>
+END_MESSAGE_MAP<b>(</b>TForm<b>)</b>
+<b>}</b><b>;</b>
+<font color="navy">//-------------------------------------------------------</font>
+<b>extern</b> PACKAGE TForm1 <b>*</b>Form1<b>;</b>
+<font color="navy">//-------------------------------------------------------</font>
+<font color="green">#endif</font>
+
+
+<font color="navy">//-------------------------------------------------------</font>
+<font color="navy">// MAINFORM.CPP</font>
+<font color="navy">//-------------------------------------------------------</font>
+<font color="green">#include &lt;vcl.h></font>
+<font color="green">#pragma hdrstop</font>
+
+<font color="navy">// The first constant is the ID of the trayicon. The value</font>
+<font color="navy">// is arbitrary. If your program displays more than one tray</font>
+<font color="navy">// icon at a time, choose a unique ID for each icon.</font>
+<font color="navy">// The char * constant is the hint text for the tray icon.</font>
+<font color="navy">// The last constant is a user defined message that the tray</font>
+<font color="navy">// will send to our window handle for tray mouse events.</font>
+<b>const</b> <b>int</b> IDC_TRAY1      <b>=</b> <font color="blue">1005</font><b>;</b>
+<b>const</b> <b>char</b> <b>*</b>HINT_MESSAGE <b>=</b> <font color="blue">"Tray Hint Message"</font><b>;</b>
+
+<font color="green">#include &lt;shellapi.h></font>
+<font color="green">#include "mainform.h"</font>
+<font color="navy">//-------------------------------------------------------</font>
+<font color="green">#pragma package(smart_init)</font>
+<font color="green">#pragma resource "*.dfm"</font>
+TForm1 <b>*</b>Form1<b>;</b>
+<font color="navy">//-------------------------------------------------------</font>
+<b>__fastcall</b> TForm1<b>:</b><b>:</b>TForm1<b>(</b>TComponent<b>*</b> Owner<b>)</b>
+    <b>:</b> TForm<b>(</b>Owner<b>)</b>
+<b>{</b>
+    <font color="navy">// Load the icon from the EXE's resources</font>
+    TrayIcon <b>=</b> <b>new</b> Graphics<b>:</b><b>:</b>TIcon<b>;</b>
+    TrayIcon<b>-></b>Handle<b>=</b>LoadImage<b>(</b>HInstance<b>,</b>
+                              <font color="blue">"LITTLEICON"</font><b>,</b>
+                              IMAGE_ICON<b>,</b>
+                              <font color="blue">0</font><b>,</b><font color="blue">0</font><b>,</b>
+                              <font color="blue">0</font><b>)</b><b>;</b>
+
+    <font color="navy">// Add the icon to the taskbar</font>
+    AddIcon<b>(</b><b>)</b><b>;</b>
+<b>}</b>
+<font color="navy">//-------------------------------------------------------</font>
+<b>__fastcall</b> TForm1<b>:</b><b>:</b><b>~</b>TForm1<b>(</b><b>)</b>
+<b>{</b>
+    <font color="navy">// Remove the icon from the tray, and delete</font>
+    <font color="navy">// the TIcon pointer that we initially created.</font>
+    RemoveIcon<b>(</b><b>)</b><b>;</b>
+    <b>delete</b> TrayIcon<b>;</b>
+<b>}</b>
+<font color="navy">//-------------------------------------------------------</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>WMTrayNotify<b>(</b>TMessage <b>&</b>Msg<b>)</b>
+<b>{</b>
+    <font color="navy">// The LPARAM of the message identifies the type of mouse message.</font>
+    <font color="navy">// When they right click, show the popup menu. When they double</font>
+    <font color="navy">// click with the left mouse, show the form.</font>
+    <b>switch</b><b>(</b>Msg<b>.</b>LParam<b>)</b>
+    <b>{</b>
+        <b>case</b> WM_RBUTTONUP<b>:</b>
+            <font color="navy">// Find the mouse cursor and popup the popupmenu at that</font>
+            <font color="navy">// location. The SetForegroundWindow and PostMessage calls</font>
+            <font color="navy">// fix an OS bug that prevents the menu from closing when</font>
+            <font color="navy">// the user clicks outside the menu. KB article Q135788</font>
+            POINT WinPoint<b>;</b>
+            GetCursorPos<b>(</b><b>&</b>WinPoint<b>)</b><b>;</b>
+            SetForegroundWindow<b>(</b>Handle<b>)</b><b>;</b>
+            PopupMenu1<b>-></b>Popup<b>(</b>WinPoint<b>.</b>x<b>,</b>WinPoint<b>.</b>y<b>)</b><b>;</b>
+            PostMessage<b>(</b>Handle<b>,</b> WM_NULL<b>,</b> <font color="blue">0</font><b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+            <b>break</b><b>;</b>
+        <b>case</b> WM_LBUTTONDBLCLK<b>:</b>
+            Visible <b>=</b> <b>true</b><b>;</b>
+            ShowWindow<b>(</b>Application<b>-></b>Handle<b>,</b> SW_SHOW<b>)</b><b>;</b>
+            <b>break</b><b>;</b>
+    <b>}</b>
+<b>}</b>
+<font color="navy">//-------------------------------------------------------</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>UnloadBtnClick<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// Terminate the app when they choose the upload option</font>
+    Application<b>-></b>Terminate<b>(</b><b>)</b><b>;</b>
+<b>}</b>
+<font color="navy">//-------------------------------------------------------</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>AddIcon<b>(</b><b>)</b>
+<b>{</b>
+    <font color="navy">// Use the Shell_NotifyIcon API function to</font>
+    <font color="navy">// add the icon to the tray.</font>
+    NOTIFYICONDATA IconData<b>;</b>
+    IconData<b>.</b>cbSize <b>=</b> <b>sizeof</b><b>(</b>NOTIFYICONDATA<b>)</b><b>;</b>
+    IconData<b>.</b>uID    <b>=</b> IDC_TRAY1<b>;</b>
+    IconData<b>.</b>hWnd   <b>=</b> Handle<b>;</b>
+    IconData<b>.</b>uFlags <b>=</b> NIF_MESSAGE<b>|</b>NIF_ICON<b>|</b>NIF_TIP<b>;</b>
+    IconData<b>.</b>uCallbackMessage <b>=</b> WM_TRAYNOTIFY<b>;</b>
+    lstrcpy<b>(</b>IconData<b>.</b>szTip<b>,</b> HINT_MESSAGE<b>)</b><b>;</b>
+    IconData<b>.</b>hIcon  <b>=</b> TrayIcon<b>-></b>Handle<b>;</b>
+
+    Shell_NotifyIcon<b>(</b>NIM_ADD<b>,</b><b>&</b>IconData<b>)</b><b>;</b>
+<b>}</b>
+<font color="navy">//-------------------------------------------------------</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>RemoveIcon<b>(</b><b>)</b>
+<b>{</b>
+    NOTIFYICONDATA IconData<b>;</b>
+    IconData<b>.</b>cbSize <b>=</b> <b>sizeof</b><b>(</b>NOTIFYICONDATA<b>)</b><b>;</b>
+    IconData<b>.</b>uID    <b>=</b> IDC_TRAY1<b>;</b>
+    IconData<b>.</b>hWnd   <b>=</b> Handle<b>;</b>
+    IconData<b>.</b>hIcon  <b>=</b> TrayIcon<b>-></b>Handle<b>;</b>
+
+    Shell_NotifyIcon<b>(</b>NIM_DELETE<b>,</b><b>&</b>IconData<b>)</b><b>;</b>
+<b>}</b>
+<font color="navy">//-------------------------------------------------------</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>FormClose<b>(</b>TObject <b>*</b>Sender<b>,</b> TCloseAction <b>&</b>Action<b>)</b>
+<b>{</b>
+    <font color="navy">// This application closes to the system tray. When they push</font>
+    <font color="navy">// close, hide the app, but don't let the program close.</font>
+    <b>if</b><b>(</b><b>!</b>Application<b>-></b>Terminated<b>)</b>
+    <b>{</b>
+        ShowWindow<b>(</b>Application<b>-></b>Handle<b>,</b> SW_HIDE<b>)</b><b>;</b>
+        Visible <b>=</b> <b>false</b><b>;</b>
+        Action <b>=</b> caNone<b>;</b>
+    <b>}</b>
+<b>}</b>
+<font color="navy">//-------------------------------------------------------</font>
+
+
+
+<font color="navy">//-------------------------------------------------------</font>
+<font color="navy">// TRAY.CPP Project Source</font>
+<font color="navy">//-------------------------------------------------------</font>
+<font color="green">#include &lt;vcl.h></font>
+<font color="green">#pragma hdrstop</font>
+USERES<b>(</b><font color="blue">"tray.res"</font><b>)</b><b>;</b>
+USEFORM<b>(</b><font color="blue">"mainform.cpp"</font><b>,</b> Form1<b>)</b><b>;</b>
+
+<font color="navy">// TrayIcons.res contains the icon resource for the tray.</font>
+USERES<b>(</b><font color="blue">"TRAYICONS.res"</font><b>)</b><b>;</b>
+<font color="navy">//-------------------------------------------------------</font>
+WINAPI WinMain<b>(</b>HINSTANCE<b>,</b> HINSTANCE<b>,</b> LPSTR<b>,</b> <b>int</b><b>)</b>
+<b>{</b>
+    <b>try</b>
+    <b>{</b>
+        Application<b>-></b>Initialize<b>(</b><b>)</b><b>;</b>
+        Application<b>-></b>CreateForm<b>(</b><b>__classid</b><b>(</b>TForm1<b>)</b><b>,</b> <b>&</b>Form1<b>)</b><b>;</b>
+
+        <font color="navy">// don't show the app's taskbar icon or the main form</font>
+        ShowWindow<b>(</b>Application<b>-></b>Handle<b>,</b>SW_HIDE<b>)</b><b>;</b>
+        Application<b>-></b>ShowMainForm <b>=</b> <b>false</b><b>;</b>
+
+        Application<b>-></b>Run<b>(</b><b>)</b><b>;</b>
+    <b>}</b>
+    <b>catch</b> <b>(</b>Exception <b>&</b>exception<b>)</b>
+    <b>{</b>
+         Application<b>-></b>ShowException<b>(</b><b>&</b>exception<b>)</b><b>;</b>
+    <b>}</b>
+    <b>return</b> <font color="blue">0</font><b>;</b>
+<b>}</b>
+</pre>
+<BR>
+<TABLE  BORDER=1 CELLPADDING=10 CELLSPACING=0 WIDTH="100%">
+<TR> <TD colspan = 2><B>Downloads for this FAQ</B> </TD> </TR>
+<TR> <TD><TT><A HREF="http://www.bcbdev.com/ftp/source/tray1src.zip">tray1src.zip</A></TT></TD> <TD>Systray project that closes to the system tray. Source code only.   </TD> </TR>
+<TR> <TD><TT><A HREF="http://www.bcbdev.com/ftp/source/tray1exe.zip">tray1exe.zip</A></TT></TD> <TD>Systray project that closes to the system tray. Includes EXE.       </TD> </TR>
+<TR> <TD><TT><A HREF="http://www.bcbdev.com/ftp/source/tray2src.zip">tray2src.zip</A></TT></TD> <TD>Systray project that minimizes to the system tray. Source code only.</TD> </TR>
+<TR> <TD><TT><A HREF="http://www.bcbdev.com/ftp/source/tray2exe.zip">tray2exe.zip</A></TT></TD> <TD>Systray project that minimizes to the system tray. Includes EXE.    </TD> </TR>
+</TABLE>
+
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

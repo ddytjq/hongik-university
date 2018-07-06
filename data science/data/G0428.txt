@@ -1,0 +1,280 @@
+ID=G0428
+URL=http://arcturus.mit.edu/SC95/codeful.html
+SIZE=8031
+DATE=09/07/2002
+TIME=16:18:29
+DATASET=Astronomy
+HTML=<HTML>
+<HEAD>
+<TITLE>Parallel Linear GR: Code</TITLE>
+</HEAD>
+<BODY>
+
+<H2>The Code</H2>
+
+<HR>
+
+<A NAME="main">
+<H3> The Main Routine </H3>
+</A>
+<PRE>
+	PROGRAM plinger
+C mytid = the process ID
+C mastid = the ID of the master process
+	INTEGER mytid,mastid
+C initialize message passing routines
+        CALL initpass(mytid, mastid)
+	IF( mytid.EQ.mastid ) THEN
+	   CALL parentsub(mytid, mastid)
+	ELSE
+	   CALL kidsub(mytid, mastid)
+	ENDIF
+C exit message passing routines
+        CALL endpass
+	STOP
+	END
+</PRE>
+
+<HR>
+
+<A NAME="master">
+<H3> The Master Subroutine </H3>
+</A>
+<PRE>
+	SUBROUTINE parentsub(mytid, mastid)
+</PRE>  <BR>
+
+<EM> {The master initializes various quantities: the number of k values,
+the maximum value of k, etc.  The values needed by the workers
+are placed into the array y.}</EM> <BR>
+
+<PRE>
+C broadcast data to all node programs
+	msgtype  = 1
+	imsglen = 5
+	CALL mybcastreal( y, imsglen, msgtype)
+
+C ik is the value of the wavenumber to be sent
+        ik = 1
+C keep track of how many ik have been received from workers
+	ikdone = 0
+
+C Start checking for messages from the workers
+	WHILE( ikdone.LE.last_nk )
+
+        CALL mycheckany( msgtype, itid)
+
+        IF( msgtype.EQ.2 ) THEN
+C msgtype=2: the worker is ready for its first ik.
+C            dispose of the message since it contains no data.
+           CALL myrecvreal( deltat, 1, msgtype, itid)
+        ENDIF
+
+        IF( msgtype.EQ.4 ) THEN 
+C msgtype=4: receive first part of data from worker
+C            the length of the next message depends on lmax
+            CALL myrecvreal( y, 21, msgtype, itid)
+	    ikold = INT(y(1))
+	    lmax = INT(y(21))
+C this data is written to an ascii file
+	    WRITE(unit_1,*) (y(i),i=1,20)
+
+C msgtype=5: receive second part of data from worker
+            msgtype = 5
+            CALL mycheckone( msgtype, itid)
+            CALL myrecvreal( y, 8+lmax+lmax, msgtype, itid)
+C this data is written to a binary file
+	    WRITE(unit_2) ikold,(y(i),i=7,lmax)
+	    WRITE(unit_2) (y(8+lmax+i),i=0,lmax)
+C done with this wavenumber
+	    ikdone = ikdone+1
+	ENDIF
+
+        IF( (msgtype.EQ.2).OR.(msgtype.EQ.5) ) THEN 
+	    IF( ik.LE.last_nk) THEN
+C reply with ik to the worker that sent the last message
+               y(1) =  DBLE(ik)
+	       msgtype  = 3
+	       imsglen  = 1
+	       CALL mysendreal( y, imsglen, msgtype, itid)
+C find the next value of ik to be sent
+               CALL ik_next(ik)
+            ELSE
+C if no more wavenumbers to send, tell the worker to stop (msgtype=6)
+	       msgtype  = 6
+	       imsglen  = 1
+	       CALL mysendreal( y, imsglen, msgtype, itid)
+	    ENDIF
+        ENDIF
+
+C if there are still wavenumbers to receive, go back
+	END WHILE
+
+	RETURN
+	END
+
+</PRE>
+
+<HR>
+<A NAME="worker">
+<H3> The Worker Subroutine </H3>
+</A>
+
+<PRE>
+	SUBROUTINE kidsub(mytid, mastid)
+
+C receive initial data from master
+        msgtype  = 1
+        CALL mycheckone( msgtype, mastid)
+	CALL myrecvreal( passbuffer, 5, msgtype, mastid)
+
+C ask for wavenumber from master
+        msgtype  = 2
+	imsglen = 1
+	CALL mysendreal( passbuffer, imsglen, msgtype, mastid)
+
+C receive from master:  next ik or message to stop
+        CALL mychecktid( msgtype, mastid)
+	CALL myrecvreal( passbuffer, 1, msgtype, mastid)
+	ik = INT( passbuffer(1) )
+
+C if the message is not a wavenumber, then exit
+        WHILE ( msgtype.NE.3 )
+
+C  Begin timestep loop.
+            time = t_start
+            WHILE( time.LT.end_time)
+</PRE>
+<EM> {Here the worker integrates the coupled equations.} </EM> <BR>
+<PRE>
+	    END WHILE
+
+C send first part of results to master
+            msgtype  = 4
+	    imsglen = 21
+	    CALL mysendreal( passbuffer, imsglen, msgtype, mastid)
+C send second part of results to master
+            msgtype  = 5
+            imsglen = 8+lmax+lmax
+            CALL mysendreal( y, imsglen, msgtype, mastid)
+
+C receive from master:  next ik or message to stop
+            CALL mychecktid( msgtype, mastid)
+            CALL myrecvreal( passbuffer, 1, msgtype, mastid)
+            ik = INT( passbuffer(1) )
+
+	END WHILE
+
+       RETURN
+       END
+</PRE>
+
+<HR>
+<A NAME="wrapper">
+<H3> Message Passing Wrapper Routines </H3>
+</A>
+Here we show what the wrapper routines look like when using
+the MPI library (see the
+<A HREF="sc95bib.html"> bibliography </A> for a link to
+the MPI Home Page).
+<P>
+
+<STRONG> initpass </STRONG>      -initialize message passing
+<BR> <PRE>
+C   Returns process ID in mytid and the ID of the master in mastid.
+       SUBROUTINE initpass(mytid, mastid)
+        call MPI_INIT( ierr )
+        call MPI_COMM_RANK( MPI_COMM_WORLD, mytid, ierr )
+        call MPI_COMM_SIZE( MPI_COMM_WORLD, nproc, ierr )
+        mastid = 0
+</PRE>  <BR>
+
+
+<STRONG> endpass  </STRONG>      -exit from message passing
+<BR> <PRE>
+C   Exits MPI
+          SUBROUTINE endpass()
+          call MPI_FINALIZE(ierr)
+</PRE>  <BR>
+
+<STRONG> mybcastreal </STRONG>   -send a message to all other processes
+<BR> <PRE>
+C   The master process sends a message with tag=msgtype to all other processes.
+C   Sends length double precision numbers starting at position buffer.
+          SUBROUTINE mybcastreal( buffer, length, msgtype)
+	  DO i=1, nproc-1
+  	     call MPI_SEND(buffer, length, MPI_DOUBLE_PRECISION,
+                                 i, msgtype, MPI_COMM_WORLD, ierr)
+	  END DO
+</PRE>  <BR>
+
+<STRONG> mysendreal  </STRONG>   -send a message to a given process
+<BR> <PRE>
+C   Sends a message with tag=msgtype to the process with ID=target.
+C   Sends length double precision numbers starting at position buffer.
+            SUBROUTINE mysendreal( buffer, length, msgtype, target)
+  	     call MPI_SEND(buffer, length, MPI_DOUBLE_PRECISION,
+                            target, msgtype, MPI_COMM_WORLD, ierr)
+</PRE>  <BR>
+
+<STRONG> mycheckany  </STRONG>   -check for message of any type from any process
+<BR> <PRE>
+C   Waits for a message of any type from any process.
+            SUBROUTINE mycheckany( msgtype, target)
+            call MPI_PROBE( MPI_ANY_SOURCE, MPI_ANY_TAG, 
+                                      MPI_COMM_WORLD, status, ierr)
+            msgtype = status(MPI_TAG)
+	    target  = status(MPI_SOURCE)
+</PRE>  <BR>
+
+
+<STRONG> mycheckone  </STRONG>   -check for message of a given type from
+a given process
+<BR> <PRE>
+C   Waits for a message of type msgtype from process target.
+            SUBROUTINE mycheckone( msgtype, target)
+            call MPI_PROBE( target, msgtype, MPI_COMM_WORLD, status, ierr)
+</PRE>  <BR>
+
+<STRONG> mychecktid  </STRONG>   -check for message of any type from a
+given process
+<BR> <PRE>
+C   Waits for a message of any type from process target.
+C   Returns the message tag in msgtype.
+            SUBROUTINE mychecktid( msgtype, target)
+            call MPI_PROBE( target, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+            msgtype = status(MPI_TAG)
+</PRE>  <BR>
+
+<STRONG> myrecvreal  </STRONG>   -receive a message
+<BR> <PRE>
+SUBROUTINE myrecvreal( buffer, length, msgtype, target)
+   Receives a message of type msgtype from process target.
+   length double precision numbers are copied, starting at address of buffer.
+	    call MPI_RECV(buffer, length, MPI_DOUBLE_PRECISION, target,
+     &           msgtype, MPI_COMM_WORLD, status, ierr)
+</PRE>  <BR>
+
+<HR>
+
+<A NAME="tags">
+<H3> The message tags and types </H3> 
+</A>
+	
+<PRE>
+	 tag            type
+	 ---    ----------------------------------
+         1     -first message from master to workers
+         2     -from worker; asking for a wavenumber
+         3     -from master; giving worker a wavenumber to work on
+         4     -from worker; giving first set of data and lmax
+         5     -from worker; giving data (length = 2*lmax+8)
+         6     -from master; telling worker to stop
+</PRE>  <BR>
+
+
+<HR>
+<ADDRESS>Paul Bode -- bode@alcor.mit.edu</ADDRESS>
+</BODY>
+</HTML>
+

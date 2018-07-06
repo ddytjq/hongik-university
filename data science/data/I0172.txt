@@ -1,0 +1,1012 @@
+ID=I0172
+URL=http://www.premfootball.co.uk/playerprofiles
+SIZE=22859
+DATE=11/07/2002
+TIME=19:27:51
+DATASET=Soccer
+HTML=<!-- Start index.nhtml - Version 3.6 -->
+<HTML>
+<HEAD>
+<TITLE>Player Profiles</TITLE>
+</HEAD>
+<!-- Start vheader.nhtml - Version 3.6 -->
+<SCRIPT><!--
+
+var gErrorUrl="";
+
+function launch(url) {
+   self.name = "opener";
+   remote = open(url, "remote", "resizable,scrollbars,status,width=700,height=800");
+ }
+
+function openWindow(windowlink) 
+{
+	newwin=window.open(windowlink, 'newwin', 'height=500, width=750, toolbar=no, location=no,directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=no');
+}
+
+function OpenHelpErrorHandler() 
+{
+    if (gErrorUrl != "")
+    {
+        location.href = gErrorUrl;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+function OpenHelp(url)
+{
+    // special case for folders
+    folderindex = location.href.indexOf("/nss-folder/");
+    if (folderindex >= 0)
+    {
+		qsindex = location.href.indexOf("?");
+		if (qsindex < 0 || folderindex < qsindex)
+		{
+        	objectendindex = location.href.indexOf("/", folderindex + 12);
+        	url = location.href.substring(0, folderindex) + "/" + location.href.substring(folderindex + 12, objectendindex) + "/" + url;
+		} // only if /nss-folder/ was found before the query string
+    }
+    
+    window.onerror = OpenHelpErrorHandler;
+    gErrorUrl = url;
+    var hWnd = window.open(url, "NVOHelp", "menubar=yes,toolbar=yes,width=595,height=400,resizable=yes,scrollbars=yes");
+	if (!hWnd.opener) hWnd.opener = self;
+	if (hWnd.focus != null) hWnd.focus();
+    gErrorUrl = "";
+}
+
+
+function FindElement(elementName)
+{
+	var i = 0;
+    
+    for (i = 0; i < document.nvoForm.elements.length; i++)
+	{
+		if (document.nvoForm.elements[i].name == elementName)
+		{
+			return document.nvoForm.elements[i];
+		}
+	}
+    return null;
+}
+
+function RemoveFocusAll()
+{
+	var vers = navigator.appVersion;
+	if (vers.indexOf("Mac") != -1 && vers.indexOf("IE") != -1)
+	{
+		var i = 0;
+
+    	for (i = document.nvoForm.elements.length - 1; i >= 0 ; i--)
+		{
+			if (document.nvoForm.elements[i].type == "text" || document.nvoForm.elements[i].type == "textarea")
+			{
+				document.nvoForm.elements[i].blur();
+			}
+		}
+	}
+}
+
+
+// this is the action string that is used to save the standard items on a page
+
+function GetStdAction()
+{
+	var hidePage = (document.nvoForm.hidePage && document.nvoForm.hidePage.checked) ? "ON" : "OFF";
+
+	if (hidePage == "ON") // if hidden page, go back home
+	{
+		document.nvoForm.NVORedirect.value = document.nvoForm.hostAddressForHiddenPage.value;
+	}
+	
+    return "Set(.Sitemap.Name." + document.nvoForm.ObjectUID.value + "=" + escape(document.nvoForm.PageName.value) 
+    			+ "&.Sitemap.Title." + document.nvoForm.ObjectUID.value + "=" + escape(document.nvoForm.PageTitle.value) 
+    			+ "&.Sitemap.Hide." + document.nvoForm.ObjectUID.value + "=" + hidePage +");";
+}
+
+var gSaveAndGoURL = "";
+var gChanged = false;
+
+function DoGoto(url)
+{
+	RemoveFocusAll();
+    if (gChanged || "" == "")
+    {
+        gSaveAndGoURL = url;
+        DoSave();
+    }
+    else
+    {
+        location.href = ReplaceString(url, "*", "");
+    }
+}
+
+// save the form data and goto the specified url
+
+function SaveAndGo(url)
+{
+	RemoveFocusAll();
+    if (gChanged)
+    {
+        gSaveAndGoURL = url;
+        DoSave();
+    }
+    else
+    {
+        location.href = url;
+    }
+}
+
+
+function Changed(url)
+{
+	gChanged = true;
+}
+
+
+function IsNetscape()
+{
+	return (navigator.appName.substring(0, 8) == "Netscape");
+}
+
+
+function WarnIfUsingOldBrowser()
+{
+	if (parseInt(navigator.appVersion) < 4)
+	{
+		if (IsNetscape())
+			alert("Editing your web site requires a newer version of Netscape Communicator. Visit Netscape's web site at www.netscape.com to obtain the newest version. Failure to do so may result in unreliable behavior.");
+		else
+			alert("Editing your web site requires a newer version of Internet Explorer. Visit Microsoft's web site at www.microsoft.com to obtain the newest version. Failure to do so may result in unreliable behavior.");
+	}
+} 
+
+function NormalizeObjectName(name)
+{
+	var	newName = "";
+
+	for (i = 0; i < name.length; i++)
+
+	{
+		charCode = name.charCodeAt(i);
+		if (charCode < 0)
+			charCode += 256;
+		
+		// Remove the chars \ / : * ? \" < > | '
+		// and handle only ascii values between 32 and 128 
+		
+		if (charCode == 47			//	/
+			|| charCode == 92		//	\
+			|| charCode == 58		//	:
+			|| charCode == 42		//	*
+			|| charCode == 63		//	?
+			|| charCode == 34		//	"
+			|| charCode == 60		//	<
+			|| charCode == 62		//	>
+			|| charCode == 124		//	|
+			|| charCode == 39)		//	'
+		{
+			// do nothing
+		}
+		else if (charCode > 32 && charCode < 128)
+			newName += name.substr(i, 1);
+	}
+	
+	// if we eliminated all chars, name the object "page"
+	if (newName == "")
+		newName = "page";
+		
+	return newName;
+	
+} // NormalizeObjectName
+
+function DoButton(buttonAction)
+{
+	if ((document.nvoForm.PageName) && (document.nvoForm.PageName.value == ""))
+    {
+    	alert("The Page Name is required and cannot be left blank. Please enter a valid name.");
+    	document.nvoForm.PageName.focus();
+    	document.nvoForm.PageName.select();
+    	location.href = "#pagename";
+    	return;
+    }
+    
+	if (gSaveAndGoURL != "")
+    {
+        document.nvoForm.NVORedirect.value = gSaveAndGoURL;
+    }
+    
+    document.nvoForm.NVOAction.value = buttonAction;
+	document.nvoForm.submit();
+}
+
+
+function DoMoveItem(where, uid)
+{
+    DoButton("MoveRecord(List=Sitemap&uid=" + uid + "&Where=" + where + ")");
+}
+
+
+window.errorLoadingApplet = false;
+
+
+// This script is called when the user clicks on the client link before
+// the browser has had time to launch the applet
+
+function AppletErrorHandler() 
+{
+    alert("Please wait for the page to complete loading and then try again.");
+    return true;
+}
+
+
+// This javascript is used launch a helper app
+
+function StartHelper(host, service, hostAddress, extra)
+{
+
+    if (navigator.appVersion.indexOf("Macintosh") != -1)
+    {
+		if (navigator.mimeTypes)
+		{
+            mimetype = navigator.mimeTypes["application/netopia"];
+            if (mimetype && mimetype.enabledPlugin)
+			{
+	            location.href = "http://" + hostAddress + "/pages/common/" + host + ".nhtml?service=" + service + "&back=" + escape(location.href) + "&extra=" + escape(extra);
+    		}
+			else
+			{
+				alert("You must have the FREE Visitor Software in order to use this feature. Please download and install the Visitor Software.");
+				location.href = "http://" + hostAddress + "/bin/download.nhtml";
+			}
+		} // if we can check for mimeTypes supported
+		else
+		{
+            location.href = "http://" + hostAddress + "/pages/common/" + host + ".nhtml?service=" + service + "&back=" + escape(location.href) + "&extra=" + escape(extra);
+		} // else go to plugin start page 
+    }
+	else
+	{
+	    if (window.errorLoadingApplet)
+	    {
+	        alert("You must have Java enabled in your browser in order to use this feature.");
+	    }
+	    else
+	    {
+	        window.onerror = AppletErrorHandler;
+	        
+	        installed = document.cc.isClassInstalled("com.netopia.ns.version.client.VisitorClient");
+	        if (installed)
+	        {
+	            location.href = "http://" + hostAddress + "/pages/common/" + host + ".netopia?service=" + service + "&extra=" + escape(extra);
+	        }
+	        else
+	        {
+	            alert("You must have the FREE Visitor Software in order to use this feature. Please download and install the Visitor Software.");
+	            location.href = "http://" + hostAddress + "/bin/download.nhtml";
+	        }
+	    }
+    } // else it's Windows
+}
+
+// pulls a parameter out of a comma delimeted string
+// For example, given the string "a,b,c", passing
+// index 0 would return "a", 1 would return "b", etc...
+function GetField(rec, fieldindex)
+{
+    var     i;
+    var     istart = 0;
+    var     iend = 0;
+
+    for (i = 0; i < fieldindex; i++)
+    {
+        istart = rec.indexOf(",", istart) + 1;
+    }
+
+    iend = rec.indexOf(",", istart);
+    if (iend < 0)
+    {
+        iend = rec.length;
+    }
+    
+    var temp = rec.substring(istart, iend);
+    return temp;
+}
+
+
+function StdDelete(singularname, pluralname, profile, list, stdeditpage)
+{
+    var     action = "";
+    var     count = 0;
+	var		m1, m2;
+
+    if (stdeditpage)
+        action = GetStdAction();
+    
+    action = "UseProfile(Name=" + profile + ");Save()";
+
+    for (i = 0; i < document.nvoForm.elements.length; i++)
+    {
+		el = document.nvoForm.elements[i];
+		if (el.name == "cb" && el.checked)
+        {
+            uid = GetField(el.value, 0);
+            action +=";Delete(List=" + list + "&UID=" + uid + ")";
+            count++;
+        }
+    }
+
+    if (count > 1)
+    {
+		m1 = "Are you sure that you want to delete ^^^count^^^ ^^^pluralname^^^?";
+		m2 = ReplaceString(m1, "^^^count^^^", count);
+        if (confirm(ReplaceString(m2, "^^^pluralname^^^", pluralname)))
+        {
+            DoButton(action);
+        }
+    }
+    else
+    {
+	    if (count == 1)
+	    {
+			m1 = "Are you sure that you want to delete ^^^count^^^ ^^^singularname^^^?";
+			m2 = ReplaceString(m1, "^^^count^^^", count);
+	        if (confirm(ReplaceString(m2, "^^^singularname^^^", singularname)))
+	        {
+	            DoButton(action);
+	        }
+	    }
+	    else
+	    {
+			m1 = "Please use the check boxes to select the ^^^pluralname^^^ and then click Delete.";
+	        alert(ReplaceString(m1, "^^^pluralname^^^", pluralname));
+	    }
+	}
+}
+
+
+function StdMove(name, moveurl, helpurl, profile, list, field, doneurl, query, uid, extraretparms)
+{
+    var     startuid = "";
+    var     enduid = "";
+
+	if (!uid)
+		uid = "";
+
+    for (i = 0; i < document.nvoForm.elements.length; i++)
+    {
+		el = document.nvoForm.elements[i];
+		if (el.name == "cb" && el.checked)
+        {
+            if (startuid.length == 0)
+                startuid = GetField(el.value, 0);
+            else
+                enduid = GetField(el.value, 0);
+        }
+    }
+
+    if (startuid.length > 0)
+    {
+        if (enduid.length == 0)
+            enduid = startuid;
+		action = moveurl + "?startuid=" + startuid + "&enduid=" + enduid + "&profile=" + profile + "&list=" + list + "&field=" + field + 
+				  "&name=" + escape(name) + "&doneurl=" + doneurl + "&uid=" + uid + "&helpurl=" + helpurl + query;
+		if (extraretparms)
+			action += "&extraretparms=" + extraretparms;
+        SaveAndGo(action);
+    }
+    else
+    {
+		var   message = "Please use the check boxes to select the ^^^name^^^ and then click Move.";
+		alert(ReplaceString(message, "^^^name^^^", name));
+    }
+}
+
+
+function StdEdit(name, editurl, editlisturl, query)
+{
+    var     uidlist = ",";
+    var     count = 0;
+        
+    for (i = 0; i < document.nvoForm.elements.length; i++)
+    {
+		el = document.nvoForm.elements[i];
+		if (el.name == "cb" && el.checked)
+        {
+            uid = GetField(el.value, 0);
+            uidlist += uid + ",";
+            count++;
+        }
+    }
+
+    if (count > 0)
+    {
+        if (count == 1)
+            SaveAndGo(editurl + "?uid=" + uid + query);
+        else
+        {
+            if (editlisturl == "")
+                alert("Please select just one item to edit.")
+            else
+                SaveAndGo(editlisturl + "?count=" + count + "&uidlist=" + uidlist + query);
+        }
+    }
+    else
+    {
+		var message = "Please use the check boxes to select the ^^^name^^^ and then click Edit.";
+        alert(ReplaceString(message, "^^^name^^^", name));
+    }
+}
+
+
+function ReplaceString(org, match, replace)
+{
+    var     dst = "";
+    var     starti = 0;
+    var     endi = 0;
+
+    while ((endi = org.indexOf(match, starti)) >= 0)
+    {
+        dst += org.substring(starti, endi) + replace;
+        starti = endi + match.length;
+    }
+
+    dst += org.substring(starti, org.length);
+
+    return dst;
+}
+
+
+function IsTrue(value)
+{
+	upperCaseValue = value.toUpperCase();
+	return ((upperCaseValue == "")
+			|| (upperCaseValue != "NO" 
+				&& upperCaseValue != "FALSE"
+				&& upperCaseValue != "OFF"
+				&& upperCaseValue != "0"));
+}
+
+function DoSelectAll()
+{
+	for (var i=0; i < document.nvoForm.elements.length; i++)
+	{
+		el = document.nvoForm.elements[i];
+		if (el.name == "cb")
+			el.checked = (document.nvoForm.allSelected.value == "check");
+	}
+	
+	//toggle values
+	if (document.nvoForm.allSelected.value == "check")
+		document.nvoForm.allSelected.value = "uncheck";
+	else
+		document.nvoForm.allSelected.value = "check";
+}
+
+
+function setStatusBar(msg) {
+	window.status = msg;
+	return true
+}
+
+
+function FindSelectedElement(name, buttonName, action, messageNone, messageTooMany)
+{
+	sel = null;
+
+	numsel = 0;
+	for (i = 0; i < document.nvoForm.elements.length; i++)
+	{
+		el = document.nvoForm.elements[i];
+		if (el.name == name && el.checked)
+		{
+			numsel++;
+			sel = el;
+		}
+	}
+
+	if (numsel == 0)
+	{
+		
+		alert(ReplaceString(messageNone, "^^^buttonName^^^", buttonName));
+	}
+	else if (numsel > 1)
+	{
+		alert(ReplaceString(messageTooMany, "^^^action^^^", action));
+		sel = null;
+	}
+
+	return sel;
+}
+
+function CheckURL(urlElement)
+{
+	if (urlElement.value.length > 0 && urlElement.value.indexOf("://") == -1)
+	{
+		urlElement.value = "http://" + urlElement.value
+	}
+	urlElement.value = ReplaceString(urlElement.value, " ", "%20");
+	Changed();
+}
+
+function popup(url) {
+
+newwin=window.open(url,'newwin','height=500,width=700,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,copyhistory=no');
+
+}
+//--></SCRIPT>
+<!-- Start incfcdefaults.nhtml - Version 3.7.2fc3 -->
+<!-- End incfcdefaults.nhtml - Version 3.7.2fc3 -->
+<body  bgcolor="#F5E3AB" BACKGROUND="http://www.premfootball.co.uk/nss-folder/scrapbook/1back1.JPG" 
+link="#000000"
+vlink="#000000"
+>
+<table border=0 cellpadding=0 width=625 cellspacing=0>
+<tr>
+<td colspan=3 width=625>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="625" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<td width=140 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="140" HEIGHT="15" BORDER="0"><br>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="1" HEIGHT="10" BORDER="0"><br>
+<!-- Side-bar nav calls -->
+<table cellpadding=0 cellspacing=0 border=0 width=130>
+<tr>
+<td colspan=2>
+<br>
+<font face="arial,helvetica,sans-serif" size="2" COLOR="#000000">
+<b>PREM FOOTBALL</b>
+</font>
+</td>
+</tr>
+<tr>
+<td colspan=2 width=140 >
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="140" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../door/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../door/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+premfootball.co.uk
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../developmentgroups/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../developmentgroups/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+Development Groups
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td colspan=2>
+<br>
+<font face="arial,helvetica,sans-serif" size="2" COLOR="#000000">
+<b>FANS INTERACTIVE</b>
+</font>
+</td>
+</tr>
+<tr>
+<td colspan=2 width=140 >
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="140" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../euroboss/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../euroboss/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+Team Of The Year
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td colspan=2>
+<br>
+<font face="arial,helvetica,sans-serif" size="2" COLOR="#000000">
+<b>CLUB FEATURES</b>
+</font>
+</td>
+</tr>
+<tr>
+<td colspan=2 width=140 >
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="140" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../facup20012002/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../facup20012002/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+FA Cup 2001/2002
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../academyupdates/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../academyupdates/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+Academy Updates
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td colspan=2>
+<br>
+<font face="arial,helvetica,sans-serif" size="2" COLOR="#000000">
+<b>COACHING</b>
+</font>
+</td>
+</tr>
+<tr>
+<td colspan=2 width=140 >
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="140" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../alexsphysiopage/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../alexsphysiopage/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+Alex's Physio Page
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../coachingdrills/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../coachingdrills/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+Coaching Drills
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td colspan=2>
+<br>
+<font face="arial,helvetica,sans-serif" size="2" COLOR="#000000">
+<b>GOALKEEPERS</b>
+</font>
+</td>
+</tr>
+<tr>
+<td colspan=2 width=140 >
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="140" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../insafehands/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../insafehands/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+In Safe Hands
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../inthespotlight/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../inthespotlight/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+In The Spotlight
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../trainingdrills/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../trainingdrills/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+Training Drills
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td colspan=2>
+<br>
+<font face="arial,helvetica,sans-serif" size="2" COLOR="#000000">
+<b>REFEREES</b>
+</font>
+</td>
+</tr>
+<tr>
+<td colspan=2 width=140 >
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="140" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../blowyourownwhistle/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../blowyourownwhistle/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+Blow Your Own Whistle
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td colspan=2>
+<br>
+<font face="arial,helvetica,sans-serif" size="2" COLOR="#000000">
+<b>World Cup 2002</b>
+</font>
+</td>
+</tr>
+<tr>
+<td colspan=2 width=140 >
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="140" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../buildup/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../buildup/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+Build Up
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../worldcupstadiums/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../worldcupstadiums/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+World Cup Stadiums
+</font>
+</a>
+</td>
+</tr>
+</table>
+<br>
+<br>
+<!-- end Side-bar nav calls -->
+</td>
+<td width=3 >
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="3" HEIGHT="250" BORDER="0"><br>
+</td>
+<td width="483" valign=top>
+<!-- Three column table for: left gutter, content, right gutter -->
+<table width="483" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<!-- left gutter -->
+<td colspan=3>
+<table border=0 cellpadding=0 width=100% cellspacing="0">
+<tr>
+<td valign=top colspan=2 align=center>
+<font face="arial,helvetica,sans-serif" size="2" COLOR="#000000">
+<IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/header1.JPG">
+
+</font>
+</td>
+</tr>
+<tr>
+<td valign=bottom>
+<table border="0" cellpadding="0" cellspacing="0">
+<tr>
+</tr>
+</table>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="1" HEIGHT="3" BORDER="0"><br>
+<FONT FACE="arial,helvetica,sans-serif" SIZE="4" COLOR="#330000">
+&nbsp;&nbsp;<b>Player Profiles</b><br>
+</FONT>
+</td>
+<td align=right>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="1" HEIGHT="3" BORDER="0"><br>
+<font face="arial,helvetica,sans-serif" SIZE="1" COLOR="#000000">
+</font>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td colspan=3 bgcolor=#330000>
+<IMG SRC="../pages/images/trans_pix.gif" width="1" HEIGHT="2" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<!-- left gutter -->
+<td width=17>
+<IMG SRC="../pages/images/trans_pix.gif" width="17" HEIGHT="1" BORDER="0"><br>
+</td>
+<td>
+<img src="../pages/images/trans_pix.gif" width="456" HEIGHT="1" BORDER="0"><br>
+<!-- body -->
+<font face="arial,helvetica,sans-serif" color="#000000" size="2">
+<br>
+<!-- Start incbanner.nhtml - Version 3.6 -->
+<!-- End incbanner.nhtml - Version 3.6 -->
+<!-- End vheader.nhtml - Version 3.6 -->
+<!-- Start links_outline.nhtml - Version 3.6 -->
+<!-- End links_outline.nhtml - Version 3.6 -->
+Complete the following player profile section and appear on this page...<br><br><form action="http://www.bytecenter.com/members/cgi/formmail.cgi" method=post><input type=hidden name="account" value="Premfootball"><br><br>Name:<input type=text name=name><br><br><br>Email:<input type=text name=email><br> <br><br>Date Of Birth:<input type=text name=DoB><br><br><br>Home Town:<input type=text name=Home Town><br><br><br>Club:<input type=text name=Club><br><br><br>Previous Clubs:<input type=text name=Previous Clubs><br><br><br>Position:<input type=text name=Position><br><br><br>Best game played in:<input type=text name=Best Game Played In><br><br><br>Favourite shirt number:<input type=text name=Favourite Shirt Number><br><br><br>Favourite professional footballer:<input type=text name=message><br><br><br>Footballing ambitions:<input type=text name=Footballing ambitions><br><br><br><br><input type=hidden name=subject value="Player Profiles"><br><br><input type=hidden name=page_url value="http://www.premfootball.co.uk"><br><input type=hidden name=page_title value="Prem Football"><br><br><input type=hidden name=redirect value="http://www.premfootball.co.uk">  <br><br>To send your player profile to Prem Football, click 'send' below, and click 'send data' on the next page.<br><br><input type=submit value=Send></form><br><br>PLAYER PROFILE<br>Name: John Talerico<br>DoB: 24.04.85<br>Home Town: Windsor<br>Club: S.C. Caboto<br>Previous Clubs: Teutonia<br>Position: Centre Midfield<br>Best Game Played In: Ontario Cup Semi-final<br>Favourite Shirt No.: 9<br>Favourite Footballer: Me<br>Footballing Ambitions: MLS<br><br><br><br>PLAYER PROFILE<br>Name: David Coyle<br>DoB: 22.7.82<br>Home Town: Clacton<br>Club: Rowhedge Rejects<br>Previous Clubs: Weeley<br>Position: sub<br>Best Game: running the line against alresford<br>Favourite Shirt No.: 15<br>Favourite Footballer: Ben Bartlett(Witham)<br>Footballing Ambition: to be as good as Craig Lesiak(Pele)<br><br><br><br>PLAYER PROFILE<br>Name: Billy Thorpe<br>Date of Birth: 16.08.69<br>Home: Oldham, Lancashire<br>Club Supported: Braintree Town<br>Previous Clubs Supported: Oldham Athletic<br>Position: No.4<br>Favourite Shirt Number: 4<br>Favourite Footballer: Gav Cowan (my HERO)<br>Footballing Ambitions: To be as good as Gav Cowan<br><br><br>PLAYER PROFILE<br>Name: Billy Gonzalez<br>Date of Birth: 25.08.83<br>Home: Rio, Brazil<br>Club: Bereira<br>Previous Clubs: Sao Paolo jnrs, palmas, ketres<br>Position: Centre Forward<br>Best Game Played In: Sao Paolo jnr V Real Madrid Jnr<br>Favourite Shirt Number: 10<br>Favourite Pro Footballer: Denilson<br>Footballing Ambitions: Move to England<br><br><br><br>PLAYER PROFILE<br>Name: Ana Sofia<br>Date Of Birth: 10.10.86<br>Home Town: Lisbon<br>Club: Benfica<br>Favourite Shirt Number: 21<br>Favourite Pro Footballer: Figo, Rui Costa, Nuno Gomes and Hugo Leal<br><br><br>PLAYER PROFILE<br>Name: Matthew Elmes<br>Date Of Birth: 11.10.78<br>Home Town: Braintree<br>Club: University Team (Nottingham)<br>Previous Clubs: White Courts, Rayne Youth, Broomfield, Representative sides<br>Position: Defender <br>Best Game Played In: Against Ipswich and Norwich youth sides at Portman Road and Carrow Road respectively, also winning a number of cup finals<br>Favourite Shirt Number: 4<br>Favourite Pro Footballer: Jaap Stam<br>Footballing ambitions: To play and enjoy it for as long as possible<br><br><br><br>PLAYER PROFILE<br>Name: Stuart Ellis<br>Date Of Birth: 05.10.89<br>Home Town: Braintree<br>Club: Great Bradfords U11<br>Previous Clubs: None<br>Position: Right back or left back<br>Best Game Played In: League cup semi final last season<br>Favourite Shirt Number: 6<br>Favourite Pro Footballer: Alan Shearer<br>Footballing ambitions: To play for Newcastle and England.<br><br><br><br>PLAYER PROFILE<br>Name: Toni Anne Wayne<br>Date Of Birth: 08.05.83<br>Home Town: Braintree<br>Club: Arsenal Reserves/White Notley FC<br>Previous Clubs: Colchester Ladies<br>Position: Goalkeeper<br>Best Game Played In: Essex v Hertfordshire<br>Favourite Shirt Number: 1<br>Favourite Pro Footballer: Thierry Henry/Marcus Stewart<br>Footballing Ambition: Play for England Ladies.<br><br><br><br>PLAYER PROFILE<br>Name: Abdul<br>Date Of Birth: 09.07.80<br>Home Town: Asker<br>Previous Clubs: Asker<br>Position: Midtfelt<br>Best Game Played In: Oslo<br>Favourite Shirt Number: 10<br>Favourite Pro Footballer: Ronaldo<br><br><br>PLAYER PROFILE<br>Name: Andrew Ould<br>Date Of Birth: 23.08.81<br>Home Town: Braintree<br>Team: St. Michael's Church FC<br>Previous Clubs: Iron Rec '96<br>Position: Striker<br>Best Game Played In: Recent friendly match vs Notley Baptist Church.  We lost 5-4 despite a disputed disallowed equaliser in stoppage time cos one of their players got a broken nose.  Made my mark with a hat-trick, and the high scoring tally was almost matched by the high number of injuries in this game.<br>Favourite Shirt Number: 5<br>Favourite professional footballer: Eric le great Cantona<br>Footballing ambitions: To beat Tom's Braintree side in tomorrow night's friendly (15/10/00). [Keep trying Andrew... Tom (16/10/00).]<br><br><br><br>PLAYER PROFILE<br>Name: Mark Cornwell<br>Date Of Birth: 05.07.67<br>Home Town: Braintree<br>Team: Argos United<br>Previous Clubs: Coggeshall, White Notley, Nags Head and the list goes on.<br>Position: Lazy Central Midfield<br>Best game played in: Still waiting<br>Favourite shirt number: 8<br>Favourite professional footballer: Stan Collymore<br>Footballing ambitions: To moan about everything in the game.<br><br><br>PLAYER PROFILE<br>Name: Peter Ondoro<br>Date Of Birth: 11.03.85<br>Home Town: Slough<br>Team: Burnham Sphinx U16s<br>Previous Clubs: Slough Town<br>Position: Goalkeeper<br>Best game played in: Cup Final against local rivals Windsor Harriers who have very good players, many on Premier League teams' books, we won it 3-2 in the last minute.<br>Favourite shirt number: 1<br>Favourite professional footballer: Peter Schmeichel (even if I support Arsenal) - he was just the<br>greatest.<br>Footballing ambitions: To become pro, to play in the Premier League and eventually play for my country because I believe I am good enough.<br><br><br>PLAYER PROFILE<br>Name: Craig Reid<br>Date Of Birth: 05.08.84<br>Home Town: Braintree<br>Team: Braintree Town U16s<br>Position: Left Back/Central Defender<br>Best game played in: Semi Final Cup v Lexden - Lost 1-0, Lexden best team in our age. <br>Favourite shirt number: 3<br>Favourite professional footballer: Sol Campbell<br>Footballing ambitions: Play for Braintree first team then hopefully get scouted.<br><br><br>PLAYER PROFILE<br>Name: Andrew Goldsmith<br>Date Of Birth: 29.10.77<br>Home Town: Gt Leighs<br>Team: Stisted<br>Previous Clubs: Accrington Stanley<br>Position: Horizontal<br>Best game played in: Up front with Richard Keily<br>Favourite shirt number: 69<br>Favourite professional footballer: Jeff Thomas <br>Footballing ambitions: To pay club fines<br><br><br>PLAYER PROFILE<br>Name: Saio <br>Date Of Birth: 3.9.84<br>Home Town: Hong Kong<br>Team: N/A<br>Previous Clubs: N/A<br>Position: Attacking Midfielder<br>Best game played in: Yesterday<br>Favourite shirt number: 7<br>Favourite professional footballer: Zlatko Zahovic<br>Footballing ambitions: To play with Zahovic<br><br><br>PLAYER PROFILE<br>Name: James Collins<br>Date Of Birth: 18.8.85<br>Home Town: Coggeshall<br>Team: Coggeshall<br>Previous Clubs: N/A<br>Position: FW/DEF<br>Best game played in: Colchester Athletic<br>Favourite shirt number: 9<br>Favourite professional footballer: Zidane<br>Footballing ambitions: Play for Ipswich<br><br><br>PLAYER PROFILE<br>Name: Ben Bartlett<br>Date Of Birth: 15.7.76<br>Home Town: Halstead<br>Team: Any one that will take him<br>Previous Clubs: Too many<br>Position: Anywhere he wants<br>Best game played in: U7s match<br>Favourite shirt number: 4<br>Favourite professional footballer: Eric Cantona<br>Footballing ambitions: To score a goal<br><br><br>PLAYER PROFILE <br>Name: Kieron Hammatt<br>Date Of Birth: 21.05.78<br>Home Town: Colchester<br>Club: Gas Recreation Reserves<br>Previous Clubs: Coggeshall Town, Mersea Island, Mistley United, Brightlingsea United.<br>Position: Substitute<br>Best game played in: In the car on way to Brightlingsea - 14/08/99<br>Favourite shirt number: 14<br>Favourite professional footballer: David Greene<br>Footballing ambitions: To complete a full game.<br>
+<!-- Start vfooter.nhtml - Version 3.6 -->
+<!-- start: vfooter.nhtml -->
+<br>
+</font>
+</td>
+<!-- right gutter -->
+<td align="right" WIDTH="10">
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="10" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td  bgcolor="#330000">
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="1" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0 width=625>
+<tr>
+<td width=147 rowspan=2>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="148" HEIGHT="1" BORDER="0"><br>
+</td>
+<td width=480>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="479" HEIGHT="2" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<td align=center>
+<br>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="1" HEIGHT="5" BORDER="0"><br>
+<FONT face="arial,helvetica,sans-serif" SIZE="2" COLOR="#000000">
+<!-- footer nav bar -->
+<table border=0 cellpadding=0 width=425 cellspacing=0>
+<tr>
+<td align=center>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+<A HREF="../door/index.html">premfootball.co.uk</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../developmentgroups/index.html">Development Groups</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../euroboss/index.html">Team Of The Year</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../facup20012002/index.html">FA Cup 2001/2002</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../academyupdates/index.html">Academy Updates</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../alexsphysiopage/index.html">Alex's Physio Page</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../coachingdrills/index.html">Coaching Drills</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../insafehands/index.html">In Safe Hands</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../inthespotlight/index.html">In The Spotlight</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../trainingdrills/index.html">Training Drills</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../blowyourownwhistle/index.html">Blow Your Own Whistle</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../buildup/index.html">Build Up</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../worldcupstadiums/index.html">World Cup Stadiums</A>
+</font>
+</td>
+</tr>
+</table>
+</FONT>
+<br>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="1" HEIGHT="5" BORDER="0"><br>
+</td>
+</tr>
+</table>
+<!-- Start incfooter.nhtml - Version 3.6 -->
+<SCRIPT><!--
+function GetSigninURL()
+{
+var partnerURL = "/pages/common/signin.nhtml";
+if (partnerURL.charAt(0) == "/")
+partnerURL = "http://www.premfootball.co.uk/pages/common/signin.nhtml";
+location.href = partnerURL;
+}
+//--></SCRIPT>
+<br>
+<table width=625 cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td align=right valign=bottom width=90%>
+</td>
+<td align=center>
+<font size=2><a name="signin" href="javascript:GetSigninURL()" onMouseOver="return setStatusBar('Sign in to your site.')" onMouseOut="return setStatusBar('')"><img src="../pages/images/signin.gif" alt="Sign In" BORDER="0"><br></a>
+<a href="javascript:GetSigninURL()" onMouseOver="return setStatusBar('Sign in to your site.')" onMouseOut="return setStatusBar('')">Sign In</a></font>
+</td>
+</tr>
+</table>
+<!-- End incfooter.nhtml - Version 3.6 -->
+</td></tr></table>
+</font>
+</body>
+</html>
+<!-- End vfooter.nhtml - Version 3.6 -->
+<!-- End index.nhtml - Version 3.6 -->
+

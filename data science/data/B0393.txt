@@ -1,0 +1,266 @@
+ID=B0393
+URL=http://www.ipswich-bs.co.uk/young.htm
+SIZE=4411
+DATE=28/06/2002
+TIME=12:50:00
+DATASET=Building Societies
+HTML=<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<title>Ipswich Building Society - Young Saver's Puzzle</title>
+<script language="javascript">
+function click() {
+if (event.button==2) {
+alert('Sorry, this function is disabled.')
+}
+}
+document.onmousedown=click
+</script>
+
+<SCRIPT language="JavaScript">
+<!--
+// ------------- Browser Detector ---------------
+// Possible values for browser are:
+//  "netscape"
+//  "opera"     <--(ewww)
+//  "msie"      <--(double ewww)
+//  "robot"
+//  "unknown"
+// Possible values for version are:
+//  any numerical value (3, 2.02, 4.04, etc.)
+//  0 if unable to determine
+
+var browser = "unknown";
+var version = 0;
+
+if (navigator.userAgent.indexOf("Opera") >= 0)
+ browser = "opera";
+else if (navigator.userAgent.indexOf("obot") >= 0)
+ browser = "robot";
+else if (navigator.appName.indexOf("etscape") >= 0)
+ browser = "netscape";
+else if (navigator.appName.indexOf("icrosoft") >= 0)
+ browser = "msie";
+
+version = parseFloat(navigator.appVersion);
+if (isNaN(version)) version = 0;
+if ((browser == "msie")&&(version == 2)) version = 3;
+
+// ------------------ Gradient Output --------------------
+// Syntax for use:
+
+//     gradient(TEXT_STRING_HERE,HEXCODES_STRING_HERE);
+
+//  use in similar way you would use document.write();
+//  note, it cannot be used to return a string value.
+//  gradient() takes two arguements. the first will
+//  be the original pure text string. (no htmlcodes)
+//  the second argument is a string of color hexcodes
+//  seperated with spaces thru which the text should
+//  progress. for example say you wanted to print out
+//  the string "color gradient", and you wanted it to
+//  progress from blue to red. a color code for blue
+//  is 4444FF, and a color code for red is FF4444.
+//  taking those two codes, and the original string,
+//  somewhere in the body of the document you would
+//  write within a <Script> tag the following:
+//  gradient("color gradient","4444FF FF4444");
+//  if however, you wanted it to progress thru three
+//  or more colors, its as simple as adding them to the
+//  string of color codes. it is important to remember
+//  however that the string must be color HEXCODES, and
+//  not merely just color names, (e.x- "red", "yellow")
+//  if this seems like too much trouble, then perhaps
+//  you should try something simple like ripping off
+//  some annoying status bar text scroller. =Þ
+//  one last thing. if you overuse this script, i can
+//  pretty much gaurantee people will hate your webpage.
+//  the fact is, this javascript is memory intensive. if
+//  you overdo it, you're crashing some visitors' browsers.
+//  ------------------------------------------------------
+
+// lookup table
+var tohex = new Array(256);
+var hex = "0123456789ABCDEF";
+var count = 0;
+for (x=0; x<16; x++) {
+ for (y=0; y<16; y++) {
+ tohex[count] = hex.charAt(x) + hex.charAt(y);
+ count++;
+ }
+}
+
+//ColorCode constructor
+function ColorCode(hexcode) {
+  if (hexcode.length == 7) {
+    this.r = parseInt(hexcode.substring(1,3),16);
+    this.g = parseInt(hexcode.substring(3,5),16);
+    this.b = parseInt(hexcode.substring(5,7),16);
+  }
+  else if (hexcode.length == 6) {
+    this.r = parseInt(hexcode.substring(0,2),16);
+    this.g = parseInt(hexcode.substring(2,4),16);
+    this.b = parseInt(hexcode.substring(4,6),16);
+  }
+  else {
+    this.r = this.g = this.b = 0;
+    alert("Error: ColorCode constructor failed");
+  }
+  if (isNaN(this.r)||isNaN(this.g)||isNaN(this.b))
+    alert("Error: ColorCode constructor failed");
+}
+
+// ColorList constructor
+function ColorList(hexcodes) {
+  var i = 0;
+  var c = 0;
+  this.codes = new Array(Math.round(hexcodes.length/7));
+  while (i < hexcodes.length) {
+    if (isNaN(parseInt(hexcodes.substring(i,i+6),16))) ++i;
+    else {
+      this.codes[c] = new ColorCode(hexcodes.substring(i,i+6));
+      i += 7;
+      ++c;
+    }
+  }
+  this.len = c;
+}
+
+function interpolate (x1, y1, x3, y3, x2) {
+  if (x3 == x1) return y1
+  else return (x2-x1)*(y3-y1)/(x3-x1) + y1
+}
+
+// x=index of letter, y=number of letters, z=number of colors
+function lowcolorindex (x, y, z) {
+  if (y == 1) return 0
+  else return Math.floor( (x*(z-1))/(y-1) )
+}
+
+function hicolorindex (x, y, z, low) { 
+  if ( low*(y-1) == x*(z-1) ) return low
+  else if (y == 1) return 0
+  else return Math.floor( (x*(z-1))/(y-1) + 1 )
+}
+
+function gradient (thetext,thecolors) {
+  if (((browser == "netscape")||(browser == "msie")||(browser == "opera"))&&(version>=3.0)) {
+    var colors = new ColorList(thecolors);
+    var numcolors = colors.len;
+    var numchars = thetext.length;
+    var rr = 0;
+    var gg = 0;
+    var bb = 0;
+    var lci = 0; //lower color index
+    var hci = 0; //high color index
+    for (i=0; i<numchars; ++i) {
+      lci = lowcolorindex(i, numchars, numcolors);
+      hci = hicolorindex(i, numchars, numcolors, lci);
+      rr = Math.round(interpolate( lci/(numcolors-1), colors.codes[lci].r, hci/(numcolors-1), colors.codes[hci].r, i/(numchars-1)));
+      gg = Math.round(interpolate( lci/(numcolors-1), colors.codes[lci].g, hci/(numcolors-1), colors.codes[hci].g, i/(numchars-1)));
+      bb = Math.round(interpolate( lci/(numcolors-1), colors.codes[lci].b, hci/(numcolors-1), colors.codes[hci].b, i/(numchars-1)));
+      if (browser == "opera") {
+        rr = 255 - rr;
+        gg = 255 - gg;
+        bb = 255 - bb;
+      }
+	document.write(thetext.charAt(i).fontcolor(tohex[rr]+tohex[gg]+tohex[bb]));
+    }
+  }
+  else document.write(thetext); // unrecognized browser, better not to attempt anything fancy
+}
+      
+//-->
+</SCRIPT>
+
+</head>
+<body background="bg.jpg" bgproperties="fixed">
+<table align="center" border="0" width="864" height="485">
+<tr>
+<td height="106" width="926" colspan="2">
+  <p align="center"><font size="7" color="#008000">Ipswich Building Society's
+  New</font>
+</td>
+</tr>
+<tr>
+<td height="87" width="926" colspan="2">
+  <p align="center"><font face="Futura BdCn BT" size="7">Y</font><font face="Futura BdCn BT" size="6">OUNG</font><font face="Futura BdCn BT" size="7">
+        S</font><font face="Futura BdCn BT" size="6">AVERS</font><font face="Futura BdCn BT" size="7">
+        A</font><font face="Futura BdCn BT" size="6">CCOUNT</font>
+</td>
+</tr>
+<tr>
+<td height="98" width="486" bgcolor="#0066FF" bordercolor="#0066FF">
+  <p align="center"><font face="Futura BdCn BT" size="4">How to be a financial
+  Whizz Kid</font>
+</td>
+<td height="98" width="651">
+  <p align="center" style="word-spacing: 0; margin-top: 0; margin-bottom: 0"><b><font color="#0066FF"><i><font size="3">Welcome to
+  our new Young Savers Account&nbsp;</font></i></font></b></p>
+  <p align="center" style="word-spacing: 0; margin-top: 0; margin-bottom: 0"><b><i><font size="2" color="#0066FF"> If
+      you're up to 16 years old, want to save money and have fun too,&nbsp;</font></i></b>
+  <p align="center" style="word-spacing: 0; margin-top: 0; margin-bottom: 0"><b><i><font size="2" color="#0066FF"> you
+      can bank on the Ipswich to help you.</font></i></b>
+</td>
+</tr>
+<tr>
+<td height="6" width="486" bgcolor="#FFFFFF" bordercolor="#FFFFFF">
+  &nbsp;
+  <ul>
+    <li><span style="background-color: #FFFFFF"><font size="3" color="#000000">Open
+      a new Young Savers Account</font></span></li>
+    <li><span style="background-color: #FFFFFF"><font size="3" color="#000000">Earn
+      extra interest for balances over £500</font></span></li>
+    <li><span style="background-color: #FFFFFF"><font size="3" color="#000000">Join
+      in regular events and competitions</font></span></li>
+  </ul>
+</td>
+<td height="363" width="651" rowspan="3">
+  <p align="center"><img border="0" src="puppies.jpg" width="354" height="282">&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td height="21" width="464" bgcolor="#0066FF">
+  <p align="center"><font face="Futura BdCn BT" size="3">&nbsp;</font><font face="Futura BdCn BT" size="4">How
+  to Join</font></p>
+</td>
+</tr>
+<tr>
+<td height="103" width="464">&nbsp;
+  <p>Simply ask your Parent or Guardian to fill in an Investment Account
+  Application form for you, then post the completed form to us or call into any
+  branch.</p>
+  <p>&nbsp;</td>
+</tr>
+<tr>
+<td height="49" width="464" bgcolor="#0066FF">
+<p align="center"><font size="4" face="Futura BdCn BT">£1 is all you need!</font></p>
+<!--<font color="#FF0000" size="2" face="TIMES NEW ROMAN"><B>
+Welcome to Tycoon Racoon's Young savers Club. If you're 11
+years old or under and want to save money and have
+fun too, you can bank on Tycoon to help you.</B></font></p>-->
+</td>
+<td height="49" width="651">
+<p align="center">A minimum investment of £1 is all you need to join.&nbsp; You can then save
+as much as you like.&nbsp; But whatever you invest each year the more you save
+the more interest you earn.</p>
+<p align="center" style="word-spacing: 0; margin-top: 0; margin-bottom: 0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font size="2">£1-499</font>     <font face="Futura BdCn BT" size="5">3.75%</font> <font size="1">Gross/AER</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p align="center" style="word-spacing: 0; margin-top: 0; margin-bottom: 0">
+<font size="2">£500 and above</font>   <font face="Futura BdCn BT" size="5">4.10%</font>
+<font size="1">Gross/AER</font></p>
+  <p>&nbsp;
+</td>
+</tr>
+</table>
+<p align="center"><a href="enquiry.htm"><img border="0" src="contact2.jpg" width="121" height="22"></a>
+<p align="center"><font size="2">Page Last Updated: <!--webbot bot="Timestamp"
+startspan S-Type="EDITED" S-Format="%d/%m/%Y" -->28/11/2001<!--webbot
+bot="Timestamp" i-CheckSum="12520" endspan -->
+</font>
+</body>
+</html>
+

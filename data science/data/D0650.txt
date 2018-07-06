@@ -1,0 +1,580 @@
+ID=D0650
+URL=http://www.javaworld.com/javaworld/jw-12-2001/jw-1228-jaxb.html
+SIZE=46021
+DATE=16/07/02
+TIME=14:54:12
+DATASET=Java
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title> Use XML data binding to do your laundry</title>
+<!-- ssilog 7814 -->
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<meta name="keywords" content=" JAXB Castor data binding XML Schema Javacommand">
+<meta name="description" content="
+The double buzz phrase "Java and XML" has been in the spotlight for a while now.  Many programmers have realized that by using XML as a data format, they can make both their Java programs and their data cross-platform.  These same programmers have also experienced severe headaches while writing and maintaining XML parsing and attribute validation code.  Recent innovations in XML data binding, or mapping XML documents to Java objects, provide the headache remedy.  XML data binding lets you seamlessly program with normal Java objects that represent your XML documents.  This is much more luxurious than writing that grueling XML parsing code.  What's more, instead of your Java program, a DTD (document type definition) or an XML Schema can maintain all your data validation rules. Think lazy: this validation stuff could become the responsibility of the XML expert in your office -- and not of the overworked Java programmer.  In this article, Sam Brodkin walks you through two frameworks for generating Java classes automatically from XML data constraints: Sun's Java Architecture for XML Binding (JAXB) and Castor from the Exolab Group. Then he shows you how easy it is to use these classes in a test program that washes his socks. (2,800 words;  December 28, 2001)
+">
+<meta name="date" content="2001-12-28">
+<META NAME="DC.Date" CONTENT="2001-12-28">
+<basefont face="verdana, arial, helvetica" size="3" />
+<style type="text/css">
+            code {font-size: 90%; font-family: monospace;}
+            pre {font-size: 90%; font-family: monospace;}
+            td {font-size: 90%;}
+</style>
+<script language="javascript">
+<!--// IDG.net Scripts
+            function mail2Friend () {
+                window.parent.location = "/MailToFriend?url=" + escape(document.location);
+            }
+
+            function openBrWindow() {
+                win=window.open("http://www.javaworld.com/channel_content/jw-story-feedback.shtml",'Feedback','width=600,height=330,toolbar=no,location=no,directories=no,menubar=no,scrollbars=yes,resizable=yes');
+            }
+            //-->
+        </script>
+    </head>
+<body bgcolor="#ffffff" text="#000000" link="#990033" vlink="#990033" alink="#990033" topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" marginheight="0" marginwidth="0">
+<table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td colspan="2" width="186" bgcolor="#006699"><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0 ></a></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- START TOP 468x60 BANNER -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=325354?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=325354?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=325354?" border="0" height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer1" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- END TOP 468x60 BANNER --></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="26" valign="top" align="left" bgcolor="#ffffff"><img height=8 src="http://www.javaworld.com/images/c_whtbottom.gif" width=8 border=0 ></td>
+                <td width="100%"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.global/idgpixel7.18.00;sz=1x1;ord=325354?" border=0 height="1" width="1"><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.usa.jw/usajw.081501;sz=1x1;ord=325354?" border=0 height="1" width="1"></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160" align="middle" valign="center" nowrap><nobr><font face="Verdana, Arial, Sans-serif" color="#ffffff" size="2">December 2001</font></nobr><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="8" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltlft.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="100%" align="middle" valign="center">    <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">HOME</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/features/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FEATURED TUTORIALS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/columns/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">COLUMNS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/news-reviews/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">NEWS & REVIEWS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://forums.idg.net/webx?13@@.ee6b802"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FORUM</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/resources/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">JW RESOURCES</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/info/jw-about-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">ABOUT JW</font></a></td>
+        </tr>
+    </table></td>
+                <td bgcolor="#006699" width="8" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltrt.gif" width=8 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr valign="top">
+                <td bgcolor="#006699" width="160" align="middle" valign="top">
+                    <table width="160" border="0" cellspacing="0" cellpadding="0" bgcolor="#006699" summary="">
+                        <tr>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                            <td align="center">
+                                <form action="http://www.javaworld.com/isearch" method="GET" name="search">
+                                    <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /><br />
+                                    <input type="text" name="qt" size="12" maxlength="2047" /><br />
+                                    <input type="image" value="search" src="http://www.javaworld.com/images/button_blue.gif" border="0" width="97" height="18" alt="GO" /><br />
+                                    <input type="hidden" name="site" value="javaworld"><br />
+                                   <!-- <a href="http://www.google.com/"><img src="http://www.javaworld.com/images/google-power-fp.gif" width="108" height="45" border="0" alt="Google.com"></a>-->
+                                    <input type="hidden" name="ms" value="1">
+                                    <input type="hidden" name="tid" value="1">
+                                    <input type="hidden" name="st" value="1">
+                                    <input type="hidden" name="rf" value="0">
+                                   
+                                </form>
+                            </td>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                        </tr>
+                        <tr>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td><img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <a href="http://www.javaworld.com/archives/index-year.html"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>ARCHIVE</strong></font></a><br>
+                                <img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <strong><a href="http://www.javaworld.com/channel_content/jw-topical-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff">TOPICAL INDEX</font></a></strong></font><br><table cellspacing="0" cellpadding="0" border="0" summary="">
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/channel_content/jw-core-index.shtml"><font color="#ffffff">Core Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-enterprise-index.shtml"><font color="#ffffff">Enterprise Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-micro-index.shtml"><font color="#ffffff">Micro Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-applied-index.shtml"><font color="#ffffff">Applied Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-community-index.shtml"><font color="#ffffff">Java Community</font></a></strong></font><br /></td>
+                        </tr>
+                    </table><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-qna-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA Q&A INDEX</strong></font></a><br /><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-tips-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA TIPS INDEX</strong></font></a><br /> <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br /><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#CCCCCC"><strong>JavaWorld Services</strong></font><br /><img alt="" height="4" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /><table cellspacing="0" cellpadding="0" border="0" summary=""><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /><img alt="" height="7" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /></td><td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/subscribe"><font color="#ffffff">Free JavaWorld newsletters</font></a></strong></font></td></tr><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://javaworld.pricegrabber.com"><font color="#ffffff">ProductFinder </font></a></strong></font></td></tr><tr> <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/white-paper/index.shtml"><font color="#ffffff">White Paper Library</font></a></strong></font></td></tr>
+</table>
+<img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br />
+</td>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                        </tr>
+                        <tr valign="bottom">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_gryblbottom.gif" width=8 ></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr>
+                       <td width="8" bgcolor="#cccccc"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                           <td align="middle" bgcolor="#cccccc"><!-- SKYSCRAPER AD START HERE -->
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=325354?" width="120" height="600" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=skyscraper;sz=120x600;tile=3;ord=325354?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;skyscraper=med;sz=120x600;tile=3;ord=325354?" border=0 height="600" width="120"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer3" visibility="hidden" width=120 height=600></ILAYER>
+<!-- SKYSCRAPER AD ENDS HERE -->
+</td>
+                       <td width="8" bgcolor="#cccccc"><img height=8 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr valign="top">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_grybltop.gif" width=8 ></td>
+                        </tr>
+                    </table>
+                    <img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                    <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                <td width="100%">
+                    <!-- ## MAIN CONTENT STARTS HERE ### -->
+                    <font face="verdana, arial, helvetica" size="3">
+                        <strong></strong>
+                        <p>
+                            <h1 align="CENTER"> Use XML data binding to do your laundry</h1>
+                            <h3 align="CENTER"> Explore JAXB and Castor from the ground up</h3>
+                        </p>
+                        <!--<BLOCKQUOTE><STRONG>Summary</STRONG><BR>-->
+                        <BLOCKQUOTE>
+<STRONG>Summary</STRONG><BR>
+
+The double buzz phrase "Java and XML" has been in the spotlight for a while now.  Many programmers have realized that by using XML as a data format, they can make both their Java programs <em>and</em> their data cross-platform.  These same programmers have also experienced severe headaches while writing and maintaining XML parsing and attribute validation code.  Recent innovations in <em>XML data binding,</em> or mapping XML documents to Java objects, provide the headache remedy.  XML data binding lets you seamlessly program with normal Java objects that represent your XML documents.  This is much more luxurious than writing that grueling XML parsing code.  What's more, instead of your Java program, a DTD (document type definition) or an XML Schema can maintain all your data validation rules. Think lazy: this validation stuff could become the responsibility of the XML expert in your office -- and not of the overworked Java programmer.  In this article, Sam Brodkin walks you through two frameworks for generating Java classes automatically from XML data constraints: Sun's Java Architecture for XML Binding (JAXB) and Castor from the Exolab Group. Then he shows you how easy it is to use these classes in a test program that washes his socks. (<em>2,800 words;</em> <strong> December 28, 2001</strong>)
+</BLOCKQUOTE>
+                        <!--</BLOCKQUOTE>-->
+                        <a href="http://www.javaworld.com/feedback" target="Feedback"><STRONG>By  Sam Brodkin</STRONG></a>
+                        <p><img src="http://www.javaworld.com/images/rule_ltblue.gif" width="100%" height="2"><br />
+                           <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                           <a href="/javaworld/jw-12-2001/jw-1228-jaxb_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><br /></p>
+                         <font size=-1>  Page 1 of 2</font>
+                        <p><!-- START BIG AD (336x280) -->
+<table align="right" border="0" cellpadding="0" cellspacing="0"><tr valign="bottom" align="center"><td><font face="verdana, arial, geneva, sans-serif" color="#999999" size="-2">Advertisement</font></td></tr><tr><td><table border=1 bordercolor="#cccccc" cellspacing="5" cellpadding="0"><tr><td>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=325354" width="336" height="280" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=325354"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=325354" border=0 height="280" width="336"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer5" visibility="hidden" width=336 height=280></ILAYER>
+</td></tr></table></td></tr></table>
+<!-- END BIG AD (336x280) --></p>
+                        <p><P>
+<img align="left" width="24" height="29" src="/javaworld/abcs/L.gif" alt="L">et's face it; XML by itself is just another data format that is annoying to access from your Java programs.  Don't get me wrong; I appreciate XML for its portability, its separation of data and presentation, and its human and computer readability.  However, I just can't be bothered writing DOM (Document Object Model), SAX (Simple API for XML), or even JDOM code to programmatically work with XML data. I have better things to do with my precious programming time. <P>
+What I need is a summer intern: someone who can get me lunch and do my dirty work for me -- like writing Java classes that correspond to every XML document type I work with.  These Java classes could turn XML documents into my program's objects.  Each XML tag would map to an object attribute, and a tag's contents would be the attribute value.  Then, for a real challenge, I'd ask my intern to provide a marshal method in each Java class. 
+<P>
+"Who's Marshal?" the intern might ask. <P>
+"A military officer who marshals things, arranges things in methodical order," I'd explain smugly. <P>
+<em>Marshaling</em> a Java object means converting it to XML format for storage or for sending.  It's like when you fold your socks to put them neatly away -- which, come to think of it, is something else my intern could do.  Later, when you or someone else wears those socks again, it's like turning an XML document back into useable Java objects -- <em>unmarshaling.</em>  And you'll agree that, when you wake up in the morning, it's nice to find a basket full of neatly folded socks. <P>
+This is the classic marshal and unmarshal diagram, but for fun, this one illustrates my socks analogy. <P>
+<CENTER><P>
+<TABLE CELLPADDING="5" BORDER="0"><TR><TD><P>
+<CENTER><P>
+<IMG VSPACE="3" WIDTH="591" HEIGHT="249" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-12-2001/images/jw-1228-jaxb.jpg"><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+Marshaling and unmarshaling </STRONG></FONT></CENTER><P>
+</TD></TR></TABLE><P>
+</CENTER><P>
+The ability to work with unmarshaled XML documents would be great because I could use and maintain regular Java objects much more easily and naturally than I could with a bunch of XML parsing code.  My unmarshaled Java objects could even validate attributes based on the original XML Schema constraints.  This validation would include type checking and verifying range values.  I would have a way to programmatically construct a Java object that could save itself as an XML document valid against a certain XML Schema.  Now we're talking!  But what about performance?  Using these unmarshaled objects, my application would be faster than SAX parsing and require less memory than DOM parsing. <P>
+Do you want to work as my intern this summer? I know what you're thinking: writing the marshal, unmarshal, and validating-accessor methods based on schema constraints would be a long and tedious task.  In addition, every time I changed my XML Schema, you'd have to update this code.  Doing my laundry wouldn't be much fun either.  Doesn't matter; I don't want to baby-sit and entertain an intern all summer anyway. I've got better things to do! <P>
+What if I told you that there already are XML data-binding frameworks that can generate this type of marshaling and unmarshaling code for you? Just feed in a DTD (document type definition) or an XML Schema and -- presto! -- you have Java classes that can marshal, unmarshal, and check data constraints.  And like many Java XML tools, these frameworks are mostly free. In this article, we'll examine two such frameworks: Sun's Java Architecture for XML Binding (JAXB) and Castor from the Exolab Group. <P><FONT SIZE="+1"><STRONG> XML data constraints: DTD versus XML Schema </STRONG></FONT><BR>
+A valuable XML concept is the ability to define your own <em>XML vocabulary.</em>  An XML vocabulary is an industry-specific XML information model or document type that you define for XML data sharing.  In other words, you define constraints that specify what a particular group of XML documents should always look like.  Document creators, programmers, graphic designers, and database specialists use a constrained document type as the basis for creating compatible application pieces.  This parallel collaboration around a document type is easy because everyone knows ahead of time what the constrained XML documents will look like.
+<P>
+You can define an XML vocabulary by constraining XML in two different ways.  The original method from the XML specification uses a DTD.  The new and improved approach uses the recently formalized W3C (World Wide Web Consortium) Recommendation, XML Schema. <P>
+For example, in this article, I will define an XML vocabulary for describing socks.  I'm a sock expert, since I wear socks almost every day, and so I know exactly what information is needed to fully describe a sock collection.  Every sock in my definition has the following descriptive properties: number, name, image, color, price, and smell. <P>
+Thus, I can create the following DTD to formally describe a sock collection: <P>
+<strong>Listing 1. socks.dtd</strong> <CODE><P>
+&lt;!ELEMENT socks ( sock* ) &gt;<BR>
+
+&lt;!ELEMENT sock (name, image, color, price, smell) &gt;<BR>
+
+&lt;!ATTLIST sock number CDATA #REQUIRED &gt;<BR>
+
+&lt;!ELEMENT name (#PCDATA) &gt;<BR>
+
+&lt;!ELEMENT image (#PCDATA) &gt;<BR>
+
+&lt;!ELEMENT color EMPTY &gt;<BR>
+
+&lt;!ELEMENT price (#PCDATA) &gt;<BR>
+
+&lt;!ELEMENT smell (#PCDATA) &gt;<BR>
+
+&lt;!ATTLIST color value (white|black) #REQUIRED &gt;<BR>
+</CODE><P>
+Listing 1 says simply that an XML document conforming to my <code>socks.dtd</code> constraints must have zero or more socks.  Each sock has exactly one name, image, color, price, and smell -- in that order.  The color can only have the values <code>white</code> or <code>black</code>.  Each sock has an attribute called <code>number</code>.  Do you see why we say DTDs <em>constrain</em> conformant XML documents?  (For more on DTDs, see <a href="#resources">Resources</a>.) <P>
+An XML document that is valid against this DTD -- that is, one that follows the constraints correctly -- might look like this: <P>
+<strong>Listing 2. socks.xml</strong> <CODE><P>
+&lt;?xml version="1.0"?&gt;<BR>
+
+&lt;!DOCTYPE socks SYSTEM "socks.dtd"&gt;<BR>
+
+&lt;socks&gt;<BR>
+
+&nbsp;&nbsp;&lt;sock number="1"&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;name&gt;black socks&lt;/name&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;image&gt;blacksocks.jpg&lt;/image&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;color value="black"/&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;price&gt;9.99&lt;/price&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;smell&gt;7&lt;/smell&gt;<BR>
+
+&nbsp;&nbsp;&lt;/sock&gt;<BR>
+
+&nbsp;&nbsp;&lt;sock number="2"&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;name&gt;white socks&lt;/name&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;image&gt;whitesocks.jpg&lt;/image&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;color value="white"/&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;price&gt;5.34&lt;/price&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;smell&gt;2&lt;/smell&gt;<BR>
+
+&nbsp;&nbsp;&lt;/sock&gt;<BR>
+
+&nbsp;&nbsp;&lt;sock number="3"&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;name&gt;old white socks&lt;/name&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;image&gt;oldwhitesocks.jpg&lt;/image&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;color value="white"/&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;price&gt;2.20&lt;/price&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;smell&gt;9&lt;/smell&gt;<BR>
+
+&nbsp;&nbsp;&lt;/sock&gt;<BR>
+
+&lt;/socks&gt;<BR>
+
+<BR>
+</CODE><P>
+DTDs have garnered some complaints, especially from programmers.  The problem: DTDs really constrain only the document's structure, not the data it contains.  All the elements and attributes are strings, and you can't specify allowed value ranges.  The best data constraining you can do with a DTD is to require that attributes be strings from a constant list.  Furthermore, DTDs are not in XML format themselves, so they don't seem to fit in too well. <P>
+The answer to these deficiencies: XML Schema.  XML Schemas are in XML format; they allow data typing, user-defined types, and range value constraints.  XML Schema's popularity and software support is growing because it is now a final W3C Recommendation.  Here you'll find an example of constraining the same document type using XML Schema: <P>
+<strong>Listing 3. socks.xsd</strong> <CODE><P>
+&lt;?xml version="1.0"?&gt;<BR>
+
+&lt;xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:element name="socks"&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:complexType&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:sequence&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:element name="sock" minOccurs="0" maxOccurs="unbounded"&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:complexType&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:sequence&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:element name="name" type="xsd:string"/&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:element name="image" type="imageType"/&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:element name="color" type="colorType"/&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:element name="price" type="money"/&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:element name="smell" type="smellType"/&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xsd:sequence&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:attribute name="number" type="xsd:string" use="required"/&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xsd:complexType&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xsd:element&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xsd:sequence&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xsd:complexType&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xsd:element&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:simpleType name="imageType"&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:restriction base="xsd:string"&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:pattern value="(.)+\.(gif|jpg|jpeg|bmp)"/&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xsd:restriction&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xsd:simpleType&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:simpleType name="colorType"&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:restriction base="xsd:string"&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:enumeration value="black"/&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:enumeration value="white"/&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xsd:restriction&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xsd:simpleType&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:simpleType name="money"&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:restriction base="xsd:decimal"&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:fractionDigits value="2"/&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xsd:restriction&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xsd:simpleType&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:simpleType name="smellType"&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:annotation&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:documentation&gt;0=clean and 10=smells terrible&lt;/xsd:documentation&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xsd:annotation&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:restriction base="xsd:nonNegativeInteger"&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;xsd:minInclusive value="0"/&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;xsd:maxInclusive value="10"/&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xsd:restriction&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/xsd:simpleType&gt;<BR>
+
+&lt;/xsd:schema&gt;<BR>
+</CODE><P>
+That looks a little more complicated, but believe me, the complexity is worth it.  In addition to the constraints we specified in the DTD, XML Schema lets us add the following: 
+<P>
+<ul> <li>The contents of the <code>&lt;image&gt;</code> tag must end with an image type extension (like <code>.gif</code>).</li> <li>The <code>&lt;price&gt;</code> must be a number with two fractional digits (like 5.34).</li> <li>The <code>&lt;smell&gt;</code> must be an <code>int</code> between 0 and 10.  There is also a documentation comment stating <code>0=clean</code> and <code>10=smells terrible</code>.  </li> </ul> <P>
+For more on XML Schemas, see the schema tutorial in <a href="#resources">Resources</a>. <P>
+To associate <code>socks.xml</code> with our XML Schema, we'll change only some attributes in the root (<code>socks</code>) tag: <P>
+<strong>Listing 4. socks.xml for use with the XML Schema</strong> <CODE><P>
+&lt;?xml version="1.0"?&gt;<BR>
+
+&lt;socks xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xsi:noNamespaceSchemaLocation="socks.xsd"&gt;<BR>
+
+&nbsp;&nbsp;&lt;sock number="1"&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;name&gt;black socks&lt;/name&gt;<BR>
+
+...<BR>
+</CODE><P>
+How do we check to see if an XML document is valid against a DTD or XML Schema?  We use an XML parser like Apache Xerces to verify that an XML document conforms to the <code>socks.dtd</code> or <code>socks.xsd</code> constraints.  I've provided a Windows batch file in my sample code called <code>validate.bat</code> to do that: <P>
+<code>validate.bat &lt;path_to_socks&gt;\socks.xml</code> <P>
+This invokes the Xerces parser in validation mode, which asks it to please check <code>socks.xml</code> against its stated document type.  Xerces now supports both DTD and XML Schema validation. 
+<P>
+I'm a teacher, so I always like to include programming exercises.  As an exercise, run <code>validate</code> on <code>socks.xml</code>, change <code>socks.xml</code> to make it invalid, and run <code>validate</code> again.  Xerces should produce helpful error messages. <P>
+<!-- break --><br /></p>
+                        <font size=-1><a href=jw-1228-jaxb-p2.html>Next page ></a><br>Page 1  Use XML data binding to do your laundry<br>Page 2 <a href=jw-1228-jaxb-p2.html>Onward to the data-binding frameworks!</a><br> </font>
+                        <p>
+                            <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                            <a href="/javaworld/jw-12-2001/jw-1228-jaxb_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><!-- REPLACE BIO --><br /></p>
+                        <p><ul><A NAME="resources"></a><STRONG>Resources</STRONG>
+<BR>
+<LI>Download the source code and resource files that accompany this article: <BR><A HREF="http://www.javaworld.com/javaworld/jw-12-2001/jaxb/jw-1228-jaxb.zip">http://www.javaworld.com/javaworld/jw-12-2001/jaxb/jw-1228-jaxb.zip
+</A><BR>
+
+
+<LI>Learn more about JAXB: <BR><A HREF="http://java.sun.com/xml/jaxb/">http://java.sun.com/xml/jaxb/
+</A><BR>
+
+
+<LI>Castor homepage: <BR><A HREF="http://www.castor.org/">http://www.castor.org/
+</A><BR>
+
+
+<LI>"XML Data Binding" from <em>Professional XML, Second Edition,</em> Mark Birbeck et al. (Wrox Press, 2001; ISBN: 1861005059) is about Castor: <BR><A HREF="http://www.wrox.com/books/samplechapters/5059/content.pdf">http://www.wrox.com/books/samplechapters/5059/content.pdf
+</A><BR>
+
+
+<LI>Excellent XML Schema tutorial by Roger L. Costello: <BR><A HREF="http://www.xfront.com/">http://www.xfront.com/
+</A><BR>
+
+
+<LI>Basic DTD tutorial by W3Schools: <BR><A HREF="http://www.w3schools.com/dtd/">http://www.w3schools.com/dtd/
+</A><BR>
+
+
+<LI>Xerces XML parser: <BR><A HREF="http://xml.apache.org/xerces2-j/">http://xml.apache.org/xerces2-j/
+</A><BR>
+
+
+<LI>Enhydra Zeus, an up-and-coming Java-to-XML data-binding framework: <BR><A HREF="http://zeus.enhydra.org">http://zeus.enhydra.org
+</A><BR>
+
+
+<LI>Arborealis, from Beautiful Code BV, is an interesting experiment in mapping Java objects to XML documents: <BR><A HREF="http://www.beautifulcode.nl/arborealis/">http://www.beautifulcode.nl/arborealis/
+</A><BR>
+
+
+<LI>"Validation with Java and XML Schema," Brett McLaughlin (<em>JavaWorld</em>):
+
+<ul><li><a href="http://www.javaworld.com/javaworld/jw-09-2000/jw-0908-validation.html">Part 1. Learn the value of data validation and why pure Java isn't the complete solution for handling it</a> (September 2000)</li>
+<li><a href="http://www.javaworld.com/javaworld/jw-10-2000/jw-1013-validation2.html">Part 2. Use XML Schema for constraining Java data</a> (October 2000)</li>
+<li><a href="http://www.javaworld.com/javaworld/jw-11-2000/jw-1110-validation3.html">Part 3. Parsing XML Schema to validate data</a> (November 2000)</li>
+<li><a href="http://www.javaworld.com/javaworld/jw-12-2000/jw-1208-validation4.html">Part 4. Build Java representations of schema constraints and apply them to Java data</a> (December 2000)</li></ul>
+
+<LI>"Validation with Pure Java," Victor Okunev (<em>JavaWorld,</em> December 2000): <BR><A HREF="http://www.javaworld.com/javaworld/jw-12-2000/jw-1229-valframe.html">http://www.javaworld.com/javaworld/jw-12-2000/jw-1229-valframe.html
+</A><BR>
+
+
+<LI>For more articles on <strong>Java and XML,</strong> browse our Topical Index: <BR><A HREF="http://www.javaworld.com/channel_content/jw-xml-index.shtml">http://www.javaworld.com/channel_content/jw-xml-index.shtml
+</A><BR>
+
+
+<LI>Log in to our <strong>XML & Java</strong> discussion to talk about JAXB: <BR><A HREF="http://forums.idg.net/webx?50@@.ee6b78f">http://forums.idg.net/webx?50@@.ee6b78f
+</A><BR>
+
+
+<LI>Sign up for <em>JavaWorld'</em>s free weekly <em>Enterprise Java</em> newsletter: <BR><A HREF="http://www.idg.net/jw-subscribe">http://www.idg.net/jw-subscribe
+</A><BR>
+
+
+<li>You'll find a wealth of IT-related articles from our sister publications at <a href="http://www.idg.net/jump?id=1100">IDG.net</a>
+</ul><br /></p>
+                        <!-- REPLACE SIDEBAR -->
+                    </font>
+                    <!-- ## MAIN CONTENT ENDS HERE ### -->
+                </td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="168" nowrap><nobr><img src="http://www.javaworld.com/images/spacer.gif" width=160 height=8 border=0 ><img src="http://www.javaworld.com/images/c_bllftbottom.gif" width=8 height=8 border=0 ></nobr></td>
+                <td width="100%"><img src="http://www.javaworld.com/images/spacer.gif" width=1 height=1 border=0 ></td>
+                <td width="8"><img src="http://www.javaworld.com/images/spacer.gif" width=8 height=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="186" bgcolor="#006699" align="middle"><nobr><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2"></font></nobr><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0></a></td>
+                <td bgcolor="#cccccc" width="8" valign="bottom"><img height=8 src="http://www.javaworld.com/images/c_blgrylftbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- BOTTOM 468x60 AD STARTS HERE -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=325354?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=325354?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=325354?" border=0 height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer4" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- BOTTOM 468x60 AD ENDS HERE -->
+</td>
+                <td width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table bgcolor="#006699" align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="100%" align="middle" valign="center">    <font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">
+        <p>
+            <br />
+            <a href="http://www.javaworld.com"><font color="#ffffff">HOME</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/features/index.shtml"><font color="#ffffff">FEATURED TUTORIALS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/columns/index.shtml"><font color="#ffffff">COLUMNS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/news-reviews/index.shtml"><font color="#ffffff">NEWS & REVIEWS</font></a>&nbsp;|&nbsp;
+            <a href="http://forums.idg.net/webx?13@@.ee6b802"><font color="#ffffff">FORUM</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/resources/index.shtml"><font color="#ffffff">JW RESOURCES</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/info/jw-about-index.shtml"><font color="#ffffff">ABOUT JW</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/feedback"><font color="#ffffff">FEEDBACK</font></a>
+        </p>
+        <p>
+
+            <a href="http://www.javaworld.com/javaworld/common/jw-copyright.html"><font color="#ffffff">Copyright © 2002</font></a> JavaWorld.com, an IDG Communications company
+        </p>
+    </font>
+</td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+            <tr>
+                <td width="100%" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_blrtbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <!--TOP_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=325354?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer1.pageX,layer1.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--125x125-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=med;sz=125x125;tile=2;ord=325354?" width=125 height=125 visibility="hidden" onLoad="moveToAbsolute(layer2.pageX,layer2.pageY);clip.height=125;clip.width=125;visibility='show';">
+</LAYER>
+
+<!--SKYSCRAPER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=325354?" width=120 height=600 visibility="hidden" onLoad="moveToAbsolute(layer3.pageX,layer3.pageY);clip.height=600;clip.width=120;visibility='show';">
+</LAYER>
+
+<!--BOTTOM_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=325354?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer4.pageX,layer4.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--Big AD-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=325354" width=336 height=280 visibility="hidden" onLoad="moveToAbsolute(layer5.pageX,layer5.pageY);clip.height=280;clip.width=336;visibility='show';">
+</LAYER>
+    </body>
+<!-- stories1 -->
+<!-- DOCID 783590 -->
+</html>
+

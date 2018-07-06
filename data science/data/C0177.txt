@@ -1,0 +1,1099 @@
+ID=C0177
+URL=http://www.rapidinsure.co.uk/Insurance/Household/Household.asp
+SIZE=29439
+DATE=10/07/2002
+TIME=13:19:35
+DATASET=Insurance Agencies
+HTML=
+
+<html>
+<head>
+<TITLE>Household Insurance</TITLE>
+<script language="JavaScript">
+
+function validateDOB(dateIn,monthIn,yearIn){
+
+
+//  ----------- Start of Include file ---------------
+// For all form validation javascripts
+// Used to define browser dependent document form object
+
+	if ((navigator.appName == "Netscape") && (navigator.userAgent.toLowerCase().indexOf('gecko') < 0)){
+	
+		formLocation = document.contentsLayer.document.forms[0];}  //Older Netscape browsers
+	else{
+		formLocation = document.forms[0];}  // MS IE, Netscape v6, Gecko powered browsers
+
+	
+// ---------- Endo of Include file -----------------
+
+	//create text string for comparision
+	var textStr = dateIn+"/"+monthIn+"/"+yearIn
+
+	//create new date type
+	var chkDate=new Date()
+
+	//set the date, month and year based on what was
+	//passed in
+
+	//now we have created the text string, strip any preceding 0s from
+	//dateIn, so that jS don't have a fit!
+	if(dateIn.indexOf("0") == 0){
+		dateIn = dateIn.substring(1)
+	}
+	//do the same for month
+	if(monthIn.indexOf("0") == 0){
+		monthIn = monthIn.substring(1)
+	}
+
+
+	chkDate.setMonth((parseInt(monthIn)-1),(parseInt(dateIn)))
+	chkDate.setFullYear(parseInt(yearIn))
+
+	//reverse this to get out what javascript is
+	//the real date, plus put a 0 on the front of single date values
+	var chkMonthInt  = chkDate.getMonth()+1
+	var chkMonthStr = chkMonthInt+"/"
+	if (chkMonthStr.length == 2){
+		chkMonthStr = "0"+chkMonthStr
+	}
+
+	var chkDateInt = chkDate.getDate()
+	var chkDateStr = chkDateInt+"/"
+	if (chkDateStr.length == 2){
+		chkDateStr = "0"+chkDateStr
+	}
+
+	var cmpDate=chkDateStr+chkMonthStr+(chkDate.getFullYear())
+
+	//uncomment for debug
+	//	alert("textStr = " + textStr + " cmpDate = " + cmpDate);
+	if (parseInt(yearIn, 10)  < 1753) {
+		alert("Date Of Birth Problem\nYou've entered a year earlier than 1753. Unfortunately we can only support dates after 1753, because this is when the Gregorian and Julian calendars were synchronized! Please re-enter a more recent date.")
+	return false
+	}
+	//check the str length (must be 10 chrs)
+	if (cmpDate.length != 10){
+		alert("Date Of Birth Problem\nYou've entered an invalid date or date format.  Please use the dd/mm/yyyy format.");
+		return false;
+	}
+	else {
+		if (textStr!=cmpDate){
+			alert("Date Of Birth Problem\nYou've entered an invalid date or date format.  Please use the dd/mm/yyyy format.");
+			return false;
+		}
+		else {
+			if (cmpDate=="NaN/NaN/NaN"){
+				alert("Date Of Birth Problem\nYou've entered an invalid date or date format.  Please use the MM/DD/YY format.");
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
+	}
+}
+
+
+function validate_postcode1() { //v2.0
+
+
+//  ----------- Start of Include file ---------------
+// For all form validation javascripts
+// Used to define browser dependent document form object
+
+	if ((navigator.appName == "Netscape") && (navigator.userAgent.toLowerCase().indexOf('gecko') < 0)){
+	
+		formLocation = document.contentsLayer.document.forms[0];}  //Older Netscape browsers
+	else{
+		formLocation = document.forms[0];}  // MS IE, Netscape v6, Gecko powered browsers
+
+	
+// ---------- Endo of Include file -----------------
+
+   var matched = 0;
+   var count = 0;
+   var alpha = new Array(26);
+
+   alpha[0] = 'A';
+   alpha[1] = 'B';
+   alpha[2] = 'C';
+   alpha[3] = 'D';
+   alpha[4] = 'E';
+   alpha[5] = 'F';
+   alpha[6] = 'G';
+   alpha[7] = 'H';
+   alpha[8] = 'I';
+   alpha[9] = 'J';
+   alpha[10] = 'K';
+   alpha[11] = 'L';
+   alpha[12] = 'M';
+   alpha[13] = 'N';
+   alpha[14] = 'O';
+   alpha[15] = 'P';
+   alpha[16] = 'Q';
+   alpha[17] = 'R';
+   alpha[18] = 'S';
+   alpha[19] = 'T';
+   alpha[20] = 'U';
+   alpha[21] = 'V';
+   alpha[22] = 'W';
+   alpha[23] = 'X';
+   alpha[24] = 'Y';
+   alpha[25] = 'Z';
+
+   formLocation.postcode1.value = formLocation.postcode1.value.toUpperCase();
+
+   matched = 0;
+   for (count = 0; count < 26; count++)
+   {
+       if (alpha[count] == formLocation.postcode1.value.charAt(0)) matched = 1;
+   }
+   if (matched == 0)
+   {
+      alert('The first part of your postcode is empty or invalid\n Please try again.');
+	  formLocation.postcode1.focus();
+      return false;
+   }
+}
+function validate_postcode2()
+{
+
+//  ----------- Start of Include file ---------------
+// For all form validation javascripts
+// Used to define browser dependent document form object
+
+	if ((navigator.appName == "Netscape") && (navigator.userAgent.toLowerCase().indexOf('gecko') < 0)){
+	
+		formLocation = document.contentsLayer.document.forms[0];}  //Older Netscape browsers
+	else{
+		formLocation = document.forms[0];}  // MS IE, Netscape v6, Gecko powered browsers
+
+	
+// ---------- Endo of Include file -----------------
+
+	var firstChar
+	formLocation.postcode2.value = formLocation.postcode2.value.toUpperCase()
+	//grab the first character
+	firstChar = formLocation.postcode2.value.substring(0,1)
+	if(isNaN(parseInt(firstChar,10))){
+		alert("Invalid Postcode\nThe second section must start with a number");
+		formLocation.postcode2.focus();
+		return false;
+	}
+	return true;
+}
+
+function validate_dob(){
+
+
+//  ----------- Start of Include file ---------------
+// For all form validation javascripts
+// Used to define browser dependent document form object
+
+	if ((navigator.appName == "Netscape") && (navigator.userAgent.toLowerCase().indexOf('gecko') < 0)){
+	
+		formLocation = document.contentsLayer.document.forms[0];}  //Older Netscape browsers
+	else{
+		formLocation = document.forms[0];}  // MS IE, Netscape v6, Gecko powered browsers
+
+	
+// ---------- Endo of Include file -----------------
+
+   	if (!validateDOB(formLocation.dateStr.value,formLocation.monthStr.value,formLocation.yearStr.value))
+	{
+		formLocation.dateStr.focus();
+		return false;
+	}else{
+		return true;
+	}
+}
+
+function validate_postcode()
+{
+
+	if(validate_postcode1() == false){
+		return false;
+	}
+	if(validate_postcode2() == false){
+		return false;
+	}
+	return true;
+}
+
+function validate_contbutton()
+{
+	
+//  ----------- Start of Include file ---------------
+// For all form validation javascripts
+// Used to define browser dependent document form object
+	
+	if ((navigator.appName == "Netscape") && (navigator.userAgent.toLowerCase().indexOf('gecko') < 0)){
+		//Older Netscape browsers
+		formLocation = document.contentsLayer.document.cover;
+		contformLocation = document.contentsLayer.document.contbutton;}  
+	else{
+		formLocation = document.cover;
+		contformLocation = document.contbutton;}  // MS IE, Netscape v6, Gecko powered browsers
+		
+// ---------- Endo of Include file -----------------
+
+	if(validate_postcode1() == false){
+		return false;
+	}
+	if(formLocation.postcode1.value != contformLocation.postcode1.value){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.postcode2.value != contformLocation.postcode2.value){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.dateStr.value != contformLocation.dateStr.value){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.monthStr.value != contformLocation.monthStr.value){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.yearStr.value != contformLocation.yearStr.value){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.amountB.value != contformLocation.amountB.value){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.occupation.options[formLocation.occupation.selectedIndex].value != contformLocation.occupation.value){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.ownership.options[formLocation.ownership.selectedIndex].value != contformLocation.ownership.value){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.voluntaryExcess.options[formLocation.voluntaryExcess.selectedIndex].value != contformLocation.voluntaryExcess.value){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.bedrooms.options[formLocation.bedrooms.selectedIndex].value != contformLocation.bedrooms.value){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.contentsPossessionsCover.options[formLocation.contentsPossessionsCover.selectedIndex].value != contformLocation.contentsPossessionsCover.value){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.frozenFood.options[formLocation.frozenFood.selectedIndex].value != contformLocation.frozenFood.value){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.nacoss.options[formLocation.nacoss.selectedIndex].value != contformLocation.nacoss.value){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.propertyAge.options[formLocation.propertyAge.selectedIndex].value != contformLocation.propertyAge.value){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.construction.options[formLocation.construction.selectedIndex].value != contformLocation.construction.value){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.material.options[formLocation.material.selectedIndex].value != contformLocation.material.value){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.roof.options[formLocation.roof.selectedIndex].value != contformLocation.roof.value){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.cycles.options[formLocation.cycles.selectedIndex].value != contformLocation.cycles.value){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.contentsAccidental.checked && contformLocation.contentsAccidental.value != "checked"){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(!formLocation.contentsAccidental.checked && contformLocation.contentsAccidental.value == "checked"){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.contentsRequired.checked && contformLocation.contentsRequired.value != "checked"){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(!formLocation.contentsRequired.checked && contformLocation.contentsRequired.value == "checked"){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(formLocation.buildingsRequired.checked && contformLocation.buildingsRequired.value != "checked"){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	if(!formLocation.buildingsRequired.checked && contformLocation.buildingsRequired.value == "checked"){
+		alert('You have changed your selected details - \nPlease click on Calculate Premium first...');
+		return false;
+	}
+	return true;
+}
+
+function validate_amount() { //v2.0
+
+
+//  ----------- Start of Include file ---------------
+// For all form validation javascripts
+// Used to define browser dependent document form object
+
+	if ((navigator.appName == "Netscape") && (navigator.userAgent.toLowerCase().indexOf('gecko') < 0)){
+	
+		formLocation = document.contentsLayer.document.forms[0];}  //Older Netscape browsers
+	else{
+		formLocation = document.forms[0];}  // MS IE, Netscape v6, Gecko powered browsers
+
+	
+// ---------- Endo of Include file -----------------
+
+   var inputnumber = parseInt(formLocation.amount.value, 10);
+
+   if (!parseInt(formLocation.amount.value, 10)) {
+	formLocation.amount.value = 35;
+	alert('Please enter a number');
+	return false;
+	}
+   else
+	formLocation.amount.value = '' + parseInt(formLocation.amount.value, 10);
+   if (formLocation.amount.value < 35) {
+	formLocation.amount.value = 35;
+	alert('Minimum amount of cover is £35,000');
+	return false;
+   }
+   if (formLocation.amount.value > 300) {
+	formLocation.amount.value = 300;
+	alert('Maximum amount of cover available is £300,000');
+	return false;
+   }
+}
+
+function validate_amountB() { //v2.0
+
+
+//  ----------- Start of Include file ---------------
+// For all form validation javascripts
+// Used to define browser dependent document form object
+
+	if ((navigator.appName == "Netscape") && (navigator.userAgent.toLowerCase().indexOf('gecko') < 0)){
+	
+		formLocation = document.contentsLayer.document.forms[0];}  //Older Netscape browsers
+	else{
+		formLocation = document.forms[0];}  // MS IE, Netscape v6, Gecko powered browsers
+
+	
+// ---------- Endo of Include file -----------------
+
+   var inputnumber = parseInt(formLocation.amountB.value, 10);
+
+   if (!parseInt(formLocation.amountB.value, 10)) {
+	formLocation.amountB.value = 35;
+	alert('Please enter a number');
+	return false;
+	}
+   else
+	formLocation.amountB.value = '' + parseInt(formLocation.amountB.value, 10);
+   if (formLocation.amountB.value > 300) {
+	formLocation.amountB.value = 300;
+	alert('Maximum amount of cover available is £300,000');
+	return false;
+   }
+   return true;
+}
+
+
+
+
+function validatePremiumForm(){
+
+
+//  ----------- Start of Include file ---------------
+// For all form validation javascripts
+// Used to define browser dependent document form object
+
+	if ((navigator.appName == "Netscape") && (navigator.userAgent.toLowerCase().indexOf('gecko') < 0)){
+	
+		formLocation = document.contentsLayer.document.forms[0];}  //Older Netscape browsers
+	else{
+		formLocation = document.forms[0];}  // MS IE, Netscape v6, Gecko powered browsers
+
+	
+// ---------- Endo of Include file -----------------
+           
+	//validate postcode
+	if (!validate_postcode()){
+		return false;
+	}
+
+	//validate dob
+	if (!validate_dob()){
+		return false;
+	}
+	//validate that a policy type has been chosen
+	if ((!formLocation.contentsRequired.checked) && (!formLocation.buildingsRequired.checked)){
+		alert("Insurance Type not Chosen\n\nYou must indicate whether you want contents insurance, buildings insurance, or both");
+		formLocation.contentsRequired.focus();
+		return false;
+	}
+
+	//validate occupation
+	if (formLocation.occupation.options[formLocation.occupation.selectedIndex].value == 1){
+		alert("Sorry - RapidInsure is unable provide insurance for this category of Occupation.")
+		formLocation.occupation.focus();
+		return false;
+	}
+
+	//validate occupation
+	if (formLocation.occupation.options[formLocation.occupation.selectedIndex].value == 11){
+		alert("Sorry - RapidInsure is unable provide insurance for this category of Occupation.")
+		formLocation.occupation.focus();
+		return false;
+	}
+
+	//validate occupation
+	if (formLocation.occupation.options[formLocation.occupation.selectedIndex].value == 99){
+		alert("Sorry - RapidInsure is unable provide insurance for this category of Occupation.")
+		formLocation.occupation.focus();
+		return false;
+	}
+
+	//if builidngs required
+	if(formLocation.buildingsRequired.checked){
+		//validate building against tennancy
+		if (formLocation.ownership.options[formLocation.ownership.selectedIndex].value == "Tenant"){
+			alert("Sorry - Rapidnsure is unable to provide buildings cover to tenants")
+			formLocation.buildingsRequired.checked = false;
+			formLocation.ownership.focus();
+			return false;
+		}
+
+		//validate against flats
+		if (formLocation.construction.options[formLocation.construction.selectedIndex].value == "Flat"){
+			alert("Sorry - RapidInsure is unable to provide buildings insurance for flats")
+			formLocation.buildingsRequired.checked = false;
+			formLocation.construction.focus();
+			return false;
+		}
+
+		//validate buildings cover required
+		if (!validate_amountB()){
+			return false;
+		}
+
+		//validate building type
+		if (formLocation.material.options[formLocation.material.selectedIndex].value == "Other"){
+			alert("Sorry - RapidInsure is unable to provide insurance if your property\nis not constructed of brick, stone, concrete or flint.")
+			formLocation.material.focus();
+			return false;
+		}
+
+		//validate roof type
+		if (formLocation.roof.options[formLocation.roof.selectedIndex].value == "Other"){
+			alert("Sorry - RapidInsure is unable to provide insurance if your property roof\nis not constructed of tile, slate, concrete or metal.")
+			formLocation.material.focus();
+			return false;
+		}
+
+	}
+	return true;
+
+}
+
+function validateContinueForm(){
+
+//  ----------- Start of Include file ---------------
+// For all form validation javascripts
+// Used to define browser dependent document form object
+
+	if ((navigator.appName == "Netscape") && (navigator.userAgent.toLowerCase().indexOf('gecko') < 0)){
+	
+		formLocation = document.contentsLayer.document.forms[0];}  //Older Netscape browsers
+	else{
+		formLocation = document.forms[0];}  // MS IE, Netscape v6, Gecko powered browsers
+
+	
+// ---------- Endo of Include file -----------------
+
+	//this wrapper function checks that the details being submittted
+	//are not differnect to the details on which the premium is based
+	//if they are alert and stop
+}
+
+function MM_displayStatusMsg(msgStr) { //v1.0
+  status=msgStr;
+  document.MM_returnValue = true;
+}
+
+</script>
+<meta name="keywords" content="business, insurance, holiday, travel, company, uk, england, life, quote, pet, health, house, office, household, contents, services, cover, broker, computer, personal, accident, accidental, rapid, insure, group, assurance, agent, whole, term, long, private, policy">
+<meta name="description" content="business insurance, holiday and travel insurance, pet, health ..... online quote from Rapid Insure .co.uk">
+<meta name="company" contents="RapidInsure">
+<meta name="homepage" contents="http://www.rapidinsure.co.uk/">
+<meta http-equiv="content-language" content="en">
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="expires" content="0">
+<meta name="distribution" content="Global">
+<meta name="rating" content="General">
+<meta name="revisit-after" content="7 days">
+<meta name="robots" content="follow, index">
+	<script>
+	<!--
+	//Break-out-of-frames script
+	//if (window!= top)
+	//top.location.href=location.href
+	// -->
+	</script>
+	<script>
+        function goCar()
+	{
+	var loc = ("http://194.216.175.247/cgi-bin/BUDI/CQ/?E4TRANSID=*NONE&E4CLIENT=BUDI&E4APPLICATION=CQ&TARGETPGM=QT001&AFFCLIE=B024");
+	myeducation=window.open(loc, 'GoEd','width=771,height=540,top=2, left=2,resizable=0,scrollbars=yes,menubar=no,status=no,toolbar=no,location=no ');
+	}
+	</script>
+	<script >
+	<!--
+	   function open_win(url)
+   {
+           if (navigator.appName == "Netscape")
+           {
+                var siteseal_win = window.open(url, "win", "screenX=0,screenY=0,toolbar=0,location=0,directories=0,status=1,menubar=1,scrollbars=0,resizable=0,width=645,height=540");
+                   siteseal_win.focus();
+           }
+           if (navigator.appName == "Microsoft Internet Explorer")
+           {
+                   var siteseal_win = window.open(url, "win", "top=0,left=0,toolbar=0,location=0,directories=0,status=1,menubar=1,scrollbars=0,resizable=0,width=645,height=540");
+           }
+   }
+	function openHelpWindow(helpNo){
+        var helpWindow = window.open("/displayHelpNote.asp?helpNo="+helpNo, "helpWindow", "screenX=0,screenY=0,top=0,left=0,toolbar=0,location=0,directories=0,status=no,menubar=no,scrollbars=yes,resizable=yes,width=285,height=350");
+        helpWindow.focus();}
+	function openBigHelpWindow(helpNo){
+        var helpWindow = window.open("/displayHelpNote.asp?helpNo="+helpNo, "bighelpWindow", "screenX=0,screenY=0,top=0,left=0,toolbar=0,location=0,directories=0,status=no,menubar=no,scrollbars=yes,resizable=yes,width=580,height=350");
+        helpWindow.focus();}
+	function MM_reloadPage(init) {  //reloads the window if Nav4 resized
+	  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
+	    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
+	  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) location.reload();
+	}
+	MM_reloadPage(true);
+	// -->
+	
+	function MM_swapImgRestore() { //v3.0
+	  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+	}
+	
+	function MM_preloadImages() { //v3.0
+	  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+	    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+	    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+	}
+	
+	function MM_findObj(n, d) { //v3.0
+	  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+	    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+	  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+	  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document); return x;
+	}
+	
+	function MM_swapImage() { //v3.0
+	  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+	   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+	}
+	
+	function MM_showHideLayers() { //v3.0
+	  var i,p,v,obj,args=MM_showHideLayers.arguments;
+	  for (i=0; i<(args.length-2); i+=3) if ((obj=MM_findObj(args[i]))!=null) { v=args[i+2];
+	    if (obj.style) { obj=obj.style; v=(v=='show')?'visible':(v='hide')?'hidden':v; }
+	    obj.visibility=v; }
+	}
+	function HelpWindow(){
+			window.open("/Information/help/help.htm", "helpWindow", "width=285,height=350")
+	}
+	//-->
+	</script>
+<link rel="stylesheet" href="/navigation/personal/master.css">
+
+</HEAD>
+<body bgcolor="#FFFFFF" text="#333399" link="#0000FF" vlink="#0000FF" alink="#009900" onLoad="MM_preloadImages('/navigation/personal/images/BusinessButton2.gif','/navigation/personal/images/img_03b.gif','/navigation/personal/images/img_04b.gif','/navigation/personal/images/img_05b.gif','/navigation/personal/images/img_06b.gif','/navigation/personal/images/img_07b.gif','/navigation/personal/images/img_08b.gif')">
+<SPAN id=BG 
+style="HEIGHT: 84px; LEFT: -7px; POSITION: absolute; TOP: 0px; WIDTH: 544px; Z-INDEX: 2"><IMG 
+border=0 height=133 
+src="/navigation/personal/images/BG.gif" 
+width=790></SPAN>
+<SPAN id=Banner style="HEIGHT: 0px; LEFT: 224px; POSITION: absolute; TOP: 0px; WIDTH: 2px; Z-INDEX: 3">
+<a href="/banmanpro/banman.asp?ZoneID=5&Task=Click&Mode=HTML&PageID=98794654">
+<img src="/banmanpro/banman.asp?ZoneID=5&Task=Get&Mode=HTML&PageID=98794654" width="468" height="60" border="0"></a>
+</span> 
+<SPAN id=Cats style="HEIGHT: 42px; LEFT: 63px; POSITION: absolute; TOP: 72px; WIDTH: 515px; Z-INDEX: 5; visibility: visible">
+<a href="https://www.rapidinsure.co.uk/insurance/holiday/holiday.asp" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('holiday','','/navigation/personal/images/holiday_on.gif',1)"><img name="holiday" border="0" src="/navigation/personal/images/holiday_off.gif" width="46" height="44"></a><a href="https://www.rapidinsure.co.uk/insurance/groupholiday/groupholiday.asp" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Image11','','/navigation/personal/images/group_travel_on.gif',1)"><img name="Image11" border="0" src="/navigation/personal/images/group_travel_off.gif" width="68" height="44"></a><a href="https://www.rapidinsure.co.uk/insurance/explorer/explorer.asp" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Image12','','/navigation/personal/images/explorer_on.gif',1)"><img name="Image12" border="0" src="/navigation/personal/images/explorer_off.gif" width="52" height="44"></a><a href="https://www.rapidinsure.co.uk/insurance/life/life.asp" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('life','','/navigation/personal/images/img_03b.gif',1)"><img name="life" border="0" src="/navigation/personal/images/img_03.gif" width="36" height="44"></a><a href="https://www.rapidinsure.co.uk/insurance/accident/accident.asp" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Image13','','/navigation/personal/images/img_05b.gif',1)"><img name="Image13" border="0" src="/navigation/personal/images/img_05.gif" width="56" height="44"></a><a href="https://www.rapidinsure.co.uk/insurance/petannual/petannual.asp" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Image14','','/navigation/personal/images/img_06b.gif',1)"><img name="Image14" border="0" src="/navigation/personal/images/img_06.gif" width="50" height="44"></a><a href="https://www.rapidinsure.co.uk/insurance/personalcomputer/computer.asp" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Image15','','/navigation/personal/images/img_07b.gif',1)"><img name="Image15" border="0" src="/navigation/personal/images/img_07.gif" width="57" height="44"></a><a href="https://www.rapidinsure.co.uk/insurance/household/household.asp" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Image16','','/navigation/personal/images/img_08b.gif',1)"><img name="Image16" border="0" src="/navigation/personal/images/img_08.gif" width="60" height="44"></a><a href="javascript:goCar();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Image18','','/navigation/personal/images/motor_on2.gif',1)"><img name="Image18" border="0" src="/navigation/personal/images/motor_off2.gif" width="48" height="44"></a></SPAN> 
+<SPAN id=Business 
+style="HEIGHT: 0px; LEFT: 495px; POSITION: absolute; TOP: 93px; WIDTH: 84px; Z-INDEX: 4">
+<A href="/business" onmouseout=MM_swapImgRestore() 
+onmouseover="MM_swapImage('Image10','','/navigation/personal/images/BusinessButton2.gif',1)"><IMG 
+border=0 height=39 name=Image10 
+src="/navigation/personal/images/BusinessButton.gif" 
+width=278></A></SPAN>
+<DIV id=Layer2 style="HEIGHT: 478px; LEFT: 784px; POSITION: absolute; TOP: 108px; WIDTH: 2px; Z-INDEX: 6"></DIV>
+<DIV id=services 
+style="HEIGHT: 5px; LEFT: 559px; POSITION: absolute; TOP: 68px; VISIBILITY: visible; WIDTH: 210px; Z-INDEX: 6">
+<TABLE align=center border=0 cellPadding=0 cellSpacing=0 height=21>
+  <TR>
+    <TD align=middle vAlign=center width="32%"><A class=members 
+      href="https://www.rapidinsure.co.uk/members/memberlogin.asp"><FONT 
+      color=white>&nbsp;&nbsp;Members&nbsp;&nbsp</FONT></A> </TD>
+    <TD align=middle vAlign=center width="20%"><A class=members 
+      href="/information"><FONT color=white>Info</FONT></A> </TD>
+    <TD align=middle vAlign=center width="24%"><A class=members 
+      href="javascript:HelpWindow();"><FONT color=white>Help</FONT></A> </TD>
+    <TD align=middle vAlign=center width="24%"><A class=members 
+      href="/press"><FONT color=white>Press</FONT></A> 
+  </TD></TR></TABLE></DIV><SPAN id=Layer1 
+style="HEIGHT: 49px; LEFT: 0px; POSITION: absolute; TOP: 3px; WIDTH: 171px; Z-INDEX: 19"><A 
+href="/"><IMG alt="Return to RapidInsure Home page" border=0 
+height=63 
+src="/navigation/personal/images/rapid_anim.gif" 
+width=189></A></SPAN>
+<div id="contentsLayer" style="position:absolute; left:1px; top:140px; width:763px; height:242px; z-index:1">
+
+<b><font face="Verdana, Arial, Helvetica, sans-serif" size="3"> Household Contents
+and Buildings Insurance - </font></b>
+<table>
+  <tr>
+    <td width=618>
+      <table width="100%" border="0" align="center">
+        <tr bgcolor="#4769B2">
+          <td align="right" colspan="4">
+            <div align="center"><font face="Verdana, Arial, Helvetica, sans-serif" size="2" color="#FFFFFF"><b>Please
+              enter your details below, then click Calculate Premium</b></font></div>
+          </td>
+        </tr>
+      </table>
+      <form method="post" action="./household.asp" name="cover" onSubmit="return validatePremiumForm();">
+        <table width="100%" border="0">
+          <tr>
+            <td width="42%" align="right"><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Postcode:
+              </font></td>
+            <td align="left" colspan="2"><font size=3>
+              <input type="text" name="postcode1" size="4" maxlength="4" value="" onChange="validate_postcode1()">
+              <input type="text" name="postcode2" size="4" maxlength="4" value="" onChange="validate_postcode2()">
+              </font></td>
+          </tr>
+          <tr>
+            <td width="42%" align="right" rowspan="2"><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Date
+              of Birth: </font></td>
+            <td rowspan="2" align="left" width="31%"><font size=3>
+              <input type="text" name="dateStr" size="2" maxlength="2" value="01">
+              /
+              <input type="text" name="monthStr" size="2" maxlength="2" value="01">
+              /
+              <input type="text" name="yearStr" size="4" maxlength="4" value="1900">
+              </font></td>
+            <td rowspan="2" align="left" width="27%"><font size=3> </font> <font face="Arial, Helvetica, sans-serif" size="1" color="#00CC33">In
+              dd/mm/yyyy format<br>
+              (e.g. 19/01/1975)</font></td>
+          </tr>
+          <tr> </tr>
+          <tr>
+            <td width="42%" align="right"><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Occupation
+              Category: </font></td>
+            <td align="left" colspan="2"><font size="2"> 
+              <select name="occupation">
+                <option value="1" >Unemployed</option>
+                <option value="2" >Househusband/wife</option>
+                <option value="3" >Retired</option>
+                <option value="4" >Professional/Management</option>
+                <option value="5" >Clerical</option>
+                <option value="6" >Blue-collar Worker</option>
+                <option value="7" selected>Manual Worker</option>
+                <option value="8" >Farmer</option>
+                <option value="9" >Home-Worker</option>
+                <option value="11" >Student</option>
+                <option value="99" >Unknown</option>
+              </select>
+              </font></td>
+          </tr>
+          <tr>
+            <td width="42%" align="right"><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Property
+              Ownership: </font></td>
+            <td align="left" colspan="2"><font size="2"> 
+              <select name="ownership">
+                <option value="Tenant" selected>Tenant</option>
+                <option value="Freehold" >Freehold</option>
+                <option value="Leasehold" >Leasehold</option>
+              </select>
+              </font></td>
+          </tr>
+          <tr>
+            <td width="42%" align="right"><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Number
+              of bedrooms: </font></td>
+            <td align="left" colspan="2"> 
+              <select name="bedrooms" size="1">
+                <option value="1" >1</option>
+                <option value="2" >2</option>
+                <option value="3" selected>3</option>
+                <option value="4" >4</option>
+                <option value="5" >5</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td width="42%" align="right"><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Year
+              property built: </font></td>
+            <td align="left" colspan="2"> 
+              <select name="propertyAge" size="1">
+                <option value="1" selected>1870 - 1899</option>
+                <option value="2" >1900 - 1919</option>
+                <option value="3" >1920 - 1945</option>
+                <option value="4" >1946 - 1959</option>
+                <option value="5" >1960 - 1979</option>
+                <option value="6" >1980 - 1989</option>
+                <option value="7" >1990 - 1999</option>
+                <option value="8" >2000 onwards</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td width="42%" align="right"><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Type
+              of Property: </font></td>
+            <td align="left" colspan="2"> 
+              <select name="construction">
+                <option value="Detached" selected>Detached</option>
+                <option value="SemiDetached" >Semi-Detached</option>
+                <option value="MidTerrace" >Middle of Terrace</option>
+                <option value="EndTerrace" >End of Terrace</option>
+                <option value="Bungalow" >Bungalow</option>
+                <option value="Flat" >Flat</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td width="42%" align="right"><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Accidental
+              Damage Cover: </font></td>
+            <td align="left" colspan="2">
+              <input type="checkbox" name="contentsAccidental" value="checked" >
+              <font face="Verdana, Arial, Helvetica, sans-serif" size="1" color="#00CC33">
+              Click box if accidental damage cover is required</font></td>
+          </tr>
+          <tr>
+            <td width="42%" align="right"><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Amount
+              of Voluntary Excess: </font></td>
+            <td align="left" colspan="2"><font size="2"> 
+              <select name="voluntaryExcess">
+                <option value=0 selected>None</option>
+                <option value=50 >&pound;50</option>
+                <option value=100 >&pound;100</option>
+                <option value=250 >&pound;250</option>
+              </select>
+              <font face="Verdana, Arial, Helvetica, sans-serif" size="1" color="#00CC33">
+              (in addition to mandatory &pound;50 excess)</font></font></td>
+          </tr>
+        </table>
+        <table width="100%" border="0">
+          <tr>
+            <td valign="top" width="50%">
+              <table width="100%" border="0" align="center">
+                <tr bgcolor="#4769B2">
+                  <td align="right" colspan="4">
+                    <div align="center"><font size="2" color="#FFFFFF" face="Verdana, Arial, Helvetica, sans-serif"><b>Tick
+                      for
+                      <input type="checkbox" name="contentsRequired" value="checked" >
+                      Contents Insurance<br>
+                      (standard cover for &pound;35,000)</b></font></div>
+                  </td>
+                </tr>
+              </table>
+              <table width="100%" border="0">
+                <tr>
+                  <td><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Is
+                    a NACOSS alarm fitted: </font><br>
+                    <font size="1" face="Verdana, Arial, Helvetica, sans-serif" color="#00CC33"><a href="securitydefs.asp">(click
+                    here for security definitions)</a></font></td>
+                  <td><font size="2" face="Verdana, Arial, Helvetica, sans-serif">
+                    
+                    <select name="nacoss">
+                      <option value="N" selected>No</option>
+                      <option value="Y" >Yes</option>
+                    </select>
+                    </font></td>
+                </tr>
+                <tr>
+                  <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td colspan="2"><font face="Verdana, Arial, Helvetica, sans-serif" size="2"><b>Additional
+                    contents cover available:</b> </font></td>
+                </tr>
+                <tr>
+                  <td><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Personal
+                    Belongings<br>
+                    (away from home): <br>
+                    <font size="1" face="Verdana, Arial, Helvetica, sans-serif" color="#00CC33">maximum
+                    single item value &pound;1500</font></font></td>
+                  <td><font color="#000000"> 
+                    <select name="contentsPossessionsCover">
+                      <option value=0 selected>None</option>
+                      <option value=2 >&pound;2,000</option>
+                      <option value=3 >&pound;3,000</option>
+                      <option value=4 >&pound;4,000</option>
+                      <option value=5 >&pound;5,000</option>
+                    </select>
+                    </font><a href="javascript:openHelpWindow(4)"> <img src="/images/helpPersonal.gif" width="25" height="25" align="absbottom" border=0 alt="Click for Information"></a></td>
+                </tr>
+                <tr>
+                  <td><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Frozen
+                    Food: </font></td>
+                  <td><font size="2" face="Verdana, Arial, Helvetica, sans-serif">
+                    <select name="frozenFood">
+                      <option value=0 selected>None</option>
+                      <option value=2 >&pound;200</option>
+                      <option value=3 >&pound;300</option>
+                      <option value=5 >&pound;500</option>
+                    </select>
+                    </font></td>
+                </tr>
+                <tr>
+                  <td><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Pedal
+                    Cycles <br>
+                    (away from home):<br>
+                    <font size="1" color="#00CC33">maximum &pound;500 per cycle</font></font></td>
+                  <td><font size="2" face="Verdana, Arial, Helvetica, sans-serif">
+                    <select name="cycles">
+                      <option value="0" selected>None</option>
+                      <option value="1" >&pound;500</option>
+                      <option value="2" >&pound;1,000</option>
+                      <option value="3" >&pound;1,500</option>
+                    </select>
+                    </font><a href="javascript:openHelpWindow(3)"> <img src="/images/helpPersonal.gif" width="25" height="25" align="absbottom" border=0 alt="Click for Information"></a></td>
+                </tr>
+              </table>
+            </td>
+            <td valign="top" width="50%">
+              <table width="100%" border="0" align="center">
+                <tr bgcolor="#4769B2">
+                  <td align="right" colspan="4">
+                    <div align="center"><font face="Verdana, Arial, Helvetica, sans-serif" size="2" color="#FFFFFF"><b>Tick
+                      for
+                      <input type="checkbox" name="buildingsRequired" value="checked" >
+                      Buildings Insurance <br>
+                      (for home owners only)</b></font></div>
+                  </td>
+                </tr>
+              </table>
+              <table width="100%" border="0">
+                <tr>
+                  <td colspan="2">
+                    <div align="right"><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Amount
+                      of buildings cover required: </font></div>
+                  </td>
+                  <td width="40%"><font color="#000000">&pound;
+                    <input type="text" name="amountB" size="3" value="35" maxlength="3">
+                    ,000</font><br>
+                    <font face="Verdana, Arial, Helvetica, sans-serif" size="2">
+                    </font><font size="1" face="Arial, Helvetica, sans-serif" color="#00CC33">(Max
+                    &pound;300,000)</font></td>
+                </tr>
+                <tr valign="middle">
+                  <td colspan="2">
+                    <div align="right"><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Wall
+                      Type: <br>
+                      </font></div>
+                  </td>
+                  <td width="40%"><font face="Verdana, Arial, Helvetica, sans-serif" size="1">
+                    
+                    <select name="material">
+                      <option value="Brick" >Brick</option>
+                      <option value="Concrete" >Concrete</option>
+                      <option value="Flint" >Flint</option>
+                      <option value="Stone" >Stone</option>
+                      <option value="Other" selected>Other</option>
+                    </select>
+                    </font></td>
+                </tr>
+                <tr valign="middle">
+                  <td colspan="2">
+                    <div align="right"><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Roof
+                      Type: </font></div>
+                  </td>
+                  <td width="40%"><font face="Verdana, Arial, Helvetica, sans-serif" size="1">
+                    
+                    <select name="roof">
+                      <option value="Concrete" >Concrete</option>
+                      <option value="Metal" >Metal</option>
+                      <option value="Slate" >Slate</option>
+                      <option value="Tile" >Tile</option>
+                      <option value="Other" selected>Other</option>
+                    </select>
+                    </font></td>
+                </tr>
+                <tr>
+                  <td width="37%">&nbsp;</td>
+                  <td colspan="2"><font face="Verdana, Arial, Helvetica, sans-serif" size="1" color="#00CC33">No
+                    more than 30% of the roof may be made of materials other than
+                    that selected.</font></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+        <table  width="100%" border="0" align="center">
+          <tr bgcolor="#00CC33">
+            <td align="right" height="1"><img src="../../Images/onebyone.gif" width="1" height="1"></td>
+          </tr>
+        </table>
+        <table width="100%" border="0">
+          <tr>
+            <td align=center><a name="premiumanchor"></a>
+              <p align="center">
+              <font face="Verdana, Arial, Helvetica, sans-serif" size="2"><b>
+              <font color="#00CC33"> <br>
+              <input type="image" border="0" name="calcpremium" src="../../Images/calculate.gif" width="136" height="30" alt="Calculate your premium based on the information that you have entered">
+              <br>
+              <br>
+              <font face="Verdana, Arial, Helvetica, sans-serif" size="3"><b>
+              <div align="center"><font color="#333399">Annual Premium = &pound;
+                0.00 </font> </div>
+              </b></font></font>
+              <p><font color="#00CC33" face="Verdana, Arial, Helvetica, sans-serif" size="2"><font size="1" color="#333399">
+                </font>  </font>
+              </b> </font>
+			  		  <input type="hidden" name="quoteCounted" value="yes">
+
+
+
+			  </td>
+          </tr>
+        </table>
+      </form>
+      <form method="post" action="./householdform.asp" name="contbutton" onSubmit="return validate_contbutton();">
+        <table  width="100%" border="0" align="center">
+          <tr bgcolor="#00CC33">
+            <td align="right" height="1"><img src="../../Images/onebyone.gif" width="1" height="1"></td>
+          </tr>
+        </table>
+        
+        <input type="hidden" name="combpremium" value="0">
+        <input type="hidden" name="postcode1" value="">
+        <input type="hidden" name="postcode2" value="">
+        <input type="hidden" name="dateStr" value="01">
+        <input type="hidden" name="monthStr" value="01">
+        <input type="hidden" name="yearStr" value="1900">
+        <input type="hidden" name="occupation" value="7">
+        <input type="hidden" name="ownership" value="Tenant">
+        <input type="hidden" name="contentsAccidental" value="">
+        <input type="hidden" name="voluntaryExcess" value="None">
+        <input type="hidden" name="contentsRequired" value="">
+        <input type="hidden" name="bedrooms" value="3">
+        <input type="hidden" name="contentsPossessionsCover" value="None">
+        <input type="hidden" name="frozenFood" value="None">
+        <input type="hidden" name="cycles" value="None">
+        <input type="hidden" name="age" value="">
+        <input type="hidden" name="amountB" value="35">
+        <input type="hidden" name="nacoss" value="N">
+        <input type="hidden" name="propertyAge" value="1">
+        <input type="hidden" name="buildingsRequired" value="">
+        <input type="hidden" name="construction" value="Detached">
+        <input type="hidden" name="material" value="Other">
+        <input type="hidden" name="roof" value="Other">
+        <input type="hidden" name="endorsements" value="">
+      </form>
+      <table  width="100%" border="0" align="center">
+        <tr bgcolor="#00CC33">
+          <td align="right" height="1"><img src="../../Images/onebyone.gif" width="1" height="1"></td>
+        </tr>
+      </table>
+      <table>
+        <tr>
+          <td>
+            <p><font size=2 face="Verdana, Arial, Helvetica, sans-serif">This
+              product is designed for homes where the replacement value of contents
+              does not exceed &pound;35,000. It is not suitable for homes containing
+              contents of a higher value. This product is only available to United
+              Kingdom Residents. </font></p>
+            <div align="center">
+              <table cellspacing=0 cellpadding=2 bordercolor="#FFFFFF" border=0 width="53%">
+                <tr bordercolor="#FF9933">
+                  <td bordercolor="#00CC33" width="123" height="0" valign="middle"><a href="summary.asp" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('summary','','../../Images/summaryOn.gif',0)"><img src="../../Images/summaryOff.gif" width="144" height="26" border="0" name="summary"></a></td>
+                  <td valign="MIDDLE" bordercolor="#00CC33" width="275" height="0"><a href="householdtncs.asp" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('tandc','','../../Images/tandcOn.gif',0)"><img src="../../Images/tandcOff.gif" width="171" height="24" name="tandc" border="0"></a></td>
+                  <td valign="MIDDLE" bordercolor="#00CC33" width="116" height="0"><a href="householdtncs.asp#claims" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('claim','','../../Images/claimOn.gif',1)"><img src="../../Images/claimOff.gif" width="171" height="26" name="claim" border="0"></a></td>
+                </tr>
+              </table>
+              <p>&nbsp;</p>
+            </div>
+            <table  width="100%" border="0" align="center">
+              <tr bgcolor="#00CC33">
+                <td align="right" height="1"><img src="/Images/onebyone.gif" width="1" height="1"></td>
+              </tr>
+            </table>
+            <p align="CENTER">
+            <center>
+              <table cellspacing=0 border=0 width="90%">
+                <tr>
+                  <td valign="MIDDLE" colspan=3 height="19">
+                    <p><font face="Verdana, Arial, Helvetica, sans-serif" size="2"><b>Notes:</b></font>
+                  </td>
+                </tr>
+                <tr valign="top">
+                  <td>
+                    <p align="left"><font face="Verdana, Arial, Helvetica, sans-serif" size="2">1.</font>
+                  </td>
+                  <td>&nbsp;</td>
+                  <td>
+                    <p><font face="Verdana, Arial, Helvetica, sans-serif" size="2">The
+                      above premium includes insurance premium tax at 5%.</font>
+                  </td>
+                </tr>
+                <tr valign="top">
+                  <td>
+                    <p align="left"><font face="Verdana, Arial, Helvetica, sans-serif" size="2">2.</font>
+                  </td>
+                  <td>&nbsp;</td>
+                  <td>
+                    <p><font face="Verdana, Arial, Helvetica, sans-serif" size="2">Pairs
+                      or sets of items are regarded as one item.</font>
+                  </td>
+                </tr>
+              </table>
+            </center>
+            <p>
+          </td>
+        </tr>
+      </table>
+    <td align=left valign=top width=150 bgcolor=white height="119">
+      <table border bordercolor="#4769b2" bordercolordark="#4769b2" bordercolorlight="#4769b2" bgcolor="white" align=center valign=center height=100% width=100%>
+        <tr bgcolor="white" valign=top>
+          <td align="center" valign=top bgcolor="white" height="100%">
+            <div align="center">
+              <p><font face="Verdana, Arial, Helvetica, sans-serif" size="2"><img src="/navigation/personal/images/householdicon.gif" width="66" height="48"><br>
+                <b>Competitive Cover:</b><br>
+                Our home policy, insured by HSBC, protects your contents
+                and buildings at competitive prices with options to insure personal
+                possessions (anywhere in Europe, and anywhere else in the World
+                for up to 60 days), pedal cycles and frozen food.</font></p>
+              <p><font face="Verdana, Arial, Helvetica, sans-serif" size="2"><b>A
+                Quick Claims Response:</b><br>
+                If you have a claim, HSBC promise you a rapid response
+                when you call their 24-hour claims helpline. In an emergency an
+                approved repairer will contact you within two hours, and in non-emergencies
+                within 24 hours. In addition professional advice is available
+                for the price of a local telephone call on 24-hour helplines.</font>
+              </p>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<br><br><br><br><div class=copyright><p align=center>&copy;RapidInsure.co.uk and associates<br>All visitors to our website are covered by our <a href="/information/siteusage.asp">Terms of Service</a></div><br><br><br><br></div>
+</body>
+</html>
+

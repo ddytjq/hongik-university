@@ -1,0 +1,114 @@
+ID=G0546
+URL=http://arcturus.mit.edu/cosmics/doc-html/node6.html
+SIZE=6469
+DATE=09/07/2002
+TIME=16:19:06
+DATASET=Astronomy
+HTML=<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95 (Thu Jan 19 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> Linger Output</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" Linger Output">
+<meta name="keywords" value="cosmics">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html77 HREF="node7.html"><IMG ALIGN=BOTTOM ALT="next" SRC="file:/usr/local/lib/latex2html/icons/next_motif.gif"></A>   <A NAME=tex2html75 HREF="node4.html"><IMG ALIGN=BOTTOM ALT="up" SRC="file:/usr/local/lib/latex2html/icons/up_motif.gif"></A>   <A NAME=tex2html71 HREF="node5.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="file:/usr/local/lib/latex2html/icons/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html78 HREF="node7.html"> DELTAT: Evaluate CMB </A>
+<B>Up:</B> <A NAME=tex2html76 HREF="node4.html"> Linger Usage</A>
+<B> Previous:</B> <A NAME=tex2html72 HREF="node5.html"> Linger Input</A>
+<BR> <HR> <P>
+<H3><A NAME=SECTION00021200000000000000> Linger Output</A></H3>
+<P>
+<tt>Linger</tt> produces no standard output after the parameters are
+entered; all subsequent output goes to two disk files, <tt>linger.dat</tt>
+and <tt>lingerg.dat</tt>.  The first one gives, as a function of <b>k</b> at
+redshift <IMG  ALIGN=MIDDLE ALT="" SRC="img62.gif">, the metric variables and the density, velocity
+divergence, and shear stress perturbations in all the components (except
+that no shear stress is output for CDM and baryons, since they are, at the
+final redshift, essentially perfect fluids with vanishing shear stress).
+<tt>Linger.dat</tt> is an ascii file with two header lines giving the input
+parameters, followed by <b>nk</b> lines giving the perturbation variables.
+It is written as follows:
+<BR><tt>
+write(10,'(4(1pe12.6,1x))') Omega_b,Omega_c,Omega_v,Omega_nu
+    <BR>
+write(10,'(3(1pe12.6,1x),3(i2,2x))') H0,Tcmb,Y_He,3-N_nu,N_nu,
+    <BR>
+&amp; ICflag<BR>
+do ik=1,nk<BR>
+write(10,'(i7,1x,19(1pe11.4,1x))') ik,ak,a,tau,psi,phi,
+    <BR>
+&amp; deltac,deltab,deltag,deltar,deltan,thetac,thetab,thetag,
+    <BR>
+&amp; thetar,thetan,shearg,shearr,shearn,econ<BR>
+end do<BR>
+</tt>
+<tt>ICflag</tt> is set to 0 for <tt>linger_con</tt>, allowing one to determine
+from the files which of the two codes was used for isentropic initial
+conditions.  The other parameters are as follows:
+<tt>ak</tt> is the wavenumber in 1/Mpc, <tt>a = 1/zend - 1</tt> is the
+final expansion scale factor, <tt>tau</tt> is the final conformal time in Mpc
+(conformal time is related to proper time by <IMG  ALIGN=MIDDLE ALT="" SRC="img63.gif">), <tt>psi</tt> and
+<tt>phi</tt> are the metric perturbation variables (for <tt>linger_con</tt>;
+substitute <tt>ahdot</tt> and <tt>eta</tt> of [<A HREF="node15.html#mab1">3</A>] in case of
+<tt>linger_syn</tt>).  The <tt>delta</tt>'s give the density fluctuations in
+CDM (c), baryons (b), photons (g), massless neutrinos (r), and massive
+neutrinos (n).  The <tt>theta</tt>'s give the velocity divergence fluctuations
+in the same components (except in the case of <tt>linger_syn</tt>, where
+<tt>thetac</tt> is replaced with the gauge transformation variable
+<tt>phi-eta</tt>, so that the gauge-invariant variable <tt>phi</tt> of
+conformal Newtonian gauge may be computed from the metric perturbation
+variable <tt>eta</tt> of synchronous gauge).  The <tt>shear</tt>'s give the
+anisotropic stress variable <IMG  ALIGN=BOTTOM ALT="" SRC="img64.gif"> of [<A HREF="node15.html#mab1">3</A>]; it is related to
+<IMG  ALIGN=BOTTOM ALT="" SRC="img65.gif"> of Kodama and Sasaki [<A HREF="node15.html#ks1">23</A>] by <IMG  ALIGN=MIDDLE ALT="" SRC="img66.gif"> for
+a component with mean density <IMG  ALIGN=MIDDLE ALT="" SRC="img67.gif"> and mean pressure <b>P</b>.  Finally,
+<tt>econ</tt> is an energy conservation check computed using the 0-0
+(energy constraint) Einstein equation; it gives a measure of the relative
+accuracy of the numerical results.
+<P>
+<tt>Lingerg.dat</tt> is an unformatted (binary) file containing the photon
+intensity and polarization transfer functions.  It is written as follows:
+<BR><tt>
+write(11) Omega_b,Omega_c,Omega_v,Omega_nu,H0,Tcmb,Y_He,3-N_nu,N_nu,
+    <BR>
+&amp; ICflag<BR>
+write(11) Bflag<BR>
+write(11) kmin,kmax,nk,zend,tau<BR>
+do ik=1,nk<BR>
+write(11) ik,ak,tau,lmax <BR>
+write(11) (DeltaI_l(k),l=0,lmax) <BR>
+write(11) (DeltaQ_l(k),l=0,lmax) <BR>
+end do<BR>
+</tt>
+Here, <tt>DeltaI_l</tt> is the perturbation in the photon temperature for
+the lth multipole moment; <tt>DeltaQ_l</tt> is the perturbation in the
+polarization.  (These two quantities are <IMG  ALIGN=MIDDLE ALT="" SRC="img68.gif"> the perturbations in
+the <b>I</b> and <b>Q</b> Stokes parameters; the factor of 4 providing the conversion
+from intensity to temperature fluctuations.)  See [<A HREF="node15.html#mab1">3</A>] for the
+exact definitions (though note that <tt>DeltaI_l</tt> and <tt>DeltaQ_l</tt>
+are written there as <IMG  ALIGN=MIDDLE ALT="" SRC="img69.gif"> and <IMG  ALIGN=MIDDLE ALT="" SRC="img70.gif">, respectively).
+<P>
+Because <tt>lingerg.dat</tt> is unformatted, it cannot (usually) be read
+on machines different from the one where it was created.  In a future
+release of COSMICS, routines will be provided giving the conversion
+of <tt>lingerg.dat</tt> to and from a portable binary scientific data format
+based on the NCSA HDF standard [<A HREF="node15.html#hdf">26</A>].
+<P>
+The results in <tt>linger.dat</tt> are used by <tt>grafic</tt>; the results in
+<tt>lingerg.dat</tt> are used by <tt>deltat</tt>.  These codes are discussed next.
+<P>
+<BR> <HR><A NAME=tex2html77 HREF="node7.html"><IMG ALIGN=BOTTOM ALT="next" SRC="file:/usr/local/lib/latex2html/icons/next_motif.gif"></A>   <A NAME=tex2html75 HREF="node4.html"><IMG ALIGN=BOTTOM ALT="up" SRC="file:/usr/local/lib/latex2html/icons/up_motif.gif"></A>   <A NAME=tex2html71 HREF="node5.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="file:/usr/local/lib/latex2html/icons/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html78 HREF="node7.html"> DELTAT: Evaluate CMB </A>
+<B>Up:</B> <A NAME=tex2html76 HREF="node4.html"> Linger Usage</A>
+<B> Previous:</B> <A NAME=tex2html72 HREF="node5.html"> Linger Input</A>
+<BR> <HR> <P>
+<BR> <HR>
+<P><ADDRESS>
+<I>Edmund Bertschinger <BR>
+Mon Jun 12 01:14:50 EDT 1995</I>
+</ADDRESS>
+</BODY>
+

@@ -1,0 +1,159 @@
+ID=F0062
+URL=http://www.geog.leeds.ac.uk/people/m.blake/magis/geog5080/lt3-1.htm
+SIZE=4911
+DATE=09/07/2002
+TIME=13:13:38
+DATASET=Visual Basic
+HTML=<HTML>
+
+<HEAD>
+<TITLE>Visual Basic Section 3: The Windows API</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF">
+<SCRIPT LANGUAGE="JavaScript">
+
+<!-- Beginning of JavaScript Applet -------------------
+
+/* Copyright (C)1996 Web Integration Systems, Inc. DBA Websys, Inc.
+   All Rights Reserved.
+
+   This applet can be re-used or modified, if credit is given in 
+   the source code.z
+
+   We will not be held responsible for any unwanted effects due to the 
+   usage of this applet or any derivative.  No warrantees for usability 
+   for any specific application are given or implied.
+
+   Chris Skinner, January 30th, 1996.
+   
+   Hacked for ItalWeb by Elizabeth Spencer-Comoy, Feb 9th 1996.
+*/
+
+function scrollit_r2l(seed)
+{
+        var m1  = "This Web Page forms part of a series that describe the Custom GIS Course at the School of Geography, Leeds University.";
+        var m2  = "**";
+        var m3  = "*";
+        var m4  = "*";
+
+        var msg=m1+m2+m3+m4;
+        var out = " ";
+        var c   = 1;
+
+        if (seed > 100) {
+                seed--;
+                var cmd="scrollit_r2l(" + seed + ")";
+                timerTwo=window.setTimeout(cmd,100);
+        }
+        else if (seed <= 100 && seed > 0) {
+                for (c=0 ; c < seed ; c++) {
+                        out+=" ";
+                }
+                out+=msg;
+                seed--;
+                var cmd="scrollit_r2l(" + seed + ")";
+                    window.status=out;
+                timerTwo=window.setTimeout(cmd,100);
+        }
+        else if (seed <= 0) {
+                if (-seed < msg.length) {
+                        out+=msg.substring(-seed,msg.length);
+                        seed--;
+                        var cmd="scrollit_r2l(" + seed + ")";
+                        window.status=out;
+                        timerTwo=window.setTimeout(cmd,100);
+                }
+                else {
+                        window.status=" ";
+                        timerTwo=window.setTimeout("scrollit_r2l(100)",75);
+                }
+        }
+}
+// -- End of JavaScript code -------------- -->
+</SCRIPT>
+
+<H2><A HREF="customgis.htm"><IMG SRC="icons/msvb.gif" ALT="Visual Basic Icon" ALIGN=middle BORDER=0></A>The Windows API</H2>
+
+<H3>A Basic Introduction</H3>
+API is one of those acronyms that is primarily used to intimidate people. It stands for <I>Application Programmer's Interface</I> and is simply a set of programming functions that every PC running Windows 3.1 provides to a programmer. The term API is also more widely used to describe a set of functions that are part of one application, but can be accessed by another application <I>e.g.</I> a VB program can execute an Excel spreadsheet function using Dynamic Data Exchange (DDE is a facility provided by Windows); the VB program is said to be accessing the Excel API.
+<P>
+So the Windows API is a set of functions that are part of Windowss and are available to any Windows application. These functions are stored in what are called Dynamic Link Libraries. These are <I>libraries</I> of functions that are <I>linked</I> when the a program is run (<I>dynamically</I>) rather than when the program is made (<I>static linking</I>).
+<P>
+<FONT COLOR="#008000">Hint: Search for &quot;API&quot; in the VB Help if you are using the professional version of VB then you'll have access to two further help files; WIN31WH.HLP &amp; WIN31API.HLP. The former provides help topics on many of the commonly used API functions. The later contains declarations, types and constants used with the Windows 3.1 API.</FONT>
+<P>
+Most of the major functions provided by Windows are stored in the following files.
+<P><B><TABLE BORDER>
+<CAPTION>Major Windows DLLs</CAPTION>
+<TR>
+<TD><b>DLL Name</b></TD>
+<TD><b>Description</b></TD>
+</TR>
+<TR>
+<TD>KERNAL.EXE</TD>
+<TD>low-level operating functions. Memory management and resource handling</TD>
+</TR>
+<TR>
+<TD>USER.EXE</TD>
+<TD>Nondisplay functions that control the communications between applications.</TD>
+</TR>
+<TR>
+<TD>GDI.EXE</TD>
+<TD>Graphics Device Interface library. Includes functions related to device output.</TD>
+</TR>
+</TABLE></B>
+
+<H3>Handles for Every Object: the hDC property</H3>
+To use an API function that function must have some way of knowing  what it is working with. To this end every object in Windows has a name (really a number) called a <I>handle</I>. VB programmers have access to this handle throught the <B>hDC</B> property of Forms, command dialog, picture boxes and the printer object <I>e.g.</I>
+
+<H3>The Device Context</H3>
+Actually the handle is part of a link between the VB application and the software that communicates with input/output (IO) devices (monitors, printers, scanners <I>etc.</I>). This link is called the device context and is composed of several other pieces of information
+
+<H3>The DECLARE Statement</H3>
+Visual Basic needs to know if the programmer is using API functions and if so where there are and what arguments they require. To do this API functions are declared within the declaration section of a module (*.BAS file). This is based on the same concept as declaring a sub procedure in Quick BASIC. 
+<P>
+<B>Declarations take the form...</B>
+<P>
+<PRE>Declare Sub FloodFill Lib "GDI" (ByVal hDC As Integer, ByVal X As Integer, ByVal Y As Integer, ByVal crColor As Long)</PRE>
+<P>
+or...
+<P>
+<PRE>Declare Function FloodFill Lib "GDI" (ByVal hDC As Integer, ByVal X As Integer, ByVal Y As Integer, ByVal crColor As Long) as integer</PRE>
+<P>
+The first acts as a sub procedure and therefore doesn't return a value. While the second declares the DLL function as a function and therefore returns a value when it finishes. This value has to go somewhere  requires that a variable is set to the return value (see below).
+<P>
+The declare statement itself is composed of four sections...
+<OL>
+<LI>a key word Sub or Function, that dictates whether the DLL function is used as a procedure or a function.
+<LI>the name of the DLL function.
+<LI>the name of the dynamic link library that contains the function. In this case it is the Graphics Device Interface or GDI.
+<LI>Lastly, there is the arguments list which contains a set of variables which determine what should be passed to the function.
+</OL>
+
+<FONT COLOR="#FF0000">
+It is very important that the declare statement is correct, especially the arguments list. Many common programming mistakes can often be attributed to the declare statement </FONT>
+
+
+
+
+
+
+
+<HR>
+Forward: <A HREF=".htm" ></A>
+<BR>
+Back: <A HREF="lt3-4.htm" target=display >Plotting Polygons</A>
+<P>
+<FONT SIZE="2">
+<I>Author: <A HREF="http://www.geog.leeds.ac.uk/staff/m.blake/m.blake.html" >Marcus Blake  
+</A>(marcus@geog.leeds.ac.uk)</I>
+<br>
+<I>Webmaster: Ian Turton (ian@geog.leeds.ac.uk)</I>
+<P>
+<I>Last Updated: 19 February 1996 07:39:23</I>
+</FONT>
+
+
+
+</BODY>
+

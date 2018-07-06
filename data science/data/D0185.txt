@@ -1,0 +1,569 @@
+ID=D0185
+URL=http://www.absolutejava.com/servlets/
+SIZE=98448
+DATE=16/07/02
+TIME=14:39:06
+DATASET=Java
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML LANG="en_US">
+<HEAD><TITLE>Absolute Java - Servlets</TITLE>
+<META HTTP-EQUIV="content-type" CONTENT="text/html; charset=ISO-8859-1">
+<link rel="stylesheet" href="../styles.css" type="text/css">
+</HEAD>
+
+<body>
+
+<p class="subtitle" style="margin-top:0px;margin-bottom:0px">Fundamentals &#151; A Hodgepodge of Servlet Facts</p>
+<div class="postSubtitle" style="margin-top:0px")><ul type="square"><li>The <code>GenericServlet</code> class has a <code>log()</code> method for writing messages to the context's log. The <code>ServletContext</code> class also has a <code>log()</code> method for writing messages to the context's log. How are they different? They're not. <code>GenericServlet</code>'s <code>log()</code> method simply calls the <code>ServletContext</code> <code>log()</code> method, prepending the name of the servlet to the message written to the log.<br><br></li>
+<li>Every servlet must implement the <code>javax.servlet.Servlet</code> interface. Most servlets implement it by
+    extending either <code>javax.servlet.GenericServlet</code> (protocol independent servlets) or
+    <code>javax.servlet.http.HttpServlet</code> (HTTP-specific servlets) since both of these classes already implement the
+   <code>Servlet</code> interface. See the <b><font color="#339933"><a href="#classDiagrams">Relevant Classes diagrams</a></font></b> for class and interface information.<br><br></li>
+<li>Each time a server dispatches a request to a servlet it invokes the servlet's <code>service()</code> method. This applies to <em>all</em> servlets.
+    A generic servlet (i.e., a class that extends <code>javax.servlet.GenericServlet</code>) <i>must</i> override the <code>service()</code> method to perform whatever processing it needs to do, since <code>service()</code> is <code>abstract</code>.
+   A <code>javax.servlet.http.HttpServlet</code>-derived servlet, however, does not need to override <code>service()</code> since the
+    <code>HttpServlet</code>'s default <code>service()</code> implemenation contains code to determine the the
+    type of HTTP request and dispatch it to the appropriate <code>doXXX()</code> method: <code>doGet()</code>, <code>doPost</code>,
+    <code>doTrace()</code>, <code>doPut</code> and <code>doDelete()</code>.<br><br></li>
+<li>If there is a <code>&lt;servlet&gt;</code> tag in the context's deployment descriptor, <i><b>and</b></i> you specify different values for the <code>&lt;servlet-name&gt;</code> and <code>&lt;servlet-class&gt;</code> tags (which you probably will), separate instances of the servlet will be created if the servlet is referred to by its name <i><b>and</b></i> by its class. Let's say we have this <code>&lt;servlet&gt;</code> tag in the deployment descriptor:
+
+<pre>
+&lt;servlet&gt;
+   &lt;servlet-name&gt;Tester123&lt;/servlet-name&gt;
+   &lt;servlet-class&gt;com.absolutejava.Tester&lt;/servlet-class&gt;
+&lt;/servlet&gt;
+</pre>
+The corresponding servlet can be referred to either by name (<code>Tester123</code>) or  class name (<code>com.absolutejava.Tester</code>). Each reference results in the creation of <i><b>separate instances</b></i> of the servlet. At least this is the behavior of Tomcat v4.0.3. This seems rather odd to me. I think it would be much more sensible if a servlet was accessible <i>only</i> through its servlet name, as defined in the <code>&lt;servlet-name&gt;</code> tag.<br>
+<br>
+</li>
+<li>The <code>ServletConfig</code> interface provides a <code>getInitParameter()</code> method to allow a servlet to obtain initialization parameters intended for that servlet. In addition, the <code>ServletContext</code> interface provides its own <code>getInitParameter()</code> method to allow context-wide servlet initialization paramters (i.e., parameters that are accessible to all servlets in a context).<br>
+<br>
+</li>
+<li>A servlet can always get a temporary directory by extracting the <code>javax.servlet.context.temdir</code> attribute from the <code>ServletContext</code>. The value of this attribute is a <code>java.io.File</code> which references a directory and is specific to the <code>ServletContext</code>. In this directory temporary files can be written. These files may, however, be deleted if the context is restarted.<br>
+<br>
+</li>
+<li>An easy way for servlets within the same context to communicate is to place objects in the context by calling <code>ServletConext.setAttribute()</code>. There is no standard way for servlets across contexts to communicate.<br>
+<br>
+</li>
+<li>Either <code>ServletResponse.getOutputStream()</code> can be called or ServletResponse.getWriter(), but not both. Calling both will result in an <code>IllegalStateException</code>.<br>
+<br>
+</li>
+<li>To retrieve a parameter from an HTTP request, call the <code>ServletRequest.getParameter(String parm)</code>
+    method. This method returns a single <code>String</code>. If the requested parameter was not given a value (e.g., the user left it blank on the form) the method will
+   return an empty string: <code>""</code>. If the requested parameter name did not exist <code>getParameter()</code>
+    method will return <code>null</code>. If a given paramter has more than one value call <code>ServletRequest.getParameterValues(String parm)</code>. This method returns an array of <code>String</code>s where each element is a separate value of the parameter. Also, note this caveat from the <code>getParamter()</code> javadocs:<br>
+<br>
+<p class="quotedText">"If the parameter data was sent in the request body, such as occurs with an HTTP POST request, then reading the body directly via getInputStream() or getReader() can interfere with the execution of this method."</p>
+<br>
+<br>
+</li>
+<li>The media type for a generic resource is <code>application/octet-stream</code>.<br>
+<br>
+</li>
+<li>When sending one or more files to the server, the HTTP client should set the content type to <code>multipart/form-data</code>. When creating an HTML FORM, this is accomplished by setting the <code>ENCTYPE</code> attribute on the <code>&lt;FORM&gt;</code> tag to a value of <code>multipart/form-data</code>:
+<pre>
+&lt;html&gt;&lt;head&gt;&lt;title&gt;Form Fields Test&lt;/title&gt;&lt;/head&gt;&lt;body&gt;
+   &lt;form method=&quot;post&quot; action=&quot;/t/servlet/CopyRemoteFiles&quot; enctype=&quot;multipart/form-data&quot;&gt;
+      &lt;input type=&quot;submit&quot; name=&quot;submitbutton&quot; value=&quot;Send Information&quot;&gt;&lt;br&gt;
+      Browse File: &lt;input type=&quot;file&quot; name=&quot;filename&quot;&gt;&lt;br&gt;
+   &lt;/form&gt;
+&lt;/body&gt;&lt;/html&gt;
+</pre>
+</li>
+<li>The <code>HttpServlet Response.sendError()</code> method causes a server generated error to be sent to the client. Calling this method has the effect of clearing the response buffer (although any headers previously set are sent) of any existing content and commiting the response. <code>sendError()</code> must be called before the response has been committed. Failure to do so will result in an <code>IllegalStateException</code>.</li>
+</ul></div>
+<a name="classDiagrams"></a>
+<p class="subtitle">Relevant Servlet Class Diagrams</p>
+<div class="postSubtitle"><table width="100%" border="0" cellspacing="0" cellpadding="10"><tr><td>
+				<div align="left"><img src="images/servlet-classes.gif" width="274" height="171"></div>
+			</td></tr></table>
+<p>&nbsp;</p><table width="100%" border="0" cellspacing="0" cellpadding="10"><tr><td>
+				<div align="left"><img src="images/servletRequest-classes.gif" width="565" height="204"></div>
+			</td></tr></table>
+<p>&nbsp;</p><table width="100%" border="0" cellspacing="0" cellpadding="10"><tr><td>
+				<div align="left"><img src="images/servletResponse-classes.gif" width="552" height="214"></div>
+			</td></tr></table></div>
+<p class="subtitle">Don't Let Your Servlets &quot;Go POSTal&quot;</p>
+<div class="postSubtitle">A servlet that reads parameters sent via the <code>POST</code> method could be open to attack from a simple HTTP client. Let's take a look at a simple HTML FORM that contains a couple text fields:</div>
+<blockquote>
+	<pre>
+&lt;html&gt;&lt;head&gt;&lt;title&gt;Form Fields Test&lt;/title&gt;&lt;/head&gt;&lt;body&gt;
+   &lt;form method=&quot;post&quot; action=&quot;/t/servlet/DumpFormFields&quot;&gt;
+      &lt;input type=&quot;reset&quot;  value=&quot;Reset Fields&quot;&gt;
+      &lt;input type=&quot;submit&quot; name=&quot;submitbutton&quot; value=&quot;Send Information&quot;&gt;&lt;br&gt;
+      Enter Text: &lt;input type=&quot;text&quot;  name=&quot;field1&quot; size=&quot;20&quot; value=&quot;big dog&quot; maxlength=&quot;100&quot;&gt;&lt;br&gt;
+      Enter Text: &lt;input type=&quot;text&quot;  name=&quot;field2&quot; size=&quot;20&quot; value=&quot;wet cat&quot; maxlength=&quot;100&quot;&gt;
+   &lt;/form&gt;
+&lt;/body&gt;&lt;/html&gt;
+</pre>
+</blockquote>
+<p>When this HTML is rendered ina a browser it looks like this:</p>
+
+<blockquote>
+   <form method="post" action="/fake/servlet/DoesNotExist">
+      <input type="reset"  value="Reset Fields">
+      <input type="reset" name="submitbutton" value="Send Information">
+		<br>
+      Enter Text: <input type="text"  name="field1" size="20" value="big dog" maxlength="100">
+	<br>
+      Enter Text: <input type="text"  name="field2" size="20" value="wet cat" maxlength="100">
+</form>
+</blockquote>
+
+<p>Don't bother pressing the &quot;Send Information&quot; button&#151;it's not connected to a real servlet (have you already tried?). If the &quot;Send Information&quot; button <i><b>were</b></i> connected to a real servlet, the servlet would see the following byte stream in the request body, based on the default values shown in the form:</p>
+
+<PRE>
+   submitbutton=Sen  73 75 62 6D 69 74 62 75 74 74 6F 6E 3D 53 65 6E
+   d+Information&fi  64 2B 49 6E 66 6F 72 6D 61 74 69 6F 6E 26 66 69
+   eld1=big+dog&fie  65 6C 64 31 3D 62 69 67 2B 64 6F 67 26 66 69 65
+   ld2=wet+cat       6C 64 32 3D 77 65 74 2B 63 61 74
+</PRE>
+
+
+<p>There's nothing amazing here. In looking at the FORM HTML, we see that both <code>&lt;input&gt;</code> elements limit the length of the text field to 100 characters. The problem here is that it's <i><b>very easy</b></i> to fashion a simple HTTP client that is capable of sending the full text of <i>War and Peace</i> as a parameter value for one of the text fields, or any other FORM field for that matter.</p>
+<p>If you retrieve parameter values using the <code>getParameter()</code> or <code>getParametervalues()</code> methods defined in <code>ServletRequest</code>, you are at the mercy of the HTTP client to not send you <i>War and Peace</i> or <i>The King James Bible</i> when you expected &quot;yes&quot; or &quot;no&quot;. <code>getParameter()</code> and <code>getParametervalues()</code> have no sense of &quot;reasonable parameter value lengths&quot;. These methods will simply attempt to read the entire paramter value, regardless of length. </p>
+<p>So, if you want to be careful and if your servlet will be used by the outside world, you might want to read the <code>ServletRequest</code>'s input stream directly to prevent such an attack. Of course, a subclass of <code>ServletRequestWrapper</code> might be a possible solution too.</p>
+<p><b><font size="4">As an aside....</font></b>
+When an HTTP client sends a request body for a POST method (as shown as shown in the hex dump above, for example), the content-type should be set to <code>application/x-www-form-urlencoded</code>. If this is <i><b>not</b></i> the content-type, the the request body will not be formatted in a way that <code>getParameter()</code> or <code>getParametervalues()</code> will be able to read. Note that this is not something you, as a servlet developer, have to worry about&#151;unless you happen to be writing an HTTP client, perhaps.</p>
+<p class="subtitle"><code>SingleThreadModel</code> and Servlet Instance Creation</p>
+<div class="postSubtitle">If a servlet implements the <code>SingleThreadModel</code> interface the servlet container <i><b>has the choice</b></i> of either creating
+    multiple instances of the servlet <i><b>or</b></i> creating a single instance&#151;and you, as the servlet developer, do not (and
+    should not) know which it will do. The only guarantee you have is that no more than one thread will ever execute within
+    the <code>service()</code> method of any particular instance of the servlet. If the servlet container decides to instantiate
+    five instances of a servlet, for example, <strong><em>each instance</em></strong> is assured that at most one thread will execute within its <code>service()</code>
+    method at any one point in time. Of course, all five instances may have their <code>service()</code> methods executing simultaneously.</div>
+<p>If the servlet container elects to instantiate multiple instances of your servlet, remember the <code>init()</code> and
+    <code>destroy()</code> methods will be called for <strong><em>each instance</em></strong>. Be careful of the processing you do in these methods.</p>
+<p>Personally, I don't think there's much advantage in implementing <code>SingleThreadModel</code>&#151;in fact, it can
+    give you a false sense of security, allowing you to easily forget that class (i.e., <code>static</code>) members are still
+    vulnerable as targets to race conditions.</p>
+<p class="subtitle">Response Buffering and Flushing</p>
+<div class="postSubtitle"> An HTTP response contains the following four components <EM>in this order</EM>: </div>
+
+		
+<OL>
+    		
+	<LI>A <EM>status line</EM> which contains a status code.</LI>
+	<LI>One or more <EM>response headers</EM>, each appearing on a separate line.</LI>
+	<LI>A blank line.</LI>
+	<LI>The <EM>response body</EM>. This is sometimes optional, depending on the status code.</LI>
+</OL>
+		
+<p>Since these four components of an HTTP response are strictly ordered you may think it
+    is first necessary to set the  <i>status line</i> (the first component) before setting any <i>response
+    headers</i> (the second component) within a servlet. Similarly, it may seem necessary to set the
+    <i>response headers</i> before generating the <i>response body</i> (the fourth component). The Servlet v2.3
+    Specification, however, provides a degree of flexibility, by allowing servlet engines to buffer their
+    output (i.e., the response) before sending it to the client. This means you may be able to generate
+    all or part of your <i>response body</i> <u>before</u> setting the <i>status line</i> or <i>response headers</i>. If you set a response header after the response has been committed to the client, the header will be ignored and the client will not receive it.</p>
+<p>The method <code>ServletResponse.getBufferSize()</code> returns the size of the buffer used by the
+    servlet engine for buffering the response. Once this buffer has become full, the contents of the response will be flushed to the client and the <code>ServletResponse.isCommitted()</code> will return true to indicate the response has been  sent to the client (in which case it's too
+    late to set them). Generally, you should try to set the <i>status line</i> and <i>response headers</i> as soon
+    as possible.</p>
+<p>Finally, note that the method, <code>ServletResponse.flushBuffer()</code> will send <i><b>everything</b></i> that has
+    accumulated in the response buffer&#151;this includes the <i>status line</i>, the <i>response headers</i>, and any portion of the <i>response body</i> that may have been generated. In other words, calling
+    <code>ServletResponse.flushBuffer()</code> will <em>commit</em> the response. As an aside, you should
+    note this <u><i><b>subtle but important</b></i></u> point (from the Servlet v2.3 specification): If the <code>flush()</code> method
+    is called on the <code>PrintWriter</code> returned from <code>ServletResponse.getWriter()</code>
+    <em>or</em> <code>flush()</code> is called on the <code>ServletOutputStream</code> returned from
+    <code>ServletResponse.getOutputStream()</code>, the effect is to commit the response (i.e., to send <i><b>everything</b></i> that has
+    accumulated in the response buffer).
+This can cause unforseen problems if you pass the <code>PrintWriter</code> or <code>OutputStream</code> as a paramter to code you are unfamiliar with or do not have the source code for. If this code calls <code>flush()</code> on the passed <code>PrintWriter</code> or <code>OutputStream</code>, then your servlet response will be (perhaps, unexpectedly) committed.</p>
+<p class="subtitle">Following the URI Path Components</p>
+<div class="postSubtitle">
+	<p>The URI used to request a servlet is made available to the servlet through the <code>HttpRequest</code> object. <code>HttpRequest</code> provides three methods to extract different path components of the URI. The first component is the &quot;context path&quot; which is returned by the <code>getContextPath()</code> method. To quote the <a href="http://www.jcp.org/aboutJava/communityprocess/final/jsr053/" target="_blank">Servlet v2.3 specification</a>, this path is &quot;the path prefix associted with the <code>ServletContext</code> that this servlet is a part of.&quot; The context path is always the first component of the URI. It starts with a &quot;/&quot; but does not end with a &quot;/&quot;. </p></div>
+	<p>After the &quot;context path&quot; comes the &quot;servlet path&quot;. This path is returned by the <code>HttpRequest</code> method, <code>getServletPath()</code> and corresponds to the path that &quot;activated&quot; the servlet. A web application's deployment descriptor may have several servlet-to-name mappings for a given servlet. <code>getServletPath()</code> will indicate which mapping was used to invoke the servlet.</p>
+	<p>After the &quot;servlet path&quot; comes an optional &quot;path info&quot;. This path is returned by the <code>HttpRequest</code> method, <code>getPathInfo()</code>. If no servlet path was specified, the method returns <code>null</code>.</p>
+	<p>Section 4.4 of the <a href="http://www.jcp.org/aboutJava/communityprocess/final/jsr053/" target="_blank">Servlet v2.3 specification</a> has a nice example of &quot;context path&quot;, &quot;servlet path&quot;, and &quot;path info&quot;.</p>
+	<p>If you need to translate one of the three paths described above to a filesystem location, use the <code>ServletContext.getRealPath(String path)</code> method. For example, to translate the &quot;context path&quot; to the real path, use:</p>
+	<blockquote>
+	   <p><code>getServletContext.getRealPath(request.getContextPath());</code></p>
+	</blockquote>
+	<p>If the path to be translated is the &quot;path info&quot; path you can just as easily use the <code>HttpServletRequest.getPathTranslated()</code> method.</p>
+	<p>On page 111,  Jason Hunter, author of <a href="http://www.oreilly.com/catalog/jservlet2/" target="_blank">Java Servlet Programming, 2nd Ed.</a>, provides a succinct description of the relationships between the various path componets used in a servlet request:</p>
+	<blockquote>
+	   <pre>
+decoded(req.getRequestURI()) == decoded(req.getContextPath()) +
+                                req.getServletPath()          +
+                                req.getPathInfo()</pre>
+   </blockquote>
+	<p>Jason Hunter also makes an important point on page 103 of <a href="http://www.oreilly.com/catalog/jservlet2/" target="_blank">Java Servlet Programming, 2nd Ed.</a>:</p>
+	<p class="quotedText">"The getPathTranslated() method has some unfortunate limitations. First, it doesn't work for content served from WAR files... Second, it doesn't work in a distrubuted load-balanced environment where there might exist a direct file but not on the server currently executing the servlet."</p>
+	<p>The <code>ServlectContext.getResource(String path)</code> method is designed to overcome the limitations described above by Hunter. This method returns a <code>URL</code> object. The path parameter must begin with a &quot;/&quot; and is interpreted as being relative to the current context root. The method will only return static content, so you cannot use it to invoke a servlet or JSP.</p>
+
+<p class="subtitle"><code>init()</code> and <code>destroy()</code></p>
+<div class="postSubtitle">The <code>init()</code> method is called by the servlet container when a servlet is first loaded. The
+    <code>init()</code> method is defined in <code>javax.servlet.GenericServlet</code>. Actually, there are two separate
+    version of <code>init()</code> in <code>GenericServlet</code>. The first one has this signature:</div>
+	<blockquote>
+	   <p><code>init<span class='codeSeparator'>(</span>ServletConfig config<span class='codeSeparator'>)</span></code></p>
+	</blockquote>
+	<p>whereas the other has
+    an empty parameter list:</p>
+	<blockquote>
+	   <p><code>init<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span></code></p>
+	</blockquote>
+	<p>If you need to override the
+    <code>init()</code> method you should always override the second form (the one with the empty parameter list).
+    If you override the first version you must remember to call <code>super.init(ServletConfig config)</code>
+    at the beginning of the method. As you can see from the <font color="#33CC33"><b><a href="#classDiagrams">Relevant Classes diagrams</a></b></font>, <code>GenericServlet</code> implements <code>ServletConfig</code>. In implementing <code>ServletConfig</code>, <code>GenericServlet</code> delegates all <code>ServletConfig</code> calls to the <code>ServletConfig</code> object passed to it in its <code>init()</code> method. If you override the first version of <code>init()</code> and you <i><b>do not</b></i> call <code>super.init(config)</code>, the <code>GenericServlet</code> will be unable to delegate <code>ServletConfig</code> method calls, resulting in unpleasant <code>NullPointerException</code>s when methods from the <code>ServletConfig</code> interface are called.</p>
+	<p>If you override the <i>second</i> version of <code>init()</code> (as you should), there's no need to worry about the <code>ServletConfig</code> object as it will already have been assigned properly. An additional advantage of overriding the second version of init() is that the first version will write a log message indicating the servlet has been started. For the sake of completeness, let's take a look at the source code for the <code>init(ServletConfig config)</code> method in
+    <code>javax.servlet.GenericServlet</code> just to see exactly what's happening:</p>
+
+
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>void</span> init<span class='codeSeparator'>(</span>ServletConfig config<span class='codeSeparator'>)</span> <span class='codeKeyword'>throws</span> ServletException <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;   <span class='codeKeyword'>this</span>.config <span class='codeOperatorLiteral'>=</span> config;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;   log<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"init"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;   <span class='codeKeyword'>this</span>.init<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>5</td>
+		<td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// init()</span></td>
+	</tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+	
+   <p>
+
+    Does it seem strange that a servlet is initialized in an <code>init()</code> method rather than in a constructor? It seems odd to me. Actually, I cannot think of any good reason for the <code>init()</code> method to exist. It seems that any initialization to be performed by a servlet can just as easily (and more elegantly) be performed in a constructor.</p>
+	<p>The <code>destory()</code> method is called by the servlet container to take a servlet &quot;out of service&quot;. The method is only called after the servlet has completed servicing all pending requests or when the requests have timed out. Once <code>destroy()</code> has been called, the servlet's <code>service()</code> method will never again be called.</p>
+	<p>The default implementation of <code>GenericServlet.destory()</code> writes a log message indicating the <code>destroy()</code> method is being called. If you override <code>destroy()</code> you may wish to call <code>super.destroy()</code> to gain the benefit of this log message, but it is certainly not necessary.</p>
+
+	
+<p class="subtitle">Knowing When Enough is Enough</p>
+<div class="postSubtitle">Let's say you have a servlet that is very expensive (in terms of resources) to execute. Perhaps this servlet is computationally expensive or very I/O intensive. Such a servlet will want to know as soon as possible if its client has disconnected (by hitting the &quot;Stop&quot; button, for example) so the expensive operation can be stopped. If the servlet is sending HTML back to a browser client (usually a bad design, anyway) you have no direct way of knowing that the client hit the &quot;Stop&quot; button or has browsed to a different web page. There is no HTTP mechanism, and therefore, no servlet mechanism, for an HTTP client to inform an HTTP server to cancel a pending request.</div>
+<p>If the servlet is writing to the <code>OutputStream</code> returned from the <code>HttpServletResponse.getOutputStream()</code> when the client has disconnected, the servlet will receive the following exception when trying to write to the <code>OutputStream</code>:</p>
+<blockquote>
+	<p><code>java.net.SocketException: Connection reset by peer: socket write error</code></p>
+</blockquote>
+<p>Of course, if the servlet sees this exception it should stop generation of any further output as well as the expensive operation.</p>
+<p>If the servlet is using the <code>PrintWriter</code> returned from <code>HttpServletResponse.getWriter()</code> to send data to the client it will not see any sort of exception if the client disconnects. Instead, the servlet must periodically call the <code>PrintWriter</code>'s <code>checkError()</code> method. If this method returns <code>true</code> the servlet should cease generation of any further output as well as the expensive operation.</p>
+<p>As an important aside, you should note the following passage from page 159 of Jason Hunter's excellent work, <a href="http://www.oreilly.com/catalog/jservlet2/" target="_blank">Java Servlet Programming, 2nd Ed.</a>:</p>
+<p class="quotedText">"It's important to note that a server is not required to throw an <code>IOException</code> or set the error flag of the <code>PrintWriter</code> after the client disconnects. A server may elect to let the response run to completetion with its output ignored."</p>
+In other words, strictly speaking, you may never have any indication that the servlet's client has disconnected from the servlet.
+<p class="subtitle">Be Careful with Background Servlet Threads</p>
+<DIV class="postSubtitle">Threads created within a servlet will continue to run, even if the servlet has been unloaded by the servlet engine. For example, let's say you create a thread somewhere within your servlet&#151;perhaps you create this thread in the <code>init()</code> method or the <code>doGet()</code> method. If, for whatever reason, the servlet engine decides to unload your servlet at some point in the future, the thread you created earlier will continue to run.</div>
+<p>Since you don't know if/when the servlet engine will unload your servlet, it's best to include logic in your <code>destroy()</code> method to stop any background threads that may have been started earlier.
+</p>
+<p class="subtitle">Remember Handy <code>ServletContext</code> Methods</p>
+<div class="postSubtitle">It's easy to forget a couple useful methods in the <code>ServletContext</code> class. The <code>getMIMEType()</code> method takes the name of a file (as a <code>String</code> parameter) and attempts to determine the MIME type (i.e., media type) of the file. This determination is made based on the configuration of the servlet container and the servlet's deployment descriptor (web.xml).</div>
+<p>The getResourcePaths() method, to quote the javadocs:</p>
+	
+<p class="quotedText">&quot;returns a directory-like listing (in the form of a <code>java.util.Set</code> object) of all the paths to resources within the web application whose longest sub-path matches the supplied path argument. The returned paths are all relative to the root of the web application and have a leading '/'. For example, for a web application containing</p>
+<blockquote>
+		
+	<p class="quotedText"><i>/welcome.html<br>
+		/catalog/index.html<br>
+		/catalog/products.html<br>
+		/catalog/offers/books.html<br>
+		/catalog/offers/music.html<br>
+		/customer/login.jsp<br>
+		/WEB-INF/web.xml<br>
+		/WEB-INF/classes/com.acme.OrderServlet.class,</i></p>
+</blockquote>
+<p class="quotedText"><i><code>getResourcePaths(&quot;/&quot;)</code> returns {&quot;/welcome.html&quot;, &quot;/catalog/&quot;, &quot;/customer/&quot;, &quot;/WEB-INF/&quot;}<br>
+		<code>getResourcePaths(&quot;/catalog/&quot;)</code> returns {&quot;/catalog/index.html&quot;, &quot;/catalog/products.html&quot;, &quot;/catalog/offers/&quot;}."</i></p>
+<p>The <code>getResource()</code> and <code>getResourceAsStream()</code> methods return a <code>java.net.URL</code> and <code>java.io.InputStream</code>, respectively, based on the supplied argument.</p>
+<p class="subtitle">Session Tracking Techniques</p>
+<div class="postSubtitle">
+	<p><u><b>Session &quot;Timeouts&quot;, from Whose Perspective?</b></u>
+	<div style="padding-left:25px">
+		There are two general perspectives of <i>session timeouts</i>. One perspective is from the server: In the <code>&lt;session-config&gt;</code> element in web.xml there is a <code>&lt;session-timeout&gt;</code> element. This value  specifies the number of minutes a  session will remain &quot;alive&quot; without any activity from the client (i.e., browser). If the server has not heard from the client within the specified number of minutes, the server considers the client's session as invalid.
+The <code>HttpServletRequest.isRequestedSessionIdValid()</code> method allows a servlet to determine whether or not the session Id sent to the servlet from the browser is valid (i.e., whether or not it has expired).
+<p>The second perspective is from the client (i.e., the browser) and only applies when cookies are being used to track sessions. When the server sends a cookie to the browser it specifies a <i>maximum age</i> (in seconds). When this time has expired the browser will no longer send the cookie back to the server during HTTP requests. Now, keep in mind that the browser doesn't really have a notion of <i>sessions</i>, per se. The browser simply stops sending the cookie back to the server once it sees that the cookie's maximum age has expired. </p>
+		<p>Cookies can be used to track sessions either <i>explicitly</i>, by adding a <a href="http://java.sun.com/products/servlet/2.3/javadoc/javax/servlet/http/Cookie.html" target="_blank"><code>javax.servlet.http.Cookie</code></a> object to the <code>HttpServletResponse</code> or <i>implicitly</i> using the Session Tracking API, described below. When the Session Tracking API uses cookies to track a session, it sets the cookie's maximum age to a negative value,  indicating the browser should return the cookie to the server for as long as the browser is running. If the browser is shutdown and then restarted, it will not send the cookie to the server.</p>
+	</div>
+</div>
+	
+	<p><u><b>URL Rewriting</b></u>
+
+<div style="padding-left:25px">This technique of session tracking requires that every &quot;local&quot; URL presented to the user be dynamically generated so as to contain some  extra, user&#8209;specific identifying information. A &quot;local&quot; URL is a URL to a resource on the local site.<br>
+	<br>
+	After the user has logged into a site using either a web-based FORM login or a browser-based authentication, we associate a unique &quot;user identifier&quot; with the user. Let's say the &quot;user identifier&quot; we select is &quot;ABC123&quot;. Note that this &quot;user identifier&quot; has nothing necessarily to do with the username/password initially supplied by the user during the login process. Once the &quot;user identifier&quot; has been established, every URL presented to the user is modified to contain the unique &quot;user identifier&quot;. There are a couple common ways to integrate the unique &quot;user identifier&quot; into the URLs. Below is an example of an original URL, without a &quot;user identifier&quot; associated with it followed by two examples where the identifier is integrated into the URL:<br>
+	<br>
+<code>http://www.absolutejava.com/servlet/sendMeMoney.html</code><br>
+<code>http://www.absolutejava.com/servlet/sendMeMoney.html?user=userABC123</code><br>
+   <code>http://www.absolutejava.com/servlet/sendMeMoney.html/userABC123</code>
+   <p>Note that the URL rewriting technique extends to the ACTION= URL of any HTML FORMs presented to the user.<br>
+		<br>
+		The problem with URL rewriting is that every URL presented to the user must be modified before being presented to the user. This means that even documents whose contents are inherently static must be modified so that any URLs embedded in these documents contain the user &quot;identifier&quot;.  Jason Hunter, on page 207 of <a href="http://www.oreilly.com/catalog/jservlet2/" target="_blank">Java Servlet Programming, 2nd Ed.</a>, indicates that this is possible, however, &quot;with the right server support&quot;.
+</div>
+<p><b><u>Hidden HTML FORM Fields</u></b>
+<div style="padding-left:25px">
+This simple technique requires one or more hidden form fields to be added to an HTML FORM presented to the user. When the user submits the FORM, the hidden field values are transmitted to the servlet along with the non-hidden forms. It's easy enought to make a hidden field in a FORM:
+<blockquote>
+	<code>&lt;INPUT TYPE='hidden' NAME='userId' VALUE='ABC123'/&gt;<br>
+		&lt;INPUT TYPE='hidden' NAME='ordereditems' VALUE='Mp981;BRS817-98;SP15-82'/&gt;</code>
+</blockquote>
+
+	As Jason Hunter so eloquently points out on page 205 of <a href="http://www.oreilly.com/catalog/jservlet2/" target="_blank">Java Servlet Programming, 2nd Ed.</a>, the primary problem with hidden form fields is that information in the fields persists only so longs as the user is presented with dynamically generated forms. Depending on your application, however, this may not be a problem.</div>
+<p><u><b>Cookies</b></u>
+<div style="padding-left:25px">The servlet API provides a very nice &quot;Cookies API&quot; using the <a href="http://java.sun.com/products/servlet/2.3/javadoc/javax/servlet/http/Cookie.html" target="_blank"><code>javax.servlet.http.Cookie</code></a> class. To create a cookie, simply call the (one and only) <code>Cookie</code> constructor:
+
+   <blockquote>
+<code>Cookie(String name, String value) </code>
+</blockquote>
+   <p>To send the <code>Cookie</code> to the client, use the <code>HTTPServletResponse.addCookie(Cookie c)</code> method. To retrieve the <code>Cookie</code>s previously sent to a client, simply call the <code>HttpServletRequest.getCookies()</code> method. It will return a <code>Cookie[]</code>. Of course, the big problem with cookies is that you have no guarantee they will be available. Many paranoid schizophrenics turn off cookie support for reasons only they understand.</p>
+	<p>Finally, note that cookies are sent to  clients as HTTP response headers. As is true with all response headers, if you attempt to set the header after the response has been committed to the client, the client will never receive the response. Cookies are sent back to the server by the browser in the HTTP request headers.</p>
+</div>
+<p><b><u>Session Tracking API</u></b>
+<div style="padding-left:25px">The three techniques mentioned above, URL Rewriting, Hidden Form Fields, and Cookies are somewhat &quot;low-level&quot; techniques for session tracking. The Servlet API provides a very nice session tracking API using the <code><a href="http://java.sun.com/products/servlet/2.3/javadoc/javax/servlet/http/HttpSession.html" target="_blank">javax.servlet.http.HttpSession</a></code> class. Internally, the &quot;Session Tracking&quot; API uses cookies and/or URL rewriting to work its magic. In other words, as a servlet developer, you can stay focused on the higher-level notion of &quot;sessions&quot; rather than focusing on the underlying mechanics of cookie management and URL rewriting.
+
+   <p>Internally, the session tracking API works its magic by attempting to send a cookie to the client. As I mentioned earlier, it's entirely possible for the user (i.e., the browser user) to turn off cookie support. I'll discuss the implications of this shortly. For now, assume cookie support is enabled in the browser. The <i>session tracking cookie</i> sent by the server to the browser remains valid for as long as the browser is running. If the browser is shutdown and restarted it will no longer send the cooie back to the server.</p>
+	<p>Let's look at a little servlet that will allow us to see what's happening with sessions and cookies:</p>
+
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.io.IOException;</td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.io.PrintWriter;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.util.Date;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> javax.servlet.*;</td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> javax.servlet.http.*;</td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> SessionTracker <span class='codeKeyword'>extends</span> HttpServlet <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>void</span> doGet<span class='codeSeparator'>(</span>HttpServletRequest request,</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;                     HttpServletResponse response<span class='codeSeparator'>)</span> <span class='codeKeyword'>throws</span> ServletException,</td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;                                                          IOException <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;      PrintWriter out <span class='codeOperatorLiteral'>=</span> response.getWriter<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;      response.setBufferSize<span class='codeSeparator'>(</span><span class='codeIntegerLiteral'>8</span> <span class='codeOperatorLiteral'>*</span> <span class='codeIntegerLiteral'>1024</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;      response.setContentType<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"text/html"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;      out.print<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;html&gt;&lt;head&gt;&lt;title&gt;SessionTrackerExample&lt;/title&gt;&lt;/head&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>17</td><td><pre>&nbsp;      out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;body bgcolor='#aaaacc'&gt;&lt;pre&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>18</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>19</td><td><pre>&nbsp;      <span class='codeComment'>// ----------------------------------------</span></td></tr><tr><td class='lineNumber'><pre>20</td><td><pre>&nbsp;      <span class='codeComment'>// Print Cookies</span></td></tr><tr><td class='lineNumber'><pre>21</td><td><pre>&nbsp;      <span class='codeComment'>// Let's see what cookies are being sent to the servlet</span></td></tr><tr><td class='lineNumber'><pre>22</td><td><pre>&nbsp;      <span class='codeComment'>// by the browser...</span></td></tr><tr><td class='lineNumber'><pre>23</td><td><pre>&nbsp;      out.print<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;strong&gt;Cookies&lt;/strong&gt;&lt;br&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>24</td><td><pre>&nbsp;      Cookie<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> cookies <span class='codeOperatorLiteral'>=</span> request.getCookies<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>25</td><td><pre>&nbsp;      <span class='codeKeyword'>if</span><span class='codeSeparator'>(</span>cookies <span class='codeOperatorLiteral'>!=</span> <span class='codeKeyword'>null</span><span class='codeSeparator'>)</span></td></tr><tr><td class='lineNumber'><pre>26</td><td><pre>&nbsp;         <span class='codeKeyword'>for</span><span class='codeSeparator'>(</span><span class='codeKeyword'>int</span> i <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>0</span>; i <span class='codeOperatorLiteral'>&lt;</span> cookies.length; <span class='codeOperatorLiteral'>++</span>i<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>27</td><td><pre>&nbsp;            out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"    Name: "</span> <span class='codeOperatorLiteral'>+</span> cookies<span class='codeSeparator'>[</span>i<span class='codeSeparator'>]</span>.getName<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeOperatorLiteral'>+</span></td></tr><tr><td class='lineNumber'><pre>28</td><td><pre>&nbsp;                        <span class='codeStringLiteral'>"Value: "</span> <span class='codeOperatorLiteral'>+</span> cookies<span class='codeSeparator'>[</span>i<span class='codeSeparator'>]</span>.getValue<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>29</td><td><pre>&nbsp;         <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>30</td><td><pre>&nbsp;      out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;strong&gt;&amp;lt;end of list&amp;gt;&lt;/strong&gt;&lt;hr&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>31</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>32</td><td><pre>&nbsp;      <span class='codeComment'>// ----------------------------------------</span></td></tr><tr><td class='lineNumber'><pre>33</td><td><pre>&nbsp;      <span class='codeComment'>// Print Session information along with the number of</span></td></tr><tr><td class='lineNumber'><pre>34</td><td><pre>&nbsp;      <span class='codeComment'>// times this session has been accessed.</span></td></tr><tr><td class='lineNumber'><pre>35</td><td><pre>&nbsp;      HttpSession session <span class='codeOperatorLiteral'>=</span> request.getSession<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>36</td><td><pre>&nbsp;      <span class='codeKeyword'>int</span><span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> sessionCounter <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span><span class='codeKeyword'>int</span><span class='codeSeparator'>[</span><span class='codeSeparator'>]</span><span class='codeSeparator'>)</span>session.getAttribute<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"counter"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>37</td><td><pre>&nbsp;      <span class='codeKeyword'>if</span><span class='codeSeparator'>(</span>sessionCounter <span class='codeOperatorLiteral'>==</span> <span class='codeKeyword'>null</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>38</td><td><pre>&nbsp;         sessionCounter <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> <span class='codeKeyword'>int</span><span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> <span class='codeSeparator'>{</span><span class='codeIntegerLiteral'>1</span><span class='codeSeparator'>}</span>;</td></tr><tr><td class='lineNumber'><pre>39</td><td><pre>&nbsp;         session.setAttribute<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"counter"</span>, sessionCounter<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>40</td><td><pre>&nbsp;      <span class='codeSeparator'>}</span> <span class='codeKeyword'>else</span></td></tr><tr><td class='lineNumber'><pre>41</td><td><pre>&nbsp;         <span class='codeOperatorLiteral'>++</span>sessionCounter<span class='codeSeparator'>[</span><span class='codeIntegerLiteral'>0</span><span class='codeSeparator'>]</span>;</td></tr><tr><td class='lineNumber'><pre>42</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>43</td><td><pre>&nbsp;      out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;strong&gt;Session Information&lt;/strong&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>44</td><td><pre>&nbsp;      out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"    Current session has been accessed "</span> <span class='codeOperatorLiteral'>+</span> sessionCounter<span class='codeSeparator'>[</span><span class='codeIntegerLiteral'>0</span><span class='codeSeparator'>]</span> <span class='codeOperatorLiteral'>+</span> <span class='codeStringLiteral'>" times..."</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>45</td><td><pre>&nbsp;      out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"    getRequestedSessionId: "</span> <span class='codeOperatorLiteral'>+</span> request.getRequestedSessionId<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>46</td><td><pre>&nbsp;      out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"    isRequestedSessionIdFromCookie: "</span> <span class='codeOperatorLiteral'>+</span> request.isRequestedSessionIdFromCookie<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>47</td><td><pre>&nbsp;      out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"    isRequestedSessionIdFromURL: "</span> <span class='codeOperatorLiteral'>+</span> request.isRequestedSessionIdFromURL<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>48</td><td><pre>&nbsp;      out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"    isNew: "</span> <span class='codeOperatorLiteral'>+</span> <span class='codeSeparator'>(</span>session.isNew<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeOperatorLiteral'>?</span> Boolean.TRUE <span class='codeOperatorLiteral'>:</span> Boolean.FALSE<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>49</td><td><pre>&nbsp;      out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"    getId: "</span> <span class='codeOperatorLiteral'>+</span> session.getId<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>50</td><td><pre>&nbsp;      out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"    getCreationTime: "</span> <span class='codeOperatorLiteral'>+</span> <span class='codeOperatorLiteral'>new</span> Date<span class='codeSeparator'>(</span>session.getCreationTime<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>51</td><td><pre>&nbsp;      out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"    getLastAccessedTime: "</span> <span class='codeOperatorLiteral'>+</span> <span class='codeOperatorLiteral'>new</span> Date<span class='codeSeparator'>(</span>session.getLastAccessedTime<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>52</td><td><pre>&nbsp;      out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"    getMaxInactiveInterval: "</span> <span class='codeOperatorLiteral'>+</span></td></tr><tr><td class='lineNumber'><pre>53</td><td><pre>&nbsp;                       String.valueOf<span class='codeSeparator'>(</span>session.getMaxInactiveInterval<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>54</td><td><pre>&nbsp;      out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;strong&gt;&amp;lt;end of list&amp;gt;&lt;/strong&gt;&lt;hr&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>55</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>56</td><td><pre>&nbsp;      <span class='codeComment'>// ----------------------------------------</span></td></tr><tr><td class='lineNumber'><pre>57</td><td><pre>&nbsp;      <span class='codeComment'>// Test automatic URL rewriting</span></td></tr><tr><td class='lineNumber'><pre>58</td><td><pre>&nbsp;      String reloadLink <span class='codeOperatorLiteral'>=</span> <span class='codeStringLiteral'>"To reload this page, &lt;a href='"</span> <span class='codeOperatorLiteral'>+</span></td></tr><tr><td class='lineNumber'><pre>59</td><td><pre>&nbsp;                          response.encodeURL<span class='codeSeparator'>(</span>request.getRequestURI<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span> <span class='codeOperatorLiteral'>+</span></td></tr><tr><td class='lineNumber'><pre>60</td><td><pre>&nbsp;                          <span class='codeStringLiteral'>"'&gt;click here&lt;/a&gt;."</span>;</td></tr><tr><td class='lineNumber'><pre>61</td><td><pre>&nbsp;      out.println<span class='codeSeparator'>(</span>reloadLink<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>62</td>
+			<td><pre>&nbsp;      out.print<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"The session Id will be appended to the URL if cookies are disabled."</span><span class='codeSeparator'>)</span>;</td>
+		</tr><tr><td class='lineNumber'><pre>63</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>64</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>65</td><td><pre>&nbsp;      out.print<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>66</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>//doGet()</span></td></tr><tr><td class='lineNumber'><pre>67</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// SessionTracker</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+
+
+
+   <p>Before running this servlet make sure cookies are turned <i><b><u>on</u></b></i> in your browser. The first time you run this servlet you should see something like this in the browser:</p>
+	<div style="background:#aaaacc">
+		<pre>
+<strong>Cookies</strong><br><strong>&lt;end of list&gt;</strong><hr>
+<strong>Session Information</strong>
+    Current session has been accessed 1 times...
+    getRequestedSessionId: null
+    isRequestedSessionIdFromCookie: false
+    isRequestedSessionIdFromURL: false
+    isNew: true
+    getId: 01DF27D1F7D14B3FB2FC1FF7F3AE65EE
+    getCreationTime: Wed Mar 27 23:00:30 CST 2002
+    getLastAccessedTime: Wed Mar 27 23:00:30 CST 2002
+    getMaxInactiveInterval: 7200
+<strong>&lt;end of list&gt;</strong><hr>
+To reload this page, <u>click here</u>.
+The session Id will be appended to the URL if cookies are disabled.
+</pre>
+	</div>
+	<p>While discussing the output above, it helps to have the HTTP request and response headers handy. Below is the HTTP request sent by the browser (note that each<img src="../images/CRLF.gif" width="24" height="12" align="absmiddle">represents a carriage return/linefeed). You'll notice there are no cookies in headers:</p>
+</div>
+	
+<div style="padding-left:25px">
+   <pre style="background-color:#ffffcc">GET /t/servlet/SessionTracker HTTP/1.1<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Accept: image/gif, image/x-xbitmap, image/jpeg,image/pjpeg, application/msword, */*<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Accept-Language: en-us<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Accept-Encoding: gzip, deflate<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0; Q312461)<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Host: linda<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Connection: Keep-Alive<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom"></pre>
+</div>
+<div style="padding-left:25px">
+	<p>And here are the HTTP response headers sent from the servlet to the browser. Here, you will notice there is a cookie in the response headers:</p>
+	<pre style="background-color:#ffffcc">
+HTTP/1.1 200 OK<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Content-Type: text/html<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Date: Thu, 28 Mar 2002 05:00:30 GMT<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Transfer-Encoding: chunked<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Server: J2EE SDK/1.3.1 (HTTP/1.1 Connector)<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Set-Cookie: JSESSIONID=01DF27D1F7D14B3FB2FC1FF7F3AE65EE;Path=/t<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+</pre>
+
+
+
+	<p>The first thing to notice about the browser output is  that the <code>HttpSession.isNew()</code> method returns <code>true</code> to indicate the client (i.e., browser) has not yet acknowledged the newly created session. In other words, the browser is unaware of the session's existence. What does this really mean? Well, really the browser has no notion of <i>sessions</i>, per se, since HTTP is a connectionless protocol. When <code>HttpSession.isNew()</code> returns <code>true</code> it simply means the browser has not returned a &quot;session identifier&quot; to the servlet.</p>
+	<p>In addition, you'll notice that both the <code>isRequestedSessionIdFromCookie()</code> and <code>isRequestedSessionIdFromURL()</code>
+methods returned <code>null</code> because, as I mentioned, the browser has not yet acknowledged the session.</p>
+	<p>Also, since the <code>HttpSession</code> class tries to use cookies as its primary session management mechanism <i><b>and</b></i> since the browser has not yet joined the session (remember, <code>isNew()</code> returned <code>true</code>) we would expect the &quot;cookies list&quot; to be empty, which it is.</p>
+	<p>Finally, note the first line of output under the <b><code>Session Information</code></b> section. In lines 36-41 of the servlet we keep track of the number of times the current session has been accessed. This is done by storing a one-element array of <code>int</code> in the session object. Each time the session is accessed we increment the value.</p>
+	<p>Now, if you hit the &quot;Reload&quot; button on the browser you should see something like this:</p>
+	<div style="background:#aaaacc">
+		<pre>
+<strong>Cookies</strong><br>    Name: JSESSIONIDValue: 01DF27D1F7D14B3FB2FC1FF7F3AE65EE
+<strong>&lt;end of list&gt;</strong><hr>
+<strong>Session Information</strong>
+    Current session has been accessed 2 times...
+    getRequestedSessionId: 01DF27D1F7D14B3FB2FC1FF7F3AE65EE
+    isRequestedSessionIdFromCookie: true
+    isRequestedSessionIdFromURL: false
+    isNew: false
+    getId: 01DF27D1F7D14B3FB2FC1FF7F3AE65EE
+    getCreationTime: Wed Mar 27 23:00:30 CST 2002
+    getLastAccessedTime: Wed Mar 27 23:00:30 CST 2002
+    getMaxInactiveInterval: 7200
+<strong>&lt;end of list&gt;</strong><hr>
+To reload this page, <u>click here</u>.
+The session Id will be appended to the URL if cookies are disabled.
+</pre>
+	</div>
+	<p>The above output shows that browser is sending back the "session cookie". As a result, <code>isNew()</code> returns <code>false</code> since the browser has now &quot;acknowledged&quot; the session's existence. Also notice that <code>isRequestedSessionIdFromCookie()</code> has returned <code>true</code>, indicating the <code>HttpSession</code> class is using a cookie to track this session rather than URL rewriting. Finally, note that the session has now been accessed two times.</p>
+	<p>Just for the heck of it, let's take a look at the HTTP request and response headers sent by the browser and servlet, respectively:</p>
+	<pre style="background-color:#ffffcc">GET /t/servlet/SessionTracker HTTP/1.1<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Accept: */*<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Accept-Language: en-us<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Accept-Encoding: gzip, deflate<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0; Q312461)<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Host: linda<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Connection: Keep-Alive<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Cookie: JSESSIONID=01DF27D1F7D14B3FB2FC1FF7F3AE65EE<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom"></pre>
+	
+	<p>Here we see the browser is indeed sending the &quot;session cookie&quot; back to the servlet, effectively acknowledging the session's existence. Again, the browser really has no notion of sessions. It is simply sending back a cookie as per the HTTP and cookie specifications. It simply treats the &quot;session cookie&quot; as it would any other cookie.</p>
+	<p>Below are the servlet's response headers. As you can see, there is nothing out of the ordinary.</p>
+	<pre style="background-color:#ffffcc">
+HTTP/1.1 200 OK<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Content-Type: text/html<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Date: Thu, 28 Mar 2002 05:14:51 GMT<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Transfer-Encoding: chunked<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Server: J2EE SDK/1.3.1 (HTTP/1.1 Connector)<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+</pre>
+
+
+
+	<p>Now, to continue with the experiment, let's turn off cookie support in the browser and restart the browser. Before reading further, verify that cookies are indeed turned off. I'll assume you know how to do that. You may have to restart the browser.</p>
+	<p>When you run the servlet with cookie support turned <u><i><b>off</b></i></u> in the browser you should see something like this:</p>
+	<div style="background:#aaaacc">
+		<pre>
+<strong>Cookies</strong><br><strong>&lt;end of list&gt;</strong><hr>
+<strong>Session Information</strong>
+    Current session has been accessed 1 times...
+    getRequestedSessionId: null
+    isRequestedSessionIdFromCookie: false
+    isRequestedSessionIdFromURL: false
+    isNew: true
+    getId: 73E4E3DD34FCEFF935CB5E86816670E0
+    getCreationTime: Thu Mar 28 00:00:34 CST 2002
+    getLastAccessedTime: Thu Mar 28 00:00:34 CST 2002
+    getMaxInactiveInterval: 7200
+<strong>&lt;end of list&gt;</strong><hr>
+To reload this page, <u>click here</u>.
+The session Id will be appended to the URL if cookies are disabled.
+</pre>
+	</div>
+	<p>Hmmm, this looks a lot like what we saw the first time.  Don't click on the <u>click here</u> link in the browser or you'll interrupt the flow of this discussion, which I know you don't want to do.</p>
+	<p>Let's take a look at the browser and servlet request and response headers, respectively:</p>
+	<pre style="background-color:#ffffcc">GET /t/servlet/SessionTracker HTTP/1.1<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Accept: */*<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Accept-Language: en-us<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Accept-Encoding: gzip, deflate<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0; Q312461)<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Host: linda<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Connection: Keep-Alive<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom"></pre>
+   <p>Well, the request header from the browser seems fine, no mention of cookies, as expected. How about the response header?</p>
+	<pre style="background-color:#ffffcc">
+HTTP/1.1 200 OK<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Content-Type: text/html<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Date: Thu, 28 Mar 2002 06:00:34 GMT<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Transfer-Encoding: chunked<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Server: J2EE SDK/1.3.1 (HTTP/1.1 Connector)<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+Set-Cookie: JSESSIONID=73E4E3DD34FCEFF935CB5E86816670E0;Path=/t<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+<img src="../images/CRLF.gif" width="24" height="12 align="absmiddle align="bottom">
+</pre>
+   <p>The response header looks good too. We see the servlet is sending a "session cookie" to the browser as before. Let's see what the browser does with the cookie since cookies are turned off. Hit the "Reload" button in the browser and you should see a display similar to this:</p>
+	<div style="background:#aaaacc">
+		<pre>
+<strong>Cookies</strong><br><strong>&lt;end of list&gt;</strong><hr>
+<strong>Session Information</strong>
+    Current session has been accessed 1 times...
+    getRequestedSessionId: null
+    isRequestedSessionIdFromCookie: false
+    isRequestedSessionIdFromURL: false
+    isNew: true
+    getId: 24DE0160A8D77B1DA5E8E40F3B5571CD
+    getCreationTime: Thu Mar 28 00:11:40 CST 2002
+    getLastAccessedTime: Thu Mar 28 00:11:40 CST 2002
+    getMaxInactiveInterval: 7200
+<strong>&lt;end of list&gt;</strong><hr>
+To reload this page, <u>click here</u>.
+The session Id will be appended to the URL if cookies are disabled.
+</pre>
+	</div>
+	<p>Because cooklies are disabled in the browser, the browser did not send back the first &quot;session cookie&quot; (the one with <code>JSESSIONID</code>=<code>73E4E3DD34FCEFF935CB5E86816670E0</code>). Since the servlet did not receive a cookie from the browser it assumes the browser has not yet joined (i.e., acknowledged) the session.  So, the servlet  tries again to establish a session by sending another cookie (with <code>JSESSIONID</code>=<code>24DE0160A8D77B1DA5E8E40F3B5571CD</code>). I'm not showing the HTTP request/response headers in this case because they are essentially the same as the previous set of headers, with only the <code>JSESSIONID</code> and <code>Date</code> headers changed. Now, every time you hit the &quot;Reload&quot; button you'll see the same result: The servlet keeps sending a new &quot;session cookie&quot; which is never acknowledged by the browser. You'll also notice that the &quot;<code>Current session has been accessed...</code>&quot; coun t always indicates &quot;1&quot; session access.</p>
+	<p>So, if the user turns off cookies in the browser can we still do session tracking? Yes, we can, <i><b>but</b></i> it will require a bit more effort on our part and the effectiveness will be slightly limited compared with using cookies.</p>
+	<p>You may have noticed that the <code>HttpSession</code> class has two interestingly named methods: <code>isRequestedSessionIdFromCookie()</code> and <code>isRequestedSessionIdFromURL()</code>. When cookies were enabled, the <code>isRequestedSessionIdFromCookie()</code> method always returned <code>true</code> when the browser sent back the &quot;session cookie&quot;. The <code>isRequestedSessionIdFromURL()</code> method might give you a clue as to how sessions are handled if cookies are not supported in the browser. The &quot;backup technique&quot; is to use URL rewriting.</p>
+	<p>URL rewriting is an alternative to cookies. Rather then sending cookies back and forth between the HTTP server and the browser, the servlet appends a session identifier to all URLs sent to the browser. When the user clicks on such a URL, the session identifier is sent back to the servlet. On the web page shown above, click on the <u>click here</u> link. Notice the URL that appears in the browser's URL field. You should see a <code>jsessionid</code> field appended to the URL.</p>
+	<p>Earlier I said that the effectiveness of using URL rewriting was limited compared to using cookies. The reason for this is that each URL written to the browser must be passed through one of the following two methods:</p>
+<ul>
+	<li>
+		<code>HttpServletResponse.encodeURL()</code>
+	</li>
+	<li>
+		<code>HttpServletResponse.encodeRedirectURL()</code>
+	</li>
+</ul>
+	<p>Each of these methods returns a <code>String</code> suitable for use as an HREF in an anchor HTML tag (e.g., <code>&lt;a&nbsp;href='<i><font color="#0033CC">encoded&nbsp;URL</font></i>'&gt;click&nbsp;me&lt;/a&gt;</code>). See lines 58-61 of the <code>SessionTracker</code> source code above to see how the <code>encodeURL()</code> method is used. The <code>encodeRedirectURL()</code> is used if the URL to be generated is to be used by the <code>HttpServletResponse.sendRedirect()</code> method.</p>
+	<p>Tracking user sessions via URL rewriting requires the servlet to generate all HTML links sent to the browser. If a simple static HTML page is sent to the user, for example, any URLs (i.e., HTML links) present in the static page will not have the <code>jsessionid</code> appended to them, preventing you from maintaining the user's session any further. If cookies were used to track the session identifiers, on the other hand, a static page could be presented to the user and session information would be maintained. It is in this sense that URL rewriting is more limited than cookies for tracking sessions.</p>
+</div>
+<p class="subtitle">Listening for Session Binding<br>
+	and Unbinding Events</p>
+<div class="postSubtitle">
+<code><a href="http://java.sun.com/products/servlet/2.2/javadoc/javax/servlet/http/HttpSession.html" target="_blank">HttpSession</a></code>s would be of little use if they didn't provide a way for storing and retrieving information associated with the browser user. If a customer makes a purchase on a web site, for example, we may store items purchased along with customer information within the session. The <code>HttpSession</code> class has methods for setting and retrieving values associated with it. To associate an object with an <code>HttpSession</code> we use the method <code>setAttribute()</code> while <code>getAttribute()</code> is used to retrieve an object previously associated with a session. You can think of <code>setAttribute()</code> and <code>getAttribute()</code> as being somewhat analogous to the <code>get()</code> and <code>put()</code> methods in <code>java.util.Map</code>. To remove an attribute from a session use the <code>removeAttribute()</code> method.</div>
+	
+<p>The  <code><a href="http://java.sun.com/products/servlet/2.2/javadoc/javax/servlet/http/HttpSessionBindingListener.html" target="_blank">javax.servlet.http.HttpSessionBindingListener</a></code> interface allows the object being associated with an <code>HttpSession</code> to be notified of its association with the session. The <code>HttpSessionBindingListener</code> interface has a <code>valueBound(HttpSessionBindingEvent&nbsp;event)</code> method that is called when the object is associated with an <code>HttpSession</code> via the <code>setAttribute()</code> method. Similarly, an object implementing <code>HttpSessionBindingListener</code> will be notified if/when it is dis-associated from an <code>HttpSession</code> by having its <code>valueUnbound(HttpSessionBindingEvent&nbsp;event)</code> method called. If the object being associated/dis-associated with the <code>HttpSession</code> does not implement <code>HttpSessionBindingListener</code> it will, of course, not be notified when <code>setAttribute()</code> or <code>removeAttribute()</code> are called.</p>
+	
+<p>Below is a simple example servlet that shows how (easily) this all works. Make sure you have cookies enabled before running this servlet.
+	<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+</p>
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.io.IOException;</td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.io.PrintWriter;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> javax.servlet.*;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> javax.servlet.http.*;</td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;<span class='codeKeyword'>class</span> SomeAttribute <span class='codeKeyword'>implements</span> HttpSessionBindingListener <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;   <span class='codeKeyword'>private</span> <span class='codeKeyword'>int</span> id;</td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;   SomeAttribute<span class='codeSeparator'>(</span><span class='codeKeyword'>int</span> id<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;      <span class='codeKeyword'>this</span>.id <span class='codeOperatorLiteral'>=</span> id;</td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// SomeAttribute()</span></td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>void</span> valueBound<span class='codeSeparator'>(</span>HttpSessionBindingEvent event<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;      <span class='codeComment'>// Get the current writer from the session and print</span></td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;      <span class='codeComment'>// a diagnostic message.</span></td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;      PrintWriter out <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>PrintWriter<span class='codeSeparator'>)</span>event.getSession<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>.getAttribute<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"writer"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>17</td><td><pre>&nbsp;      out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Listener with id="</span> <span class='codeOperatorLiteral'>+</span> id <span class='codeOperatorLiteral'>+</span> <span class='codeStringLiteral'>" and name="</span> <span class='codeOperatorLiteral'>+</span></td></tr><tr><td class='lineNumber'><pre>18</td><td><pre>&nbsp;                  event.getName<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeOperatorLiteral'>+</span> <span class='codeStringLiteral'>" has been bound..."</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>19</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// valueBound()</span></td></tr><tr><td class='lineNumber'><pre>20</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>21</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>void</span> valueUnbound<span class='codeSeparator'>(</span>HttpSessionBindingEvent event<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>22</td><td><pre>&nbsp;      <span class='codeComment'>// Get the current writer from the session and print</span></td></tr><tr><td class='lineNumber'><pre>23</td><td><pre>&nbsp;      <span class='codeComment'>// a diagnostic message.</span></td></tr><tr><td class='lineNumber'><pre>24</td><td><pre>&nbsp;      PrintWriter out <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>PrintWriter<span class='codeSeparator'>)</span>event.getSession<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>.getAttribute<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"writer"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>25</td><td><pre>&nbsp;      out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"   Listener with id="</span> <span class='codeOperatorLiteral'>+</span> id <span class='codeOperatorLiteral'>+</span> <span class='codeStringLiteral'>" and name="</span> <span class='codeOperatorLiteral'>+</span></td></tr><tr><td class='lineNumber'><pre>26</td><td><pre>&nbsp;                  event.getName<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeOperatorLiteral'>+</span> <span class='codeStringLiteral'>" has been UNbound..."</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>27</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// valueUnbound()</span></td></tr><tr><td class='lineNumber'><pre>28</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// SomeAttribute</span></td></tr><tr><td class='lineNumber'><pre>29</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>30</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>31</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeKeyword'>extends</span> HttpServlet <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>32</td><td><pre>&nbsp;   <span class='codeKeyword'>private</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>int</span> count;</td></tr><tr><td class='lineNumber'><pre>33</td><td><pre>&nbsp;   <span class='codeComment'>// Create some objects that implement HttpSessionBindingListener.</span></td></tr><tr><td class='lineNumber'><pre>34</td><td><pre>&nbsp;   <span class='codeKeyword'>private</span> SomeAttribute<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> attribs <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>{</span><span class='codeOperatorLiteral'>new</span> SomeAttribute<span class='codeSeparator'>(</span><span class='codeIntegerLiteral'>0</span><span class='codeSeparator'>)</span>, <span class='codeOperatorLiteral'>new</span> SomeAttribute<span class='codeSeparator'>(</span><span class='codeIntegerLiteral'>1</span><span class='codeSeparator'>)</span>,</td></tr><tr><td class='lineNumber'><pre>35</td><td><pre>&nbsp;                                      <span class='codeOperatorLiteral'>new</span> SomeAttribute<span class='codeSeparator'>(</span><span class='codeIntegerLiteral'>2</span><span class='codeSeparator'>)</span>, <span class='codeOperatorLiteral'>new</span> SomeAttribute<span class='codeSeparator'>(</span><span class='codeIntegerLiteral'>3</span><span class='codeSeparator'>)</span><span class='codeSeparator'>}</span>;</td></tr><tr><td class='lineNumber'><pre>36</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>37</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>void</span> doGet<span class='codeSeparator'>(</span>HttpServletRequest request,</td></tr><tr><td class='lineNumber'><pre>38</td><td><pre>&nbsp;                     HttpServletResponse response<span class='codeSeparator'>)</span> <span class='codeKeyword'>throws</span> ServletException,</td></tr><tr><td class='lineNumber'><pre>39</td><td><pre>&nbsp;                                                          IOException <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>40</td><td><pre>&nbsp;      PrintWriter out <span class='codeOperatorLiteral'>=</span> response.getWriter<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>41</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>42</td><td><pre>&nbsp;      response.setBufferSize<span class='codeSeparator'>(</span><span class='codeIntegerLiteral'>8</span> <span class='codeOperatorLiteral'>*</span> <span class='codeIntegerLiteral'>1024</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>43</td><td><pre>&nbsp;      response.setContentType<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"text/html"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>44</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>45</td><td><pre>&nbsp;      out.print<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;html&gt;&lt;head&gt;&lt;title&gt;Tester&lt;/title&gt;&lt;/head&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>46</td><td><pre>&nbsp;      out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;body bgcolor='#aaccaa'&gt;&lt;pre style='size:125%'&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>47</td><td><pre>&nbsp;      out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"count = "</span> <span class='codeOperatorLiteral'>+</span> count<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>48</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>49</td><td><pre>&nbsp;      HttpSession session <span class='codeOperatorLiteral'>=</span> request.getSession<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>50</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>51</td><td><pre>&nbsp;      <span class='codeComment'>// Store the current writer in the session.</span></td></tr><tr><td class='lineNumber'><pre>52</td><td><pre>&nbsp;      session.setAttribute<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"writer"</span>, out<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>53</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>54</td><td><pre>&nbsp;      <span class='codeKeyword'>switch</span><span class='codeSeparator'>(</span>count<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>55</td><td><pre>&nbsp;         <span class='codeKeyword'>case</span> <span class='codeIntegerLiteral'>0</span><span class='codeOperatorLiteral'>:</span> session.setAttribute<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"mary"</span>, attribs<span class='codeSeparator'>[</span><span class='codeIntegerLiteral'>0</span><span class='codeSeparator'>]</span><span class='codeSeparator'>)</span>; <span class='codeKeyword'>break</span>;</td></tr><tr><td class='lineNumber'><pre>56</td><td><pre>&nbsp;         <span class='codeKeyword'>case</span> <span class='codeIntegerLiteral'>1</span><span class='codeOperatorLiteral'>:</span> session.setAttribute<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"jane"</span>, attribs<span class='codeSeparator'>[</span><span class='codeIntegerLiteral'>1</span><span class='codeSeparator'>]</span><span class='codeSeparator'>)</span>; <span class='codeKeyword'>break</span>;</td></tr><tr><td class='lineNumber'><pre>57</td><td><pre>&nbsp;         <span class='codeKeyword'>case</span> <span class='codeIntegerLiteral'>2</span><span class='codeOperatorLiteral'>:</span> session.setAttribute<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"joe"</span>,  attribs<span class='codeSeparator'>[</span><span class='codeIntegerLiteral'>2</span><span class='codeSeparator'>]</span><span class='codeSeparator'>)</span>; <span class='codeKeyword'>break</span>;</td></tr><tr><td class='lineNumber'><pre>58</td><td><pre>&nbsp;         <span class='codeKeyword'>case</span> <span class='codeIntegerLiteral'>3</span><span class='codeOperatorLiteral'>:</span> session.setAttribute<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"pete"</span>, attribs<span class='codeSeparator'>[</span><span class='codeIntegerLiteral'>3</span><span class='codeSeparator'>]</span><span class='codeSeparator'>)</span>; <span class='codeKeyword'>break</span>;</td></tr><tr><td class='lineNumber'><pre>59</td><td><pre>&nbsp;         <span class='codeKeyword'>case</span> <span class='codeIntegerLiteral'>4</span><span class='codeOperatorLiteral'>:</span> session.removeAttribute<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"mary"</span><span class='codeSeparator'>)</span>; <span class='codeKeyword'>break</span>;</td></tr><tr><td class='lineNumber'><pre>60</td><td><pre>&nbsp;         <span class='codeKeyword'>case</span> <span class='codeIntegerLiteral'>5</span><span class='codeOperatorLiteral'>:</span> session.removeAttribute<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"jane"</span><span class='codeSeparator'>)</span>; <span class='codeKeyword'>break</span>;</td></tr><tr><td class='lineNumber'><pre>61</td><td><pre>&nbsp;         <span class='codeKeyword'>case</span> <span class='codeIntegerLiteral'>6</span><span class='codeOperatorLiteral'>:</span> session.removeAttribute<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"joe"</span><span class='codeSeparator'>)</span>;  <span class='codeKeyword'>break</span>;</td></tr><tr><td class='lineNumber'><pre>62</td><td><pre>&nbsp;         <span class='codeKeyword'>case</span> <span class='codeIntegerLiteral'>7</span><span class='codeOperatorLiteral'>:</span> session.removeAttribute<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"pete"</span><span class='codeSeparator'>)</span>; <span class='codeKeyword'>break</span>;</td></tr><tr><td class='lineNumber'><pre>63</td><td><pre>&nbsp;      <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>64</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>65</td><td><pre>&nbsp;      count <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>++</span>count <span class='codeOperatorLiteral'>%</span> <span class='codeIntegerLiteral'>8</span>; <span class='codeComment'>// update count to next value</span></td></tr><tr><td class='lineNumber'><pre>66</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>67</td><td><pre>&nbsp;      out.print<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>68</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>//doGet()</span></td></tr><tr><td class='lineNumber'><pre>69</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+
+
+<p>The servlet keeps a counter whose value ranges over the integers [0,7]. For values in [0,3], attributes are added to the session while for values in [4,7] they are removed.</p>
+<p class="subtitle">HTML <code style="font-size:large">FORM</code> Without <code style="font-size:large">ACTION</code></p>
+<div class="postSubtitle">When using the <CODE>&lt;FORM&gt;</CODE> tag, you will usually specify an <CODE>ACTION=&lt;<EM>someURL</EM>&gt;</CODE>
+attribute to specify a CGI script or Java servlet to be executed when the form is submitted. The
+<CODE>ACTION=&lt;<EM>someURL</EM>&gt;</CODE> attribute, however, is not strictly necessary. If <CODE>ACTION=</CODE> is omitted,
+an implicit <CODE>ACTION=</CODE> is provided. What is the value for this implied <CODE>ACTION=</CODE> attribute?
+Its value is the same URL that served the page originally.</div>
+<p>Let's say we have the following in a file called <CODE>SomeForm.html</CODE>:
+
+
+</p>
+<blockquote>
+	<PRE>
+<SPAN CLASS="comment">&lt;!-- SomeForm.html --&gt;</SPAN>
+&lt;!DOCTYPE HTML PUBLIC "-//w3c//dtd html 4.0 transitional//en"&gt;
+&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;
+   &lt;form method="get"&gt;
+      Enter name #1: &lt;input type="text" name="userName1" size="25"&gt;&lt;br&gt;
+      Enter name #2: &lt;input type="text" name="userName2" size="25"&gt;&lt;br&gt;
+      &lt;input type="submit" VALvalueUE="Submit This"&gt;
+   &lt;/form&gt;
+&lt;/body&gt;&lt;/html&gt;
+</PRE>
+</blockquote>
+
+Notice that the <CODE>action=&lt;<EM>someURL</EM>&gt;</CODE> attribute is missing from the <CODE>&lt;FORM&gt;</CODE> tag.
+When this form is submitted, the data entered for the <CODE>userName1</CODE> and <CODE>userName2</CODE> parameters
+sent back to the web server as part of the HTTP <code>GET</code> request. So far there is nothing unusual happening.
+What's interesting is the URL encoded in the HTTP <code>GET</code> request -- it is the exact same URL that served
+the page originally. The implication is that the web server will simply "re-serve" the same URL, only this time the
+parameters will be set to the values entered.<br>
+<br>
+
+Another way to look at this is that the form is being handled exactly as if the following <CODE>&lt;FORM&gt;</CODE> tag
+had been used instead:
+
+<PRE>
+&lt;form method="GET" action="SomeForm.html"&gt;
+</PRE>
+
+In fact, even the <CODE>method=</CODE> parameter is not strictly necessary. If ommitted, <CODE>action="GET"</CODE> is the default.<br>
+<br>
+
+Why is this significant? Well, you could have a servlet (like the one below) which checks if one or more parameters
+have been set to appropritae values. If the parameters <em>have</em> been set correctly it could perform specific
+processing like redirecting the user to another page. If the parameter(s) has not been set correctly, the servlet
+could simply re&#8209;generate the original output. The servlet below does exactly this by using a <code>RequestDispatcher</code>.<br>
+<br>
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.io.*;</td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> javax.servlet.*;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> javax.servlet.http.*;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeKeyword'>extends</span> HttpServlet <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;  <span class='codeKeyword'>public</span> <span class='codeKeyword'>void</span> doGet<span class='codeSeparator'>(</span>HttpServletRequest req,</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;                    HttpServletResponse res<span class='codeSeparator'>)</span> <span class='codeKeyword'>throws</span> ServletException,</td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;                                                    IOException <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;      String personalName <span class='codeOperatorLiteral'>=</span> req.getParameter<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"personalName"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;      <span class='codeComment'>// If the "personalName" parameter is "Mickey Mouse" we redirect to</span></td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;      <span class='codeComment'>// another page; otherwise, we re-generate the same page.</span></td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;      <span class='codeKeyword'>if</span><span class='codeSeparator'>(</span>personalName <span class='codeOperatorLiteral'>!=</span> <span class='codeKeyword'>null</span> <span class='codeOperatorLiteral'>&amp;&amp;</span> personalName.equals<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Mickey Mouse"</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;         RequestDispatcher rd <span class='codeOperatorLiteral'>=</span> req.getRequestDispatcher<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"/HiMickey.html"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;         rd.forward<span class='codeSeparator'>(</span>req, res<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;        <span class='codeKeyword'>return</span>;</td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;      <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>17</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>18</td><td><pre>&nbsp;      res.setContentType<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"text/html"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>19</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>20</td><td><pre>&nbsp;      PrintWriter out <span class='codeOperatorLiteral'>=</span> res.getWriter<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>21</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>22</td><td><pre>&nbsp;      out.print<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;HTML LANG=\"en\"&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>23</td><td><pre>&nbsp;      out.print<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;HEAD&gt;&lt;/HEAD&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>24</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>25</td><td><pre>&nbsp;      out.print<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;BODY&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>26</td><td><pre>&nbsp;      out.print<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;H1&gt;Simple Form&lt;/H1&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>27</td><td><pre>&nbsp;      out.print<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;H3&gt;personalName="</span> <span class='codeOperatorLiteral'>+</span> req.getParameter<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"personalName"</span><span class='codeSeparator'>)</span> <span class='codeOperatorLiteral'>+</span> <span class='codeStringLiteral'>"&lt;/H3&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>28</td><td><pre>&nbsp;      out.print<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;form method=\"GET\"&gt;"</span><span class='codeSeparator'>)</span>; <span class='codeComment'>// Notice there is no "ACTION=" here.</span></td></tr><tr><td class='lineNumber'><pre>29</td><td><pre>&nbsp;      out.print<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Your Name? &lt;input type=\"text\" name=\"personalName\"&gt;&lt;br&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>30</td><td><pre>&nbsp;      out.print<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;input type=\"submit\"&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>31</td><td><pre>&nbsp;      out.print<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;/form&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>32</td><td><pre>&nbsp;      out.print<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;/BODY&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>33</td><td><pre>&nbsp;      out.print<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"&lt;/HTML&gt;"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>34</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>35</td><td><pre>&nbsp;      out.close<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>36</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// doGet()</span></td></tr><tr><td class='lineNumber'><pre>37</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+
+<DIV ALIGN="center">
+   <P STYLE="font-size:9pt; font-family:verdana,arial,helvetica; color:black">
+Copyright &copy; 1999-2002, Tony LaPaso<BR>
+		All Rights Reserved.</P>
+</DIV>
+
+</body>
+</html>
+

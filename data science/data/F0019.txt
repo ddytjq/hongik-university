@@ -1,0 +1,445 @@
+ID=F0019
+URL=http://www.stlvbug.org/vblinks.asp
+SIZE=22193
+DATE=09/07/2002
+TIME=13:12:31
+DATASET=Visual Basic
+HTML=
+
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="styles.css">
+<title>St. Louis Visual Basic Users Group Links Page</title>
+
+</head>
+
+<body background="images/grytxtr5.jpg" bgcolor="#d5d5d5" BGPROPERTIES=FIXED>
+<p><img src="images/vbug.gif" width="576" height="144"></p>
+
+<!-- begin CoolBar Control -->
+<STYLE TYPE="text/css"><!--
+	
+	A { text-decoration:none; }
+
+	TABLE#tblCoolbar { 
+		background-color:threedface; padding:1px; color:menutext; 
+		border-width:1px; border-style:solid; 
+		border-color:threedhighlight threedshadow threedshadow threedhighlight;
+	}
+
+	TABLE#tblCoolbar TABLE { 
+		font-family:tahoma; font-size:70%; color:menutext; 
+		border:1px solid threedface; cursor:hand; padding:1px; 
+	}
+	
+--></STYLE>
+
+<SCRIPT LANGUAGE="JScript"><!--
+
+	// SET SOME "CONSTANT" VALUES FOR THE SCRIPT
+	// MAKES PLAYING WITH LOOK AND FEEL A LOT EASIER
+
+	var sOffBackColor = "threedface";
+	var sOffTextColor = "menutext"
+	var sOffBorderColor = "threedface";
+	var sOffPadding = "1px 1px 1px 1px";
+
+	var sOverBackColor = "threedface";
+	var sOverTextColor = "menutext"
+	var sOverBorderColor = "threedhighlight threedshadow threedshadow threedhighlight";
+	var sOverPadding = "1px 1px 1px 1px";
+
+	var sDownBackColor = "window"
+	var sDownTextColor = "menutext"
+	var sDownBorderColor = "threedshadow threedhighlight threedhighlight threedshadow";
+	var sDownPadding = "2px 0px 0px 2px";
+
+	var sPaneName = "";
+	var eActiveButton = null;
+
+	// TWO HELPER FUNCTIONS
+	// ONE TO SET BUTTON PADDING AND ONE TO SET BUTTON IMAGE
+
+	function SetButtonPadding(eButton,sPaddingStyle)
+	{
+		eButton.rows[0].cells[0].style.padding = sPaddingStyle;
+		eButton.rows[0].cells[1].style.padding = sPaddingStyle;
+	}
+	
+	function SetButtonImage(eButton,sState)
+	{
+		var eImg = eButton.rows[0].cells[0].children[0];
+		if (eImg) 
+		{
+			var sImgSrc = eImg.src;
+			
+			if (sState == "over")
+			{
+				eImg.src = "../images/minus.gif";
+			}
+			
+			if (sState == "off")
+			{
+				eImg.src = "../images/plus.gif";
+			}
+
+		}
+	}
+	
+	// FOUR EVENT-HANDLER FUNCTIONS
+
+	function button_over(eButton)
+	{
+
+		// IF WE'RE JUST MOUSING ABOUT WITHIN THE BUTTON, THEN BAIL
+
+		if (window.event && eButton.contains(window.event.fromElement)) return false;
+
+		// OTHERWISE CHANGE BUTTON STYLE
+
+		eButton.style.backgroundColor = sOverBackColor;
+		eButton.style.color = sOverTextColor;
+		if (eActiveButton != eButton)
+		{
+			eButton.style.borderColor = sOverBorderColor;
+			SetButtonImage(eButton,"over");
+		}
+	}
+
+
+	function button_out(eButton)
+	{
+		// IF WE'RE JUST MOUSING ABOUT WITHIN THE BUTTON, THEN BAIL
+		
+		if (window.event && eButton.contains(window.event.toElement)) return false;
+
+		// OTHERWISE CHANGE BUTTON STYLE
+
+		if (eActiveButton != eButton)
+		{
+			eButton.style.backgroundColor = sOffBackColor;
+			eButton.style.borderColor = sOffBorderColor;
+			eButton.style.color = sOffTextColor;
+			SetButtonPadding(eButton,sOffPadding);
+			SetButtonImage(eButton,"off")
+		}
+		else
+		{
+			eButton.style.backgroundColor = sDownBackColor;
+			eButton.style.borderColor = sDownBorderColor;
+			eButton.style.color = sDownTextColor;
+		}
+	}
+
+	function button_down(eButton)
+	{
+		eButton.style.borderColor = sDownBorderColor;
+		SetButtonPadding(eButton,sDownPadding);
+	}
+
+	function button_up(eButton)
+	{
+
+		// IF ANOTHER BUTTON IS ACTIVE, RESET IT
+
+		if (null != eActiveButton && eButton != eActiveButton)
+		{
+			eActiveButton.style.backgroundColor = sOffBackColor;
+			eActiveButton.style.borderColor = sOffBorderColor;
+			eActiveButton.style.color = sOffTextColor;
+			SetButtonImage(eActiveButton,"off");
+			SetButtonPadding(eActiveButton,sOffPadding);
+			eActiveButton = null; 
+
+			// insert code here for button hiding 
+			window.status = window.defaultStatus;
+		}
+
+		// IF THE BUTTON WE CLICKED IS NOT THE ACTIVE BUTTON, MAKE IT ACTIVE
+
+		if (eButton != eActiveButton)  
+		{
+			eActiveButton = eButton;
+			eActiveButton.style.borderColor = sDownBorderColor;
+			eActiveButton.style.color = sDownTextColor;
+			SetButtonPadding(eActiveButton,sDownPadding);
+			sPaneName = eActiveButton.id.replace(/tbl(.*)Button/,"$1");
+
+			// insert code here for button showing 
+			//window.status = "Now showing: " + sPaneName;
+		}
+
+		// OTHERWISE, RESET IT
+
+		else  
+		{
+			eActiveButton.style.backgroundColor = sOverBackColor;
+			eActiveButton.style.borderColor = sOverBorderColor;
+			eActiveButton.style.color = sOverTextColor;
+			SetButtonPadding(eActiveButton,sOverPadding);
+			eActiveButton = null;
+
+			// insert code here for button hiding 
+			window.status = window.defaultStatus;
+		}
+
+	}
+
+//--></SCRIPT>
+
+<TABLE ID="tblCoolbar" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONSELECTSTART="return false;">
+<TR VALIGN="middle">
+
+	<TD>
+	<TABLE ID="tblHomeButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="VBUG Home">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><A HREF="default.asp">Home</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>
+
+	<TD>
+	<TABLE ID="tblFeedbackButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="Send Us Feedback">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><A HREF="feedback.asp">Feedback</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>
+
+	<TD>
+	<TABLE ID="tblAppButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="Join VBUG!">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><A HREF="vbugapp.asp">VBUG Application</A>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>	
+	
+	<TD>
+	<TABLE ID="tblMeetingButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="Current Meeting">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><a href="currmtg.asp">Current Meeting</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>
+	
+	<TD>
+	<TABLE ID="tblTipsButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="VBUG Tips and Tricks">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><a href="tips.asp">Tips and Tricks</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>	
+
+	<TD>
+	<TABLE ID="tblNewsButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="VBUG Newsgroup">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><a href="newsgroup.asp">VBUG Online Newsgroup</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>	
+
+	<TD>&nbsp;</TD>
+
+</TR>
+</TABLE>
+
+<P><P>
+
+<!-- End CoolBar Control -->
+
+<IMG SRC="http://service.bfast.com/bfast/serve?bfmid=2181&sourceid=5196581&categoryid=rn_softwstore2" BORDER="0" WIDTH="1" HEIGHT="1" NOSAVE >
+
+<style type="text/css">
+<!--
+.store {font-size : 13px; font-family : Arial; color : #006666;}
+-->
+</style>
+<IMG SRC="http://service.bfast.com/bfast/serve?bfmid=2181&sourceid=5196581&categoryid=rn_softwstore2" BORDER="0" WIDTH="1" HEIGHT="1" NOSAVE >
+	<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="460" HEIGHT="300" BGCOLOR="#FFFFFF">
+		<TR>
+			<TD BGCOLOR="#ffffff" COLSPAN="2" ROWSPAN="2" WIDTH="10" HEIGHT="10"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/softwstore2_upLeft.gif" WIDTH="10" HEIGHT="10" ALT="" BORDER="0"></TD>
+			<TD BGCOLOR="#006666" COLSPAN="2" HEIGHT="2" VALIGN="top"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="440" HEIGHT="2" BORDER="0"></TD>				
+			<TD BGCOLOR="#ffffff" COLSPAN="2" ROWSPAN="2" ALIGN="left" WIDTH="10" HEIGHT="10"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/softwstore2_upRight.gif" WIDTH="10" HEIGHT="10" BORDER="0"></TD>			</TR>
+		<TR>
+			<TD BGCOLOR="#ffffff" COLSPAN="2" WIDTH="440" HEIGHT="8" VALIGN="top"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" HEIGHT="8" BORDER="0"></TD>
+		</TR>
+	
+		<TR>
+			<TD BGCOLOR="#006666" WIDTH="2"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="2" HEIGHT="96" BORDER="0"></TD>
+			<TD BGCOLOR="#ffffff" WIDTH="8"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="8" HEIGHT="96" BORDER="0"></TD>
+			<TD WIDTH="230" HEIGHT="96"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/softwstore2_head.gif" WIDTH="230" HEIGHT="96" ALT="Barnes & Noble.com" BORDER="0"></TD>
+			<TD ALIGN="RIGHT" VALIGN="top"><IFRAME SRC="http://ads.bfast.com/ad/frame?bfmid=2181&5196581=5196581&size=120x90&space=5529093" WIDTH="120" HEIGHT="90" NORESIZE SCROLLING="no" FRAMEBORDER="0" MARGINHEIGHT="0" MARGINWIDTH="0">
+			<SCRIPT LANGUAGE="JavaScript" SRC="http://ads.bfast.com/ad/script?bfmid=2181&5196581=5196581&size=120x90&space=5529093">
+			</SCRIPT>
+			<NOSCRIPT>
+			<A HREF="http://ads.bfast.com/ad/click?bfmid=2181&5196581=5196581&size=120x90&space=5529093" TARGET="_top">
+			<IMG SRC="http://ads.bfast.com/ad/serve?bfmid=2181&5196581=5196581&size=120x90&space=5529093" BORDER="0" WIDTH="120" HEIGHT="90"></A>
+			</NOSCRIPT>
+			</IFRAME></A>
+			</TD>
+			<TD BGCOLOR="#ffffff" WIDTH="8"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="8" HEIGHT="96" BORDER="0"></TD>
+			<TD BGCOLOR="#006666" WIDTH="2"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="2" HEIGHT="96" BORDER="0"></TD>
+		</TR>
+			
+		<TR>
+			<TD BGCOLOR="#006666" WIDTH="2"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="2" HEIGHT="17" BORDER="0"></TD>
+			<TD BGCOLOR="#ffffff" WIDTH="8"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="8" HEIGHT="17" BORDER="0"></TD>
+			<TD BGCOLOR="#ffffff" COLSPAN="2" HEIGHT="17"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="1" HEIGHT="17" BORDER="0"></TD>
+			<TD BGCOLOR="#ffffff" WIDTH="8"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="8" HEIGHT="17" BORDER="0"></TD>
+			<TD BGCOLOR="#006666" WIDTH="2"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="2" HEIGHT="17" BORDER="0"></TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR="#006666" WIDTH="2"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="2" HEIGHT="27" BORDER="0"></TD>
+			<TD BGCOLOR="#ffffff" WIDTH="8"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="8" HEIGHT="27" BORDER="0"></TD>
+			<TD BGCOLOR="#ffffff" HEIGHT="27" COLSPAN="2">
+				<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" BGCOLOR="#FFFFFF">
+					<TR><FORM ACTION="http://service.bfast.com/bfast/click">
+						<input type="hidden" name="sourceid" value="5196581">
+						<input type="hidden" name="bfmid" value="2181">
+						<input type="hidden" name="categoryid" value="rn_software_searchby"></TD>
+						<TD><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/softwstore2_search.gif" WIDTH="121" HEIGHT="27" ALT="SEARCH SOFTWARE" BORDER="0"></TD>
+						<TD>&nbsp;&nbsp;<INPUT NAME="query" TYPE="text" SIZE="15" HEIGHT="1">
+							<SELECT NAME="searchtype">
+							<OPTION VALUE="Title" SELECTED>Title
+						   	<OPTION VALUE="Keyword">Keyword
+						   	<OPTION VALUE="Publisher">Publisher
+						   	<OPTION VALUE="upc_code">UPC Code
+							</SELECT></TD>
+						<TD>&nbsp;<INPUT TYPE="image" VALUE="Go" SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/softwstore2_go.gif" WIDTH="27" HEIGHT="27" BORDER="0"></TD>
+				</FORM></TR></TABLE>
+			</TD>
+			<TD BGCOLOR="#ffffff" WIDTH="8"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="8" HEIGHT="27" BORDER="0"></TD>
+			<TD BGCOLOR="#006666" WIDTH="2"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="2" HEIGHT="27" BORDER="0"></TD>
+		</TR>
+		<TR>
+			<TD BGCOLOR="#006666" WIDTH="2"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="2" HEIGHT="4" BORDER="0"></TD>
+			<TD BGCOLOR="#ffffff" WIDTH="8"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="8" HEIGHT="4" BORDER="0"></TD>
+			<TD BGCOLOR="#ffffff" COLSPAN="2"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="440" HEIGHT="4" BORDER="0"></TD>
+			<TD BGCOLOR="#ffffff" WIDTH="8"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="8" HEIGHT="4" BORDER="0"></TD>
+			<TD BGCOLOR="#006666" WIDTH="2"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="2" HEIGHT="4" BORDER="0"></TD>
+		</TR>
+		<TR>	
+			<TD COLSPAN="6" BGCOLOR="#006666"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="460" HEIGHT="2" BORDER="0"></TD>
+		</TR>
+
+		<TR VALIGN="TOP">
+			<TD BGCOLOR="#006666" WIDTH="2"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="2" HEIGHT="134" BORDER="0"></TD>
+			<TD BGCOLOR="#ffffff" WIDTH="8"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="8" HEIGHT="134" BORDER="0"></TD>
+			<TD BGCOLOR="#ffffff" COLSPAN="2" WIDTH="440" HEIGHT="134" ALIGN="center" VALIGN="middle">
+				<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="100%" BGCOLOR="#FFFFFF">
+					<TR><FORM ACTION="http://service.bfast.com/bfast/click">
+						<input type="hidden" name="sourceid" value="5196581">
+						<input type="hidden" name="bfmid" value="2181">
+						<input type="hidden" name="categoryid" value="categorydropdown"></td>
+						
+						<TD ALIGN="left" VALIGN="middle"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/softwstore2_browse.gif" WIDTH="144" HEIGHT="27" ALT="BROWSE BY CATEGORY" BORDER="0"></TD>
+						<TD ALIGN="left" VALIGN="middle">
+						<SELECT NAME="Subjects" SIZE=1>
+						<option value="4400">Adult Education
+						<option value="4000">Business and Productivity
+						<option value="4900">Film & Video
+						<option value="4100">Games and Entertainment
+						<option value="4200">Home and Reference
+						<option value="4300">Kids! and Education
+						<option value="4901">Music
+						<option value="4600">Publishing
+						<option value="4700" SELECTED>Software Development
+						<option value="4500">Web and Communication
+						<option value="2">All Software Subjects
+						</SELECT></TD>
+						<TD ALIGN="left" VALIGN="middle"><INPUT TYPE="image" VALUE="Go" SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/softwstore2_go.gif" WIDTH="27" HEIGHT="27" BORDER="0"></TD>
+						<TD BGCOLOR="#ffffff" WIDTH="70" ALIGN="left"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="70" HEIGHT="27" BORDER="0"></TD>
+					</TR>
+					<TR>
+						<TD COLSPAN="4"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="1" HEIGHT="8" BORDER="0"></TD>
+					</TR>
+					
+				</TABLE>
+				<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="100%" BGCOLOR="#FFFFFF">
+					<TR>
+						<TD COLSPAN="3" ALIGN="center">
+							<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="100%" BGCOLOR="#FFFFFF">
+								<TR ALIGN="left" VALIGN="MIDDLE" BGCOLOR="#ffffff">
+									<TD><a href="http://service.bfast.com/bfast/click?bfmid=2181&sourceid=5196581&categoryid=rn_software_home"><font size=2 face="helvetica, arial, ms sans serif, sans-serif" color="#006666"><b>Software</b></font></a></td>
+<td><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" width=10 height=1  border="0"><a href="http://service.bfast.com/bfast/click?bfmid=2181&sourceid=5196581&categoryid=rn_computers"><font size=2 face="helvetica, arial, ms sans serif, sans-serif" color="#006666"><b>Computer Books</b></font></a></td>
+<td><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" width=10 height=1 border="0"><a href="http://service.bfast.com/bfast/click?bfmid=2181&sourceid=5196581&categoryid=rn_home"><font size=2 face="helvetica, arial, ms sans serif, sans-serif" color="#006666"><b>And More</b></font></a></TD>
+								</TR>
+								<TR ALIGN="left" VALIGN="MIDDLE" BGCOLOR="#ffffff">
+									<TD><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/orange_arrow.gif" width=10 height=8  border="0"><a href="http://service.bfast.com/bfast/click?bfmid=2181&sourceid=5196581&categoryid=rn_software_newrel"><font color="#006666" valign="top" face="arial" size="2">New Releases</font></a></td>
+<td><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" width=10 height=1  border="0"><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/orange_arrow.gif" width=10 height=8  border="0"><a href="http://service.bfast.com/bfast/click?bfmid=2181&sourceid=5196581&categoryid=rn_tt_computer"><font color="#006666"  valign="top" face="arial" size="2">Bestsellers</font></a></a></td>
+<td><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" width=10 height=1 border="0"><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/orange_arrow.gif" width=10 height=8  border="0"><a href="http://service.bfast.com/bfast/click?bfmid=2181&sourceid=5196581&categoryid=rn_ebooks"><font color="#006666" valign="top" face="arial" size="2">eBooks</font></a></TD>
+								</TR>
+								<TR ALIGN="left" VALIGN="MIDDLE" BGCOLOR="#ffffff">
+									<TD><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/orange_arrow.gif" width=10 height=8  border="0"><a href="http://service.bfast.com/bfast/click?bfmid=2181&sourceid=5196581&categoryid=rn_software_prerel"><font color="#006666" valign="top" face="arial" size="2">Pre-Releases</font></a></td>
+<td><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" width=10 height=1  border="0"><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/orange_arrow.gif" width=10 height=8  border="0"><a href="http://service.bfast.com/bfast/click?bfmid=2181&sourceid=5196581&categoryid=rn_editpicks_comp"><font color="#006666"  valign="top" face="arial" size="2">Editor's Picks</font></a></td>
+<td><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" width=10 height=1 border="0"><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/orange_arrow.gif" width=10 height=8  border="0"><a href="http://service.bfast.com/bfast/click?bfmid=2181&sourceid=5196581&categoryid=rn_pp_home"><font color="#006666" valign="top" face="arial" size="2">Prints & Posters</font></a></TD>
+								</TR>
+								<TR ALIGN="left" VALIGN="MIDDLE" BGCOLOR="#ffffff">
+									<TD><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/orange_arrow.gif" width=10 height=8  border="0"><a href="http://service.bfast.com/bfast/click?bfmid=2181&sourceid=5196581&categoryid=rn_softw_bargain"><font color="#006666" valign="top" face="arial" size="2">Bargains</font></a></td>
+<td><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" width=10 height=1  border="0"><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/orange_arrow.gif" width=10 height=8  border="0"><a href="http://service.bfast.com/bfast/click?bfmid=2181&sourceid=5196581&categoryid=rn_softw_browse"><font color="#006666"  valign="top" face="arial" size="2">Browse Categories</font></a></td>
+<td><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" width=10 height=1  border="0"><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/orange_arrow.gif" width=10 height=8  border="0"><a href="http://service.bfast.com/bfast/click?bfmid=2181&sourceid=5196581&categoryid=rn_bargain_home"><font color="#006666"  valign="top" face="arial" size="2">Bargain Books</font></a></TD>
+								</TR>
+								<TR ALIGN="left" VALIGN="MIDDLE" BGCOLOR="#ffffff">
+									<TD><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/orange_arrow.gif" width=10 height=8  border="0"><a href="http://service.bfast.com/bfast/click?bfmid=2181&sourceid=5196581&categoryid=rn_softw_advsearch"><font color="#006666" valign="top" face="arial" size="2">Advanced Search</font></a></td>
+<td><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" width=10 height=1  border="0"><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/orange_arrow.gif" width=10 height=8  border="0"><a href="http://service.bfast.com/bfast/click?bfmid=2181&sourceid=5196581&categoryid=rn_bookshelf_web"><font color="#006666"  valign="top" face="arial" size="2">WWW & Internet</font></a></td>
+<td><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" width=10 height=1  border="0"><img src="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/orange_arrow.gif" width=10 height=8  border="0"><a href="http://service.bfast.com/bfast/click?bfmid=2181&sourceid=5196581&categoryid=rn_magazine_home"><font color="#006666"  valign="top" face="arial" size="2">Magazines</font></a></TD>
+								</TR>
+								<TR>
+									<TD COLSPAN="3"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="1" HEIGHT="7" BORDER="0"></TD>
+								</TR>
+						</TABLE></TD>
+					</TR>
+				</TABLE>
+			</TD>
+			<TD BGCOLOR="#ffffff" WIDTH="8"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="8" HEIGHT="134" BORDER="0"></TD>
+			<TD BGCOLOR="#006666" WIDTH="2"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="2" HEIGHT="134" BORDER="0"></TD>
+		</TR>
+		<TR>
+			<TD BGCOLOR="#ffffff" COLSPAN="2" ROWSPAN="2" WIDTH="10" HEIGHT="10"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/softwstore2_lowLeft.gif" WIDTH="10" HEIGHT="10" BORDER="0"></TD>
+			<TD BGCOLOR="#ffffff" COLSPAN="2" HEIGHT="8" VALIGN="top"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="440" HEIGHT="8" BORDER="0"></TD>
+			<TD BGCOLOR="#ffffff" WIDTH="10" HEIGHT="10" COLSPAN="2" ROWSPAN="2"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/softwstore2_lowRight.gif" WIDTH="10" HEIGHT="10" BORDER="0"></TD>
+		</TR>
+		<TR>
+			<TD BGCOLOR="#006666" COLSPAN="2" HEIGHT="2"><IMG SRC="http://a1204.g.akamai.net/f/1204/1181/24h/www.affiliate.net/affnet/images/cleardot.gif" WIDTH="440" HEIGHT="2" BORDER="0"></TD>
+		</TR>
+	</TABLE>
+</FORM>
+<P>&nbsp;</P>
+<UL>
+<LI><a href='http://members.aol.com/vbolug'><font size=2>Visual Basic Online Users Group</font></a>
+<LI><a href='http://www.vbpj.com'><font size=2>Visual Basic Programmers Journal</font></a>
+<LI><a href='http://www.topica.com/lists/stlvbu'><font size=2>St. Louis VB Users ListServer</font></a>
+<LI><a href='http://www.vbtt.com'><font size=2>VB Tips and Tricks</font></a>
+<LI><a href='http://www.insteptech.com/'><font size=2>Instep Technologies (Debora Kurata's site)</font></a>
+<LI><a href='http://www.planetsourcecode.com/vb/'><font size=2>Planet Source Code - VB</font></a>
+<LI><a href='http://www.codeguru.com/vb'><font size=2>Code Guru - great newsgroup!!</font></a>
+<LI><a href='http://www.devx.com'><font size=2>Development Exchange (Publishers of VBPJ)</font></a>
+<LI><a href='http://www.vbcode.com'><font size=2>VBCode.com - free source code</font></a>
+<LI><a href='http://www.vbxtras.com'><font size=2>VB Xtras - custom controls</font></a>
+<LI><a href='http://support.microsoft.com/support/?PR=asp&FR=1'><font size=2>ASP Knowledge Base Index</font></a>
+<LI><a href='http://www.vb2themax.com'><font size=2>VB-2-the-Max -- Francesco Balena's Site</font></a>
+<LI><a href='http://www.vbonly.com'><font size=2>VB Only.com - great resource</font></a>
+<LI><a href='http://www.ASPFree.com'><font size=2>ASPFree  - ASP+ Samples!!</font></a>
+<LI><a href='http://www.pdxvbug.com'><font size=2>Portland Visual Basic User Group</font></a>
+<LI><a href='http://p2p.wrox.com'><font size=2>Wrox Discussion Email Newsletters</font></a>
+<LI><a href='http://www.stlnet.org'><font size=2>The St. Louis .Net User Group</font></a>
+<LI><a href='http://www.vbxml.com'><font size=2>VB XML.com source code and how-tos</font></a>
+<LI><a href='http://www.justvbjobs.com'><font size=2>Job Site, JUST FOR VB POSITIONS!</font></a>
+<LI><a href='http://msdn.microsoft.com/vstudio/sp/vs6sp5/dnldoverview.asp'><font size=2>Visual Studio Service Pack 5</font></a>
+<LI><a href='http://www.textcontrol.com'><font size=2>TX Text Control - great text editing</font></a>
+<LI><a href='http://download.microsoft.com/download/vb60pro/Redist/sp5/WIN98Me/EN-US/vbrun60sp5.exe'><font size=2>Visual Basic 6 Runtime Library</font></a>
+</UL>
+
+<P>
+<font size=2>If you think another page should be linked here, send me an <a href="mailto:john@shallowwatersystems.com?subject=VB%20Link">email</a></font>.
+
+</body>
+</html>
+

@@ -1,0 +1,115 @@
+ID=G0388
+URL=http://arcturus.mit.edu/cosmics/doc-html/node10.html
+SIZE=8232
+DATE=09/07/2002
+TIME=16:18:16
+DATASET=Astronomy
+HTML=<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95 (Thu Jan 19 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> GRAFIC Input 1: Using linger.dat for transfer functions</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" GRAFIC Input 1: Using linger.dat for transfer functions">
+<meta name="keywords" value="cosmics">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html124 HREF="node11.html"><IMG ALIGN=BOTTOM ALT="next" SRC="file:/usr/local/lib/latex2html/icons/next_motif.gif"></A>   <A NAME=tex2html122 HREF="node9.html"><IMG ALIGN=BOTTOM ALT="up" SRC="file:/usr/local/lib/latex2html/icons/up_motif.gif"></A>   <A NAME=tex2html116 HREF="node9.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="file:/usr/local/lib/latex2html/icons/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html125 HREF="node11.html"> GRAFIC Input 2: </A>
+<B>Up:</B> <A NAME=tex2html123 HREF="node9.html"> GRAFIC Usage</A>
+<B> Previous:</B> <A NAME=tex2html117 HREF="node9.html"> GRAFIC Usage</A>
+<BR> <HR> <P>
+<H3><A NAME=SECTION00041100000000000000> GRAFIC Input 1: Using linger.dat for transfer functions</A></H3>
+<P>
+<A NAME=grafic1>&#160;</A>
+<P>
+Each of the three cases has slightly different input after setting
+<tt>Tflag</tt>.  We shall begin with <tt>Tflag = 1</tt>.  In this case, the
+user inputs the name of the <tt>linger.dat</tt> filename produced by
+<tt>linger</tt>.  (Its name should be changed to avoid overwriting
+by subsequent <tt>linger</tt> runs.)  From the <tt>linger</tt> header
+information, <tt>grafic</tt> automatically determines the cosmological
+parameters.  It then asks the user to enter the long-wave spectral
+index <b>n</b> (the same parameter used by <tt>deltat</tt>; <b>n=1</b> for the
+scale-invariant Harrison-Zel'dovich spectrum).  Next, it requests the
+desired normalization at redshift zero (<b>a=1</b>), either <IMG  ALIGN=MIDDLE ALT="" SRC="img121.gif">
+in <IMG  ALIGN=MIDDLE ALT="" SRC="img122.gif">K if the user wishes to use a COBE normalization, or
+<IMG  ALIGN=MIDDLE ALT="" SRC="img123.gif"> if the user prefers the conventional normalization on
+galaxy cluster scales.  To distinguish them, a negative value should
+be used for <IMG  ALIGN=MIDDLE ALT="" SRC="img124.gif">; <tt>grafic</tt> then takes the absolute value.
+These normalization quantities are defined as follows:
+<P><A NAME=norm>&#160;</A><IMG  ALIGN=BOTTOM ALT="" SRC="img125.gif"><P> 
+Here, <IMG  ALIGN=MIDDLE ALT="" SRC="img126.gif"> is the present-day microwave background temperature;
+<IMG  ALIGN=MIDDLE ALT="" SRC="img127.gif"> is the <b>l=2</b> component of the angular power spectrum computed
+by <tt>grafic</tt> using equation (<A HREF="node7.html#cls">2</A>), with <IMG  ALIGN=MIDDLE ALT="" SRC="img128.gif"> coming from the photon shear stress in <tt>linger.dat</tt>;
+<IMG  ALIGN=MIDDLE ALT="" SRC="img129.gif"> is the matter density fluctuation power spectrum,
+related to the primeval spectrum <IMG  ALIGN=MIDDLE ALT="" SRC="img130.gif"> of equation (<A HREF="node7.html#cls">2</A>) via the
+Poisson equation (<A HREF="node3.html#poisson">1</A>); <IMG  ALIGN=MIDDLE ALT="" SRC="img131.gif"> is the spherical Bessel function;
+and <IMG  ALIGN=MIDDLE ALT="" SRC="img132.gif"> <IMG  ALIGN=BOTTOM ALT="" SRC="img133.gif"> Mpc is the standard radius for computing <IMG  ALIGN=MIDDLE ALT="" SRC="img134.gif">.
+The term inside brackets in the integral for <IMG  ALIGN=MIDDLE ALT="" SRC="img135.gif"> is the window
+function for a spherical tophat, so that <IMG  ALIGN=MIDDLE ALT="" SRC="img136.gif"> is the rms density
+fluctuation in a sphere of radius <IMG  ALIGN=MIDDLE ALT="" SRC="img137.gif">.  Whichever way the user chooses
+to normalize the power spectrum, <tt>grafic</tt> quickly computes the other
+quantity appropriate for this normalization from equation (<A HREF="node10.html#norm">5</A>).
+See the file <tt>grafic/accuracy_considerations</tt> for comments about the
+accuracy of <IMG  ALIGN=MIDDLE ALT="" SRC="img138.gif">.
+<P>
+The normalization quantities are evaluated at <b>a=1</b> (<IMG  ALIGN=MIDDLE ALT="" SRC="img139.gif">).
+If <tt>linger</tt> was evolved to <tt>zend</tt> <b>&gt;0</b> (<IMG  ALIGN=MIDDLE ALT="" SRC="img140.gif">), <tt>grafic</tt>
+corrects <IMG  ALIGN=MIDDLE ALT="" SRC="img141.gif"> and <IMG  ALIGN=MIDDLE ALT="" SRC="img142.gif"> using linear theory in a
+Friedmann universe (with matter and, possibly, vacuum energy, but
+negligible radiation):
+<P><A NAME=z0corr>&#160;</A><IMG  ALIGN=BOTTOM ALT="" SRC="img143.gif"><P>
+In the integral for <IMG  ALIGN=MIDDLE ALT="" SRC="img144.gif">, <IMG  ALIGN=MIDDLE ALT="" SRC="img145.gif"> is computed using the evolution
+of the potential in a Friedmann universe, <IMG  ALIGN=MIDDLE ALT="" SRC="img146.gif">.  These time-dependent quantities are computed accurately by
+<tt>grafic</tt>.
+<P>
+After the normalization is completed, <tt>grafic</tt> optionally will output
+to file <tt>power.dat</tt> the matter power spectrum <IMG  ALIGN=MIDDLE ALT="" SRC="img147.gif"> at
+<b>a=1</b>.  The user is prompted to enter <IMG  ALIGN=MIDDLE ALT="" SRC="img148.gif"> and <IMG  ALIGN=MIDDLE ALT="" SRC="img149.gif">
+for this output; if either one is zero or negative, <tt>grafic</tt> skips
+this output.
+<P>
+Next, <tt>grafic</tt> requests parameters used in constructing realizations
+of the density field and particle positions and velocities.  The user
+must enter <tt>dx</tt>, <tt>epsilon</tt>, and <tt>etat</tt>.  The first quantity
+is the lattice spacing in comoving Mpc; <tt>epsilon</tt> is the desired softening
+distance (in comoving Mpc) for subgrid-resolution simulation programs
+such as particle-particle/particle-mesh (p3m, not included in COSMICS,
+but part of a package of <b>N</b>-body solvers to be released by the author
+in the future); and <tt>etat</tt> is a parameter used by the author in p3m
+to select the code timestep.  These parameters, among others, are output
+by <tt>grafic</tt> in header records for the particle output file.  Users may
+wish to tailor the input of <tt>grafic</tt> here for their needs, so that they
+can write the output files in their own favorite formats.
+<P>
+<tt>Grafic</tt> then requests a 9-digit random number seed to initialize
+its pseudorandom number generator.  The random number routines, in
+<tt>random8.f</tt>, are based on a subtract-with-borrow lagged Fibonacci
+generator with base <IMG  ALIGN=MIDDLE ALT="" SRC="img150.gif"> and period <IMG  ALIGN=BOTTOM ALT="" SRC="img151.gif"> [<A HREF="node15.html#mz">33</A>], shuffled by a
+completely independent generator.  Although relatively expensive,
+<tt>random8</tt> produces psuedorandom numbers with a uniform distribution
+and no detectable serial correlations (despite many attempts by the author
+to find them when he got curious results due to bugs elsewhere!).
+<P>
+Finally, <tt>grafic</tt> requests the user to enter a flag <tt>ido</tt>,
+determining whether it will compute an unconstrained realization of
+a gaussian random field (<tt>ido = 1</tt>), the mean field of constraints
+(<tt>ido = 2</tt>, this is not a noise field at all, but rather the ensemble
+average of constrained noisy fields), or a realization of the constrained
+random field (<tt>ido = 3</tt>).  The last two options require that the
+user set the constraints appropriately by editing <tt>constr.f</tt>.
+<P>
+<BR> <HR><A NAME=tex2html124 HREF="node11.html"><IMG ALIGN=BOTTOM ALT="next" SRC="file:/usr/local/lib/latex2html/icons/next_motif.gif"></A>   <A NAME=tex2html122 HREF="node9.html"><IMG ALIGN=BOTTOM ALT="up" SRC="file:/usr/local/lib/latex2html/icons/up_motif.gif"></A>   <A NAME=tex2html116 HREF="node9.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="file:/usr/local/lib/latex2html/icons/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html125 HREF="node11.html"> GRAFIC Input 2: </A>
+<B>Up:</B> <A NAME=tex2html123 HREF="node9.html"> GRAFIC Usage</A>
+<B> Previous:</B> <A NAME=tex2html117 HREF="node9.html"> GRAFIC Usage</A>
+<BR> <HR> <P>
+<BR> <HR>
+<P><ADDRESS>
+<I>Edmund Bertschinger <BR>
+Mon Jun 12 01:14:50 EDT 1995</I>
+</ADDRESS>
+</BODY>
+

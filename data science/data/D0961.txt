@@ -1,0 +1,452 @@
+ID=D0961
+URL=http://www.javaworld.com/javaworld/jw-10-2000/jw-1020-javadev.html
+SIZE=40382
+DATE=16/07/02
+TIME=15:03:00
+DATASET=Java
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title> Serve clients' specific protocol requirements with Brazil, Part 2</title>
+<!-- ssilog 7814 -->
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<meta name="keywords" content=" Brazil Project, XML, Weather Search Aggregation, Tcl, PYTHON">
+<meta name="description" content="
+In this second article in the Brazil technology series, Rinaldo Di Giorgio will demonstrate how to use XML to facilitate data exchange between applications. Specifically, he'll explain how you apply XML to exchange weather data. He'll also introduce scripting languages that you can implement to efficiently and quickly produce XML-tagged data. Brazil supports the Python and Tcl scripting languages as handlers, and can support added languages like Perl. The examples presented here work with the Brazil Web server, but can also be ported to other servers like Apache and iPlanet. This month, he focuses on defining and generating XML data via BSL, Tcl, or Python. (2,900 words) 
+">
+<meta name="date" content="2000-10-20">
+<META NAME="DC.Date" CONTENT="2000-10-20">
+<basefont face="verdana, arial, helvetica" size="3" />
+<style type="text/css">
+            code {font-size: 90%; font-family: monospace;}
+            pre {font-size: 90%; font-family: monospace;}
+            td {font-size: 90%;}
+</style>
+<script language="javascript">
+<!--// IDG.net Scripts
+            function mail2Friend () {
+                window.parent.location = "/MailToFriend?url=" + escape(document.location);
+            }
+
+            function openBrWindow() {
+                win=window.open("http://www.javaworld.com/channel_content/jw-story-feedback.shtml",'Feedback','width=600,height=330,toolbar=no,location=no,directories=no,menubar=no,scrollbars=yes,resizable=yes');
+            }
+            //-->
+        </script>
+    </head>
+<body bgcolor="#ffffff" text="#000000" link="#990033" vlink="#990033" alink="#990033" topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" marginheight="0" marginwidth="0">
+<table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td colspan="2" width="186" bgcolor="#006699"><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0 ></a></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- START TOP 468x60 BANNER -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=251380?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=251380?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=251380?" border="0" height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer1" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- END TOP 468x60 BANNER --></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="26" valign="top" align="left" bgcolor="#ffffff"><img height=8 src="http://www.javaworld.com/images/c_whtbottom.gif" width=8 border=0 ></td>
+                <td width="100%"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.global/idgpixel7.18.00;sz=1x1;ord=251380?" border=0 height="1" width="1"><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.usa.jw/usajw.081501;sz=1x1;ord=251380?" border=0 height="1" width="1"></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160" align="middle" valign="center" nowrap><nobr><font face="Verdana, Arial, Sans-serif" color="#ffffff" size="2">October 2000</font></nobr><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="8" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltlft.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="100%" align="middle" valign="center">    <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">HOME</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/features/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FEATURED TUTORIALS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/columns/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">COLUMNS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/news-reviews/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">NEWS & REVIEWS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://forums.idg.net/webx?13@@.ee6b802"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FORUM</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/resources/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">JW RESOURCES</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/info/jw-about-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">ABOUT JW</font></a></td>
+        </tr>
+    </table></td>
+                <td bgcolor="#006699" width="8" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltrt.gif" width=8 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr valign="top">
+                <td bgcolor="#006699" width="160" align="middle" valign="top">
+                    <table width="160" border="0" cellspacing="0" cellpadding="0" bgcolor="#006699" summary="">
+                        <tr>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                            <td align="center">
+                                <form action="http://www.javaworld.com/isearch" method="GET" name="search">
+                                    <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /><br />
+                                    <input type="text" name="qt" size="12" maxlength="2047" /><br />
+                                    <input type="image" value="search" src="http://www.javaworld.com/images/button_blue.gif" border="0" width="97" height="18" alt="GO" /><br />
+                                    <input type="hidden" name="site" value="javaworld"><br />
+                                   <!-- <a href="http://www.google.com/"><img src="http://www.javaworld.com/images/google-power-fp.gif" width="108" height="45" border="0" alt="Google.com"></a>-->
+                                    <input type="hidden" name="ms" value="1">
+                                    <input type="hidden" name="tid" value="1">
+                                    <input type="hidden" name="st" value="1">
+                                    <input type="hidden" name="rf" value="0">
+                                   
+                                </form>
+                            </td>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                        </tr>
+                        <tr>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td><img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <a href="http://www.javaworld.com/archives/index-year.html"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>ARCHIVE</strong></font></a><br>
+                                <img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <strong><a href="http://www.javaworld.com/channel_content/jw-topical-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff">TOPICAL INDEX</font></a></strong></font><br><table cellspacing="0" cellpadding="0" border="0" summary="">
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/channel_content/jw-core-index.shtml"><font color="#ffffff">Core Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-enterprise-index.shtml"><font color="#ffffff">Enterprise Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-micro-index.shtml"><font color="#ffffff">Micro Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-applied-index.shtml"><font color="#ffffff">Applied Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-community-index.shtml"><font color="#ffffff">Java Community</font></a></strong></font><br /></td>
+                        </tr>
+                    </table><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-qna-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA Q&A INDEX</strong></font></a><br /><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-tips-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA TIPS INDEX</strong></font></a><br /> <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br /><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#CCCCCC"><strong>JavaWorld Services</strong></font><br /><img alt="" height="4" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /><table cellspacing="0" cellpadding="0" border="0" summary=""><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /><img alt="" height="7" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /></td><td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/subscribe"><font color="#ffffff">Free JavaWorld newsletters</font></a></strong></font></td></tr><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://javaworld.pricegrabber.com"><font color="#ffffff">ProductFinder </font></a></strong></font></td></tr><tr> <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/white-paper/index.shtml"><font color="#ffffff">White Paper Library</font></a></strong></font></td></tr>
+</table>
+<img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br />
+</td>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                        </tr>
+                        <tr valign="bottom">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_gryblbottom.gif" width=8 ></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr>
+                       <td width="8" bgcolor="#cccccc"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                           <td align="middle" bgcolor="#cccccc"><!-- SKYSCRAPER AD START HERE -->
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=251380?" width="120" height="600" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=skyscraper;sz=120x600;tile=3;ord=251380?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;skyscraper=med;sz=120x600;tile=3;ord=251380?" border=0 height="600" width="120"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer3" visibility="hidden" width=120 height=600></ILAYER>
+<!-- SKYSCRAPER AD ENDS HERE -->
+</td>
+                       <td width="8" bgcolor="#cccccc"><img height=8 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr valign="top">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_grybltop.gif" width=8 ></td>
+                        </tr>
+                    </table>
+                    <img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                    <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                <td width="100%">
+                    <!-- ## MAIN CONTENT STARTS HERE ### -->
+                    <font face="verdana, arial, helvetica" size="3">
+                        <strong> Java Developer</strong>
+                        <p>
+                            <h1 align="CENTER"> Serve clients' specific protocol requirements with Brazil, Part 2</h1>
+                            <h3 align="CENTER"> How to support XML applications with the Brazil project</h3>
+                        </p>
+                        <!--<BLOCKQUOTE><STRONG>Summary</STRONG><BR>-->
+                        <BLOCKQUOTE>
+<STRONG>Summary</STRONG><BR>
+
+In this second article in the Brazil technology series, Rinaldo Di Giorgio will demonstrate how to use XML to facilitate data exchange between applications. Specifically, he'll explain how you apply XML to exchange weather data. He'll also introduce scripting languages that you can implement to efficiently and quickly produce XML-tagged data. Brazil supports the Python and Tcl scripting languages as handlers, and can support added languages like Perl. The examples presented here work with the Brazil Web server, but can also be ported to other servers like Apache and iPlanet. This month, he focuses on defining and generating XML data via BSL, Tcl, or Python. <em>(2,900 words)</em> 
+</BLOCKQUOTE>
+                        <!--</BLOCKQUOTE>-->
+                        <a href="http://www.javaworld.com/feedback" target="Feedback"><STRONG>By   Rinaldo Di Giorgio</STRONG></a>
+                        <p><img src="http://www.javaworld.com/images/rule_ltblue.gif" width="100%" height="2"><br />
+                           <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                           <a href="/javaworld/jw-10-2000/jw-1020-javadev_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><br /></p>
+                         <font size=-1>  Page 1 of 2</font>
+                        <p><!-- START BIG AD (336x280) -->
+<table align="right" border="0" cellpadding="0" cellspacing="0"><tr valign="bottom" align="center"><td><font face="verdana, arial, geneva, sans-serif" color="#999999" size="-2">Advertisement</font></td></tr><tr><td><table border=1 bordercolor="#cccccc" cellspacing="5" cellpadding="0"><tr><td>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=251380" width="336" height="280" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=251380"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=251380" border=0 height="280" width="336"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer5" visibility="hidden" width=336 height=280></ILAYER>
+</td></tr></table></td></tr></table>
+<!-- END BIG AD (336x280) --></p>
+                        <p><P>
+<img align="left" width="12" height="29" src="/javaworld/abcs/I.gif" alt="I">n Part 1 of this series, I introduced the concept of a developer-friendly experimental Web server technology called Brazil. The Brazil technology supports additional functionality via handlers, the simple Brazil Scripting Language (BSL), and a global dictionary of system and user properties. (For more information on BSL, properties, and handlers, refer to <a href="/javaworld/jw-08-2000/jw-0811-javadev.html">Part 1</a> of this series.) <P>
+The technology also supports languages that facilitate the rapid creation of XML content. In this month's installment of this series, I will explain how to represent different types of data in XML while still supporting those applications that lack XML ability. I will apply XML to three example applications' data: detailed realtime weather data, stock data, and data from other applications or devices. In addition, I will demonstrate how to use other languages, such as Python and Tcl scripting, with the Brazil Web server. This article will focus on XML generation, with future articles covering XML consumption. <P>
+Read the whole series on Brazil technology:  <ul> <li><a href="/javaworld/jw-08-2000/jw-0811-javadev.html">Part 1: Learn how to build an application server that can deliver data to clients requiring different protocols</a> </li> <li><a href="/javaworld/jw-10-2000/jw-1020-javadev.html">Part 2: How to support XML applications with the Brazil project</a> </li> <li><a href="/javaworld/jw-01-2001/jw-0126-javadev.html">Part 3: Economically sustain PQA, UP.SDK, and J2ME with the Brazil project</a></li> <li><a href="/javaworld/jw-04-2001/jw-0420-javadev.html">Part 4: Build multicast-aware apps with JRMS</a></li>  <li><a href="/javaworld/jw-08-2001/jw-0824-javadev.html">Part 5: Manage users and content with Brazil</a> </li> <li><a href="/javaworld/jw-07-2002/jw-0712-javadev.html">Part 6: Plug Jini, BeanShell, and JAXM into Brazil </a></li> </ul> <P><FONT SIZE="+1"><STRONG> Benefits of XML </STRONG></FONT><BR>
+Numerous Webpages combine formatting and data. One of the primary benefits of XML is that it facilitates the separation of data from the formatting of that data. Good Web applications will support XML while providing support for those that don't.
+<P>
+Let's begin with a small example that demonstrates the coupling of data with formatting. Let's say we're interested in the collection and display of weather data. To make the temperature bold in an HTML table, we could write the following code: <P>
+<CODE><P>
+<BR>
+&lt;td&gt;Temperature &lt;bold&gt;76,5 &lt;/bold&gt; &lt;/td&gt;<BR>
+</CODE><P>
+To generate the page, eventually the data and code must be combined. For example, the above code segment could be realized in BSL by the following:
+<P>
+<CODE><P>
+<BR>
+&lt;td&gt;Temperature&nbsp;&nbsp;&lt;bold&gt; &lt;property temperature&gt; &lt;/bold&gt; &lt;/td&gt;<BR>
+</CODE><P>
+<strong>Listing 1. Combine data and formatting in HTML via the typical approach</strong>
+<P>
+If you need to place the temperature on a page, the above approach is much easier than creating HTML each time by generating the content with a procedural programming language that requires recompilation for simple changes. You also don't have to search for a location for the temperature; simply put the <code>&lt;property ws.sample.Temperature&gt;</code> tag anywhere on the HTML page where you would like realtime weather data, and the Brazil technology will rewrite the page so that it will display the data when a browser displays it.
+<P>
+In prior articles, I configured the Brazil Web server to interface with a realtime weather station and provide Web data in the typical manner -- content plus data together -- as shown in Listing 1. For display to users, this approach is suitable, but more and more new Web applications consist of data from multiple Websites. Requiring developers that work on these new types of applications to parse HTML can lead to complications. To create a new service, developers would have to parse the data to obtain the weather information from site A to combine with site C's data. A process that separates the formatting from the content would solve these complications.
+<P>
+Click on <code>GetSample.html</code> at our weather station (<a target="new" href  ="http://www.brazilhandlers.com:9090/Applications/WeatherStation/ ">http://www.brazilhandlers.com:9090/Applications/WeatherStation/ </a>) to use BSL to display weather station data. It will produce the following output: <P>
+<CODE><P>
+<BR>
+
+weather.sampleRate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5000<BR>
+
+weather.sample.Time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;23:26:32 PM<BR>
+
+weather.sample.Temperature&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 73.34<BR>
+
+weather.sample.Time.UTC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;970025192844<BR>
+
+weather.sample.WindDirection&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NOT CALIBRATED<BR>
+
+weather.sample.WindSpeed&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.00<BR>
+</CODE><P>
+<strong>Listing 2. Use BSL to display weather station data </strong> <P>
+(Note: All of the examples in this article are available at <a target="new" href  =" http://www.brazilhandlers.com:9090/Applications/WeatherStation">http://www.brazilhandlers.com:9090/Applications/WeatherStation</a>.) <P>
+The HTML page that utilizes BSL with the Brazil technology to generate the data in Listing 2 follows: <P>
+<CODE><P>
+<BR>
+&lt;TABLE&gt;<BR>
+&lt;foreach name=a&nbsp;&nbsp;match="(weather.sample.*)" &gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;tr&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;td&gt; &lt;property a.name.1&gt; &lt;/td&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;td&gt; &lt;property a.value&gt; &lt;/td&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/tr&gt;<BR>
+&lt;/foreach&gt;<BR>
+&lt;/TABLE&gt;<BR>
+</CODE><P>
+<strong>Listing 3. Generate the HTML from Listing 2</strong> <P>
+By substituting property values with real values in realtime, BSL improves the separation of formatting information and data. The BSL handler processes the simple lines above, and any properties matching <code>weather.sample.*</code> are assigned to the variable <code>a</code> and are available for page placement as shown by <code>&lt;td&gt; &lt;property a.name.1&gt; &lt;/td&gt;</code>. The <code>1</code> represents the matched string as specified in most regex implementations. <P>
+The above technique is useful for generating your own pages, but quickly becomes tedious when you have to supply data to numerous users that all have different requirements. How do you accomplish this objective without staying up all night? You need to provide XML representations of the data and get out of the UI business -- in other words, you need to separate your data from content with XML. You must be pragmatic here, however. Your boss will not think too highly of your intelligence if your application supports XML yet doesn't meet the needs of those users lacking XML support. One of the strengths of the Brazil technology is its ability to live in both worlds, supporting both new and traditional technologies through task-specific handlers. <P>
+A formal XML primer would be beyond the scope of this article. Many books providing detailed examples are available to guide you (see <a href="#resources">Resources</a> for help with XML). To generate XML tags, you need to examine your data elements; usually the nouns will be elements. In our example, temperature, wind speed, wind direction, precipitation, and barometric pressure are all nouns. For our weather station example, I am producing tags to simplify the XML. The sidebar at the Brazil Website features a real-world XML definition of weather data that defines a common language for the myriad of weather reports coming from ships, buoys, balloons, and manned and unmanned stations in different formats (see <a href="#resources">Resources </a> for direct link). Before defining your own XML tags, search the Internet for preexisting definitions. Basically, you will search for a Document Type Definition (DTD).
+<P>
+<!-- break --><br /></p>
+                        <font size=-1><a href=jw-1020-javadev-p2.html>Next page ></a><br>Page 1  Serve clients' specific protocol requirements with Brazil, Part 2<br>Page 2 <a href=jw-1020-javadev-p2.html>Realtime weather data: A simple XML example</a><br> </font>
+                        <p>
+                            <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                            <a href="/javaworld/jw-10-2000/jw-1020-javadev_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><!-- REPLACE BIO --><br /></p>
+                        <p><ul><A NAME="resources"></a><STRONG>Resources</STRONG>
+<BR>
+
+<li>"Serve Clients' Specific Protocol Requirements with Brazil," Rinaldo Di Giorgio <em>(JavaWorld):</em>
+
+<ul>
+<li><a href="/javaworld/jw-08-2000/jw-0811-javadev.html">Part 1: Learn how to build an application server that can deliver data to clients requiring different protocols</a> (August 2000)</li>
+
+<li><a href="/javaworld/jw-10-2000/jw-1020-javadev.html">Part 2: How to support XML applications with the Brazil project</a> (October 2000)</li>
+
+<li><a href="/javaworld/jw-01-2001/jw-0126-javadev.html">Part 3: Economically sustain PQA, UP.SDK, and J2ME with the Brazil project</a> (January 2001)</li>
+
+<li><a href="/javaworld/jw-04-2001/jw-0420-javadev.html">Part 4: Build multicast-aware apps with JRMS </a> (April 2001)</li>
+
+<li><a href="/javaworld/jw-08-2001/jw-0824-javadev.html">Part 5: Manage users and content with Brazil</a> (August 2001)</li>
+
+<li><a href="/javaworld/jw-07-2002/jw-0712-javadev.html">Part 6: Plug Jini, BeanShell, and JAXM into Brazil </a> (July 2002)</li>
+</ul>
+
+<LI>Support Website for this series: <BR><A HREF="http://www.brazilhandlers.com:9090/JavaWorld/Brazil">http://www.brazilhandlers.com:9090/JavaWorld/Brazil
+</A><BR>
+
+
+<LI>General Brazil technology site at Sun Microsystems: <BR><A HREF="http://www.sun.com/research/brazil/">http://www.sun.com/research/brazil/
+</A><BR>
+
+
+<LI>Source code for weather station handlers: <BR><A HREF="http://www.brazilhandlers.com:9090/Source/WeatherStation">http://www.brazilhandlers.com:9090/Source/WeatherStation
+</A><BR>
+
+
+<LI>Python handler example with Brazil Project: <BR><A HREF="http://www.brazilhandlers.com:9090/Applications/ScriptingInterfaces/Python/ ">http://www.brazilhandlers.com:9090/Applications/ScriptingInterfaces/Python/ 
+</A><BR>
+
+
+<LI>Python programming language: <BR><A HREF="http://www.python.org/">http://www.python.org/
+</A><BR>
+
+
+<LI>Tcl handler example with Brazil Project: <BR><A HREF="http://www.brazilhandlers.com:9090/Applications/ScriptingInterfaces/Tcl/getStocks.cgi?symbols=SUNW">http://www.brazilhandlers.com:9090/Applications/ScriptingInterfaces/Tcl/getStocks.cgi?symbols=SUNW
+</A><BR>
+
+
+<LI>A Website for Tcl developers: <BR><A HREF="http://dev.scriptics.com/">http://dev.scriptics.com/
+</A><BR>
+
+
+<LI>Real-world XML weather tags developed by weather experts: <BR><A HREF="http://zowie.metnet.navy.mil/~spawar/JMV-TNG/XML/OMF.html">http://zowie.metnet.navy.mil/~spawar/JMV-TNG/XML/OMF.html
+</A><BR>
+
+
+<LI>"The Java Electronic Commerce Framework and Modern Protocol Designs" detailed an implementation of an XML-like system using Java before XML was adopted as a standard. The paper also discusses the differences between object-based protocols and protocols based on wire transfers. To read this paper, click on JECF.pdf at: <BR><A HREF="http://www.brazilhandlers.com:9090/Articles/">http://www.brazilhandlers.com:9090/Articles/
+</A><BR>
+
+
+<LI>Past <strong>Java Developer</strong> columns in <em>JavaWorld:</em> <BR><A HREF="http://www.javaworld.com/javaworld/topicalindex/jw-ti-javadev.html">http://www.javaworld.com/javaworld/topicalindex/jw-ti-javadev.html
+</A><BR>
+
+
+</ul><strong>Recent XML articles in JavaWorld</strong><ul>
+
+<LI>"Mapping XML to Java, Part 1," Robert Hustead (<em>JavaWorld,</em> August 4, 2000) explains how to use SAX to map XML documents to Java objects: <BR><A HREF="http://www.javaworld.com/javaworld/jw-08-2000/jw-0804-sax.html">http://www.javaworld.com/javaworld/jw-08-2000/jw-0804-sax.html
+</A><BR>
+
+
+<LI>"XSL Gives Your XML Some Style," Michael Ball (<em>JavaWorld,</em> June 30, 2000) explains how XSL stylesheets can help with you programming: <BR><A HREF="http://www.javaworld.com/javaworld/jw-06-2000/jw-0630-xsl.html">http://www.javaworld.com/javaworld/jw-06-2000/jw-0630-xsl.html
+</A><BR>
+
+
+<LI>"Easy Java/XML Integration, Part 1," Jason Hunter and Brett McLaughlin (<em>JavaWorld,</em> May 18, 2000) introduces the new open source JDOM API for manipulating XML from within Java: <BR><A HREF="http://www.javaworld.com/javaworld/jw-05-2000/jw-0518-jdom.html">http://www.javaworld.com/javaworld/jw-05-2000/jw-0518-jdom.html
+</A><BR>
+
+
+<LI>"Easy Java/XML integration with JDOM, Part 2," Jason Hunter and Brett McLaughlin (<em>JavaWorld,</em> July 28, 2000) focuses on how you can use JDOM to create and mutate XML: <BR><A HREF="http://www.javaworld.com/javaworld/jw-07-2000/jw-0728-jdom2.html">http://www.javaworld.com/javaworld/jw-07-2000/jw-0728-jdom2.html
+</A><BR>
+
+
+<LI>"Programming XML in Java, Part 1," Mark Johnson (<em>JavaWorld,</em> March 2000) looks at how to use SAX to process XML documents in Java: <BR><A HREF="http://www.javaworld.com/javaworld/jw-03-2000/jw-03-xmlsax.html">http://www.javaworld.com/javaworld/jw-03-2000/jw-03-xmlsax.html
+</A><BR>
+
+
+<LI>"Programming XML in Java, Part 2" Mark Johnson (<em>JavaWorld,</em> April 7, 2000) delves further into SAX applications: <BR><A HREF="http://www.javaworld.com/jw-04-2000/jw-0407-advsax.html">http://www.javaworld.com/jw-04-2000/jw-0407-advsax.html
+</A><BR>
+
+
+
+
+
+</ul><br /></p>
+                        <!-- REPLACE SIDEBAR -->
+                    </font>
+                    <!-- ## MAIN CONTENT ENDS HERE ### -->
+                </td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="168" nowrap><nobr><img src="http://www.javaworld.com/images/spacer.gif" width=160 height=8 border=0 ><img src="http://www.javaworld.com/images/c_bllftbottom.gif" width=8 height=8 border=0 ></nobr></td>
+                <td width="100%"><img src="http://www.javaworld.com/images/spacer.gif" width=1 height=1 border=0 ></td>
+                <td width="8"><img src="http://www.javaworld.com/images/spacer.gif" width=8 height=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="186" bgcolor="#006699" align="middle"><nobr><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2"></font></nobr><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0></a></td>
+                <td bgcolor="#cccccc" width="8" valign="bottom"><img height=8 src="http://www.javaworld.com/images/c_blgrylftbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- BOTTOM 468x60 AD STARTS HERE -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=251380?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=251380?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=251380?" border=0 height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer4" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- BOTTOM 468x60 AD ENDS HERE -->
+</td>
+                <td width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table bgcolor="#006699" align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="100%" align="middle" valign="center">    <font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">
+        <p>
+            <br />
+            <a href="http://www.javaworld.com"><font color="#ffffff">HOME</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/features/index.shtml"><font color="#ffffff">FEATURED TUTORIALS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/columns/index.shtml"><font color="#ffffff">COLUMNS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/news-reviews/index.shtml"><font color="#ffffff">NEWS & REVIEWS</font></a>&nbsp;|&nbsp;
+            <a href="http://forums.idg.net/webx?13@@.ee6b802"><font color="#ffffff">FORUM</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/resources/index.shtml"><font color="#ffffff">JW RESOURCES</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/info/jw-about-index.shtml"><font color="#ffffff">ABOUT JW</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/feedback"><font color="#ffffff">FEEDBACK</font></a>
+        </p>
+        <p>
+
+            <a href="http://www.javaworld.com/javaworld/common/jw-copyright.html"><font color="#ffffff">Copyright © 2002</font></a> JavaWorld.com, an IDG Communications company
+        </p>
+    </font>
+</td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+            <tr>
+                <td width="100%" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_blrtbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <!--TOP_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=251380?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer1.pageX,layer1.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--125x125-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=med;sz=125x125;tile=2;ord=251380?" width=125 height=125 visibility="hidden" onLoad="moveToAbsolute(layer2.pageX,layer2.pageY);clip.height=125;clip.width=125;visibility='show';">
+</LAYER>
+
+<!--SKYSCRAPER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=251380?" width=120 height=600 visibility="hidden" onLoad="moveToAbsolute(layer3.pageX,layer3.pageY);clip.height=600;clip.width=120;visibility='show';">
+</LAYER>
+
+<!--BOTTOM_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=251380?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer4.pageX,layer4.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--Big AD-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=251380" width=336 height=280 visibility="hidden" onLoad="moveToAbsolute(layer5.pageX,layer5.pageY);clip.height=280;clip.width=336;visibility='show';">
+</LAYER>
+    </body>
+<!-- stories1 -->
+<!-- DOCID 658498 -->
+</html>
+

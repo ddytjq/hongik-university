@@ -1,0 +1,160 @@
+ID=D0014
+URL=http://www.ejbtut.com/EntityCreate.jsp
+SIZE=7862
+DATE=16/07/02
+TIME=14:34:47
+DATASET=Java
+HTML=<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.75 [en] (Win98; U) [Netscape]">
+   <meta name="Description" content="EJB Tutorial">
+   <meta name="Keywords" content="JSP Tutorial">
+   <meta name="KeyWords" content="EJB Tutorial">
+   <title>EJB Tutorial</title>
+</head>
+<body>
+&nbsp;
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0 COLS=1 WIDTH="100%" >
+<tr>
+<td>
+<center><b><font size=+3>EJB Tutorial</font></b>
+<br><img SRC="ejbtut.gif" ></center>
+</td>
+</tr>
+
+<tr>
+<td><i><font size=-1><a href="/">Tutorial Index Page</a></font></i>
+<h2>
+Creating an Entity Bean</h2>
+EJB's require an "EJB Container", commonly provided as part of an "application
+server". In this tutorial, we will be using the <a href="http://www.blazix.com/BlazixEjbServer.html" target="_new">Blazix
+application server</a> as the EJB container.&nbsp; Before beginning, download
+and install the server from the link above if you don't already have it.&nbsp;
+(Even if you are using another server, for the first few lessons you will
+need Blazix.&nbsp; It includes an <i>EJB wizard</i> that we will use for
+generating EJBs.&nbsp; This way, we don't need to deal with all the details
+initially and we can concentrate on the important concepts.&nbsp; Once
+you understand the concepts, it should be relatively easy to transfer the
+concepts to other servers as well.)&nbsp; Also make sure to modify your
+PATH to include the Blazix installation directory, and to modify your CLASSPATH
+to include the blazix.jar file.&nbsp; (For any questions relating to the
+Blazix server, visit the <a href="http://groups.yahoo.com/group/Blazix">Blazix
+Group</a> at Yahoo.)
+<p>
+<hr WIDTH="100%"><b><i>Important:</i></b>&nbsp; The advantages of getting
+an actual server and trying everything hands-on cannot be overstated.&nbsp;
+Blazix is only a <b><i>1.5 MB</i></b> download so it can easily be downloaded
+even over a modem in a few minutes.&nbsp; It will run on any Java platform
+including Windows 98.&nbsp; Running the tutorial examples and doing the
+exercises is very important, because this tutorial has been written with
+the hands-on student in mind.&nbsp; So if you haven't yet, it is strongly
+recommended that you go get the server now, before you proceed with this
+tutorial anymore!
+<br>
+<hr WIDTH="100%">
+<p>As briefly mentioned in the overview, entity beans require a certain
+framework:
+<ul>
+<li>
+A "<tt>remote</tt>" interface.&nbsp; This is the interface that does the
+real work -- it provides the actual services needed by the clients of the
+entity bean.</li>
+
+<li>
+A "<tt>home</tt>" interface.&nbsp; Before using an entity bean, one must
+find it, or create it.&nbsp; The "<tt>home</tt>" interface provides methods
+for creating or finding the beans.</li>
+
+<li>
+Entity beans also need a "<tt>primary key</tt>" class.&nbsp; Each entity
+bean has a "<tt>primary key</tt>".&nbsp; The primary key may be a single
+member field contained in the entity bean, or it may consist of a few member
+fields.&nbsp; If the primary key is composed of more than one member fields,
+a class must be provided that corresponds to the primary key member fields.</li>
+</ul>
+The Blazix EJB Wizard - Blizzard - takes care of generating the basic framework,
+thereby simplifying the task of creating an entity bean.&nbsp;&nbsp; For
+the first few exercises, we will be taking advantage of the wizard so we
+won't need to know all the details of the framework.
+<p>For this example, we will create an entity bean that is a permanent,
+shareable version of a Property list.&nbsp; It will allow any of its clients
+to add a string at a given "key", and to retrieve the string stored at
+a given key.&nbsp; This is a very simple usage of an entity bean, but is
+still useful and displays the advantages of entity beans.
+<p>We must decide upon a database representation first.&nbsp; For this
+entity bean, a table with one column called "key" and one column called
+"value" is sufficient.
+<p><b>Step 1:&nbsp;</b> Create a database table called "PropsTable" with
+two columns, one called "key" and one called "value".&nbsp; They should
+be "varchar" (or the corresponding type in your database) with some reasonable
+space limit, such as 255.&nbsp;&nbsp; IMPORTANT:&nbsp; Do not use the "char"
+datatype, otherwise all your calls will need padding the string to the
+correct length with spaces.
+<p>If you do not have access to a database, and if you are on a Windows
+machine, download the <tt><a href="Props.mdb">Props.mdb</a></tt> file which
+is an MS-Access database and should work on all Windows machines.
+<p><b>Step 2:</b>&nbsp; Configure the database table created in step 1
+into the EJB configuration file.&nbsp; A convenient way to do this is to
+<a href="Odbc.jsp">create
+an ODBC data source</a>.&nbsp;<a NAME="OdbcReturn"></a>Suppose you created
+an ODBC data source called "<tt>PropsOdbc</tt>".&nbsp; Then add the following
+lines to the EJB configuration file ejb.ini:
+<blockquote>
+<pre>dataSource.name: propsDataSource
+dataSource.propsDatasource.odbc: PropsOdbc</pre>
+</blockquote>
+<b>Step 3:</b>&nbsp; Run the Blazix EJB wizard Blizzard, and select "Create
+an Entity bean".&nbsp; Give the wizard the datasource you created in step
+2, and the name of the table you created in step 1 above.&nbsp; The wizard
+will go through the table columns.&nbsp; For column "key", select "primary
+key".&nbsp; For both columns, select the datatype "String".&nbsp; For column
+"value", select "generate Setters".&nbsp; The following link show the various
+pages the wizard displays.
+<blockquote><a href="EntityWiz1.jsp">Entity Bean Wizard Steps</a></blockquote>
+<a NAME="BuildBean"></a><b>Note:</b>&nbsp; In the next steps of the tutorial,
+it is assumed that in the last page of the wizard, the bean name has been
+changed to "Props".
+<p>Now examine the files created by the wizard.&nbsp; We will be covering
+the ejb-jar.xml file later, but for now, look in the remote interface,
+the home interface and the bean class.&nbsp; Notice that the remote interface
+consists of methods to access the bean fields, the home interface consists
+of methods to create or find the beans, and the bean class provides a simple
+implementation of the remote interface.
+<p><b>Step 4:&nbsp; </b>Build the bean.&nbsp; The wizard creates a .cmd
+file containing the list of commands you must type to build the bean.&nbsp;
+This involves compiling the source files, running "jar" to create a Jar
+file containing all the classes and the <i>ejb-jar.xml file</i> (we will
+be examining this file in more detail in a later step) created by the wizard,
+and then running <b>blxejbc</b>, the Blazix EJB compiler.&nbsp; The EJB
+compiler will generate another Jar file, which is ready to deploy.&nbsp;
+Note that you will need Blazix installation directory to be in your path
+in order to be able to use the <b>blxejbc</b> command.
+<p><i>Exercise:</i>&nbsp; Build another entity bean called "Employees".&nbsp;
+The primary key for this will be social security numbers (use strings)
+of the employees.&nbsp; Create a database table with fields for the social
+security number, first name, last name, salary, position, employment year,
+and date of birth.&nbsp; Create and build an entity bean from this database
+table.
+<p><a href="TroubleShooting.jsp#EntityCreate">Troubleshooting Tips</a></td>
+</tr>
+
+<tr>
+<td>
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%" >
+<tr>
+<td><a href="EntityDeploy.jsp">Next tutorial: Deploying the Entity Bean</a></td>
+
+<td>
+<div align=right><font size=-1><a href="Index.html#contents">Contents</a></font></div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+</body>
+</html>
+

@@ -1,0 +1,274 @@
+ID=E0993
+URL=http://www.research.att.com/~bs/3rd_printing16.html
+SIZE=6379
+DATE=12/07/02
+TIME=19:26:34
+DATASET=C
+HTML=<html>
+<head>
+<title>Stroustrup: Errata for 5th/15th printing of The C++ Programming Language</title>
+</head>
+<body bgcolor="FFFBFB">
+<center>
+<a href="homepage.html">homepage</a>
+|
+<a href="C++.html">C++ links</a>
+|
+<a href="bs_faq.html">FAQ</a>
+|
+<a href="bs_faq2.html">technical FAQ</a>
+|
+<a href="glossary.html">glossary</a>
+|
+<a href="compilers.html">compilers</a>
+|
+<a href="papers.html">publications</a>
+|
+<a href="3rd.html">TC++PL</a>
+|
+<a href="dne.html">D&E</a>
+|
+<a href="bio.html">bio</a>
+|
+<a href="interviews.html">interviews</a>
+|
+<a href="applications.html">applications</a>
+|
+<a href="http://www.research.att.com">AT&T Research</a>
+</center>
+<center>
+<h1>Errata for 5th/15th printing of The C++ Programming Language</h1>
+</center>
+<p align=right>
+Modified July 8, 2002
+<p>
+Errata for
+<a href="homepage.html">
+Bjarne Stroustrup</a>:
+<a href="3rd.html">
+The C++ Programming Language (special edition)</a>,
+Addison-Wesley, 2000. ISBN0-201-70073-5.
+Errata for the 5th printing.
+Also for the 15th printing of "The C++ Programming Language (3rd edition)".
+<hr>
+<h2>Errors and Clarifications</h2>
+<hr>
+<a href="3rd_notes.pdf">Chapter 1</a>:
+<p>
+pg 13	s/(sec B.2)/(with a few minor exceptions; see sec B.2)/
+<p>
+<a href="3rd_tour.pdf">Chapter 2</a>:
+<p>
+<a href="3rd_tour2.pdf">Chapter 3</a>:
+<p>
+pg 62	s/we search that list/we search that sequence/
+<p>
+Chapter 6:
+<p>
+pg 134	s/``does p point to a valid object,''/
+	``does p point to a valid object (assuming proper initialization),''/
+<p>
+Chapter 8:
+<p>
+pg 190	A better Error:
+<pre>
+	namespace Error {
+		int no_of_errors;
+
+		struct Zero_divide {
+			Zero_divide() { no_of_errors++; }
+		};
+
+		struct Syntax_error {
+			const char* p;
+			Syntax_error(const char* q) { p = q; no_of_errors++; }
+		};
+	}
+
+</pre>
+Chapter 10:
+<p>
+pg 251	replace the middle example with
+<pre>
+	void g()
+	{
+		vector< Table> v(10);					// no need for a delete
+		vector< Table>* p = new vector< Table>(10);	// use plain "delete" rather than "delete[]"
+
+		delete p;
+	}
+</pre>
+Using a container, such as vector, is simpler than writing a new/delete
+pair. Furthermore, vector provides exception safety (Appendix E).
+<p>
+Chapter 11:
+<p>
+pg 290	replace the example using Y at the middle of the page by:
+
+"Given a class Y for which ->, *, and [] have their default meaning and a
+Y* called p then
+<pre>
+	p->m == (*p).m		// is true
+	(*p).m == p[0].m	// is true
+	p->m == p[0].m		// is true
+</pre>"
+<p>
+Chapter 13:
+<p>
+pg 335	s/const char[12]/const char v[12]/
+<p>
+Chapter 14:
+<p>
+pg 369	better:
+<pre>
+	X* p3 = new(&buffer[10]) X;		// place X in buffer (no deallocation needed)
+	X* p4 = new(&buffer[11]) X[10];
+</pre>
+<p>
+Chapter 16:
+<p>
+pg 433 correct entry in Input/Output table:
+<pre>
+	< cctype>	character classification functions	sec20.4.2
+</pre>
+Chapter 18:
+<p>
+pg 538	replace the second example with
+<p>
+	For a call random_shuffle(b,e,r), the generator is called with
+	the number of elements in the sequence as its argument.
+	For example, for a call r(e-b) the generator must return a value
+	in the range [0,e-b). If My_rand
+	is such a generator, we might shuffle a deck of cards like this:
+<pre>
+	void f(deque< Card>& dc, My_rand& r)
+	{
+		random_shuffle(dc.begin(),dc.end(),r);
+		// ...
+	}
+</pre>
+<p>
+Chapter 19:
+<p>
+pg 570 add "template":
+<pre>
+	typedef typename A:: template rebind< Link>::other Link_alloc;	// allocator< Link>
+</pre>
+<p>
+pg 573 s/an implementation of a standard may take advantage of that./
+	an implementation of a standard container may take advantage of that./
+<p>
+Chapter 20:
+<p>
+pg 581	s/The difference is .../The difference is that move()
+	works correctly even if [s,s+n[ and [s2,s2+n[ overlap./
+<p>
+pg 582	s/wstreamoff/streamoff/
+<p>
+pg 582	s/Such functions are most easily utilized/
+	Such instructions are most easily utilized/
+<p>
+pg 599	replace the last two declarations with:
+<pre>
+	size_t strspn(const char* p, const char* q);	// number of char in p before a char not in q
+	size_t strcspn(const char* p, const char* q);	// number of char in p before a char in q
+</pre>
+<p>
+Appendix A:
+<p>
+<a href="3rd_compat.pdf">Appendix B</a>:
+<p>
+Appendix C:
+<p>
+pg 895	s/: num_put/std::num_put/
+<p>
+pg 898	s/my_numpunct/My_punct/
+<p>
+pg 910	add before D.4.4.4:
+	A  _byname version (D.4, D.4.1) of time_put is also provided:
+<pre>
+	template < class Ch, class Out = ostreambuf_iterator< Ch> >
+	class std::time_put_byname : public time_put< Ch,Out> { /* ... */ };
+</pre>
+<p>
+pg 912	s/time_put()/time_put::put()/ twice
+<p>
+pg 912	replace the last paragraph with:
+A _byname version (D.4, D.4.1)  time_get is also provided:
+<pre>
+	template < class Ch, class In = istreambuf_iterator< Ch> >
+	class std::time_get_byname : public time_get< Ch,In> { /* ... */ };
+</pre>
+<p>
+pg 915	s/Date_format< char>::/Date_format::/
+<p>
+pg 918	s/dateorder()/date_order()/
+<p>
+pg 919	s/order = dateorder();/order = date_order();/
+<p>
+pg 919	s/tmp->tm_mday = val[1];/tmp->tm_mday = val[2];/
+<p>
+pg 924	s/widen(narrow('x')) == 'x'/widen(narrow('x',0)) == 'x'/
+<p>
+pg 926	s/out() encountered/in() encountered/
+<p>
+pg 928	add "char ch;" before the while-statement
+<p>
+<a href="3rd_loc0.html">Appendix D</a>:
+<p>
+<a href="3rd_safe0.html">Appendix E</a>:
+<hr>
+<h2>Typos</h2>
+<hr>
+Chapter 4:
+pg 80	s/a vector/an array/
+<p>
+Chapter 11:
+pg 288	s/of the array/of the vector/
+<p>
+Chapter 17:
+<p>
+pg 488	s/the m/m/ on the first line
+<p>
+<a href="3rd_compat.pdf">Appendix B</a>:
+<p>
+pg 817	s/Direction d = 1;/enum Direction d = 1;/
+<p>
+<p>
+<a href="3rd_loc0.html">Appendix D</a>:
+<p>
+pg 817	s/Grenwich/Greenwich/
+<p>
+<a href="3rd_safe0.html">Appendix E</a>:
+<p>
+<center>
+<a href="homepage.html">homepage</a>
+|
+<a href="C++.html">C++ links</a>
+|
+<a href="bs_faq.html">FAQ</a>
+|
+<a href="bs_faq2.html">technical FAQ</a>
+|
+<a href="glossary.html">glossary</a>
+|
+<a href="compilers.html">compilers</a>
+|
+<a href="papers.html">publications</a>
+|
+<a href="3rd.html">TC++PL</a>
+|
+<a href="dne.html">D&E</a>
+|
+<a href="bio.html">bio</a>
+|
+<a href="interviews.html">interviews</a>
+|
+<a href="applications.html">applications</a>
+|
+<a href="http://www.research.att.com">AT&T Research</a>
+</center>
+</body>
+</html>
+
+

@@ -1,0 +1,790 @@
+ID=F0199
+URL=http://www.vbip.com/winsock-api/connectionendpoints/connectionendpoints-01.asp
+SIZE=49963
+DATE=09/07/2002
+TIME=13:16:36
+DATASET=Visual Basic
+HTML=
+<html>
+
+<head>
+<title>Visual Basic and Winsock API - End points of the connection</title>
+<meta name="description" content="The fifth part of the tutorial is about how to use the getpeername and getsockname Winsock API functions in Visual Basic in order to determine parameters of the TCP connection's end-points.">
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta name="ROBOTS" content="INDEX,FOLLOW">
+
+	<link rel="stylesheet" type="text/css" href="../../../vbip_nn.css">
+
+</head>
+
+<body bgcolor="#FFFFFF">
+<form name="GlobalForm" ID="GlobalForm">
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100%">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="120"><img border="0" src="../../_borders/vbip_logo3.gif" width="132" height="50"></td>
+          <td valign="middle">
+				<p align="center">
+              <!-- start BITS ad HTML -- top of page -- 468x60 banner www.bitsonthewire.com         --> 
+               <iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=0" width=468 height=60 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no> 
+                 <a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=1">
+                   <img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=1&siteid=1126&ad_type=0">
+                 </a></iframe> 
+              <!-- stop BITS ad HTML -- top of page -- 468x60 banner                                --> 
+				&nbsp;
+              <a href="http://www.amazon.com/exec/obidos/redirect-home/vbipvisualbasici">
+              <img border="0" src="../../images/gnused120x60.gif" width="120" height="60"></a></p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+      <hr noshade color="#FF9933">
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+    <p class="barsidecaption">
+    	<a href="../../default.asp">Home</a> -
+      	<a href="../../whatsnew.asp"> What's New</a> - <a href="../../tools.asp"> Tools&amp;Technologies</a> -
+      	<a href="../../resources.asp"> Resources</a> - <a href="../../resources/books/default.asp">Books</a>
+        - <a href="../../forum/">Forum</a>
+    </p>
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+      <hr noshade color="#FF9933">
+    </td>
+  </tr>
+</table>
+
+<table width="100%" cellspacing="1" cellpadding="2" bordercolor="#800000" border="1">
+  <tr>
+    <td width="100%" bgcolor="#FF9933">
+      <font color="#FFFFCC">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="37%">
+          <SCRIPT LANGUAGE=javascript>
+          <!--
+          if(navigator.appName.indexOf('Microsoft')>=0)
+          {
+          document.write('<a HREF="javascript:void(0);" class="tbcaption" onClick="window.external.AddFavorite(location.href, document.title);">Add to Favorites</a>');
+          }
+          // -->
+          </SCRIPT>
+          </td>
+          <td width="63%">
+            <p align="right" class="tbcaption"><a href="../../default.asp" class="tbcaption">Home</a> -
+            <a href="../../tools.asp" class="tbcaption">Tools&amp;Technologies</a> -
+            <a href="../default.asp" class="tbcaption">Winsock API</a> - End 
+            points of the connection</td>
+        </tr>
+      </table>
+      </font>
+    </td>
+  </tr>
+</table>
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+
+<!--table-->
+    <td width="125" valign="top"  style="border-left: 1px solid #800000; border-right: 1px solid #800000; " bgcolor="#FF9933">
+
+    <table border="0" width="100%">
+     <tr>
+        <td width="100%" bgcolor="#FFCC00" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " height="20">
+          <p align="center" class="barsidecaption">[Advertisement]</td>
+      </tr>
+      <tr>
+        <td width="100%" style="border: 1px solid #800000; " height="120">
+<!-- start BITS ad HTML -- first 125x125 banner www.bitsonthewire.com                 --> 
+<iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=-6" width=125 height=125 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no>
+<a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=3"><img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=3&siteid=1126&ad_type=-6"></a></iframe> 
+<!-- stop BITS ad HTML -- 125x125 banner                                             --> 	
+        </td>
+      </tr>
+         
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Search vbip.com]</td>
+      </tr>
+      <tr>
+      
+        <td valign="top" width="100%" height="21">
+        
+			<input type="text" size="7" name="search_site">&nbsp;
+			<input type="button"  value="Go" onclick='location.href="http://www.vbip.com/search2/search.asp?Realm=vbip.com&Match=1&Terms="+document.GlobalForm.search_site.value;'>	
+		
+        </td>
+      </tr>
+         
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Search other VB sites]</td>
+      </tr>
+      <tr>
+        <td valign="top" width="100%" height="21">
+        
+			<input type="text" size="7" name="search_web">&nbsp;
+			<input type="button"  value="Go" onclick='location.href="http://www.vbip.com/search2/search.asp?Realm=Other+VB+Websites&Match=1&Terms="+document.GlobalForm.search_web.value;'>	
+		      
+      </tr>
+     
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Featured Book]</td>
+      </tr>
+      <tr>
+        <td valign="top" width="100%" height="21">
+<center><script src="http://rcm.amazon.com/e/cm?t=vbipvisualbasici&l=st1&search=winsock&mode=books&p=8&o=1" type="text/JavaScript"></script><noscript>
+<MAP NAME="boxmap"><AREA SHAPE="RECT" COORDS="14, 200, 103, 207" HREF="http://rcm.amazon.com/e/cm/privacy-policy.html?o=1"><AREA COORDS="0,0,10000,10000" HREF="http://www.amazon.com/exec/obidos/redirect-home/vbipvisualbasici"></MAP><img src="http://rcm-images.amazon.com/images/G/01/rcm/120x240.gif" width="120" height="240" border="0" usemap="#boxmap" alt="Shop at Amazon.com">
+</noscript>
+</center>
+        </td>
+      </tr>
+     
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Newsletter]</td>
+      </tr>
+      <tr>
+        <td width="100%" height="56">
+          <form method="POST" action="../../sub.asp" onSubmit="">
+            <table border="0" width="100%" cellspacing="0">
+              <tr>
+                <td width="84%">
+                <input type="text" name="T1" size="8" style="font-family: Tahoma; color: #800000; font-size: 8pt; background-color: #FFCC99; border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " value="your e-mail"></td>
+                <td width="16%"><input type="submit" value="Sub" name="B1" style="font-family: Tahoma; font-size: 8pt; color: #800000"></td>
+              </tr>
+              <tr>
+                <td width="100%" colspan="2"><input type="radio" value="V1" checked name="R1"><span class="barsidecaption">HTML</span>
+                  <input type="radio" name="R1" value="V2"><span class="barsidecaption">Text</span></td>
+              </tr>
+            </table>
+          </form>
+        </td>
+      </tr>
+
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+      <p align="center" class="barsidecaption">
+      [Partners]
+      </tr>
+	
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.vbcity.com" target="_blank"><img border="0" src="../..//images/vbcity2_100x30.gif" width="100" height="30"></a>
+  </tr>
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.vbweb.co.uk/" target="_blank"><img border="0" src="../..//images/vbweb_button.gif" width="100" height="30"></a>
+  </tr>  
+      <tr>
+        <td width="100%" height="12" align="center">
+      <a href="http://www.vbwire.com" target="_blank"><img border="0" src="../..//images/VBWire-btn.gif" width="100" height="30"></a>
+      </tr>
+
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.developersdex.com/vb" target="_blank"><img border="0" src="../..//images/vbdex.gif" width="100" height="30"></a>
+  </tr>  
+  <tr>
+        <td width="100%" height="3">
+        <center>
+        <!-- BEGIN ACKY CODE -->
+		<a href="http://www.acky.net" target="_blank"><img
+		src="http://www.acky.net/banners/ackbut3.gif" width="88" height="31"
+		border="0" alt="Acky.net is your one stop shop for all of your web
+		developing needs"></a>
+		<!-- END ACKY CODE -->
+		</center>
+  </tr>
+    </table>
+
+    </td>
+    <td valign="top" bgcolor="#FFFFFF">
+      <blockquote>
+        <p><b><font face="Arial"><a href="../../winsock_control.asp"><br>
+        </a><img border="0" src="../winsock-api-banner.gif">
+        </font></b></p>
+        <p class="ChapterTitle"><span lang="en-us">End points of the connection</span></p>
+        <div align="center">
+          <center>
+          <table border="0" width="90%" cellspacing="0" cellpadding="0" height="44">
+            <tr>
+              <td width="100%" height="15" colspan="3">
+        <hr noshade size="1" color="#FF9933">
+              </td>
+            </tr>
+            <tr>
+              <td width="16" bgcolor="#FFFFCC" height="21" valign="top" style="border: 1px solid #FF9933" class="tbcaption">
+                <p align="center">
+                <a href="../socket-protocol-info/TestBench-03.zip">
+                <img border="0" src="../../images/download-icon4.gif" align="right"></a></td>
+              <td width="40%" bgcolor="#FF9933" height="21" class="tbcaption">
+                <p>&nbsp;<a class="tbcaption" href="TestBench-05.zip">Download 
+                 
+                Winsock API Test Bench<span lang="en-us"> 5</span> project</a></td>
+              <td width="57%" bgcolor="#FF9933" height="21" class="tbcaption">
+              &nbsp;</td>
+            </tr>
+            <tr>
+              <td width="100%" height="15" colspan="3">
+        <hr noshade size="1" color="#FF9933">
+              </td>
+            </tr>
+          </table>
+          </center>
+        </div>
+        <p class="ArticleH2"><span lang="en-us">Introduction</span></p>
+        <blockquote>
+        <p><span lang="en-us">If you are familiar with the Winsock ActiveX 
+        Control, you probably know something about its properties which provide 
+        information about end-points of the connection established between two 
+        computers via TCP/IP. I'm talking about the following properties:</span></p>
+          <ul type="square">
+            <li>
+        <p class="code"><span lang="en-us">
+        <a target="_blank" href="http://msdn.microsoft.com/library/en-us/mswnsk98/html/vbprolocalip.asp">
+        LocalIP</a></span></p>
+            </li>
+            <li>
+        <p class="code"><span lang="en-us">
+        <a target="_blank" href="http://msdn.microsoft.com/library/en-us/mswnsk98/html/vbprolocalhostnameproperty.asp">
+        LocalHostName</a></span></p>
+            </li>
+            <li>
+        <p class="code"><span lang="en-us">
+        <a target="_blank" href="http://msdn.microsoft.com/library/en-us/mswnsk98/html/vbprolocalportproperty.asp">
+        LocalPort</a></span></p>
+            </li>
+            <li>
+        <p class="code"><span lang="en-us">
+        <a target="_blank" href="http://msdn.microsoft.com/library/en-us/mswnsk98/html/vbproremotehostipproperty.asp">
+        RemoteHostIP</a></span></p>
+            </li>
+            <li>
+        <p class="code"><span lang="en-us">
+        <a target="_blank" href="http://msdn.microsoft.com/library/en-us/vbcmn98/html/vbproinetremotehost.asp">
+        RemoteHost</a></span></p>
+            </li>
+            <li>
+        <p class="code"><span lang="en-us">
+        <a target="_blank" href="http://msdn.microsoft.com/library/en-us/vbcmn98/html/vbproinetremoteport.asp">
+        RemotePort</a></span></p>
+            </li>
+          </ul>
+        <p><span lang="en-us">Today we'll learn how to use two functions from 
+        the Winsock API that allow us to retrieve such an information at any 
+        time of the communication session between connected hosts.</span></p>
+        </blockquote>
+        <p class="ArticleH2"><span lang="en-us"><font face="Courier New">getsockname</font> and 
+        <font face="Courier New">getpeername</font> 
+        functions</span></p>
+        <blockquote>
+        <p><span lang="en-us">In most cases you'll know properties of the remote 
+        end-point of the connection without any additional efforts, cause you 
+        just cannot establish the connection without providing the 
+        <font face="Courier New">connect</font> 
+        Winsock API function with values of remote host address and port number. 
+        That's OK to hold those values in some global variables, if you use just 
+        one socket in your application. But what about several or dozens of 
+        sockets. In this case you should develop some data structure (like 
+        3-demantional array or a simple array of UDT's) to hold those values for 
+        each socket. The <font face="Courier New">
+        <a target="_blank" href="http://msdn.microsoft.com/library/en-us/winsock/wsapiref_8woi.asp">
+        getpeername</a></font> function saves us from that.</span></p>
+        <p class="code"><font color="#000080">Declare Function</font> 
+        getpeername <span lang="en-us">_<br>
+        </span><font color="#000080">Lib</font> &quot;ws2_32.dll&quot; (<font color="#000080">ByVal</font> 
+        s <font color="#000080">As Long</font>, <font color="#000080">ByRef</font> 
+        name <font color="#000080">As</font> sockaddr_in, <span lang="en-us">_<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span><font color="#000080">ByRef</font> namelen <font color="#000080">
+        As Long</font>) <font color="#000080">As Long</font></p>
+        <p><span lang="en-us">In order to retrieve the remote end-point 
+        properties, you should provide this function with the socket handle (the
+        <i><font face="Courier New">s</font></i> argument), empty
+        <font face="Courier New">
+        <a target="_blank" href="http://msdn.microsoft.com/library/en-us/winsock/strucetc_0d82.asp">
+        sockaddr_in</a></font> structure (the <i><font face="Courier New">name</font></i> 
+        argument), and length of the structure (the <i><font face="Courier New">
+        namelen</font></i> argument). If the function returned 0, you can 
+        retrieve the host address and port number from the corresponding members 
+        of the structure; you already know how to do that, if you have read the 
+        <a href="../connect/connect-01.asp">previous article</a>.</span></p>
+        <p><span lang="en-us">Ok. What about the local end-point of the 
+        connection? When you call the <font face="Courier New">connect</font> function you do not provide it 
+        with the local host address (your system may have two or more IPs) and 
+        port number. Which ones are used by default in order to establish the 
+        connection? To find out the answer call the <font face="Courier New">
+        <a target="_blank" href="http://msdn.microsoft.com/library/en-us/winsock/wsapiref_273m.asp">
+        getsockname</a></font> Winsock API function:</span></p>
+        <p class="code"><font color="#000080">Declare Function</font> 
+        getsockname <font color="#000080"><span lang="en-us">_<br>
+        </span>Lib</font> &quot;ws2_32.dll&quot; (<font color="#000080">ByVal</font> s
+        <font color="#000080">As Long</font>, <font color="#000080">ByRef</font> 
+        name <font color="#000080">As</font> sockaddr_in, <font color="#000080">
+        <span lang="en-us">_<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </span>ByRef</font> namelen <font color="#000080">As Long</font>)
+        <font color="#000080">As Long</font></p>
+          <table align='center' border='1' width='80%' bgcolor='#F8F8F8' cellspacing='0' cellpadding='4'>
+  <tr>
+    <td width='100%'>
+      <p><span lang="en-us">Actually, you can bind a socket to a specified local 
+      IP address and IP port using the <b><font face="Courier New">
+      <a target="_blank" href="http://msdn.microsoft.com/library/en-us/winsock/wsapiref_6vzm.asp">bind</a></font></b> 
+      Winsock API function. We'll talk about this function in the next article.</span></p>
+    </td>
+  </tr>
+</table>
+        <p><span lang="en-us">As you can see, the <font face="Courier New">
+        <a target="_blank" href="http://msdn.microsoft.com/library/en-us/winsock/wsapiref_273m.asp">
+        getsockname</a> </font>function looks exactly like the
+        <font face="Courier New">
+        <a target="_blank" href="http://msdn.microsoft.com/library/en-us/winsock/wsapiref_8woi.asp">
+        getpeername</a> </font>one. It has got the same set of arguments,&nbsp;and I ensure you the same behavior. </span></p>
+        <p><span lang="en-us">Since we should do the same things in order to 
+        extract the end-points' properties using these functions, I have got an 
+        idea to develop a single function for the sample application that will 
+        return a single value - specified by an argument of the function.</span></p>
+        </blockquote>
+        <p class="ArticleH2"><span lang="en-us">The <font face="Courier New">GetIPEndPointField</font> function</span></p>
+        <blockquote>
+        <p><span lang="en-us">Firstly, let's declare a new enumeration type - 
+        <font face="Courier New">IPEndPointFields</font>.</span></p>
+        <table border='0' width='80%' bgcolor='#F8F8F8' cellspacing='0' cellpadding='2'>
+  <tr>
+    <td width='100%'>
+      <p class='code'><font color='#000080'>Public</font>&nbsp;<font color='#000080'>Enum</font>&nbsp;IPEndPointFields&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;LOCAL_HOST&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;LOCAL_HOST_IP&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;LOCAL_PORT&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;REMOTE_HOST&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;REMOTE_HOST_IP&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;REMOTE_PORT&nbsp;<br>
+<font color='#000080'>End</font>&nbsp;Enum</p>
+    </td>
+  </tr>
+</table>
+        <p><span lang="en-us">This type will be used by the function to 
+        determine what value to return. See the code of the function to get an 
+        idea how it works.</span></p>
+        <table border='0' width='80%' bgcolor='#F8F8F8' cellspacing='0' cellpadding='2'>
+  <tr>
+    <td width='100%'>
+      <p class='code'><font color='#000080'>Public</font>&nbsp;<font color='#000080'>Function</font>&nbsp;GetIPEndPointField(ByVal&nbsp;lngSocket&nbsp;<font color='#000080'>As</font>&nbsp;Long,&nbsp;<span lang="en-us">_</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>ByVal</font>&nbsp;EndPointField&nbsp;<font color='#000080'>As</font>&nbsp;IPEndPointFields)&nbsp;<font color='#000080'>As</font>&nbsp;<font color='#000080'>Variant</font>&nbsp;<br>
+<font color='#008000'>'********************************************************************************</font><br>
+<font color='#008000'>'Purpose&nbsp;&nbsp;&nbsp;:Retrieves&nbsp;IP&nbsp;address&nbsp;or&nbsp;host&nbsp;name&nbsp;or&nbsp;port&nbsp;number&nbsp;of</font><br>
+<font color='#008000'>'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;an&nbsp;end-point&nbsp;of&nbsp;the&nbsp;connection&nbsp;established</font><br>
+<font color='#008000'>'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on&nbsp;the&nbsp;socket&nbsp;-&nbsp;lngSocket</font><br>
+<br>
+<font color='#008000'>'Return<span lang="en-us">s</span>&nbsp;&nbsp;&nbsp;:If&nbsp;no&nbsp;errors&nbsp;occurres,&nbsp;the&nbsp;function&nbsp;returns&nbsp;the&nbsp;value</font><br>
+<font color='#008000'>'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;requested&nbsp;by&nbsp;the&nbsp;EndPointField&nbsp;argument.</font><br>
+<font color='#008000'>'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Otherwise,&nbsp;it&nbsp;returns&nbsp;the&nbsp;value&nbsp;of&nbsp;SOCKET_ERROR</font><br>
+<br>
+<font color='#008000'>'Arguments&nbsp;:</font><br>
+<font color='#008000'>'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lngSocket&nbsp;-&nbsp;&nbsp;socket's&nbsp;handle.&nbsp;The&nbsp;socket&nbsp;must&nbsp;be&nbsp;connected&nbsp;to&nbsp;the&nbsp;remote&nbsp;host.</font><br>
+<font color='#008000'>'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EndPointField&nbsp;-&nbsp;specifies&nbsp;the&nbsp;value&nbsp;to&nbsp;return:</font><br>
+<font color='#008000'>'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LOCAL_HOST</font><br>
+<font color='#008000'>'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LOCAL_HOST_IP</font><br>
+<font color='#008000'>'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LOCAL_PORT</font><br>
+<font color='#008000'>'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REMOTE_HOST</font><br>
+<font color='#008000'>'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REMOTE_HOST_IP</font><br>
+<font color='#008000'>'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REMOTE_PORT</font><br>
+<font color='#008000'>'********************************************************************************</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>Dim</font>&nbsp;udtSocketAddress&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>As</font>&nbsp;sockaddr_in&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>Dim</font>&nbsp;lngReturnValue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>As</font>&nbsp;<font color='#000080'>Long</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>Dim</font>&nbsp;lngPtrToAddress&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>As</font>&nbsp;<font color='#000080'>Long</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>On</font>&nbsp;<font color='#000080'>Error</font>&nbsp;<font color='#000080'>GoTo</font>&nbsp;ERROR_HANDLER&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;Select&nbsp;<font color='#000080'>Case</font>&nbsp;EndPointField&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>Case</font>&nbsp;LOCAL_HOST,&nbsp;LOCAL_HOST_IP,&nbsp;LOCAL_PORT&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'If&nbsp;the&nbsp;info&nbsp;of&nbsp;a&nbsp;local&nbsp;end-point&nbsp;of&nbsp;the&nbsp;connection&nbsp;is</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'requested,&nbsp;call&nbsp;the&nbsp;getsockname&nbsp;Winsock&nbsp;API&nbsp;function</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lngReturnValue&nbsp;=&nbsp;getsockname(lngSocket,&nbsp;udtSocketAddress,&nbsp;LenB(udtSocketAddress))&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>Case</font>&nbsp;REMOTE_HOST,&nbsp;REMOTE_HOST_IP,&nbsp;REMOTE_PORT&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'If&nbsp;the&nbsp;info&nbsp;of&nbsp;a&nbsp;remote&nbsp;end-point&nbsp;of&nbsp;the&nbsp;connection&nbsp;is</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'requested,&nbsp;call&nbsp;the&nbsp;getpeername&nbsp;Winsock&nbsp;API&nbsp;function</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lngReturnValue&nbsp;=&nbsp;getpeername(lngSocket,&nbsp;udtSocketAddress,&nbsp;LenB(udtSocketAddress))&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>End</font>&nbsp;Select&nbsp;<font color='#008000'>'->EndPointField</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>If</font>&nbsp;lngReturnValue&nbsp;=&nbsp;0&nbsp;<font color='#000080'>Then</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'If&nbsp;no&nbsp;errors&nbsp;were&nbsp;occurred,&nbsp;the&nbsp;getsockname&nbsp;or&nbsp;getpeername</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'function&nbsp;returns&nbsp;0.</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Select</font>&nbsp;<font color='#000080'>Case</font>&nbsp;EndPointField&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>Case</font>&nbsp;LOCAL_PORT,&nbsp;REMOTE_PORT&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'If&nbsp;the&nbsp;port&nbsp;number&nbsp;is&nbsp;requested,&nbsp;retrieve&nbsp;that&nbsp;value</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'from&nbsp;the&nbsp;sin_port&nbsp;member&nbsp;of&nbsp;the&nbsp;udtSocketAddress</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'structure,&nbsp;and&nbsp;change&nbsp;the&nbsp;byte&nbsp;order&nbsp;of&nbsp;that&nbsp;value&nbsp;from</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'the&nbsp;network&nbsp;to&nbsp;host&nbsp;byte&nbsp;order.</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetIPEndPointField&nbsp;=&nbsp;IntegerToUnsigned(ntohs(udtSocketAddress.sin_port))&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>Case</font>&nbsp;LOCAL_HOST_IP,&nbsp;REMOTE_HOST_IP&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'The&nbsp;host&nbsp;address&nbsp;is&nbsp;stored&nbsp;in&nbsp;the&nbsp;sin_addr&nbsp;member&nbsp;of&nbsp;the&nbsp;structure</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'as&nbsp;4-byte&nbsp;value.</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'To&nbsp;get&nbsp;an&nbsp;IP&nbsp;address&nbsp;of&nbsp;the&nbsp;host:</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'Get&nbsp;pointer&nbsp;to&nbsp;the&nbsp;string&nbsp;that&nbsp;contains&nbsp;the&nbsp;IP&nbsp;address</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lngPtrToAddress&nbsp;=&nbsp;inet_ntoa(udtSocketAddress.sin_addr)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span lang="en-us">'</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'Retrieve&nbsp;that&nbsp;string&nbsp;by&nbsp;the&nbsp;pointer</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetIPEndPointField&nbsp;=&nbsp;StringFromPointer(lngPtrToAddress)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>Case</font>&nbsp;LOCAL_HOST,&nbsp;REMOTE_HOST&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'The&nbsp;same&nbsp;procedure&nbsp;as&nbsp;for&nbsp;an&nbsp;IP&nbsp;address.</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'But&nbsp;here&nbsp;is&nbsp;the&nbsp;GetHostNameByAddress&nbsp;function&nbsp;call</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'to&nbsp;retrieve&nbsp;host&nbsp;name&nbsp;by&nbsp;IP&nbsp;address.</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lngPtrToAddress&nbsp;=&nbsp;inet_ntoa(udtSocketAddress.sin_addr)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetIPEndPointField&nbsp;=&nbsp;GetHostNameByAddress(StringFromPointer(lngPtrToAddress))&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>End</font>&nbsp;Select&nbsp;&nbsp;<font color='#008000'>'-></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>Else</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetIPEndPointField&nbsp;=&nbsp;SOCKET_ERROR&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>End</font>&nbsp;<font color='#000080'>If</font>&nbsp;&nbsp;<font color='#008000'>'->lngReturnValue&nbsp;=&nbsp;0</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+EXIT_LABEL:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>Exit</font>&nbsp;<font color='#000080'>Function</font>&nbsp;<br>
+<br>
+ERROR_HANDLER:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;GetIPEndPointField&nbsp;=&nbsp;SOCKET_ERROR&nbsp;<br>
+&nbsp;&nbsp;&nbsp;<br>
+<font color='#000080'>End</font>&nbsp;<font color='#000080'>Function</font>&nbsp;<br>
+      </p>
+    </td>
+  </tr>
+</table>
+        <p>The <font face="Courier New">GetHostNameByAddress</font> function was 
+        developed in the first part of this tutorial series; see the
+        <a href="../gethostbyaddr/gethostbyaddr-01.asp">&quot;How to get host name 
+        by&nbsp;IP address&quot;</a> article for more info.</p>
+        </blockquote>
+        <p class="ArticleH2">Modifying the sample application</p>
+        <blockquote>
+        <p>We are to add a new feature to the TestBench sample application. If 
+        the user clicks the Connect button in the case the selected socket is 
+        already connected to the remote host, a dialog window will be displayed 
+        to inform the user about the connection's end-points parameters.</p>
+        <p>Add to the project a new form. <span lang="en-us">Name it as 
+        <font face="Courier New">frmConnectionInfo</font>. </span>Place on the form two frames controls, 12 labels, and a command button as shown in the picture. </p>
+        <p align="center"><img border="0" src="connec1.gif"></p>
+        <p><span lang="en-us">All the parameters of both end-points of the 
+        connection will be retrieved during the loading of the form - in the 
+        <font face="Courier New">Form_Load</font> event procedure. Take a look at the code for the form:</span></p>
+        <table border='0' width='80%' bgcolor='#F8F8F8' cellspacing='0' cellpadding='2'>
+  <tr>
+    <td width='100%'>
+      <p class='code'><font color='#000080'>Option</font>&nbsp;<font color='#000080'>Explicit</font>&nbsp;<br>
+<br>
+<font color='#008000'>'local&nbsp;variable&nbsp;for&nbsp;SocketHandle&nbsp;property</font><br>
+<font color='#000080'>Private</font>&nbsp;m_lngSocketHandle&nbsp;<font color='#000080'>As</font>&nbsp;<font color='#000080'>Long</font>&nbsp;<br>
+<br>
+<font color='#000080'>Public</font>&nbsp;<font color="#000080">Property</font>&nbsp;<font color='#000080'>Let</font>&nbsp;SocketHandle(NewValue&nbsp;<font color='#000080'>As</font>&nbsp;<font color="#000080">Long</font>)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;m_lngSocketHandle&nbsp;=&nbsp;NewValue&nbsp;<br>
+<font color='#000080'>End</font>&nbsp;<font color="#000080">Property</font>&nbsp;<br>
+<br>
+<font color='#000080'>Private</font>&nbsp;<font color='#000080'>Sub</font>&nbsp;cmdClose_Click()&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Unload&nbsp;Me&nbsp;<br>
+<font color='#000080'>End</font>&nbsp;<font color='#000080'>Sub</font>&nbsp;<br>
+<br>
+<font color='#000080'>Private</font>&nbsp;<font color='#000080'>Sub</font>&nbsp;Form_Load()&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>If</font>&nbsp;m_lngSocketHandle&nbsp;>&nbsp;0&nbsp;<font color='#000080'>Then</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblLocalHost.Caption&nbsp;=&nbsp;GetIPEndPointField(m_lngSocketHandle,&nbsp;LOCAL_HOST)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblLocalIPAddress.Caption&nbsp;=&nbsp;GetIPEndPointField(m_lngSocketHandle,&nbsp;LOCAL_HOST_IP)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblLocalPort.Caption&nbsp;=&nbsp;GetIPEndPointField(m_lngSocketHandle,&nbsp;LOCAL_PORT)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblRemoteHost.Caption&nbsp;=&nbsp;GetIPEndPointField(m_lngSocketHandle,&nbsp;REMOTE_HOST)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblRemoteIPAddress.Caption&nbsp;=&nbsp;GetIPEndPointField(m_lngSocketHandle,&nbsp;REMOTE_HOST_IP)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblRemotePort.Caption&nbsp;=&nbsp;GetIPEndPointField(m_lngSocketHandle,&nbsp;REMOTE_PORT)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>End</font>&nbsp;<font color='#000080'>If</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+<font color='#000080'>End</font>&nbsp;<font color='#000080'>Sub</font>&nbsp;<br>
+      </p>
+    </td>
+  </tr>
+</table>
+        <p><span lang="en-us">As you can see, a new property of the form is 
+        created - <font face="Courier New">SocketHandle</font>. This property is just to pass the value of a 
+        socket handle to the form, and thus it must be initialized before the 
+        call of the <font face="Courier New">Show</font> method of the form. See how the
+        <font face="Courier New">cmdConnect_Click</font> event 
+        procedure is changed:</span></p>
+        <table border='0' width='80%' cellspacing='0' cellpadding='2'>  <tr>
+    <td width='100%'  class='code'><span lang="en-us">&nbsp;&nbsp;&nbsp; . . .</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>Dim</font>&nbsp;lngRetValue&nbsp;<font color='#000080'>As</font>&nbsp;<font color='#000080'>Long</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'Check&nbsp;for&nbsp;existence&nbsp;of&nbsp;the&nbsp;socket</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>If</font>&nbsp;<font color='#000080'>Not</font>&nbsp;lvSockets.SelectedItem&nbsp;Is&nbsp;<font color='#000080'>Nothing</font>&nbsp;Then</td>
+  </tr>
+  <tr>
+    <td width='100%' bgcolor='#F8F8F8' class='code'>&nbsp;&nbsp;&nbsp;<span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;
+    <font color="#008000">'</font></span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>If</font>&nbsp;lvSockets.SelectedItem.Bold&nbsp;<font color='#000080'>Then</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>Dim</font>&nbsp;frmInfo&nbsp;<font color='#000080'>As</font>&nbsp;frmConnectionInfo&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>Set</font>&nbsp;frmInfo&nbsp;=&nbsp;<font color='#000080'>New</font>&nbsp;frmConnectionInfo&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frmInfo.SocketHandle&nbsp;=&nbsp;CLng(lvSockets.SelectedItem.Text)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frmInfo.Show&nbsp;vbModal&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>Exit</font>&nbsp;<font color='#000080'>Sub</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>End</font>&nbsp;<font color='#000080'>If</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'</td>
+  </tr>
+  <tr>
+    <td width='100%'  class='code'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'Create&nbsp;an&nbsp;instance&nbsp;of&nbsp;the&nbsp;frmConnect</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>Set</font>&nbsp;frm&nbsp;=&nbsp;<font color='#000080'>New</font>&nbsp;frmConnect&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000"><span lang="en-us">'</span></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#000080'>With</font>&nbsp;frm&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color='#008000'>'</td>
+  </tr>
+</table>
+        <p><span lang="en-us">At this moment, we don't know how to find out the 
+        state of a socket using the Winsock API. So, the program does check the 
+        <font face="Courier New">Bold</font> property of the list item to find out that the socket is already 
+        connected. </span></p>
+        <blockquote>
+        <p><i><span lang="en-us">If you have read the previous article, you 
+        should know that the sample application marks connected sockets with a 
+        bold font in the list view control.</span></i></p>
+        </blockquote>
+        <p><span lang="en-us">At the next step, the program creates an instance 
+        of the <font face="Courier New">frmConnectionInfo</font> form, passes value of the socket's handle to 
+        the form through the <font face="Courier New">SocketHandle</font> property, and finally calls the 
+        <font face="Courier New">Show</font> 
+        method to display the form.</span></p>
+        </blockquote>
+        <p class="ArticleH2"><span lang="en-us">Testing the sample application</span></p>
+        <blockquote>
+        <p><span lang="en-us">Press F5 to run the application. Create a new 
+        socket with the parameters shown in the table:</span></p>
+        <div align="center">
+          <center>
+          <table border="0" cellpadding="3" cellspacing="3" style="border-collapse: collapse" bordercolor="#111111" width="60%" id="AutoNumber2">
+            <tr>
+              <td width="24%">Address family</td>
+              <td width="76%">AF_INET</td>
+            </tr>
+            <tr>
+              <td width="24%">Socket type</td>
+              <td width="76%">SOCK_STREAM</td>
+            </tr>
+            <tr>
+              <td width="24%">Protocol</td>
+              <td width="76%">IPPROTO_TCP</td>
+            </tr>
+          </table>
+          </center>
+        </div>
+        <p align="center">
+        <img border="0" src="../connect/connec2.gif"></p>
+        <p><span lang="en-us">Click the Connect button, then enter some values 
+        of the host address and port number in the Connect dialog box:</span></p>
+        <p align="center">
+        <img border="0" src="../connect/connec3.gif"></p>
+        <p><span lang="en-us">Click the Connect button on the dialog box. </span></p>
+        <p align="center">
+        <img border="0" src="../connect/connec4.gif"></p>
+        <p><span lang="en-us">Now click the Connect button one more time. You 
+        should see the dialog window that displays parameters of the end-points 
+        of the connection.</span></p>
+
+        <p align="center"><img border="0" src="connec2.gif"></p>
+
+        </blockquote>
+        <p class="ArticleH2"><span lang="en-us">Conclusion</span></p>
+
+        <blockquote>
+        <p><span lang="en-us">I don't like how the app is designed regarding the
+        <font face="Courier New">GetIPEndPointField</font> function, maybe 
+        because it returns the <font face="Courier New">Variant</font>, maybe 
+        because it's too universal. But I have found it is suitable for this 
+        sample application. In &quot;a real life programming&quot; you can use the <font face="Courier New">
+        <a target="_blank" href="http://msdn.microsoft.com/library/en-us/winsock/wsapiref_8woi.asp">
+        getpeername</a> </font>and <font face="Courier New">
+        <a target="_blank" href="http://msdn.microsoft.com/library/en-us/winsock/wsapiref_273m.asp">
+        getsockname</a> </font>functions by other ways. Anyway, my work for today is 
+        done - you should know what those functions are for, and how they work. 
+        Also you learned today that the Winsock service chooses the IP address 
+        and port number for you by default. But you can control this - you can 
+        assign both the local IP address and the local port number for a socket 
+        using the <font face="Courier New">
+        <a target="_blank" href="http://msdn.microsoft.com/library/en-us/winsock/wsapiref_6vzm.asp">bind</a></font> Winsock API function we 
+        are going to talk about in the next article.</span></p>
+
+        </blockquote>
+<p>        
+    <hr noshade color="#FF9933">
+    <table width="90%" align="center" border="0">
+      <tr>
+        <td width="25%">
+          <img border="0" src="../../../images/comments.gif">
+        </td>
+        <td width="75%">
+          Please, post here only feedback for the article/tutorial/sample you
+          have read above.<br>
+          If you have any question and like to get an answer, post your messages in the <a href="http://www.vbip.com/forum/">Forum</a>.
+        <td>
+      </tr>
+    </table>
+    
+    
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../../comment.asp?591">port # as integer</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Joseph Dunne Thursday, November 01, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../../comment.asp?620">GetHostNameByAddress </a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">John Smith Monday, November 26, 2001</font></i>	
+			</p>
+			
+        <p>
+        <form name="newcomm" method="POST" action="../../../add_comments.asp">
+          <p><input align="right" border="0" src="../../../images/addyours2.gif" name="I1" type="image"></p>
+          <input type="hidden" name="page" value="/winsock-api/connectionendpoints/connectionendpoints-01.asp">
+          <input type="hidden" name="title">
+	  <input type="hidden" name="actionID" value="add">
+        </form>
+        <SCRIPT LANGUAGE="JavaScript">
+        	{document.newcomm.title.value = document.title}
+        </SCRIPT>
+	<br>
+        <p>
+        <hr noshade color="#FF9933">
+</p>            
+      </blockquote>
+<p><center>
+<!-- start BITS ad HTML -- bottom of page 468x60 banner www.bitsonthewire.com         --> 
+  <iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=2" width=468 height=60 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no> 
+    <a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=2">
+      <p>
+      <img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=2&siteid=1126&ad_type=2">
+    </a>
+  </iframe> 
+<!-- stop BITS ad HTML -- bottom of page 468x60 banner                                --> 
+</center></p>
+    </td>
+</table>
+<table border="1" width="100%" cellspacing="1" cellpadding="2" bordercolor="#800000">
+  <tr>
+    <td width="100%" bgcolor="#FF9933">
+      <font color="#FFFFCC">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="37%"></td>
+          <td width="63%">
+            <p align="right" class="tbcaption"><a href="../../default.asp" class="tbcaption">Home</a> -
+            <a href="../../tools.asp" class="tbcaption">Tools&amp;Technologies</a> -
+            <a href="../default.asp" class="tbcaption">Winsock API</a> - End 
+            points of the connection</td>
+        </tr>
+      </table>
+      </font>
+    </td>
+  </tr>
+</table>
+&nbsp;<table border="0" width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="121" valign="top">
+<!-- START OF WEBTRENDS LIVE TAG -->
+<!-- Copyright 2001 NetIQ Corporation -->
+<!--  For privacy concerns, check our Privacy Policy at http://www.webtrendslive.com/privacy_policy.htm -->
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+// Modification of this code is not allowed and will permanently disable your account!
+// SiteName:  Visual Basic Internet Programming
+function wtl_Tag4_27048()
+{
+	function D8( d)
+	{
+		var fwd=1, seed= new Date('01/01/2000'), key= "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+		var s= key.charAt( d.getFullYear()-2000)+key.charAt( d.getMonth()+1)+key.charAt( d.getDate());
+		s+= key.charAt( d.getHours())+key.charAt( d.getMinutes())+key.charAt( d.getSeconds());
+		while( seed.getDay()!=fwd) seed= new Date(seed.getTime() + 86400000);
+		var w= Math.floor( (d.getTime()-(seed.getTime()+86400000)) / 604800000 );
+		s+= key.charAt( (w-(w%16))/16 );
+		s+= key.charAt( w%16);
+		return s;
+	}
+
+	var t = new Date();
+	var W="tagver=4&si=27048&fw=1&bn=13";
+	W+="&tz="+escape(t.getTimezoneOffset());
+	W+="&ch="+escape(t.getHours());
+	W+="&cl="+escape(D8(t));
+	W+="&ti="+escape(document.title);
+	W+="&url="+escape(window.document.URL);
+	W+="&rf="+escape(window.document.referrer);
+	W+="&js=Yes";
+	W+="&ul="+(navigator.appName=="Netscape"?navigator.language:navigator.userLanguage);
+	if(typeof(screen)=="object")
+	{
+	W+="&sr="+screen.width+"x"+screen.height;
+	W+="&cd="+screen.colorDepth;
+	W+="&jo="+(navigator.javaEnabled()?"Yes":"No");
+	}
+	
+	
+	document.write('<A TARGET="_blank" HREF="http://www.webtrendslive.com/redirect.asp?siteID=27048">');
+	document.write('<IMG ID="WTL_TAG" BORDER="0" WIDTH="100" HEIGHT="30" ALT="This Site Tracked by WebTrendsLive." SRC="http://p.wtlive.com/S003-00-9-14-186109-27048/button4.asp?'+W+'">');
+	document.write('</A>');
+	
+}	
+
+wtl_Tag4_27048();
+//-->
+</SCRIPT>
+
+
+<NOSCRIPT>
+<A TARGET="_blank" HREF="http://www.webtrendslive.com/redirect.asp?siteID=27048">
+<IMG BORDER="0" WIDTH="100" HEIGHT="30" ALT="This Site Tracked by WebTrendsLive." SRC="http://p.wtlive.com/S003-00-9-14-186109-27048/button4.asp?tagver=4&si=27048&fw=1&bn=13&js=No&"></A></NOSCRIPT>
+
+
+<!-- END OF WEBTRENDS LIVE TAG -->
+
+     
+      </td>
+    <td>
+<p align="center" class="barsidecaption"><a href="../../default.asp">Home</a> | <a href="../../whatsnew.asp">What's
+New</a> | <a href="../../tools.asp"> Tools
+&amp; Technologies</a> | <a href="../../resources.asp">Resources</a> | <a href="../../resources/books/default.asp">Books</a>
+ | <a href="../../forum/">Forum</a></p>
+<p align="center" class="barsidecaption">Report about any problems and errors to <a href="mailto:webmaster@vbip.com">webmaster@vbip.com</a><br>
+Copyright © 1998 - 2002 by <a href="mailto:oleg@vbip.com"> Oleg Gdalevich</a></p>
+    </td>
+    <td valign="top" width="140">
+<p align="center">
+<a target="_blank" href="http://www.amazon.com/exec/obidos/ASIN/B00005AFI2/vbipvisualbasici">
+<img border="0" src="../../images/frontpage_button.gif" align="right" width="100" height="38"></a>
+    </td>
+  </tr>
+</table>
+</body>
+
+</html>

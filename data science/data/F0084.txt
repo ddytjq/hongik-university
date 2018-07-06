@@ -1,0 +1,498 @@
+ID=F0084
+URL=http://www.vbuniverse.co.uk/whatsnew.html
+SIZE=24371
+DATE=09/07/2002
+TIME=13:14:34
+DATASET=Visual Basic
+HTML=<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Whats new in Windows Script 5</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 3.0">
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p align="center"><font size="5" face="Arial" color="#FF0000"><strong>Whats new in Windows
+Script 5.5?</strong></font></p>
+
+<p align="center"><font face="Arial">&nbsp;</font></p>
+
+<h6><font face="Arial"><big>The first beta release of Windows Script 5.5 is fully
+compliant with the ECMA-262 (otherwise known as ECMAScript) version 3 standard. The
+changes for ECMAScript version 3 primarily involved extending the built-in objects, rather
+than radical improvements in the language itself. Here's a quick rundown on a few of the
+new features you can find in JScript® and Visual Basic® Scripting Edition (VBScript)
+5.5. Enjoy!</big></font></h6>
+
+<h6><font face="Arial"><big><big>Regular Expressions</big></big></font></h6>
+
+<h6><font face="Arial"><big>Regular expressions are incredibly powerful tools for
+searching and manipulating all kinds of textual data. JScript has included support for
+regular expressions since version 3 -- but this time around, we have added new features to
+both the pattern syntax and the replace method.</big></font></h6>
+
+<h6><font face="Arial"><big><big>Using Replacement Functions</big></big></font></h6>
+
+<h6><font face="Arial"><big>Previously, if you wanted to replace text within a string, you
+had two choices:</big></font></h6>
+
+<ul>
+  <li><h6><font face="Arial"><big>If the text you wanted to replace was static, you could
+    perform a single global replacement using a regular expression in one line of code. Very
+    nice. </big></font></h6>
+  </li>
+  <li><h6><font face="Arial"><big>If the text you wanted to replace was &quot;dynamic,&quot;
+    you had to use <b>indexOf</b> or <b>charCodeAt</b> calls inside of a loop and manually
+    build up the replacement string. Yuck. </big></font></h6>
+  </li>
+</ul>
+
+<h6><font face="Arial"><big>In JScript 5.5, you have the best of both worlds with <b>replacement
+functions</b>. You can perform a neat, one-line global search-and-replace operation using
+your favourite regular expression, but pass it a <b>Function</b> object instead of a
+replacement string. Because the function is called every time the regular expression finds
+a match, it can make &quot;smart&quot; decisions and perform computations before returning
+a replacement string.</big></font></h6>
+
+<h6><font face="Arial"><big>Now that sounds a little complex, so here's a concrete
+example. Hopefully, many of you will have heard of something called &quot;ROT13
+encoding.&quot; Basically, ROT13 is a weak form of text encoding, designed to hide the
+content of a message from casual users. ROT13 can be used, for instance, to hide
+&quot;spoilers&quot; within a film review on the news:rec.arts.movies newsgroup.&nbsp; If
+you have Outlook Express installed on your computer, you can use the &quot;Unscramble
+(ROT13)&quot; menu item from the Message menu when reading newsgroups to see how this
+would work.</big></font></h6>
+
+<h6><font face="Arial"><big>ROT13 gets its name from the fact that it &quot;rotates&quot;
+all the alphabetical characters in the input text by 13 places. Of course, since there are
+26 letters in the alphabet, if you ROT13 encode a message twice, you get back to where you
+started. To build your own ROT13 encoder in JScript 5.0, you would have had to use the old
+<b>charCodeAt</b> trick, checking every character in the string, and building up the
+replacement character by character. Here's how it might look:</big></font></h6>
+
+<pre class="clsCode"><font face="Arial">// Old-style function to ROT 13 encode upper-case letters
+function OldRot13(s)
+{
+&nbsp;&nbsp; var sResult = &quot;&quot;;
+&nbsp;&nbsp; var i = 0;
+&nbsp;&nbsp; var d = 0;
+
+&nbsp;&nbsp; // Check every character in the string
+&nbsp;&nbsp; for (i = 0; i &lt; s.length; i++)
+&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Get the next character
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; d = s.charCodeAt(i);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Is it an upper-case character?
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ((d &gt;= 65) &amp;&amp; (d &lt;= 90))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Increment it
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; d += 13;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Rotate any over-flows
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (d &gt; 90)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; d = 64 + (d - 90);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Add the character to the string
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sResult += String.fromCharCode(d);
+&nbsp;&nbsp; }
+
+&nbsp;&nbsp; // Return the result
+&nbsp;&nbsp; return sResult;
+}</font></pre>
+
+<h6><font face="Arial"><big>Notice how the actual logic to do the encoding &#150;- adding
+13 and then rotating any overflows -&#150; is cluttered up by having the looping code
+around the outside? Sure, we could add another function to encapsulate the per-character
+rotation code, but we've still got that ugly looping code hanging around. Here's how we
+might use it:</big></font></h6>
+
+<pre class="clsCode"><font face="Arial">var s = &quot;A SECRET MESSAGE! &quot;;
+
+// Encode it:
+var sEncoded = OldRot13(s);
+window.alert(sEncoded);
+
+// Decode it:
+s = OldRot13(sEncoded);
+window.alert(s);</font></pre>
+
+<h6><font face="Arial"><big>The output of this code is the encoded string &quot;N FRPERG
+ZRFFNTR!&quot; followed by the original string, &quot;A SECRET MESSAGE!&quot;.</big></font></h6>
+
+<h6><font face="Arial"><big>So far, so good: We've got an ugly encoding function, but
+using it is no problem. Imagine, though, that we wanted to encode something other than
+just upper-case letters; for example, what if we wanted to encode only those strings that
+matched a certain pattern? We'd have to hack the <b>OldRot13</b> function to do this. Not
+so good.</big></font></h6>
+
+<h6><font face="Arial"><big>Enter JScript 5.5 to save the day. Using the new function
+replacements, you can implement the same functionality as <b>OldRot13</b> in JScript 5.5
+as follows:</big></font></h6>
+
+<pre class="clsCode"><font face="Arial">// Simple function to ROT 13 encode upper-case letters
+function Rot13(sMatchedString)
+{
+&nbsp;&nbsp; // Get the character code
+&nbsp;&nbsp; var d = sMatchedString.charCodeAt(0);
+
+&nbsp;&nbsp; // Increment it
+&nbsp;&nbsp; d += 13;
+
+&nbsp;&nbsp; // Rotate any over-flows
+&nbsp;&nbsp; if (d &gt; 90)
+&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; d = 64 + (d - 90);
+&nbsp;&nbsp; }
+
+&nbsp;&nbsp; return String.fromCharCode(d);
+}</font></pre>
+
+<h6><font face="Arial"><big>And a sample way to use it (giving the same results as above):</big></font></h6>
+
+<pre class="clsCode"><font face="Arial">// Encode only the upper-case letters
+var re = /[A-Z]/g;
+
+var s = &quot;A SECRET MESSAGE!&quot;;
+
+// Encode it:
+var sEncoded = s.replace(re, Rot13);
+window.alert(sEncoded);
+
+// Decode it:
+s = sEncoded.replace(re, Rot13);
+window.alert(s);</font></pre>
+
+<h6><font face="Arial"><big>Notice several differences here. First, there's about half as
+much code, as we didn't have to worry about all the looping logic; the global replace
+function did that for us. Second, we specify the type of characters to search for using a
+regular expression, so it is easy to change. If we want to encode only the vowels, we can
+change the first line:</big></font></h6>
+
+<pre class="clsCode"><font face="Arial">// Encode only the upper-case vowels
+var re = /[AEIOU]/g;</font></pre>
+
+<h6><font face="Arial"><big>Voilà! It works, displaying &quot;N SRCRRT MRSSNGR!&quot;
+(Note, however, that the decoding phase no longer works, because the regular expression
+still only looks for vowels, and we encoded all the vowels out of the string!)</big></font></h6>
+
+<h6><font face="Arial"><big><big>Syntax of the Replacement Function</big></big></font></h6>
+
+<h6><font face="Arial"><big>In the example above, only one parameter was passed to the
+replacement function -- sMatchedString &#150; but this function can actually take a
+variable number of arguments, as follows:</big></font></h6>
+
+<pre class="clsCode"><font face="Arial">replaceFunc(matchedString [, subMatch1 [, ...]] , matchPos, source)</font></pre>
+
+<table border="0" cellPadding="5" cellSpacing="2" class="clsRef">
+<TBODY>
+  <tr bgColor="#a6caf0">
+    <th vAlign="top" width="133"><font face="Arial"><b>Parameter</b> </font></th>
+    <th vAlign="top"><font face="Arial"><b>Value</b> </font></th>
+  </tr>
+  <tr>
+    <td bgColor="#eeeeee" vAlign="top" width="133"><font face="Arial">matchedString </font></td>
+    <td bgColor="#eeeeee" vAlign="top"><font face="Arial">The entire substring string that
+    matched the regular expression. </font></td>
+  </tr>
+  <tr>
+    <td bgColor="#eeeeee" vAlign="top" width="133"><font face="Arial">subMatch1 </font></td>
+    <td bgColor="#eeeeee" vAlign="top"><font face="Arial">The first captured submatch, if any </font></td>
+  </tr>
+  <tr>
+    <td bgColor="#eeeeee" vAlign="top" width="133"><font face="Arial">... </font></td>
+    <td bgColor="#eeeeee" vAlign="top"><font face="Arial">Additional captured submatches, if
+    any </font></td>
+  </tr>
+  <tr>
+    <td bgColor="#eeeeee" vAlign="top" width="133"><font face="Arial">matchPos </font></td>
+    <td bgColor="#eeeeee" vAlign="top"><font face="Arial">The position within the source
+    string that the match was found </font></td>
+  </tr>
+  <tr>
+    <td bgColor="#eeeeee" vAlign="top" width="133"><font face="Arial">source </font></td>
+    <td bgColor="#eeeeee" vAlign="top"><font face="Arial">The entire source string being
+    searched </font></td>
+  </tr>
+</TBODY>
+</table>
+
+<h6><font face="Arial"><big>The replacement function will always be passed at least three
+parameters -- <b>matchedString</b>, <b>matchPos</b>, and <b>source</b> -- but it will also
+be passed additional parameters if there are capturing submatches in the regular
+expression. Submatches are introduced using parentheses. For example, the following code
+shows how submatches are passed to the replacement function:</big></font></h6>
+
+<pre class="clsCode"><font face="Arial">// Look for a word, followed by a decimal number
+var re = /(\w+)\s*(\d+\.\d+)/g;
+
+// Sample string to search
+var s = &quot;JScript 5.5 and VBScript 5.5&quot;;
+
+s = s.replace(re, showParams);
+window.alert(s);
+
+function showParams(matchedString, subMatch1, subMatch2, matchPos, source)
+{
+&nbsp;&nbsp; var s = &quot;Found a match!&quot; +
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;\n\tMatch = &quot; + matchedString +
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;\n\tSub-match 1 = &quot; + subMatch1 +
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;\n\tSub-match 2 = &quot; + subMatch2 +
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;\n\tMatch position = &quot; + matchPos +
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;\n\tSource string = &quot; + source;
+
+&nbsp;&nbsp; window.alert(s);
+
+&nbsp;&nbsp; return (subMatch1 + &quot; is great&quot;);
+}</font></pre>
+
+<h6><font face="Arial">The code above produces the following three alert dialogs:</font></h6>
+
+<pre class="clsCode"><font face="Arial">Found a match!
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Match = JScript 5.5
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sub-match 1 = JScript
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sub-match 2 = 5.5
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Match position = 0
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Source string = JScript 5.5 and VBScript 5.5</font></pre>
+
+<p><font face="Arial"><br>
+</font></p>
+
+<pre class="clsCode"><font face="Arial">Found a match!
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Match = VBScript 5.5
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sub-match 1 = VBScript
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sub-match 2 = 5.5
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Match position = 16
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Source string = JScript 5.5 and VBScript 5.5</font></pre>
+
+<p><font face="Arial"><br>
+</font></p>
+
+<pre class="clsCode"><font face="Arial">JScript is great! and VBScript is great!</font></pre>
+
+<h6><font face="Arial"><big><big>Dollar Variables</big></big></font></h6>
+
+<h6><font face="Arial"><big>But the buck doesn't stop there! Not only do you get
+replacement functions, but we've added a host of new replacement tokens for the replace
+string. These are pretty much borrowed from Perl 5, so some of you may find them familiar.
+These tokens can be used in the replacement string of a call to <b>String.prototype.replace</b>,
+but they can't be used inside a replacement function. C'est la vie. </big></font></h6>
+
+<table border="0" cellPadding="5" cellSpacing="2" class="clsRef">
+<TBODY>
+  <tr bgColor="#a6caf0">
+    <th vAlign="top" width="76"><font face="Arial">Token </font></th>
+    <th vAlign="top"><font face="Arial">Meaning </font></th>
+  </tr>
+  <tr>
+    <td bgColor="#eeeeee" vAlign="top" width="76"><font face="Arial">$$ </font></td>
+    <td bgColor="#eeeeee" vAlign="top"><font face="Arial">The literal character '$' </font></td>
+  </tr>
+  <tr>
+    <td bgColor="#eeeeee" vAlign="top" width="76"><font face="Arial">$&amp; </font></td>
+    <td bgColor="#eeeeee" vAlign="top"><font face="Arial">The entire matched string </font></td>
+  </tr>
+  <tr>
+    <td bgColor="#eeeeee" vAlign="top" width="76"><font face="Arial">$` </font></td>
+    <td bgColor="#eeeeee" vAlign="top"><font face="Arial">The substring preceding the matched
+    substring </font></td>
+  </tr>
+  <tr>
+    <td bgColor="#eeeeee" vAlign="top" width="76"><font face="Arial">$' </font></td>
+    <td bgColor="#eeeeee" vAlign="top"><font face="Arial">The substring following the matched
+    substring </font></td>
+  </tr>
+  <tr>
+    <td bgColor="#eeeeee" vAlign="top" width="76"><font face="Arial">$nn </font></td>
+    <td bgColor="#eeeeee" vAlign="top"><font face="Arial">The <i>nn</i><sup>th</sup> captured
+    submatch </font></td>
+  </tr>
+  <tr>
+    <td bgColor="#eeeeee" vAlign="top" width="76"><font face="Arial">$+ </font></td>
+    <td bgColor="#eeeeee" vAlign="top"><font face="Arial">The last matched substring </font></td>
+  </tr>
+  <tr>
+    <td bgColor="#eeeeee" vAlign="top" width="76"><font face="Arial">$_ </font></td>
+    <td bgColor="#eeeeee" vAlign="top"><font face="Arial">The entire input string </font></td>
+  </tr>
+</TBODY>
+</table>
+
+<h6><font face="Arial"><big><big>Formatting Functions</big></big></font></h6>
+
+<h6><font face="Arial"><big>One of the most common questions on the JScript newsgroups is
+&quot;How do I format a number with two decimal places?&quot; Using VBScript's <b>FormatNumber</b>
+function, this has been easy -- but those using JScript have been forced to use esoteric
+calculations involving <b>Math.ceil</b> and <b>Math.pow</b> to fulfill this simple desire.
+Again, JScript 5.5 fixes this problem with three new methods of the Number prototype
+object: <b>toFixed(fractionDigits)</b>, <b>toExponential(fractionDigits)</b>, and <b>toPrecision(precision)</b>.
+The first two methods format a number with <b>fractionDigits</b> digits after the decimal
+place; <b>toFixed</b> uses normal decimal notation, and <b>toExponential</b> uses
+exponential notation. The last method, <b>toPrecision</b>, formats the number with <b>precision</b>
+digits of precision, using exponential notation if necessary.</big></font></h6>
+
+<h6><font face="Arial"><big>The following simple script illustrates these methods, and the
+improved <b>toLocaleString</b> (see below):</big></font></h6>
+
+<pre class="clsCode"><font face="Arial">var x = 1234.56789;
+
+window.alert(x.toString());
+window.alert(x.toLocaleString());
+window.alert(x.toFixed(3));
+window.alert(x.toExponential(3));
+window.alert(x.toPrecision(3));</font></pre>
+
+<h6><font face="Arial"><big>On my computer, this produces the following results (yours may
+differ for the second line if you have a different number format setup in Control Panel's <b>Regional
+Settings</b>).</big></font></h6>
+
+<pre class="clsCode"><font face="Arial">1234.56789
+1,234.57
+1234.568
+1.235e+3
+1.23e+3</font></pre>
+
+<h6><font face="Arial"><big><big>toLocaleString</big></big></font></h6>
+
+<h6><font face="Arial"><big>Another common request we receive is for the ability to format
+dates correctly. The string produced by <b>Date.prototype.toString</b> is -- for
+historical reasons -- somewhat less than ideal for displaying dates to the user. As such,
+many script authors revert to writing their own routines to do this. </big></font></h6>
+
+<h6><font face="Arial"><big>With the release of JScript 5.5, we have updated <b>toLocaleString</b>
+for <b>Date</b>, <b>Number</b>, and <b>Array</b> objects so that they all retrieve
+formatting information from the user's Control Panel settings. For <b>Date</b> objects,
+the return value is formatted with the user's Long Date format; for <b>Number</b> objects
+and values, the decimal and thousands separators are used; and for <b>Array</b> objects,
+the list separator is used to concatenate the individual elements.</big></font></h6>
+
+<h6><font face="Arial"><big>While this means that users can finally get to see dates,
+numbers, and lists in their preferred format, it also means that you cannot rely on the
+return values of these functions for calculations. You should use <b>toLocaleString</b>
+only to present information to your users -- never as part of your internal computations.</big></font></h6>
+
+<h6><font face="Arial"><big><big>Miscellaneous</big></big></font></h6>
+
+<h6><font face="Arial"><big>We've added a lot of other functionality to JScript for this
+release -- but unfortunately, I cannot list all the new features here. A quick (but
+incomplete) rundown of some of the remaining features follows:</big></font></h6>
+
+<ul>
+  <li><font face="Arial">The new <b>in</b> operator checks if an object (or its prototype
+    chain) contains the named property: </font><pre class="clsCode"><font face="Arial">if (prop in obj) // obj (or its prototype) has a property named prop</font></pre>
+  </li>
+  <li><font face="Arial">New methods of the Object prototype object: </font><pre
+    class="clsCode"><font face="Arial">obj.hasOwnProperty(prop) // obj has a property named prop</font></pre>
+    <pre class="clsCode"><font face="Arial">obj.<span class="Inlinecode">propertyIsEnumerable(prop) // prop is enumerable in for..in loops</font></pre>
+    <pre class="clsCode"><font face="Arial">obj.</span>isPrototypeOf(proto) // obj has proto in its prototype chain</font></pre>
+  </li>
+  <li><font face="Arial">URI encoding and decoding functions (now you can stop using <b>escape</b>
+    and <b>unescape</b>) </font><pre class="clsCode"><font face="Arial">encodeURI(text) // encodes a string as a full URI</font></pre>
+    <pre class="clsCode"><font face="Arial">encodeURIComponent(text) // encodes a string as a URI component</font></pre>
+    <pre class="clsCode"><font face="Arial">decodeURI(uri) // decodes a full URI</font></pre>
+    <pre class="clsCode"><font face="Arial">decodeURIComponent(uricomponent) // decodes a URI component</font></pre>
+  </li>
+  <li><h6><font face="Arial"><big>New or improved methods for <b>Array</b> objects (<b>pop</b>,
+    <b>push</b>, <b>shift</b>, <b>unshift</b>, and more) </big></font></h6>
+  </li>
+  <li><h6><font face="Arial"><big><b>finally</b> blocks for exception handling (actually,
+    these existed in JScript 5.0, but they were undocumented) </big></font></h6>
+  </li>
+</ul>
+
+<h6><font face="Arial"><big><big><big>What About VBScript?</big></big></big></font></h6>
+
+<h6><font face="Arial"><big>We haven't forgotten VBScript users with this release. Up
+until now, VBScript's support for regular expressions has not been as complete as
+JScript's, but all that changes with VBScript 5.5. VBScript (and the <b>VBScript.RegExp</b>
+COM component) now has all the features of JScript regular expressions, including
+submatches and replacement functions.</big></font></h6>
+
+<h6><font face="Arial"><big><big>Submatches in VBScript</big></big></font></h6>
+
+<h6><font face="Arial"><big>VBScript 5.5 now supports capturing parentheses (submatches),
+just as JScript does. This new functionality is implemented by having a <b>SubExp</b>
+collection for each <b>Match</b> object returned by the <b>Execute</b> method. Here's a
+simple example that shows how to get the components of an e-mail address. (Note that this
+isn't a complete regular expression for matching e-mail addresses.)</big></font></h6>
+
+<pre class="clsCode"><font face="Arial">Dim s, re, matches
+s = &quot;Please send feedback to msscript@microsoft.com&quot;
+Set re = New RegExp
+
+// Pattern to match an e-mail address, capturing the three parts
+re.Pattern = &quot;(\w+)@(\w+)\.(\w+)&quot;
+Set matches = re.Execute(s)
+
+// Show the whole match
+window.alert(&quot;Complete match is &quot; &amp; matches.Item(0))
+
+// Show how many submatches were in the first match
+window.alert(&quot;Number of captures is &quot; &amp; matches.Item(0).Count)
+
+// Show each submatch
+window.alert(&quot;Name is &quot; &amp; matches.Item(0).SubExp(1))
+window.alert(&quot;Organisation is &quot; &amp; matches.Item(0).SubExp(2))
+window.alert(&quot;Root domain is &quot; &amp; matches.Item(0).SubExp(3))</font></pre>
+
+<h6><font face="Arial"><big>This results in the following messages being displayed:</big></font></h6>
+
+<pre class="clsCode"><font face="Arial">Complete match is msscript@microsoft.com
+Number of captures is 3
+Name is msscript
+Organization is microsoft
+Root domain is com</font></pre>
+
+<h6><font face="Arial"><big>Unfortunately, at the time of the beta release, the <b>MatchCollection</b>
+collection was zero-based, but the <b>SubExp</b> collection was one-based; this will
+change in the final release so that both collections are zero-based. Additionally, the <b>Item</b>
+property of the <b>MatchCollection</b> object is not the default member, so you cannot use
+syntax such as <b>matches(0)</b> to get the first item; this, too, will be fixed for the
+final release.</big></font></h6>
+
+<h6><font face="Arial"><big>Replacement Functions in VBScript</big></font></h6>
+
+<h6><font face="Arial">Replacement functions in VBScript work much the same as in JScript.
+Simply pass the return of the <b>GetRef</b> function instead of the replacement string:</font></h6>
+
+<pre class="clsCode"><font face="Arial">// Simple replacement function
+Function Test(match, pos, source)
+&nbsp;&nbsp; Test = &quot;matched '&quot; &amp; match &amp; &quot;' at position &quot; &amp; pos &amp; &quot;...&quot;
+End Function
+
+Dim s, re
+
+s = &quot;Hello there&quot;
+Set re = New RegExp
+re.Pattern = &quot;\w+&quot;
+re.Global = True
+
+// Call the Replace method and display the result
+s = re.Replace(s, GetRef(&quot;Test&quot;))
+window.alert(s)</font></pre>
+
+<h6><font face="Arial"><big>This code displays the string &quot;matched 'Hello' at
+position 0... matched 'there' at position 6... &quot;. </big></font></h6>
+
+<h6><font face="Arial"><big>Using the replacement function in Visual Basic (not VBScript)
+is a little more involved, because Visual Basic doesn't support the <b>GetRef</b>
+function. Instead, you need to create a Class module with a public default function, and
+pass a new instance of that object to the <b>Replace</b> method. You can make a function
+the default member of a class in Visual Basic 6.0 by choosing <b>Procedure Attributes </b>from
+the <b>Tools </b>menu, clicking the <b>Advanced </b>button, and changing the <b>Procudure
+ID </b>control to &quot;(Default)&quot;. The name of the function does not matter, because
+the <b>RegExp</b> object will simply call whatever method happens to be registered as the
+default. See the Visual Basic documentation for more information on how to create classes
+and set their attributes.</big></font></h6>
+
+<hr>
+
+<p><font face="Arial">&lt;!-- </font></p>
+</body>
+</html>
+

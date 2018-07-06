@@ -1,0 +1,413 @@
+ID=E0355
+URL=http://www.bcbdev.com/faqs/faq41.htm
+SIZE=19179
+DATE=12/07/02
+TIME=19:20:09
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+
+<H3>
+Q: Converting <TT>AnsiStrings</TT> to numbers and converting numbers to <TT>AnsiStrings</TT>
+</H3>
+<BR>
+<H3>Summary of tasks</H3>
+<P>
+This FAQ covers the following tasks:
+<UL>
+<LI> <A HREF="#strtoint">Converting AnsiStrings to integers</A>
+<LI> <A HREF="#strtofloat">Converting AnsiStrings to floats or doubles</A>
+<LI> <A HREF="#inttostr">Converting integers to AnsiStrings</A>
+<LI> <A HREF="#floattostr">Converting floats or doubles to AnsiStrings</A>
+</UL>
+<H3><A NAME="strtoint">
+Task 1: Converting <TT>AnsiStrings</TT> to integers:
+</A></H3>
+<P>
+The VCL provides four functions to convert <TT>AnsiStrings</TT> to integers: the global
+<TT>StrToInt</TT> and <TT>StrToIntDef</TT> functions, and the <TT>ToInt</TT> and
+<TT>ToIntDef</TT> member functions of <TT>AnsiString</TT>. The <TT>StrToIntDef</TT>
+and <TT>ToIntDef</TT> functions allow you to specify a default integer to return if the
+string doesn't contain an valid integer. In addition to the VCL functions, you can still
+use streams or the C run time library to convert an <TT>AnsiString</TT> to an <TT>int</TT>. Each
+strategy is outlined below.
+</P>
+<B><TT>StrToInt</TT></B>
+<P>
+<TT>StrToInt</TT> is a global VCL function. The code for <TT>StrToInt</TT> resides in
+<TT>SOURCE\SYSUTILS.PAS</TT>. The prototype for <TT>StrToInt</TT> is located in
+<TT>INCLUDE\SYSUTILS.HPP</TT>. This header file is automatically included into your project
+when <TT>VCL.H</TT> is included. <TT>StrToInt</TT> is easy to use: you simply pass it an
+<TT>AnsiString</TT> and it returns an integer.
+</P>
+
+<pre>
+<font color="navy">// this code converts a string</font>
+<font color="navy">// into an integer number</font>
+AnsiString str<b>(</b><font color="blue">"29"</font><b>)</b><b>;</b>
+<b>int</b> nValue<b>;</b>
+nValue <b>=</b> StrToInt<b>(</b>str<b>)</b><b>;</b>
+</pre>
+
+<TT>StrToInt</TT> generates an exception if the string does not contain a valid integer.
+The exception is of the type <TT>EConvertError</TT>. This code demonstrates how you can
+catch the exception.
+
+<pre>
+AnsiString str<b>=</b><font color="blue">"Get lost Buffy!"</font><b>;</b>
+<b>int</b> nValue<b>;</b>
+<b>try</b>
+<b>{</b>
+    nValue <b>=</b> StrToInt<b>(</b>str<b>)</b><b>;</b>
+<b>}</b>
+<b>catch</b> <b>(</b>EConvertError <b>&</b>e<b>)</b>
+<b>{</b>
+    Application<b>-></b>MessageBox<b>(</b><font color="blue">"It wasn't a number."</font> <b>,</b> <font color="blue">"error"</font><b>,</b> MB_OK<b>)</b><b>;</b>
+    <b>return</b><b>;</b>
+<b>}</b>
+</pre>
+<B><TT>AnsiString::ToInt</TT></B>
+<P>
+The <TT>Ansistring</TT> class contains a <TT>ToInt</TT> member function that converts the
+string into an integer. The declaration for <TT>ToInt</TT> looks like this
+(<TT>DSTRING.H</TT>):
+</P>
+<pre>
+<b>int</b> <b>__fastcall</b> ToInt<b>(</b><b>)</b> <b>const</b><b>;</b>
+</pre>
+<P>
+Notice that <TT>ToInt</TT> is declared as a const member function, which allows you to
+call <TT>ToInt</TT> on constant strings. The code for <TT>ToInt</TT> is located in
+<TT>SOURCE\VCL\DSTRING.CPP</TT>. If you have the VCL source, open up <TT>DSTRING.CPP</TT>.
+You should see that <TT>ToInt</TT> simply calls the global <TT>StrToInt</TT> function. In
+fact, all of the <TT>AnsiString</TT> conversion methods call their global counterparts.
+Since <TT>ToInt</TT> simply calls <TT>StrToInt</TT>, you can surround <TT>ToInt</TT> with a
+try-catch block to catch any conversion exceptions. Here is an example of how to use the
+<TT>ToInt</TT> function.
+</P>
+
+<pre>
+AnsiString str<b>(</b><font color="blue">"29"</font><b>)</b><b>;</b>
+<b>int</b> nValue<b>;</b>
+nValue <b>=</b> str<b>.</b>ToInt<b>(</b><b>)</b><b>;</b>
+</pre>
+
+<B><TT>StrToIntDef</TT> and <TT>AnsiString::ToIntDef</TT></B>
+<P>
+<TT>StrToIntDef</TT> and <TT>AnsiString::ToIntDef</TT> allow you to specify a default value
+that will be returned if the <TT>AnsiString</TT> doesn't contain a valid integer. If the
+string is not an integer, these functions return the default value instead of generating an
+exception. If you have the VCL source, <TT>DSTRING.CPP</TT> reveals that the <TT>ToIntDef</TT>
+method of <TT>AnsiString</TT> simply calls the global <TT>StrToIntDef</TT> function.
+Here are code examples:
+</P>
+<pre>
+<font color="navy">// StrToIntDef</font>
+<font color="navy">// this code converts a string from an edit box</font>
+<font color="navy">// into an integer number. Default value is 29.</font>
+<b>int</b> nValue<b>;</b>
+nValue <b>=</b> StrToIntDef <b>(</b>Edit1<b>-></b>Text<b>,</b> <font color="blue">29</font><b>)</b><b>;</b>
+
+<font color="navy">// AnsiString::ToIntDef</font>
+<font color="navy">// this code converts a string from an edit box</font>
+<font color="navy">// into an integer number. Default value is 29.</font>
+<b>int</b> nValue<b>;</b>
+nValue <b>=</b> Edit1<b>-></b>Text<b>.</b>ToIntDef<b>(</b><font color="blue">29</font><b>)</b><b>;</b>
+</pre>
+
+<B>Using the C RTL or iostreams to convert an <TT>AnsiString</TT> to an integer</B>
+<P>
+The VCL <TT>StrToInt</TT> function requires that the entire string be a valid number. If
+you call <TT>StrToInt</TT> for an <TT>AnsiString</TT> that contains "1100 Grand Avenue",
+you might expect that the return value will be 1100. Not so. Instead, <TT>StrToInt</TT>
+sees that the string contains non-numeric characters and generates an exception. For strings
+like these, you can use either the C RTL <TT>sscanf</TT> function, or use an iostream. This
+technique requires that you call the <TT>c_str</TT> member function to retrieve a <TT>char *</TT>
+that you can pass to the RTL.
+</P>
+
+<pre>
+<font color="navy">// using sscanf to read numbers from an AnsiString</font>
+<font color="navy">// you need to add the standard sscanf error handling code</font>
+<font color="navy">// don't forget to #include &lt;stdio.h></font>
+<b>int</b> i<b>,</b>j<b>;</b>
+AnsiString strEdit <b>=</b> <font color="blue">"29 100"</font><b>;</b>
+sscanf<b>(</b>strEdit<b>.</b>c_str<b>(</b><b>)</b><b>,</b> <font color="blue">"%d %d"</font><b>,</b><b>&</b>i<b>,</b> <b>&</b>j<b>)</b><b>;</b>
+ProgressBar1<b>-></b>Position <b>=</b> i<b>;</b>
+ProgressBar2<b>-></b>Position <b>=</b> j<b>;</b>
+
+<font color="navy">// using streams to read numbers from an AnsiString</font>
+<font color="green">#include &lt;sstream></font>
+<b>using</b> <b>namespace</b> std<b>;</b>
+<b>...</b>
+<b>int</b> i<b>,</b>j<b>;</b>
+AnsiString strEdit <b>=</b> <font color="blue">"29 100"</font><b>;</b>
+istrstream istr<b>(</b>strEdit<b>.</b>c_str<b>(</b><b>)</b><b>,</b> strEdit<b>.</b>Length<b>(</b><b>)</b><b>)</b><b>;</b>
+istr <b>>></b> i <b>>></b> j<b>;</b>
+ProgressBar1<b>-></b>Position <b>=</b> i<b>;</b>
+ProgressBar2<b>-></b>Position <b>=</b> j<b>;</b>
+</pre>
+
+<H3><A NAME="strtofloat">
+Task 2: Converting <TT>AnsiStrings</TT> to floating point numbers:
+</A></H3>
+<P>
+The VCL provides two functions that convert <TT>AnsiStrings</TT> to floating point
+numbers: the global <TT>StrToFloat</TT> function and the <TT>ToDouble</TT> member
+function of <TT>AnsiString</TT> (<TT>ToDouble</TT> simply calls <TT>StrToFloat</TT>).
+You can also use streams or the C RTL (see previous code about converting strings to ints).
+The following example demonstrates how to use <TT>StrToFloat</TT> and
+<TT>AnsiString::ToDouble</TT>.
+</P>
+<pre>
+<font color="navy">// using StrToFloat to convert an AnsiString to a float</font>
+AnsiString str<b>(</b><font color="blue">"3.14159"</font><b>)</b><b>;</b>
+<b>float</b> fValue<b>;</b>
+fValue <b>=</b> StrToFloat<b>(</b>str<b>)</b><b>;</b>
+
+<font color="navy">// using AnsiString::ToDouble to convert an AnsiString to a float</font>
+AnsiString str<b>(</b><font color="blue">"3.14159"</font><b>)</b><b>;</b>
+<b>float</b> fValue<b>;</b>
+fValue <b>=</b> str<b>.</b>ToDouble<b>(</b><b>)</b><b>;</b>
+</pre>
+<P>
+<TT>StrToFloat</TT> returns an 80 bit <TT>long double</TT>, whereas <TT>ToDouble</TT>
+returns a 64 bit double. Both of the preceeding code examples could have used the
+<TT>double</TT> data type instead of <TT>float</TT>. <TT>StrToFloat</TT>
+generates an exception if the <TT>AnsiString</TT> contains invalid text.
+<TT>StrToFloat</TT> works by calling the <TT>TextToFloat</TT> pascal function
+in <TT>SYSUTILS.PAS</TT>.
+</P>
+<P>
+The section on how to convert an <TT>AnsiString</TT> to an integer contained
+a section that described how to use <TT>sscanf</TT> or <TT>istringstream</TT>
+to extract integer values from a string. These examples could also be extended
+to floating point types.
+</P>
+<H3><A NAME="inttostr">
+Task 3: Converting integers to <TT>AnsiStrings</TT>:
+</A></H3>
+<P>
+The VCL provides two functions to convert an integer to an <TT>AnsiString</TT>: the global
+<TT>IntToStr</TT> function and a version of the <TT>AnsiString</TT> constructor. Once again,
+nothing prevents you from using iostreams or the C run time library to do the conversion.
+The examples below demonstrate each method.
+</P>
+<B><TT>IntToStr</TT></B>
+<P>
+The prototype for <TT>IntToStr</TT> is located in <TT>SYSUTILS.HPP</TT>, which is
+automatically included by <TT>VCL.H</TT>. The code for <TT>IntToStr</TT> is located in
+<TT>SYSUTILS.PAS</TT>. The function would look like this if it were written in C++:
+</P>
+<pre>
+AnsiString <b>__fastcall</b> IntToStr<b>(</b><b>int</b> Value<b>)</b>
+<b>{</b>
+    AnsiString RetValue<b>;</b>
+    FmtStr<b>(</b>RetValue<b>,</b> <font color="blue">"%d"</font><b>,</b> Value<b>)</b><b>;</b>
+    <b>return</b> RetValue<b>;</b>
+<b>}</b>
+</pre>
+<TT>FmtStr</TT> is a pascal function that works a lot like the C <TT>sprintf</TT> function.
+The code example below shows how to use <TT>IntToStr</TT>.
+<pre>
+<b>int</b> nValue     <b>=</b> TrackBar1<b>-></b>Position<b>;</b>
+AnsiString str <b>=</b> IntToStr<b>(</b>nValue<b>)</b><b>;</b>
+Edit1<b>-></b>Text    <b>=</b> str<b>;</b>
+</pre>
+<B><TT>AnsiString::AnsiString(int Value)</TT></B>
+<P>
+<TT>AnsiString</TT> contains a constructor that can initialize the string with an integer
+value. Here's how you do it:
+</P>
+<pre>
+<b>int</b> nValue <b>=</b> TrackBar1<b>-></b>Position<b>;</b>
+AnsiString str<b>(</b>nValue<b>)</b><b>;</b>
+Edit1<b>-></b>Text <b>=</b> str<b>;</b>
+</pre>
+<B>Using the <TT>sprintf</TT> member function of <TT>AnsiString</TT></B>
+<P>
+In C++Builder 4, Borland added 2 member functions to AnsiString called <TT>sprintf</TT>
+and <TT>printf</TT>. These functions work much like the standalone <TT>sprintf</TT>
+function in the RTL. The difference is that <TT>AnsiString::sprintf</TT> formats
+the <TT>AnsiString</TT> object, instead of formatting a <TT>char *</TT>.
+</P>
+The code example below shows how you can use the <TT>sprintf</TT> member function
+of <TT>AnsiString</TT>.
+</P>
+
+<pre>
+<font color="navy">// using sprintf to read numbers into an AnsiString</font>
+<b>int</b> i <b>=</b> <font color="blue">29</font><b>;</b>
+<b>int</b> j <b>=</b> <font color="blue">5006</font><b>;</b>
+AnsiString str<b>;</b>
+str<b>.</b>sprintf<b>(</b><font color="blue">"The numbers are %d and %d."</font><b>,</b> i<b>,</b>j<b>)</b><b>;</b>
+Label1<b>-></b>Caption <b>=</b> str<b>;</b>
+</pre>
+
+<P>
+This is a very useful function. Notice that you don't have to pass a destination
+buffer to <TT>AnsiString::sprintf</TT>. This is because the AnsiString itself
+is the destination.
+</P>
+<P>
+<TT>AnsiString</TT> contains several other member functions that behave like
+the <TT>sprintf</TT> function. They are <TT>printf</TT>, <TT>vprintf</TT>,
+<TT>cat_sprintf</TT>, <TT>cat_printf</TT>, and <TT>cat_vprintf</TT> (the last
+four may only be available in BCB5 and beyond, check <TT>dstring.h</TT> to be sure).
+The <TT>printf</TT> member funtion works just like <TT>sprintf</TT>, except that
+it returns the length of the string after the formatting has been done. <TT>sprintf</TT>
+does not return anything. Don't confuse <TT>AnsiString::printf</TT> with the regular
+<TT>printf</TT> function. The RTL <TT>printf</TT> routine prints to <TT>stdout</TT>.
+<TT>AnsiString::printf</TT> writes to the <TT>AnsiString</TT> object.
+</P>
+<P>
+The <TT>vprintf</TT> member of <TT>AnsiString</TT> behaves sort of like the
+RTL <TT>vprintf</TT> function. Unlike <TT>sprintf</TT> and <TT>printf</TT>, this
+function takes a <TT>va_list</TT> argument, instead of a variable number of
+arguments. The <TT>printf</TT> and <TT>sprintf</TT> routines both rely on the
+<TT>vprintf</TT> function for their underlying implementation.
+</P>
+<P>
+All of the cat routines concatenate the formatted string onto whatever was already
+in the <TT>AnsiString</TT>. Here is an example that demonstrates <TT>cat_sprintf</TT>
+</P>
+
+<pre>
+<font color="navy">// using cat_sprintf to read numbers into an AnsiString</font>
+<b>int</b> i <b>=</b> <font color="blue">29</font><b>;</b>
+<b>int</b> j <b>=</b> <font color="blue">5006</font><b>;</b>
+AnsiString str <b>(</b><font color="blue">"I was already here: "</font><b>)</b><b>;</b>
+str<b>.</b>sprintf<b>(</b><font color="blue">"The numbers are %d and %d."</font><b>,</b> i<b>,</b>j<b>)</b><b>;</b>
+Label1<b>-></b>Caption <b>=</b> str<b>;</b>
+</pre>
+
+<P>
+After calling <TT>cat_sprintf</TT>, the string contains the text
+"I was already here: The numbers are 29 and 5006."
+</P>
+
+<P>
+<B>Using <TT>ostringstream</TT> to read numbers into an <TT>AnsiString</TT></B>
+</P>
+<P>
+You can also use an <TT>ostringstream</TT> to format an <TT>AnsiString</TT> variable. In fact,
+this method may be better than using the <TT>sprintf</TT> because it does not
+rely on format codes and variable argument functions. Here is a code
+example.
+</P>
+<pre>
+<font color="navy">// using streams to read numbers from an AnsiString</font>
+<font color="green">#include &lt;sstream></font>
+<b>using</b> <b>namespace</b> std<b>;</b>
+<b>...</b>
+<b>int</b> i <b>=</b> <font color="blue">29</font><b>;</b>
+<b>int</b> j <b>=</b> <font color="blue">5006</font><b>;</b>
+AnsiString str<b>;</b>
+ostringstream ostr<b>;</b>
+ostr <b><<</b> <font color="blue">"The numbers are "</font><b><<</b> i <b><<</b> <font color="blue">" and "</font> <b><<</b> j <b><<</b> <font color="blue">"."</font> <b>;</b>
+str <b>=</b> ostr<b>.</b>str<b>(</b><b>)</b><b>.</b>c_str<b>(</b><b>)</b><b>;</b>
+Label1<b>-></b>Caption <b>=</b> str<b>;</b>
+</pre>
+
+<H3><A NAME="floattostr">
+Task 4: Converting floats to <TT>AnsiStrings</TT>:
+</A></H3>
+<P>
+The VCL provides several functions that convert floating point numbers to
+<TT>AnsiString</TT>s. You can use the <TT>FloatToStr</TT> or <TT>FloatToStrF</TT>
+global functions, or you can use an alternative <TT>AnsiString</TT> constructor
+that takes a <TT>double</TT> value as an argument. Once again, you can always
+resort to iostreams or the C RTL (see the examples in how to convert an int to a string).
+</P>
+<B><TT>FloatToStr</TT> and <TT>FloatToStrF</TT></B>
+<P>
+Both <TT>FloatToStr</TT> and <TT>FloatToStrF</TT> work by calling a pascal function
+called <TT>FloatToText</TT>. <TT>FloatToText</TT> takes arguments that allow you
+to customize the format of the resulting string. It allows you to specify the
+format, the precision, and a number that represents how many digits to display.
+The format is chosen by specifying a value from the <TT>TFloatFormat</TT> enum.
+<TT>FloatToStr</TT> hard codes the format to <TT>ffGeneral</TT>, the precision to 15,
+and the digit value to 0. <TT>FloatToStrF</TT> allows you to specify these values,
+which makes it the more useful function of the two. Here is a code example of both.
+</P>
+<pre>
+<font color="navy">// an example of FloatToStr</font>
+<b>float</b> fValue <b>=</b> <font color="blue">100.2</font><b>;</b>
+AnsiString str <b>=</b> FloatToStr<b>(</b>fValue<b>)</b><b>;</b>
+
+<font color="navy">// an example of FloatToStrF</font>
+<b>float</b> fValue <b>=</b> <font color="blue">100.2</font><b>;</b>
+AnsiString str <b>=</b> FloatToStrF<b>(</b>fValue<b>,</b>ffGeneral<b>,</b><font color="blue">7</font><b>,</b><font color="blue">5</font><b>)</b><b>;</b>
+
+<font color="navy">// an example of FloatToStrF using scientific notation</font>
+<b>float</b> fValue <b>=</b> <font color="blue">10</font>e<b>-</b><font color="blue">6</font><b>;</b>
+AnsiString str <b>=</b> FloatToStrF<b>(</b>fValue<b>,</b>ffExponent<b>,</b> <font color="blue">7</font><b>,</b><font color="blue">5</font><b>)</b><b>;</b>
+</pre>
+<P>
+The third argument to <TT>FloatToStrF</TT> determines the precision of the
+conversion. This value should be 7 or less for single precision float types,
+and should be 15 or less for double's. The last parameter is the digits argument.
+This meaning of the digits argument varies for different conversion modes
+(<TT>ffExponent</TT> verses <TT>ffGeneral</TT>). Consult the help file for
+specific details.
+</P>
+<B><TT>AnsiString::AnsiString(double Value)</TT></B>
+<P>
+The <TT>AnsiString</TT> class provides a constructor that allows you to initialize the
+string with a double precision floating point value. The constructor works by
+calling <TT>FloatToStrF</TT>.
+</P>
+
+<pre>
+<font color="navy">// an example of AnsiString::AnsiString(double src)</font>
+<b>float</b> fValue <b>=</b> <font color="blue">100.2</font><b>;</b>
+AnsiString str<b>(</b>vFalue<b>)</b><b>;</b>
+Label1<b>-></b>Caption <b>=</b> str<b>;</b>
+</pre>
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

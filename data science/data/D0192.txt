@@ -1,0 +1,598 @@
+ID=D0192
+URL=http://www.javaworld.com/javaworld/jw-12-1999/jw-12-beans.html
+SIZE=61513
+DATE=16/07/02
+TIME=14:39:34
+DATASET=Java
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title> Process XML with JavaBeans, Part 2</title>
+<!-- ssilog 7814 -->
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<meta name="keywords" content=" XML, JavaBean, JavaBeans, beans, components, editors, rapid application development, bean sets, XML Beans">
+<meta name="description" content="
+Last month's JavaBeans column introduced IBM's XML Beans, a suite of JavaBeans that process XML files. This month, Mark looks at the XMLEditor and XMLConvenience bean sets that make creating custom XML editors a snap. (3,400 words)
+">
+<meta name="date" content="1999-12-29">
+<META NAME="DC.Date" CONTENT="1999-12-29">
+<basefont face="verdana, arial, helvetica" size="3" />
+<style type="text/css">
+            code {font-size: 90%; font-family: monospace;}
+            pre {font-size: 90%; font-family: monospace;}
+            td {font-size: 90%;}
+</style>
+<script language="javascript">
+<!--// IDG.net Scripts
+            function mail2Friend () {
+                window.parent.location = "/MailToFriend?url=" + escape(document.location);
+            }
+
+            function openBrWindow() {
+                win=window.open("http://www.javaworld.com/channel_content/jw-story-feedback.shtml",'Feedback','width=600,height=330,toolbar=no,location=no,directories=no,menubar=no,scrollbars=yes,resizable=yes');
+            }
+            //-->
+        </script>
+    </head>
+<body bgcolor="#ffffff" text="#000000" link="#990033" vlink="#990033" alink="#990033" topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" marginheight="0" marginwidth="0">
+<table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td colspan="2" width="186" bgcolor="#006699"><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0 ></a></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- START TOP 468x60 BANNER -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=204588?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=204588?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=204588?" border="0" height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer1" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- END TOP 468x60 BANNER --></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="26" valign="top" align="left" bgcolor="#ffffff"><img height=8 src="http://www.javaworld.com/images/c_whtbottom.gif" width=8 border=0 ></td>
+                <td width="100%"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.global/idgpixel7.18.00;sz=1x1;ord=204588?" border=0 height="1" width="1"><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.usa.jw/usajw.081501;sz=1x1;ord=204588?" border=0 height="1" width="1"></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160" align="middle" valign="center" nowrap><nobr><font face="Verdana, Arial, Sans-serif" color="#ffffff" size="2">December 1999</font></nobr><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="8" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltlft.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="100%" align="middle" valign="center">    <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">HOME</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/features/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FEATURED TUTORIALS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/columns/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">COLUMNS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/news-reviews/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">NEWS & REVIEWS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://forums.idg.net/webx?13@@.ee6b802"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FORUM</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/resources/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">JW RESOURCES</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/info/jw-about-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">ABOUT JW</font></a></td>
+        </tr>
+    </table></td>
+                <td bgcolor="#006699" width="8" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltrt.gif" width=8 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr valign="top">
+                <td bgcolor="#006699" width="160" align="middle" valign="top">
+                    <table width="160" border="0" cellspacing="0" cellpadding="0" bgcolor="#006699" summary="">
+                        <tr>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                            <td align="center">
+                                <form action="http://www.javaworld.com/isearch" method="GET" name="search">
+                                    <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /><br />
+                                    <input type="text" name="qt" size="12" maxlength="2047" /><br />
+                                    <input type="image" value="search" src="http://www.javaworld.com/images/button_blue.gif" border="0" width="97" height="18" alt="GO" /><br />
+                                    <input type="hidden" name="site" value="javaworld"><br />
+                                   <!-- <a href="http://www.google.com/"><img src="http://www.javaworld.com/images/google-power-fp.gif" width="108" height="45" border="0" alt="Google.com"></a>-->
+                                    <input type="hidden" name="ms" value="1">
+                                    <input type="hidden" name="tid" value="1">
+                                    <input type="hidden" name="st" value="1">
+                                    <input type="hidden" name="rf" value="0">
+                                   
+                                </form>
+                            </td>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                        </tr>
+                        <tr>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td><img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <a href="http://www.javaworld.com/archives/index-year.html"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>ARCHIVE</strong></font></a><br>
+                                <img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <strong><a href="http://www.javaworld.com/channel_content/jw-topical-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff">TOPICAL INDEX</font></a></strong></font><br><table cellspacing="0" cellpadding="0" border="0" summary="">
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/channel_content/jw-core-index.shtml"><font color="#ffffff">Core Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-enterprise-index.shtml"><font color="#ffffff">Enterprise Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-micro-index.shtml"><font color="#ffffff">Micro Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-applied-index.shtml"><font color="#ffffff">Applied Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-community-index.shtml"><font color="#ffffff">Java Community</font></a></strong></font><br /></td>
+                        </tr>
+                    </table><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-qna-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA Q&A INDEX</strong></font></a><br /><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-tips-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA TIPS INDEX</strong></font></a><br /> <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br /><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#CCCCCC"><strong>JavaWorld Services</strong></font><br /><img alt="" height="4" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /><table cellspacing="0" cellpadding="0" border="0" summary=""><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /><img alt="" height="7" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /></td><td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/subscribe"><font color="#ffffff">Free JavaWorld newsletters</font></a></strong></font></td></tr><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://javaworld.pricegrabber.com"><font color="#ffffff">ProductFinder </font></a></strong></font></td></tr><tr> <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/white-paper/index.shtml"><font color="#ffffff">White Paper Library</font></a></strong></font></td></tr>
+</table>
+<img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br />
+</td>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                        </tr>
+                        <tr valign="bottom">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_gryblbottom.gif" width=8 ></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr>
+                       <td width="8" bgcolor="#cccccc"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                           <td align="middle" bgcolor="#cccccc"><!-- SKYSCRAPER AD START HERE -->
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=204588?" width="120" height="600" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=skyscraper;sz=120x600;tile=3;ord=204588?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;skyscraper=med;sz=120x600;tile=3;ord=204588?" border=0 height="600" width="120"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer3" visibility="hidden" width=120 height=600></ILAYER>
+<!-- SKYSCRAPER AD ENDS HERE -->
+</td>
+                       <td width="8" bgcolor="#cccccc"><img height=8 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr valign="top">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_grybltop.gif" width=8 ></td>
+                        </tr>
+                    </table>
+                    <img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                    <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                <td width="100%">
+                    <!-- ## MAIN CONTENT STARTS HERE ### -->
+                    <font face="verdana, arial, helvetica" size="3">
+                        <strong> JavaBeans</strong>
+                        <p>
+                            <h1 align="CENTER"> Process XML with JavaBeans, Part 2</h1>
+                            <h3 align="CENTER"> How IDEs interconnect components</h3>
+                        </p>
+                        <!--<BLOCKQUOTE><STRONG>Summary</STRONG><BR>-->
+                        <BLOCKQUOTE>
+<STRONG>Summary</STRONG><BR>
+
+Last month's <strong>JavaBeans</strong> column introduced IBM's XML Beans, a suite of JavaBeans that process XML files. This month, Mark looks at the <code>XMLEditor</code> and <code>XMLConvenience</code> bean sets that make creating custom XML editors a snap. <em>(3,400 words)</em>
+</BLOCKQUOTE>
+                        <!--</BLOCKQUOTE>-->
+                        <a href="http://www.javaworld.com/feedback" target="Feedback"><STRONG>By   Mark Johnson</STRONG></a>
+                        <p><img src="http://www.javaworld.com/images/rule_ltblue.gif" width="100%" height="2"><br />
+                           <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                           <a href="/javaworld/jw-12-1999/jw-12-beans_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><br /></p>
+                         <font size=-1>  <!-- REPLACE PAGECOUNT --></font>
+                        <p><!-- START BIG AD (336x280) -->
+<table align="right" border="0" cellpadding="0" cellspacing="0"><tr valign="bottom" align="center"><td><font face="verdana, arial, geneva, sans-serif" color="#999999" size="-2">Advertisement</font></td></tr><tr><td><table border=1 bordercolor="#cccccc" cellspacing="5" cellpadding="0"><tr><td>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=204588" width="336" height="280" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=204588"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=204588" border=0 height="280" width="336"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer5" visibility="hidden" width=336 height=280></ILAYER>
+</td></tr></table></td></tr></table>
+<!-- END BIG AD (336x280) --></p>
+                        <p><P>
+<IMG width="12" height="29" ALIGN="LEFT" SRC="/javaworld/abcs/I.gif" ALT="I">n last month's column, I discussed the creation of XML-processing applications that have little or no user interface. That article covered the <code>DOMGenerator</code>, <code>XMLTokenizer</code>, <code>XMLFileGenerator</code>, and <code>XMLStringGenerator</code> components, all of which are nonvisual beans. <P>
+<!--start textbox--><P>
+<TABLE BGCOLOR="#990033" WIDTH="175" hspace="5" ALIGN="right" CELLPADDING="2" CELLSPACING="0" BORDER="0"><P>
+<TR><P>
+<TH><P>
+<FONT COLOR="#FFFFFF" FACE="Arial,Helvetica,Sans-serif"><P>
+&nbsp; Process XML with JavaBeans: Read the whole series! &nbsp;<P>
+</FONT><P>
+</TH><P>
+</TR><P>
+<TR><P>
+<TD><P>
+<TABLE WIDTH="100%" BGCOLOR="#cccccc" CELLPADDING="5" CELLSPACING="0" BORDER="0"><P>
+<TR><P>
+<TD><P>
+<FONT SIZE="-1" FACE="Arial,Helvetica,Sans-serif"><P>
+
+<LI><a href="/javaworld/jw-11-1999/jw-11-beans.html ">Part 1. Interconnect JavaBeans to process XML</a> <P>
+<LI><a href="/javaworld/jw-12-1999/jw-12-beans.html ">Part 2. How IDEs interconnect components</a> <P>
+<LI><a href="/javaworld/jw-01-2000/jw-01-beans.html">Part 3. Simplify XML processing with XMLConvenience Beans</a> <P>
+</FONT><P>
+</TD><P>
+</TR><P>
+</TABLE><P>
+</TD><P>
+</TR><P>
+</TABLE><P>
+<!--end textbox--><P>
+Last month's components showed you how to read and write XML trees. This month, I'll show you how to use the nonvisual <code>XMLEditor</code> bean set to process those trees. This article will be highly technical, so you must have prior knowledge of how JavaBeans interconnect in an integrated development environment (IDE) at the lowest level. I'll give a detailed example of a very simple application, with explanations of event and property connections, and describe how you can use them to create applications <em>without</em> programming. <P>
+This article assumes you've read Part 1 of this series and that you're familiar with the basics of XML, the Document Object Model (DOM), and JavaBeans, as well as the concept of building applications in an IDE. It would also be helpful to download and install IBM's XML Beans from IBM's alphaBeans site (see <a href="#resources">Resources</a>). <P><FONT SIZE="+1"><STRONG> The XMLEditor bean set </STRONG></FONT><BR>
+<code>XMLEditor</code> beans do not necessarily edit XML, despite what their name implies. Instead, these beans form a hierarchy of containers and operators that match particular features of an <code>org.w3c.dom.Document</code> or a <code>org.w3c.dom.Node</code> (which I will simply call <code>Document</code>, <code>Node</code>, <code>Element</code>, etc.), and hold a reference to that object for processing. <P>
+That object represents a part of the input XML tree being edited. As shown last month, a <code>DOMGenerator</code> bean creates a <code>Document</code> object, representing the tree of XML nodes. But that capability is almost useless if you can't pick the tree apart and use its pieces. That's where <code>XMLEditor</code> beans come in. <P>
+I'll start with an example that clarifies what I'm discussing here. Part of the sample XML I've been using for these articles, a recipe for Lime Jello Marshmallow Cottage Cheese Surprise, appears in Figure 1 in two different forms. <P>
+<!--start image--> <center><P>
+<TABLE CELLPADDING="5" BORDER="0"><TR><TD><P>
+<center><P>
+<IMG VSPACE="3" WIDTH="375" HEIGHT="327" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-12-1999/images/jw-12-beans1.gif"><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+Figure 1. Recipe XML as text (left) and as objects (right) </STRONG></FONT></center><P>
+</TD></TR></TABLE><P>
+</center><P>
+<!--end image--> <P>
+The left side of the figure represents part of the sample XML document, encoded as ASCII text. (You can find a link to the entire sample XML code in the <a href="#resources">Resources</a> section below.) On the right is the same document, represented as a tree of DOM <code>Node</code> objects (subclasses of <code>org.w3c.dom.Node</code>). The <code>DOMGenerator</code> (by way of its underlying parser) produces this tree from the input XML stream. <P>
+The top-level element is the <code>Document</code> node, only one of which exists for any given XML document. The <code>DOMGenerator</code> object creates an object of this type and provides it as its <code>result</code> property. A <code>Document</code> is a container that, if not empty, holds one and only one object of type <code>Element</code>, which is in turn given the same name as the <code>Document</code>'s top-level tag. This element is called the <em>document element.</em> In this example, the document element is <code>&lt;Recipe&gt;</code>. (With the notation <code>&lt;<i>Tagname</i>&gt;</code>, I indicate both the name of an XML tag and the tag name returned by the <code>getTagName()</code> method of a corresponding DOM <code>Element</code> object.) <P>
+The <code>&lt;Recipe&gt;</code> contains a single <code>&lt;Name&gt;</code> that contains a <code>Text</code> item. The <code>Text</code> item's value is the name of the recipe. This structure is defined and enforced by the Document Type Definition (DTD) for the XML document. (You can see the simple DTD for this Recipe XML in <a href="#resources">Resources</a> below.) <P>
+What does all this have to do with <code>XMLEditor</code> beans? Each container bean class in the <code>XMLEditor</code> bean set recognizes a particular <code>Node</code> type at the bean class's input. For example, a <code>DocumentContainer</code> <code>XMLEditor</code> bean takes a <code>Document</code> node as its input. A <code>DocumentContainer</code>'s input is the value of its <code>inputDocument</code> property, which is write only. The <code>DocumentContainer</code> contains a read-write property called <code>currentNode</code>, which is the document to be edited. The <code>DocumentContainer</code> has a third property, <code>result</code>, which is read only, and returns the <code>Document</code> object that the <code>DocumentContainer</code> currently contains. <P>
+The <code>inputDocument</code> (write only) and <code>result</code> properties (read only) can be different because the document within the <code>DocumentContainer</code> (the <code>currentNode</code>) is editable. After editing (setting the <code>currentNode</code> property to refer to a different <code>Document</code> object, for example), the <code>result</code> document -- that is, the output -- may well be different from the input.
+<P>
+Let's apply this to the example above. Imagine setting a <code>DocumentContainer</code>'s <code>inputDocument</code> to the <code>Document</code> object at the top of the object tree in Figure 1. The <code>DocumentContainer</code> will make the <code>Document</code> available as a <code>Node</code> (since a <code>Document</code> is a subclass of <code>Node</code>, and therefore <em>is</em> a <code>Node</code>), and then make that <code>Node</code> available as its <code>currentNode</code> property. It will also make the <code>Document</code> available as its <code>result</code> property. <P>
+To understand how an application composed of interconnected objects works, you must understand how to interconnect objects. What does it mean for objects to be connected to one another? <P>
+<!-- break --><P><FONT SIZE="+1"><STRONG> Object connection: An in-depth example </STRONG></FONT><BR>
+
+Returning to the example in Figure 1, let's build a small application that gives the user a view of a recipe's name -- that is, the contents of the <code>&lt;Name&gt;</code> element inside a <code>Document</code>'s <code>&lt;Recipe&gt;</code> element. Figure 2 shows the configuration of just such an application running inside the IBM VisualAge for Java IDE. Other IDEs may present the connections between beans in completely different ways, but all serious IDEs allow connections between bean properties, events, and methods. <P>
+<!--start image--> <CENTER><P>
+<TABLE CELLPADDING="5" BORDER="0"><TR><TD><P>
+<CENTER><P>
+<IMG VSPACE="3" WIDTH="416" HEIGHT="166" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-12-1999/images/jw-12-beans2_sml.gif"><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+ center Figure 2. Configuration of the RecipeEditor application </STRONG></FONT></CENTER><P>
+</TD></TR></TABLE><P>
+</CENTER><P>
+<!--end image--> <P>
+The purpose of the <code>RecipeEditor</code> bean is simply to extract the text of the <code>&lt;Name&gt;</code> element of a <code>Document</code> containing a <code>&lt;Recipe&gt;</code> and display that <code>&lt;Name&gt;</code> to the user. <P>
+For the rest of this section, I'm going to delve into the inner workings of how IDEs connect objects to one another, using the simple <code>RecipeEditor</code> as an example. If you already understand event listener relationships and the ways in which IDEs interconnect components to create applications, you can skip down to the section titled <A HREF="#unprogrammed"> <strong>An unprogrammed application</strong> </a>. <P>
+Clicking the Open File button causes the <code>DOMGenerator</code> object (marked A in Figure 2) to read its input, parse any XML it finds, and produce a DOM <code>Document</code> as its output. But how exactly does clicking the button cause this to happen? <P><STRONG> Making the connection </STRONG><BR>
+
+The arrow in Figure 2 between the Open File button and <code>DOMGenerator1</code> indicates an event listener relationship. In this case, the <code>DOMGenerator</code>'s <code>triggerAction()</code> method is called when the Open File button produces an <code>ActionEvent</code>. Calling <code>triggerAction()</code> causes the <code>DOMGenerator</code> to fetch its input document, parse the document, and produce a <code>Document</code> object as its result. <P>
+It's fairly easy to create a <code>DOMGenerator</code> that listens for <code>ActionEvent</code>s on another object. For example: <P>
+<CODE><P>
+<BR>
+
+public class DOMGeneratorThatListens<BR>
+
+&nbsp;&nbsp;extends DOMGenerator implements ActionListener {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;public void actionPerformed(ActionEvent e) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;triggerAction();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+}<BR>
+</CODE><P>
+Then, elsewhere in the code: <P>
+<CODE><P>
+<BR>
+
+Button openFile = new Button("Open file...");<BR>
+
+DOMGeneratorThatListens dg = new DOMGeneratorThatListens();<BR>
+
+openFile.addActionListener(dg);<BR>
+</CODE><P>
+Simple enough. In real applications, though, many objects listen for events from multiple sources, and they may also send events to other objects. The resulting code quickly becomes too complex for an IDE to handle easily. <P><STRONG> Being adaptable </STRONG><BR>
+A common solution to this problem is to split the listening and reacting functionality out of the subclass and place it in a separate class, called an <em>event adapter</em> class. An event adapter is simply a dispatcher that listens for events on an event source and then calls methods on the event target. Code for an event adapter might look like this: <P>
+<CODE><P>
+<BR>
+
+public class DOMGeneratorButtonAdapter implements ActionListener {<BR>
+
+&nbsp;&nbsp; DOMGenerator dg = null;<BR>
+
+&nbsp;&nbsp; Button b = null;<BR>
+
+&nbsp;&nbsp; DOMGeneratorButtonAdapter(Button source, DOMGenerator target) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b = source;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dg = target;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b.addPropertyChangeListener(this);<BR>
+
+&nbsp;&nbsp; }<BR>
+
+&nbsp;&nbsp; public void actionPerformed(ActionEvent e) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dg.triggerAction();<BR>
+
+&nbsp;&nbsp; }<BR>
+
+}<BR>
+</CODE><P>
+You could then link together a button and a <code>DOMGenerator</code> <em>without</em> subclassing either of them, like this: <P>
+<CODE><P>
+<BR>
+
+Button openFile = new Button("Open file...");<BR>
+
+DOMGenerator dg = new DOMGenerator();<BR>
+
+DOMGeneratorButtonAdapter dgba = new DOMGeneratorButtonAdapter(openFile, dg);<BR>
+</CODE><P>
+When the button is clicked, the adapter receives the event and then performs the method call on the target object. <P>
+A purely object-oriented solution would be to create a separate event adapter object for each connection. Some IDEs may do so, but the designers of VisualAge for Java decided to turn the application class (in this case, <code>RecipeEditor</code>) into the event adapter for all events. In other words, the application class listens for all events from objects (e.g., clicks on the Open File button) and then dispatches calls to the appropriate targets (e.g., the <code>DOMGenerator</code>'s <code>triggerAction()</code>). <P>
+When the user clicks the Open File button, the button sends an <code>ActionEvent</code> to all of its listeners by passing it to those listeners' <code>actionPerformed()</code> methods. The application class (<code>RecipeEditor</code>) is registered as a listener for <code>ActionEvent</code>s, and it responds to the button's <code>ActionEvent</code> by calling the <code>DOMGenerator</code>'s <code>triggerAction()</code> method.
+<P><STRONG> How connections are created </STRONG><BR>
+In Figure 2, the application developer created the connection between the button and the <code>DOMGenerator</code> in the IDE. The arrow leading from the button to the <code>DOMGenerator</code> is a graphical representation of a method that the IDE generated automatically. The application developer indicated (graphically, using mouse clicks and menus) that the IDE should connect the button's <code>actionPerformed()</code> method to the <code>DOMGenerator</code>'s <code>triggerAction()</code> method. The IDE then automatically took the following steps: <P>
+<oL> <LI>It declared the application class <code>RecipeEditor</code> as an <code>ActionListener</code> by adding <code>implements ActionListener</code> to the <code>RecipeEditor</code> class declaration. This made the class capable of receiving <code>ActionEvent</code> objects. <P>
+<LI>It wrote a handler method <code>actionPerformed</code>, which detects whether the source of the <code>ActionEvent</code> was the Open File button and, if so, calls <code>triggerAction()</code> on the <code>DOMGenerator</code>. Here's a sample of the code the IDE produced: <P>
+<CODE><P>
+<BR>
+
+/* WARNING: THIS METHOD WILL BE REGENERATED. */<BR>
+
+public void actionPerformed(ActionEvent e) {<BR>
+if ((e.getSource() == getButton3()) ) {<BR>
+connEtoM11(e);<BR>
+}<BR>
+<font color="red">if ((e.getSource() == getOpenFile()) ) {<BR>
+connEtoM1(e);<BR>
+}</font><BR>
+
+}<BR>
+
+/* WARNING: THIS METHOD WILL BE REGENERATED. */<BR>
+
+private void connEtoM1(ActionEvent arg1) {<BR>
+<font color="red">getDOMGenerator().triggerAction();</font><BR>
+
+}<BR>
+</CODE><P>
+You can see that the IDE wrote two methods: <code>actionPerformed()</code>, which checks the source of the event, and <code>connEtoM1()</code>, which <code>actionPerformed</code> calls after making that check and which actually performs the connection. Notice also that, instead of using the user interface element objects directly, the IDE has created accessors for them (<code>getOpenFile()</code> and <code>getDOMGenerator()</code>). This is good programming style, as it encapsulates access to the class's internal objects. </LI> <P>
+<LI>Finally, the IDE registered the application class as a listener for <code>ActionEvent</code>s on the Open File button in the <code>RecipeEditor.initConnections()</code> method, called from the constructor. <code>initConnections()</code> is a method, written entirely by VisualAge for Java, that is responsible for creating property change and event relationships. </LI> </oL> <P>
+Code generated by other IDEs would look very different from code that appears in the source files, but it would do essentially the same thing: it would call <code>triggerAction()</code> when the Open File button is pushed. (You can find <code>RecipeEditor.java</code>  in the source archive, downloadable in jar, tgz or zip formats from <a href="#resources">Resources</a> below.) <P>
+This is the standard way in which IDEs assemble objects into applications: they create instances of component classes and interconnect them with event listener and property change listener relationships. Each object maintains a list of other objects to notify when particular events occur. When an event occurs on an object (a mouse click, a query result return, a method call, input ready to be read, and so forth), the object generates an event (itself an object) describing what happened, and passes it to all the other objects listening for such events. That way, objects can be assembled into applications without compiling anything at runtime. <P>
+A component knows what other objects wish to be notified about an event because, earlier in the program's run, the object was added to the component's list of listeners for that event by way of a call to the component's <code>add<em>eventType</em>Listener()</code> method. <P>
+The method call that adds one object to another object's list of listeners can occur practically anywhere in a program. Often components will listen for their own events. Window classes commonly listen for their own <code>WindowEvent</code> messages, for example. Sometimes components will add other objects to their own listener lists. Usually an object adds itself to another object's list of listeners for a particular event, by making a call such as <code>otherObject.addSomeEventListener(this)</code>. In most of the cases in this article,  though, an IDE generates the code that adds objects to other objects' listener lists, creating an event connection between the two objects. VisualAge for Java creates all these connections in a method called <code>initConnections()</code> (which you can see in this month's sample source code; see <a href="#resources">Resources</a> to download it). <P>
+The reason I'm spending so much time on this topic is that it's the central concept behind building applications visually. If the ideas are still unclear to you, read up on event listener relationships in <a href="#resources">Resources</a>. Meanwhile, let's return to the sample application. <P>
+<a name="unprogrammed"> <!-- break --><P><FONT SIZE="+1"><STRONG> An unprogrammed application </STRONG></FONT><BR>
+Now that you understand how IDEs connect objects to one another, I'll discuss using those connections in an application. First, forget that the application class is the event listener. That's an implementation detail. From the point of view of the person assembling an application, a connection between two components is direct. You need only understand what the IDE is doing, so you can debug more effectively. <P>
+Figure 2 is reprinted below to minimize scrolling. <P>
+<center><P>
+<TABLE CELLPADDING="5" BORDER="0"><TR><TD><P>
+<center><P>
+<IMG VSPACE="3" WIDTH="416" HEIGHT="166" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-12-1999/images/jw-12-beans2_sml.gif"><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+Figure 2. Configuration of the RecipeEditor application (encore) </STRONG></FONT></center><P>
+</TD></TR></TABLE><P>
+</center><P>
+As noted earlier, connection A in Figure 2 causes a button click to call <code>triggerAction()</code> on <code>DOMGenerator1</code>. The other connections behave as described below: <P>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="15"> <P>
+<TR> <TD ALIGN="CENTER" WIDTH="5%" BGCOLOR="#f0f0ff"><strong>B</strong></TD> <TD> According to the documentation, a <code>DOMGenerator</code> fires an event called <code>fetchArguments</code> before it reads its input; that allows the input source a chance to initialize. The input source will in this case be a filename, indicated by the user by way of an <code>ExtendedFileDialog</code> object. <code>ExtendedFileDialog</code> is a class in the <code>XMLConvenience</code> bean set that extends the standard <code>java.awt.FileDialog</code> and has additional properties that simplify its use in an IDE. Connection B configures <code>ExtendedFileDialog1</code>'s <code>show()</code> method to be called in response to <code>DOMGenerator1</code> firing <code>fetchArguments</code>. The user may then select a file that activates connection C. </TD> </TR> <P>
+<TR> <TD ALIGN="CENTER" BGCOLOR="fff0ff"><strong>C</strong></TD> <TD> Connection C is a <em>property change relationship,</em> a special type of event relationship that binds two properties together. Changing the value of a property on the source causes a corresponding <code>set</code> of a property on the target. (For more on property change relationships, see <a href="#resources">Resources</a>.) <p> VisualAge for Java indicates a property change relationship using a blue line with circles on the ends. The circle at the property source end is hollow; the target end is full. So the diagram in Figure 2 indicates that changing some property of <code>ExtendedFileDialog1</code> results in the setting of some other property of <code>DOMGenerator1</code>. Selecting connection C in VisualAge displays the following text in the status line: <P>
+<p> <code> connPtoP10: (ExtendedFileDialog1,fullpath)<-->(DOMGenerator1,inputXmlFileLocation) </code> <p> <P>
+This line indicates that, when <code>ExtendedFileDialog1.fullpath</code> is set, <code>DOMGenerator1.inputXmlFileLocation</code> is also set to the same value. (Incidentally, the method that performs this property change is <code>connPtoP10</code>, useful information when debugging.) <code>ExtendedFileDialog1.fullpath</code> is set exclusively by the user action of selecting a file; therefore, that action sets the location of <code>DOMGenerator1</code>'s input file, by way of the property change relationship. </TD> </TR> <P>
+<TR> <TD ALIGN="CENTER" BGCOLOR="#f0f0ff"><strong>D</strong></TD> <TD> Connection D is a property change relationship between <code>DOMGenerator1.result</code> and <code>DocumentContainer1.inputDocument</code>. When <code>DOMGenerator1</code> produces a <code>Document</code>, connection D passes the <code>Document</code> to <code>DocumentContainer1</code>. </TD> </TR> <P>
+<TR> <TD ALIGN="CENTER" BGCOLOR="fff0ff"><strong>E</strong></TD> <TD> The <code>ECRecipe</code> object is an instance of <code>ElementContainer</code>, an <code>XMLEditor</code> bean set class. <code>ElementContainer</code> finds an element with a particular tag name within an input node. <p> When an <code>ElementContainer</code>'s <code>inputParentNode</code> is set to a particular node, the <code>ElementContainer</code> searches that node's child nodes for any child with a tag name matching the <code>ElementContainer</code>'s <code>elementName</code> property. If it finds one, the <code>ElementContainer</code> sets its <code>currentNode</code> to the discovered element. <p> <code>ECRecipe</code> is an <code>ElementContainer</code> with its <code>elementName</code> set to the string "Recipe." When the <code>inputParentNode</code> property of <code>ECRecipe</code> is set to a <code>Document</code> containing a <code>&lt;Recipe&gt;</code> element, <code>ECRecipe</code> sets its output <code>currentNode</code> property to the input. <code>ECRecipe</code> then picks the <code>&lt;Recipe&gt;</code> element out of the <code>Document</code>. <p> Connection E is a property change relationship linking <code>DocumentContainer1.currentNode</code> to <code>ECRecipe.inputParentNode</code>. <code>ECRecipe</code> picks the <code>&lt;Recipe&gt;</code> tag out of any <code>Document</code> that appears at its input. If there is no such tag, then <code>ECRecipe</code> does nothing. </TD> </TR> <P>
+<TR> <TD ALIGN="CENTER" BGCOLOR="#f0f0ff"><strong>F</strong></TD> <TD> Connection F is a property change relationship from <code>ECRecipe.currentNode</code> to <code>ECName.inputParentNode</code>. <p> Just as <code>ECRecipe</code> picks the <code>&lt;Recipe&gt;</code> node out of a <code>Document</code>, <code>ECName</code> picks the <code>&lt;Name&gt;</code> node out of a <code>&lt;Recipe&gt;</code> and makes it available at its <code>currentNode</code> property. </TD> </TR> <P>
+<TR> <TD ALIGN="CENTER" BGCOLOR="fff0ff"><strong>G</strong></TD> <TD> The <code>TextContainer</code> is yet another <code>XMLEditor</code> class. Like the other containers, the <code>TextContainer</code> holds a reference to a DOM <code>Node</code> object -- a <code>Text</code> object, in this case. The container searches the <code>Node</code> at its <code>inputParentNode</code> property for a <code>Text</code> node and, if it finds one, sets its <code>data</code> property to  the string contents of the <code>Text</code> node. In other words, a <code>TextContainer</code> picks the string out of a <code>Text</code> node and makes it available at its <code>data</code> property. <p> Connection G is a property change relationship from <code>ECName.currentNode</code> to <code>TCName.inputParentNode</code>. It picks the text out of the <code>Name</code> element and makes it available at its <code>data</code> property. </TD> </TR> <P>
+<TR> <TD ALIGN="CENTER" BGCOLOR="#f0f0ff"><strong>H</strong></TD> <TD> Finally, connection H is a property change relationship from <code>TCName.data</code> (a string) to the <code>TextField</code>'s <code>text</code> property. This sets the <code>TextField</code>'s <code>text</code> to be identical to  the string inside the <code>Name</code> element at the input of <code>TCName</code>. </TD> </TR> <P>
+</TABLE> <P>
+So, to recap, the <code>TextField</code> in the form gets set to the name of the recipe, because it's set to: <P>
+<UL> <LI>the string, which is contained in... </LI> <LI>the <code>Name</code>, which is contained in... </LI> <LI>the <code>Recipe</code>, which is contained in... </LI> <LI>the <code>Document</code>, which... </LI> <LI><code>DOMGenerator1</code> read from the file the user chose, using... </LI> <LI><code>ExtendedFileDialog1</code>, which was activated because... </LI> <LI><code>DOMGenerator1</code> fired a <code>fetchArguments</code> event,because... </LI> <LI>the Open File button was wired to call <code>DOMGenerator1.triggerAction()</code> when pressed. (Whew!)</LI> </UL> <P>
+Figure 3 shows the <code>RecipeEditor</code> in operation. The <CODE>example.html</code> file in <a href="#resources">Resources</a> has been loaded into the application, and the name of the current recipe is clearly visible. Anticlimactic, isn't it? <P>
+<!--start image--> <center><P>
+<TABLE CELLPADDING="5" BORDER="0"><TR><TD><P>
+<center><P>
+<IMG VSPACE="3" WIDTH="372" HEIGHT="122" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-12-1999/images/jw-12-beans3.gif"><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+Figure 3. The RecipeEditor in action </STRONG></FONT></center><P>
+</TD></TR></TABLE><P>
+</center><P>
+<!--end image--> <P>
+<!-- break --><P><FONT SIZE="+1"><STRONG> Why build applications with components? </STRONG></FONT><BR>
+This is quite a lot of work and a lot of explanation for something so simple, right?  Seems as though it would be easier just to code the whole mess by hand. But there are advantages to building an application this way. <P>
+<ul> <li>First, this application was built with no programming. Not one line. I created a running application that can read an XML file, pick the text out of an element a couple of levels down, and display it for editing in a panel by <em>drawing pictures.</em> And it was built in less time than it took to explain how it works.
+<P>
+<li>Second, building applications by assembling components lets you create a system at a higher level of abstraction than programming -- in terms of ideas rather than code. To draw an application this way is to work with objects in the domain of the system being built. In this case, the domain is processing XML documents.
+<P>
+There's still plenty of room for coding -- the components must come from somewhere. But, while you're building a system out of components, the temptation to start coding is an indication that something isn't right with your set of components. Ask yourself why you want to code something manually rather than provide it as a service that a component can offer; your answers will improve your design because you're thinking through that decision consciously. <P>
+<li>Third, the designers of this XML JavaBeans package did a good job of separating the functionality of the <code>XMLEditor</code> beans from the user interface. They deliberately gave these beans <em>no</em> user interface, because they'd like them to be used  where a GUI is not appropriate. On a server, for example, decoupling functionality from presentation is one good way to make code reusable.
+<P>
+It would be easy to disconnect the pieces of the application that have no user interface and use them in another context, completely unmodified. Imagine, for example, that you had a directory with thousands of XML recipe files and you wanted to get their names for an index. Replace the <code>ExtendedFileDialog</code> with a directory-scanning object and send the output of <code>TCName</code> to a self-sorting vector of strings, and you have a program that indexes recipe files. Of course, you may need to write the directory scanner or sort the vector beans yourself, but you'll be able to reuse those in the future if they're general and well designed. <P>
+<li>Fourth, there's another form of recycling I haven't explored: using components to build other components. Imagine taking this chain of little objects, putting it in a box, and labeling the box "Recipe Name Finder." The chain of components just created could be used anywhere, whenever the name of a recipe was needed.
+<P>
+<li>Finally, applications built with components and events can be easier to debug than coded programs, because test classes can be attached to the event connections to report what is going on as the program runs. Debugging a program with events then becomes more like troubleshooting an electrical circuit than debugging code. Again, the person doing the troubleshooting is working at a higher level of abstraction. </ul> <P>
+Using components to create applications can cause problems, too. Performance limitations, training considerations, memory usage, and the lack of components that have the exact functionality needed are examples. But that's material for another column. <P><FONT SIZE="+1"><STRONG> Running the sample program </STRONG></FONT><BR>
+You need to install the XML Beans suite and include its jar file in your <CODE>CLASSPATH</CODE> to run this month's sample code (see <a href="#resources">Resources</a> below to find it). If you're interested in how the code works, you can load the <code>.java</code> files (also available in <a href="#resources">Resources</a>) into your own IDE and step through the code manually. If you use VisualAge for Java, you should be able to open the <code>RecipeEditor</code> class in the Visual Composition Editor and play with the connections. <P><FONT SIZE="+1"><STRONG> Conclusion </STRONG></FONT><BR>
+Of course, the little application you've seen is useless. I doubt anyone's going to be sitting at a desk viewing recipe titles all day. But now that you have the basics down, you can start to do more interesting things with these components. <P>
+In the next part of the series, I'll show you how to make the contents of these containers updatable, traverse the DOM tree in more than one direction at once, and handle multiple objects contained in a node. I'll also show how to create such applications more easily by using the <code>XMLConvenience</code> bean set of the XML JavaBeans suite. 
+<IMG HEIGHT="12" WIDTH="22" SRC="http://www.idg.net/microsites/javaworld/javaworld/icons/jw-dingbat.gif"><P><br /></p>
+                        <font size=-1><!-- REPLACE PAGEURLS --> </font>
+                        <p>
+                            <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                            <a href="/javaworld/jw-12-1999/jw-12-beans_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><!-- REPLACE BIO --><br /></p>
+                        <p><ul><A NAME="resources"></a><STRONG>Resources</STRONG>
+<BR>
+</UL><strong>Download the source code and class files for this month's article</strong><UL>
+
+<LI>In jar format (with class and <code>.java</code> files): <BR><A HREF="http://www.javaworld.com/jw-12-1999/beans/JWBeansDec99.jar">http://www.javaworld.com/jw-12-1999/beans/JWBeansDec99.jar
+</A><BR>
+
+
+<LI>In tgz format (gzipped tar): <BR><A HREF="http://www.javaworld.com/jw-12-1999/beans/JWBeansDec99.tgz">http://www.javaworld.com/jw-12-1999/beans/JWBeansDec99.tgz
+</A><BR>
+
+
+<LI>In zip format: <BR><A HREF="http://www.javaworld.com/jw-12-1999/beans/JWBeansDec99.zip">http://www.javaworld.com/jw-12-1999/beans/JWBeansDec99.zip
+</A><BR>
+
+
+<LI>Read the entire sample XML: <BR><A HREF="http://www.javaworld.com/jw-12-1999/beans/example.html">http://www.javaworld.com/jw-12-1999/beans/example.html
+</A><BR>
+
+
+<LI>See the simple DTD for this Recipe XML: <BR><A HREF="http://www.javaworld.com/jw-12-1999/beans/example-dtd.html">http://www.javaworld.com/jw-12-1999/beans/example-dtd.html
+</A><BR>
+
+
+</ul><strong>XML and XML JavaBeans Suite resources</strong><ul>
+
+<LI>"XML for the absolute beginner," Mark Johnson (<em>JavaWorld,</em> April 1998) -- a quick start to XML: <BR><A HREF="http://www.javaworld.com/javaworld/jw-04-1999/jw-04-xml.html">http://www.javaworld.com/javaworld/jw-04-1999/jw-04-xml.html
+</A><BR>
+
+
+<LI>"Keep listening for upcoming events," Mark Johnson (<em>JavaWorld,</em> October 1997) -- a tutorial introduction to the event listener interface concept: <BR><A HREF="http://www.javaworld.com/jw-10-1997/jw-10-beans.html">http://www.javaworld.com/jw-10-1997/jw-10-beans.html
+</A><BR>
+
+
+<LI>"'Double Shot, Half Decaf, Skinny Latte' -- Customize your Java," Mark Johnson (<em>JavaWorld,</em> September 1997) -- an example of event listener interfaces: <BR><A HREF="http://www.javaworld.com/jw-09-1997/jw-09-beans.html">http://www.javaworld.com/jw-09-1997/jw-09-beans.html
+</A><BR>
+
+
+<LI>Download IBM's XML JavaBeans Suite from the alphaWorks alphaBeans site: <BR><A HREF="http://alphaWorks.ibm.com/ab.nsf/techmain/CC88275128BB7B0088256723000AC88F?OpenDocument">http://alphaWorks.ibm.com/ab.nsf/techmain/CC88275128BB7B0088256723000AC88F?OpenDocument
+</A><BR>
+
+
+<LI>IBM's alphaBeans site has a large number of high-quality JavaBeans you can play with: <BR><A HREF="http://www.alphaWorks.ibm.com/alphaBeans">http://www.alphaWorks.ibm.com/alphaBeans
+</A><BR>
+
+
+<LI>The parser from IBM's <code>xml4j</code> package is available free for noncommercial use. It's even free for commercial use, but be sure to read the license agreement first: <BR><A HREF="http://www.alphaWorks.ibm.com/formula/XML">http://www.alphaWorks.ibm.com/formula/XML
+</A><BR>
+
+
+<LI>The World Wide Web Consortium (W3C) maintains a page covering ongoing efforts in the XML community: <BR><A HREF="http://www.w3.org/XML">http://www.w3.org/XML
+</A><BR>
+
+
+<LI>The undisputed mother of all XML news sites is Robin Cover's SGML/XML Web page: <BR><A HREF="http://www.oasis-open.org/cover/">http://www.oasis-open.org/cover/
+</A><BR>
+
+
+<LI>A good site for XML news, tutorials, and information: <BR><A HREF="http://www.xml.com">http://www.xml.com
+</A><BR>
+
+
+<LI>David Megginson, creator of the SAX parser, has a Web site: <BR><A HREF="http://www.megginson.com">http://www.megginson.com
+</A><BR>
+
+
+<LI>IBM's developerWorks site includes excellent XML resources: <BR><A HREF="http://www.ibm.com/developer/xml">http://www.ibm.com/developer/xml
+</A><BR>
+
+
+<LI>Microsoft's data management is increasingly based on XML. Read about Microsoft's XML strategies: <BR><A HREF="http://msdn.microsoft.com/xml/default.asp">http://msdn.microsoft.com/xml/default.asp
+</A><BR>
+
+</UL>
+
+</ul><br /></p>
+                        <!-- REPLACE SIDEBAR -->
+                    </font>
+                    <!-- ## MAIN CONTENT ENDS HERE ### -->
+                </td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="168" nowrap><nobr><img src="http://www.javaworld.com/images/spacer.gif" width=160 height=8 border=0 ><img src="http://www.javaworld.com/images/c_bllftbottom.gif" width=8 height=8 border=0 ></nobr></td>
+                <td width="100%"><img src="http://www.javaworld.com/images/spacer.gif" width=1 height=1 border=0 ></td>
+                <td width="8"><img src="http://www.javaworld.com/images/spacer.gif" width=8 height=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="186" bgcolor="#006699" align="middle"><nobr><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2"></font></nobr><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0></a></td>
+                <td bgcolor="#cccccc" width="8" valign="bottom"><img height=8 src="http://www.javaworld.com/images/c_blgrylftbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- BOTTOM 468x60 AD STARTS HERE -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=204588?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=204588?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=204588?" border=0 height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer4" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- BOTTOM 468x60 AD ENDS HERE -->
+</td>
+                <td width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table bgcolor="#006699" align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="100%" align="middle" valign="center">    <font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">
+        <p>
+            <br />
+            <a href="http://www.javaworld.com"><font color="#ffffff">HOME</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/features/index.shtml"><font color="#ffffff">FEATURED TUTORIALS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/columns/index.shtml"><font color="#ffffff">COLUMNS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/news-reviews/index.shtml"><font color="#ffffff">NEWS & REVIEWS</font></a>&nbsp;|&nbsp;
+            <a href="http://forums.idg.net/webx?13@@.ee6b802"><font color="#ffffff">FORUM</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/resources/index.shtml"><font color="#ffffff">JW RESOURCES</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/info/jw-about-index.shtml"><font color="#ffffff">ABOUT JW</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/feedback"><font color="#ffffff">FEEDBACK</font></a>
+        </p>
+        <p>
+
+            <a href="http://www.javaworld.com/javaworld/common/jw-copyright.html"><font color="#ffffff">Copyright © 2002</font></a> JavaWorld.com, an IDG Communications company
+        </p>
+    </font>
+</td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+            <tr>
+                <td width="100%" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_blrtbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <!--TOP_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=204588?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer1.pageX,layer1.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--125x125-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=med;sz=125x125;tile=2;ord=204588?" width=125 height=125 visibility="hidden" onLoad="moveToAbsolute(layer2.pageX,layer2.pageY);clip.height=125;clip.width=125;visibility='show';">
+</LAYER>
+
+<!--SKYSCRAPER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=204588?" width=120 height=600 visibility="hidden" onLoad="moveToAbsolute(layer3.pageX,layer3.pageY);clip.height=600;clip.width=120;visibility='show';">
+</LAYER>
+
+<!--BOTTOM_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=204588?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer4.pageX,layer4.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--Big AD-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=204588" width=336 height=280 visibility="hidden" onLoad="moveToAbsolute(layer5.pageX,layer5.pageY);clip.height=280;clip.width=336;visibility='show';">
+</LAYER>
+    </body>
+<!-- stories2 -->
+<!-- DOCID 658261 -->
+</html>
+

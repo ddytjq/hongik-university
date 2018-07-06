@@ -1,0 +1,345 @@
+ID=F0251
+URL=http://www.stlvbug.org/currmtg.asp
+SIZE=6000
+DATE=09/07/2002
+TIME=13:17:43
+DATASET=Visual Basic
+HTML=<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	<title>Current Meeting Notice</title>
+</head>
+
+<body background="images/grytxtr5.jpg" bgcolor="#d5d5d5" BGPROPERTIES=fixed>
+<p><img src="images/vbug.gif" width="576" height="144"></p>
+<!-- begin CoolBar Control -->
+<STYLE TYPE="text/css"><!--
+	
+	A { text-decoration:none; }
+
+	TABLE#tblCoolbar { 
+		background-color:threedface; padding:1px; color:menutext; 
+		border-width:1px; border-style:solid; 
+		border-color:threedhighlight threedshadow threedshadow threedhighlight;
+	}
+
+	TABLE#tblCoolbar TABLE { 
+		font-family:tahoma; font-size:70%; color:menutext; 
+		border:1px solid threedface; cursor:hand; padding:1px; 
+	}
+	
+--></STYLE>
+
+<SCRIPT LANGUAGE="JScript"><!--
+
+	// SET SOME "CONSTANT" VALUES FOR THE SCRIPT
+	// MAKES PLAYING WITH LOOK AND FEEL A LOT EASIER
+
+	var sOffBackColor = "threedface";
+	var sOffTextColor = "menutext"
+	var sOffBorderColor = "threedface";
+	var sOffPadding = "1px 1px 1px 1px";
+
+	var sOverBackColor = "threedface";
+	var sOverTextColor = "menutext"
+	var sOverBorderColor = "threedhighlight threedshadow threedshadow threedhighlight";
+	var sOverPadding = "1px 1px 1px 1px";
+
+	var sDownBackColor = "window"
+	var sDownTextColor = "menutext"
+	var sDownBorderColor = "threedshadow threedhighlight threedhighlight threedshadow";
+	var sDownPadding = "2px 0px 0px 2px";
+
+	var sPaneName = "";
+	var eActiveButton = null;
+
+	// TWO HELPER FUNCTIONS
+	// ONE TO SET BUTTON PADDING AND ONE TO SET BUTTON IMAGE
+
+	function SetButtonPadding(eButton,sPaddingStyle)
+	{
+		eButton.rows[0].cells[0].style.padding = sPaddingStyle;
+		eButton.rows[0].cells[1].style.padding = sPaddingStyle;
+	}
+	
+	function SetButtonImage(eButton,sState)
+	{
+		var eImg = eButton.rows[0].cells[0].children[0];
+		if (eImg) 
+		{
+			var sImgSrc = eImg.src;
+			
+			if (sState == "over")
+			{
+				eImg.src = "../images/minus.gif";
+			}
+			
+			if (sState == "off")
+			{
+				eImg.src = "../images/plus.gif";
+			}
+
+		}
+	}
+	
+	// FOUR EVENT-HANDLER FUNCTIONS
+
+	function button_over(eButton)
+	{
+
+		// IF WE'RE JUST MOUSING ABOUT WITHIN THE BUTTON, THEN BAIL
+
+		if (window.event && eButton.contains(window.event.fromElement)) return false;
+
+		// OTHERWISE CHANGE BUTTON STYLE
+
+		eButton.style.backgroundColor = sOverBackColor;
+		eButton.style.color = sOverTextColor;
+		if (eActiveButton != eButton)
+		{
+			eButton.style.borderColor = sOverBorderColor;
+			SetButtonImage(eButton,"over");
+		}
+	}
+
+
+	function button_out(eButton)
+	{
+		// IF WE'RE JUST MOUSING ABOUT WITHIN THE BUTTON, THEN BAIL
+		
+		if (window.event && eButton.contains(window.event.toElement)) return false;
+
+		// OTHERWISE CHANGE BUTTON STYLE
+
+		if (eActiveButton != eButton)
+		{
+			eButton.style.backgroundColor = sOffBackColor;
+			eButton.style.borderColor = sOffBorderColor;
+			eButton.style.color = sOffTextColor;
+			SetButtonPadding(eButton,sOffPadding);
+			SetButtonImage(eButton,"off")
+		}
+		else
+		{
+			eButton.style.backgroundColor = sDownBackColor;
+			eButton.style.borderColor = sDownBorderColor;
+			eButton.style.color = sDownTextColor;
+		}
+	}
+
+	function button_down(eButton)
+	{
+		eButton.style.borderColor = sDownBorderColor;
+		SetButtonPadding(eButton,sDownPadding);
+	}
+
+	function button_up(eButton)
+	{
+
+		// IF ANOTHER BUTTON IS ACTIVE, RESET IT
+
+		if (null != eActiveButton && eButton != eActiveButton)
+		{
+			eActiveButton.style.backgroundColor = sOffBackColor;
+			eActiveButton.style.borderColor = sOffBorderColor;
+			eActiveButton.style.color = sOffTextColor;
+			SetButtonImage(eActiveButton,"off");
+			SetButtonPadding(eActiveButton,sOffPadding);
+			eActiveButton = null; 
+
+			// insert code here for button hiding 
+			window.status = window.defaultStatus;
+		}
+
+		// IF THE BUTTON WE CLICKED IS NOT THE ACTIVE BUTTON, MAKE IT ACTIVE
+
+		if (eButton != eActiveButton)  
+		{
+			eActiveButton = eButton;
+			eActiveButton.style.borderColor = sDownBorderColor;
+			eActiveButton.style.color = sDownTextColor;
+			SetButtonPadding(eActiveButton,sDownPadding);
+			sPaneName = eActiveButton.id.replace(/tbl(.*)Button/,"$1");
+
+			// insert code here for button showing 
+			//window.status = "Now showing: " + sPaneName;
+		}
+
+		// OTHERWISE, RESET IT
+
+		else  
+		{
+			eActiveButton.style.backgroundColor = sOverBackColor;
+			eActiveButton.style.borderColor = sOverBorderColor;
+			eActiveButton.style.color = sOverTextColor;
+			SetButtonPadding(eActiveButton,sOverPadding);
+			eActiveButton = null;
+
+			// insert code here for button hiding 
+			window.status = window.defaultStatus;
+		}
+
+	}
+
+//--></SCRIPT>
+
+<TABLE ID="tblCoolbar" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONSELECTSTART="return false;">
+<TR VALIGN="middle">
+
+	<TD>
+	<TABLE ID="tblHomeButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="VBUG Home">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><A HREF="default.asp">Home</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>
+
+	<TD>
+	<TABLE ID="tblFeedbackButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="Send Us Feedback">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><A HREF="feedback.asp">Feedback</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>
+
+	<TD>
+	<TABLE ID="tblAppButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="Join VBUG!">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><A HREF="vbugapp.asp">VBUG Application</A>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>	
+	
+	<TD>
+	<TABLE ID="tblMeetingButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="Current Meeting">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><a href="currmtg.asp">Current Meeting</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>
+	
+	<TD>
+	<TABLE ID="tblTipsButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="VBUG Tips and Tricks">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><a href="tips.asp">Tips and Tricks</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>	
+
+	<TD>
+	<TABLE ID="tblNewsButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="VBUG Newsgroup">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><a href="newsgroup.asp">VBUG Online Newsgroup</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>	
+
+	<TD>&nbsp;</TD>
+
+</TR>
+</TABLE>
+
+<P><P>
+
+<!-- End CoolBar Control -->
+<p ALIGN="center"><font SIZE="5">MEETING NOTICE</font></p>
+<p align="center">July Presentation: <strong>LDAP and Active Directory </strong><BR><BR>
+by Kathi Kellenberger</P>
+<P>Date: Wednesday, July 17, 2002
+<BR>Time: 6:15 - 9:15 PM 
+<BR>Place: One CityPlace, Creve Coeur (a.k.a. Microsoft bldg) <BR>
+East of 270 and Olive, turn north off Olive at CityPlace Dr. If the door is locked, WAIT, someone will come and open it. <BR>
+<P> </P>
+Hosted by: Dave Wickersheim<BR>
+Sponsored by: <a href='http://www.Ajilon.com'>Ajilon</a><BR>
+<i>Door Prizes:</i></b>TBA!<br><BR>
+<b>Sessions:</b><BR>
+<P>
+<strong>Intro: </strong>Small Group Discussion Activity.<P>
+VBUG Webiste.  The VBUG website is in need of being updated.  We need ideas for a new look, navigation and content.  Please bring your ideas.
+<P>
+<strong>Main:</strong>
+Kathi will be talking about LDAP, Active Directory and how she used this technology in a website.
+<P>
+
+<h3>
+	<strong><b><font size="2">Steering Committee:</font></b></strong>
+</h3>
+<p>
+	<font size="2">Click below to send us an email message! </font>
+</p>
+<font size="2">
+	<table border="0">
+		<!--
+  <tr>
+    <td><img src="images/pinpurpl.gif" alt="Image Not Found" align="middle" WIDTH="21" HEIGHT="21"> </td>
+    <td><font size=2>Fred Gowin</font></td>
+    <td><font size=2>314-655-7493</font></td>
+    <td><a href="mailto:VBGuy@iname.com"><font size=2>VBGuy@iname.com</font></a></td>
+  </tr>
+-->
+		<tr>
+			<td>
+				<img src="images/pinpurpl.gif" alt="Image Not Found" align="middle" WIDTH="21" HEIGHT="21">
+			</td>
+			<td>
+				<font size="2">John Pirkey</font>
+			</td>
+			<td>
+				<font size="2">636-225-3262</font>
+			</td>
+			<td>
+				<font size="2"><a href="mailto:webmaster@stlvbug.org">webmaster@stlvbug.org</a></font>
+			</td>
+			<td>
+				&nbsp;
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<img src="images/pinpurpl.gif" alt="Image Not Found" align="middle" WIDTH="21" HEIGHT="21">
+			</td>
+			<td>
+				<font size="2">Dave Wickersheim</font>
+			</td>
+			<td>
+				<font size="2">&nbsp;</font>
+			</td>
+			<td>
+				<font size="2"><a href="mailto:dave@stlvbug.org">dave@stlvbug.org</a></font>
+			</td>
+		</tr>
+	</table>
+</font>
+<font size=2>Send an email to all of us here : <a href="mailto:committee@stlvbug.org">committee@stlvbug.org</a></font>
+<p>
+<p>
+	<font size="2">News Editor and Web Master: <em>John Pirkey</em></font>
+	<br>
+
+
+<b>
+
+<p ALIGN="center">Meeting facilities sponsored by Daugherty Systems and Source Consulting</p>
+
+<p ALIGN="center">Web site sponsored by John Pirkey</p></FONT></b>
+
+<SCRIPT LANGUAGE="JScript"><!--
+
+	//START WITH Home BUTTON ACTIVE
+
+	button_over(tblMeetingButton);
+	button_up(tblMeetingButton);
+	button_out(tblMeetingButton);
+
+//--></SCRIPT>
+
+</body>
+</html>
+

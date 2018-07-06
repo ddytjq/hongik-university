@@ -1,0 +1,211 @@
+ID=E0837
+URL=http://www.bcbdev.com/faqs/faq64.htm
+SIZE=11022
+DATE=12/07/02
+TIME=19:24:56
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+<H3>
+Q: Create and remove menu items from code.
+</H3>
+<BR>
+<H3>Background information:</H3>
+<P>
+Both <TT>TMainMenu</TT> and <TT>TPopupMenu</TT> contain an <TT>Items</TT> property. The <TT>Items</TT> property
+returns a <TT>TMenuItem</TT> pointer. The <TT>TMenuItem</TT> that is returned by the <TT>Items</TT> property
+represents an invisible root item that contains all of the menu items in the control. Think of this item as the
+root node of a tree view control. The only difference is that the root node of a tree view is visible.
+</P>
+<TT>TMenuItem</TT> has a <TT>Count</TT> property that returns the number children that are owned by the menu item.
+<TT>TMenuItem</TT> also contains an <TT>Items</TT> property. This property allows you to access all of the child menu
+items of the parent item. For example, imagine that your program has three main menu items called File, Edit and Help.
+The <TT>Items</TT> property of <TT>TMainMenu</TT> will return the invisible root item. The <TT>Count</TT> property of
+the root item will be three. The <TT>Items</TT> property of the root menu item will contain three child items: one
+for File, one for Edit, and one for Help. The following code explains this concept further.
+</P>
+<pre>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button1Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    ListBox1<b>-></b>Items<b>-></b>Clear<b>(</b><b>)</b><b>;</b>
+
+    TMenuItem <b>*</b>Root <b>=</b> MainMenu1<b>-></b>Items<b>;</b>
+
+    Label1<b>-></b>Caption <b>=</b> IntToStr<b>(</b>Root<b>-></b>Count<b>)</b><b>;</b>
+    <b>for</b><b>(</b><b>int</b> j<b>=</b><font color="blue">0</font><b>;</b> j&lt;Root<b>-></b>Count<b>;</b> j<b>++</b><b>)</b>
+        ListBox1<b>-></b>Items<b>-></b>Add<b>(</b>Root<b>-></b>Items<b>[</b>j<b>]</b><b>-></b>Caption<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+This code isn't all that useful, but it does explain how the root menu item works. The code takes the top level
+menu items and inserts a string into a listbox for each one. If your program has top level menu items call File,
+Edit, and Help, then the code would put File, Edit, and Help into the listbox.
+</P>
+<P>
+Most top level menu items contain other menu items as children. These child items can be accessed through the
+<TT>Items</TT> property of their parent. The following code places a string in a listbox for every menu item below
+the first top level menu item in the program.
+</P>
+<pre>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button1Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    ListBox1<b>-></b>Items<b>-></b>Clear<b>(</b><b>)</b><b>;</b>
+
+    TMenuItem <b>*</b>Root <b>=</b> MainMenu1<b>-></b>Items<b>;</b>
+    <b>if</b><b>(</b>Root<b>-></b>Count <b>==</b> <font color="blue">0</font><b>)</b>
+        <b>return</b><b>;</b>
+
+    TMenuItem <b>*</b>FirstItem <b>=</b> Root<b>-></b>Items<b>[</b><font color="blue">0</font><b>]</b><b>;</b>
+    <b>for</b><b>(</b><b>int</b> j<b>=</b><font color="blue">0</font><b>;</b> j&lt;Root<b>-></b>Count<b>;</b> j<b>++</b><b>)</b>
+        ListBox1<b>-></b>Items<b>-></b>Add<b>(</b>FirstItem<b>-></b>Items<b>[</b>j<b>]</b><b>-></b>Caption<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+Of course, you don't have to retrieve the menu items from the <TT>Items</TT> property if your form class already contains
+<TT>TMenuItem</TT> pointers for all the menu items in your program.
+</P>
+<P>
+<TT>TMenuItem</TT> contains a host of functions for adding and removing menu items. The <TT>Add</TT> method of <TT>TMenuItem</TT>
+adds a new child menu at the end of any existing menu items. The <TT>Add</TT> function takes a <TT>TMenuItem</TT> pointer
+as an argument. You must construct the menu item in code, assign its properties, and then call <TT>Add</TT> to make the
+item appear. <TT>Insert</TT> works just like the <TT>Add</TT> method, except that it takes an extra index argument that
+specifies where the new menu item should appear. You can delete a child menu item by calling the <TT>Delete</TT> method
+of its parent. <TT>Delete</TT> takes an integer index that determines which item should be nuked. You can also delete a
+child menu item by calling the <TT>Remove</TT> method. <TT>Remove</TT> takes a pointer to the menu item that should be
+deleted.
+</P>
+<P><B>Note:</B> Both the <TT>Remove</TT> function and the <TT>Delete</TT> function delete the <TT>TMenuItem</TT> pointer
+that they remove from the menu. You can no longer reference the menu item was you <TT>Remove</TT> or <TT>Delete</TT> it.
+For this reason, you probably should not <TT>Remove</TT> or <TT>Delete</TT> menu items that were created at design time,
+because those items have data members in the form class.
+</P>
+<H3>Adding new top-level menu items</H3>
+<P>
+This code adds a new top level menu item called Help, and several child menu items under the top level item.
+</P>
+<pre>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button4Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    TMenuItem <b>*</b>Root <b>=</b> MainMenu<b>-></b>Items<b>;</b>
+
+    <font color="navy">// create a new menu item, set the owner to the form;</font>
+    TMenuItem <b>*</b>HelpItem <b>=</b> <b>new</b> TMenuItem<b>(</b><b>this</b><b>)</b><b>;</b>
+    HelpItem<b>-></b>Caption <b>=</b> <font color="blue">"&Help"</font><b>;</b>
+    Root<b>-></b>Add<b>(</b>HelpItem<b>)</b><b>;</b>
+
+    <font color="navy">// now add child items under the new Help item.</font>
+    TMenuItem <b>*</b>ContentsItem <b>=</b> <b>new</b> TMenuItem<b>(</b><b>this</b><b>)</b><b>;</b>
+    TMenuItem <b>*</b>IndexItem    <b>=</b> <b>new</b> TMenuItem<b>(</b><b>this</b><b>)</b><b>;</b>
+    TMenuItem <b>*</b>AboutItem    <b>=</b> <b>new</b> TMenuItem<b>(</b><b>this</b><b>)</b><b>;</b>
+    ContentsItem <b>-></b>Caption <b>=</b> <font color="blue">"&Contents"</font><b>;</b>
+    IndexItem    <b>-></b>Caption <b>=</b> <font color="blue">"&Index"</font><b>;</b>
+    AboutItem    <b>-></b>Caption <b>=</b> <font color="blue">"&About"</font><b>;</b>
+
+    HelpItem<b>-></b>Add<b>(</b>ContentsItem<b>)</b><b>;</b>
+    HelpItem<b>-></b>Add<b>(</b>IndexItem<b>)</b><b>;</b>
+    HelpItem<b>-></b>Add<b>(</b>AboutItem<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+
+<H3>Adding nested menus</H3>
+<P>
+This code adds new child items to an existing menu item. The code creates a menu that resembles the File | Reopen
+menu option in the C++Builder IDE.
+</P>
+<pre>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button5Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// existing menu item is a member variable called Reopen1</font>
+    <font color="navy">// and four child menu items</font>
+    TMenuItem <b>*</b>Child1 <b>=</b> <b>new</b> TMenuItem<b>(</b><b>this</b><b>)</b><b>;</b>
+    TMenuItem <b>*</b>Child2 <b>=</b> <b>new</b> TMenuItem<b>(</b><b>this</b><b>)</b><b>;</b>
+    TMenuItem <b>*</b>Child3 <b>=</b> <b>new</b> TMenuItem<b>(</b><b>this</b><b>)</b><b>;</b>
+    TMenuItem <b>*</b>Child4 <b>=</b> <b>new</b> TMenuItem<b>(</b><b>this</b><b>)</b><b>;</b>
+
+    Child1<b>-></b>Caption <b>=</b> <font color="blue">"c:\\cbuilder3\\projects\\project1.bpr"</font><b>;</b>
+    Child2<b>-></b>Caption <b>=</b> <font color="blue">"c:\\cbuilder3\\projects\\project2.bpr"</font><b>;</b>
+    Child3<b>-></b>Caption <b>=</b> <font color="blue">"-"</font><b>;</b> <font color="navy">// separator bar</font>
+    Child4<b>-></b>Caption <b>=</b> <font color="blue">"c:\\cbuilder3\\projects\\unit1.cpp"</font><b>;</b>
+
+    Child1<b>-></b>Default <b>=</b> <b>true</b><b>;</b>
+
+    Reopen1<b>-></b>Add<b>(</b>Child1<b>)</b><b>;</b>
+    Reopen1<b>-></b>Add<b>(</b>Child2<b>)</b><b>;</b>
+    Reopen1<b>-></b>Add<b>(</b>Child3<b>)</b><b>;</b>
+    Reopen1<b>-></b>Add<b>(</b>Child4<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+
+<H3>Removing a menu item</H3>
+<P>
+This code removes the last top level menu item. All children of this item are also destroyed.
+</P>
+<pre>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button6Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    TMenuItem <b>*</b>Root <b>=</b> MainMenu1<b>-></b>Items<b>;</b>
+    <b>if</b><b>(</b>Root<b>-></b>Count <b>></b> <font color="blue">0</font><b>)</b>
+        Root<b>-></b>Delete<b>(</b>Root<b>-></b>Count <b>-</b><font color="blue">1</font><b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<H3>Adding and Removing a menu item without deleting the object</H3>
+<P>
+As mentioned earlier, removing a menu item deletes the menu item pointer. This might be a problem if you want to
+add and remove the same menu item repeatedly. Instead of calling the <TT>Add</TT> and <TT>Remove</TT> methods, you can
+simply toggle the <TT>Visible</TT> property of a menu item. This keeps the menu item pointer intact. Here is a code
+example that hides or shows the Edit menu based on the state of a check box. Notice that hiding a parent item hides all
+of its child items.
+</P>
+<pre>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>CheckBox1Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    EditMenuItem<b>-></b>Visible <b>=</b> CheckBox1<b>-></b>Checked<b>;</b>
+<b>}</b>
+</pre>
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

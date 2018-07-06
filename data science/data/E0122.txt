@@ -1,0 +1,3737 @@
+ID=E0122
+URL=http://gcc.gnu.org/ml/gcc-patches/2001-06/msg00951.html
+SIZE=141421
+DATE=12/07/02
+TIME=19:17:45
+DATASET=C
+HTML=<!-- MHonArc v2.4.7 -->
+<!--X-Subject: 2nd try for patch for automaton based pipeline hazard recognizer (part #1) -->
+<!--X-From-R13: Hynqvzve [nxnebi <iznxnebiNgbxr.gbebagb.erqung.pbz> -->
+<!--X-Date: 13 Jun 2001 18:59:31 &#45;0000 -->
+<!--X-Message-Id: 200106131859.OAA30718@toke.toronto.redhat.com -->
+<!--X-Content-Type: text/plain -->
+<!--X-Head-End-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML//EN">
+<HTML>
+<HEAD>
+<TITLE>Vladimir Makarov - 2nd try for patch for automaton based pipeline hazard recognizer (part #</TITLE>
+</HEAD>
+<BODY>
+<!--X-Body-Begin-->
+<!--X-User-Header-->
+<!--htdig_noindex-->
+<p>This is the mail archive of the 
+<tt>gcc-patches@gcc.gnu.org</tt>
+mailing list for the <a href="/">GCC project</a>.
+
+
+<!--/htdig_noindex-->
+<!--X-User-Header-End-->
+<!--X-TopPNI-->
+<!--htdig_noindex-->
+<HR>
+<table border="0">
+  <tr><th align="left">Index Nav:</th>
+      <td colspan="2">
+        [<A HREF="index.html#00951">Date&nbsp;Index</A>] [<a href="subjects.html#00951">Subject&nbsp;Index</a>] [<a href="authors.html#00951">Author&nbsp;Index</a>] [<A HREF="threads.html#00951">Thread&nbsp;Index</A>]
+      </td>
+  </tr>
+  <tr><th align="left">Message Nav:</th>
+      <td>[<A HREF="msg00950.html">Date&nbsp;Prev</A>]&nbsp;[<A HREF="msg00952.html">Date&nbsp;Next</A>]</td>
+      <td>[<A HREF="msg00950.html">Thread&nbsp;Prev</A>]&nbsp;[<A HREF="msg00963.html">Thread&nbsp;Next</A>]</td>
+  </tr>
+</table>
+<!--/htdig_noindex-->
+
+<!--X-TopPNI-End-->
+<!--X-MsgBody-->
+<!--X-Subject-Header-Begin-->
+<h1>2nd try for patch for automaton based pipeline hazard recognizer (part #1)</h1>
+<!--X-Subject-Header-End-->
+<!--X-Head-of-Message-->
+<ul>
+<li><em>To</em>: gcc-patches at gcc dot gnu dot org</li>
+<li><em>Subject</em>: 2nd try for patch for automaton based pipeline hazard recognizer (part #1)</li>
+<li><em>From</em>: Vladimir Makarov &lt;vmakarov at toke dot toronto dot redhat dot com&gt;</li>
+<li><em>Date</em>: Wed, 13 Jun 2001 14:59:09 -0400</li>
+<li><em>CC</em>: geoffk at cygnus dot com</li>
+</ul>
+<!--X-Head-of-Message-End-->
+<!--X-Head-Body-Sep-Begin-->
+<hr>
+<!--X-Head-Body-Sep-End-->
+<!--X-Body-of-Message-->
+<PRE>
+  I considerably modified the sources according to the most of Bernd
+Schmidt's comments.  This is the second try to get approval of the
+patch.  The patch has been successfully tested on i386 Linux and
+Solaris machines.
+
+Vladimir Makarov
+
+---------------Original message from Jan 31,2001-------------------------------
+  Hello, we'd like to contribute new code for more accurate
+description of pipeline behavior of processors and for fast
+recognition of pipeline hazards.  Currently gcc has only one
+construction `define_function_unit' for this.  The proposed model is
+based on describing processor functional unit reservations by
+instruction with the aid of regular expressions.  The patch translates
+new description into code for fast pipeline hazard recognition based
+on deterministic finite state automaton.
+
+  To feel the automaton description, let us consider automaton based
+description of a hypothetic superscalar RISC machine which can issue
+three insns (two integer insns and one floating point insn) on cycle
+but finish only two insns.  To describe this, we define the following
+functional units.
+
+(define_cpu_unit &quot;i0_pipeline, i1_pipeline, f_pipeline&quot;)
+(define_cpu_unit &quot;port_0, port1&quot;)
+
+All simple integer insns can be executed in any integer pipeline and
+their result is ready in two cycles.  The simple integer insns are
+issued into the first pipeline unless it is reserved, otherwise they
+are issued into the second pipeline.  Integer division and
+multiplication insns can be executed only in the second integer
+pipeline and their results are ready correspondingly in 8 and 4
+cycles.  Integer division is not pipelined, i.e. subsequent integer
+division insn can not be issued until current division insn finished.
+Floating point insns are fully pipelined and their results are ready
+in 3 cycles.  There is also additional one cycle delay in usage by
+integer insns of result produced by floating point insns.  To describe
+all of this we could specify
+
+(define_cpu_unit &quot;div&quot;)
+
+(define_insn_reservation &quot;simple&quot; 2 (eq_attr &quot;cpu&quot; &quot;int&quot;)
+                         &quot;(i0_pipeline | i1_pipeline), (port_0 | port1)&quot;)
+
+(define_insn_reservation &quot;mult&quot; 4 (eq_attr &quot;cpu&quot; &quot;mult&quot;)
+                         &quot;i1_pipeline, nothing*3, (port_0 | port1)&quot;)
+
+(define_insn_reservation &quot;div&quot; 8 (eq_attr &quot;cpu&quot; &quot;div&quot;)
+                         &quot;i1_pipeline, div*7, (port_0 | port1)&quot;)
+
+(define_insn_reservation &quot;float&quot; 3 (eq_attr &quot;cpu&quot; &quot;float&quot;)
+                         &quot;f_pipeline, nothing, (port_0 | port1))
+
+(define_bypass 4 &quot;float&quot; &quot;simple,mut,div&quot;)
+
+  To understand the reasons of writing the patch, I'd like to say
+about drawbacks of the current model of processor pipeline
+descriptions and pipeline hazard recognizer (PHR) based on it in
+comparison with the proposed one.
+
+  1. Each functional unit is believed to be reserved at the
+     instruction execution start.  This is very inaccurate model for
+     modern processors.
+
+  2. Inadequate description of instruction latency times.  Latency
+     time is bound with functional unit reserved by instruction not with
+     instruction itself.  In other words, the description is oriented
+     to describe at most one unit reservation by each instruction.  It
+     also does not permit to describe special bypasses between
+     instruction pair.
+
+  3. Implementation of the pipeline hazard recognizer interface has
+     constraints on number of functional units.  This is number of
+     bits in integer on the host machine.
+
+  4. Interface to the pipeline hazard recognizer is more complex than
+     one to automaton based pipeline recognizer.
+
+  5. Unnatural description when you write a unit and condition which
+     selects instructions using the unit.  Writing all unit
+     reservations for an instruction (an instruction class) is more
+     natural.
+
+  6. Recognition of interlock delays has slow implementation.  GCC
+     scheduler supports structures which describe the unit
+     reservations.  The more processor has functional units, the
+     slower pipeline hazard recognizer.  Such implementation would
+     become slower when we enable to reserve functional units not only
+     at the instruction execution start.  The automaton based pipeline
+     hazard recognizer speed is not depended on processor complexity.
+
+  Because transition from old descriptions to new ones is assumed to
+be long process (or will never finish fully), the patch permits to use
+old description and PHR code based on it as new one too.  You could
+use old description for one processor submodels and new one for the
+rest processor submodels.  You only need to define correctly macro
+USE_AUTOMATON_PIPELINE_INTERFACE.  By default if there are old and new
+one description in md file, the new one is used.
+
+  So the patch is safe, it will no affect the current ports unless
+pipeline description in .md is rewritten.
+
+  In general, the usage of automaton based description is more
+preferable.  The model is more rich.  It permits to describe more
+accurately pipeline characteristics of processors which results in
+improving code quality (although sometimes only on several percent
+fractions).  It could be also used as infrastructure to implement
+sophisticated and practical insn scheduling which will try many
+instruction sequences to choose the best one.
+
+  The new code (and description model) has been already used in
+several projects (ports for a VLIW processor and for a few superscalar
+RISC processors).
+
+  If the patch is approved, we could contribute a software pipeliner
+for GCC.  Without approving the patch, it has no sense because
+the software pipeliner requires automaton based pipeline hazard
+recognizer.
+
+Best regards,
+Vladimir Makarov
+
+-------------------------------------------------------------------------
+
+2001-06-13  Vladimir Makarov  &lt;vmakarov@touchme.toronto.redhat.com&gt;
+
+        * rtl.def (DEFINE_CPU_UNIT, DEFINE_QUERY_CPU_UNIT, EXCLUSION_SET,
+	PRESENCE_SET, ABSENCE_SET, DEFINE_BYPASS, DEFINE_AUTOMATON,
+	AUTOMATA_OPTION, DEFINE_RESERVATION, DEFINE_INSN_RESERVATION): New
+	RTL constructions.
+	
+	* genattr.c (main): New variable num_insn_reservations.  Increase
+	it if there is DEFINE_INSN_RESERVATION.  Output automaton based
+	pipeline hazard recognizer interface.  Use macro preprocessor
+	conditionals to brace old pipeline hazard recognizer interface.
+
+	* genattrtab.h: New file.
+	
+	* genattrtab.c: Include genattrtab.h.
+	(attr_printf, check_attr_test, make_internal_attr,
+	make_numeric_value): Move protypes into genattrtab.h.  Define them
+	as external.
+	(num_dfa_decls): New global variable.
+	(main): Process DEFINE_CPU_UNIT, DEFINE_QUERY_CPU_UNIT,
+	DEFINE_BYPASS, EXCLUSION_SET, PRESENCE_SET, ABSENCE_SET,
+	DEFINE_AUTOMATON, AUTOMATA_OPTION, DEFINE_RESERVATION,
+	DEFINE_INSN_RESERVATION.  Call expand_automata and write_automata
+	if there are automaton descriptions.  Generate using macro
+	preprocessor conditionals to brace old pipeline hazard recognizer
+	code.
+
+	* genautomata.c: New file.
+
+	* rtl.h (LINK_COST_ZERO, LINK_COST_FREE): Remove them.
+	
+        * sched-int.h: (OLD_PIPELINE_INTERFACE,
+	AUTOMATON_PIPELINE_INTERFACE, FIRST_CYCLE_MULTIPASS_SCHEDULING,
+	FIRST_CYCLE_MULTIPASS_SCHEDULING_LOOKAHEAD,
+	OLD_PIPELINE_INTERFACE, USE_AUTOMATON_PIPELINE_INTERFACE): Define
+	the default macro values.
+	(FUNCTION_UNITS_SIZE, BLOCKAGE_BITS, MAX_MULTIPLICITY,
+	MIN_BLOCKAGE, MAX_BLOCKAGE): Undefine these macros for automaton
+	pipeline interface.
+	(curr_state): Add the external definition for automaton pipeline
+        interface.
+	(haifa_insn_data): Brace definitions `blockage' and `units' by
+	preprocessor conditionals with OLD_PIPELINE_INTERFACE.
+	(INSN_BLOCKAGE, UNIT_BITS, BLOCKAGE_MASK, MIN_BLOCKAGE_COST,
+	MAX_BLOCKAGE_COST, init_target_units, insn_print_units,
+	print_block_visualization, visualize_scheduled_insns,
+	visualize_no_unit, visualize_stall_cycles, insn_issue_delay,
+	insn_unit, get_unit_last_insn, actual_hazard_this_instance): Brace
+	them by preprocessor conditionals with OLD_PIPELINE_INTERFACE.
+	
+        * haifa-sched.c (issue_rate, ISSUE_RATE): Brace them by
+	preprocessor conditionals with OLD_PIPELINE_INTERFACE.
+	(MAX_INSN_QUEUE_INDEX): New macro.
+	(insn_queue): Redefine it as pointer to array.
+	(NEXT_Q, NEXT_Q_AFTER): Use MAX_INSN_QUEUE_INDEX instead of
+	INSN_QUEUE_SIZE.
+	(max_insn_queue_index_macro_value): New variable.
+	(insert_schedule_bubbles_p, curr_state, dfa_state_size,
+	ready_try): New varaibles for automaton interface.
+	(blockage_range, clear_units, schedule_unit, actual_hazard,
+	potential_hazard): Brace them by preprocessor conditionals with
+	OLD_PIPELINE_INTERFACE.
+	(ready_element, ready_remove, max_issue): New function prototypes
+	for automaton interface.
+	(choose_ready): New function prototype.
+	(insn_unit, blockage_range, unit_last_insn, unit_tick,
+	unit_n_insns, get_unit_last_insn, clear_units, insn_issue_delay,
+	actual_hazard_this_instance, schedule_unit, actual_hazard,
+	potential_hazard): Brace them by preprocessor conditionals with
+	OLD_PIPELINE_INTERFACE.
+	(insn_cost): Use cost -1 as undefined value.  Remove
+	LINK_COST_ZERO and LINK_COST_FREE.  Brace old code by preprocessor
+	conditionals with OLD_PIPELINE_INTERFACE.  Add new code for
+	automaton pipeline interface.
+	(ready_element): New function for automaton interface.
+	(schedule_insn): Brace old code by preprocessor conditionals with
+	OLD_PIPELINE_INTERFACE.  Add new code for automaton pipeline
+	interface.  Annotate the first insns starting on new cycle.
+	(queue_to_ready): Brace old code by preprocessor conditionals with
+	OLD_PIPELINE_INTERFACE.  Add new code for automaton pipeline
+	interface.  Use MAX_INSN_QUEUE_INDEX instead of INSN_QUEUE_SIZE.
+	(debug_ready_list): Print newline when the queue is empty.
+	(MD_SCHED_INIT, MD_SCHED_REORDER, MD_SCHED_VARIABLE_ISSUE):
+	Undefine for automaton pipeline interface.
+	(MD_AUTOMATON_SCHED_INIT, MD_AUTOMATON_SCHED_REORDER): Undefine
+	for old pipeline interface.
+	(max_issue): New function for automaton pipeline interface.
+	(choose_ready): New function.
+	(schedule_block): Brace old code by preprocessor conditionals with
+	OLD_PIPELINE_INTERFACE.  Add new code for automaton pipeline
+	interface.  Print ready list before scheduling each insn.
+	(sched_init): Brace old code by preprocessor conditionals with
+	OLD_PIPELINE_INTERFACE.  Add new code for automaton pipeline
+	interface.  Initiate insn cost by -1.
+	(sched_finish): Free the current automaton state and finalize
+	automaton pipeline interface.
+	
+	* sched-rgn.c (remove_new_cpu_cycle_marks): New function
+	prototype.
+	(init_ready_list, new_ready, debug_dependencies): Brace old code
+	by preprocessor conditionals with OLD_PIPELINE_INTERFACE.  Add new
+	code for automaton pipeline interface.
+	(remove_new_cpu_cycle_marks): New function.
+	(schedule_region): Add call of remove_new_cpu_cycle_marks.
+
+	* sched-vis.c (target_units, insn_print_units, init_target_units,
+	print_block_visualization, visualize_no_unit,
+	visualize_scheduled_insns, visualize_stall_cycles): Brace them by
+	preprocessor conditionals with OLD_PIPELINE_INTERFACE.
+	(get_visual_tbl_length): Add code for automaton interface.  Brace
+	old code by preprocessor conditionals with OLD_PIPELINE_INTERFACE.
+
+        * Makefile.in (GETRUNTIME, HASHTAB, HOST_GETRUNTIME, HOST_HASHTAB,
+	HOST_VARRAY): New variables.
+	(getruntime.o, genautomata.o): New entries.
+	(genattrtab.o): Add new dependency file genattrtab.h.
+	(genattrtab): Add new dependencies.  Link it with `libm.a'.
+	(getruntime.o, hashtab.o): New entries for canadian cross.
+
+	* doc/md.texi: Description of automaton based model.
+	
+	* doc/tm.texi (USE_AUTOMATON_PIPELINE_INTERFACE,
+	MD_AUTOMATON_SCHED_INIT, MD_AUTOMATON_SCHED_REORDER,
+	DFA_SCHEDULER_PRE_CYCLE_INSN, DFA_SCHEDULER_POST_CYCLE_INSN,
+	FIRST_CYCLE_MULTIPASS_SCHEDULING,
+	FIRST_CYCLE_MULTIPASS_SCHEDULING_LOOKAHEAD,
+	INIT_SCHEDULER_BUBBLES, SCHEDULER_BUBBLE): The new macro
+	descriptions.
+	(ISSUE_RATE, MD_SCHED_INIT, MD_SCHED_REORDER, MD_SCHED_REORDER2,
+	MD_SCHED_VARIABLE_ISSUE): Add comment.
+	
+
+-----------------New file geanttrtab.c--------------------------------------
+/* External definitions of source files of genattrtab.
+   Copyright (C)  2001 Free Software Foundation, Inc.
+
+This file is part of GNU CC.
+
+GNU CC is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2, or (at your option)
+any later version.
+
+GNU CC is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GNU CC; see the file COPYING.  If not, write to
+the Free Software Foundation, 59 Temple Place - Suite 330,
+Boston, MA 02111-1307, USA.  */
+
+/* Defined in genattrtab.c: */
+extern rtx check_attr_test	PARAMS ((rtx, int, int));
+extern rtx make_numeric_value	PARAMS ((int));
+extern void make_internal_attr	PARAMS ((const char *, rtx, int));
+extern char *attr_printf	PARAMS ((int, const char *, ...))
+  ATTRIBUTE_PRINTF_2;
+
+extern int num_dfa_decls;
+
+/* Defined in genautomata.c: */
+extern void gen_cpu_unit		PARAMS ((rtx));
+extern void gen_query_cpu_unit		PARAMS ((rtx));
+extern void gen_bypass			PARAMS ((rtx));
+extern void gen_excl_set		PARAMS ((rtx));
+extern void gen_presence_set		PARAMS ((rtx));
+extern void gen_absence_set		PARAMS ((rtx));
+extern void gen_automaton		PARAMS ((rtx));
+extern void gen_automata_option		PARAMS ((rtx));
+extern void gen_reserv   		PARAMS ((rtx));
+extern void gen_insn_reserv     	PARAMS ((rtx));
+extern void initiate_automaton_gen	PARAMS ((int, char **));
+extern void expand_automata             PARAMS ((void));
+extern void write_automata              PARAMS ((void));
+-----------------End of file geanttrtab.c--------------------------------------
+
+
+Index: rtl.def
+===================================================================
+RCS file: /cvs/gcc/gcc/gcc/rtl.def,v
+retrieving revision 1.44
+diff -c -p -r1.44 rtl.def
+*** rtl.def	2001/03/28 11:03:56	1.44
+--- rtl.def	2001/06/13 18:24:28
+*************** DEF_RTL_EXPR(SEQUENCE, &quot;sequence&quot;, &quot;E&quot;, 
+*** 334,339 ****
+--- 334,477 ----
+  DEF_RTL_EXPR(ADDRESS, &quot;address&quot;, &quot;e&quot;, 'm')
+  
+  /* ----------------------------------------------------------------------
++    Constructions for CPU pipeline description described by NDFAs.
++    These do not appear in actual rtl code in the compiler.
++    ---------------------------------------------------------------------- */
++ 
++ /* (define_cpu_unit string [string]) describes cpu functional
++    units (separated by comma).
++ 
++    1st operand: Names of cpu functional units.
++    2nd operand: Name of automaton (see comments for DEFINE_AUTOMATON).
++ 
++    All define_reservations, define_cpu_units, and
++    define_query_cpu_units should have unique names which may not be
++    &quot;nothing&quot;.  */
++ DEF_RTL_EXPR(DEFINE_CPU_UNIT, &quot;define_cpu_unit&quot;, &quot;sS&quot;, 'x')
++ 
++ /* (define_query_cpu_unit string [string]) describes cpu functional
++    units analogously to define_cpu_unit.  If we use automaton without
++    minimization, the reservation of such units can be queried for
++    automaton state.  */
++ DEF_RTL_EXPR(DEFINE_QUERY_CPU_UNIT, &quot;define_query_cpu_unit&quot;, &quot;sS&quot;, 'x')
++ 
++ /* (exclusion_set string string) means that each CPU functional unit
++    in the first string can not be reserved simultaneously with any
++    unit whose name is in the second string and vise versa.  CPU units
++    in the string are separated by commas.  For example, it is useful
++    for description CPU with fully pipelined floating point functional
++    unit which can execute simultaneously only single floating point
++    insns or only double floating point insns.  */
++ DEF_RTL_EXPR(EXCLUSION_SET, &quot;exclusion_set&quot;, &quot;ss&quot;, 'x')
++ 
++ /* (presence_set string string) means that each CPU functional unit in
++    the first string can not be reserved unless at least one of units
++    whose names are in the second string is reserved.  This is an
++    asymmetric relation.  CPU units in the string are separated by
++    commas.  For example, it is useful for description that slot1 is
++    reserved after slot0 reservation for VLIW processor.  */
++ DEF_RTL_EXPR(PRESENCE_SET, &quot;presence_set&quot;, &quot;ss&quot;, 'x')
++ 
++ /* (absence_set string string) means that each CPU functional unit in
++    the first string can not be reserved only if each unit whose name
++    is in the second string is not reserved.  This is an asymmetric
++    relation (actually exclusion set is analogous to this one but it is
++    symmetric).  CPU units in the string are separated by commas.  For
++    example, it is useful for description that slot0 can not be
++    reserved after slot1 or slot2 reservation for VLIW processor.  */
++ DEF_RTL_EXPR(ABSENCE_SET, &quot;absence_set&quot;, &quot;ss&quot;, 'x')
++ 
++ /* (define_bypass number out_insn_names in_insn_names) names bypass
++    with given latency (the first number) from insns given by the first
++    string (see define_insn_reservation) into insns given by the second
++    string.  Insn names in the strings are separated by commas.  The
++    third operand is optional name of function which is additional
++    guard for the bypass.  The function will get the two insns as
++    parameters.  If the function returns zero the bypass will be
++    ignored for this case.  Additional guard is necessary to recognize
++    complicated bypasses, e.g. when consumer is load address.  */
++ DEF_RTL_EXPR(DEFINE_BYPASS, &quot;define_bypass&quot;, &quot;issS&quot;, 'x')
++ 
++ /* (define_automaton string) describes names of automata generated and
++    used for pipeline hazards recognition.  The names are separated by
++    comma.  Actually it is possibly to generate the single automaton
++    but unfortunately it can be very large.  If we use more one
++    automata, the summary size of the automata usually is less than the
++    single one.  The automaton name is used in define_cpu_unit and
++    define_query_cpu_unit.  All automata should have unique names.  */
++ DEF_RTL_EXPR(DEFINE_AUTOMATON, &quot;define_automaton&quot;, &quot;s&quot;, 'x')
++ 
++ /* (automata_option string) describes option for generation of
++    automata.  Currently there are the following options:
++ 
++    o &quot;no-minimization&quot; which makes no minimization of automata.  This
++      is only worth to do when we are going to query CPU functional
++      unit reservations in an automaton state.
++ 
++    o &quot;w&quot; which means generation of file describing the result
++      automaton.  The file can be used for the description verification.
++ 
++    o &quot;ndfa&quot; which makes nondeterministic finite state automata.  */
++ DEF_RTL_EXPR(AUTOMATA_OPTION, &quot;automata_option&quot;, &quot;s&quot;, 'x')
++ 
++ /* (define_reservation string string) names reservation (the first
++    string) of cpu functional units (the 2nd string).  Sometimes unit
++    reservations for different insns contain common parts.  In such
++    case, you can describe common part and use its name (the 1st
++    parameter) in regular expression in define_insn_reservation.  All
++    define_reservations, define_cpu_units, and define_query_cpu_units
++    should have unique names which may not be &quot;nothing&quot;.  */
++ DEF_RTL_EXPR(DEFINE_RESERVATION, &quot;define_reservation&quot;, &quot;ss&quot;, 'x')
++ 
++ /* (define_insn_reservation name default_latency condition regexpr)
++    describes reservation of cpu functional units (the 3nd operand) for
++    instruction which is selected by the condition (the 2nd parameter).
++    The first parameter is used for output of debugging information.
++    The reservations are described by a regular expression according
++    the following syntax:
++ 
++        regexp = regexp &quot;,&quot; oneof
++               | oneof
++ 
++        oneof = oneof &quot;|&quot; allof
++              | allof
++ 
++        allof = allof &quot;+&quot; repeat
++              | repeat
++  
++        repeat = element &quot;*&quot; number
++               | element
++ 
++        element = cpu_function_unit_name
++                | reservation_name
++                | result_name
++                | &quot;nothing&quot;
++                | &quot;(&quot; regexp &quot;)&quot;
++ 
++        1. &quot;,&quot; is used for describing start of the next cycle in
++        reservation.
++ 
++        2. &quot;|&quot; is used for describing the reservation described by the
++        first regular expression *or* the reservation described by the
++        second regular expression *or* etc.
++ 
++        3. &quot;+&quot; is used for describing the reservation described by the
++        first regular expression *and* the reservation described by the
++        second regular expression *and* etc.
++ 
++        4. &quot;*&quot; is used for convinience and simply means sequence in
++        which the regular expression are repeated NUMBER times with
++        cycle advancing (see &quot;,&quot;).
++ 
++        5. cpu functional unit name which means its reservation.
++ 
++        6. reservation name -- see define_reservation.
++ 
++        7. string &quot;nothing&quot; means no units reservation.  */
++ 
++ DEF_RTL_EXPR(DEFINE_INSN_RESERVATION, &quot;define_insn_reservation&quot;, &quot;sies&quot;, 'x')
++ 
++ /* ----------------------------------------------------------------------
+     Expressions used for insn attributes.  These also do not appear in
+     actual rtl code in the compiler.
+     ---------------------------------------------------------------------- */
+Index: genattr.c
+===================================================================
+RCS file: /cvs/gcc/gcc/gcc/genattr.c,v
+retrieving revision 1.40
+diff -c -p -r1.40 genattr.c
+*** genattr.c	2001/04/02 16:29:31	1.40
+--- genattr.c	2001/06/13 18:24:28
+*************** main (argc, argv)
+*** 193,198 ****
+--- 193,199 ----
+    int have_delay = 0;
+    int have_annul_true = 0;
+    int have_annul_false = 0;
++   int num_insn_reservations = 0;
+    int num_units = 0;
+    struct range all_simultaneity, all_multiplicity;
+    struct range all_ready_cost, all_issue_delay, all_blockage;
+*************** main (argc, argv)
+*** 308,317 ****
+  	  extend_range (&amp;all_issue_delay,
+  			unit-&gt;issue_delay.min, unit-&gt;issue_delay.max);
+  	}
+      }
+  
+!   if (num_units &gt; 0)
+      {
+        /* Compute the range of blockage cost values.  See genattrtab.c
+  	 for the derivation.  BLOCKAGE (E,C) when SIMULTANEITY is zero is
+  
+--- 309,428 ----
+  	  extend_range (&amp;all_issue_delay,
+  			unit-&gt;issue_delay.min, unit-&gt;issue_delay.max);
+  	}
++       else if (GET_CODE (desc) == DEFINE_INSN_RESERVATION)
++ 	num_insn_reservations++;
+      }
+  
+!   if (num_insn_reservations == 0)
+      {
++       printf (&quot;\n#ifndef AUTOMATON_PIPELINE_INTERFACE\n&quot;);
++       printf (&quot;#define AUTOMATON_PIPELINE_INTERFACE 0\n&quot;);
++       printf (&quot;#endif\n\n&quot;);
++     }
++   else
++     {
++       /* Output interface for pipeline hazards recognition based on
++          DFA (deterministic finite state automata.  */
++       printf (&quot;\n#ifndef AUTOMATON_PIPELINE_INTERFACE\n&quot;);
++       printf (&quot;#define AUTOMATON_PIPELINE_INTERFACE 1\n&quot;);
++       printf (&quot;#endif\n\n&quot;);
++       printf (&quot;#ifndef AUTOMATON_STATE_ALTS\n&quot;);
++       printf (&quot;#define AUTOMATON_STATE_ALTS 0\n&quot;);
++       printf (&quot;#endif\n\n&quot;);
++       printf (&quot;#ifndef CPU_UNITS_QUERY\n&quot;);
++       printf (&quot;#define CPU_UNITS_QUERY 0\n&quot;);
++       printf (&quot;#endif\n\n&quot;);
++       /* Interface itself: */
++       printf (&quot;#if AUTOMATON_PIPELINE_INTERFACE\n\n&quot;);
++       printf (&quot;#define INSN_SCHEDULING\n\n&quot;);
++       printf (&quot;/* Insn latency time defined in define_insn_reservation. */\n&quot;);
++       printf (&quot;extern int insn_default_latency PARAMS ((rtx));\n\n&quot;);
++       printf (&quot;/* Return nonzero if there is a bypass for given insn\n&quot;);
++       printf (&quot;   which is a data producer.  */\n&quot;);
++       printf (&quot;extern int bypass_p PARAMS ((rtx));\n\n&quot;);
++       printf (&quot;/* Insn latency time on data consumed by the 2nd insn.\n&quot;);
++       printf (&quot;   Use the function if bypass_p returns nonzero for\n&quot;);
++       printf (&quot;   the 1st insn. */\n&quot;);
++       printf (&quot;extern int insn_latency PARAMS ((rtx, rtx));\n\n&quot;);
++       printf (&quot;/* The following function returns number of alternative\n&quot;);
++       printf (&quot;   reservations of given insn.  It may be used for better\n&quot;);
++       printf (&quot;   insns scheduling heuristics. */\n&quot;);
++       printf (&quot;extern int insn_alts PARAMS ((rtx));\n\n&quot;);
++       printf (&quot;/* Maximal possible number of insns waiting results being\n&quot;);
++       printf (&quot;   produced by insns whose execution is not finished. */\n&quot;);
++       printf (&quot;extern int max_insn_queue_index;\n\n&quot;);
++       printf (&quot;/* Pointer to data describing current state of DFA.  */\n&quot;);
++       printf (&quot;typedef void *state_t;\n\n&quot;);
++       printf (&quot;/* Size of the data in bytes.  */\n&quot;);
++       printf (&quot;extern int state_size PARAMS ((void));\n\n&quot;);
++       printf (&quot;/* Initiate given DFA state, i.e. Set up the state\n&quot;);
++       printf (&quot;   as all functional units were not reserved.  */\n&quot;);
++       printf (&quot;extern void state_reset PARAMS ((state_t));\n&quot;);
++       printf (&quot;/* The following function returns negative value if given\n&quot;);
++       printf (&quot;   insn can be issued in processor state described by given\n&quot;);
++       printf (&quot;   DFA state.  In this case, the DFA state is changed to\n&quot;);
++       printf (&quot;   reflect the current and future reservations by given\n&quot;);
++       printf (&quot;   insn.  Otherwise the function returns minimal time\n&quot;);
++       printf (&quot;   delay to issue the insn.  This delay may be zero\n&quot;);
++       printf (&quot;   for superscalar or VLIW processors.  If the second\n&quot;);
++       printf (&quot;   parameter is NULL the function changes given DFA state\n&quot;);
++       printf (&quot;   as new processor cycle started.  */\n&quot;);
++       printf (&quot;extern int state_transition PARAMS ((state_t, rtx));\n&quot;);
++       printf (&quot;\n#if AUTOMATON_STATE_ALTS\n&quot;);
++       printf (&quot;/* The following function returns number of possible\n&quot;);
++       printf (&quot;   alternative reservations of given insn in given\n&quot;);
++       printf (&quot;   DFA state.  It may be used for better insns scheduling\n&quot;);
++       printf (&quot;   heuristics.  By default the function is defined if\n&quot;);
++       printf (&quot;   macro AUTOMATON_STATE_ALTS is defined because its\n&quot;);
++       printf (&quot;   implementation may require much memory.  */\n&quot;);
++       printf (&quot;extern int state_alts PARAMS ((state_t, rtx));\n&quot;);
++       printf (&quot;#endif\n&quot;);
++       printf (&quot;extern int min_issue_delay PARAMS ((state_t, rtx));\n&quot;);
++       printf (&quot;/* The following function returns nonzero if no one insn\n&quot;);
++       printf (&quot;   can be issued in current DFA state. */\n&quot;);
++       printf (&quot;extern int state_dead_lock_p PARAMS ((state_t));\n&quot;);
++       printf (&quot;/* The function returns minimal delay of issue of the 2nd\n&quot;);
++       printf (&quot;   insn after issuing the 1st insn in given DFA state.\n&quot;);
++       printf (&quot;   The 1st insn should be issued in given state (i.e.\n&quot;);
++       printf (&quot;    state_transition should return negative value for\n&quot;);
++       printf (&quot;    the insn and the state).  Data dependencies between\n&quot;);
++       printf (&quot;    the insns are ignored by the function.  */\n&quot;);
++       printf
++ 	(&quot;extern int min_insn_conflict_delay PARAMS ((state_t, rtx, rtx));\n&quot;);
++       printf (&quot;/* The following function outputs reservations for given\n&quot;);
++       printf (&quot;   insn as they are described in the corresponding\n&quot;);
++       printf (&quot;   define_insn_reservation.  */\n&quot;);
++       printf (&quot;extern void print_reservation PARAMS ((FILE *, rtx));\n&quot;);
++       printf (&quot;\n#if CPU_UNITS_QUERY\n&quot;);
++       printf (&quot;/* The following function returns code of functional unit\n&quot;);
++       printf (&quot;   with given name (see define_cpu_unit). */\n&quot;);
++       printf (&quot;extern int get_cpu_unit_code PARAMS ((const char *));\n&quot;);
++       printf (&quot;/* The following function returns nonzero if functional\n&quot;);
++       printf (&quot;   unit with given code is currently reserved in given\n&quot;);
++       printf (&quot;   DFA state.  */\n&quot;);
++       printf (&quot;extern int cpu_unit_reservation_p PARAMS ((state_t, int));\n&quot;);
++       printf (&quot;#endif\n&quot;);
++       printf (&quot;/* Initiate and finish work with DFA.  They should be\n&quot;);
++       printf (&quot;   called as the first and the last interface\n&quot;);
++       printf (&quot;   functions.  */\n&quot;);
++       printf (&quot;extern void dfa_start PARAMS ((void));\n&quot;);
++       printf (&quot;extern void dfa_finish PARAMS ((void));\n&quot;);
++       printf (&quot;#endif /* #if AUTOMATON_PIPELINE_INTERFACE */\n\n&quot;);
++     }
++ 
++   if (num_units == 0)
++     {
++       printf (&quot;\n#ifndef OLD_PIPELINE_INTERFACE\n&quot;);
++       printf (&quot;#define OLD_PIPELINE_INTERFACE 0\n&quot;);
++       printf (&quot;#endif\n\n&quot;);
++     }
++   else if (num_units &gt; 0)
++     {
++       printf (&quot;\n#ifndef OLD_PIPELINE_INTERFACE\n&quot;);
++       printf (&quot;#define OLD_PIPELINE_INTERFACE 1\n&quot;);
++       printf (&quot;#endif\n\n&quot;);
++       printf (&quot;#if OLD_PIPELINE_INTERFACE\n\n&quot;);
++ 
+        /* Compute the range of blockage cost values.  See genattrtab.c
+  	 for the derivation.  BLOCKAGE (E,C) when SIMULTANEITY is zero is
+  
+*************** main (argc, argv)
+*** 348,353 ****
+--- 459,465 ----
+  
+        write_units (num_units, &amp;all_multiplicity, &amp;all_simultaneity,
+  		   &amp;all_ready_cost, &amp;all_issue_delay, &amp;all_blockage);
++       printf (&quot;#endif /* #if OLD_PIPELINE_INTERFACE */\n\n&quot;);
+      }
+  
+    /* Output flag masks for use by reorg.  
+Index: genattrtab.c
+===================================================================
+RCS file: /cvs/gcc/gcc/gcc/genattrtab.c,v
+retrieving revision 1.90
+diff -c -p -r1.90 genattrtab.c
+*** genattrtab.c	2001/04/13 21:10:14	1.90
+--- genattrtab.c	2001/06/13 18:24:29
+*************** Boston, MA 02111-1307, USA.  */
+*** 110,115 ****
+--- 110,117 ----
+  #include &quot;obstack.h&quot;
+  #include &quot;errors.h&quot;
+  
++ #include &quot;genattrtab.h&quot;
++ 
+  static struct obstack obstack1, obstack2;
+  struct obstack *hash_obstack = &amp;obstack1;
+  struct obstack *temp_obstack = &amp;obstack2;
+*************** static int have_annul_true, have_annul_f
+*** 304,309 ****
+--- 306,313 ----
+  static int num_units, num_unit_opclasses;
+  static int num_insn_ents;
+  
++ int num_dfa_decls;
++ 
+  /* Used as operand to `operate_exp':  */
+  
+  enum operator {PLUS_OP, MINUS_OP, POS_MINUS_OP, EQ_OP, OR_OP, ORX_OP, MAX_OP, MIN_OP, RANGE_OP};
+*************** rtx pic_offset_table_rtx;
+*** 365,374 ****
+  static void attr_hash_add_rtx	PARAMS ((int, rtx));
+  static void attr_hash_add_string PARAMS ((int, char *));
+  static rtx attr_rtx		PARAMS ((enum rtx_code, ...));
+- static char *attr_printf	PARAMS ((int, const char *, ...))
+-   ATTRIBUTE_PRINTF_2;
+  static char *attr_string        PARAMS ((const char *, int));
+- static rtx check_attr_test	PARAMS ((rtx, int, int));
+  static rtx check_attr_value	PARAMS ((rtx, struct attr_desc *));
+  static rtx convert_set_attr_alternative PARAMS ((rtx, struct insn_def *));
+  static rtx convert_set_attr	PARAMS ((rtx, struct insn_def *));
+--- 369,375 ----
+*************** static void write_const_num_delay_slots 
+*** 451,460 ****
+  static int n_comma_elts		PARAMS ((const char *));
+  static char *next_comma_elt	PARAMS ((const char **));
+  static struct attr_desc *find_attr PARAMS ((const char *, int));
+- static void make_internal_attr	PARAMS ((const char *, rtx, int));
+  static struct attr_value *find_most_used  PARAMS ((struct attr_desc *));
+  static rtx find_single_value	PARAMS ((struct attr_desc *));
+- static rtx make_numeric_value	PARAMS ((int));
+  static void extend_range	PARAMS ((struct range *, int, int));
+  static rtx attr_eq		PARAMS ((const char *, const char *));
+  static const char *attr_numeral	PARAMS ((int));
+--- 452,459 ----
+*************** attr_rtx VPARAMS ((enum rtx_code code, .
+*** 741,747 ****
+  
+     rtx attr_printf (len, format, [arg1, ..., argn])  */
+  
+! static char *
+  attr_printf VPARAMS ((register int len, const char *fmt, ...))
+  {
+  #ifndef ANSI_PROTOTYPES
+--- 740,746 ----
+  
+     rtx attr_printf (len, format, [arg1, ..., argn])  */
+  
+! char *
+  attr_printf VPARAMS ((register int len, const char *fmt, ...))
+  {
+  #ifndef ANSI_PROTOTYPES
+*************** attr_copy_rtx (orig)
+*** 929,935 ****
+  
+     Return the new expression, if any.   */
+  
+! static rtx
+  check_attr_test (exp, is_const, lineno)
+       rtx exp;
+       int is_const;
+--- 928,934 ----
+  
+     Return the new expression, if any.   */
+  
+! rtx
+  check_attr_test (exp, is_const, lineno)
+       rtx exp;
+       int is_const;
+*************** find_attr (name, create)
+*** 5865,5871 ****
+  
+  /* Create internal attribute with the given default value.  */
+  
+! static void
+  make_internal_attr (name, value, special)
+       const char *name;
+       rtx value;
+--- 5864,5870 ----
+  
+  /* Create internal attribute with the given default value.  */
+  
+! void
+  make_internal_attr (name, value, special)
+       const char *name;
+       rtx value;
+*************** find_single_value (attr)
+*** 5932,5938 ****
+  
+  /* Return (attr_value &quot;n&quot;) */
+  
+! static rtx
+  make_numeric_value (n)
+       int n;
+  {
+--- 5931,5937 ----
+  
+  /* Return (attr_value &quot;n&quot;) */
+  
+! rtx
+  make_numeric_value (n)
+       int n;
+  {
+*************** from the machine description file `md'. 
+*** 6082,6087 ****
+--- 6081,6087 ----
+  
+    /* Read the machine description.  */
+  
++   initiate_automaton_gen (argc, argv);
+    while (1)
+      {
+        int lineno;
+*************** from the machine description file `md'. 
+*** 6110,6115 ****
+--- 6110,6155 ----
+  	  gen_unit (desc, lineno);
+  	  break;
+  
++ 	case DEFINE_CPU_UNIT:
++ 	  gen_cpu_unit (desc);
++ 	  break;
++ 	  
++ 	case DEFINE_QUERY_CPU_UNIT:
++ 	  gen_query_cpu_unit (desc);
++ 	  break;
++ 	  
++ 	case DEFINE_BYPASS:
++ 	  gen_bypass (desc);
++ 	  break;
++ 	  
++ 	case EXCLUSION_SET:
++ 	  gen_excl_set (desc);
++ 	  break;
++ 	  
++ 	case PRESENCE_SET:
++ 	  gen_presence_set (desc);
++ 	  break;
++ 	  
++ 	case ABSENCE_SET:
++ 	  gen_absence_set (desc);
++ 	  break;
++ 	  
++ 	case DEFINE_AUTOMATON:
++ 	  gen_automaton (desc);
++ 	  break;
++ 	  
++ 	case AUTOMATA_OPTION:
++ 	  gen_automata_option (desc);
++ 	  break;
++ 	  
++ 	case DEFINE_RESERVATION:
++ 	  gen_reserv (desc);
++ 	  break;
++ 	  
++ 	case DEFINE_INSN_RESERVATION:
++ 	  gen_insn_reserv (desc);
++ 	  break;
++ 
+  	default:
+  	  break;
+  	}
+*************** from the machine description file `md'. 
+*** 6138,6143 ****
+--- 6178,6188 ----
+    if (num_units)
+      expand_units ();
+  
++   /* Build DFA, output some functions and expand DFA information into
++      new attributes.  */
++   if (num_dfa_decls)
++     expand_automata ();
++ 
+    printf (&quot;#include \&quot;config.h\&quot;\n&quot;);
+    printf (&quot;#include \&quot;system.h\&quot;\n&quot;);
+    printf (&quot;#include \&quot;rtl.h\&quot;\n&quot;);
+*************** from the machine description file `md'. 
+*** 6213,6219 ****
+  
+    /* Write out information about function units.  */
+    if (num_units)
+!     write_function_unit_info ();
+  
+    /* Write out constant delay slot info */
+    write_const_num_delay_slots ();
+--- 6258,6277 ----
+  
+    /* Write out information about function units.  */
+    if (num_units)
+!     {
+!       printf (&quot;#if OLD_PIPELINE_INTERFACE\n&quot;);
+!       write_function_unit_info ();
+!       printf (&quot;#endif /* #if OLD_PIPELINE_INTERFACE */\n\n&quot;);
+!     }
+! 
+!   if (num_dfa_decls)
+!     {
+!       /* Output code for pipeline hazards recognition based on
+! 	 DFA (deterministic finite state automata. */
+!       printf (&quot;#if AUTOMATON_PIPELINE_INTERFACE\n&quot;);
+!       write_automata ();
+!       printf (&quot;#endif /* #if AUTOMATON_PIPELINE_INTERFACE */\n\n&quot;);
+!     }
+  
+    /* Write out constant delay slot info */
+    write_const_num_delay_slots ();
+Index: rtl.h
+===================================================================
+RCS file: /cvs/gcc/gcc/gcc/rtl.h,v
+retrieving revision 1.264
+diff -c -p -r1.264 rtl.h
+*** rtl.h	2001/06/09 22:39:23	1.264
+--- rtl.h	2001/06/13 18:24:29
+*************** typedef struct rtx_def
+*** 110,120 ****
+    ENUM_BITFIELD(machine_mode) mode : 8;
+  
+    /* 1 in an INSN if it can alter flow of control
+!      within this function.
+!      LINK_COST_ZERO in an INSN_LIST.  */
+    unsigned int jump : 1;
+!   /* 1 in an INSN if it can call another function.
+!      LINK_COST_FREE in an INSN_LIST.  */
+    unsigned int call : 1;
+    /* 1 in a REG if value of this expression will never change during
+       the current function, even though it is not manifestly constant.
+--- 110,118 ----
+    ENUM_BITFIELD(machine_mode) mode : 8;
+  
+    /* 1 in an INSN if it can alter flow of control
+!      within this function.  */
+    unsigned int jump : 1;
+!   /* 1 in an INSN if it can call another function.  */
+    unsigned int call : 1;
+    /* 1 in a REG if value of this expression will never change during
+       the current function, even though it is not manifestly constant.
+*************** extern unsigned int subreg_regno 	PARAMS
+*** 899,914 ****
+  /* During sched, for an insn, 1 means that the insn must be scheduled together
+     with the preceding insn.  */
+  #define SCHED_GROUP_P(INSN) ((INSN)-&gt;in_struct)
+- 
+- /* During sched, for the LOG_LINKS of an insn, these cache the adjusted
+-    cost of the dependence link.  The cost of executing an instruction
+-    may vary based on how the results are used.  LINK_COST_ZERO is 1 when
+-    the cost through the link varies and is unchanged (i.e., the link has
+-    zero additional cost).  LINK_COST_FREE is 1 when the cost through the
+-    link is zero (i.e., the link makes the cost free).  In other cases,
+-    the adjustment to the cost is recomputed each time it is needed.  */
+- #define LINK_COST_ZERO(X) ((X)-&gt;jump)
+- #define LINK_COST_FREE(X) ((X)-&gt;call)
+  
+  /* For a SET rtx, SET_DEST is the place that is set
+     and SET_SRC is the value it is set to.  */
+--- 897,902 ----
+Index: sched-int.h
+===================================================================
+RCS file: /cvs/gcc/gcc/gcc/sched-int.h,v
+retrieving revision 1.8
+diff -c -p -r1.8 sched-int.h
+*** sched-int.h	2001/03/01 13:21:30	1.8
+--- sched-int.h	2001/06/13 18:24:29
+*************** along with GNU CC; see the file COPYING.
+*** 20,25 ****
+--- 20,99 ----
+  the Free Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+  02111-1307, USA.  */
+  
++ /* The following definition is for old genattrtab which has no code
++    for generation of automata.  Macro OLD_PIPELINE_INTERFACE is set up
++    to nonzero in file generated by genattr if there is a traditional
++    pipeline description in .md file.  */
++ #ifndef OLD_PIPELINE_INTERFACE
++ #define OLD_PIPELINE_INTERFACE 1
++ #endif
++ 
++ /* Macro AUTOMATON_PIPELINE_INTERFACE is set up to nonzero in file
++    generated by genattr if there is a DFA pipeline description in .md
++    file.  Macro USE_AUTOMATON_PIPELINE_INTERFACE defines when should
++    we use the DFA ot traditional description.  When there are
++    traditional and DFA descriptions, the user should define the macro.  */
++ #ifndef AUTOMATON_PIPELINE_INTERFACE
++ #define AUTOMATON_PIPELINE_INTERFACE 0
++ #endif
++ 
++ /* If the following macro value is nonzero, we will make multi-pass
++    scheduling for the first cycle.  In other words, we will try to
++    choose ready insn which permits to start maximum number of insns on
++    the same cycle.  */
++ #ifndef FIRST_CYCLE_MULTIPASS_SCHEDULING
++ #define FIRST_CYCLE_MULTIPASS_SCHEDULING 0
++ #endif
++ 
++ /* The following macro defines how many insns in queue `ready' will we
++    try for multi-pass scheduling.  */
++ #ifndef FIRST_CYCLE_MULTIPASS_SCHEDULING_LOOKAHEAD
++ #define FIRST_CYCLE_MULTIPASS_SCHEDULING_LOOKAHEAD 0
++ #endif
++ 
++ /* At least one of the two macro should have nonzero value.  */ 
++ #if !OLD_PIPELINE_INTERFACE &amp;&amp; !AUTOMATON_PIPELINE_INTERFACE
++ #undef OLD_PIPELINE_INTERFACE
++ #define OLD_PIPELINE_INTERFACE 1
++ #endif
++ 
++ #if OLD_PIPELINE_INTERFACE &amp;&amp; !AUTOMATON_PIPELINE_INTERFACE
++ /* We always use traditional description if there is only traditional
++    description.  */
++ #undef USE_AUTOMATON_PIPELINE_INTERFACE
++ #define USE_AUTOMATON_PIPELINE_INTERFACE 0
++ #else
++ #if !OLD_PIPELINE_INTERFACE &amp;&amp; AUTOMATON_PIPELINE_INTERFACE
++ /* We always use DFA description if there is only DFA description.  */
++ #undef USE_AUTOMATON_PIPELINE_INTERFACE
++ #define USE_AUTOMATON_PIPELINE_INTERFACE 1
++ #else
++ /* By default we use DFA description if there are two descriptions
++    (traditional and DFA based ones).  */
++ #ifndef USE_AUTOMATON_PIPELINE_INTERFACE
++ #define USE_AUTOMATON_PIPELINE_INTERFACE 1
++ #endif
++ #endif
++ #endif
++ 
++ /* The following is for safety to support the two pipeline description
++    interfaces.  The scheduler using only DFA description should never
++    use the following macros.  */
++ #if !OLD_PIPELINE_INTERFACE
++ 
++ #undef FUNCTION_UNITS_SIZE
++ #undef BLOCKAGE_BITS
++ #undef MAX_MULTIPLICITY
++ #undef MIN_BLOCKAGE
++ #undef MAX_BLOCKAGE
++ 
++ #endif /* #if !OLD_PIPELINE_INTERFACE */
++ 
++ #if AUTOMATON_PIPELINE_INTERFACE
++ /* Pointer to data describing the current DFA state.  */
++ extern state_t curr_state;
++ #endif
++ 
+  /* Forward declaration.  */
+  struct ready_list;
+  
+*************** struct haifa_insn_data
+*** 171,179 ****
+--- 245,257 ----
+       the ready queue when its counter reaches zero.  */
+    int dep_count;
+  
++   /* The scheduler using only DFA description should never use the
++      following member.  */
++ #if OLD_PIPELINE_INTERFACE
+    /* An encoding of the blockage range function.  Both unit and range
+       are coded.  */
+    unsigned int blockage;
++ #endif
+  
+    /* Number of instructions referring to this insn.  */
+    int ref_count;
+*************** struct haifa_insn_data
+*** 184,191 ****
+--- 262,273 ----
+  
+    short cost;
+  
++   /* The scheduler using only DFA description should never use the
++      following member.  */
++ #if OLD_PIPELINE_INTERFACE
+    /* An encoding of the function units used.  */
+    short units;
++ #endif
+  
+    /* This weight is an estimation of the insn's contribution to
+       register pressure.  */
+*************** extern struct haifa_insn_data *h_i_d;
+*** 217,222 ****
+--- 299,309 ----
+  #define INSN_UNIT(INSN)		(h_i_d[INSN_UID (INSN)].units)
+  #define INSN_REG_WEIGHT(INSN)	(h_i_d[INSN_UID (INSN)].reg_weight)
+  
++ /* The following is for safety to support the two pipeline description
++    interfaces.  The scheduler using only DFA description should never
++    use the following macros.  */
++ #if OLD_PIPELINE_INTERFACE
++ 
+  #define INSN_BLOCKAGE(INSN)	(h_i_d[INSN_UID (INSN)].blockage)
+  #define UNIT_BITS		5
+  #define BLOCKAGE_MASK		((1 &lt;&lt; BLOCKAGE_BITS) - 1)
+*************** extern struct haifa_insn_data *h_i_d;
+*** 233,238 ****
+--- 320,327 ----
+  #define MIN_BLOCKAGE_COST(R) ((R) &gt;&gt; (HOST_BITS_PER_INT / 2))
+  #define MAX_BLOCKAGE_COST(R) ((R) &amp; ((1 &lt;&lt; (HOST_BITS_PER_INT / 2)) - 1))
+  
++ #endif /* #if OLD_PIPELINE_INTERFACE */
++ 
+  extern FILE *sched_dump;
+  extern int sched_verbose;
+  
+*************** extern int sched_verbose;
+*** 245,257 ****
+--- 334,358 ----
+  #endif
+  
+  /* Functions in sched-vis.c.  */
++ 
++ /* The scheduler using only DFA description never calls the following
++    functions.  */
++ #if OLD_PIPELINE_INTERFACE
+  extern void init_target_units PARAMS ((void));
+  extern void insn_print_units PARAMS ((rtx));
++ #endif /* #if OLD_PIPELINE_INTERFACE */
++ 
+  extern void init_block_visualization PARAMS ((void));
++ 
++ /* The scheduler using only DFA description never calls the following
++    functions.  */
++ #if OLD_PIPELINE_INTERFACE
+  extern void print_block_visualization PARAMS ((const char *));
+  extern void visualize_scheduled_insns PARAMS ((int));
+  extern void visualize_no_unit PARAMS ((rtx));
+  extern void visualize_stall_cycles PARAMS ((int));
++ #endif /* #if OLD_PIPELINE_INTERFACE */
++ 
+  extern void visualize_alloc PARAMS ((void));
+  extern void visualize_free PARAMS ((void));
+  
+*************** extern void restore_line_notes PARAMS ((
+*** 280,286 ****
+--- 381,392 ----
+  extern void rm_redundant_line_notes PARAMS ((void));
+  extern void rm_other_notes PARAMS ((rtx, rtx));
+  
++ /* The scheduler using only DFA description never calls the following
++    function.  */
++ #if OLD_PIPELINE_INTERFACE
+  extern int insn_issue_delay PARAMS ((rtx));
++ #endif
++ 
+  extern int set_priorities PARAMS ((rtx, rtx));
+  
+  extern void schedule_block PARAMS ((int, int));
+*************** extern void ready_add PARAMS ((struct re
+*** 291,298 ****
+  
+  /* The following are exported for the benefit of debugging functions.  It
+     would be nicer to keep them private to haifa-sched.c.  */
+  extern int insn_unit PARAMS ((rtx));
+  extern int insn_cost PARAMS ((rtx, rtx, rtx));
+  extern rtx get_unit_last_insn PARAMS ((int));
+  extern int actual_hazard_this_instance PARAMS ((int, int, rtx, int, int));
+! 
+--- 397,414 ----
+  
+  /* The following are exported for the benefit of debugging functions.  It
+     would be nicer to keep them private to haifa-sched.c.  */
++ 
++ /* The scheduler using only DFA description never calls the following
++    function.  */
++ #if OLD_PIPELINE_INTERFACE
+  extern int insn_unit PARAMS ((rtx));
++ #endif
++ 
+  extern int insn_cost PARAMS ((rtx, rtx, rtx));
++ 
++ /* The scheduler using only DFA description never calls the following
++    functions.  */
++ #if OLD_PIPELINE_INTERFACE
+  extern rtx get_unit_last_insn PARAMS ((int));
+  extern int actual_hazard_this_instance PARAMS ((int, int, rtx, int, int));
+! #endif /* #if OLD_PIPELINE_INTERFACE */
+Index: haifa-sched.c
+===================================================================
+RCS file: /cvs/gcc/gcc/gcc/haifa-sched.c,v
+retrieving revision 1.179
+diff -c -p -r1.179 haifa-sched.c
+*** haifa-sched.c	2001/03/22 18:48:29	1.179
+--- haifa-sched.c	2001/06/13 18:24:30
+*************** the Free Software Foundation, 59 Temple 
+*** 151,156 ****
+--- 151,160 ----
+  
+  #ifdef INSN_SCHEDULING
+  
++ /* The scheduler using only DFA description should never use the
++    following variable and macro.  */
++ #if OLD_PIPELINE_INTERFACE
++ 
+  /* issue_rate is the number of insns that can be scheduled in the same
+     machine cycle.  It can be defined in the config/mach/mach.h file,
+     otherwise we set it to 1.  */
+*************** static int issue_rate;
+*** 161,166 ****
+--- 165,180 ----
+  #define ISSUE_RATE 1
+  #endif
+  
++ #endif /* #if OLD_PIPELINE_INTERFACE */
++ 
++ #if AUTOMATON_PIPELINE_INTERFACE
++ /* If the following variable value is non zero, the scheduler inserts
++    bubbles (nop insns).  The value of variable affects on scheduler
++    behavior only if automaton pipeline interface with multipass
++    scheduling is used and macro SCHEDULER_BUBBLE is defined.  */
++ int insert_schedule_bubbles_p = 0;
++ #endif
++ 
+  /* sched-verbose controls the amount of debugging output the
+     scheduler prints.  It is controlled by -fsched-verbose=N:
+     N&gt;0 and no -DSR : the output is directed to stderr.
+*************** static rtx note_list;
+*** 257,271 ****
+     passes or stalls are introduced.  */
+  
+  /* Implement a circular buffer to delay instructions until sufficient
+!    time has passed.  INSN_QUEUE_SIZE is a power of two larger than
+!    MAX_BLOCKAGE and MAX_READY_COST computed by genattr.c.  This is the
+!    longest time an isnsn may be queued.  */
+! static rtx insn_queue[INSN_QUEUE_SIZE];
+  static int q_ptr = 0;
+  static int q_size = 0;
+! #define NEXT_Q(X) (((X)+1) &amp; (INSN_QUEUE_SIZE-1))
+! #define NEXT_Q_AFTER(X, C) (((X)+C) &amp; (INSN_QUEUE_SIZE-1))
+  
+  /* Describe the ready list of the scheduler.
+     VEC holds space enough for all insns in the current region.  VECLEN
+     says how many exactly.
+--- 271,314 ----
+     passes or stalls are introduced.  */
+  
+  /* Implement a circular buffer to delay instructions until sufficient
+!    time has passed.  For the old pipeline description interface,
+!    INSN_QUEUE_SIZE is a power of two larger than MAX_BLOCKAGE and
+!    MAX_READY_COST computed by genattr.c.  For the new pipeline
+!    description interface, MAX_INSN_QUEUE_INDEX is a power of two minus
+!    one which is larger than maximal time of instruction execution
+!    computed by genattr.c on the base maximal time of functional unit
+!    reservations and geting a result.  This is the longest time an
+!    insn may be queued.  */
+! 
+! #define MAX_INSN_QUEUE_INDEX max_insn_queue_index_macro_value
+! 
+! static rtx *insn_queue;
+  static int q_ptr = 0;
+  static int q_size = 0;
+! #define NEXT_Q(X) (((X)+1) &amp; MAX_INSN_QUEUE_INDEX)
+! #define NEXT_Q_AFTER(X, C) (((X)+C) &amp; MAX_INSN_QUEUE_INDEX)
+  
++ /* The following variable defines value for macro
++    MAX_INSN_QUEUE_INDEX. */
++ static int max_insn_queue_index_macro_value;
++ 
++ #if AUTOMATON_PIPELINE_INTERFACE
++ 
++ /* The following variable value refers for all current and future
++    reservations of the processor units.  */
++ state_t curr_state;
++ 
++ /* The following variable value is size of memory representing all
++    current and future reservations of the processor units.  */
++ static size_t dfa_state_size;
++ 
++ #if FIRST_CYCLE_MULTIPASS_SCHEDULING
++ /* The following array is used to find the best insn from ready.  */
++ static char *ready_try;
++ #endif
++ 
++ #endif /* #if AUTOMATON_PIPELINE_INTERFACE */
++ 
+  /* Describe the ready list of the scheduler.
+     VEC holds space enough for all insns in the current region.  VECLEN
+     says how many exactly.
+*************** struct ready_list
+*** 283,293 ****
+--- 326,342 ----
+  };
+  
+  /* Forward declarations.  */
++ 
++ /* The scheduler using only DFA description should never use the
++    following functions.  */
++ #if OLD_PIPELINE_INTERFACE
+  static unsigned int blockage_range PARAMS ((int, rtx));
+  static void clear_units PARAMS ((void));
+  static void schedule_unit PARAMS ((int, rtx, int));
+  static int actual_hazard PARAMS ((int, rtx, int, int));
+  static int potential_hazard PARAMS ((int, rtx, int));
++ #endif /* #if OLD_PIPELINE_INTERFACE */
++ 
+  static int priority PARAMS ((rtx));
+  static int rank_for_schedule PARAMS ((const PTR, const PTR));
+  static void swap_sort PARAMS ((rtx *, int));
+*************** static void debug_ready_list PARAMS ((st
+*** 334,339 ****
+--- 383,399 ----
+  static rtx move_insn1 PARAMS ((rtx, rtx));
+  static rtx move_insn PARAMS ((rtx, rtx));
+  
++ /* The following functions are used to implement multi-pass scheduling
++    on the first cycle.  It is implemented only for DFA based
++    scheduler.  */
++ #if AUTOMATON_PIPELINE_INTERFACE &amp;&amp; FIRST_CYCLE_MULTIPASS_SCHEDULING
++ static rtx ready_element PARAMS ((struct ready_list *, int));
++ static rtx ready_remove PARAMS ((struct ready_list *, int));
++ static int max_issue PARAMS ((struct ready_list *, state_t, int *, int *));
++ #endif
++ 
++ static rtx choose_ready PARAMS ((struct ready_list *));
++ 
+  #endif /* INSN_SCHEDULING */
+  
+  /* Point to state used for the current scheduling pass.  */
+*************** schedule_insns (dump_file)
+*** 353,358 ****
+--- 413,422 ----
+  
+  static rtx last_scheduled_insn;
+  
++ /* The scheduler using only DFA description should never use the
++    following code.  */
++ #if OLD_PIPELINE_INTERFACE
++ 
+  /* Compute the function units used by INSN.  This caches the value
+     returned by function_units_used.  A function unit is encoded as the
+     unit number if the value is non-negative and the compliment of a
+*************** potential_hazard (unit, insn, cost)
+*** 641,646 ****
+--- 705,712 ----
+    return cost;
+  }
+  
++ #endif /* #if OLD_PIPELINE_INTERFACE */
++ 
+  /* Compute cost of executing INSN given the dependence LINK on the insn USED.
+     This is the number of cycles between instruction issue and
+     instruction results.  */
+*************** insn_cost (insn, link, used)
+*** 651,714 ****
+  {
+    register int cost = INSN_COST (insn);
+  
+!   if (cost == 0)
+      {
+        recog_memoized (insn);
+  
+!       /* A USE insn, or something else we don't need to understand.
+!          We can't pass these directly to result_ready_cost because it will
+!          trigger a fatal error for unrecognizable insns.  */
+        if (INSN_CODE (insn) &lt; 0)
+  	{
+! 	  INSN_COST (insn) = 1;
+! 	  return 1;
+  	}
+        else
+  	{
+! 	  cost = result_ready_cost (insn);
+! 
+! 	  if (cost &lt; 1)
+! 	    cost = 1;
+! 
+  	  INSN_COST (insn) = cost;
+  	}
+      }
+  
+    /* In this case estimate cost without caring how insn is used.  */
+!   if (link == 0 &amp;&amp; used == 0)
+      return cost;
+  
+!   /* A USE insn should never require the value used to be computed.  This
+!      allows the computation of a function's result and parameter values to
+!      overlap the return and call.  */
+    recog_memoized (used);
+    if (INSN_CODE (used) &lt; 0)
+-     LINK_COST_FREE (link) = 1;
+- 
+-   /* If some dependencies vary the cost, compute the adjustment.  Most
+-      commonly, the adjustment is complete: either the cost is ignored
+-      (in the case of an output- or anti-dependence), or the cost is
+-      unchanged.  These values are cached in the link as LINK_COST_FREE
+-      and LINK_COST_ZERO.  */
+- 
+-   if (LINK_COST_FREE (link))
+      cost = 0;
+! #ifdef ADJUST_COST
+!   else if (!LINK_COST_ZERO (link))
+      {
+!       int ncost = cost;
+! 
+!       ADJUST_COST (used, link, insn, ncost);
+!       if (ncost &lt; 1)
+  	{
+! 	  LINK_COST_FREE (link) = 1;
+! 	  ncost = 0;
+  	}
+!       if (cost == ncost)
+! 	LINK_COST_ZERO (link) = 1;
+!       cost = ncost;
+!     }
+  #endif
+    return cost;
+  }
+  
+--- 717,798 ----
+  {
+    register int cost = INSN_COST (insn);
+  
+!   if (cost &lt; 0)
+      {
+        recog_memoized (insn);
+  
+!       /* A USE insn, or something else we don't need to
+! 	 understand.  We can't pass these directly to
+! 	 result_ready_cost or insn_default_latency because it will
+! 	 trigger a fatal error for unrecognizable insns.  */
+        if (INSN_CODE (insn) &lt; 0)
+  	{
+! 	  INSN_COST (insn) = 0;
+! 	  return 0;
+  	}
+        else
+  	{
+! 	  
+! #if AUTOMATON_PIPELINE_INTERFACE
+! 	  if (USE_AUTOMATON_PIPELINE_INTERFACE)
+! 	    cost = insn_default_latency (insn);
+! #endif
+! #if OLD_PIPELINE_INTERFACE
+! 	  if (!USE_AUTOMATON_PIPELINE_INTERFACE)
+! 	    cost = result_ready_cost (insn);
+! #endif	      
+! 	  
+! 	  if (cost &lt; 0)
+! 	    cost = 0;
+! 	  
+  	  INSN_COST (insn) = cost;
+  	}
+      }
+  
+    /* In this case estimate cost without caring how insn is used.  */
+!   if (link == 0 || used == 0)
+      return cost;
+  
+!   /* A USE insn should never require the value used to be computed.
+!      This allows the computation of a function's result and parameter
+!      values to overlap the return and call.  */
+    recog_memoized (used);
+    if (INSN_CODE (used) &lt; 0)
+      cost = 0;
+!   else
+      {
+! #if AUTOMATON_PIPELINE_INTERFACE
+!       if (USE_AUTOMATON_PIPELINE_INTERFACE)
+  	{
+! 	  if (INSN_CODE (insn) &gt;= 0)
+! 	    {
+! 	      if (REG_NOTE_KIND (link) == REG_DEP_ANTI)
+! 		cost = 0;
+! 	      else if (REG_NOTE_KIND (link) == REG_DEP_OUTPUT)
+! 		{
+! 		  cost = (insn_default_latency (insn)
+! 			  - insn_default_latency (used));
+! 		  if (cost &lt;= 0)
+! 		    cost = 1;
+! 		}
+! 	      else if (bypass_p (insn))
+! 		cost = insn_latency (insn, used);
+! 	    }
+! #ifdef ADJUST_DFA_DEPENDENCY_COST
+! 	  ADJUST_DFA_DEPENDENCY_COST (used, link, insn, cost);
+! #endif
+  	}
+! #endif /* #if AUTOMATON_PIPELINE_INTERFACE */
+!       
+! #if OLD_PIPELINE_INTERFACE &amp;&amp; defined (ADJUST_COST)
+!       if (! USE_AUTOMATON_PIPELINE_INTERFACE)
+! 	ADJUST_COST (used, link, insn, cost);
+  #endif
++ 
++       if (cost &lt; 0)
++ 	cost = 0;
++     }
++   
+    return cost;
+  }
+  
+*************** ready_remove_first (ready)
+*** 935,940 ****
+--- 1019,1068 ----
+    return t;
+  }
+  
++ /* The following code implements multi-pass scheduling for the first
++    cycle.  In other words, we will try to choose ready insn which
++    permits to start maximum number of insns on the same cycle.  */
++ #if AUTOMATON_PIPELINE_INTERFACE &amp;&amp; FIRST_CYCLE_MULTIPASS_SCHEDULING
++ 
++ /* Return a pointer to the element INDEX from the ready.  INDEX for
++    insn with the highest priority is 0, and the lowest priority has
++    N_READY - 1.  */
++ 
++ HAIFA_INLINE static rtx
++ ready_element (ready, index)
++      struct ready_list *ready;
++      int index;
++ {
++   if (ready-&gt;n_ready == 0 || index &gt;= ready-&gt;n_ready)
++     abort ();
++   return ready-&gt;vec[ready-&gt;first - index];
++ }
++ 
++ /* Remove the element INDEX from the ready list and return it.  INDEX
++    for insn with the highest priority is 0, and the lowest priority
++    has N_READY - 1.  */
++ 
++ HAIFA_INLINE static rtx
++ ready_remove (ready, index)
++      struct ready_list *ready;
++      int index;
++ {
++   rtx t;
++   int i;
++ 
++   if (index == 0)
++     return ready_remove_first (ready);
++   if (ready-&gt;n_ready == 0 || index &gt;= ready-&gt;n_ready)
++     abort ();
++   t = ready-&gt;vec[ready-&gt;first - index];
++   ready-&gt;n_ready--;
++   for (i = index; i &lt; ready-&gt;n_ready; i++)
++     ready [ready-&gt;first - i] = ready [ready-&gt;first - i - 1];
++   return t;
++ }
++ 
++ #endif /*#if AUTOMATON_PIPELINE_INTERFACE &amp;&amp; FIRST_CYCLE_MULTIPASS_SCHEDULING*/
++ 
+  /* Sort the ready list READY by ascending priority, using the SCHED_SORT
+     macro.  */
+  
+*************** schedule_insn (insn, ready, clock)
+*** 981,1006 ****
+       int clock;
+  {
+    rtx link;
+    int unit;
+  
+!   unit = insn_unit (insn);
+  
+    if (sched_verbose &gt;= 2)
+      {
+!       fprintf (sched_dump, &quot;;;\t\t--&gt; scheduling insn &lt;&lt;&lt;%d&gt;&gt;&gt; on unit &quot;,
+! 	       INSN_UID (insn));
+!       insn_print_units (insn);
+        fprintf (sched_dump, &quot;\n&quot;);
+      }
+  
+!   if (sched_verbose &amp;&amp; unit == -1)
+!     visualize_no_unit (insn);
+  
+-   if (MAX_BLOCKAGE &gt; 1 || issue_rate &gt; 1 || sched_verbose)
+-     schedule_unit (unit, insn, clock);
+  
+!   if (INSN_DEPEND (insn) == 0)
+!     return;
+  
+    for (link = INSN_DEPEND (insn); link != 0; link = XEXP (link, 1))
+      {
+--- 1109,1168 ----
+       int clock;
+  {
+    rtx link;
++ #if OLD_PIPELINE_INTERFACE
+    int unit;
++ #endif
+  
+! #if OLD_PIPELINE_INTERFACE
+!   if (!USE_AUTOMATON_PIPELINE_INTERFACE)
+!     unit = insn_unit (insn);
+! #endif
+  
+    if (sched_verbose &gt;= 2)
+      {
+! 
+! #if AUTOMATON_PIPELINE_INTERFACE
+!       if (USE_AUTOMATON_PIPELINE_INTERFACE)
+! 	{
+! 	  fprintf (sched_dump,
+! 		   &quot;;;\t\t--&gt; scheduling insn &lt;&lt;&lt;%d&gt;&gt;&gt;:reservation &quot;,
+! 		   INSN_UID (insn));
+! 	  
+! 	  recog_memoized (insn);
+! 	  
+! 	  if (INSN_CODE (insn) &lt; 0)
+! 	    fprintf (sched_dump, &quot;nothing&quot;);
+! 	  else
+! 	    print_reservation (sched_dump, insn);
+! 	}
+! #endif /* #if AUTOMATON_PIPELINE_INTERFACE */
+! 
+! #if OLD_PIPELINE_INTERFACE
+!       if (!USE_AUTOMATON_PIPELINE_INTERFACE)
+! 	{
+! 	  fprintf (sched_dump, &quot;;;\t\t--&gt; scheduling insn &lt;&lt;&lt;%d&gt;&gt;&gt; on unit &quot;,
+! 		   INSN_UID (insn));
+! 	  insn_print_units (insn);
+! 	}
+! #endif /* #if OLD_PIPELINE_INTERFACE */
+! 
+        fprintf (sched_dump, &quot;\n&quot;);
+      }
+  
+! #if OLD_PIPELINE_INTERFACE
+!   if (!USE_AUTOMATON_PIPELINE_INTERFACE)
+!     {
+!       if (sched_verbose &amp;&amp; unit == -1)
+! 	visualize_no_unit (insn);
+  
+  
+!       if (MAX_BLOCKAGE &gt; 1 || issue_rate &gt; 1 || sched_verbose)
+! 	schedule_unit (unit, insn, clock);
+!       
+!       if (INSN_DEPEND (insn) == 0)
+! 	return;
+!     }
+! #endif /* #if OLD_PIPELINE_INTERFACE */
+  
+    for (link = INSN_DEPEND (insn); link != 0; link = XEXP (link, 1))
+      {
+*************** schedule_insn (insn, ready, clock)
+*** 1037,1052 ****
+  	}
+      }
+  
+!   /* Annotate the instruction with issue information -- TImode
+!      indicates that the instruction is expected not to be able
+!      to issue on the same cycle as the previous insn.  A machine
+!      may use this information to decide how the instruction should
+!      be aligned.  */
+!   if (reload_completed &amp;&amp; issue_rate &gt; 1)
+      {
+!       PUT_MODE (insn, clock &gt; last_clock_var ? TImode : VOIDmode);
+        last_clock_var = clock;
+      }
+  }
+  
+  /* Functions for handling of notes.  */
+--- 1199,1218 ----
+  	}
+      }
+  
+!   if (GET_CODE (PATTERN (insn)) != USE &amp;&amp; GET_CODE (PATTERN (insn)) != CLOBBER)
+      {
+!       /* Annotate insn by using mode if it is issued on new processor
+!          cycle.  */
+! #ifdef ANNOTATE_INSNS_BY_DELAY_IN_CYCLES
+!       PUT_MODE (insn, (clock &gt; last_clock_var
+! 		       ? (reload_completed ? clock - last_clock_var : TImode)
+! 		       : VOIDmode));
+! #else
+!       PUT_MODE (insn, (clock &gt; last_clock_var ? TImode : VOIDmode));
+! #endif
+        last_clock_var = clock;
+      }
++ 
+  }
+  
+  /* Functions for handling of notes.  */
+*************** queue_to_ready (ready)
+*** 1470,1476 ****
+      {
+        register int stalls;
+  
+!       for (stalls = 1; stalls &lt; INSN_QUEUE_SIZE; stalls++)
+  	{
+  	  if ((link = insn_queue[NEXT_Q_AFTER (q_ptr, stalls)]))
+  	    {
+--- 1636,1642 ----
+      {
+        register int stalls;
+  
+!       for (stalls = 1; stalls &lt;= MAX_INSN_QUEUE_INDEX; stalls++)
+  	{
+  	  if ((link = insn_queue[NEXT_Q_AFTER (q_ptr, stalls)]))
+  	    {
+*************** queue_to_ready (ready)
+*** 1489,1501 ****
+  		}
+  	      insn_queue[NEXT_Q_AFTER (q_ptr, stalls)] = 0;
+  
+  	      if (ready-&gt;n_ready)
+  		break;
+  	    }
+  	}
+  
+!       if (sched_verbose &amp;&amp; stalls)
+  	visualize_stall_cycles (stalls);
+        q_ptr = NEXT_Q_AFTER (q_ptr, stalls);
+        clock_var += stalls;
+      }
+--- 1655,1688 ----
+  		}
+  	      insn_queue[NEXT_Q_AFTER (q_ptr, stalls)] = 0;
+  
++ #if AUTOMATON_PIPELINE_INTERFACE
++ 
++ 	      /* Advance time on one cycle.  */
++ 	      if (USE_AUTOMATON_PIPELINE_INTERFACE)
++ 		{
++ #ifdef DFA_SCHEDULER_PRE_CYCLE_INSN
++ 		  state_transition (curr_state, DFA_SCHEDULER_PRE_CYCLE_INSN);
++ #endif
++ 
++ 		  state_transition (curr_state, NULL);
++ 
++ #ifdef DFA_SCHEDULER_POST_CYCLE_INSN
++ 		  state_transition (curr_state, DFA_SCHEDULER_POST_CYCLE_INSN);
++ #endif
++ 		}
++ 
++ #endif /* #if AUTOMATON_PIPELINE_INTERFACE */
++ 
+  	      if (ready-&gt;n_ready)
+  		break;
+  	    }
+  	}
+  
+! #if OLD_PIPELINE_INTERFACE
+!       if (!USE_AUTOMATON_PIPELINE_INTERFACE &amp;&amp; sched_verbose &amp;&amp; stalls)
+  	visualize_stall_cycles (stalls);
++ #endif
++ 
+        q_ptr = NEXT_Q_AFTER (q_ptr, stalls);
+        clock_var += stalls;
+      }
+*************** debug_ready_list (ready)
+*** 1511,1517 ****
+    int i;
+  
+    if (ready-&gt;n_ready == 0)
+!     return;
+  
+    p = ready_lastpos (ready);
+    for (i = 0; i &lt; ready-&gt;n_ready; i++)
+--- 1698,1707 ----
+    int i;
+  
+    if (ready-&gt;n_ready == 0)
+!     {
+!       fprintf (sched_dump, &quot;\n&quot;);
+!       return;
+!     }
+  
+    p = ready_lastpos (ready);
+    for (i = 0; i &lt; ready-&gt;n_ready; i++)
+*************** move_insn (insn, last)
+*** 1630,1635 ****
+--- 1820,1949 ----
+    return retval;
+  }
+  
++ /* The following is for safety to support the
++    two pipeline description interfaces.  */
++ #if !OLD_PIPELINE_INTERFACE
++ #undef MD_SCHED_INIT
++ #undef MD_SCHED_REORDER
++ #undef MD_SCHED_VARIABLE_ISSUE
++ #endif
++ 
++ #if !AUTOMATON_PIPELINE_INTERFACE
++ #undef MD_AUTOMATON_SCHED_INIT
++ #undef MD_AUTOMATON_SCHED_REORDER
++ #endif
++ 
++ #if AUTOMATON_PIPELINE_INTERFACE &amp;&amp; FIRST_CYCLE_MULTIPASS_SCHEDULING
++ 
++ /* The following function returns maximal (or close to maximal) number
++    of insns which can be issued on the same cycle and one of which
++    insns is insns with the best rank (the last insn in READY).  To
++    make this function tries different samples of ready insns.  READY
++    is current queue `ready'.  Global array READY_TRY reflects what
++    insns are already issued in this try.  STATE is current processor
++    state.  If the function returns nonzero, INDEX will contain index
++    of the best insn in READY.  *LAST_P is nonzero if the insn with the
++    highest rank is in the current sample.  */
++ 
++ static int
++ max_issue (ready, state, index, last_p)
++      struct ready_list *ready;
++      state_t state;
++      int *index;
++      int *last_p;
++      
++ {
++   int i, best, n, temp_index, delay;
++   state_t temp_state;
++   rtx insn;
++   int max_lookahead = FIRST_CYCLE_MULTIPASS_SCHEDULING_LOOKAHEAD;
++ 
++   if (state_dead_lock_p (state))
++     return 0;
++   
++   temp_state = alloca (dfa_state_size);
++   best = 0;
++   
++   for (i = 0; i &lt; ready-&gt;n_ready; i++)
++     if (!ready_try [i])
++       {
++ 	insn = ready_element (ready, i);
++ 	
++ 	if (INSN_CODE (insn) &lt; 0)
++ 	  continue;
++ 	
++ 	memcpy (temp_state, state, dfa_state_size);
++ 	
++ 	delay = state_transition (temp_state, insn);
++ 	
++ 	if (delay == 0)
++ 	  {
++ #ifdef SCHEDULER_BUBBLE
++ 	    int j;
++ 	    rtx bubble;
++ 
++ 	    for (j = 0; (bubble = SCHEDULER_BUBBLE (j)) != NULL_RTX; j++)
++ 	      if (state_transition (temp_state, bubble) &lt; 0
++ 		  &amp;&amp; state_transition (temp_state, insn) &lt; 0)
++ 		break;
++ 	    
++ 	    if (bubble == NULL_RTX)
++ #endif
++ 	    continue;
++ 	  }
++ 	else if (delay &gt; 0)
++ 	  continue;
++ 	
++ 	--max_lookahead;
++ 	
++ 	if (max_lookahead &lt; 0)
++ 	  break;
++ 	
++ 	ready_try [i] = 1;
++ 	*last_p = 0;
++ 	
++ 	n = max_issue (ready, temp_state, &amp;temp_index, last_p) + 1;
++ 	
++ 	if (best &lt; n &amp;&amp; (ready_try [0] || *last_p))
++ 	  {
++ 	    best = n;
++ 	    *index = i;
++ 	    *last_p = 1;
++ 	  }
++ 	ready_try [i] = 0;
++       }
++   
++   return best;
++ }
++ 
++ #endif /* #if FIRST_CYCLE_MULTIPASS_SCHEDULING &amp;&amp; AUTOMATON_PIPELINE_INTERFACE */
++ 
++ /* The following function chooses insn from READY and modifies *N_READY
++    and READY.  */
++ 
++ static rtx
++ choose_ready (ready)
++      struct ready_list *ready;
++ {
++ #if AUTOMATON_PIPELINE_INTERFACE &amp;&amp; FIRST_CYCLE_MULTIPASS_SCHEDULING
++   if (FIRST_CYCLE_MULTIPASS_SCHEDULING_LOOKAHEAD &lt;= 0)
++ #endif
++     return ready_remove_first (ready);
++ #if AUTOMATON_PIPELINE_INTERFACE &amp;&amp; FIRST_CYCLE_MULTIPASS_SCHEDULING
++   else
++     {
++       /* Try to choose the better insn.  */
++       int index;
++       int last_p = 0;
++       
++       if (max_issue (ready, curr_state, &amp;index, &amp;last_p) == 0)
++ 	return ready_remove_first (ready);
++       else
++ 	return ready_remove (ready, index);
++     }
++ #endif /* #if FIRST_CYCLE_MULTIPASS_SCHEDULING &amp;&amp; FIRST_CYCLE_MULTIPASS_SCHEDULING */
++ }
++ 
+  /* Use forward list scheduling to rearrange insns of block B in region RGN,
+     possibly bringing insns from subsequent blocks in the same region.  */
+  
+*************** schedule_block (b, rgn_n_insns)
+*** 1640,1646 ****
+  {
+    rtx last;
+    struct ready_list ready;
+!   int can_issue_more;
+  
+    /* Head/tail info for this block.  */
+    rtx prev_head = current_sched_info-&gt;prev_head;
+--- 1954,1964 ----
+  {
+    rtx last;
+    struct ready_list ready;
+!   int first_cycle_insn_p;
+!   int can_issue_more = 0;
+! #if AUTOMATON_PIPELINE_INTERFACE &amp;&amp; FIRST_CYCLE_MULTIPASS_SCHEDULING
+!   state_t temp_state = alloca (dfa_state_size);
+! #endif
+  
+    /* Head/tail info for this block.  */
+    rtx prev_head = current_sched_info-&gt;prev_head;
+*************** schedule_block (b, rgn_n_insns)
+*** 1673,1679 ****
+        init_block_visualization ();
+      }
+  
+!   clear_units ();
+  
+    /* Allocate the ready list.  */
+    ready.veclen = rgn_n_insns + 1 + ISSUE_RATE;
+--- 1991,2005 ----
+        init_block_visualization ();
+      }
+  
+! #if AUTOMATON_PIPELINE_INTERFACE
+!   if (USE_AUTOMATON_PIPELINE_INTERFACE)
+!     state_reset (curr_state);
+! #endif
+!   
+! #if OLD_PIPELINE_INTERFACE
+!   if (!USE_AUTOMATON_PIPELINE_INTERFACE)
+!     clear_units ();
+! #endif
+  
+    /* Allocate the ready list.  */
+    ready.veclen = rgn_n_insns + 1 + ISSUE_RATE;
+*************** schedule_block (b, rgn_n_insns)
+*** 1681,1690 ****
+    ready.vec = (rtx *) xmalloc (ready.veclen * sizeof (rtx));
+    ready.n_ready = 0;
+  
+    (*current_sched_info-&gt;init_ready_list) (&amp;ready);
+  
+! #ifdef MD_SCHED_INIT
+!   MD_SCHED_INIT (sched_dump, sched_verbose, ready.veclen);
+  #endif
+  
+    /* No insns scheduled in this block yet.  */
+--- 2007,2030 ----
+    ready.vec = (rtx *) xmalloc (ready.veclen * sizeof (rtx));
+    ready.n_ready = 0;
+  
++ #if AUTOMATON_PIPELINE_INTERFACE &amp;&amp; FIRST_CYCLE_MULTIPASS_SCHEDULING
++   if (USE_AUTOMATON_PIPELINE_INTERFACE)
++     {
++       ready_try = (char *) xmalloc ((rgn_n_insns + 1) * sizeof (char));
++       memset (ready_try, 0, (rgn_n_insns + 1) * sizeof (char));
++     }
++ #endif
++ 
+    (*current_sched_info-&gt;init_ready_list) (&amp;ready);
++ 
++ #if AUTOMATON_PIPELINE_INTERFACE &amp;&amp; defined (MD_AUTOMATON_SCHED_INIT)
++   if (USE_AUTOMATON_PIPELINE_INTERFACE)
++     MD_AUTOMATON_SCHED_INIT (sched_dump, sched_verbose);
++ #endif
+  
+! #if OLD_PIPELINE_INTERFACE &amp;&amp; defined (MD_SCHED_INIT)
+!   if (!USE_AUTOMATON_PIPELINE_INTERFACE)
+!     MD_SCHED_INIT (sched_dump, sched_verbose, ready.veclen);
+  #endif
+  
+    /* No insns scheduled in this block yet.  */
+*************** schedule_block (b, rgn_n_insns)
+*** 1694,1701 ****
+       queue.  */
+    q_ptr = 0;
+    q_size = 0;
+!   last_clock_var = 0;
+!   memset ((char *) insn_queue, 0, sizeof (insn_queue));
+  
+    /* Start just before the beginning of time.  */
+    clock_var = -1;
+--- 2034,2053 ----
+       queue.  */
+    q_ptr = 0;
+    q_size = 0;
+! 
+! #if OLD_PIPELINE_INTERFACE
+!   if (!USE_AUTOMATON_PIPELINE_INTERFACE)
+!     max_insn_queue_index_macro_value = INSN_QUEUE_SIZE - 1;
+! #endif
+! 
+! #if AUTOMATON_PIPELINE_INTERFACE
+!   if (USE_AUTOMATON_PIPELINE_INTERFACE)
+!     max_insn_queue_index_macro_value = max_insn_queue_index;
+! #endif
+! 
+!   insn_queue = (rtx *) alloca ((MAX_INSN_QUEUE_INDEX + 1) * sizeof (rtx));
+!   memset ((char *) insn_queue, 0, (MAX_INSN_QUEUE_INDEX + 1) * sizeof (rtx));
+!   last_clock_var = -1;
+  
+    /* Start just before the beginning of time.  */
+    clock_var = -1;
+*************** schedule_block (b, rgn_n_insns)
+*** 1708,1713 ****
+--- 2060,2081 ----
+      {
+        clock_var++;
+  
++ #if AUTOMATON_PIPELINE_INTERFACE
++       if (USE_AUTOMATON_PIPELINE_INTERFACE)
++ 	{
++ #ifdef DFA_SCHEDULER_PRE_CYCLE_INSN
++ 	  state_transition (curr_state, DFA_SCHEDULER_PRE_CYCLE_INSN);
++ #endif
++ 
++ 	  /* Advance time on one cycle.  */
++ 	  state_transition (curr_state, NULL);
++ 
++ #ifdef DFA_SCHEDULER_POST_CYCLE_INSN
++ 	  state_transition (curr_state, DFA_SCHEDULER_POST_CYCLE_INSN);
++ #endif
++ 	}
++ #endif /* #if AUTOMATON_PIPELINE_INTERFACE */
++ 
+        /* Add to the ready list all pending insns that can be issued now.
+           If there are no ready insns, increment clock until one
+           is ready and add all pending insns at that point to the ready
+*************** schedule_block (b, rgn_n_insns)
+*** 1728,1759 ****
+  	  debug_ready_list (&amp;ready);
+  	}
+  
+!       /* Sort the ready list based on priority.  */
+!       ready_sort (&amp;ready);
+  
+        /* Allow the target to reorder the list, typically for
+  	 better instruction bundling.  */
+  #ifdef MD_SCHED_REORDER
+!       MD_SCHED_REORDER (sched_dump, sched_verbose, ready_lastpos (&amp;ready),
+! 			ready.n_ready, clock_var, can_issue_more);
+  #else
+!       can_issue_more = issue_rate;
+  #endif
+  
+!       if (sched_verbose)
+  	{
+! 	  fprintf (sched_dump, &quot;\n;;\tReady list (t =%3d):  &quot;, clock_var);
+! 	  debug_ready_list (&amp;ready);
+! 	}
+  
+!       /* Issue insns from ready list.  */
+!       while (ready.n_ready != 0
+! 	     &amp;&amp; can_issue_more
+! 	     &amp;&amp; (*current_sched_info-&gt;schedule_more_p) ())
+! 	{
+! 	  /* Select and remove the insn from the ready list.  */
+! 	  rtx insn = ready_remove_first (&amp;ready);
+! 	  int cost = actual_hazard (insn_unit (insn), insn, clock_var, 0);
+  
+  	  if (cost &gt;= 1)
+  	    {
+--- 2096,2258 ----
+  	  debug_ready_list (&amp;ready);
+  	}
+  
+! #if OLD_PIPELINE_INTERFACE
+!       if (!USE_AUTOMATON_PIPELINE_INTERFACE)
+! 	/* Sort the ready list based on priority.  */
+! 	ready_sort (&amp;ready);
+! #endif
+  
+        /* Allow the target to reorder the list, typically for
+  	 better instruction bundling.  */
++ #if AUTOMATON_PIPELINE_INTERFACE &amp;&amp; defined (MD_AUTOMATON_SCHED_REORDER)
++       if (USE_AUTOMATON_PIPELINE_INTERFACE)
++ 	MD_AUTOMATON_SCHED_REORDER (sched_dump, sched_verbose, ready,
++ 				    ready.n_ready, clock_var);
++ #endif
++ 
++ #if OLD_PIPELINE_INTERFACE
++ 
++       if (!USE_AUTOMATON_PIPELINE_INTERFACE)
++ 	{
+  #ifdef MD_SCHED_REORDER
+! 	  MD_SCHED_REORDER (sched_dump, sched_verbose, ready_lastpos (&amp;ready),
+! 			    ready.n_ready, clock_var, can_issue_more);
+  #else
+! 	  can_issue_more = issue_rate;
+  #endif
++ 	}
+  
+! #endif /* #if OLD_PIPELINE_INTERFACE */
+! 
+!       first_cycle_insn_p = 1;
+!       for (;;)
+  	{
+! 	  rtx insn;
+! 	  int cost;
+! 
+! 	  if (sched_verbose)
+! 	    {
+! 	      fprintf (sched_dump, &quot;;;\tReady list (t =%3d):  &quot;,
+! 		       clock_var);
+! 	      debug_ready_list (&amp;ready);
+! 	    }
+! 
+! #if AUTOMATON_PIPELINE_INTERFACE
+! 
+! 	  if (USE_AUTOMATON_PIPELINE_INTERFACE)
+! 	    {
+! 	      if (ready.n_ready == 0 || state_dead_lock_p (curr_state)
+! 		  || !(*current_sched_info-&gt;schedule_more_p) ())
+! 		break;
+! 	      
+! 	      /* Sort the ready list based on priority.  We make it
+! 		 here because there are some processors which permits
+! 		 to issue some depended insns even on the same
+! 		 cycle.  */
+! 	      ready_sort (&amp;ready);
+! 
+! 	      /* Select and remove the insn from the ready list.  */
+! 	      insn = choose_ready (&amp;ready);
+! 	      
+! 	      recog_memoized (insn);
+! 	      
+! 	      if (INSN_CODE (insn) &lt; 0)
+! 		{
+! 		  if (!first_cycle_insn_p
+! 		      &amp;&amp; (GET_CODE (PATTERN (insn)) == ASM_INPUT
+! 			  || asm_noperands (PATTERN (insn)) &gt;= 0))
+! 		    /* This is asm insn which is tryed to be issued on the
+! 		       cycle not first.  Issue it on the next cycle.  */
+! 		    cost = 1;
+! 		  else
+! 		    /* A USE insn, or something else we don't need to
+! 		       understand.  We can't pass these directly to
+! 		       state_transition because it will trigger a
+! 		       fatal error for unrecognizable insns.  */
+! 		    cost = 0;
+! 		}
+! 	      else
+! 		{
+! 		  cost = state_transition (curr_state, insn);
+! 
+! #if FIRST_CYCLE_MULTIPASS_SCHEDULING &amp;&amp; defined (SCHEDULER_BUBBLE)
+  
+! 		  if (cost == 0)
+! 		    {
+! 		      int j;
+! 		      rtx bubble;
+! 
+! 		      for (j = 0;
+! 			   (bubble = SCHEDULER_BUBBLE (j)) != NULL_RTX;
+! 			   j++)
+! 			{
+! 			  memcpy (temp_state, curr_state, dfa_state_size);
+! 			  
+! 			  if (state_transition (temp_state, bubble) &lt; 0
+! 			      &amp;&amp; state_transition (temp_state, insn) &lt; 0)
+! 			    break;
+! 			}
+! 		      
+! 		      if (bubble != NULL_RTX)
+! 			{
+! 			  memcpy (curr_state, temp_state, dfa_state_size);
+! 			  
+! 			  if (insert_schedule_bubbles_p)
+! 			    {
+! 			      rtx copy;
+! 
+! 			      copy = copy_rtx (PATTERN (bubble));
+! 			      emit_insn_after (copy, last);
+! 			      last = NEXT_INSN (last);
+! 			      INSN_CODE (last) = INSN_CODE (bubble);
+! 			      
+! 			      /* Annotate the same for the first insns
+!                                  scheduling by using mode.  */
+! 			      PUT_MODE (last, (clock_var &gt; last_clock_var
+! 					       ? clock_var - last_clock_var
+! 					       : VOIDmode));
+! 			      last_clock_var = clock_var;
+! 			      
+! 			      if (sched_verbose &gt;= 2)
+! 				{
+! 				  fprintf (sched_dump,
+! 					   &quot;;;\t\t--&gt; scheduling bubble insn &lt;&lt;&lt;%d&gt;&gt;&gt;:reservation &quot;,
+! 					   INSN_UID (last));
+! 				  
+! 				  recog_memoized (last);
+! 				  
+! 				  if (INSN_CODE (last) &lt; 0)
+! 				    fprintf (sched_dump, &quot;nothing&quot;);
+! 				  else
+! 				    print_reservation (sched_dump, last);
+! 				  
+! 				  fprintf (sched_dump, &quot;\n&quot;);
+! 				}
+! 			    }
+! 			  cost = -1;
+! 			}
+! 		    }
+! #endif /* #if FIRST_CYCLE_MULTIPASS_SCHEDULING &amp;&amp; defined (SCHEDULER_BUBBLE) */
+! 
+! 		  if (cost &lt; 0)
+! 		    cost = 0;
+! 		  else if (cost == 0)
+! 		    cost = 1;
+! 		}
+! 	    }
+! 
+! #endif /* #if AUTOMATON_PIPELINE_INTERFACE */
+! 
+! #if OLD_PIPELINE_INTERFACE
+! 	  if (!USE_AUTOMATON_PIPELINE_INTERFACE)
+! 	    {
+! 	      if (ready.n_ready == 0 || !can_issue_more
+! 		  || !(*current_sched_info-&gt;schedule_more_p) ())
+! 		break;
+! 	      insn = choose_ready (&amp;ready);
+! 	      cost = actual_hazard (insn_unit (insn), insn, clock_var, 0);
+! 	    }
+! #endif /* #if OLD_PIPELINE_INTERFACE */
+  
+  	  if (cost &gt;= 1)
+  	    {
+*************** schedule_block (b, rgn_n_insns)
+*** 1767,1796 ****
+  	  last_scheduled_insn = insn;
+  	  last = move_insn (insn, last);
+  
+  #ifdef MD_SCHED_VARIABLE_ISSUE
+! 	  MD_SCHED_VARIABLE_ISSUE (sched_dump, sched_verbose, insn,
+! 				   can_issue_more);
+  #else
+! 	  can_issue_more--;
+  #endif
+  
+  	  schedule_insn (insn, &amp;ready, clock_var);
+  
+  	next:
+! 	  ;
+! #ifdef MD_SCHED_REORDER2
+! 	  /* Sort the ready list based on priority.  */
+! 	  if (ready.n_ready &gt; 0)
+! 	    ready_sort (&amp;ready);
+! 	  MD_SCHED_REORDER2 (sched_dump, sched_verbose,
+! 			     ready.n_ready ? ready_lastpos (&amp;ready) : NULL,
+! 			     ready.n_ready, clock_var, can_issue_more);
+! #endif
+  	}
+  
+!       /* Debug info.  */
+!       if (sched_verbose)
+  	visualize_scheduled_insns (clock_var);
+      }
+  
+  #ifdef MD_SCHED_FINISH
+--- 2266,2306 ----
+  	  last_scheduled_insn = insn;
+  	  last = move_insn (insn, last);
+  
++ #if OLD_PIPELINE_INTERFACE
++ 	  if (!USE_AUTOMATON_PIPELINE_INTERFACE)
++ 	    {
+  #ifdef MD_SCHED_VARIABLE_ISSUE
+! 	      MD_SCHED_VARIABLE_ISSUE (sched_dump, sched_verbose, insn,
+! 				       can_issue_more);
+  #else
+! 	      can_issue_more--;
+  #endif
++ 	    }
++ #endif /* #if OLD_PIPELINE_INTERFACE */
+  
+  	  schedule_insn (insn, &amp;ready, clock_var);
+  
+  	next:
+! 	  first_cycle_insn_p = 0;
+! 
+! #if OLD_PIPELINE_INTERFACE &amp;&amp; defined (MD_SCHED_REORDER2)
+! 	  if (!USE_AUTOMATON_PIPELINE_INTERFACE)
+! 	    {
+! 	      /* Sort the ready list based on priority.  */
+! 	      if (ready.n_ready &gt; 0)
+! 		ready_sort (&amp;ready);
+! 	      MD_SCHED_REORDER2 (sched_dump, sched_verbose,
+! 				 ready.n_ready ? ready_lastpos (&amp;ready) : NULL,
+! 				 ready.n_ready, clock_var, can_issue_more);
+! 	    }
+! #endif /* #if OLD_PIPELINE_INTERFACE &amp;&amp; defined (MD_SCHED_REORDER2) */
+  	}
+  
+! #if OLD_PIPELINE_INTERFACE
+!       if (!USE_AUTOMATON_PIPELINE_INTERFACE &amp;&amp; sched_verbose)
+! 	/* Debug info.  */
+  	visualize_scheduled_insns (clock_var);
++ #endif
+      }
+  
+  #ifdef MD_SCHED_FINISH
+*************** schedule_block (b, rgn_n_insns)
+*** 1802,1808 ****
+      {
+        fprintf (sched_dump, &quot;;;\tReady list (final):  &quot;);
+        debug_ready_list (&amp;ready);
+!       print_block_visualization (&quot;&quot;);
+      }
+  
+    /* Sanity check -- queue must be empty now.  Meaningless if region has
+--- 2312,2321 ----
+      {
+        fprintf (sched_dump, &quot;;;\tReady list (final):  &quot;);
+        debug_ready_list (&amp;ready);
+! #if OLD_PIPELINE_INTERFACE
+!       if (!USE_AUTOMATON_PIPELINE_INTERFACE)
+! 	print_block_visualization (&quot;&quot;);
+! #endif /* #if OLD_PIPELINE_INTERFACE */
+      }
+  
+    /* Sanity check -- queue must be empty now.  Meaningless if region has
+*************** schedule_block (b, rgn_n_insns)
+*** 1847,1852 ****
+--- 2360,2370 ----
+    current_sched_info-&gt;tail = tail;
+  
+    free (ready.vec);
++ 
++ #if AUTOMATON_PIPELINE_INTERFACE  &amp;&amp; FIRST_CYCLE_MULTIPASS_SCHEDULING
++   if (USE_AUTOMATON_PIPELINE_INTERFACE)
++     free (ready_try);
++ #endif
+  }
+  
+  /* Set_priorities: compute priority of each insn in the block.  */
+*************** sched_init (dump_file)
+*** 1888,1893 ****
+--- 2406,2412 ----
+  {
+    int luid, b;
+    rtx insn;
++   int i;
+  
+    /* Disable speculative loads in their presence if cc0 defined.  */
+  #ifdef HAVE_cc0
+*************** sched_init (dump_file)
+*** 1903,1910 ****
+--- 2422,2432 ----
+    sched_dump = ((sched_verbose_param &gt;= 10 || !dump_file)
+  		? stderr : dump_file);
+  
++   /* Issue rate is never used by DFA based scheduler.  */
++ #if OLD_PIPELINE_INTERFACE
+    /* Initialize issue_rate.  */
+    issue_rate = ISSUE_RATE;
++ #endif
+  
+    split_all_insns (1);
+  
+*************** sched_init (dump_file)
+*** 1914,1919 ****
+--- 2436,2464 ----
+  
+    h_i_d = (struct haifa_insn_data *) xcalloc (old_max_uid, sizeof (*h_i_d));
+  
++   for (i = 0; i &lt; old_max_uid; i++)
++     h_i_d [i].cost = -1;
++ 
++ #if AUTOMATON_PIPELINE_INTERFACE
++ 
++ #ifdef INIT_DFA_SCHEDULER_PRE_CYCLE_INSN
++   INIT_DFA_SCHEDULER_PRE_CYCLE_INSN ();
++ #endif
++   
++ #ifdef INIT_DFA_SCHEDULER_POST_CYCLE_INSN
++   INIT_DFA_SCHEDULER_POST_CYCLE_INSN ();
++ #endif
++ 
++ #if FIRST_CYCLE_MULTIPASS_SCHEDULING &amp;&amp; defined (INIT_SCHEDULER_BUBBLES)
++   INIT_SCHEDULER_BUBBLES ();
++ #endif
++ 
++   dfa_start ();
++   dfa_state_size = state_size ();
++   curr_state = xmalloc (dfa_state_size);
++ 
++ #endif /* if AUTOMATON_PIPELINE_INTERFACE */
++ 
+    h_i_d[0].luid = 0;
+    luid = 1;
+    for (b = 0; b &lt; n_basic_blocks; b++)
+*************** sched_init (dump_file)
+*** 1971,1979 ****
+  	}
+      }
+  
+!   /* Find units used in this fuction, for visualization.  */
+!   if (sched_verbose)
+      init_target_units ();
+  
+    /* ??? Add a NOTE after the last insn of the last basic block.  It is not
+       known why this is done.  */
+--- 2516,2526 ----
+  	}
+      }
+  
+! #if OLD_PIPELINE_INTERFACE
+!   if (!USE_AUTOMATON_PIPELINE_INTERFACE &amp;&amp; sched_verbose)
+!     /* Find units used in this function, for visualization.  */
+      init_target_units ();
++ #endif /* if OLD_PIPELINE_INTERFACE */
+  
+    /* ??? Add a NOTE after the last insn of the last basic block.  It is not
+       known why this is done.  */
+*************** void
+*** 1998,2003 ****
+--- 2545,2556 ----
+  sched_finish ()
+  {
+    free (h_i_d);
++ 
++ #if AUTOMATON_PIPELINE_INTERFACE
++   free (curr_state);
++   dfa_finish ();
++ #endif /* if AUTOMATON_PIPELINE_INTERFACE */
++ 
+    free_dependency_caches ();
+    end_alias_analysis ();
+    if (write_symbols != NO_DEBUG)
+Index: sched-rgn.c
+===================================================================
+RCS file: /cvs/gcc/gcc/gcc/sched-rgn.c,v
+retrieving revision 1.11
+diff -c -p -r1.11 sched-rgn.c
+*** sched-rgn.c	2001/01/19 18:28:58	1.11
+--- sched-rgn.c	2001/06/13 18:24:30
+*************** static void compute_block_backward_depen
+*** 303,308 ****
+--- 303,311 ----
+  void debug_dependencies PARAMS ((void));
+  
+  static void init_regions PARAMS ((void));
++ 
++ static void remove_new_cpu_cycle_marks PARAMS ((int));
++ 
+  static void schedule_region PARAMS ((int));
+  static void propagate_deps PARAMS ((int, struct deps *));
+  static void free_pending_lists PARAMS ((void));
+*************** init_ready_list (ready)
+*** 2137,2150 ****
+  
+  	for (insn = src_head; insn != src_next_tail; insn = NEXT_INSN (insn))
+  	  {
+  	    if (! INSN_P (insn))
+  	      continue;
+  
+  	    if (!CANT_MOVE (insn)
+  		&amp;&amp; (!IS_SPECULATIVE_INSN (insn)
+! 		    || (insn_issue_delay (insn) &lt;= 3
+  			&amp;&amp; check_live (insn, bb_src)
+  			&amp;&amp; is_exception_free (insn, bb_src, target_bb))))
+  	      {
+  		rtx next;
+  
+--- 2140,2175 ----
+  
+  	for (insn = src_head; insn != src_next_tail; insn = NEXT_INSN (insn))
+  	  {
++ 	    int move_p = 0;
++ 
+  	    if (! INSN_P (insn))
+  	      continue;
+  
++ #if AUTOMATON_PIPELINE_INTERFACE
++ 	    if (USE_AUTOMATON_PIPELINE_INTERFACE)
++ 	      /* DFA pipeline hazard recognizer needs to have
++ 		 non-negative insn code. */
++ 	      recog_memoized (insn);
++ #endif /* #if AUTOMATON_PIPELINE_INTERFACE */
++ 
+  	    if (!CANT_MOVE (insn)
+  		&amp;&amp; (!IS_SPECULATIVE_INSN (insn)
+! 		    || ((0
+! #if AUTOMATON_PIPELINE_INTERFACE
+! 			 || (USE_AUTOMATON_PIPELINE_INTERFACE
+! 			     &amp;&amp; INSN_CODE (insn) &gt;= 0
+! 			     &amp;&amp; min_insn_conflict_delay (curr_state, insn,
+! 							 insn) &lt;= 3)
+! #endif
+! #if OLD_PIPELINE_INTERFACE
+! 			 || (!USE_AUTOMATON_PIPELINE_INTERFACE
+! 			     &amp;&amp; insn_issue_delay (insn) &lt;= 3))
+! #endif
+  			&amp;&amp; check_live (insn, bb_src)
+  			&amp;&amp; is_exception_free (insn, bb_src, target_bb))))
++ 	      move_p = 0;
++ 
++ 	    if (move_p)
+  	      {
+  		rtx next;
+  
+*************** static int
+*** 2244,2259 ****
+  new_ready (next)
+       rtx next;
+  {
+    /* For speculative insns, before inserting to ready/queue,
+       check live, exception-free, and issue-delay.  */
+    if (INSN_BB (next) != target_bb
+        &amp;&amp; (!IS_VALID (INSN_BB (next))
+  	  || CANT_MOVE (next)
+  	  || (IS_SPECULATIVE_INSN (next)
+! 	      &amp;&amp; (insn_issue_delay (next) &gt; 3
+  		  || !check_live (next, INSN_BB (next))
+  		  || !is_exception_free (next, INSN_BB (next), target_bb)))))
+      return 0;
+    return 1;
+  }
+  
+--- 2269,2302 ----
+  new_ready (next)
+       rtx next;
+  {
++ #if AUTOMATON_PIPELINE_INTERFACE
++   if (USE_AUTOMATON_PIPELINE_INTERFACE)
++     /* DFA pipeline hazard recognizer needs to have non-negative insn
++        code. */
++     recog_memoized (next);
++ #endif /* #if AUTOMATON_PIPELINE_INTERFACE */
++ 
+    /* For speculative insns, before inserting to ready/queue,
+       check live, exception-free, and issue-delay.  */
+    if (INSN_BB (next) != target_bb
+        &amp;&amp; (!IS_VALID (INSN_BB (next))
+  	  || CANT_MOVE (next)
+  	  || (IS_SPECULATIVE_INSN (next)
+! 	      &amp;&amp; (0
+! #if AUTOMATON_PIPELINE_INTERFACE
+! 		  || (USE_AUTOMATON_PIPELINE_INTERFACE
+! 		      &amp;&amp; (INSN_CODE (next) &lt; 0
+! 			  || min_insn_conflict_delay (curr_state, next,
+! 						      next) &gt; 3))
+! #endif
+! #if OLD_PIPELINE_INTERFACE
+! 		  || (!USE_AUTOMATON_PIPELINE_INTERFACE
+! 		      &amp;&amp; insn_issue_delay (next) &gt; 3)
+! #endif
+  		  || !check_live (next, INSN_BB (next))
+  		  || !is_exception_free (next, INSN_BB (next), target_bb)))))
+      return 0;
++ 
+    return 1;
+  }
+  
+*************** debug_dependencies ()
+*** 2641,2655 ****
+  	  next_tail = NEXT_INSN (tail);
+  	  fprintf (sched_dump, &quot;\n;;   --- Region Dependences --- b %d bb %d \n&quot;,
+  		   BB_TO_BLOCK (bb), bb);
+  
+! 	  fprintf (sched_dump, &quot;;;   %7s%6s%6s%6s%6s%6s%11s%6s\n&quot;,
+! 	  &quot;insn&quot;, &quot;code&quot;, &quot;bb&quot;, &quot;dep&quot;, &quot;prio&quot;, &quot;cost&quot;, &quot;blockage&quot;, &quot;units&quot;);
+! 	  fprintf (sched_dump, &quot;;;   %7s%6s%6s%6s%6s%6s%11s%6s\n&quot;,
+! 	  &quot;----&quot;, &quot;----&quot;, &quot;--&quot;, &quot;---&quot;, &quot;----&quot;, &quot;----&quot;, &quot;--------&quot;, &quot;-----&quot;);
+  	  for (insn = head; insn != next_tail; insn = NEXT_INSN (insn))
+  	    {
+  	      rtx link;
+- 	      int unit, range;
+  
+  	      if (! INSN_P (insn))
+  		{
+--- 2684,2715 ----
+  	  next_tail = NEXT_INSN (tail);
+  	  fprintf (sched_dump, &quot;\n;;   --- Region Dependences --- b %d bb %d \n&quot;,
+  		   BB_TO_BLOCK (bb), bb);
++ 
++ #if AUTOMATON_PIPELINE_INTERFACE
++ 	  if (USE_AUTOMATON_PIPELINE_INTERFACE)
++ 	    {
++ 	      fprintf (sched_dump, &quot;;;   %7s%6s%6s%6s%6s%6s%14s\n&quot;,
++ 		       &quot;insn&quot;, &quot;code&quot;, &quot;bb&quot;, &quot;dep&quot;, &quot;prio&quot;, &quot;cost&quot;,
++ 		       &quot;reservation&quot;);
++ 	      fprintf (sched_dump, &quot;;;   %7s%6s%6s%6s%6s%6s%14s\n&quot;,
++ 		       &quot;----&quot;, &quot;----&quot;, &quot;--&quot;, &quot;---&quot;, &quot;----&quot;, &quot;----&quot;,
++ 		       &quot;-----------&quot;);
++ 	    }
++ #endif /* #if AUTOMATON_PIPELINE_INTERFACE */
+  
+! #if OLD_PIPELINE_INTERFACE
+! 	  if (!USE_AUTOMATON_PIPELINE_INTERFACE)
+! 	    {
+! 	      fprintf (sched_dump, &quot;;;   %7s%6s%6s%6s%6s%6s%11s%6s\n&quot;,
+! 	      &quot;insn&quot;, &quot;code&quot;, &quot;bb&quot;, &quot;dep&quot;, &quot;prio&quot;, &quot;cost&quot;, &quot;blockage&quot;, &quot;units&quot;);
+! 	      fprintf (sched_dump, &quot;;;   %7s%6s%6s%6s%6s%6s%11s%6s\n&quot;,
+! 	      &quot;----&quot;, &quot;----&quot;, &quot;--&quot;, &quot;---&quot;, &quot;----&quot;, &quot;----&quot;, &quot;--------&quot;, &quot;-----&quot;);
+! 	    }
+! #endif /* #if OLD_PIPELINE_INTERFACE */
+! 
+  	  for (insn = head; insn != next_tail; insn = NEXT_INSN (insn))
+  	    {
+  	      rtx link;
+  
+  	      if (! INSN_P (insn))
+  		{
+*************** debug_dependencies ()
+*** 2668,2690 ****
+  		    fprintf (sched_dump, &quot; {%s}\n&quot;, GET_RTX_NAME (GET_CODE (insn)));
+  		  continue;
+  		}
+  
+! 	      unit = insn_unit (insn);
+! 	      range = (unit &lt; 0
+! 		 || function_units[unit].blockage_range_function == 0) ? 0 :
+! 		function_units[unit].blockage_range_function (insn);
+! 	      fprintf (sched_dump,
+! 		       &quot;;;   %s%5d%6d%6d%6d%6d%6d  %3d -%3d   &quot;,
+! 		       (SCHED_GROUP_P (insn) ? &quot;+&quot; : &quot; &quot;),
+! 		       INSN_UID (insn),
+! 		       INSN_CODE (insn),
+! 		       INSN_BB (insn),
+! 		       INSN_DEP_COUNT (insn),
+! 		       INSN_PRIORITY (insn),
+! 		       insn_cost (insn, 0, 0),
+! 		       (int) MIN_BLOCKAGE_COST (range),
+! 		       (int) MAX_BLOCKAGE_COST (range));
+! 	      insn_print_units (insn);
+  	      fprintf (sched_dump, &quot;\t: &quot;);
+  	      for (link = INSN_DEPEND (insn); link; link = XEXP (link, 1))
+  		fprintf (sched_dump, &quot;%d &quot;, INSN_UID (XEXP (link, 0)));
+--- 2728,2779 ----
+  		    fprintf (sched_dump, &quot; {%s}\n&quot;, GET_RTX_NAME (GET_CODE (insn)));
+  		  continue;
+  		}
++ 
++ #if AUTOMATON_PIPELINE_INTERFACE
++ 	      if (USE_AUTOMATON_PIPELINE_INTERFACE)
++ 		{
++ 		  fprintf (sched_dump,
++ 			   &quot;;;   %s%5d%6d%6d%6d%6d%6d   &quot;,
++ 			   (SCHED_GROUP_P (insn) ? &quot;+&quot; : &quot; &quot;),
++ 			   INSN_UID (insn),
++ 			   INSN_CODE (insn),
++ 			   INSN_BB (insn),
++ 			   INSN_DEP_COUNT (insn),
++ 			   INSN_PRIORITY (insn),
++ 			   insn_cost (insn, 0, 0));
++ 		  
++ 		  recog_memoized (insn);
++ 		  if (INSN_CODE (insn) &lt; 0)
++ 		    fprintf (sched_dump, &quot;nothing&quot;);
++ 		  else
++ 		    print_reservation (sched_dump, insn);
++ 		}
++ #endif /* #if AUTOMATON_PIPELINE_INTERFACE */
+  
+! #if OLD_PIPELINE_INTERFACE
+! 	      if (!USE_AUTOMATON_PIPELINE_INTERFACE)
+! 		{
+! 		  int unit = insn_unit (insn);
+! 		  int range
+! 		    = (unit &lt; 0
+! 		       || function_units[unit].blockage_range_function == 0
+! 		       ? 0
+! 		       : function_units[unit].blockage_range_function (insn));
+! 		  fprintf (sched_dump,
+! 			   &quot;;;   %s%5d%6d%6d%6d%6d%6d  %3d -%3d   &quot;,
+! 			   (SCHED_GROUP_P (insn) ? &quot;+&quot; : &quot; &quot;),
+! 			   INSN_UID (insn),
+! 			   INSN_CODE (insn),
+! 			   INSN_BB (insn),
+! 			   INSN_DEP_COUNT (insn),
+! 			   INSN_PRIORITY (insn),
+! 			   insn_cost (insn, 0, 0),
+! 			   (int) MIN_BLOCKAGE_COST (range),
+! 			   (int) MAX_BLOCKAGE_COST (range));
+! 		  insn_print_units (insn);
+! 		}
+! #endif /* #if OLD_PIPELINE_INTERFACE */
+! 
+  	      fprintf (sched_dump, &quot;\t: &quot;);
+  	      for (link = INSN_DEPEND (insn); link; link = XEXP (link, 1))
+  		fprintf (sched_dump, &quot;%d &quot;, INSN_UID (XEXP (link, 0)));
+*************** debug_dependencies ()
+*** 2695,2700 ****
+--- 2784,2812 ----
+    fprintf (sched_dump, &quot;\n&quot;);
+  }
+  
++ 
++ /* The function removes marks about start of new cycle made in the
++    first instruction scheduling.  Although regmove may remove them
++    too.  */
++ 
++ static void
++ remove_new_cpu_cycle_marks (bb)
++      int bb;
++ {
++   rtx next_tail;
++   rtx tail;
++   rtx head;
++   rtx insn;
++ 
++   get_block_head_tail (BB_TO_BLOCK (bb), &amp;head, &amp;tail);
++ 
++   next_tail = NEXT_INSN (tail);
++   
++   for (insn = head; insn != next_tail; insn = NEXT_INSN (insn))
++     if (INSN_P (insn) &amp;&amp; GET_MODE (insn) == TImode)
++       PUT_MODE (insn, VOIDmode);
++ }
++ 
+  /* Schedule a region.  A region is either an inner loop, a loop-free
+     subroutine, or a single basic block.  Each bb in the region is
+     scheduled after its flow predecessors.  */
+*************** schedule_region (rgn)
+*** 2712,2717 ****
+--- 2824,2833 ----
+    current_blocks = RGN_BLOCKS (rgn);
+  
+    init_deps_global ();
++ 
++   if (reload_completed)
++     for (bb = 0; bb &lt; current_nr_blocks; bb++)
++       remove_new_cpu_cycle_marks (bb);
+  
+    /* Initializations for region data dependence analyisis.  */
+    bb_deps = (struct deps *) xmalloc (sizeof (struct deps) * current_nr_blocks);
+Index: sched-vis.c
+===================================================================
+RCS file: /cvs/gcc/gcc/gcc/sched-vis.c,v
+retrieving revision 1.6
+diff -c -p -r1.6 sched-vis.c
+*** sched-vis.c	2001/04/03 15:05:28	1.6
+--- sched-vis.c	2001/06/13 18:24:30
+*************** the Free Software Foundation, 59 Temple 
+*** 33,38 ****
+--- 33,42 ----
+  #include &quot;sched-int.h&quot;
+  
+  #ifdef INSN_SCHEDULING
++ 
++ /* The scheduler using only DFA description should never use the
++    following variable.  */
++ #if OLD_PIPELINE_INTERFACE
+  /* target_units bitmask has 1 for each unit in the cpu.  It should be
+     possible to compute this variable from the machine description.
+     But currently it is computed by examining the insn list.  Since
+*************** the Free Software Foundation, 59 Temple 
+*** 41,46 ****
+--- 45,51 ----
+     definition of function_units[] in &quot;insn-attrtab.c&quot;.)  */
+  
+  static int target_units = 0;
++ #endif /* #if OLD_PIPELINE_INTERFACE */
+  
+  static char *safe_concat PARAMS ((char *, char *, const char *));
+  static int get_visual_tbl_length PARAMS ((void));
+*************** static void print_value PARAMS ((char *,
+*** 49,54 ****
+--- 54,63 ----
+  static void print_pattern PARAMS ((char *, rtx, int));
+  static void print_insn PARAMS ((char *, rtx, int));
+  
++ /* The scheduler using only DFA description should never use the
++    following function.  */
++ #if OLD_PIPELINE_INTERFACE
++ 
+  /* Print names of units on which insn can/should execute, for debugging.  */
+  
+  void
+*************** insn_print_units (insn)
+*** 76,81 ****
+--- 85,92 ----
+      }
+  }
+  
++ #endif /* #if OLD_PIPELINE_INTERFACE */
++ 
+  /* MAX_VISUAL_LINES is the maximum number of lines in visualization table
+     of a basic block.  If more lines are needed, table is splitted to two.
+     n_visual_lines is the number of lines printed so far for a block.
+*************** char *visual_tbl;
+*** 89,94 ****
+--- 100,109 ----
+  int n_vis_no_unit;
+  rtx vis_no_unit[10];
+  
++ /* The scheduler using only DFA description should never use the
++    following functions.  */
++ #if OLD_PIPELINE_INTERFACE
++ 
+  /* Finds units that are in use in this fuction.  Required only
+     for visualization.  */
+  
+*************** init_target_units ()
+*** 112,145 ****
+      }
+  }
+  
+  /* Return the length of the visualization table.  */
+  
+  static int
+  get_visual_tbl_length ()
+  {
+!   int unit, i;
+!   int n, n1;
+!   char *s;
+! 
+!   /* Compute length of one field in line.  */
+!   s = (char *) alloca (INSN_LEN + 6);
+!   sprintf (s, &quot;  %33s&quot;, &quot;uname&quot;);
+!   n1 = strlen (s);
+! 
+!   /* Compute length of one line.  */
+!   n = strlen (&quot;;; &quot;);
+!   n += n1;
+!   for (unit = 0; unit &lt; FUNCTION_UNITS_SIZE; unit++)
+!     if (function_units[unit].bitmask &amp; target_units)
+!       for (i = 0; i &lt; function_units[unit].multiplicity; i++)
+! 	n += n1;
+!   n += n1;
+!   n += strlen (&quot;\n&quot;) + 2;
+! 
+!   visual_tbl_line_length = n;
+! 
+!   /* Compute length of visualization string.  */
+!   return (MAX_VISUAL_LINES * n);
+  }
+  
+  /* Init block visualization debugging info.  */
+--- 127,173 ----
+      }
+  }
+  
++ #endif /* #if OLD_PIPELINE_INTERFACE */
++ 
+  /* Return the length of the visualization table.  */
+  
+  static int
+  get_visual_tbl_length ()
+  {
+!   if (USE_AUTOMATON_PIPELINE_INTERFACE)
+!     {
+!       visual_tbl_line_length = 1;
+!       return 1; /* Can't return 0 because that will cause problems
+!                    with alloca.  */
+!     }
+!   
+! #if OLD_PIPELINE_INTERFACE
+!   {
+!     int unit, i;
+!     int n, n1;
+!     char *s;
+!     
+!     /* Compute length of one field in line.  */
+!     s = (char *) alloca (INSN_LEN + 6);
+!     sprintf (s, &quot;  %33s&quot;, &quot;uname&quot;);
+!     n1 = strlen (s);
+!     
+!     /* Compute length of one line.  */
+!     n = strlen (&quot;;; &quot;);
+!     n += n1;
+!     for (unit = 0; unit &lt; FUNCTION_UNITS_SIZE; unit++)
+!       if (function_units[unit].bitmask &amp; target_units)
+! 	for (i = 0; i &lt; function_units[unit].multiplicity; i++)
+! 	  n += n1;
+!     n += n1;
+!     n += strlen (&quot;\n&quot;) + 2;
+!     
+!     visual_tbl_line_length = n;
+!     
+!     /* Compute length of visualization string.  */
+!     return (MAX_VISUAL_LINES * n);
+!   }
+! #endif /* #if OLD_PIPELINE_INTERFACE */
+  }
+  
+  /* Init block visualization debugging info.  */
+*************** print_insn (buf, x, verbose)
+*** 808,813 ****
+--- 836,845 ----
+      }
+  }				/* print_insn */
+  
++ /* The scheduler using only DFA description should never use the
++    following function.  */
++ #if OLD_PIPELINE_INTERFACE
++ 
+  /* Print visualization debugging info.  */
+  
+  void
+*************** visualize_stall_cycles (stalls)
+*** 930,935 ****
+--- 962,969 ----
+  
+    strcpy (p, suffix);
+  }
++ 
++ #endif /* #if OLD_PIPELINE_INTERFACE */
+  
+  /* Allocate data used for visualization during scheduling.  */
+  
+Index: Makefile.in
+===================================================================
+RCS file: /cvs/gcc/gcc/gcc/Makefile.in,v
+retrieving revision 1.676
+diff -c -p -r1.676 Makefile.in
+*** Makefile.in	2001/06/13 14:26:01	1.676
+--- Makefile.in	2001/06/13 18:24:30
+*************** INTL_SUBDIRS = intl $(POSUB)
+*** 343,348 ****
+--- 343,352 ----
+  # system library.
+  OBSTACK=obstack.o
+  
++ # The following object files is used by genautomata.
++ GETRUNTIME = getruntime.o
++ HASHTAB = hashtab.o
++ 
+  # The GC method to be used on this system.
+  GGC=@GGC@.o
+  
+*************** HOST_CPPFLAGS=$(ALL_CPPFLAGS)
+*** 485,490 ****
+--- 489,496 ----
+  HOST_OBSTACK=$(OBSTACK)
+  HOST_VFPRINTF=$(VFPRINTF)
+  HOST_DOPRINT=$(DOPRINT)
++ HOST_GETRUNTIME=$(GETRUNTIME)
++ HOST_HASHTAB=$(HASHTAB)
+  HOST_STRSTR=$(STRSTR)
+  
+  # Actual name to use when installing a native compiler.
+*************** ALL_CPPFLAGS = $(CPPFLAGS) $(X_CPPFLAGS)
+*** 607,612 ****
+--- 613,620 ----
+  USE_HOST_OBSTACK= ` case &quot;${HOST_OBSTACK}&quot; in ?*) echo ${HOST_PREFIX}${HOST_OBSTACK} ;; esac `
+  USE_HOST_VFPRINTF= ` case &quot;${HOST_VFPRINTF}&quot; in ?*) echo ${HOST_PREFIX}${HOST_VFPRINTF} ;; esac `
+  USE_HOST_DOPRINT= ` case &quot;${HOST_DOPRINT}&quot; in ?*) echo ${HOST_PREFIX}${HOST_DOPRINT} ;; esac `
++ USE_HOST_GETRUNTIME= ` case &quot;${HOST_GETRUNTIME}&quot; in ?*) echo ${HOST_PREFIX}${HOST_GETRUNTIME} ;; esac `
++ USE_HOST_HASHTAB= ` case &quot;${HOST_HASHTAB}&quot; in ?*) echo ${HOST_PREFIX}${HOST_HASHTAB} ;; esac `
+  USE_HOST_STRSTR= ` case &quot;${HOST_STRSTR}&quot; in ?*) echo ${HOST_PREFIX}${HOST_STRSTR} ;; esac `
+  
+  # Dependency on obstack or whatever library facilities
+*************** HOST_RTL = $(HOST_PREFIX)rtl.o $(HOST_PR
+*** 635,640 ****
+--- 643,649 ----
+  
+  HOST_PRINT = $(HOST_PREFIX)print-rtl.o
+  HOST_ERRORS = $(HOST_PREFIX)errors.o
++ HOST_VARRAY = $(HOST_PREFIX)varray.o
+  
+  # Specify the directories to be searched for header files.
+  # Both . and srcdir are used, in that order,
+*************** obstack.o: $(srcdir)/../libiberty/obstac
+*** 1307,1312 ****
+--- 1316,1326 ----
+  	$(CC) -c $(ALL_CFLAGS) -DGENERATOR_FILE $(ALL_CPPFLAGS) $(INCLUDES) \
+  		obstack.c $(OUTPUT_OPTION)
+  
++ getruntime.o: $(srcdir)/../libiberty/getruntime.c $(CONFIG_H)
++ 	rm -f getruntime.c
++ 	$(LN_S) $(srcdir)/../libiberty/getruntime.c getruntime.c
++ 	$(CC) -c $(ALL_CFLAGS) $(ALL_CPPFLAGS) $(INCLUDES) getruntime.c
++ 
+  prefix.o: prefix.c $(CONFIG_H) $(SYSTEM_H) Makefile prefix.h
+  	$(CC) $(ALL_CFLAGS) $(ALL_CPPFLAGS) $(INCLUDES) \
+  	-DPREFIX=\&quot;$(prefix)\&quot; \
+*************** genattr$(build_exeext) : genattr.o $(HOS
+*** 1777,1790 ****
+  genattr.o : genattr.c $(RTL_H) $(HCONFIG_H) $(SYSTEM_H) errors.h gensupport.h
+  	$(HOST_CC) -c $(HOST_CFLAGS) $(HOST_CPPFLAGS) $(INCLUDES) $(srcdir)/genattr.c
+  
+! genattrtab$(build_exeext) : genattrtab.o $(HOST_RTL) $(HOST_PRINT) $(HOST_ERRORS) $(HOST_LIBDEPS)
+  	$(HOST_CC) $(HOST_CFLAGS) $(HOST_LDFLAGS) -o $@ \
+! 	 genattrtab.o $(HOST_RTL) $(HOST_PRINT) $(HOST_ERRORS) $(HOST_LIBS)
+  
+  genattrtab.o : genattrtab.c $(RTL_H) $(OBSTACK_H) $(HCONFIG_H) \
+!   $(SYSTEM_H) errors.h $(GGC_H) gensupport.h
+  	$(HOST_CC) -c $(HOST_CFLAGS) $(HOST_CPPFLAGS) $(INCLUDES) $(srcdir)/genattrtab.c
+  
+  genoutput$(build_exeext) : genoutput.o $(HOST_RTL) $(HOST_PRINT) $(HOST_ERRORS) $(HOST_LIBDEPS)
+  	$(HOST_CC) $(HOST_CFLAGS) $(HOST_LDFLAGS) -o $@ \
+  	 genoutput.o $(HOST_RTL) $(HOST_PRINT) $(HOST_ERRORS) $(HOST_LIBS)
+--- 1791,1808 ----
+  genattr.o : genattr.c $(RTL_H) $(HCONFIG_H) $(SYSTEM_H) errors.h gensupport.h
+  	$(HOST_CC) -c $(HOST_CFLAGS) $(HOST_CPPFLAGS) $(INCLUDES) $(srcdir)/genattr.c
+  
+! genattrtab$(build_exeext) : genattrtab.o genautomata.o $(HOST_RTL) $(HOST_PRINT) $(HOST_ERRORS) $(HOST_VARRAY) $(HOST_PREFIX)$(HOST_GETRUNTIME) $(HOST_LIBDEPS)
+  	$(HOST_CC) $(HOST_CFLAGS) $(HOST_LDFLAGS) -o $@ \
+! 	 genattrtab.o genautomata.o $(HOST_RTL) $(HOST_PRINT) $(HOST_ERRORS) $(HOST_VARRAY) $(USE_HOST_GETRUNTIME) $(HOST_LIBS) -lm
+  
+  genattrtab.o : genattrtab.c $(RTL_H) $(OBSTACK_H) $(HCONFIG_H) \
+!   $(SYSTEM_H) errors.h $(GGC_H) gensupport.h genattrtab.h
+  	$(HOST_CC) -c $(HOST_CFLAGS) $(HOST_CPPFLAGS) $(INCLUDES) $(srcdir)/genattrtab.c
+  
++ genautomata.o : genautomata.c $(RTL_H) $(OBSTACK_H) $(HCONFIG_H) \
++   $(SYSTEM_H) errors.h varray.h hash.h genattrtab.h
++ 	$(HOST_CC) -c $(HOST_CFLAGS) $(HOST_CPPFLAGS) $(INCLUDES) $(srcdir)/genautomata.c
++ 
+  genoutput$(build_exeext) : genoutput.o $(HOST_RTL) $(HOST_PRINT) $(HOST_ERRORS) $(HOST_LIBDEPS)
+  	$(HOST_CC) $(HOST_CFLAGS) $(HOST_LDFLAGS) -o $@ \
+  	 genoutput.o $(HOST_RTL) $(HOST_PRINT) $(HOST_ERRORS) $(HOST_LIBS)
+*************** $(HOST_PREFIX_1)obstack.o: $(srcdir)/../
+*** 1826,1831 ****
+--- 1844,1859 ----
+  	rm -f $(HOST_PREFIX)obstack.c
+  	sed -e 's/config[.]h/hconfig.h/' $(srcdir)/../libiberty/obstack.c &gt; $(HOST_PREFIX)obstack.c
+  	$(HOST_CC) -c $(HOST_CFLAGS) $(HOST_CPPFLAGS) $(INCLUDES) $(HOST_PREFIX)obstack.c
++ 
++ $(HOST_PREFIX_1)getruntime.o: $(srcdir)/../libiberty/getruntime.c
++ 	rm -f $(HOST_PREFIX)getruntime.c
++ 	sed -e 's/config[.]h/hconfig.h/' $(srcdir)/../libiberty/getruntime.c &gt; $(HOST_PREFIX)getruntime.c
++ 	$(HOST_CC) -c $(HOST_CFLAGS) $(HOST_CPPFLAGS) $(INCLUDES) $(HOST_PREFIX)getruntime.c
++ 
++ $(HOST_PREFIX_1)hashtab.o: $(srcdir)/../libiberty/hashtab.c
++ 	rm -f $(HOST_PREFIX)hashtab.c
++ 	sed -e 's/config[.]h/hconfig.h/' $(srcdir)/../libiberty/hashtab.c &gt; $(HOST_PREFIX)hashtab.c
++ 	$(HOST_CC) -c $(HOST_CFLAGS) $(HOST_CPPFLAGS) $(INCLUDES) $(HOST_PREFIX)hashtab.c
+  
+  $(HOST_PREFIX_1)vfprintf.o: $(srcdir)/../libiberty/vfprintf.c $(HCONFIG_H)
+  	rm -f $(HOST_PREFIX)vfprintf.c
+Index: doc/md.texi
+===================================================================
+RCS file: /cvs/gcc/gcc/gcc/doc/md.texi,v
+retrieving revision 1.3
+diff -c -p -r1.3 md.texi
+*** md.texi	2001/06/11 20:52:30	1.3
+--- md.texi	2001/06/13 18:24:31
+*************** in the compiler.@refill
+*** 3607,3616 ****
+  There are two cases where you should specify how to split a pattern into
+  multiple insns.  On machines that have instructions requiring delay
+  slots (@pxref{Delay Slots}) or that have instructions whose output is
+! not available for multiple cycles (@pxref{Function Units}), the compiler
+! phases that optimize these cases need to be able to move insns into
+! one-instruction delay slots.  However, some insns may generate more than one
+! machine instruction.  These insns cannot be placed into a delay slot.
+  
+  Often you can rewrite the single insn as a list of individual insns,
+  each corresponding to one machine instruction.  The disadvantage of
+--- 3607,3617 ----
+  There are two cases where you should specify how to split a pattern into
+  multiple insns.  On machines that have instructions requiring delay
+  slots (@pxref{Delay Slots}) or that have instructions whose output is
+! not available for multiple cycles (@pxref{Processor pipeline description}),
+! the compiler phases that optimize these cases need to be able to move
+! insns into one-instruction delay slots.  However, some insns may
+! generate more than one machine instruction.  These insns cannot be
+! placed into a delay slot.
+  
+  Often you can rewrite the single insn as a list of individual insns,
+  each corresponding to one machine instruction.  The disadvantage of
+*************** to track the condition codes.
+*** 4140,4146 ****
+  * Insn Lengths::        Computing the length of insns.
+  * Constant Attributes:: Defining attributes that are constant.
+  * Delay Slots::         Defining delay slots required for a machine.
+! * Function Units::      Specifying information for insn scheduling.
+  @end menu
+  
+  @node Defining Attributes
+--- 4141,4147 ----
+  * Insn Lengths::        Computing the length of insns.
+  * Constant Attributes:: Defining attributes that are constant.
+  * Delay Slots::         Defining delay slots required for a machine.
+! * Processor pipeline description::      Specifying information for insn scheduling.
+  @end menu
+  
+  @node Defining Attributes
+*************** branch is true, we might represent this 
+*** 4770,4777 ****
+  @end smallexample
+  @c the above is *still* too long.  --mew 4feb93
+  
+! @node Function Units
+! @subsection Specifying Function Units
+  @cindex function units, for scheduling
+  
+  On most RISC machines, there are instructions whose results are not
+--- 4771,4847 ----
+  @end smallexample
+  @c the above is *still* too long.  --mew 4feb93
+  
+! @node Processor pipeline description
+! @subsection Specifying processor pipeline description
+! 
+! To achieve better productivity the most of modern processors
+! (super-pipelined, superscalar RISC, and VLIW processors) have many
+! @dfn{functional units} on which several instructions can be executed
+! simultaneously.  An instruction execution can be started only if its
+! issue conditions are satisfied.  If not, instruction is interlocked
+! until its conditions are satisfied.  Such an @dfn{interlock (pipeline)
+! delay} causes interruption of the fetching of successor instructions
+! (or demands @var{nop} instructions, e.g. for some MIPS processors).
+! 
+! There are two major kind of interlock delays in modern processors.
+! The first one is data dependence delay determining @dfn{instruction
+! latency time}.  The instruction execution is not started until all
+! source data has been evaluated by previous instructions (there are
+! more complex cases when the instruction execution starts even when the
+! data are not evaluated but will be ready till given time after the
+! instruction execution start).  Taking into account of the data
+! dependence delays is simple.  Data dependence (true, output, and
+! anti-dependence) delay between two instructions is given by constant.
+! In the most cases this approach is adequate.  The second kind of
+! interlock delays is reservation delay.  Two such way dependent
+! instructions under execution will be in need of shared processors
+! resources, i.e. buses, internal registers, and/or functional units,
+! which are reserved for some time.  Taking into account of this kind of
+! delay is complex especially for modern RISC processors.
+! 
+! The task of exploiting more processor parallelism is solved by
+! instruction scheduler.  For better solution of this problem, the
+! instruction scheduler has to have adequate description of processor
+! parallelism (or @dfn{pipeline description}).  Currently GCC has two
+! ways to describe processor parallelism.  The first one is old and
+! originated from instruction scheduler written by Michael Tiemann and
+! described in the first subsequent section.  The second one is new and
+! based on description of functional unit reservations by processor
+! instructions with the aid of @dfn{regular expressions}.  This is so
+! called @dfn{automaton based description}.
+! 
+! Gcc instruction scheduler uses @dfn{pipeline hazard recognizer} to
+! figure out possibility of instruction issue by processor on given
+! simulated processor cycle.  The pipeline hazard recognizer is code
+! generated from processor pipeline description.  The pipeline hazard
+! recognizer generated from automaton based description is more
+! sophisticated and based on deterministic finite state automaton (DFA)
+! and therefore faster than one generated from the old description.
+! Also its speed is not depended on processor complexity.  The
+! instruction issue is possible if there is transition from one
+! automaton state to another one.
+! 
+! You can use any model to describe processor pipeline characteristics
+! or even mix of them.  You could use old description for some processor
+! submodels and DFA-based one for the rest processor submodels.
+! 
+! In general, the usage of automaton based description is more
+! preferable.  The model is more rich.  It permits to describe more
+! accurately pipeline characteristics of processors which results in
+! improving code quality (although sometimes only on several percent
+! fractions).  It will be also used as infrastructure to implement
+! sophisticated and practical insn scheduling which will try many
+! instruction sequences to choose the best one.
+! 
+! 
+! @menu
+! * Old pipeline description:: Specifying information for insn scheduling.
+! * Automaton pipeline description:: Describing insn pipeline characteristics.
+! * Comparison of two descriptions:: Drawbacks of old pipeline description
+! @end menu
+! 
+! @node Old pipeline description
+! @subsubsection Specifying Function Units
+  @cindex function units, for scheduling
+  
+  On most RISC machines, there are instructions whose results are not
+*************** units.  These insns will cause a potenti
+*** 4888,4893 ****
+--- 4958,5304 ----
+  used during their execution and there is no way of representing that
+  conflict.  We welcome any examples of how function unit conflicts work
+  in such processors and suggestions for their representation.
++ 
++ @node Automaton pipeline description
++ @subsubsection Describing instruction pipeline characteristics
++ @cindex automaton based pipeline description
++ 
++ This section describes constructions of automaton based processor
++ pipeline description.  The order of all mentioned below constructions
++ in machine description file is not important.
++ 
++ @findex define_automaton
++ 
++ The following optional construction describes names of automata
++ generated and used for pipeline hazards recognition.  Sometimes the
++ generated finite state automaton used by pipeline hazard recognizer is
++ large.  If we use more one automata and bind functional units to the
++ automata, the summary size of the automata usually is less than the
++ size of the single one.  If there is no one such construction, only
++ one finite state automaton is generated.
++ 
++ @smallexample
++ (define_automaton @var{automata-names})
++ @end smallexample
++ 
++ @var{automata-names} is a string giving names of the automata.  The
++ names are separated by comma.  All automata should have unique names.
++ The automaton name is used in construction @code{define_cpu_unit} and
++ @code{define_query_cpu_unit}.
++ 
++ @findex define_cpu_unit
++ Each processor functional unit used in description of instruction
++ reservations should be described by the following construction.
++ 
++ @smallexample
++ (define_cpu_unit @var{unit-names} [@var{automaton-name}])
++ @end smallexample
++ 
++ @var{names} is a string giving the names of the functional units
++ separated by commas.  Don't use name @dfn{nothing}, it is reserved for
++ other goals.
++ 
++ @var{automaton-name} is a string giving the name of automaton with
++ which the unit is bound.  The automaton should be described in
++ construction @code{define_automaton}.  You should give
++ @dfn{automaton-name}, if there is a defined automaton.
++ 
++ @findex define_query_cpu_unit
++ 
++ The following construction describes CPU functional units analogously
++ to @code{define_cpu_unit}.  If we use automaton without its
++ minimization, the reservation of such units can be queried for
++ automaton state.  Instruction scheduler never queries reservation of
++ functional units for given automaton state.  So as rule, you don't
++ need this construction.  This construction could be used to future
++ code generation goals (e.g. to generate VLIW insn templates).
++ 
++ @smallexample
++ (define_query_cpu_unit @var{unit-names} [@var{automaton-name}])
++ @end smallexample
++ 
++ @var{names} is a string giving the names of the functional units
++ separated by commas.
++ 
++ @var{automaton-name} is a string giving the name of automaton with
++ which the unit is bound.
++ 
++ @findex define_insn_reservation
++ 
++ The following construction is major one to describe pipeline
++ characteristics of instruction.
++ 
++ @smallexample
++ (define_insn_reservation @var{insn-name} @var{default_latency}
++                          @var{condition} @var{regexp})
++ @end smallexample
++ 
++ @var{default_latency} is number giving latency time of the
++ instruction.
++ 
++ @var{insn-names} is string giving an internal name of insn.  The
++ internal names are used in constructions @code{define_bypass} and in
++ automaton description file used for debugging.  The internal name has
++ nothing common with names in @code{define_insn}.  It is a good
++ practice to use insn classes described in the processor manual.
++ 
++ @var{condition} defines what RTL insns are described by this construction.
++ 
++ @var{regexp} is string describing reservation of cpu functional units
++ by the instruction.  The reservations are described by a regular
++ expression according the following syntax:
++ 
++ @smallexample
++        regexp = regexp &quot;,&quot; oneof
++               | oneof
++ 
++        oneof = oneof &quot;|&quot; allof
++              | allof
++ 
++        allof = allof &quot;+&quot; repeat
++              | repeat
++  
++        repeat = element &quot;*&quot; number
++               | element
++ 
++        element = cpu_function_unit_name
++                | reservation_name
++                | result_name
++                | &quot;nothing&quot;
++                | &quot;(&quot; regexp &quot;)&quot;
++ @end smallexample
++ 
++ @itemize @bullet
++ @item
++ @samp{&quot;,&quot;} is used for describing start of the next cycle in
++ reservation.
++ 
++ @item
++ @samp{&quot;|&quot;} is used for describing the reservation described by the
++ first regular expression *or* the reservation described by the second
++ regular expression *or* etc.
++ 
++ @item
++ @samp{&quot;+&quot;} is used for describing the reservation described by the
++ first regular expression *and* the reservation described by the second
++ regular expression *and* etc.
++ 
++ @item
++ @samp{&quot;*&quot;} is used for convenience and simply means sequence in which
++ the regular expression are repeated @var{number} times with cycle
++ advancing (see @samp{&quot;,&quot;}).
++ 
++ @item
++ @samp{cpu_function_unit_name} denotes reservation of the named
++ functional unit.
++ 
++ @item
++ @samp{reservation_name} -- see description of construction
++ @samp{define_reservation}.
++ 
++ @item
++ @samp{&quot;nothing&quot;} denotes no unit reservations.
++ @end itemize
++ 
++ @findex define_reservation
++ 
++ Sometimes unit reservations for different insns contain common parts.
++ In such case, you can simplify pipeline description by describing the
++ common part by the following construction
++ 
++ @smallexample
++ (define_reservation @var{reservation-name} @var{regexp})
++ @end smallexample
++ 
++ @var{reservation-name} is string giving name of @var{regexp}.  The
++ functional unit names and reservation names are in the same name
++ space.  So the reservation names should be different from functional
++ unit names and can not be reserved name @dfn{nothing}.
++ 
++ @findex define_bypass
++ The following construction is used to describe exceptions in latency
++ time for given instruction pair.  This is so called bypasses.
++ 
++ @smallexample
++ (define_bypass @var{number} @var{out_insn_names} @var{in_insn_names}
++                [@var{guard}])
++ @end smallexample
++ 
++ @var{number} gives when the result generated by instructions given in
++ string @var{out_insn_names} will be ready for instructions given in
++ string @var{in_insn_names}.  Instructions in the string are separated
++ by comma.
++ 
++ @var{guard} is optional string given name of C function which defines
++ additional guard for the bypass.  The function will get the two insns
++ as parameters.  If the function returns zero the bypass will be
++ ignored for this case.  Additional guard is necessary to recognize
++ complicated bypasses, e.g. when consumer is only address of insn
++ @samp{store} (not stored value).
++ 
++ Usually the following three constructions are used to describe VLIW
++ processors (more correctly to describe placement of small insns into
++ VLIW insn slots).  Although they can be used for RISC processor too.
++ 
++ @smallexample
++ (exclusion_set @var{unit-names} @var{unit-names})
++ (presence_set @var{unit-names} @var{unit-names})
++ (absence_set @var{unit-names} @var{unit-names})
++ @end smallexample
++ 
++ @var{unit-names} is string giving names of functional units separated by comma.
++ 
++ The first construction (exclusion_set) means that each functional unit
++ in the first string can not be reserved simultaneously with unit whose
++ name is in the second string and vice versa.  For example, the
++ construction is useful for describing processors (e.g. some SPARC
++ processors) with fully pipelined floating point functional unit which
++ can execute simultaneously only single floating point insns or only
++ double floating point insns.
++ 
++ The second construction (presence_set) means that each functional unit
++ in the first string can not be reserved unless at least one of units
++ whose names are in the second string is reserved.  This is an
++ asymmetric relation.  For example, it is useful for description that
++ VLIW @samp{slot1} is reserved after @samp{slot0} reservation.
++ 
++ The third construction (absence_set) means that each functional unit
++ in the first string can be reserved only if each unit whose name is in
++ the second string is not reserved.  This is an asymmetric relation
++ (actually @samp{exclusion_set} is analogous to this one but it is
++ symmetric).  For example, it is useful for description that VLIW
++ @samp{slot0} can not be reserved after @samp{slot1} or @samp{slot2}
++ reservation.
++ 
++ You can control generator of pipeline hazard recognizer with the
++ following construction.
++ 
++ @smallexample
++ (automata_option @var{options})
++ @end smallexample
++ 
++ @var{options} is a string giving options which affect generated code.
++ Currently there are the following options:
++ 
++ @itemize @bullet
++ @item
++ @dfn{no-minimization} makes no minimization of automaton.  This is only
++ worth to do when we are going to query CPU functional unit
++ reservations in an automaton state.
++ 
++ @item
++ @dfn{w} means generation of file describing the result automaton.  The
++ file can be used to verify the description.
++ 
++ @item
++ @dfn{ndfa} makes nondeterministic finite state automata.  This affects
++ treatment of operator `|' in the regular expressions.  The usual
++ treatment of the operator is to try the first alternative and, if the
++ reservation is not possible, the second alternative.  The
++ nondeterministic treatment means trying all alternatives, some of them
++ may be rejected by reservations in subsequent insns.  You can not
++ query functional unit reservation in state of nondeterministic
++ automaton.
++ @end itemize
++ 
++ As an example, consider a superscalar RISC machine which can issue
++ three insns (two integer insns and one floating point insn) on cycle
++ but finish only two insns.  To describe this, we define the following
++ functional units.
++ 
++ @smallexample
++ (define_cpu_unit &quot;i0_pipeline, i1_pipeline, f_pipeline&quot;)
++ (define_cpu_unit &quot;port_0, port1&quot;)
++ @end smallexample
++ 
++ All simple integer insns can be executed in any integer pipeline and
++ their result is ready in two cycles.  The simple integer insns are
++ issued into the first pipeline unless it is reserved, otherwise they
++ are issued into the second pipeline.  Integer division and
++ multiplication insns can be executed only in the second integer
++ pipeline and their results are ready correspondingly in 8 and 4
++ cycles.  Integer division is not pipelined, i.e. subsequent integer
++ division insn can not be issued until current division insn finished.
++ Floating point insns are fully pipelined and their results are ready
++ in 3 cycles.  There is also additional one cycle delay in usage by
++ integer insns of result produced by floating point insns.  To describe
++ all of this we could specify
++ 
++ @smallexample
++ (define_cpu_unit &quot;div&quot;)
++ 
++ (define_insn_reservation &quot;simple&quot; 2 (eq_attr &quot;cpu&quot; &quot;int&quot;)
++                          &quot;(i0_pipeline | i1_pipeline), (port_0 | port1)&quot;)
++ 
++ (define_insn_reservation &quot;mult&quot; 4 (eq_attr &quot;cpu&quot; &quot;mult&quot;)
++                          &quot;i1_pipeline, nothing*3, (port_0 | port1)&quot;)
++ 
++ (define_insn_reservation &quot;div&quot; 8 (eq_attr &quot;cpu&quot; &quot;div&quot;)
++                          &quot;i1_pipeline, div*7, (port_0 | port1)&quot;)
++ 
++ (define_insn_reservation &quot;float&quot; 3 (eq_attr &quot;cpu&quot; &quot;float&quot;)
++                          &quot;f_pipeline, nothing, (port_0 | port1))
++ 
++ (define_bypass 4 &quot;float&quot; &quot;simple,mut,div&quot;)
++ @end smallexample
++ 
++ To simplify the description we could describe the following reservation
++ 
++ @smallexample
++ (define_reservation &quot;finish&quot; &quot;port0|port1&quot;)
++ @end smallexample
++ 
++ and use it in all @code{define_insn_reservation} as in the following
++ construction
++ 
++ @smallexample
++ (define_insn_reservation &quot;simple&quot; 2 (eq_attr &quot;cpu&quot; &quot;int&quot;)
++                          &quot;(i0_pipeline | i1_pipeline), finish&quot;)
++ @end smallexample
++ 
++ 
++ @node Comparison of two descriptions
++ @subsubsection Drawbacks of old pipeline description
++ 
++ The old instruction level parallelism description and pipeline hazards
++ recognizer based on it have the following drawbacks in comparisons
++ with DFA-based one:
++   
++ @itemize @bullet
++ @item
++ Each functional unit is believed to be reserved at the instruction
++ execution start.  This is very inaccurate model for modern processors.
++ 
++ @item
++ Inadequate description of instruction latency times.  Latency time is
++ bound with functional unit reserved by instruction not with instruction
++ itself.  In other words, the description is oriented to describe at
++ most one unit reservation by each instruction.  It also does not
++ permit to describe special bypasses between instruction pairs.
++ 
++ @item
++ Implementation of the pipeline hazard recognizer interface has
++ constraints on number of functional units.  This is number of bits in
++ integer on the host machine.
++ 
++ @item
++ Interface to the pipeline hazard recognizer is more complex than one
++ to automaton based pipeline recognizer.
++ 
++ @item
++ Unnatural description when you write a unit and condition which
++ selects instructions using the unit.  Writing all unit reservations
++ for an instruction (an instruction class) is more natural.
++ 
++ @item
++ Recognition of interlock delays has slow implementation.  GCC
++ scheduler supports structures which describe the unit reservations.
++ The more processor has functional units, the slower pipeline hazard
++ recognizer.  Such implementation would become slower when we enable to
++ reserve functional units not only at the instruction execution start.
++ The automaton based pipeline hazard recognizer speed is not depended
++ on processor complexity.
++ @end itemize
+  @end ifset
+  
+  @node Conditional Execution
+Index: doc/tm.texi
+===================================================================
+RCS file: /cvs/gcc/gcc/gcc/doc/tm.texi,v
+retrieving revision 1.2
+diff -c -p -r1.2 tm.texi
+*** tm.texi	2001/06/07 16:41:27	1.2
+--- tm.texi	2001/06/13 18:24:33
+*************** symbols must be explicitly imported from
+*** 8343,8363 ****
+  A C statement that adds to @var{CLOBBERS} @code{STRING_CST} trees for
+  any hard regs the port wishes to automatically clobber for all asms.
+  
+  @findex ISSUE_RATE
+  @item ISSUE_RATE
+  A C expression that returns how many instructions can be issued at the
+  same time if the machine is a superscalar machine.
+  
+  @findex MD_SCHED_INIT
+  @item MD_SCHED_INIT (@var{file}, @var{verbose}, @var{max_ready})
+! A C statement which is executed by the scheduler at the
+! beginning of each block of instructions that are to be scheduled.
+! @var{file} is either a null pointer, or a stdio stream to write any
+! debug output to.  @var{verbose} is the verbose level provided by
+  @samp{-fsched-verbose-}@var{n}.  @var{max_ready} is the maximum number
+  of insns in the current scheduling region that can be live at the same
+  time.  This can be used to allocate scratch space if it is needed.
+  
+  @findex MD_SCHED_FINISH
+  @item MD_SCHED_FINISH (@var{file}, @var{verbose})
+  A C statement which is executed by the scheduler at the end of each block
+--- 8343,8383 ----
+  A C statement that adds to @var{CLOBBERS} @code{STRING_CST} trees for
+  any hard regs the port wishes to automatically clobber for all asms.
+  
++ @findex USE_AUTOMATON_PIPELINE_INTERFACE
++ @item USE_AUTOMATON_PIPELINE_INTERFACE
++ A C expression that is used only when the machine description file
++ contains old pipeline description and automaton based one
++ (@pxref{Processor pipeline description,,Specifying processor pipeline
++ description}).  If the expression returns nonzero, the automaton based
++ pipeline description is used for insn scheduling, otherwise the old
++ pipeline description is used.  The default value is one.  In other
++ words, by default the automaton based pipeline description will be
++ always used.
++ 
+  @findex ISSUE_RATE
+  @item ISSUE_RATE
+  A C expression that returns how many instructions can be issued at the
+  same time if the machine is a superscalar machine.
+  
++ This is used only for old pipeline description.
++ 
+  @findex MD_SCHED_INIT
+  @item MD_SCHED_INIT (@var{file}, @var{verbose}, @var{max_ready})
+! A C statement which is executed by the scheduler at the beginning of
+! each block of instructions that are to be scheduled.  @var{file} is
+! either a null pointer, or a stdio stream to write any debug output to.
+! @var{verbose} is the verbose level provided by
+  @samp{-fsched-verbose-}@var{n}.  @var{max_ready} is the maximum number
+  of insns in the current scheduling region that can be live at the same
+  time.  This can be used to allocate scratch space if it is needed.
+  
++ This macro is used only for old pipeline description.
++ 
++ @findex MD_AUTOMATON_SCHED_INIT
++ @item MD_AUTOMATON_SCHED_INIT (@var{file}, @var{verbose})
++ Like @samp{MD_SCHED_INIT} but used only for automaton based
++ pipeline description.
++ 
+  @findex MD_SCHED_FINISH
+  @item MD_SCHED_FINISH (@var{file}, @var{verbose})
+  A C statement which is executed by the scheduler at the end of each block
+*************** is the timer tick of the scheduler.  @va
+*** 8383,8388 ****
+--- 8403,8415 ----
+  parameter that is set to the number of insns that can issue this clock;
+  normally this is just @code{issue_rate}.  See also @samp{MD_SCHED_REORDER2}.
+  
++ This macro is used only for old pipeline description.
++ 
++ @findex MD_AUTOMATON_SCHED_REORDER
++ @item MD_AUTOMATON_SCHED_REORDER (@var{file}, @var{verbose}, @var{ready}, @var{n_ready}, @var{clock})
++ Like @samp{MD_SCHED_REORDER} but used only for automaton based
++ pipeline description.
++ 
+  @findex MD_SCHED_REORDER2
+  @item MD_SCHED_REORDER2 (@var{file}, @var{verbose}, @var{ready}, @var{n_ready}, @var{clock}, @var{can_issue_more})
+  Like @samp{MD_SCHED_REORDER}, but called at a different time.  While the
+*************** Defining this macro can be useful if the
+*** 8394,8399 ****
+--- 8421,8428 ----
+  scheduling one insn causes other insns to become ready in the same cycle,
+  these other insns can then be taken into account properly.
+  
++ This macro is used only for old pipeline description.
++ 
+  @findex MD_SCHED_VARIABLE_ISSUE
+  @item MD_SCHED_VARIABLE_ISSUE (@var{file}, @var{verbose}, @var{insn}, @var{more})
+  A C statement which is executed by the scheduler after it
+*************** is the verbose level provided by @samp{-
+*** 8404,8409 ****
+--- 8433,8520 ----
+  number of instructions that can be issued in the current cycle.  The
+  @samp{MD_SCHED_VARIABLE_ISSUE} macro is responsible for updating the
+  value of @var{more} (typically by @var{more}--).
++ 
++ This macro is used only for old pipeline description.
++ 
++ @findex DFA_SCHEDULER_PRE_CYCLE_INSN
++ @item DFA_SCHEDULER_PRE_CYCLE_INSN
++ A C statement which returns an RTL insn.  The automaton state used in
++ pipeline hazard recognizer is changed as if the insn were scheduled
++ when the new simulated processor cycle starts.  Usage of the macro may
++ simplify automaton pipeline description for some VLIW processors.  If
++ the macro is defined, it is used only for automaton based pipeline
++ description.
++ 
++ @findex DFA_SCHEDULER_POST_CYCLE_INSN
++ @item DFA_SCHEDULER_POST_CYCLE_INSN
++ Like @samp{DFA_SCHEDULER_PRE_CYCLE_INSN} but it is used at the end of
++ simulated processor cycle.
++ 
++ @findex FIRST_CYCLE_MULTIPASS_SCHEDULING
++ @item FIRST_CYCLE_MULTIPASS_SCHEDULING
++ This macro controls better choosing insn from ready insn queue for
++ DFA-based insn scheduler.  Usually scheduler chooses the first insn
++ from the queue.  If @samp{FIRST_CYCLE_MULTIPASS_SCHEDULING} is not
++ zero, additional scheduler code tries all permutations of
++ @samp{FIRST_CYCLE_MULTIPASS_SCHEDULING_LOOKAHEAD} subsequent ready
++ insns to choose insn whose issue will result maximal number of issued
++ insns on the same cycle.  For VLIW processor, the code could actually
++ solve problem of packing simple insns into VLIW insn.  Of course, if
++ the rules of VLIW packing are described in automaton.
++ 
++ This code also could be used for superscalar RISC processors.  Let us
++ consider superscalar RISC processor with 3 pipelines.  Some insns can
++ be executed in pipelines @samp{A} or @samp{B}, some insns only in
++ pipeline @samp{B} or @samp{C}, and one insn in pipeline @samp{B}.  The
++ processor may issue the 1st insn into @samp{A}, the 2nd one into
++ @samp{B}.  In this case, the 3rd insn will wait for freeing @samp{B}
++ until the next cycle.  If the scheduler issues the 3rd insn the first,
++ the processor could issue all 3 insns per cycle.
++ 
++ Actually this code demonstrates the advantages of automaton based
++ pipeline hazard recognizer.  We try quickly and easy many insn
++ schedules to choose the best one.
++ 
++ The default value of the macro is zero.
++ 
++ @findex FIRST_CYCLE_MULTIPASS_SCHEDULING_LOOKAHEAD
++ @item FIRST_CYCLE_MULTIPASS_SCHEDULING_LOOKAHEAD
++ See description of @samp{FIRST_CYCLE_MULTIPASS_SCHEDULING}.  The
++ default value of the macro is zero.  Actually this means no multi-pass
++ scheduling.
++ 
++ @findex INIT_SCHEDULER_BUBBLES
++ @item INIT_SCHEDULER_BUBBLES ()
++ DFA-based scheduler could take insertion of nop operations for better
++ insn scheduling into account.  It can be done only if multi-pass insn
++ scheduling works (see macro @samp{FIRST_CYCLE_MULTIPASS_SCHEDULING}).
++ 
++ Let us consider VLIW processor insn with 3 slots.  Each insn can be
++ placed only in one of three slots.  We have 3 ready insns @samp{A},
++ @samp{B}, and @samp{C}.  @samp{A} and @samp{C} can be placed only in
++ the 1st slot, @samp{B} can be placed only in the 3rd slot.  We
++ described automaton which does not permit empty slot gaps between
++ insns (usually such description is simpler).  Without this code
++ scheduler would place each insn in 3 separate VLIW insns.  If
++ scheduler places a nop insn into the 2nd slot, it could place the 3
++ insns into 2 VLIW insns.  What is nop insn is defined by macro
++ @samp{SCHEDULER_BUBBLE}.  If macro @samp{INIT_SCHEDULER_BUBBLES} is
++ defined it can be used to initialize or create the nop insns.
++ 
++ You should remember that the scheduler does not insert the nop insns.
++ It is not wise because of the following optimizations.  The scheduler
++ only considers such possibility to improve the result scheduler.  The
++ nop insns should be inserted lately, e.g. on final phase.
++ 
++ @findex SCHEDULER_BUBBLE
++ @item SCHEDULER_BUBBLE (@var{index})
++ If this macro and macro @samp{FIRST_CYCLE_MULTIPASS_SCHEDULING} are
++ defined, DFA-based scheduler could take insertion of nop operations
++ for better insn scheduling into account (see also description of macro
++ @samp{INIT_SCHEDULER_BUBBLES}).  This macro returns nop insn with
++ given @var{index}.  The indexes start with zero.  The macro should
++ return NULL if there are no more nop insns with indexes greater than
++ given index.
+  
+  @findex MAX_INTEGER_COMPUTATION_MODE
+  @item MAX_INTEGER_COMPUTATION_MODE
+
+</PRE>
+
+<!--X-Body-of-Message-End-->
+<!--X-MsgBody-End-->
+<!--X-Follow-Ups-->
+<hr>
+<ul><li><strong>Follow-Ups</strong>:
+<ul>
+<li><strong><a name="00963" href="msg00963.html">Re: 2nd try for patch for automaton based pipeline hazard recognizer(part #1)</a></strong>
+<ul><li><em>From:</em> Joseph S. Myers</li></ul></li>
+<li><strong><a name="01076" href="msg01076.html">Re: 2nd try for patch for automaton based pipeline hazard recognizer (part #1)</a></strong>
+<ul><li><em>From:</em> Richard Henderson</li></ul></li>
+<li><strong><a name="01226" href="msg01226.html">Re: 2nd try for patch for automaton based pipeline hazard recognizer (part #1)</a></strong>
+<ul><li><em>From:</em> law</li></ul></li>
+</ul></li></ul>
+<!--X-Follow-Ups-End-->
+<!--X-References-->
+<!--X-References-End-->
+<!--X-BotPNI-->
+<!--htdig_noindex-->
+<table border="0">
+  <tr><th align="left">Index Nav:</th>
+      <td colspan="2">
+        [<A HREF="index.html#00951">Date&nbsp;Index</A>] [<a href="subjects.html#00951">Subject&nbsp;Index</a>] [<a href="authors.html#00951">Author&nbsp;Index</a>] [<A HREF="threads.html#00951">Thread&nbsp;Index</A>]
+      </td>
+  </tr>
+  <tr><th align="left">Message Nav:</th>
+      <td>[<A HREF="msg00950.html">Date&nbsp;Prev</A>]&nbsp;[<A HREF="msg00952.html">Date&nbsp;Next</A>]</td>
+      <td>[<A HREF="msg00950.html">Thread&nbsp;Prev</A>]&nbsp;[<A HREF="msg00963.html">Thread&nbsp;Next</A>]</td>
+  </tr>
+</table>
+<!--/htdig_noindex-->
+
+<!--X-BotPNI-End-->
+<!--X-User-Footer-->
+<!--X-User-Footer-End-->
+</body>
+</html>
+

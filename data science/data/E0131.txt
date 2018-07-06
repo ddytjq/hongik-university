@@ -1,0 +1,797 @@
+ID=E0131
+URL=http://www.troubleshooters.com/codecorn/littperl/perlsub.htm
+SIZE=24896
+DATE=12/07/02
+TIME=19:17:48
+DATASET=C
+HTML=<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="description" content="Debugging and Troubleshooting Source Code including MS Access, C++, Delphi, FoxPro, MFC, SQL, Visual Basic">
+   <meta name="keywords" content="debugging, troubleshooting, Source Code, Access, C++, Delphi, FoxPro, MFC, Microsoft Foundation Classes, SQL, Visual Basic">
+   <meta name="FORMATTER" content="Microsoft FrontPage 1.1">
+   <meta name="Author" content="Steve Litt">
+   <meta name="Description" content="Subroutines and References in PERL">
+   <meta name="KeyWords" content="perl,Perl,PERL,subroutines,function,references,pointers">
+   <meta name="GENERATOR" content="Mozilla/4.5 [en] (Win98; U) [Netscape]">
+   <title>Subroutines and References in PERL</title>
+</head>
+<body text="#000000" bgcolor="#FFFFF0" link="#0000EE" vlink="#551A8B" alink="#FF0000" background="../../tcbk.gif">
+
+<center>
+<h2>
+<a NAME="top"></a><a href="../../troubleshooters.htm">Troubleshooters.Com</a>
+and <a href="../index.htm">Code Corner</a> Present</h2></center>
+
+<center>
+<h1>
+<a href="index.htm">Steve Litt's PERLs of Wisdom</a>:<br>
+<font size=+4>Subroutines and References<br>
+in PERL<br>
+</font>(With Snippets)</h1></center>
+
+<center><a href="../../cpyright.htm">Copyright (C) 1998-2000 by Steve Litt</a></center>
+
+<p>
+<hr>
+<h1>
+Contents</h1>
+
+<ul>
+<li>
+<b><a href="#Introduction">Introduction</a></b></li>
+
+<li>
+<b><a href="#References">References</a></b></li>
+
+<li>
+<b><a href="#SubroutinesADiscussion">Subroutines: A Discussion</a></b></li>
+
+<li>
+<b><a href="#BareBonesSubroutineSyntax">Bare Bones Subroutine Syntax</a></b></li>
+
+<li>
+<b><a href="#ReturningaScalar">Returning a Scalar</a></b></li>
+
+<li>
+<b><a href="#ReturningaList">Returning a List</a></b></li>
+
+<li>
+<b><a href="#ReturningaHash">Returning a Hash</a></b></li>
+
+<li>
+<b><a href="#ScalarInputOutputArgs">Subroutine With Scalar Input/Output
+Arguments</a></b></li>
+
+<li>
+<b><a href="#ScalarInputOnlyArgs">Subroutine With Scalar Input-Only Arguments</a></b></li>
+
+<li>
+<b><a href="#ListInputOutputArgs">Subroutine With List Input/Output Arguments</a></b></li>
+
+<li>
+<b><a href="#ListInputOnlyArgs">Subroutine With List Input-Only Arguments</a></b></li>
+
+<li>
+<b><a href="#HashInputOutputArgs">Subroutine With Hash Input/Output Arguments</a></b></li>
+
+<li>
+<b><a href="#HashInputOnlyArgs">Subroutine With Hash Input-Only Arguments</a></b></li>
+</ul>
+
+<h1>
+<a NAME="Introduction"></a>Introduction</h1>
+This page discusses both subroutines and references. They're on the same
+page because references are often passed into and out of subroutines.
+<h1>
+<a NAME="References"></a>References</h1>
+In PERL, you can pass only one kind of argument to a subroutine: a scalar.
+To pass any other kind of argument, you need to convert it to a scalar.
+You do that by passing a <b>reference</b> to it. A reference to anything
+is a scalar. If you're a C programmer you can think of a reference as a
+pointer (sort of).
+<p>The following table discusses the referencing and de-referencing of
+variables. Note that in the case of lists and hashes, you reference and
+dereference the list or hash as a whole, not individual elements (at least
+not for the purposes of this discussion).
+<br>&nbsp;
+<table BORDER >
+<tr>
+<td>Variable</td>
+
+<td>Referencing it</td>
+
+<td>Dereferencing it</td>
+
+<td>Accessing an element</td>
+</tr>
+
+<tr>
+<td>$scalar</td>
+
+<td>$ref = \$scalar</td>
+
+<td>$$ref or
+<br>${$ref}</td>
+
+<td>N/A</td>
+</tr>
+
+<tr>
+<td>@list</td>
+
+<td>$ref = \@list</td>
+
+<td>@{$ref}</td>
+
+<td>${$ref}[3]</td>
+</tr>
+
+<tr>
+<td>%hash</td>
+
+<td>$ref = \%hash</td>
+
+<td>%{$ref}</td>
+
+<td>${$ref}{"president"}</td>
+</tr>
+
+<tr>
+<td>FILE</td>
+
+<td>$ref = \*FILE</td>
+
+<td>{$ref} or scalar &lt;$ref></td>
+
+<td></td>
+</tr>
+</table>
+
+<p>These principles are demonstrated in the source code below. Note the
+following anomolies:
+<ul>
+<li>
+A variable with a % sign won't evaluate out when placed in doublequotes.
+Variables with @ and $ will. I have no idea why.</li>
+</ul>
+
+<table BORDER BGCOLOR="#E0F0FF" >
+<tr>
+<td>
+<pre>sub doscalar
+&nbsp;&nbsp; {
+&nbsp;&nbsp; my($scalar) = "This is the scalar";
+&nbsp;&nbsp; my($ref) = \$scalar;
+&nbsp;&nbsp; print "${$ref}\n";&nbsp;&nbsp; # Prints "This is the scalar".
+&nbsp;&nbsp; }
+
+sub dolist
+&nbsp;&nbsp; {
+&nbsp;&nbsp; my(@list) = ("Element 0", "Element 1", "Element 2");
+&nbsp;&nbsp; my($ref) = \@list;
+&nbsp;&nbsp; print "@{$ref}\n";&nbsp;&nbsp;&nbsp; # Prints "Element 0 Element 1 Element 2".
+&nbsp;&nbsp; print "${$ref}[1]\n"; # Prints "Element 1".
+&nbsp;&nbsp; }
+
+sub dohash
+&nbsp;&nbsp; {
+&nbsp;&nbsp; my(%hash) = ("president"=>"Clinton",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "vice president" => "Gore",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "intern" => "Lewinsky");
+&nbsp;&nbsp; my($ref) = \%hash;
+
+&nbsp;&nbsp; # NOTE: Can't put %{ref} inside doublequotes!!! Doesn't work!!!
+&nbsp;&nbsp; # Prints "internLewinskyvice presidentGorepresidentClinton".
+&nbsp;&nbsp; # NOTE: Hash elements might print in any order!
+&nbsp;&nbsp; print %{$ref}; print "\n";
+
+&nbsp;&nbsp; # NOTE: OK to put ${$ref}{} in doublequotes.
+&nbsp;&nbsp; # NOTE: Prints "Gore".
+&nbsp;&nbsp; print "${$ref}{'vice president'}\n";
+&nbsp;&nbsp; }
+
+&amp;doscalar;
+&amp;dolist;
+&amp;dohash;</pre>
+</td>
+</tr>
+</table>
+
+<h1>
+<a NAME="SubroutinesADiscussion"></a>Subroutines: A Discussion</h1>
+Subroutines are the basic computer science methodology to divide tasks
+into subtasks. They take zero or more scalar arguments as input (and possibly
+output), and they return zero or one scalar as a return value. Note that
+the scalar arguments and/or return values can be references to lists, hashes,
+or any other type of complex data, so the possibilities are limitless.
+<p>In computer science, there are two methods of passing arguments to a
+subroutine:
+<ul>
+<li>
+By value</li>
+
+<li>
+By reference</li>
+</ul>
+When passing by value, the language makes a copy of the argument, and all
+access inside the subroutine is to that copy. Therefore, changes made inside
+the subroutine do not effect the calling routine. Such arguments
+<b>cannot</b>
+be used as output from the subroutine. The preferred method of outputting
+from a subroutine is via the return value. Unfortunately, the PERL language
+doesn't support it. Instead, the programmer must explicitly make the copy
+inside the subroutine.
+<p>In general, I believe it's best to use arguments as input-only.
+<p>When passing by reference, the language makes the argument's exact variable
+available inside the subroutine, so any changes the subroutine makes to
+the argument affect the arguments value in the calling procedure (after
+the subroutine call, of course). This tends to reduce encapsulation, as
+there's no way of telling in the calling routine that the called routine
+changed it. Passing by reference harkens back to the days of global values,
+and in general creates less robust code.
+<p>All arguments in PERL are passed by reference! If the programmer wishes
+to make a copy of the argument to simulate passing by value (and I believe
+in most cases he should), he must explicitly make the copy in the subroutine
+and not otherwise access the original arguments.
+<p>
+<hr WIDTH="100%"><b>NOTE: Modern Perl versions (5.003 and newer) enable
+you to do function prototyping somewhat similar to C. Doing so lessens
+the chance for wierd runtime errors. Because this page was created before
+Perl prototyping was common, much of its code is old school. This will
+change as time goes on.</b>
+<hr WIDTH="100%">
+<center>
+<hr WIDTH="100%"><b><font size=+3>Danger! Warning! Peligro! Achtung! Watch
+it!</font></b>
+<br>As you would probably imagine, subroutine order matters when prototyping.
+A subroutine call must call a subroutine defined previously. The danger
+lies in the fact that if you do not, you get a non-obvious runtime error,
+not a compile error.
+<br><b><font size=+2><a href="perlfuncorder.htm">SUBROUTINE ORDER MATTERS
+IN PROTOTYPING</a></font></b>
+<hr WIDTH="100%"></center>
+
+<h1>
+<a NAME="BareBonesSubroutineSyntax"></a>Bare Bones Subroutine Syntax</h1>
+
+<table BORDER >
+<tr>
+<td COLSPAN="2">Old school, no prototyping</td>
+</tr>
+
+<tr>
+<td>Calling the subroutine</td>
+
+<td>Constructing the subroutine</td>
+</tr>
+
+<tr>
+<td>
+<pre>&amp;mysub();</pre>
+</td>
+
+<td>
+<pre>sub mysub
+&nbsp; {
+&nbsp; }</pre>
+</td>
+</tr>
+</table>
+Note that in the above the ampersand (&amp;) is used before the subroutine
+call, and that no parentheses are used in the function definition.
+<br>&nbsp;
+<table BORDER >
+<tr>
+<td COLSPAN="2">Prototyping, no arguments</td>
+</tr>
+
+<tr>
+<td>Calling the subroutine</td>
+
+<td>Constructing the subroutine</td>
+</tr>
+
+<tr>
+<td>
+<pre>mysub();</pre>
+</td>
+
+<td>
+<pre>sub mysub()
+&nbsp; {
+&nbsp; }</pre>
+</td>
+</tr>
+</table>
+The preceding is prototyped. Note that there is no ampersand before the
+function. Note also that the function definition has parentheses, but because
+there are no args expected those parens are empty. Contrast that with the
+following, which expects two scalars. Experiment and note that Perl gripes
+when your prototype and call don't match.
+<br>&nbsp;
+<table BORDER >
+<tr>
+<td COLSPAN="2">Prototyping, two string arguments</td>
+</tr>
+
+<tr>
+<td>Calling the subroutine</td>
+
+<td>Constructing the subroutine</td>
+</tr>
+
+<tr>
+<td>
+<pre>mysub($filename, $title);</pre>
+</td>
+
+<td>
+<pre>sub mysub($$)
+&nbsp; {
+&nbsp; }</pre>
+</td>
+</tr>
+</table>
+
+<h1>
+<a NAME="ReturningaScalar"></a>Returning a Scalar</h1>
+Use the return statement.
+<br>&nbsp;
+<table BORDER >
+<tr>
+<td>Calling the subroutine</td>
+
+<td>Constructing the subroutine</td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td>
+<pre>my($name) = &amp;getName();
+print "$name\n";</pre>
+
+<pre># Prints "Bill Clinton"</pre>
+</td>
+
+<td>
+<pre>sub getName
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; return("Bill Clinton");
+&nbsp;&nbsp;&nbsp; }</pre>
+</td>
+</tr>
+</table>
+
+<p>NOTE: In C++ there are cases where the calling code can "reach into"
+the function via the returned pointer or reference. This is appearantly
+not true of passed back scalars. Check out this code:
+<pre>$GlobalName = "Clinton";
+
+sub getGlobalName
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; return($GlobalName);
+&nbsp;&nbsp;&nbsp; }
+
+print "Before: " . &amp;getGlobalName() . "\n";
+$ref = \&amp;getGlobalName();
+$$ref = "Gore";
+print "After: " . &amp;getGlobalName() . "\n";</pre>
+
+<pre>#All print statements printed "Clinton"</pre>
+I have been unable to hack into a subroutine via its scalar return. If
+you know of a way it can be done, please <a href="mailto:slitt@troubleshooters.com">let
+me know</a>, as this would be a horrid violation of encapsulation.
+<h1>
+<a NAME="ReturningaList"></a>Returning a List</h1>
+
+<table BORDER >
+<tr>
+<td>Calling the subroutine</td>
+
+<td>Constructing the subroutine</td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td>
+<pre>my($first, $last) = &amp;getFnameLname();
+print "$last, $first\n";
+
+# Prints "Clinton, Bill"</pre>
+</td>
+
+<td>
+<pre>sub getFnameLname
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; return("Bill", "Clinton");
+&nbsp;&nbsp;&nbsp; }</pre>
+</td>
+</tr>
+</table>
+
+<h1>
+<a NAME="ReturningaHash"></a>Returning a Hash</h1>
+
+<table BORDER >
+<tr>
+<td>Calling the subroutine</td>
+
+<td>Constructing the subroutine</td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td>
+<pre>my(%officers) = &amp;getOfficers();
+print $officers{"vice president"};
+
+# prints Al Gore</pre>
+</td>
+
+<td>
+<pre>sub getOfficers
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; return("president"=>"Bill Clinton",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "vice president"=>"Al Gore",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "intern"=>"Monica Lewinsky"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );
+&nbsp;&nbsp;&nbsp; }</pre>
+</td>
+</tr>
+</table>
+
+<h1>
+<a NAME="ScalarInputOutputArgs"></a>Subroutine With Scalar Input/Output
+Arguments</h1>
+Arguments to a subroutine are accessible inside the subroutine as list
+@_. Any change the subroutine performs to @_ or any of its members like
+$_[0], $_[1], etc, are changes to the original argument. HOWEVER, assigning
+@_ or its elements to other variables makes a separate copy. Changes to
+the separate copy are unknown outside of the subroutine.
+<p>For readability therefore, on output or input/output arguments it is
+therefore important to use the output argument as $_[] or @_ throughout
+the function to let the reader know it's an output argument.
+<p>Below is how to change the value of an argument outside the function.
+<br>&nbsp;
+<table BORDER >
+<tr>
+<td>Calling the subroutine</td>
+
+<td>Constructing the subroutine</td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td>
+<pre>my($mm, $dd, $yyyy) = ("12", "10", "1998");
+print "Before: $mm/$dd/$yyyy\n";
+<b>&amp;firstOfNextMonth($mm, $dd, $yyyy);
+</b>print "After : $mm/$dd/$yyyy\n";</pre>
+
+<pre># Second print will print 01/01/1999</pre>
+</td>
+
+<td>
+<pre>sub firstOfNextMonth
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; $_[1] = "01";
+&nbsp;&nbsp;&nbsp; $_[0] = $_[0] + 1;
+&nbsp;&nbsp;&nbsp; if($_[0] > 12)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $_[0] = "01";
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $_[2]++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; }</pre>
+</td>
+</tr>
+</table>
+
+<p>By the way, the above is an excellent example of the advantages of a
+loosely typed language. Note the implicit conversions between string and
+integer.
+<h1>
+<a NAME="ScalarInputOnlyArgs"></a>Subroutine With Scalar Input-Only Arguments</h1>
+Arguments to a subroutine are accessible inside the subroutine as list
+@_. Any change the subroutine performs to @_ or any of its members like
+$_[0], $_[1], etc, are changes to the original argument. HOWEVER, assigning
+@_ or its elements to other variables makes a separate copy. Changes to
+the separate copy are unknown outside of the subroutine.
+<p>For readability, it is therefore important to immediately assign the
+input-only arguments to local variables, and only work on the local variables.
+<p>Below is how to print changed values without changing the arguments
+outside the functions scope.
+<br>&nbsp;
+<table BORDER >
+<tr>
+<td>Calling the subroutine</td>
+
+<td>Constructing the subroutine</td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td>
+<pre>my($mm, $dd, $yyyy) = ("12", "10", "1998");
+print "Before: $mm/$dd/$yyyy\n";
+<b>&amp;printFirstOfNextMonth($mm, $dd, $yyyy);
+</b>print "After : $mm/$dd/$yyyy\n";</pre>
+
+<pre># Before and after will print 12/10/1998.
+# Inside will print 01/01/1999</pre>
+</td>
+
+<td>
+<pre>sub printFirstOfNextMonth
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; my($mm, $dd, $yyyy) = @_;
+&nbsp;&nbsp;&nbsp; $dd = "01";
+&nbsp;&nbsp;&nbsp; $mm = $mm + 1;
+&nbsp;&nbsp;&nbsp; if($mm > 12)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $mm = "01";
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $yyyy++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; print "Inside: $mm/$dd/$yyyy\n";
+&nbsp;&nbsp;&nbsp; }</pre>
+</td>
+</tr>
+</table>
+
+<h1>
+<a NAME="ListInputOutputArgs"></a>Subroutine With List Input/Output Arguments</h1>
+Arguments to a subroutine are accessible inside the subroutine as list
+@_, which is a list of scalars. Any change the subroutine performs to @_
+or any of its members like $_[0], $_[1], etc, are changes to the original
+argument. HOWEVER, assigning @_ or its elements to other variables makes
+a separate copy. Changes to the separate copy are unknown outside of the
+subroutine.
+<p>For readability therefore, on output or input/output arguments it is
+therefore important to use the output argument as $_[] or @_ throughout
+the function to let the reader know it's an output argument.
+<p>If a member of @_ (in other words, an argument) is a reference to a
+list, it can be dereferenced and used inside the subroutine.
+<p>Here's an example of a listcat() function which appends the second list
+to the first. From that point forward the caller will see the new value
+of the first argument:
+<br>&nbsp;
+<table BORDER >
+<tr>
+<td>Calling the subroutine</td>
+
+<td>Constructing the subroutine</td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td>
+<pre>my(@languages) = ("C","C++","Delphi");
+my(@newlanguages) = ("Java","PERL");
+print "Before: @languages\n";
+&amp;listcat(\@languages, \@newlanguages);
+print "After : @languages\n";
+
+# Before prints "C C++ Delphi"
+# After prints "C C++ Delphi Java PERL"
+
+</pre>
+</td>
+
+<td>
+<pre>sub listcat
+&nbsp;&nbsp; {
+&nbsp;&nbsp; # Purpose of @append is only to
+&nbsp;&nbsp; # self-document input-only status
+&nbsp;&nbsp; my(@append) = @{$_[1]};
+
+&nbsp;&nbsp; my($temp);
+&nbsp;&nbsp; foreach $temp (@append)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # note direct usage of arg0
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; push(@{$_[0]}, $temp);&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; }</pre>
+</td>
+</tr>
+</table>
+
+<p>By the way, the above is an excellent example of the advantages of a
+loosely typed language. Note the implicit conversions between string and
+integer.
+<h1>
+<a NAME="ListInputOnlyArgs"></a>Subroutine With List Input-Only Arguments</h1>
+Arguments to a subroutine are accessible inside the subroutine as list
+@_. Any change the subroutine performs to @_ or any of its members like
+$_[0], $_[1], etc, are changes to the original argument. HOWEVER, assigning
+@_ or its elements to other variables makes a separate copy. Changes to
+the separate copy are unknown outside of the subroutine.
+<p>For readability, it is therefore important to immediately assign the
+input-only arguments to local variables, and only work on the local variables.
+<p>If a member of @_ (in other words, an argument) is a reference to a
+list, it can be dereferenced and used inside the subroutine.
+<p>Here's an example of an improved listcat() function which appends the
+second list to the first without affecting the first outside the subroutine.
+Instead, it returns the total string.
+<br>&nbsp;
+<table BORDER >
+<tr>
+<td>Calling the subroutine</td>
+
+<td>Constructing the subroutine</td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td>
+<pre>my(@languages) = ("C","C++","Delphi");
+my(@newlanguages) = ("Java","PERL");
+print "Before: @languages\n";
+print "Inside: ";
+print &amp;listcat(\@languages,\@newlanguages);
+print "\n";
+print "After : @languages\n";
+
+# Before and after prints "C C++ Delphi"
+# Inside prints "CC++DelphiJavaPERL"
+
+</pre>
+</td>
+
+<td>
+<pre>sub listcat
+&nbsp;&nbsp; {
+&nbsp;&nbsp; # Purpose of @append is only to
+&nbsp;&nbsp; # self-document input-only status
+&nbsp;&nbsp; my(@original) = @{$_[0]};
+&nbsp;&nbsp; my(@append) = @{$_[1]};
+&nbsp;&nbsp; my($temp);
+&nbsp;&nbsp; foreach $temp (@append)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; push(@original, $temp);&nbsp; # note direct usage
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; return(@original);
+&nbsp;&nbsp; }</pre>
+</td>
+</tr>
+</table>
+
+<h2>
+Use parentheses with the shift command!</h2>
+The following generates an error:
+<pre>sub handleArray
+&nbsp; {
+&nbsp; my(@localArray) = @{shift};
+&nbsp; my($element);
+&nbsp; foreach $element (@localArray) {print $element . "\n";}
+&nbsp; }
+&amp;handleArray(\@globalArray);</pre>
+
+<p><br>But once you place the shift command in parens, everything's fine:
+<pre>sub handleArray
+&nbsp; {
+&nbsp; my(@localArray) = @{(shift)};
+&nbsp; my($element);
+&nbsp; foreach $element (@localArray) {print $element . "\n";}
+&nbsp; }
+&amp;handleArray(\@globalArray);</pre>
+
+<h2>
+Using prototypes</h2>
+Be careful prototyping with lists:
+<pre>sub printList(@$) {print @{(shift)}; print shift; print "\n";};
+printList(\@globalArray);</pre>
+The preceding gives some runtime warnings. But the call is missing an arg
+-- it shouldn't run at all. Instead, use \@ for the list in the prototype,
+and pass just the list in the call, as follows:
+<pre>sub printList(\@$) {print @{(shift)}; print shift; print "\n";};
+printList(@globalArray);</pre>
+Now it gives you a "not enough arguments errors, and ends with a compile
+error, which is what you want. Place an additional scalar in the call so
+the call matches the prototype, and it runs perfectly:
+<pre>sub printList(\@$) {print @{(shift)}; print shift; print "\n";};
+printList(@globalArray, "Hello World");</pre>
+Remember, using an unbackslashed @ in the prototype defeats the purpose
+of prototyping. Precede the @ with a backslash. Note that this is also
+true for passed hashes (%). Unless you have a very good reason to do otherwise,
+precede all @ and % with backslashes in the prototype.
+<h1>
+<a NAME="HashInputOutputArgs"></a>Subroutine With Hash Input/Output Arguments</h1>
+Arguments to a subroutine are accessible inside the subroutine as list
+@_, which is a list of scalars. Any change the subroutine performs to @_
+or any of its members like $_[0], $_[1], etc, are changes to the original
+argument. HOWEVER, assigning @_ or its elements to other variables makes
+a separate copy. Changes to the separate copy are unknown outside of the
+subroutine.
+<p>For readability therefore, on output or input/output arguments it is
+therefore important to use the output argument as $_[] or @_ throughout
+the function to let the reader know it's an output argument.
+<p>If a member of @_ (in other words, an argument) is a reference to a
+hash, it can be dereferenced and used inside the subroutine.
+<p>Here's an example of a setGlobals() function which takes an existing
+%globals passed in as a reference argument and sets the proper elements.
+From that point forward the caller will see the new value of the elements:
+<br>&nbsp;
+<table BORDER >
+<tr>
+<td>Calling the subroutine</td>
+
+<td>Constructing the subroutine</td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td>
+<pre>%globals;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&amp;setGlobals(\%globals);
+&amp;printGlobals(\%globals);
+
+</pre>
+</td>
+
+<td>
+<pre>sub setGlobals
+&nbsp;&nbsp; {
+&nbsp;&nbsp; ${$_[0]}{"currentdir"} = "/corporate/data";
+&nbsp;&nbsp; ${$_[0]}{"programdir"} = "/corporate/bin";
+&nbsp;&nbsp; ${$_[0]}{"programver"} = "5.21";
+&nbsp;&nbsp; ${$_[0]}{"accesslevel"} = "root";
+&nbsp;&nbsp; }</pre>
+</td>
+</tr>
+</table>
+
+<h1>
+<a NAME="HashInputOnlyArgs"></a>Subroutine With Hash Input-Only Arguments</h1>
+Arguments to a subroutine are accessible inside the subroutine as list
+@_. Any change the subroutine performs to @_ or any of its members like
+$_[0], $_[1], etc, are changes to the original argument. HOWEVER, assigning
+@_ or its elements to other variables makes a separate copy. Changes to
+the separate copy are unknown outside of the subroutine.
+<p>For readability, it is therefore important to immediately assign the
+input-only arguments to local variables, and only work on the local variables.
+<p>If a member of @_ (in other words, an argument) is a reference to a
+list, it can be dereferenced and used inside the subroutine.
+<p>Here's an example of an improved listcat() function which appends the
+second list to the first without affecting the first outside the subroutine.
+Instead, it returns the total string.
+<br>&nbsp;
+<table BORDER >
+<tr>
+<td>Calling the subroutine</td>
+
+<td>Constructing the subroutine</td>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td>
+<pre>%globals;
+# ...
+# set globals
+# ...</pre>
+
+<pre># now print globals
+&amp;printGlobals(\%globals);
+
+</pre>
+</td>
+
+<td>
+<pre>sub printGlobals
+&nbsp;&nbsp; {
+&nbsp;&nbsp; # copy of argument precludes extra-scope change
+&nbsp;&nbsp; my(%globals) = %{$_[0]};
+&nbsp;&nbsp; print "Current Dir: $globals{'currentdir'}\n";
+&nbsp;&nbsp; print "Program Dir: $globals{'programdir'}\n";
+&nbsp;&nbsp; print "Version&nbsp;&nbsp;&nbsp; : $globals{'programver'}\n";
+&nbsp;&nbsp; print "Accesslevel: $globals{'accesslevel'}\n";
+&nbsp;&nbsp; }</pre>
+</td>
+</tr>
+</table>
+
+<p>
+<hr>
+<p>&nbsp;[ <a href="../../troubleshooters.htm">Troubleshooters.com</a>
+| <a href="../index.htm">Code Corner</a> | <a href="mailto:slitt@troubleshooters.com">Email
+Steve Litt</a> ]
+<p><a href="../../cpyright.htm#top"><img SRC="../../images/biglcpyr.gif" BORDER=0 height=30 width=30></a><a href="../../cpyright.htm">Copyright
+(C)1998-2000 by Steve Litt</a> --
+<a href="../../cpyright.htm#top">Legal</a>
+<br>&nbsp;
+<br>&nbsp;
+</body>
+</html>
+

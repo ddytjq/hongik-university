@@ -1,0 +1,145 @@
+ID=G0308
+URL=http://arcturus.mit.edu/cosmics/doc-html/node13.html
+SIZE=9797
+DATE=09/07/2002
+TIME=16:17:45
+DATASET=Astronomy
+HTML=<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95 (Thu Jan 19 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> GRAFIC Output</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" GRAFIC Output">
+<meta name="keywords" value="cosmics">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html152 HREF="node14.html"><IMG ALIGN=BOTTOM ALT="next" SRC="file:/usr/local/lib/latex2html/icons/next_motif.gif"></A>   <A NAME=tex2html150 HREF="node9.html"><IMG ALIGN=BOTTOM ALT="up" SRC="file:/usr/local/lib/latex2html/icons/up_motif.gif"></A>   <A NAME=tex2html146 HREF="node12.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="file:/usr/local/lib/latex2html/icons/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html153 HREF="node14.html"> Acknowledgments</A>
+<B>Up:</B> <A NAME=tex2html151 HREF="node9.html"> GRAFIC Usage</A>
+<B> Previous:</B> <A NAME=tex2html147 HREF="node12.html"> GRAFIC Input 3: </A>
+<BR> <HR> <P>
+<H3><A NAME=SECTION00041400000000000000> GRAFIC Output</A></H3>
+<P>
+The output produced by <tt>grafic</tt> is straightforward.  The normalization
+values and statistics of the random density and displacement fields are
+printed on standard output, while there are two unformatted files giving the
+density and particle data, and (optionally) one formatted file giving the
+<b>a=1</b> linear matter power spectrum used.  If a large grid size is set in
+<tt>grafic.inc</tt>, it may be some time between the last input (<tt>ido</tt>,
+determining whether an unconstrained or constrained field is to be produced)
+and the output of the statistics.  The statistics for the unconstrained
+field include ensemble-average values of the rms density contrast and
+displacement (<tt>mean sigma_delta, sigma_psi</tt>, the latter in units of
+comoving Mpc).  The <IMG  ALIGN=MIDDLE ALT="" SRC="img186.gif"> statistic gives the sum of squares of the
+standard normal deviates (unit-variance, zero-mean gaussian random variables)
+generated for the random density field.  It may be compared with its mean
+value, <tt>dof</tt> (which equals the number of grid points minus one; one degree
+of freedom is eliminated because the density fluctuation field has zero
+mean).  <tt>Grafic</tt> also outputs a standardized deviation <IMG  ALIGN=BOTTOM ALT="" SRC="img187.gif"> indicating
+by how much <IMG  ALIGN=MIDDLE ALT="" SRC="img188.gif"> deviates from its mean value.  Note that <IMG  ALIGN=BOTTOM ALT="" SRC="img189.gif"> for
+the unconstrained field is <i>not</i> related to the magnitude of any imposed
+constraint.
+<P>
+If the user applies constraints, statistics are printed out for each
+constraint next.  First are the values of the constraint and a
+suitably defined <IMG  ALIGN=MIDDLE ALT="" SRC="img190.gif"> for the unconstrained field  (for one
+constraint of standardized value <IMG  ALIGN=MIDDLE ALT="" SRC="img191.gif">, it is <IMG  ALIGN=MIDDLE ALT="" SRC="img192.gif">); the
+``sampled'' and ``desired'' values differ because the constraint has not
+yet been imposed.  <tt>Grafic</tt> indicates when it begins to compute a
+constrained realization.  When it is finished, it prints the values of
+the constraints computed from the actual density field.  They should
+match very precisely the constraints imposed by the user in subroutine
+<tt>constr.f</tt>.
+<P>
+The penultimate set of statistics printed by <tt>grafic</tt> are the rms and
+maximum density fluctuation and displacement, and <IMG  ALIGN=MIDDLE ALT="" SRC="img193.gif"> and the number
+of degrees of freedom, for the final random realization at expansion
+factor <b>a=1</b> (before the fields are rescaled back to the linear regime).
+The rms values should be close (but not equal) to the ensemble-average
+values printed out earlier; the maximum values are, of course, several
+times larger.  (A 5-standard deviation value is not uncommon on even a
+<IMG  ALIGN=BOTTOM ALT="" SRC="img194.gif"> grid.)  If no constraints are imposed, <IMG  ALIGN=MIDDLE ALT="" SRC="img195.gif"> and <tt>dof</tt> given
+here agree with those for the unconstrained realization; otherwise <IMG  ALIGN=MIDDLE ALT="" SRC="img196.gif">
+is reduced and <tt>dof</tt> is decreased by the number of constraints.
+<P>
+Finally, <tt>grafic</tt> outputs the expansion factor <tt>astart</tt> to which
+it rescales the density fluctuation, displacements, and velocities.
+Because the rescaling is done so that the maximum <IMG  ALIGN=MIDDLE ALT="" SRC="img197.gif">,
+<tt>astart</tt> is related to the reciprocal of the maximum <IMG  ALIGN=MIDDLE ALT="" SRC="img198.gif">
+printed out for <b>a=1</b>.  (In an Einstein-de Sitter universe <tt>astart</tt>
+exactly equals the reciprocal because linear density fluctuations grow in
+proportion to <b>a</b>; in other models the linear growth factor is computed to
+give the correct starting time.)  The statistics for the density fluctuation
+and displacement fields are then extrapolated back to <tt>astart</tt>.  Most
+users will be concerned only with this final set of statistics.
+<P>
+If the user gives the appropriate input, <tt>grafic</tt> produces an ascii
+file <tt>power.dat</tt> giving the linear matter power spectrum at <b>a=1</b>.
+The first line contains the spectral slope <b>n</b> and normalization constant
+input by the user; the latter is negative if the normalization is based
+on <IMG  ALIGN=MIDDLE ALT="" SRC="img199.gif"> and positive if it is set by <IMG  ALIGN=MIDDLE ALT="" SRC="img200.gif">.  After
+this header follow 201 lines of <IMG  ALIGN=MIDDLE ALT="" SRC="img201.gif">, with <b>k</b> logarithmically
+sampled from the minimum and maximum values entered by the user.  Note:
+<b>k</b> has units of Mpc<IMG  ALIGN=BOTTOM ALT="" SRC="img202.gif"> and the power spectrum has units of Mpc<IMG  ALIGN=BOTTOM ALT="" SRC="img203.gif">.
+COSMICS does not use units of <IMG  ALIGN=BOTTOM ALT="" SRC="img204.gif"> Mpc for length, nor does it use
+improperly defined power spectra.  <IMG  ALIGN=MIDDLE ALT="" SRC="img205.gif"> is a spectral density; it must
+be multiplied by a <b>k</b>-space volume element to give the power.   Some
+experts define <b>P</b> so that the power is <IMG  ALIGN=MIDDLE ALT="" SRC="img206.gif">; the
+absence of factors <IMG  ALIGN=MIDDLE ALT="" SRC="img207.gif"> from equation (<A HREF="node10.html#norm">5</A>) shows
+that COSMICS is based on the power being <IMG  ALIGN=MIDDLE ALT="" SRC="img208.gif">.
+<P>
+<tt>Grafic</tt> produces two unformatted (binary) files containing the density
+fluctuation field and deformed lattice positions and velocities at
+expansion factor <tt>astart</tt>.  These files provide the input needed for
+nonlinear evolution codes.  The first file, <tt>delta.dat</tt>, contains
+<IMG  ALIGN=MIDDLE ALT="" SRC="img209.gif"> on the lattice and is written as follows:
+<BR><tt>
+write(10) np1,np2,np3,dx,astart,omegam,omegav,H0<BR>
+write(11) (((delta(i,j,k),i=1,np1),j=1,np2),k=1,np3)
+        <BR>
+</tt>
+(Actually, in the program it is written as a one-dimensional array, but
+that is equivalent to the three-dimensional array as shown above.)
+The lattice size is (<tt>np1</tt>,<tt>np2</tt>,<tt>np3</tt>); these numbers
+are set in <tt>grafic.inc</tt> before <tt>grafic</tt> is built.
+<P>
+The final file, <tt>p3m.dat</tt>, gives <IMG  ALIGN=MIDDLE ALT="" SRC="img210.gif"> on the lattice
+(see eq. <A HREF="node8.html#zeld">4</A>) at expansion factor <tt>astart</tt>.  The units of
+<IMG  ALIGN=BOTTOM ALT="" SRC="img211.gif"> are comoving Mpc; those of <IMG  ALIGN=BOTTOM ALT="" SRC="img212.gif"> are proper km s<IMG  ALIGN=BOTTOM ALT="" SRC="img213.gif">.
+They are written as one-dimensional arrays because it is more natural to
+think of a particle list as being one-dimensional:
+<BR><tt>
+write(10) npart,np1,np2,np3,dx,epsilon,astart,omegam,omegav,H0,
+        <BR>
+&amp; dt2,etat,nstep,ekin,egrav,egint,nrec<BR>
+write(11) ((x(i,j),i=1,3),j=1,npart)<BR>
+write(11) ((v(i,j),i=1,3),j=1,npart)<BR>
+</tt>
+Most of the parameters in the two header lines have been discussed already
+(note that <tt>dx</tt> and <tt>epsilon</tt> have units of comoving Mpc, and
+<tt>H0</tt> has the natural units); of those that have not, the most
+important are <tt>npart</tt> = <tt>np1*np2*np3</tt> (the number of particles)
+and <tt>nrec</tt>, which determines how many records are to be used for
+writing the positions and velocities.  In most cases, the user will want
+to set <tt>nrec</tt> = 1 in <tt>grafic.inc</tt>, in which case <tt>x</tt> and
+<tt>v</tt> are written with one record each as shown above.  However, for
+very large <tt>npart</tt> and computers with inefficient use of I/O buffers,
+it may be difficult or impossible to write <tt>3*npart</tt> floating-point
+numbers as one record.  In that case, increase <tt>nrec</tt>, and examine
+the code to see how to read the data back again.  The parameters that
+we have not discussed are specific to the author's p3m code.
+<P>
+<BR> <HR><A NAME=tex2html152 HREF="node14.html"><IMG ALIGN=BOTTOM ALT="next" SRC="file:/usr/local/lib/latex2html/icons/next_motif.gif"></A>   <A NAME=tex2html150 HREF="node9.html"><IMG ALIGN=BOTTOM ALT="up" SRC="file:/usr/local/lib/latex2html/icons/up_motif.gif"></A>   <A NAME=tex2html146 HREF="node12.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="file:/usr/local/lib/latex2html/icons/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html153 HREF="node14.html"> Acknowledgments</A>
+<B>Up:</B> <A NAME=tex2html151 HREF="node9.html"> GRAFIC Usage</A>
+<B> Previous:</B> <A NAME=tex2html147 HREF="node12.html"> GRAFIC Input 3: </A>
+<BR> <HR> <P>
+<BR> <HR>
+<P><ADDRESS>
+<I>Edmund Bertschinger <BR>
+Mon Jun 12 01:14:50 EDT 1995</I>
+</ADDRESS>
+</BODY>
+

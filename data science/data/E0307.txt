@@ -1,0 +1,118 @@
+ID=E0307
+URL=http://www.hh.se/stud/d98rolb/ansi/free().html
+SIZE=4405
+DATE=12/07/02
+TIME=19:19:46
+DATASET=C
+HTML=<html>
+<head>
+  <title>free()</title>
+  <meta name="Generator" content="GuideML V1.6">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+<body>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="fread().html"><img src="prev.gif" alt="PREV" border=0></a><a href="freopen().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+<hr>
+<pre>
+free-Free memory
+
+Synopsis
+
+        #include &#060;stdlib.h&#062;
+
+        void free(b);
+
+        void *b;   /* block pointer */
+
+Description
+
+        The free function releases a block of memory that was previously
+        obtained using the <a href="calloc().html"> calloc </a>, <a href="malloc().html"> malloc </a>, or <a href="realloc().html"> realloc </a> function.  For
+        compatibility with some versions of UNIX, the block is not
+        actually returned to the free space pool until the next time you
+        call the <a href="calloc().html"> calloc </a>, <a href="malloc().html"> malloc </a>, <a href="realloc().html"> realloc </a>, or free function.  Then, if
+        that next call is to the <a href="realloc().html"> realloc </a> function and the block being
+        reallocated is the one that was just freed, the <a href="realloc().html"> realloc </a> function
+        will proceed correctly.  In other words, you can ask the <a href="realloc().html"> realloc </a>
+        function to reallocate a block that was freed as long as you have
+        not called the <a href="calloc().html"> calloc </a>, <a href="malloc().html"> malloc </a>, or <a href="realloc().html"> realloc </a> function in the
+        meantime.
+
+
+Example
+
+        #include &#060;stdio.h&#062;
+        #include &#060;stdlib.h&#062;
+        #include &#060;string.h&#062;
+
+        struct LIST
+        {
+            struct LIST *next;
+            char text[2];
+        };
+
+        void main(int argc, char *argv[])
+        {
+            struct LIST *p;
+            struct LIST *q;
+            struct LIST list;
+            char b[256];
+            int x;
+
+            printf(&quot;nBegin new group...n&quot;);
+            for (q = &amp;list; ; q = p)
+            {
+                printf(&quot;Enter a text string: &quot;);
+                if (fgets(b,sizeof(b),stdin) == NULL)
+                {
+                    break;
+                }
+                if (b[0] == NULL)
+                {
+                    if (q == &amp;list)
+                    {
+                        printf(&quot;n&quot;);
+                        exit(EXIT_SUCCESS);
+                    }
+                    break;
+                }
+                x = sizeof(struct LIST) - 2 + strlen(b) + 1;
+                p = (struct LIST *)malloc(x);
+                if (p == NULL)
+                {
+                    printf(&quot;No more memoryn&quot;);
+                    exit(EXIT_FAILURE);
+                }
+                q-&#062;next = p;
+                p-&#062;next = NULL;
+                strcpy(p-&#062;text, b);
+            }
+
+            printf(&quot;nnTEXT LIST...n&quot;);
+            /*
+             * You must be sure to copy the next pointer from
+             * the current block before you free it.  Some
+             * systems rely on a side-effect to be able to
+             * access the memory after it is freed -- this is
+             * BAD PROGRAMMING PRACTICE!
+             */
+            p = list.next;
+            while(p != NULL)
+            {
+                q = p-&#062;next;
+                printf(p-&#062;text);
+                free((char *)p);
+                p = q;
+            }
+            list.next = NULL;
+        }
+
+See Also
+
+        <a href="calloc().html"> calloc </a>, <a href="malloc().html"> malloc </a>, <a href="realloc().html"> realloc </a>
+</pre>
+<hr>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="fread().html"><img src="prev.gif" alt="PREV" border=0></a><a href="freopen().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+</body>
+</html>
+

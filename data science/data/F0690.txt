@@ -1,0 +1,120 @@
+ID=F0690
+URL=http://www.chez.com/scribe/en/directx/d3d8_03.htm
+SIZE=3980
+DATE=09/07/2002
+TIME=13:24:34
+DATASET=Visual Basic
+HTML=<HTML>
+<HEAD>
+<LINK rel="stylesheet" type="text/css" href="../..//global.css">
+</HEAD>
+<BODY>
+<TABLE class="menu" width="100%"><TR><TD class="header">
+<A href="../index.htm">Home</A> - <A href="../about/index.htm">About</A> - <A href="../assembly/index.htm">Assembly</A> - <A href="../directx/index.htm">DirectX</A> - <A href="../opengl/index.htm">OpenGL</A> - <A href="../dotnet/index.htm">.NET</A> - <A href="../psdk/index.htm">Platform SDK</A> - <A href="../downloads/index.htm">Downloads</A> - <A href="../links/index.htm">Links</A></TD>
+<TD class="header" style="text-align:right">June 28, 2001</TD></TR></TABLE><TABLE align="right"><TR><TD><!-- BEGIN WEBSIDESTORY CODE -->
+<!-- COPYRIGHT 1997-2001 WEBSIDESTORY, INC. ALL RIGHTS RESERVED. U.S.PATENT PENDING. Privacy notice at: http://websidestory.com/privacy -->
+<!-- webbot bot="HTMLMarkup" startspan -->
+<script language="javascript">
+var _pn="en - 2D Graphics - Surfaces"; //page name
+var _acct="WQ5909151KCE94EN7";   //account number
+var _pndef="title";var _hcv=65;var _mn="wf200";
+var _lp=location.protocol.indexOf('https')==0?"https://":"http://";
+var _gn="hg1.hitbox.com";function _ps(_h){if(_h.indexOf("en - 2D Graphics - Surfaces")==0) {
+if (_pndef=="title"){return document.title?document.title:_pndef;}else{
+var _g=location.pathname;_h=_g.substring(_g.lastIndexOf("/")+1,_g.length);
+if(_h==""){return _pndef};}};return _h;}var _sv=10;var _bn=navigator.appName;
+if(_bn.substring(0,9)=="Microsoft"){_bn="MSIE";};var _bv=Math.round(parseFloat(navigator.appVersion)*100);
+if((_bn=="MSIE")&&(parseInt(_bv)==2))_bv=301;var _rf=escape(document.referrer);_pn=_ps(_pn);
+var _hbfa="<a href='http://rd1.hitbox.com/rd?acct="+_acct+"' target=_top><img src='";
+var _hbfc="' border=0 width=125 height=125></a><div><font face='MS Sans Serif,Arial,Helvetica '"+
+"size=1><a href='http://counter.hitbox.com/a/hitboxfree.cgi' target='_blank'>privacy</a></font></div>";
+var _hbfb="";</script><script language="javascript1.1" id="_hbc">_sv=11;</script><script
+language="javascript1.1" src="http://stats.hitbox.com/js/hbf.js"></script><script language="javascript">
+if(_hbfb.length!=0){document.write(_hbfa+_hbfb+_hbfc);}else{if((_rf=="undefined")||(_rf=="")){
+_rf="bookmark";};document.write(_hbfa+_lp+_gn+"/HG?hc="+_mn+"&hb="+_acct+"&n="+escape(_pn)+
+"&cd=1&hv=6"+"&bn="+escape(_bn)+"&bv="+_bv+"&ss=na&sc=na&dt=&sv="+_sv+"&ja=na&ln=na&pl=&rf="+_rf+_hbfc);}
+</script><noscript><a href="http://rd1.hitbox.com/rd?acct=WQ5909151KCE94EN7" target=_top><img
+src = "http://hg1.hitbox.com/HG?hc=wf200&cd=1&hv=6&ce=u&hb=WQ5909151KCE94EN7&n=en - 2D Graphics - Surfaces"
+border="0" width=125 height=125></a><div><font face="MS Sans Serif,Arial,Helvetica" size=1><a
+href="http://counter.hitbox.com/a/hitboxfree.cgi" target="_blank">privacy</a></font></div>
+</noscript><!--//-->
+
+<!-- webbot bot="HTMLMarkup" endspan -->
+<!-- END WEBSIDESTORY CODE  -->
+</TD></TR></TABLE>
+<TABLE align="center"><TR><TD align="right" class="header" width="45%"><A href="d3d8_02.htm">2D Graphics - Sprite</A>&nbsp;&lt;&lt;</TD>
+<TD align="center" class="header" width="10%"><A href="index.htm">Up</A></TD><TD align="left" class="header" width="45%">&gt;&gt;&nbsp;<A href="d3d8_04.htm">3D Graphics - Matrices</A></TD></TR></TABLE>
+<H1>2D Graphics - Surfaces</H1>
+<IMG align="right" src="../../images/d3d8_03.png" width="326" height="265">Download : <A href="../../downloads/d3d8_03.zip">d3d8_03.zip</A> (59 Kb)<BR>
+Rectangular surfaces are now created using the <CODE>Direct3DSurface8</CODE> class. Initialization is done using two steps :
+<UL><LI>the surface is first created using a particular size and a surface format. We are using the same format than the current display mode.<LI>The newly created surface is now loaded from a bitmap file.</UL>
+<BR clear="all">
+<DIV class="code"><PRE>
+<SPAN class="comment">' Added</SPAN>
+Dim DisplayMode As D3DDISPLAYMODE
+Dim BackGround As Direct3DSurface8
+Dim BackBuffer As Direct3DSurface8
+Direct3D.GetAdapterDisplayMode D3DADAPTER_DEFAULT, DisplayMode
+Set BackGround = Device.CreateImageSurface(320, 240, DisplayMode.Format)
+d3dx.LoadSurfaceFromFile
+    BackGround, _
+    ByVal 0, _
+    ByVal 0, _
+    App.Path & "\cloud3.bmp", _
+    ByVal 0, _
+    D3DX_DEFAULT, _
+    0, _
+    ByVal 0
+</PRE></DIV>
+<P>Parameters are :
+<UL>
+<LI>Destination surface
+<LI>No destination palette (ByVal 0)
+<LI>Using the whole destination surface (ByVal 0)
+<LI>Source file
+<LI>Using the whole source surface (ByVal 0)
+<LI>As the source file width and height doesn't match the destination surface dimensions, the <CODE>D3DX_DEFAULT</CODE> filter to resize the bitmap during the copy operation.
+<LI>No color key
+<LI>We don't need the surface description
+</UL>
+</P>
+<P>We now have a <CODE>Direct3DSurface8</CODE> class object that is loaded with our background image. We need now to get access to the back buffer.</P>
+<DIV class="code"><PRE>
+Set BackBuffer = Device.GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO)
+</PRE></DIV>
+<P>This single line of code allows to gain access to the back buffer surface (that is also a <CODE>Direct3DSurface8</CODE> object).</P>
+<P>The only thing left now is to fill the back buffer with the background image. This is done using the <CODE>Direct3DDevice8.CopyRects</CODE> method :
+<DIV class="code"><PRE>
+Device.CopyRects BackGround, ByVal 0, 0, BackBuffer, ByVal 0
+</PRE></DIV>
+<HR>
+<DIV class="copyright"><A href="../mail.htm">Patrice Scribe</A></DIV>
+</BODY>
+</HTML>
+<!-- -->
+</noscript>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+<!--
+var rnd = Math.floor(Math.random() * 9) + 1 ; 
+if (rnd <= 4) { 
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/default','pub','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=470,height=120');
+} else if(rnd == 5) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre4','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=200,height=200');
+} else if(rnd == 6) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre2','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=200,height=200');
+} else if(rnd >= 7) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=200,height=200');
+}
+// -->
+</SCRIPT>
+
+<script language="javascript">
+WEBO_ZONE=122;
+WEBO_PAGE=1;
+weboplus_ok=0;
+</script>
+<script language="javascript"
+src="http://js.libertysurf.fr/chez/weborama/weboscopeplus.js"></SCRIPT>
+<SCRIPT>if(weboplus_ok==1){weboplus_zp(WEBO_ZONE,WEBO_PAGE);}
+</script>
+

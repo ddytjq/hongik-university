@@ -1,0 +1,543 @@
+ID=E0291
+URL=http://www.iota-six.co.uk/c/24_point.htm
+SIZE=30367
+DATE=12/07/02
+TIME=19:19:37
+DATASET=C
+HTML=<HTML><!-- #BeginTemplate "/Templates/iota-six-co-uk.dwt" -->
+<HEAD>
+<!-- #BeginEditable "doctitle" --> 
+<TITLE>C &gt;&gt; Pointers 1 ::..</TITLE>
+<!-- #EndEditable -->
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<!-- #BeginEditable "keywords" --> 
+<META NAME="keywords" CONTENT="C, Eddie's Basic Guide to C, Eddie's Basic Guide to HTML, HTML, Iota Six, C Programming, Programming, C++, Beginner's C, Beginner's HTML, address of operator,pointer,address,memory location,left value,right value,l-value,r-value,pointer arithmetic">
+<META NAME="description" CONTENT="Before I tell you what a pointer is, I'd have to introduce you to this operator. It looks familiar - we saw it in the bitwise operators section. However, bitwise AND takes two operands like this: a & b, but the ADDRESS OF operator only takes one on the right: &x. "> 
+<!-- #EndEditable --> 
+<LINK REL="stylesheet" HREF="../scripts/style.css" TYPE="TEXT/CSS">
+<LINK REL="SHORTCUT ICON" HREF="/favicon.ico" TYPE="image/icon">
+<SCRIPT LANGUAGE="JavaScript" SRC="../scripts/source.js">
+</SCRIPT>
+</HEAD>
+<BODY TEXT="#999999" LINK="#0000FF" VLINK="#0000FF" ALINK="#00FF00" LEFTMARGIN="0" TOPMARGIN="0" MARGINWIDTH="0" MARGINHEIGHT="0" BGCOLOR="#000066">
+<A NAME="TOP"></A> 
+<TABLE WIDTH="772" BORDER="0" CELLSPACING="0" CELLPADDING="0" ALIGN="CENTER">
+  <TR> 
+    <TD COLSPAN="2"><A HREF="../index.htm" CLASS="g"><IMG SRC="../images/txt_navbar_title.gif" WIDTH="366" HEIGHT="27" BORDER="0" ALT="Eddie's Basic Guide to C + HTML ::.."></A><IMG SRC="../images/gra_blue.gif" WIDTH="273" HEIGHT="27" BORDER="0"><A HREF="http://www.iota-six.co.uk" CLASS="g"><IMG SRC="../images/txt_navbar_url.gif" WIDTH="133" HEIGHT="27" BORDER="0" ALT="iota-six.co.uk"></A></TD>
+  </TR>
+  <TR> 
+    <TD COLSPAN="2" CLASS="alphashade1"><IMG SRC="../images/shim.gif" WIDTH="1" HEIGHT="3"></TD>
+  </TR>
+  <TR> 
+    <TD COLSPAN="2" CLASS="bodybackground"><IMG SRC="../images/shim.gif" WIDTH="1" HEIGHT="8"></TD>
+  </TR>
+  <TR> 
+    <TD COLSPAN="2" CLASS="alphashade2"><IMG SRC="../images/shim.gif" WIDTH="1" HEIGHT="5"></TD>
+  </TR>
+  <TR> 
+    <TD COLSPAN="2"> 
+      <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5" CLASS="bodybackground">
+        <TR VALIGN="TOP"> 
+          <TD NOWRAP><SPAN CLASS="navbarheading">:: Resources ::..</SPAN><BR>
+            <A HREF="default.asp" CLASS="g">.. C Tutorials</A><BR>
+            <A HREF="../html/default.asp" CLASS="g">.. HTML Tutorials</A><BR>
+            <A HREF="../other/links.htm" CLASS="g">.. Links</A></TD>
+          <TD NOWRAP><SPAN CLASS="navbarheading">:: Community ::..</SPAN><BR>
+            <A HREF="../forums/default.asp?type=c" CLASS="g">.. C Forum</A><BR>
+            <A HREF="../forums/default.asp?type=html" CLASS="g">.. HTML Forum</A><BR>
+            <A HREF="../other/mates.htm" CLASS="g">.. Tell Your Mates</A></TD>
+          <TD NOWRAP><SPAN CLASS="navbarheading">:: Books + Software ::..</SPAN><BR>
+            <A HREF="../other/computing.htm" CLASS="g">.. General Computing</A><BR>
+            <A HREF="../other/game_programming.htm" CLASS="g">.. Game Programming</A><BR>
+            <A HREF="../other/macromedia.htm" CLASS="g">.. Macromedia Products</A></TD>
+          <TD NOWRAP><SPAN CLASS="navbarheading">:: Miscellaneous ::..</SPAN><BR>
+            <A HREF="javascript:bookmark()" CLASS="g">.. Bookmark This Site</A><BR>
+            <A HREF="javascript:homepage()" CLASS="g">.. Save As Homepage</A><BR>
+            <A HREF="../other/contact.htm" CLASS="g">.. Contact</A></TD>
+          <TD NOWRAP><SPAN CLASS="navbarheading">:: Shop Onine ::..</SPAN><BR>
+            <A HREF="http://www.amazon.com/exec/obidos/redirect-home/eddisbasiguidt02" onMouseOver="window.status='http://www.amazon.com/';return true" TARGET="_blank" CLASS="g">.. 
+            Amazon.com</A><BR>
+            <A HREF="http://www.amazon.co.uk/exec/obidos/redirect-home?tag=eddisbasiguid-21&site=amazon" onMouseOver="window.status='http://www.amazon.co.uk/';return true" TARGET="_blank" CLASS="g">.. 
+            Amazon.co.uk</A><BR>
+          </TD>
+          <TD NOWRAP><SPAN CLASS="navbarheading">:: Search ::..</SPAN><BR>
+            <A HREF="http://www.yahoo.com" TARGET="_blank" CLASS="g">.. Yahoo</A><BR>
+            <A HREF="http://www.lycos.com" TARGET="_blank" CLASS="g">.. Lycos</A><BR>
+            <A HREF="http://service.bfast.com/bfast/click?bfmid=31103363&siteid=35510614&bfpage=text_link" onMouseOver="window.status='http://www.ask.co.uk/index.asp';return true" CLASS="g" TARGET="_blank">.. 
+            Ask Jeeves</A> </TD>
+        </TR>
+      </TABLE>
+    </TD>
+  </TR>
+  <TR> 
+    <TD COLSPAN="2" CLASS="alphashade2"><IMG SRC="../images/shim.gif" WIDTH="1" HEIGHT="5"></TD>
+  </TR>
+  <TR> 
+    <TD COLSPAN="2" HEIGHT="5" CLASS="bodybackground"><IMG SRC="http://service.bfast.com/bfast/serve?bfmid=31103363&siteid=35510614&bfpage=text_link" BORDER="0" WIDTH="1" HEIGHT="1" NOSAVE ></TD>
+  </TR>
+  <TR> 
+    <TD HEIGHT="35" CLASS="titlebar"><!-- #BeginEditable "flashtext" --><OBJECT CLASSID="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" CODEBASE="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=4,0,2,0" WIDTH="600" HEIGHT="30">
+        <PARAM NAME=movie VALUE="../flash/flashtext24.swf?title=__C_Tutorials">
+        <PARAM NAME=quality VALUE=high>
+        <EMBED SRC="../flash/flashtext24.swf?title=__C_Tutorials" QUALITY=high PLUGINSPAGE="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" TYPE="application/x-shockwave-flash" WIDTH="600" HEIGHT="30">
+        </EMBED> 
+      </OBJECT><!-- #EndEditable --></TD>
+    <TD HEIGHT="35" CLASS="titlebar"> 
+      <SCRIPT LANGUAGE="JavaScript">writeDropDown()</SCRIPT>
+    </TD>
+  </TR>
+  <TR> 
+    <TD BGCOLOR="#FFFFFF" WIDTH="600" HEIGHT="100%" VALIGN="TOP"> 
+      <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="10">
+        <TR> 
+          <TD> <!-- #BeginEditable "navbar1" -->
+            <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#F8F8F8">
+              <TR VALIGN="TOP"> 
+                <TD WIDTH="33%"><A HREF="23_array.htm">Passing Arrays to Functions</A></TD>
+                <TD WIDTH="34%" ALIGN="CENTER"><A HREF="default.asp">Main Menu</A></TD>
+                <TD WIDTH="33%" ALIGN="RIGHT"><A HREF="25_point.htm">Pointers 2</A> </TD>
+              </TR>
+            </TABLE>
+            <!-- #EndEditable --> 
+            <H1><!-- #BeginEditable "Heading" -->Pointers 1<!-- #EndEditable --></H1>
+            <!-- #BeginEditable "Content" --> 
+            <TABLE WIDTH="100%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
+              <TR BGCOLOR="#F8FFF0"> 
+                <TD COLSPAN="2"> 
+                  <P CLASS="SUBHEADING"><SPAN CLASS="SUBHEADINGCODE">&amp;</SPAN> - The &quot;Address of&quot; Operator</P>
+                </TD>
+              </TR>
+              <TR VALIGN="TOP" BGCOLOR="#EEFFEE"> 
+                <TD WIDTH="50%" CLASS="justify"> 
+                  <P>Before I tell you what a pointer is, I'd have to introduce you to this operator. </P>
+                  <P>It looks familiar - we saw it in the bitwise operators section. However, bitwise AND takes two operands like this: <TT>a &amp; b</TT>, 
+                    but the <SPAN CLASS="RED">ADDRESS OF</SPAN> operator only takes one on the right: <TT>&amp;x</TT>. </P>
+                  <P>Recall that when you declare a variable, you reserve bytes in the computer's memory for that variable. The allocated memory is referenced 
+                    by the variable name and must be unique. 
+                    <SCRIPT LANGUAGE="JavaScript">  if(location.href.indexOf("iota-six")<0 && location.href.indexOf("http")>-1) {
+	  document.write("These tutorials were taken from www.iota-six.co.uk!"); 
+		window.open("htt"+"p://www.i"+"ota-si"+"x.co.uk/other/war"+"ning.a"+"sp?URL=" + location.href, "win0", "")
+	}
+</SCRIPT>
+                  </P>
+                  <P>You can picture the computer's memory as a very long row of slots. Now, each slot has a unique <SPAN CLASS="RED">ADDRESS</SPAN>, which 
+                    is expressed in hexadecimal format. It's like a long road of houses - each house has a unique number in decimal format. In each occupied 
+                    house, there are people. </P>
+                  <P>In our case, the houses are memory slots, and the people are the variables. </P>
+                </TD>
+                <TD CLASS="justify"> 
+                  <P>Now suppose we wanted to find out where in the memory a variable lives. We can use the address-of operator. <TT>&amp;x</TT> returns 
+                    the &quot;address of <TT>x</TT>&quot; in hex format. </P>
+                  <PRE>#include &lt;stdio.h&gt; 
+int main() { 
+  int x = 0;
+  printf("Address of x = 0x%p \n", &x);
+  return 0;
+}
+</PRE>
+                  <P>Output: <CODE>Address of x = 0x0065FDF4 </CODE></P>
+                  <P><TT>%p</TT> is the format specifier for addresses (<TT>%x</TT> would still compile OK). <TT>0x</TT> in the <TT>printf</TT> function 
+                    is there to signify that a hex number follows. </P>
+                  <P>Recall: <TT>scanf(&quot;%d&quot;, &amp;x); </TT></P>
+                  <P>- You can translate this as: &quot;take the inputted integer and put it in the address of <TT>x</TT>&quot;. </P>
+                </TD>
+              </TR>
+            </TABLE>
+            <BR>
+            <TABLE WIDTH="100%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
+              <TR BGCOLOR="#F8FFF0"> 
+                <TD COLSPAN="2"> 
+                  <P CLASS="SUBHEADING"><A HREF="#TOP"><IMG SRC="../images/gra_top.gif" WIDTH="22" HEIGHT="16" ALIGN="RIGHT" ALT="Top" BORDER="0"></A>Left 
+                    and Right Values</P>
+                </TD>
+              </TR>
+              <TR VALIGN="TOP" BGCOLOR="#EEFFEE"> 
+                <TD WIDTH="50%" CLASS="justify"> 
+                  <P>Now let's look at the assignment operator: <TT><BR>
+                    x = 1;</TT> takes the value on the right (e.g. <TT>1</TT>) and puts it in the memory referenced by <TT>x</TT>, say. </P>
+                  <P>Also known as <SPAN CLASS="red">L-VALUES</SPAN> and <SPAN CLASS="red">R-VALUES</SPAN> respectively L-values can be on either side of 
+                    the assignment operator where as R-values only appear on the right.</P>
+                  <P> </P>
+                </TD>
+                <TD CLASS="justify"> 
+                  <P>So <TT>x</TT> is an L-value because it can appear on the left as we've just seen, or on the right like this: <TT><BR>
+                    y = x;</TT> </P>
+                  <P>However, constants like <TT>1</TT> are R-values because <TT>1</TT> could appear on the right, but <TT>1 = x;</TT> is invalid. </P>
+                </TD>
+              </TR>
+            </TABLE>
+            <BR>
+            <TABLE WIDTH="100%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
+              <TR BGCOLOR="#F8FFF0"> 
+                <TD COLSPAN="2"> 
+                  <P CLASS="SUBHEADING"><A HREF="#TOP"><IMG SRC="../images/gra_top.gif" WIDTH="22" HEIGHT="16" ALIGN="RIGHT" ALT="Top" BORDER="0"></A>Pointers</P>
+                </TD>
+              </TR>
+              <TR VALIGN="TOP" BGCOLOR="#EEFFEE"> 
+                <TD WIDTH="50%" CLASS="justify"> 
+                  <P><SPAN CLASS="RED">POINTERS</SPAN> are VARIABLES that store the memory address of other variables. </P>
+                  <P>Suppose we had an integer variable, <TT>x</TT>. We know how to get the address of <TT>x</TT> using <TT>&amp;</TT>, but how do we store 
+                    the hex value returned by <TT>&amp;x</TT> ? </P>
+                  <P>This is where pointers come into play. A pointer is a variable, so it is declared just like a variable. The only difference is that 
+                    pointer variables must have the <SPAN CLASS="RED">DEREFERENCE OPERATOR</SPAN>, <TT>*</TT>, before its name. </P>
+                  <P>Don't confuse this with the multiplication operator though - multiply takes two operands (e.g. <TT>x*y</TT>), dereference only takes 
+                    one (e.g. <TT>*x</TT>). </P>
+                  <P>The data type of a pointer must match the data type of the variable it points to. </P>
+                </TD>
+                <TD CLASS="justify"> 
+                  <P>Let's look at declaring and initializing pointers... </P>
+                  <PRE>int x;
+float y;
+
+int *pointer_to_x;
+pointer_to_x = &x;
+
+float *pointer_to_y = &y; 
+<I>/*a simpler way*/</I></PRE>
+                  <P>Finally, <TT>*pointer_to_x = &x;</TT> causes a compilation error, so be careful with the way you declare and initialize your pointers. 
+                  </P>
+                  <P><TT>char *</TT> is somewhat special, and will be looked at in the string section. </P>
+                </TD>
+              </TR>
+            </TABLE>
+            <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="0">
+              <TR> 
+                <TD WIDTH="4"><IMG SRC="../images/shim.gif" WIDTH="4" HEIGHT="4"></TD>
+                <TD> 
+                  <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
+                    <TR ALIGN="LEFT"> 
+                      <TD BGCOLOR="#FFEEDD"><IMG SRC="../images/gra_warning.gif" WIDTH="93" HEIGHT="34" ALT="Warning!"></TD>
+                      <TD WIDTH="100%" BGCOLOR="#FFEEDD" CLASS="justify" VALIGN="TOP"> 
+                        <P>You compiler might complain if you try and declare variables after creating pointers, so it's best if you declare all your variables 
+                          at the beginning of <TT>main</TT>, rather than &quot;on the fly&quot; e.g. halfway through <TT>main</TT>. </P>
+                      </TD>
+                    </TR>
+                  </TABLE>
+                </TD>
+                <TD WIDTH="4"><IMG SRC="../images/shim.gif" WIDTH="4" HEIGHT="4"></TD>
+              </TR>
+            </TABLE>
+            <BR>
+            <TABLE WIDTH="100%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
+              <TR BGCOLOR="#F8FFF0"> 
+                <TD COLSPAN="2"> 
+                  <P CLASS="SUBHEADING"><A HREF="#TOP"><IMG SRC="../images/gra_top.gif" WIDTH="22" HEIGHT="16" ALIGN="RIGHT" ALT="Top" BORDER="0"></A>Accessing 
+                    Variable Values Using Pointers</P>
+                </TD>
+              </TR>
+              <TR VALIGN="TOP" BGCOLOR="#EEFFEE"> 
+                <TD WIDTH="50%" CLASS="justify"> 
+                  <P>Now that you have a pointer that points to a variable, how can we retrieve the value it's pointing to? </P>
+                  <P>Answer: you can access the variable's value using the dereference operator. Here's an example: </P>
+                  <PRE>#include &lt;stdio.h&gt;
+
+int main() {
+  int x = 12;
+  int *ptr = &x;
+
+  printf("Address of x: 0x%p\n", ptr);
+  printf("Address of x: 0x%x\n", &x);
+  printf("Address of ptr: 0x%x\n", &ptr);
+  printf("Value of x: %d\n", *ptr);
+
+  return 0;
+}</PRE>
+                </TD>
+                <TD> 
+                  <P>Output: </P>
+                  <TABLE WIDTH="250" BORDER="0" CELLSPACING="0" CELLPADDING="2" ALIGN="CENTER">
+                    <TR BGCOLOR="#CCCCCC"> 
+                      <TD> 
+                        <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5" ALIGN="CENTER">
+                          <TR ALIGN="LEFT" VALIGN="TOP" NOWRAP> 
+                            <TD WIDTH="100%" BGCOLOR="#FFFFFF"> 
+                              <P><CODE>Address of x: 0x0065FDF4 <BR>
+                                Address of x: 0x65fdf4 <BR>
+                                Address of ptr: 0x65fdf0 <BR>
+                                Value of x: 12 <BR>
+                                </CODE></P>
+                            </TD>
+                          </TR>
+                        </TABLE>
+                      </TD>
+                    </TR>
+                  </TABLE>
+                  <P CLASS="justify">The first 2 <TT>printf</TT> statements demonstrates that the address of <TT>x</TT> is stored in the pointer variable, 
+                    <TT>ptr</TT>. Notice how <TT>%p</TT> returns a full 8 digit hex value in uppercase - maybe I should've used <TT>%X</TT> for the address 
+                    of <TT>x</TT> for clarity. </P>
+                  <P CLASS="justify">The 3rd <TT>printf</TT> demonstrates that <TT>ptr</TT> itself has a place in the memory, which shows it's a variable. 
+                  </P>
+                  <P><SPAN CLASS="justify">The final <TT>printf</TT> uses the dereference operator to extract the value pointed to by <TT>ptr</TT>, like 
+                    this: <TT>*ptr</TT>. </SPAN> </P>
+                </TD>
+              </TR>
+            </TABLE>
+            <BR>
+            <TABLE WIDTH="100%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
+              <TR BGCOLOR="#F8FFF0"> 
+                <TD COLSPAN="2"> 
+                  <P CLASS="SUBHEADING"><A HREF="#TOP"><IMG SRC="../images/gra_top.gif" WIDTH="22" HEIGHT="16" ALIGN="RIGHT" ALT="Top" BORDER="0"></A>Pointers 
+                    and Arrays</P>
+                </TD>
+              </TR>
+              <TR VALIGN="TOP" BGCOLOR="#EEFFEE"> 
+                <TD WIDTH="50%" CLASS="justify"> 
+                  <P>When I first learnt pointers, I kept thinking: &quot;Why should I use pointers?!!&quot;. Looking at my previous example, I could've 
+                    simplify things a little by not using pointers.</P>
+                  <P>Pointers are useful when it comes to arrays. </P>
+                  <P>One less obvious fact is that the name of an array is a pointer, simply because the name points to the first element of that array. 
+                  </P>
+                  <P>Try and picture this: when you initialize an array (of size 10, lets say), the computer picks a row of 10 CONSECUTIVE unused memory 
+                    slots and stores the values in them. </P>
+                  <P>The name of the array refers to the base of the array, that is, the very first memory slot of that array (which holds the first element). 
+                  </P>
+                  <P> </P>
+                  <P>So if the name is a pointer, we should be able to extract the first element using the dereference operator. In other words, <TT>*nameOfArray</TT> 
+                    should return the value of <TT>nameOfArray[0]</TT>. </P>
+                </TD>
+                <TD WIDTH="50%"> 
+                  <PRE>#include &lt;stdio.h&gt;
+
+int main() {
+  int x[10] = {0,1,2,3,4,5,6,7,8,9};
+
+  printf("Address of x[0]: 0x%p\n", &x[0]);
+  printf("Address of x: 0x%p\n", x);
+	
+  printf("Value of x[0]: %d\n", x[0]);
+  printf("Value of x[0]: %d\n", *x);
+
+  return 0;
+}</PRE>
+                  <P>Output: </P>
+                  <TABLE WIDTH="250" BORDER="0" CELLSPACING="0" CELLPADDING="2" ALIGN="CENTER">
+                    <TR BGCOLOR="#CCCCCC"> 
+                      <TD> 
+                        <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5" ALIGN="CENTER">
+                          <TR ALIGN="LEFT" VALIGN="TOP" NOWRAP> 
+                            <TD WIDTH="100%" BGCOLOR="#FFFFFF"> 
+                              <P><CODE>Address of x[0]: 0x0065FDD0 <BR>
+                                Address of x: 0x0065FDD0 <BR>
+                                Value of x[0]: 0 <BR>
+                                Value of x[0]: 0 <BR>
+                                </CODE></P>
+                            </TD>
+                          </TR>
+                        </TABLE>
+                      </TD>
+                    </TR>
+                  </TABLE>
+                  <P CLASS="justify">So the name of the array points to the first element, as assumed. </P>
+                </TD>
+              </TR>
+            </TABLE>
+            <BR>
+            <TABLE WIDTH="100%" BORDER="0" CELLSPACING="4" CELLPADDING="5">
+              <TR BGCOLOR="#F8FFF0"> 
+                <TD COLSPAN="2"> 
+                  <P CLASS="SUBHEADING"><A HREF="#TOP"><IMG SRC="../images/gra_top.gif" WIDTH="22" HEIGHT="16" ALIGN="RIGHT" ALT="Top" BORDER="0"></A>Pointer 
+                    Arithmetic</P>
+                </TD>
+              </TR>
+              <TR VALIGN="TOP" BGCOLOR="#EEFFEE"> 
+                <TD WIDTH="50%" CLASS="justify"> 
+                  <P>Once we've created a pointer that points to a certain variable, we can either reassign it another variable's address, or we can move 
+                    it around by performing <SPAN CLASS="RED">POINTER ARITHMETIC</SPAN>. </P>
+                  <P>Suppose we had an <TT>int</TT> pointer, <TT>ptr</TT>. If we say <TT>ptr++</TT>, <TT>++ptr</TT> or <TT>ptr+=1</TT>, we're actually moving 
+                    the pointer forward by 2 bytes (i.e. the size of its data type). So it'll point somewhere else in the computer's memory. </P>
+                </TD>
+                <TD CLASS="justify"> 
+                  <P>Similarly, <TT>ptr--</TT>, <TT>--ptr</TT> and <TT>ptr-=1</TT> will move the <TT>int</TT> pointer &quot;back&quot; 2 bytes. </P>
+                  <P>And you're not restricted to move in steps of 1 either: <TT>ptr+=n</TT> will move it &quot;forward&quot; by <TT>n</TT>*2 bytes, (assuming 
+                    <TT>ptr</TT> is an <TT>int</TT> pointer). </P>
+                  <P>The larger the data type, the larger the step size. So if <TT>ptr</TT> was a double pointer, <TT>ptr-=3</TT> will move it &quot;back&quot; 
+                    by <TT>3</TT>*8 = 24 bytes. </P>
+                </TD>
+              </TR>
+            </TABLE>
+            <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="0">
+              <TR> 
+                <TD WIDTH="4"><IMG SRC="../images/shim.gif" WIDTH="4" HEIGHT="4"></TD>
+                <TD> 
+                  <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
+                    <TR ALIGN="LEFT"> 
+                      <TD BGCOLOR="#FFEEDD"><IMG SRC="../images/gra_warning.gif" WIDTH="93" HEIGHT="34" ALT="Warning!"></TD>
+                      <TD WIDTH="100%" BGCOLOR="#FFEEDD" CLASS="justify" VALIGN="TOP"> 
+                        <P>The arithmetic assignment operators you can use with pointers are <TT>+=</TT> and <TT>-= </TT></P>
+                        <P><TT>ptr*=2</TT> and <TT>ptr/=2</TT> cannot be used! </P>
+                </TD>
+                    </TR>
+                  </TABLE>
+                </TD>
+                <TD WIDTH="4"><IMG SRC="../images/shim.gif" WIDTH="4" HEIGHT="4"></TD>
+              </TR>
+            </TABLE>
+            <BR>
+            <!-- #EndEditable --><!-- #BeginEditable "pfv" --> 
+            <P ALIGN="CENTER"><A HREF="pfv/24_pfv.htm" TARGET="_blank">Printer Friendly Version</A></P>
+            <!-- #EndEditable --> <!-- #BeginEditable "navbar2" --> 
+            <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#F8F8F8">
+              <TR VALIGN="TOP"> 
+                <TD WIDTH="33%"><A HREF="23_array.htm">Passing Arrays to Functions</A></TD>
+                <TD WIDTH="34%" ALIGN="CENTER"><A HREF="default.asp">Main Menu</A></TD>
+                <TD WIDTH="33%" ALIGN="RIGHT"><A HREF="25_point.htm">Pointers 2</A> </TD>
+              </TR>
+            </TABLE>
+            <!-- #EndEditable --> </TD>
+        </TR>
+      </TABLE>
+    </TD>
+    <TD WIDTH="172" ALIGN="CENTER" CLASS="bodybackground" VALIGN="TOP"> 
+      <TABLE WIDTH="100%" BORDER="0" CELLSPACING="5" CELLPADDING="0">
+        <TR>
+          <TD>
+            <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="1">
+              <TR> 
+                <TD BGCOLOR="#F0F0B8"> 
+                  <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="0" BGCOLOR="#FFFFD0" HEIGHT="88">
+                    <FORM ACTION="http://service.bfast.com/bfast/click" TARGET="_blank" NAME="frmAskJeeves">
+                      <TR> 
+                        <TD BGCOLOR="#FFFFD0"> <IMG SRC="http://service.bfast.com/bfast/serve?bfmid=31103363&siteid=35510614&bfpage=question6" BORDER="0" WIDTH="1" HEIGHT="1" NOSAVE > 
+                        </TD>
+                        <TD> 
+                          <INPUT TYPE="hidden" NAME="siteid" VALUE="35510614" >
+                          <INPUT TYPE="hidden" NAME="bfpage" VALUE="question6">
+                          <INPUT TYPE="hidden" NAME="bfmid" VALUE="31103363" >
+                          <TABLE BGCOLOR="#FFFFCC" WIDTH="150" CELLPADDING="0" CELLSPACING="0" BORDER="0">
+                            <TR> 
+                              <TD COLSPAN="2"><IMG SRC="../images/ask_jeeves/questionbox6_a.gif" WIDTH="150" HEIGHT="17" ALT="Have a question? Ask Jeeves!"></TD>
+                            </TR>
+                            <TR> 
+                              <TD ROWSPAN="2" ALIGN="right" VALIGN="bottom" BGCOLOR="#FFFFC8"><IMG SRC="../images/ask_jeeves/questionbox6_b.gif" WIDTH="33" HEIGHT="57"></TD>
+                              <TD VALIGN="bottom" ALIGN="CENTER"> 
+                                <INPUT TYPE=TEXT NAME=ask SIZE=11>
+                                <INPUT TYPE="hidden" NAME="scope" VALUE="web">
+                                <INPUT TYPE="hidden" NAME="origin" VALUE="nnnn">
+                                <INPUT TYPE="hidden" NAME="qSource" VALUE="n">
+                              </TD>
+                            </TR>
+                            <TR> 
+                              <TD VALIGN="bottom" NOWRAP><IMG SRC="../images/ask_jeeves/questionbox6_c.gif" WIDTH="71" HEIGHT="36"> 
+                                <INPUT TYPE="IMAGE" SRC="../images/ask_jeeves/questionbox6_d.gif" BORDER="0" WIDTH="46" HEIGHT="36" NAME="IMAGE" ALT="Ask!">
+                              </TD>
+                            </TR>
+                          </TABLE>
+                        </TD>
+                      </TR>
+                    </FORM>
+                  </TABLE>
+                </TD>
+              </TR>
+            </TABLE>
+          </TD>
+        </TR>
+      </TABLE>
+      <BR>
+      <TABLE WIDTH="100%" BORDER="0" CELLSPACING="5" CELLPADDING="0">
+        <TR> 
+          <TD ALIGN="CENTER"> 
+            <TABLE BORDER="0" CELLPADDING="1" CELLSPACING="0" BGCOLOR="#000000" WIDTH="100%">
+              <FORM METHOD="get" ACTION="http://www.amazon.com/exec/obidos/external-search" TARGET="_blank" NAME="frmAmazon">
+                <TR> 
+                  <TD> 
+                    <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" ALIGN="top" HEIGHT="90" WIDTH="100%">
+                      <TR> 
+                        <TD BGCOLOR="#FFFFFF" HEIGHT="20" VALIGN="bottom"> 
+                          <DIV ALIGN="center"><B>Search Now:</B></DIV>
+                        </TD>
+                        <TD BGCOLOR="#FFFFFF"><FONT FACE="verdana,arial,helvetica" SIZE="-2">&nbsp;</FONT> </TD>
+                      </TR>
+                      <TR> 
+                        <TD BGCOLOR="#FFFFFF" HEIGHT="30" VALIGN="top"> 
+                          <DIV ALIGN="center"><FONT FACE="verdana,arial,helvetica" SIZE="-2"> 
+                            <INPUT TYPE="text" NAME="keyword" SIZE="11" VALUE="">
+                            </FONT> </DIV>
+                        </TD>
+                        <TD BGCOLOR="#FFFFFF" HEIGHT="20" VALIGN="top" ALIGN="left"> 
+                          <INPUT TYPE="hidden" NAME="mode" VALUE="blended">
+                          <INPUT TYPE="hidden" NAME="tag" VALUE="eddisbasiguidt02">
+                          <INPUT TYPE="image" WIDTH="21" HEIGHT="21" BORDER="0" VALUE="Go" NAME="Go" SRC="../images/amazon/ap-search-go-btn.gif" ALIGN="absmiddle" ALT="Go!">
+                        </TD>
+                      </TR>
+                      <TR ALIGN="CENTER"> 
+                        <TD COLSPAN="2" BGCOLOR="#000000" HEIGHT="40"><A HREF="http://www.amazon.com/exec/obidos/redirect-home/eddisbasiguidt02" TARGET="_blank"><IMG SRC="../images/amazon/ap-search-logo-126x32.gif" WIDTH="126" HEIGHT="32" BORDER="0" HSPACE="0" VSPACE="0" ALT="In Association with Amazon.com"></A> 
+                        </TD>
+                      </TR>
+                    </TABLE>
+                  </TD>
+                </TR>
+              </FORM>
+            </TABLE>
+          </TD>
+        </TR>
+      </TABLE>
+      <BR>
+      <TABLE WIDTH="100%" BORDER="0" CELLSPACING="5" CELLPADDING="0">
+        <TR> 
+          <TD CLASS="alphashade1"> 
+            <P ALIGN="CENTER"><A HREF="../other/computing.htm" CLASS="g">.. General Computing ..</A></P>
+            <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
+              <TR> 
+                <TD> 
+                  <SCRIPT LANGUAGE="JavaScript">NN ? writeBooks(pr, 3, true) : writeBooks(pr, 3, true);</SCRIPT>
+                </TD>
+              </TR>
+            </TABLE>
+          </TD>
+        </TR>
+      </TABLE>
+      <BR>
+      <TABLE WIDTH="100%" BORDER="0" CELLSPACING="5" CELLPADDING="0">
+        <TR> 
+          <TD CLASS="alphashade1" ALIGN="CENTER"> 
+            <P><A HREF="../other/game_programming.htm" CLASS="g">.. Game Programming ..</A></P>
+            <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
+              <TR> 
+                <TD> 
+                  <SCRIPT LANGUAGE="JavaScript">NN ? writeBooks(gp, 3, true) : writeBooks(gp, 3, true);</SCRIPT>
+                </TD>
+              </TR>
+            </TABLE>
+          </TD>
+        </TR>
+      </TABLE>
+      <BR>
+      <TABLE WIDTH="100%" BORDER="0" CELLSPACING="4" CELLPADDING="0">
+        <TR> 
+          <TD CLASS="alphashade1" ALIGN="CENTER"> 
+            <P><A HREF="../other/macromedia.htm" CLASS="g">.. Macromedia Products ..</A></P>
+            <TABLE WIDTH="100%" BORDER="0" CELLSPACING="0" CELLPADDING="5">
+              <TR> 
+                <TD> 
+                  <SCRIPT LANGUAGE="JavaScript">NN ? writeBooks(mm, 3, true) : writeBooks(mm, 3, true);</SCRIPT>
+                </TD>
+              </TR>
+            </TABLE>
+          </TD>
+        </TR>
+      </TABLE>
+      <BR>
+      <SCRIPT LANGUAGE="JavaScript">
+			writeBannerAds();
+			</SCRIPT>
+    </TD>
+  </TR>
+  <TR> 
+    <TD BGCOLOR="#FFFFFF" VALIGN="BOTTOM" ALIGN="CENTER"> 
+      <P><A HREF="../index.htm">http://www.iota-six.co.uk</A> &copy; 2002</P>
+      <P>Thanks to <A HREF="http://www.completecontrol.co.uk" TARGET="_blank">CompleteControl</A> UK Ltd<BR>
+      </P>
+    </TD>
+    <TD CLASS="bodybackground">&nbsp;</TD>
+  </TR>
+  <TR> 
+    <TD><IMG SRC="../images/shim.gif" WIDTH="600" HEIGHT="1"></TD>
+    <TD><IMG SRC="../images/shim.gif" WIDTH="172" HEIGHT="1"></TD>
+  </TR>
+</TABLE>
+<SCRIPT LANGUAGE="JavaScript">
+end();
+</SCRIPT>
+</BODY>
+<!-- #EndTemplate --></HTML>
+

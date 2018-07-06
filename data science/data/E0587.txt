@@ -1,0 +1,172 @@
+ID=E0587
+URL=http://www.devx.com/cplus/free/articles/mm0502/listing2.asp
+SIZE=3684
+DATE=12/07/02
+TIME=19:22:30
+DATASET=C
+HTML=<html>
+<head>
+	<title>Listing 2</title>
+</head>
+
+<body text="#000000" link="#990000" bgcolor="#ffffff">
+
+<table border="0" align="center">
+	<tr>
+    	<td>
+<table>
+	<tr>
+		<TD>
+		<SCRIPT language="JavaScript1.1" SRC="http://ad.doubleclick.net/adj/devx.cplus.dart/cplus;abr=!webtv;door=;dcopt=ist;sz=120x60;tile=1;ord=1209657067059?">
+		</SCRIPT> 
+		<SCRIPT> 
+		if ((!document.images && navigator.userAgent.indexOf('Mozilla/2.') >= 0)  || navigator.userAgent.indexOf("WebTV")>= 0) {
+		document.write('<A HREF="http://ad.doubleclick.net/jump/devx.cplus.dart/cplus;door=;sz=120x60;tile=1;ord=1209657067059?">');
+		document.write('<IMG SRC="http://ad.doubleclick.net/ad/devx.cplus.dart/cplus;door=;sz=120x60;tile=1;ord=1209657067059?" border="0" height="120" width="60"></A>') 
+		} 
+		</SCRIPT> 
+		<NOSCRIPT> 
+		<A HREF="http://ad.doubleclick.net/jump/devx.cplus.dart/cplus;door=;sz=120x60;tile=1;ord=1209657067059?" >
+		<IMG SRC="http://ad.doubleclick.net/ad/devx.cplus.dart/cplus;door=;sz=120x60;tile=1;ord=1209657067059?" border="0" height="120" width="60"></A>
+		</NOSCRIPT>
+		</TD>
+		<td>
+		<SCRIPT language="JavaScript1.1" SRC="http://ad.doubleclick.net/adj/devx.cplus.dart/cplus;abr=!webtv;door=;dcopt=ist;sz=468x60;tile=2;ord=1209657067059?">
+		</SCRIPT> 
+		<SCRIPT> 
+		if ((!document.images && navigator.userAgent.indexOf('Mozilla/2.') >= 0)  || navigator.userAgent.indexOf("WebTV")>= 0) {
+		document.write('<A HREF="http://ad.doubleclick.net/jump/devx.cplus.dart/cplus;door=;sz=468x60;tile=2;ord=1209657067059?">');
+		document.write('<IMG SRC="http://ad.doubleclick.net/ad/devx.cplus.dart/cplus;door=;sz=468x60;tile=2;ord=1209657067059?" border="0" height="60" width="468"></A>') 
+		} 
+		</SCRIPT> 
+		<NOSCRIPT> 
+		<A HREF="http://ad.doubleclick.net/jump/devx.cplus.dart/cplus;door=;sz=468x60;tile=2;ord=1209657067059?" >
+		<IMG SRC="http://ad.doubleclick.net/ad/devx.cplus.dart/cplus;door=;sz=468x60;tile=2;ord=1209657067059?" border="0" height="60" width="468"></A>
+		</NOSCRIPT>
+		</td>
+		<td width="5">&nbsp;</td>
+	</tr>
+</table>
+</td>
+	</tr>
+	<tr>
+		<td align="center" valign="top"><img src="/images/general/devxrule.gif" border="0" width="468" height="2"></td>
+	</tr>
+</table>
+
+<br>
+
+<!-- Start page layout -->
+<table width="500" border="0" cellpadding="1" cellspacing="1">
+	<tr align="left" valign="middle">
+		<td width="500" height="30">
+		<FONT FACE="Arial, Helvetica" SIZE="2"><B>Listing 2: Flow Control.</b> The base class decides when and where the derived class control methods are called. You can also see how screens are created by CreateDlg().
+
+</td>
+	</tr>
+</table>
+
+<table width="500" border="1" cellpadding="4" cellspacing="0" bordercolor="#6A0512">
+	<tr align="left" valign="top">
+		<td bgcolor="#fafae6">
+<pre><font size="2"> #include "stdafx.h"
+#include "TextDlg.h"
+#include "EditTextDlg.h"
+#include "NewTextDlg.h"
+#include "ViewTextDlg.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+/////////////////////////////////////////////////////////////////////
+// CTextDlg dialog
+
+// ** Created by Class Wizard **
+
+CTextDlg::CTextDlg(CWnd* pParent /*=NULL*/)
+    : CDialog(CTextDlg::IDD, pParent)
+{
+    //{{AFX_DATA_INIT(CTextDlg)
+    m_Text = _T("");
+    //}}AFX_DATA_INIT
+}
+
+
+void CTextDlg::DoDataExchange(CDataExchange* pDX)
+{
+     CDialog::DoDataExchange(pDX);
+     //{{AFX_DATA_MAP(CTextDlg)
+     DDX_Control(pDX, IDC_PRINT, m_PrintBtnCtrl);
+     DDX_Control(pDX, IDC_EDIT1, m_EditCtrl);
+     DDX_Text(pDX, IDC_EDIT1, m_Text);
+     //}}AFX_DATA_MAP
+}
+
+BEGIN_MESSAGE_MAP(CTextDlg, CDialog)
+    //{{AFX_MSG_MAP(CTextDlg)
+    //}}AFX_MSG_MAP
+END_MESSAGE_MAP()
+
+/////////////////////////////////////////////////////////////////////
+// CTextDlg message handlers
+
+// ** Added code **
+
+CTextDlg *CTextDlg::CreateDlg(enum CTextDlg::dlgType type)
+{
+    // create a derived dialog class
+    switch (type)
+    {
+        case NEW:
+            return new CNewTextDlg;
+		
+        case EDIT:
+            return new CEditTextDlg;
+
+        case VIEW:
+            return new CViewTextDlg;
+    }
+
+    return NULL;
+}
+
+CString CTextDlg::GetText()
+{
+     // get text entered from edit control
+     return m_Text;
+}
+
+BOOL CTextDlg::OnInitDialog() 
+{
+     CDialog::OnInitDialog();
+
+     // allow derived class to initialize
+     Setup();
+
+     return TRUE;  // return TRUE unless you set the focus to a control
+                   // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+void CTextDlg::OnOK() 
+{
+    // allow derived class to carry out "OK" action
+    DoOK();
+
+    CDialog::OnOK();
+}
+
+void CTextDlg::OnCancel() 
+{
+    // allow derived class to carry out "Cancel" action
+    DoCancel();
+
+    CDialog::OnCancel();
+}
+</font></pre>
+<!-- End the page layout -->
+
+</body>
+</html>

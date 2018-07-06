@@ -1,0 +1,999 @@
+ID=D0121
+URL=http://www.absolutejava.com/test-your-java-knowledge/
+SIZE=122773
+DATE=16/07/02
+TIME=14:37:28
+DATASET=Java
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><head><title>Absolute Java - Test Your Java Knowldege</title><meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<style type="text/css">
+<!-- 
+p.answer { margin-top: 10px; margin-bottom: 0px; font-size:125%; font-weight:bold; color:#000000; background: #66FF99; padding: 5px 5px; clip: rect(auto auto auto auto); overflow: hidden; float: left; border: thin #000000 solid}
+-->
+</style>
+<link rel="stylesheet" href="../styles.css" type="text/css">
+</head><body>
+	
+<a name="question_1"></a><p class="subtitle" style="margin-top:0px">Question 1: Package Visibility</p>
+<div class="postSubtitle">Assume we have the following code in the file /abc/def/A.java:<p></p></div>
+<table cellspacing='0' class='codeTable'>
+	<tr>
+		<td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeComment'>// File: /ABC/def/A.java</span></td></tr>
+	<tr>
+		<td class='lineNumber'><pre>2</td><td><pre>&nbsp;<span class='codeKeyword'>package</span> def;</td></tr>
+	<tr>
+		<td class='lineNumber'><pre>3</td><td><pre>&nbsp;&nbsp;</td></tr>
+	<tr>
+		<td class='lineNumber'><pre>4</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> A <span class='codeSeparator'>{</span></td></tr>
+	<tr>
+		<td class='lineNumber'><pre>5</td><td><pre>&nbsp;   <span class='codeKeyword'>int</span> var;</td></tr>
+	<tr>
+		<td class='lineNumber'><pre>6</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// A</span></td></tr>
+</table>
+<p><br>
+And this code is in /ABC/Tester.java:
+</p>
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeComment'>// File: /ABC/Tester.java</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> def.A;</td></tr>
+<tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeSeparator'>{</span></td></tr><tr>
+		<td class='lineNumber'><pre>5</td><td><pre>&nbsp;   A a <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> A<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr>
+	<tr>
+		<td class='lineNumber'><pre>6</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>void</span> someMethod<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr>
+	<tr>
+		<td class='lineNumber'><pre>7</td><td><pre>&nbsp;      a.var <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>1</span>;</td></tr>
+	<tr>
+		<td class='lineNumber'><pre>8</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// someMethod()</span></td></tr>
+	<tr>
+		<td class='lineNumber'><pre>9</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr>
+</table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+
+<p> Now assume that <code>/ABC</code> is the current directory. When we try to 
+  compile <code>Tester.java</code> with the following command,</p>
+<blockquote>
+	
+  <pre>javac Tester.java</pre>
+</blockquote>
+<p>the compiler displays this error message:</p>
+<blockquote>
+	
+  <pre>Tester.java:7: var is not public in def.A; cannot be accessed from outside package
+      a.var = 1;
+       ^
+1 error</pre>
+</blockquote>
+<p>Explain why the error message occurs and how to eliminate it.
+<span style="font-style:italic"></span>
+
+<p class="answer">Answer 1: Package Visibility</p>
+<div class="postSubtitle">The error occurs because the variable, <code>var</code>, in the <code>A</code> 
+class has <em>package visibility</em>. A member (variable or method) with <em>package 
+visibility</em> is accessible <em>only</em> to classes defined within the same 
+package. In the code above, class <code>A</code> resides in the package named 
+<code>def</code>. The class <code>Tester</code>, on the other hand, resides in 
+what's known as the <em>default</em> package. Java considers any class missing 
+a <code>package</code> statement as being in the <i>default</i> package. Because 
+the default package is not the same as the <code>def</code> package, the member 
+<code>var</code> in class <code>A</code> is not accessible within the <code>Tester</code> 
+class.</div>
+<p> The table below should give you an idea of how member visibility declarations 
+  (i.e., <code>public</code>, <code>protected</code>, package, and <code>private</code>) 
+  affect where a member can be referenced. Of course, package visibility is what 
+  you get if none of the other three visibility modifiers are specified. 
+<p>
+<div align="center">
+   <table border=2 cellpadding=2>
+		<tr bgcolor="#CCFFCC">
+			<td rowspan=2><strong>If a member is<br>
+				declared as...</strong></td><td colspan=4 align="center" bgcolor="#FFFFFF"><strong>then is the member accessible within...</strong></td></tr>
+		<tr bgcolor="#FFFFFF">
+			<td>its own class?</td><td>any class in its<br>
+				own package?</td><td>any subclass in a<br>
+				different package?</td><td>any non-subclass in<br>
+				a different package?</td></tr>
+		<tr>
+			<td bgcolor="#CCFFCC"><code>public</code></td><td align="CENTER">YES</td><td align="center">YES</td><td align="center">YES</td><td align="CENTER">YES</td></tr>
+		<tr>
+			<td bgcolor="#CCFFCC"><code>protected</code></td><td align="center">YES</td><td align="center">YES</td><td style="color:red" align="CENTER">YES*</td><td align="CENTER">NO</td></tr>
+		<tr>
+			<td bgcolor="#CCFFCC">package</td><td align="center">YES</td><td align="center">YES</td><td align="CENTER">NO</td><td align="CENTER">NO</td></tr>
+		<tr>
+			<td bgcolor="#CCFFCC"><code>private</code></td><td align="center">YES</td><td align="center">NO</td><td align="CENTER">NO</td><td align="CENTER">NO</td></tr>
+   </table></div>
+<br>
+<div style="color:red; margin-left:1.0in; margin-right:1.0in"> * When a class, 
+  <em>S</em>, extends another class, <em>B</em>, every instance of <em>S</em> 
+  contains <u>all</u> the members declared in <em>B</em>, regardless of the visibility 
+  modifiers (e.g., <code>private</code>, <code>protected</code>, package, or <code>public</code>) 
+  on those members. Even though all instances of S contain all the members declared 
+  in <em>B</em>, they cannot necessarily refer to all of them. <br>
+  <br>
+  <img src="images/visibility-of-superclass-protected-members.gif" width="166" height="145" align="left" hspace="10" vspace="10">Let's 
+  take a look at Figure 1. This figure shows four classes: <code>B</code>, <code>S</code>, 
+  <code>T</code> and <code>R</code> with class <code>B</code> containing a protected 
+  member, &quot;<code>protAttrib</code>&quot;. We'll use lower-case letters to 
+  represent instances of the corresponding classes, proper. For example, assume 
+  object <code>b</code> was created by calling <code>new B(),</code> and so on.<br>
+  <br>
+  An object can only refer to <code>protected</code> members in objects that are 
+  of its own class or subclass. So, for example, object <code>s</code> can refer 
+  to the <code>protAttrib</code> variable in itself or in object <code>r</code> 
+  or in any other instances of <code>S</code> or <code>R</code> but not in any 
+  instances of <code>T</code> or <code>B</code>, proper. Object <code>b</code> 
+  can refer to the <code>protAttrib</code> variable in <code>b</code>, <code>s</code>, 
+  <code>t</code>, <code>r</code> as well as any other instances of <code>B</code>, 
+  <code>S</code>, <code>T</code>, and <code>R</code>. Object <code>r</code> can 
+  only refer to the <code>protAttrib</code> in itself or other instances of <code>R</code>, 
+  proper. Admittedly, this may be a bit hard to understand without an example. 
+  See <a href="#question_2">Question 2</a> for a concrete example using Java code. 
+</div>
+<a name="question_2"></a>
+<p class="subtitle">Question 2: Member Visibility</p>
+<div class="postSubtitle">This question builds directly on <a href="#question_1">Question 1</a>. In the 
+code that follows, take careful note of the package in which each class resides.<br></div>
+<p>Assume we have the following code in the file /abc/def/A.java: 
+   <!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+   <!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+</p>
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td>
+		<td><pre>&nbsp;<span class='codeComment'>// File: /abc/def/A.java</span></td>
+	</tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;<span class='codeKeyword'>package</span> def;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> A <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;   <span class='codeKeyword'>private</span> <span class='codeKeyword'>int</span>   privateVar;</td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;   <span class='codeKeyword'>int</span>           packageVar;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;   <span class='codeKeyword'>protected</span> <span class='codeKeyword'>int</span> protectedVar;</td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>int</span>    publicVar;</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// A</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+<p><br>
+  and this code is in /abc/B.java: 
+   <!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+   <!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+</p>
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td>
+		<td><pre>&nbsp;<span class='codeComment'>// File: /abc/B.java</span></td>
+	</tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> def.A;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> B <span class='codeKeyword'>extends</span> A <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;   A a <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> A<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;   C c <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> C<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>void</span> someMethod<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;      <span class='codeComment'>// First, try to refer to sup's members.</span></td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;      a.privateVar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>1</span>;    <span class='codeComment'>// Line 10</span></td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;      a.packageVar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>2</span>;    <span class='codeComment'>// Line 11</span></td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;      a.protectedVar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>3</span>;  <span class='codeComment'>// Line 12</span></td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;      a.publicVar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>4</span>;     <span class='codeComment'>// Line 13</span></td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;      <span class='codeComment'>// Next, try to refer to this object's members</span></td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;      <span class='codeComment'>// supplied by class A.</span></td></tr><tr><td class='lineNumber'><pre>17</td><td><pre>&nbsp;      privateVar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>5</span>;      <span class='codeComment'>// Line 17</span></td></tr><tr><td class='lineNumber'><pre>18</td><td><pre>&nbsp;      packageVar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>6</span>;      <span class='codeComment'>// Line 18</span></td></tr><tr><td class='lineNumber'><pre>19</td><td><pre>&nbsp;      protectedVar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>7</span>;    <span class='codeComment'>// Line 19</span></td></tr><tr><td class='lineNumber'><pre>20</td><td><pre>&nbsp;      publicVar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>8</span>;       <span class='codeComment'>// Line 20</span></td></tr><tr><td class='lineNumber'><pre>21</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>22</td><td><pre>&nbsp;      <span class='codeComment'>// Next, let's try to access the members of</span></td></tr><tr><td class='lineNumber'><pre>23</td><td><pre>&nbsp;      <span class='codeComment'>// another instance of B.</span></td></tr><tr><td class='lineNumber'><pre>24</td><td><pre>&nbsp;      B b <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> B<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>25</td><td><pre>&nbsp;      b.privateVar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>9</span>;    <span class='codeComment'>// Line 25</span></td></tr><tr><td class='lineNumber'><pre>26</td><td><pre>&nbsp;      b.packageVar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>10</span>;   <span class='codeComment'>// Line 26</span></td></tr><tr><td class='lineNumber'><pre>27</td><td><pre>&nbsp;      b.protectedVar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>11</span>; <span class='codeComment'>// Line 27</span></td></tr><tr><td class='lineNumber'><pre>28</td><td><pre>&nbsp;      b.publicVar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>12</span>;    <span class='codeComment'>// Line 28</span></td></tr><tr><td class='lineNumber'><pre>29</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>30</td><td><pre>&nbsp;      <span class='codeComment'>// Finally, try to refer to the members in a</span></td></tr><tr><td class='lineNumber'><pre>31</td><td><pre>&nbsp;      <span class='codeComment'>// subclass of B.</span></td></tr><tr><td class='lineNumber'><pre>32</td><td><pre>&nbsp;      c.privateVar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>13</span>;   <span class='codeComment'>// Line 32</span></td></tr><tr><td class='lineNumber'><pre>33</td><td><pre>&nbsp;      c.packageVar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>14</span>;   <span class='codeComment'>// Line 33</span></td></tr><tr><td class='lineNumber'><pre>34</td><td><pre>&nbsp;      c.protectedVar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>15</span>; <span class='codeComment'>// Line 34</span></td></tr><tr><td class='lineNumber'><pre>35</td><td><pre>&nbsp;      c.publicVar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>16</span>;    <span class='codeComment'>// Line 35</span></td></tr><tr><td class='lineNumber'><pre>36</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// someMethod()</span></td></tr><tr><td class='lineNumber'><pre>37</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// B</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+<p><br>
+  and this code is in /abc/C.java: 
+   <!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+   <!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+</p>
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td>
+		<td><pre>&nbsp;<span class='codeComment'>// File: /abc/C.java</span></td>
+	</tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> C <span class='codeKeyword'>extends</span> B <span class='codeSeparator'>{</span><span class='codeSeparator'>}</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+<br>
+Now assume that /abc is the current directory. When we try to compile <code>B.java</code> with the following command,<br>
+<blockquote>
+  <span style="font-weight:bold"><code>C:\abc></code></span><code>javac B.java</code>
+</blockquote>
+<p>the compiler displays several error messages. For each of the labeled lines in B.java, decide whether or not a compiler error will be generated.</p>
+
+<p class="answer">Answer 2: Member Visibility</p>
+<div class="postSubtitle">When one class extends another class, instances of the subclass will contain their 
+own copies of <em>all</em> members declared in the superclass (including any <code>private</code> 
+variables). In the example above, all instances of <code>B</code> will contain 
+all four of the variables declared in <code>A</code>. However, not all of these 
+variables will be accessible (i.e., visible) by instances of <code>B</code>.</div>
+<p>In the descriptions below, we say a variable is <em>inherited</em> by a subclass if it is accessible to (in other words, it can be referred to) instances of the subclass.</p>
+<u>a.privateVar = 1; <span class="comment">// Line 10</span></u>
+<div style="margin-left:0.4in"> <code>private</code> members are only accessible 
+  from within the class in which they are declared. Because <code>privateVar</code> 
+  was declared in class <code>A</code>, it is not accessible from within instances 
+  of class <code>B</code>. The following compiler error results: </div>
+<blockquote>
+  <pre>
+B.java:10: privateVar has private access in def.A
+      a.privateVar = 1;    // Line 10
+       ^
+</pre>
+</blockquote>
+<u>a.packageVar = 2; <span class="comment">// Line 11</span></u> 
+<div style="margin-left:0.4in"> <code>package</code> members are only accessible 
+  to classes within the same package as the class that declares them. In this 
+  case, the member <code>packageVar</code>, is declared in class <code>A</code>, 
+  in the <code>def</code> package. <code>packageVar</code> is accessible <i><b>only</b></i> 
+  from within classes in the <code>def</code> package. Since <code>B</code> is 
+  in the "default package" (i.e., it has no <code>package</code> statement) it 
+  does not have access to <code>packageVar</code>. The following compiler error 
+  results: </div>
+<blockquote>
+  <pre>
+B.java:11: packageVar is not public in def.A; cannot be accessed from outside package
+      a.packageVar = 2;    // Line 11
+       ^
+</pre>
+</blockquote>
+<u>a.protectedVar = 3; <span class="comment">// Line 12</span></u> 
+<div style="margin-left:0.4in"> Even though class <code>B</code> extends class 
+  <code>A</code>, instances of <code>B</code> are not allowed access to protected 
+  members in instances of <code>A</code>, proper. Because field <code>a</code> 
+  is an instance of <code>A</code>, proper, a <code>instances of B</code> do not 
+  have access to its <code>protected</code> members. Instances of class <code>B</code> 
+  can only access <code>protected</code> members in instances of classes that 
+  are of type <code>B</code>. This includes classes that inherit from <code>B</code> 
+  (such as the <code>C</code> class). The following compiler error results: </div>
+<blockquote>
+  <pre>
+B.java:12: protectedVar has protected access in def.A
+      a.protectedVar = 3;  // Line 12
+       ^</pre>
+</blockquote>
+<u>a.publicVar = 4; <span class="comment">// Line 13</span></u> 
+<div style="margin-left:0.4in">
+  <p><code>public</code> members are available "everywhere". Consequently, <code>B</code>'s 
+    reference to <code>a.publicVar</code> compiles without error.</p>
+</div>
+<u>privateVar = 5; <span class="comment">// Line 17</span></u>
+<div style="margin-left:0.4in"> <code>private</code> members are only accessible 
+  from within the class in which they are declared. Because <code>privateVar</code> 
+  was declared in class <code>A</code>, it is not accessible from within instances 
+  of class <code>B</code>. Note that on Line 10 we attempted to refer to a <code>private</code> 
+  member in another object (object <code>a</code>). On line 17 we are attempting 
+  to refer to the copy of <code>privateVar</code> that <code>B</code> contains 
+  by virtue of being a subclass of <code>A</code>. In terms of the visibility 
+  of <code>privateVar</code>, however, it does not matter. <code>privateVar</code> 
+  is a <code>private</code> member declared in the <code>A</code> class and can 
+  <em>only</em> be accessed from within that class. The following compiler error 
+  results: </div>
+<blockquote>
+  <pre>
+B.java:17: privateVar has private access in def.A
+      privateVar = 5;      // Line 17
+      ^</pre>
+</blockquote>
+<u>packageVar = 6; <span class="comment">// Line 18</span></u> 
+<div style="margin-left:0.4in"> As was true for line 11, package members are only 
+  accessible to classes within the same package as the class that declares them. 
+  Here an instance of <code>B</code> is trying to access the <code>packageVar</code> 
+  variable it contains by virtue of being a subclass of <code>A</code>. The <code>protectedVar</code> 
+  variable, however, was <em>declared</em> by a class in the <code>def</code> 
+  package. Recall that <code>B</code> is not in the <i>default</i> package. Therefore, 
+  <code>B</code> cannot access the <code>packageVar</code> member. The following 
+  compiler error results:</div>
+<blockquote>
+  <pre>B.java:18: packageVar is not public in def.A; cannot be accessed from outside package
+      packageVar = 6;      // Line 18
+      ^</pre>
+</blockquote>
+<a name="line_19_description"></a> <u>protectedVar = 7; <span class="comment">// 
+Line 19</span></u> 
+<div style="margin-left:0.4in"> There is no compiler error for line 19. Remember 
+  that a <code>protected</code> member declared in a class, <em>R</em>, is accessible 
+  within: 
+  <ul style="list-style-type:square">
+    <li style="line-height:0.15in">any instance of any class in the same package 
+      as <em>R</em> (this is exactly the same restriction that applies to package 
+      members)</li>
+	 <li style="line-height:0.15in">an instance, <em>m</em>, of any class, <em>M</em>, 
+      such that a reference of type <i>M</i> is assignable to a reference of type 
+      <i>R</i>.
+  </ul>
+  The language here is getting a bit abstract. In our coded example above, class 
+  <em>R</em> is represented by class <code>A</code> and class <em>M</em> is represented 
+  by class <code>B</code>. Instance <em>m</em> is simply an instance of <code>B</code>. 
+  Since <code>B</code> extends <code>A</code>, an object of class <code>B</code> 
+  can certainly be assigned to a reference of type <code>A</code>. 
+</div>
+<br>
+<u>publicVar = 8; <span class="comment">// Line 20</span></u> 
+<div style="margin-left:0.4in"> As was the case with line 13, <code>public</code> 
+  members are available "everywhere". Consequently, <code>B</code>'s reference 
+  to <code>publicVar</code> compiles without error.</div>
+<br>
+<u>b.privateVar = 9; <span class="comment">// Line 25</span></u> 
+<div style="margin-left:0.4in"> As was the case with lines 10 and 17, the member, 
+  <code>privateVar</code>, is declared in class <code>A</code> and can therefore 
+  only be accessed by instances of class <code>A</code>, proper (i.e., in object 
+  of class <code>A</code>, but not any of its subclasses). The following compiler 
+  error results:</div>
+<blockquote>
+  <pre>B.java:25: privateVar has private access in def.A
+      b.privateVar = 9;    // Line 25
+       ^</pre>
+</blockquote>
+<u>b.packageVar = 10; <span class="comment">// Line 26</span></u> 
+<div style="margin-left:0.4in"> As was the case with lines 11 and 18, the member, 
+  <code>packageVar</code>, is declared in class <code>A</code> which is in the 
+  <code>def</code> package. Only instances of classes in the same package as class 
+  <code>A</code> can access the package variable, <code>packageVar</code>. Remember 
+  that because the <code>B</code> class does not have a <code>package</code> statement 
+  it is placed in the <i>default</i> package. The following compiler error results:</div>
+<blockquote>
+  <pre>B.java:26: packageVar is not public in def.A; cannot be accessed from outside package
+      b.packageVar = 10;   // Line 26
+       ^</pre>
+</blockquote>
+<a name="line_27_description"></a> <u>b.protectedVar = 11; <span class="comment">// 
+Line 27</span></u> 
+<div style="margin-left:0.4in"> You may want to refer back to the description 
+  of <a href="#line_19_description">line 19</a>. Generically speaking, if we have 
+  a class (call it <em>R</em>) that contains a <code>protected</code> member (call 
+  it <em>p</em>) and another class (call it <em>M</em>) extends <em>R</em>, then 
+  any instance of <em>M</em> can access the <em>p</em> contained in any other 
+  instance of <code>M</code>, including instances of subclasses of <em>M</em>. 
+  <p> Once again, in this coded example, class <em>R</em> is class <code>A</code>, 
+    class <em>M</em> is class <code>B</code>, and <em>p</em> is the <code>protected</code> 
+    member, <code>protectedVar</code>. Line 27 is an example of an instance of 
+    <code>B</code> attempting to reference a <code>protected</code> member in 
+    another instance of <code>B</code> (the member, <code>b.protectedVar</code>). 
+    Since an instance of <code>B</code> is attempting to reference a <code>protected</code> 
+    member in another instance of <code>B</code>, the line compiles cleanly. 
+</div>
+<br>
+<u>b.publicVar = 12; <span class="comment">// Line 28</span></u> 
+<div style="margin-left:0.4in"> As was the case with lines 13 and 20, <code>public</code> 
+  members are available "everywhere". Consequently, <code>B</code>'s reference 
+  to <code>b.publicVar</code> compiles without error. </div>
+<br>
+<u>c.privateVar = 13; <span class="comment">// Line 32</span></u> 
+<div style="margin-left:0.4in"> As was the case with lines 10, 17, and 25, the 
+  member, <code>c.privateVar</code>, is declared as <code>private</code> in class 
+  <code>A</code> and can therefore only be accessed by instances of class <code>A</code>, 
+  proper (i.e., non-subclasses of <code>A</code>). The following compiler error 
+  results: </div>
+<blockquote>
+  <pre>B.java:32: privateVar has private access in def.A
+      c.privateVar = 13;   // Line 32
+       ^</pre>
+</blockquote>
+<u>c.packageVar = 14; <span class="comment">// Line 33</span></u> 
+<div style="margin-left:0.4in"> As was the case with lines 11, 18, and 22, the 
+  member, <code>c.packageVar</code>, is declared in class <code>A</code> which 
+  is in the <code>def</code> package. To access this member the class attempting 
+  the access (<code>B</code>, in this case) must be in the <code>def</code> package. 
+  Remember that since <code>B</code> does not have a <code>package</code> statement 
+  it is placed in Java's <i>default</i> package. The following compiler error 
+  results: </div>
+<blockquote>
+  <pre>B.java:33: packageVar is not public in def.A; cannot be accessed from outside package
+      c.packageVar = 14;   // Line 33
+       ^</pre>
+</blockquote>
+<u>c.protectedVar = 15; <span class="comment">// Line 34</span></u> 
+<div style="margin-left:0.4in"> You may want to refer back to the descriptions 
+  of <a href="#line_19_description">lines 19</a> and <a href="#line_27_description">27</a>. 
+  Actually, this line compiles cleanly for exactly the same reason line 27 compiled 
+  cleanly. Remember that class <code>C</code> extends class <code>B</code>. Consequently, 
+  any instances of <code>C</code> are also considered instances of <code>B</code>. 
+  Another way to look at this is that the object, <code>c</code>, could be assigned 
+  to a reference of type <code>B</code>, meaning that object <code>c</code> &quot;is 
+  a <code>B</code>&quot;.</div>
+<br>
+<u>c.publicVar = 16; <span class="comment">// Line 35</span></u> 
+<div style="margin-left:0.4in"> As was the case with lines 13, 20 and 28, <code>public</code> 
+  members are available "everywhere". Consequently, <code>B</code>'s reference 
+  to <code>c.publicVar</code> compiles without error. </div>
+<!-- END QUESTION 2 -->
+<p class="subtitle">Question 3: Anonymous Subclass</p>
+<div class="postSubtitle">Assume we have the following code in the file abc/A.java:
+<p></p></div>
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td>
+		<td><pre>&nbsp;<span class='codeComment'>// File: abc/A.java</span></td>
+	</tr><tr><td class='lineNumber'><pre>2</td>
+		<td><pre>&nbsp;<span class='codeKeyword'>package</span> abc;</td>
+	</tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> A <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;   <span class='codeKeyword'>protected</span> <span class='codeKeyword'>int</span> protectedVar;</td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// A</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+<p>and this code is in the default package: </p>
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeComment'>// File: Tester.java</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> abc.A;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp; <span class='codeKeyword'>private</span> A z <span class='codeOperatorLiteral'>= new</span> A<span class='codeSeparator'>() {</span></td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;      <span class='codeKeyword'>void</span> someMethod<span class='codeSeparator'>() {</span></td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;         protectedVar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>1</span>; <span class='codeComment'>// will this compile??</span></td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;      <span class='codeSeparator'>}</span> <span class='codeComment'>// someMethod()</span></td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span>;</td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+<p>Determine whether or not the assignment statement in <code>Tester</code> will 
+  compile successfully. Assume the directory, /abc, is in the compiler's classpath 
+  when compiling Tester.java.</p>
+<p class="answer">Answer 3: Anonymous Subclasses</p>
+<div class="postSubtitle">Both classes compile cleanly. You may wonder why the assignment statement seems 
+  to compile cleanly since it appears that a <code>protected</code> member is 
+  being accessed from within a class (<code>Tester</code>) that does not extend 
+  the class which declared the <code>protected</code> member (class <code>A</code>). 
+  Specifically, it may seem strange that class <code>Tester</code> has access 
+  to <code>protectedVar</code> since <code>Tester</code> does not extend <code>A</code> 
+  and the two classes are in different packages.</div>
+<p>In actuality, the reference to <code>protectedVar</code> is not taking place 
+  within <code>Tester</code> at all! Note the declaration of the variable <code>z</code> 
+  within <code>Tester. What type of object would you say that z is? The answer: z</code> is an instance of a subclass of <code>A</code>, so <code>z</code> is <i>also</i> an instance of <code>A</code>. What's the name of this subclass? Well, it doesn't have a name -- it's an <i>anonymous 
+  subclass</i>. The important thing to realize is that since <code>z</code> is of a type which extends <code>A</code>, <code>z</code> has access to the protected members 
+  in <code>A</code>. This situation is exactly the same situation we saw in <a href="#line_19_description">Question 
+  2, line 19</a>.</p>
+<p> The result of compiling the above code is three separate class files: A.class, 
+  Tester.class, and Tester$1.class. Tester$1 is the name the Java compiler assigned 
+  to the anonymous subclass of <code>A</code>.</p>
+<!-- END QUESTION 3 -->
+<p class="subtitle">Question 4: Method Overriding I</p>
+<div class="postSubtitle">Determine the result of attempting to compile and run the following code:<p></p></div>
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeOperatorLiteral'>new</span> Sub<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>.g<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;   <span class='codeKeyword'>private</span> <span class='codeKeyword'>int</span> f<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeIntegerLiteral'>2</span>;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;   <span class='codeKeyword'>int</span> g<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;      <span class='codeKeyword'>return</span> f<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;<span class='codeKeyword'>class</span> Sub <span class='codeKeyword'>extends</span> Tester <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>int</span> f<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeIntegerLiteral'>1</span>;</td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>17</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Sub</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+<p></p>
+<p class="answer">Answer 4: Method Overriding I</p>
+<div class="postSubtitle">The output is:</div>
+<blockquote>
+  <pre>
+2
+</pre>
+</blockquote>
+The important point to note about this code is that the method <code>Tester.f()</code> 
+is <b><i>not</i></b> overridden in class <code>Sub</code>. So long as <code>Tester.f()</code> 
+has <code>private</code> visibility, it cannot be overridden by <em><b><i>any</i></b></em> 
+subclass of <code>Tester</code>. The fact that class <code>Sub</code> has a method 
+whose name happens to be <code>f()</code> and which happens to return an <code>int</code> 
+is completely irrelevant and unrelated to <code>Tester</code>'s version of <code>f()</code>. <code>Sub.f()</code> <i><b>does not</b></i> override the method, <code>Tester.f()</code>. 
+<p>Now, imagine for a moment that <code>Tester.f()</code>'s visibility was changed 
+  to something other than <code>private</code>. In such a case, <code>Tester.g()</code>'s 
+  call to <code>f()</code> would use Java's "dynamic method lookup mechanism" 
+  (analogous to the C++ v-table) to determine which version of <code>f()</code> 
+  should be called, which, in this case would be <code>Sub.f()</code>. But because 
+  <code>Tester.f()</code> is <code>private</code> (and therefore, cannot be overridden), 
+  the Java compiler does not generate code to use dynamic method lookup when compiling 
+  <code>Tester.g()</code>'s call to <code>f()</code>. Instead, the compiler generates a direct (non-overridable) call to <code>Tester</code>'s version of <code>f()</code>.</p>
+<p>Note that if you were to change <code>Tester.g()</code>'s definition to this:</p>
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>int</span> g<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;   <span class='codeKeyword'>return</span> <span class='codeSeparator'>(</span><span class='codeSeparator'>(</span>Sub<span class='codeSeparator'>)</span><span class='codeKeyword'>this</span><span class='codeSeparator'>)</span>.f<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;<span class='codeSeparator'>}</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+<p>the output of the program would be <code>1</code>. Of course, you would <em>never</em>, 
+<em>ever</em>, <em>ever</em> want to cast <code>this</code> to a subclass type 
+as shown here. I'm only suggesting it to illustrate the fact that <code>Sub.f()</code> 
+is accessible.</P>
+<!-- END QUESTION 4 -->
+<a name="question_5"></a>
+<p class="subtitle">Question 5: Basic Conversions I</p>
+<div class="postSubtitle">Determine the result of attempting to compile and run the following code:</div><p></p>
+  
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeIntegerLiteral'>4</span> <span class='codeOperatorLiteral'>+</span> <span class='codeStringLiteral'>" "</span> <span class='codeOperatorLiteral'>+</span> <span class='codeIntegerLiteral'>2</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeIntegerLiteral'>4</span> <span class='codeOperatorLiteral'>+</span> <span class='codeCharacterLiteral'>' '</span> <span class='codeOperatorLiteral'>+</span> <span class='codeIntegerLiteral'>2</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;  <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+<p></p>
+<p class="answer">Answer 5: Basic Conversions I</p>
+<div class="postSubtitle">The output is:</div>
+<blockquote>
+  <pre>
+4 2
+38
+</pre>
+</blockquote>
+<p>The first line of output is probably not too surprising. The second line is 
+  a result of Java's <em>binary numeric promotion</em> rules. The '<code>+</code>' 
+  operator is a binary operator (meaning it takes two operands). Java will convert 
+  each operand of a binary operator to the "widest type" operand, or to an <code>int</code>, whichever is wider. In this case we have three operands: two <code>int</code>s and a <code>char</code>. The <code>int</code> type is the widest type so the <code>char</code> is converted to an <code>int</code> and the addition proceeds, using the Unicode value for the space character (32). Effectively, the addition proceeds as 4 + 32 + 2.</p>
+<p>To review how Java converts between primitives, see the "<a href="../java-tidbits/index.html#Binary-Numeric-Promotion">Binary Numeric Promotion</a>" tidbit in the <a href="../java-tidbits/index.html"><em>Java 
+  Tidbits</em></a> article.</p>
+<!-- END QUESTION 5 -->
+<!-- BEGIN QUESTION 6 -->
+<p class="subtitle">Question 6: Conditional Operator Details</p>
+<div class="postSubtitle">Determine the result of attempting to compile and run the following code:</div><p></p>
+  <br>
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> parms<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;      <span class='codeKeyword'>int</span> i <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>10</span>;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;      i <span class='codeOperatorLiteral'>==</span> <span class='codeIntegerLiteral'>10</span> <span class='codeOperatorLiteral'>?</span> equals10<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeOperatorLiteral'>:</span> notEqual10<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;   <span class='codeKeyword'>private</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>int</span> equals10<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"result is 10"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeIntegerLiteral'>10</span>;</td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// equals10()</span></td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;   <span class='codeKeyword'>private</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>int</span> notEqual10<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"result is NOT 10"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeOperatorLiteral'>-</span><span class='codeIntegerLiteral'>1</span>;</td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// notEqual10()</span></td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+<p></p>
+<p class="answer">Answer 6: Conditional Operator Details</p>
+<div class="postSubtitle">The output is:</div>
+<blockquote>
+  <pre>
+Tester.java:4: not a statement
+     i == 10 ? equals10() : notEqual10();
+             ^
+1 error
+</pre>
+</blockquote>
+<p>This was a tricky one. The fact is that the <a href="http://java.sun.com/docs/books/jls/" target="_jls">JLS 
+  2</a> (<a href="http://java.sun.com/docs/books/jls/second_edition/html/expressions.doc.html#290293" target="_jls">§15.25</a>) 
+  indicates that "<em>it is not permitted for a conditional expression to appear 
+  in any context where an invocation of a </em><code>void</code><em> method could 
+  appear.</em>"</p>
+<p>The idea here is that a conditional expression (<code>a ? b : c</code>) always 
+  evaluates to some value (either <code>b</code> or <code>c</code>). The JLS requires 
+  that that value be assigned or used in some way. If we add an assignment operator, 
+  for example, to the above conditional expression, all will be fine:</p>
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;     i <span class='codeOperatorLiteral'>=</span> i <span class='codeOperatorLiteral'>==</span> <span class='codeIntegerLiteral'>10</span> <span class='codeOperatorLiteral'>?</span> equals10<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeOperatorLiteral'>:</span> notEqual10<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+<p class="subtitle">Question 7: Basic Conversions II</p>
+<div class="postSubtitle">Determine the result of attempting to compile and run the following code:</div><p></p>
+<p>
+  <!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+  <!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+</p>
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;      <span class='codeKeyword'>byte</span> b <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>-</span><span class='codeIntegerLiteral'>1</span>;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;      b <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span><span class='codeKeyword'>byte</span><span class='codeSeparator'>)</span><span class='codeSeparator'>(</span>b <span class='codeOperatorLiteral'>&gt;&gt;&gt;</span> <span class='codeIntegerLiteral'>4</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span>b<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+<p></p>
+<p class="answer">Answer 7: Basic Conversions II</p>
+<div class="postSubtitle">The output is:</div>
+<blockquote>
+  <pre>
+-1
+</pre>
+</blockquote>
+<p>The fact that it's necessary to cast the result to a <code>byte</code> should 
+  provide a clue as to what's going on here.</p>
+<p><code>b</code> is a <code>byte</code> that starts out with a value of -1 (taking 
+  into account the fact that a <code>byte</code> is 8 bits in length, <code>b</code>'s 
+  bit pattern is <code>0xFF</code>).</p>
+<p>Before the right-shift operation takes place, <code>b</code> is promoted to 
+  an integer according to Java's  rules for <a href="../java-tidbits/index.html#Binary-Numeric-Promotion">binary  numeric promotion</a>. 
+  Taking into account the fact that integers have 32 bits, <code>B's</code> resulting 
+  bit pattern then becomes <code>0xFFFFFFFF</code>.</p>
+<p>After the unsigned shift operation completes, the result, <code>0x0FFFFF</code>, 
+  is assigned back to <code>b</code>. When this result is cast back to a <code>byte</code> 
+  only the low-order 8 bits of <code>0x0FFFFFFF</code> are assigned to <code>b</code>, 
+  leaving <code>b</code> with its original value of -1.</p>
+<a name="unwinding-compund-assignment-operators"></a> 
+<p class="subtitle">Question 8: Unwinding Compound-Assignment Operators
+<div class="postSubtitle">Determine the result of attempting to compile and run the following code:</div>
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;      <span class='codeKeyword'>int</span>  i <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>0</span>;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;      <span class='codeKeyword'>byte</span> b <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>0</span>;</td></tr><tr><td class='lineNumber'><pre>5</td>
+		<td><pre>&nbsp;      b <span class='codeOperatorLiteral'>+=</span> b <span class='codeOperatorLiteral'>-</span> <span class='codeSeparator'>(</span>i <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>0xffffffc9</span><span class='codeSeparator'>)</span>;</td>
+	</tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span>Integer.toHexString<span class='codeSeparator'>(</span>b<span class='codeSeparator'>))</span>;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+<p></p>
+<p class="answer">Answer 8: Unwinding Compound-Assignment Operators
+<div class="postSubtitle">The output is:</div>
+<blockquote>
+   <pre>37</pre>
+</blockquote>
+<p>This question illustrates use of one of Java's arithmetic <em>compound-assignment</em> 
+  operators (<code>+=</code>). There are a total of five of these operators: (<code>+=</code>, 
+  <code>-=</code>, <code>*=</code>, <code>/=</code>, and <code>%=</code>).</p>
+<p>To interpret the execution of these operators you need to see them as the Java 
+  compiler sees them. Below, assume <em>var</em> represents the variable being 
+  assigned to by one of the arithmetic compound-assignment operators. Let <em>op=</em> 
+  denote the compound-assignment operator being used and <em>exp</em> be the expression 
+  on the right side of the arithmetic compound-assignment operator. Finally, let 
+  <em>T</em> denote the type of the varable <em>var</em>.</p>
+<p>Using the notation we just defined, an arithmetic compund-assignment statement 
+  has this general form:</p>
+<p style="margin-left:0.4in"> <em>var op= exp</em>; </p>
+<p>where <em>op</em> is one of <code>+</code>, <code>-</code>, <code>*</code>, 
+  <code>/</code>, or <code>%</code> and <code>var</code> is of type <em>T</em>.<br>
+  <br>
+  Java interprets such statements as if they had been written:</p>
+<blockquote>
+  <pre>
+var = (T)(var op (exp));
+</pre>
+</blockquote>
+<p>Referring back to our example code, the Java compiler treats the following 
+  statement:</p>
+<blockquote>
+  <p><code>b <span class='codeOperatorLiteral'>+=</span> b <span class='codeOperatorLiteral'>-</span> <span class='codeSeparator'>(</span>i <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>0xffffffc9</span><span class='codeSeparator'>)</span>;</code></p>
+</blockquote>
+<p>as if it had been written:</p>
+
+
+
+<!-- END QUESTION 10 -->
+<blockquote>
+   <p><code>b <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span><span class='codeKeyword'>byte</span><span class='codeSeparator'>)(</span>b <span class='codeOperatorLiteral'>+</span> <span class='codeSeparator'>(</span>b <span class='codeOperatorLiteral'>-</span> <span class='codeSeparator'>(</span>i <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>0xffffffc9</span><span class='codeSeparator'>)))</span>;</code></p>
+</blockquote>
+<a name="object-construction-i"></a> 
+<p class="subtitle">Question 9: Object Construction I</p>
+<div class="postSubtitle">Determine the result of attempting to compile and run the following code:</div><p></p>
+
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>class</span> A <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> A<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"AAA"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// A()</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;   <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"456"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// A</span></td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> B <span class='codeKeyword'>extends</span> A <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;   B<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;      <span class='codeKeyword'>this</span><span class='codeSeparator'>(</span><span class='codeIntegerLiteral'>12</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"BBB"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// B()</span></td></tr><tr><td class='lineNumber'><pre>17</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>18</td><td><pre>&nbsp;   B<span class='codeSeparator'>(</span><span class='codeKeyword'>int</span> x<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>19</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"CCC"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>20</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// B()</span></td></tr><tr><td class='lineNumber'><pre>21</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>22</td><td><pre>&nbsp;   <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>23</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"123"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>24</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>25</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>26</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>27</td><td><pre>&nbsp;      <span class='codeOperatorLiteral'>new</span> B<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>28</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>29</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// B</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+<p></p>
+<p class="answer">Answer 9: Object Construction I</p>
+<div class="postSubtitle">The output is:</div>
+<blockquote>
+  <pre>
+456
+AAA
+123
+CCC
+BBB
+</pre>
+</blockquote>
+<p>The <strong>first statement</strong> to be executed in any Java constructor will <i><b>always</b></i> 
+  be one of the following: 
+<ol>
+  <ol>
+	 <li>A call to another constructor in the same class using the "<code>this();</code>" 
+    notation. For example, <code>this(parm1, parm2, parm3);</code></li>
+	 <li>A call to a constructor in the super class using the "<code>super();</code>" 
+    notation. For example, <code>super(parm1, parm2, parm3);</code></li>
+	   <li>If neither of the above two cases applies the compiler inserts an implicit 
+    call to the superclass no-arg constructor as the first statement: <code>super();</code></li>
+  </ol>
+</ol>
+From the above three cases it should be clear that if some class <em>B</em> extends 
+another class, <em>A</em>, calling <em>B</em>'s constructor will result in one 
+of <em>A</em>'s constructors being executed <em>in its entirety</em> before the 
+second statement is <em>B</em> is ever executed.<br>
+<br>
+Once a class' base class constructor has completed executing, any instance initializers 
+defined by the class are executed, in the order in which they are defined. After 
+all instance initializers have executed the constructor body finally executes.<br>
+<br>
+Using the example code above, the following events occur: 
+<ol>
+   <ol>
+	   <li><code>On line 27, B</code>'s no-arg constructor is invoked from <code>main()</code>.</li>
+		<li>The <code>B()</code> constructor makes a call to another constructor (<code>B(int)</code>) 
+    on line 14 using the "<code>this()</code>" notation: <code>this(12);</code>.</li>
+		  
+		<li>The <code>B(int)</code> constructor does not call another constructor in 
+    the same class nor does it <em>explicitly</em> call a constructor in the base 
+    class. Therefore, the compiler  inserts an implicit call to <code>A</code>'s 
+    no-arg constructor as the first statement in the constructor defined on line 18.</li>
+		  
+		<li>The <code>A()</code> constructor does not call another constructor in the 
+    same class nor does it <em>explicitly</em> call a constructor in the base 
+    class (<code>java.lang.Object</code>). Therefore, the compiler inserts 
+    an implicit call to <code>java.lang.Object</code>'s no-arg constructor as the first 
+    statement in the constructor defined on line 2.</li>
+		<li>After <code>java.lang.Object</code>'s no-arg constructor returns, all instance 
+    initializers in <code>A</code> are then executed in the order in which they appear. Since <code>A</code> has only one instance initializer (line 6), this results in the string 
+    "<code>456</code>" being printed.</li>
+		<li>After <code>A</code>'s instance initializer completes, the body of <code>A</code>'s constructor defined on line 2 executes, printing the string, "<code>AAA</code>".</li>
+		<li>Once <code>A</code>'s constructor completes, control is returned to the <code>B(int)</code> 
+    constructor. But before the body of that constructor executes <code>B</code>'s 
+    instance initializers must be run. Since <code>B</code> has only one instance initializer on line 22, this results in the string 
+    "<code>123</code>" being printed.</li>
+		<li>After <code>B</code>'s instance initializer completes, the <code>B(int)</code> 
+    constructor body resumes on line 19, printing the string, "<code>CCC</code>".</li>
+		<li>Finally, control returns back to line 15 of <code>B</code>'s no-arg constructor which 
+    prints, "<code>BBB</code>".</li>
+	</ol>
+</ol>
+<a name="object-construction-ii"></a> 
+<p class="subtitle">Question 10: Object Construction II</p>
+<div class="postSubtitle">Determine the result of attempting to compile and run the following code:</div><p></p>
+  <br>
+  <!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+  <!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>class</span> A <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>int</span> Avar;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> A<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"AAA"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;      doSomething<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// A()</span></td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>void</span> doSomething<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;      Avar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>1111</span>;</td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"A.doSomething()"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// doSomething()</span></td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// A</span></td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> B <span class='codeKeyword'>extends</span> A <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>int</span> Bvar <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>2222</span>;</td></tr><tr><td class='lineNumber'><pre>17</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> B<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>18</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"BBB"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>19</td><td><pre>&nbsp;      doSomething<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>20</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Avar="</span> <span class='codeOperatorLiteral'>+</span> Avar<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>21</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// B()</span></td></tr><tr><td class='lineNumber'><pre>22</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>23</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>void</span> doSomething<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>24</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Bvar="</span> <span class='codeOperatorLiteral'>+</span> Bvar<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>25</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// doSomething()</span></td></tr><tr><td class='lineNumber'><pre>26</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>27</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>28</td><td><pre>&nbsp;      <span class='codeOperatorLiteral'>new</span> B<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>29</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>30</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// B</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+<p></p>
+<p class="answer">Answer 10: Object Construction II</p>
+<div class="postSubtitle">The output is:</div>
+<blockquote>
+  <pre>
+AAA
+Bvar=0
+BBB
+Bvar=2222
+Avar=0
+</pre>
+</blockquote>
+<p>The key to understanding this example is to observe that when the <code>doSomething()</code> 
+  method is invoked from within <code>A</code>'s constructor, it is actually <code>B</code>'s 
+  version of <code>doSomething()</code> that is being invoked. But since <code>B</code>'s 
+  instance initializers have not yet executed the variable <code>Bvar</code> still 
+  has its default value of zero (which accounts for the <code>Bvar=0</code> output).<br>
+  <br>
+  It is only <em>after</em> control returns from <code>A</code>'s constructor 
+  that <code>B</code>'s instance initializers are allowed to execute, thereby 
+  initializing<code>Bvar</code> to 2,222. By the time the <code>B()</code> constructor 
+  calls <code>doSomething()</code> the instance initializer has already initialized 
+  <code>Bvar</code> to 2,222 (which accounts for the <code>Bvar=2222</code> output).</p>
+
+<p class="highlightBlock">The lesson to be learned from this example is that you must be very careful when calling non-<code>private</code><i> or non-</i><code>final</code> methods from within a constructor because a subclass could override the methods you think you're calling.</p>
+<p>Because class <code>A</code> called the <code>doSomething()</code> method from its constructor,  class <code>B</code> was able to override <code>doSomething()</code>, thereby preventing <code>Avar</code> from being properly initialized to 1,111.</p>
+
+<p class="subtitle">Question 11: Static Members and Null References</p>
+<div class="postSubtitle">Determine the result of attempting to compile and run the following code:</div><p></p>
+
+  <!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+  <!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>class</span> A <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;   <span class='codeKeyword'>static</span> A createA<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeOperatorLiteral'>new</span> A<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// createA()</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// A</span></td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> parms<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;      A aVar <span class='codeOperatorLiteral'>=</span> <span class='codeKeyword'>null</span>;</td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span>aVar.createA<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>.hashCode<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+<p></p>
+<p class="answer">Answer 11: Static Members and Null References</p>
+<div class="postSubtitle">The code compiles and runs without any problems. A sample run of this code produces:</div>
+<blockquote>
+  <pre>
+2765838
+</pre>
+</blockquote>
+<p>The fact that the variable, <code>aVar</code>, is <code>null</code> does not 
+  cause a problem. When accessing a class' static members, Java only considers 
+  the <em>type</em> of the referencing identifier, not its value. In our example 
+  the referencing identifier is <code>aVar</code> and its type is <code>A</code>. 
+  The fact that <code>aVar</code>'s value is <code>null</code> is irrelevant.<br>
+  <br>
+  Incidentally, your output from this program will probably be different. The 
+  lesson to take away from this example is that a <code>NullPointerException</code> 
+  will not be thrown due to <code>aVar</code> being <code>null</code>.</p>
+
+<p class="subtitle">Question 12: When Static Initializers Detour</p>
+<div class="postSubtitle">Determine the result of attempting to compile and run the following code (assume 
+class <code>A</code> is the class to be executed):</div><p></p>
+  <!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+  <!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> A <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;   <span class='codeKeyword'>static</span> String a <span class='codeOperatorLiteral'>=</span> <span class='codeStringLiteral'>"aaa"</span>;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;   <span class='codeKeyword'>static</span> String b <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> B<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>.sayHi_B<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;   <span class='codeKeyword'>static</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"A.static: A's vars are: {"</span> <span class='codeOperatorLiteral'>+</span> A.a <span class='codeOperatorLiteral'>+</span> <span class='codeCharacterLiteral'>','</span> <span class='codeOperatorLiteral'>+</span> A.b <span class='codeOperatorLiteral'>+</span> <span class='codeCharacterLiteral'>'}'</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;   <span class='codeKeyword'>void</span> sayHi_A<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"A.sayHi(): A's vars are: {"</span> <span class='codeOperatorLiteral'>+</span> A.a <span class='codeOperatorLiteral'>+</span> <span class='codeCharacterLiteral'>','</span> <span class='codeOperatorLiteral'>+</span> A.b <span class='codeOperatorLiteral'>+</span> <span class='codeCharacterLiteral'>'}'</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// sayHi_A()</span></td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> parms<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span><span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// A</span></td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;<span class='codeKeyword'>class</span> B <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;   <span class='codeKeyword'>static</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"B.static #1: A's vars are: {"</span> <span class='codeOperatorLiteral'>+</span> A.a <span class='codeOperatorLiteral'>+</span> <span class='codeCharacterLiteral'>','</span> <span class='codeOperatorLiteral'>+</span> A.b <span class='codeOperatorLiteral'>+</span> <span class='codeCharacterLiteral'>'}'</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>17</td><td><pre>&nbsp;      <span class='codeOperatorLiteral'>new</span> A<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>.sayHi_A<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>18</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"B.static #2: A's vars are: {"</span> <span class='codeOperatorLiteral'>+</span> A.a <span class='codeOperatorLiteral'>+</span> <span class='codeCharacterLiteral'>','</span> <span class='codeOperatorLiteral'>+</span> A.b <span class='codeOperatorLiteral'>+</span> <span class='codeCharacterLiteral'>'}'</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>19</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>20</td><td><pre>&nbsp;   String sayHi_B<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>21</td><td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeStringLiteral'>"Hi"</span>;</td></tr><tr><td class='lineNumber'><pre>22</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// sayHi_B()</span></td></tr><tr><td class='lineNumber'><pre>23</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// B</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+<p></p>
+<p class="answer">Answer 12: When Static Initializers Detour</p>
+<div class="postSubtitle">The output is:</div>
+<blockquote>
+  <pre>
+B.static #1: A's vars are: {AAA,null}
+A.sayHi(): A's vars are: {AAA,null}
+B.static #2: A's vars are: {AAA,null}
+A.static: A's vars are: {AAA,Hi}
+</pre>
+</blockquote>
+<p>What's happening here is actually pretty straight forward. <code>A</code>'s 
+  static initializers begin executing at line 2. At line 3 a new instance of <code>B</code> 
+  is created. Before this instance can be created, however, <code>B</code>'s static 
+  initializers need to run. The first line of output is produced by <code>B</code>'s 
+  static initializer at line 16. So far, nothing here should be too surprising.</p>
+<p>At line 17 a new instance of <code>A</code> is being created. But how can <code>A</code> 
+  be instantiated when <code>A</code>'s static initializers have not completed? 
+  Remember, the reason line 17 is being executed in the first place is because 
+  <code>A</code>'s static initializer (line 3) is trying to create an instance 
+  <code>B</code>. It turns out that Java <em>will</em> allow an instance of <code>A</code> 
+  to be created, even though its static initializers have not completed. Any static 
+  variables in <code>A</code> that have not been initialized when the instance 
+  of <code>A</code> is created will simply have their default value (0, <code>null</code>, 
+  0.0, <code>false</code>, etc., depending onthe type of the variable). We can see this from the second line of output 
+  produced by line 8: The variable, <code>A.b</code> is still <code>null</code>. 
+  After <code>sayHi_A()</code> has completed execution we return to line 18 which 
+  is responsible for the third line of output. At this point, <code>B</code>'s 
+  static initializers have completed and a new instance of <code>B</code> can 
+  be created created (remember, line 3 is still executing) and the <code>sayHi_B()</code> 
+  method can run. Finally, the last static initializer in <code>A</code> (at line 
+  4) begins executing, producing the fourth line of output.</p>
+<p>To summarize, a static initializer in <code>A</code> forced <code>B</code>'s 
+  static initializers to be executed. During <code>B</code>'s static initializer 
+  execution, however, an instance of <code>A</code> was created. Java allowed 
+  this instance of <code>A</code> to be created even though <code>A</code>'s static 
+  initializer had not completed. After <code>B</code>'s static initializers completed, 
+  <code>A</code>'s static initializers were resumed (even though an instance of 
+  <code>A</code> had already been created by <code>B</code>'s static initializer).</p>
+<!-- END QUESTION 15 -->
+<!-- BEGIN QUESTION 16 -->
+<p class="subtitle">Question 13: Precedence Check I</p>
+<div class="postSubtitle">Determine the result of attempting to compile and run the following code and explain 
+which, if any, of the casts on lines 6 through 9 are needed to avoid a compiler 
+error:</div><p></p>
+  <br>
+  <!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+  <!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;  <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> parms<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;    <span class='codeKeyword'>long</span>  l;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;    <span class='codeKeyword'>int</span>   i1, i2, i3;</td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;    l  <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span><span class='codeKeyword'>long</span><span class='codeSeparator'>)</span><span class='codeIntegerLiteral'>0x3A895E2647L</span> <span class='codeOperatorLiteral'>&gt;&gt;&gt;</span> <span class='codeIntegerLiteral'>4</span>;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;    i1 <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span><span class='codeKeyword'>int</span><span class='codeSeparator'>)</span><span class='codeSeparator'>(</span><span class='codeIntegerLiteral'>0x3A895E2647L</span><span class='codeSeparator'>)</span> <span class='codeOperatorLiteral'>&gt;&gt;&gt;</span> <span class='codeIntegerLiteral'>4</span>;</td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;    i2 <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span><span class='codeKeyword'>int</span><span class='codeSeparator'>)</span><span class='codeSeparator'>(</span><span class='codeIntegerLiteral'>0x3A895E2647L</span> <span class='codeOperatorLiteral'>&gt;&gt;&gt;</span> <span class='codeIntegerLiteral'>4</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;    i3 <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span><span class='codeKeyword'>int</span><span class='codeSeparator'>)</span><span class='codeIntegerLiteral'>0x3A895E2647L</span> <span class='codeOperatorLiteral'>&gt;&gt;&gt;</span> <span class='codeIntegerLiteral'>4</span>;</td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;    System.out.println<span class='codeSeparator'>(</span>Long.toHexString<span class='codeSeparator'>(</span>l<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;    System.out.println<span class='codeSeparator'>(</span>Integer.toHexString<span class='codeSeparator'>(</span>i1<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;    System.out.println<span class='codeSeparator'>(</span>Integer.toHexString<span class='codeSeparator'>(</span>i2<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;    System.out.println<span class='codeSeparator'>(</span>Integer.toHexString<span class='codeSeparator'>(</span>i3<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;  <span class='codeSeparator'>}</span>  <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+<p></p>
+<p class="answer">Answer 13: Precedence Check I</p>
+<div class="postSubtitle">The output is:</div>
+<blockquote>
+  <pre>
+3a895e264
+895e264
+a895e264
+895e264
+</pre>
+</blockquote>
+<p>The answer to this question boils down to remembering Java's precedence of 
+  operations and knowing a little about the shift operators. The first point to 
+  realize is that the resulting type of a shift operation will always be the type 
+  of the left operand (<a href="http://java.sun.com/docs/books/jls/" target="_jls">JLS 
+  2</a>, <a href="http://java.sun.com/docs/books/jls/second_edition/html/expressions.doc.html#5121" target="_jls">&sect;15.19</a>), 
+  after applying <a href="../java-tidbits/index.html#Unary-Numeric-Promotion">unary numeric promotion</a> 
+  to each operand. Since we are shifting a <code>long</code> in each of lines 
+  6 through 9, the result of the shift operation will be a <code>long</code>. 
+  Consequently, only line 6 does <em>not</em> require a cast (since the resulting 
+  <code>long</code> is being assigned to a <code>long</code>).</p>
+<p>The output produced by line 11 should require no explanation -- it is the result 
+  of a simple shift operation with no type conversions or data truncation. To 
+  understand the output from lines 12 through 14 you need to realize that the 
+  cast operation has a higher precedence than the shift operator. Lines 7 and 
+  9, therefore, cast the value to be shifted (<code>0x3A895E2647L</code>) to an 
+  <code>int</code> <em>before</em> performing the shift operation. Line 8, however, 
+  performs the shift operation first and then casts the resulting <code>long</code> 
+  value back to an <code>int</code>, which is reflected in the output produced 
+  by line 13.</p>
+<p class="subtitle">Question 14: Getting the "Superinterface" of an Interface</p>
+<div class="postSubtitle">Determine the result of attempting to compile and run the following code:</div><p></p>
+  <!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+  <!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;      Class superclass <span class='codeOperatorLiteral'>=</span> Z.<span class='codeKeyword'>class</span>.getSuperclass<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;       <span class='codeKeyword'>if</span><span class='codeSeparator'>(</span>superclass <span class='codeOperatorLiteral'>==</span> <span class='codeKeyword'>null</span><span class='codeSeparator'>)</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;          System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"superclass is null"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;        <span class='codeKeyword'>else</span></td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;           System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"superclass is "</span> <span class='codeOperatorLiteral'>+</span> superclass.getName<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;     Class<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> interfaces <span class='codeOperatorLiteral'>=</span> Z.<span class='codeKeyword'>class</span>.getInterfaces<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;     <span class='codeKeyword'>for</span><span class='codeSeparator'>(</span><span class='codeKeyword'>int</span> i <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>0</span>; i <span class='codeOperatorLiteral'>&lt;</span> interfaces.length; <span class='codeOperatorLiteral'>++</span>i<span class='codeSeparator'>)</span></td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;        System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"implements interface: "</span> <span class='codeOperatorLiteral'>+</span> interfaces<span class='codeSeparator'>[</span>i<span class='codeSeparator'>]</span>.getName<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;  <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;<span class='codeKeyword'>interface</span> X <span class='codeSeparator'>{</span><span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;<span class='codeKeyword'>interface</span> Y <span class='codeKeyword'>extends</span> X <span class='codeSeparator'>{</span><span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>17</td><td><pre>&nbsp;<span class='codeKeyword'>interface</span> Z <span class='codeKeyword'>extends</span> Y, X <span class='codeSeparator'>{</span><span class='codeSeparator'>}</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+<p></p>
+<p class="answer">Answer 14: Getting the "Superinterface" of an Interface</p>
+<div class="postSubtitle">The output is:</div>
+<blockquote>
+  <pre>
+superclass is null
+implements interface: Y
+implements interface: X
+</pre>
+</blockquote>
+<p>Calling <code>Class.getSuperclass()</code> on an interface object will always 
+  return <code>null</code>, even if the interface extends other interfaces, as 
+  shown in this example. To find what interfaces a given interface extends you 
+  must call <code>Class.getInterfaces()</code>.</p>
+<p class="subtitle">Question 15: Getting Subtle with Class Initialization</p>
+<div class="postSubtitle">Determine the result of attempting to compile and run the following code:</div><p></p>
+  <!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+  <!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> A <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"In A.main, B.X="</span> <span class='codeOperatorLiteral'>+</span> B.X<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"In A.main, B.Y="</span> <span class='codeOperatorLiteral'>+</span> B.Y<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// A</span></td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;<span class='codeKeyword'>class</span> B <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;   <span class='codeKeyword'>static</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"In the B static initializer block..."</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;   <span class='codeKeyword'>final</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>int</span> X <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>11</span>;</td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;   <span class='codeKeyword'>static</span> <span class='codeKeyword'>int</span> Y <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>22</span>;</td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// B</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+<p></p>
+<p class="answer">Answer 15: Getting Subtle with Class Initialization</p>
+<div class="postSubtitle">The output is:</div>
+<blockquote>
+  <pre>
+In A.main, B.X=11
+In the B static initializer block...
+In A.main, B.Y=22
+</pre>
+</blockquote>
+<p>Does it seem strange that class <code>A</code> was able to refer to <code>B.X</code> 
+without causing <code>B</code>'s static initializer to run? As you can see from 
+the output, <code>B</code>'s static initializer did not execute until <code>A</code> 
+referred to <code>B.Y</code> on line 4.<br>
+   <br>
+The reason this occurred is because <code>B.X</code> is a <em>constant</em> field. 
+To quote the <a href="http://java.sun.com/docs/books/vmspec/" target="_jvms">JVMS</a>, 
+<a href="http://java.sun.com/docs/books/vmspec/2nd-edition/html/Concepts.doc.html#19075" target="_jvms">§2.17.4</a>:</p>
+<p class="quotedText">"A constant field is one that is (explicitly or implicitly) both <code>final</code> 
+and <code>static</code>, <em>and</em> that is initialized with the value of a 
+compile-time constant expression."</p>
+<p>The <a href="http://java.sun.com/docs/books/vmspec/" target="_jvms">JVMS</a> 
+goes on to say that <em>constant</em> fields:</p>
+<p class="quotedText">"...must be resolved at compile time 
+to a copy of the compile-time constant value, so uses of such a field never cause 
+initialization."</p>
+<p>In other words, referring to an <em>initialized</em> <code>static 
+final</code> field will not cause the class containing that field to be initialized, 
+and hence its static initializer(s) to be executed.<br>
+   <br>
+Now, how would the output change if we changed class <code>B</code> to this:<br>
+   <br>
+   <!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+   <!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+</p>
+<table cellspacing='0' class='codeTable'><tr>
+		<td class='lineNumber'><pre>9</td>
+		<td><pre>&nbsp;<span class='codeKeyword'>class</span> B <span class='codeSeparator'>{</span></td></tr><tr>
+		<td class='lineNumber'><pre>10</td>
+		<td><pre>&nbsp;   <span class='codeKeyword'>static</span> <span class='codeSeparator'>{</span></td></tr><tr>
+		<td class='lineNumber'><pre>11</td>
+		<td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"In the B static initializer block..."</span><span class='codeSeparator'>)</span>;</td></tr><tr>
+		<td class='lineNumber'><pre>12</td>
+		<td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr>
+		<td class='lineNumber'><pre>13</td>
+		<td><pre>&nbsp;&nbsp;</td></tr><tr>
+		<td class='lineNumber'><pre>14</td>
+		<td><pre>&nbsp;   <span class='codeKeyword'>final</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>int</span> X; <span class='codeComment'>// X is no longer a constant</span></td></tr><tr>
+		<td class='lineNumber'><pre>15</td>
+		<td><pre>&nbsp;   <span class='codeKeyword'>static</span> <span class='codeKeyword'>int</span> Y <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>22</span>;</td></tr><tr>
+		<td class='lineNumber'><pre>16</td>
+		<td><pre>&nbsp;&nbsp;</td></tr><tr>
+		<td class='lineNumber'><pre>17</td>
+		<td><pre>&nbsp;   <span class='codeKeyword'>static</span> <span class='codeSeparator'>{</span></td></tr><tr>
+		<td class='lineNumber'><pre>18</td>
+		<td><pre>&nbsp;      X <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>11</span>;</td></tr><tr>
+		<td class='lineNumber'><pre>19</td>
+		<td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr>
+		<td class='lineNumber'><pre>20</td>
+		<td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// B</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+
+<br>
+Now the output becomes: 
+<blockquote>
+  <pre>
+In the B static initializer block...
+In A.main, B.X=11
+In A.main, B.Y=22
+</pre>
+</blockquote>
+<p>Since <code>B.X</code> is no longer an <em>initialized</em> <code>static final</code> 
+(i.e., it is no longer a <em>constant</em>), class <code>B</code> must be initialized. 
+Part of this initialization process is to execute the static initializers, which 
+accounts for the change in output. Note that we have changed <code>B.X</code> 
+to a <em>blank final</em> field. To review <em>blank final</em> variables, see 
+"<a href="../java-tidbits/index.html#Blank-Final-Variable-Initialization">Blank Final Variable Initialization</a>" 
+in the <em><a href="../java-tidbits/">Java Tidbits</a></em> article.
+<p>
+<p class="subtitle">Question 16: Method Overriding II</p>
+<div class="postSubtitle">Determine the result of attempting to compile the following code:</div><p></p>
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.util.*;</td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;<span class='codeKeyword'>abstract</span> <span class='codeKeyword'>class</span> A <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;   Map getMap<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeOperatorLiteral'>new</span> HashMap<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// A</span></td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;<span class='codeKeyword'>class</span> B <span class='codeKeyword'>extends</span> A <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;   Hashtable getMap<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeOperatorLiteral'>new</span> Hashtable<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// B</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+<p></p>
+<p class="answer">Answer 16: Method Overriding II</p>
+<div class="postSubtitle">The output is:</div><p></p>
+<blockquote>
+<pre>
+Tester.java:10: getMap() in B cannot override getMap() in A; attempting to use incompatible return type
+found   : java.util.Hashtable
+required: java.util.Map
+        Hashtable getMap() {
+                  ^
+1 error
+</pre>
+</blockquote>
+
+<p>When a subclass overrides a method, the subclass' method must return the exact same type as the overridden method. Even though a Hashtable is a type of Map, Java does not allow it. This behavior is covered in <a href="http://java.sun.com/docs/books/jls/second_edition/html/classes.doc.html#227965" target="_jls">&sect;8.4.6.3</a> of the <a href="http://java.sun.com/docs/books/jls/" target="_jls">JLS 2</a>.</p>
+<p>There is an RFE (<a href="http://developer.java.sun.com/developer/bugParade/bugs/4144488.html" target="_blank">Bug Id  4144488</a>) at <a href="http://developer.java.sun.com/developer/bugParade/" target="_blank">Sun's Java Bug Parade</a> to change this aspect of the Java Specification. The proposed change would allow an overriding method to return a type that is &quot;assignable to&quot; the type of the overridden method.</p>
+<p>
+<p class="subtitle">Question 17: Method Overriding III (and Variable<br>
+	Shadowing and Method Overloading)</p>
+<div class="postSubtitle">Determine the result of attempting to compile and run the following code:</div><p></p>
+
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>class</span> A <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;   <span class='codeKeyword'>int</span> i <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>10</span>;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;   <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> sayHello<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Hello from A"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;   <span class='codeKeyword'>void</span> sayHelloAgain<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Hello again from A"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// A</span></td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;<span class='codeKeyword'>class</span> B <span class='codeKeyword'>extends</span> A <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;   <span class='codeKeyword'>float</span> i <span class='codeOperatorLiteral'>=</span> <span class='codeFloatingPointLiteral'>99.99F</span>;</td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;   <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> sayHello<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>17</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Hello from B"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>18</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>19</td><td><pre>&nbsp;   <span class='codeKeyword'>void</span> sayHelloAgain<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>20</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Hello again from B"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>21</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>22</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// B</span></td></tr><tr><td class='lineNumber'><pre>23</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>24</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>25</td><td><pre>&nbsp;<span class='codeKeyword'>class</span> Tester <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>26</td><td><pre>&nbsp;   <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> m<span class='codeSeparator'>(</span>A a<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>27</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"someMethod() -- A"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>28</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>29</td><td><pre>&nbsp;   <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> m<span class='codeSeparator'>(</span>B b<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>30</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"someMethod() -- B"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>31</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>32</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>33</td><td><pre>&nbsp;      A a <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> B<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>34</td><td><pre>&nbsp;      B b <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> B<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>35</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>36</td><td><pre>&nbsp;      a.sayHello<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>37</td><td><pre>&nbsp;      a.sayHelloAgain<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>38</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"a.i="</span> <span class='codeOperatorLiteral'>+</span> a.i<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>39</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>40</td><td><pre>&nbsp;      m<span class='codeSeparator'>(</span>a<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>41</td><td><pre>&nbsp;      m<span class='codeSeparator'>(</span>b<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>42</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>43</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+<p></p>
+<p class="answer">Answer 17: Method Overriding III (and Variable<br>
+	Shadowing and Method Overloading)</p>
+<div class="postSubtitle">The output is:</div><p></p>
+<blockquote><pre>
+Hello from A
+Hello again from B
+a.i=10
+someMethod() -- A
+someMethod() -- B</pre></blockquote>
+<p>This example illustrates  method overriding and variable shadowing. <code>static</code> methods cannot be overridden by subclasses. Even though class <code>B</code> defines a method named <code>sayHello()</code> Java does not consider this to &quot;override&quot; <code>A</code>'s method of the same name. When calling a static method, the Java compiler looks at the <i>type of the reference</i> being used to call the method&#151;it <i>does not</i> consider the type of the object <i>referred to</i> by the reference. Even though the variable <code>'a'</code> refers to an object of type <code>B</code>, because the method being called is static, Java only considers the type of the variable in deciding what method should be called. Since the variable is of type <code>A</code>, it is <code>A</code>'s static method that gets called. This accounts for the first line of output.</p>
+<p>Since instance methods <i>can</i> be overridden, the Java compiler uses the object <i>referred to</i> by the variable '<code>a</code>' to determine which version of <code>sayHelloAgain()</code> will be called. To be more specific, since <code>sayHelloAgain()</code> is an instance method, the Java compiler cannot decide which version of <code>sayHelloAgain()</code> to call. Instead, method selection occurs at runtime based on the type of the object <i>referred to</i> by the '<code>a</code>' variable. This accounts for the second line of output.</p>
+<p>When a subclass declares a variable of the same name as its superclass, the subclass' variable is said to <i>shadow</i> that of the superclass. Shadowed variables are different from overridden methods: When an instance method is invoked the type of the object <i>referred to</i> by the reference variable determines which method will be called, <i>not the type of the reference variable</i>. This determination occurs at runtime. When a shadowed instance variable is referred to, it the the <i>type of the reference variable</i> that determines which version of the variable is referred to, <i>not the type of object referred to by the variable</i>. This determination occurs at compile time. This accounts for the third line of output.</p>
+<p>The <code>Tester</code> class has overloaded the <code>m()</code> method. When deciding which overloaded method to call the compiler looks at <i>the types of the actual arguments</i>. In this example, the actual argument type on line 40 was of class <code>A</code> so the method declared on line 26 was called. This accounts for the output on line 4.</p>
+<p>The method call on line 41 is more interesting because the actual argument type can be considered to be of type <code>A</code> <b><i>and</i></b> type <code>B</code>, since <code>B</code> extends <code>A</code>. Java does what you would expect though&#151;it selects the method whose argument types &quot;most closely matches&quot; the types of the actual arguments. This means the method declared on line 29 in invoked, resulting in the fifth line of output. Note that it is entirely possible to write overloaded methods such that the compiler cannot determine which version of the method to call, resulting in a compiler error. Here's a simple little example:</p>
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>class</span> Tester <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;   <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> m<span class='codeSeparator'>(</span><span class='codeKeyword'>char</span> c, <span class='codeKeyword'>int</span> i<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"someMethod() -- A"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;   <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> m<span class='codeSeparator'>(</span><span class='codeKeyword'>int</span> i, <span class='codeKeyword'>char</span> c<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"someMethod() -- B"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;      m<span class='codeSeparator'>(</span><span class='codeCharacterLiteral'>'U'</span>, <span class='codeCharacterLiteral'>'S'</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+
+<p>Attempting to compile this code results in the following error:</p>
+<blockquote>
+	<pre>
+Tester.java:9: reference to m is ambiguous, both method m(char,int) in Tester and method m(int,char) in Tester match
+                m('U', 'S');
+                ^
+1 error
+</pre>
+</blockquote>
+
+<p class="subtitle">Question 18: Exceptions I</p>
+<div class="postSubtitle">Here's a simpe one. Determine the result of attempting to compile and run the following code:</div><br>
+
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Jasper <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;      <span class='codeKeyword'>int</span> i;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;      <span class='codeKeyword'>for</span><span class='codeSeparator'>(</span>i <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>1</span>; i <span class='codeOperatorLiteral'>&lt;</span> <span class='codeIntegerLiteral'>10</span>; <span class='codeOperatorLiteral'>++</span>i<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;         System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"i="</span> <span class='codeOperatorLiteral'>+</span> i<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;         <span class='codeKeyword'>if</span><span class='codeSeparator'>(</span>i <span class='codeOperatorLiteral'>==</span> <span class='codeIntegerLiteral'>3</span><span class='codeSeparator'>)</span></td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;            <span class='codeKeyword'>break</span>;</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;      <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"i after loop #1: "</span> <span class='codeOperatorLiteral'>+</span> i<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;      i <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>1</span>;</td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;      <span class='codeKeyword'>while</span><span class='codeSeparator'>(</span>i <span class='codeOperatorLiteral'>&lt;</span> <span class='codeIntegerLiteral'>10</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;         <span class='codeKeyword'>try</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;            System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"i="</span> <span class='codeOperatorLiteral'>+</span> i<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;            <span class='codeKeyword'>if</span><span class='codeSeparator'>(</span>i <span class='codeOperatorLiteral'>==</span> <span class='codeIntegerLiteral'>3</span><span class='codeSeparator'>)</span></td></tr><tr><td class='lineNumber'><pre>17</td><td><pre>&nbsp;               <span class='codeKeyword'>break</span>;</td></tr><tr><td class='lineNumber'><pre>18</td><td><pre>&nbsp;         <span class='codeSeparator'>}</span> <span class='codeKeyword'>finally</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>19</td><td><pre>&nbsp;            <span class='codeOperatorLiteral'>++</span>i;</td></tr><tr><td class='lineNumber'><pre>20</td><td><pre>&nbsp;         <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>21</td><td><pre>&nbsp;      <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>22</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"i after loop #2: "</span> <span class='codeOperatorLiteral'>+</span> i<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>23</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>24</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Jasper</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+
+
+<br>
+
+<p class="answer">Answer 18: Exceptions I</p>
+<div class="postSubtitle">The output is:</div>
+<pre>
+i=1
+i=2
+i=3
+i after loop #1: 3
+i=1
+i=2
+i=3
+i after loop #2: 4
+</pre>
+<p>Determining the output from loop #1 should have been trivial.</p>
+<p>Loop #2 demonstrates the fact that a <code>finally</code> block is <em>always</em>, when control leaves a <code>try</code> block&#8212;unless the <code>try</code> block or subsequent <code>catch</code> block contains a call to <code>System.exit()</code>, which causes the VM to shutdown. The <code>break</code> statement on line 17 causes control to leave the <code>while</code> loop. In order for control to leave the <code>while</code> loop, however, it must also leave the <code>try</code> block. If a <code>finally</code> block is present, control will <em>always</em> pass to the <code>finally</code> block, regardless of what happened in the <code>try</code> block or any <code>catch</code> blocks&#8212;again, unless the <code>try</code> block or subsequent <code>catch</code> block contains a call to <code>System.exit()</code>.
+</p>
+<div style="font-size:9pt; text-align:center; font-family:verdana,arial,helvetica; color: black">
+<p>Copyright &copy; 1999-2002, Tony LaPaso<br>
+    All Rights Reserved.
+</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,91 @@
+ID=G0584
+URL=http://arcturus.mit.edu/cosmics/doc-html/node8.html
+SIZE=6317
+DATE=09/07/2002
+TIME=16:19:17
+DATASET=Astronomy
+HTML=<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95 (Thu Jan 19 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> GRAFIC: Gaussian Random Field Initial Conditions</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" GRAFIC: Gaussian Random Field Initial Conditions">
+<meta name="keywords" value="cosmics">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html97 HREF="node9.html"><IMG ALIGN=BOTTOM ALT="next" SRC="file:/usr/local/lib/latex2html/icons/next_motif.gif"></A>   <A NAME=tex2html95 HREF="cosmics.html"><IMG ALIGN=BOTTOM ALT="up" SRC="file:/usr/local/lib/latex2html/icons/up_motif.gif"></A>   <A NAME=tex2html89 HREF="node7.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="file:/usr/local/lib/latex2html/icons/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html98 HREF="node9.html"> GRAFIC Usage</A>
+<B>Up:</B> <A NAME=tex2html96 HREF="cosmics.html">COSMICS: Cosmological Initial Conditions </A>
+<B> Previous:</B> <A NAME=tex2html90 HREF="node7.html"> DELTAT: Evaluate CMB </A>
+<BR> <HR> <P>
+<H1><A NAME=SECTION00040000000000000000> GRAFIC: Gaussian Random Field Initial Conditions</A></H1>
+<P>
+<tt>Grafic</tt> normalizes the power spectrum of matter density fluctuations
+(either derived from <tt>linger.dat</tt>, or from a standard parameter fit
+to the CDM transfer function [<A HREF="node15.html#bbks">27</A>]), and generates initial conditions
+needed for nonlinear cosmic structure formation simulations.   It produces
+the density fluctuation field <IMG  ALIGN=MIDDLE ALT="" SRC="img107.gif"> (that is, <IMG  ALIGN=MIDDLE ALT="" SRC="img108.gif">) in comoving coordinates as a gaussian random field with the
+appropriate power spectrum.
+<P>
+Constraints may be imposed (such as the presence of a specified overdensity
+of the smoothed density field) by providing them in a subroutine;
+the Hoffman-Ribak algorithm [<A HREF="node15.html#hr">28</A>] is used to correctly sample the
+constrained action.  Our implementation method is described in a paper
+giving a detailed presentation of the theory of constrained gaussian random
+fields [<A HREF="node15.html#vdw">29</A>].  The HR algorithm has also been implemented by Ganon
+and Hoffman [<A HREF="node15.html#gh">30</A>]; their implementation is restricted to constraints
+that may be specified at lattice points (as opposed to the arbitrary linear
+constraints allowed by <tt>grafic</tt>), but it is faster than <tt>grafic</tt>
+for more than a few constraints.  Note that <tt>grafic</tt> is an exact
+method, unlike the iterative heat bath algorithm developed earlier by
+the author [<A HREF="node15.html#b87">31</A>], so that it is fast for up to tens of constraints.
+The main limitation is on the memory required to store the constraint matrix.
+<P>
+<tt>Grafic</tt> outputs both the density field and the initial positions and
+velocities of particles displaced from the lattice to produce that density
+field.  The former object is useful for initializing cosmological gas
+dynamics solvers, while the latter quantities are needed for cosmological
+<b>N</b>-body simulations.  They are related to each other using the Zel'dovich
+approximation [<A HREF="node15.html#zel70">32</A>]:
+<P><A NAME=zeld>&#160;</A><IMG  ALIGN=BOTTOM ALT="" SRC="img109.gif"><P>
+Here <IMG  ALIGN=MIDDLE ALT="" SRC="img110.gif"> is a Lagrangian coordinate corresponding to the unperturbed
+comoving position of a mass element; <tt>grafic</tt> takes these positions
+to be on a regular Cartesian lattice with periodic boundary conditions.
+The perturbed comoving positions are <IMG  ALIGN=BOTTOM ALT="" SRC="img111.gif">; the perturbations to position
+grow in proportion with the cosmic growth factor <IMG  ALIGN=MIDDLE ALT="" SRC="img112.gif">, which depends
+on the cosmological model.  The displacement field <IMG  ALIGN=MIDDLE ALT="" SRC="img113.gif">
+is obtained by calculating the inverse Laplacian of the linear density field
+using a fast fourier transform.  The approximation comes in the third of
+equations (<A HREF="node8.html#zeld">4</A>), which neglects terms <IMG  ALIGN=MIDDLE ALT="" SRC="img114.gif">.  <tt>Grafic</tt>
+automatically selects the output redshift high enough so that the maximum
+density fluctuation at any lattice point has amplitude 1; for <IMG  ALIGN=BOTTOM ALT="" SRC="img115.gif"> or
+more  points this means that the rms density perturbation is typically less
+than 0.2.  The proper peculiar velocity <IMG  ALIGN=BOTTOM ALT="" SRC="img116.gif"> follows straightforwardly.
+<tt>Grafic</tt> includes subroutines that compute <IMG  ALIGN=MIDDLE ALT="" SRC="img117.gif">, <IMG  ALIGN=MIDDLE ALT="" SRC="img118.gif">,
+<IMG  ALIGN=MIDDLE ALT="" SRC="img119.gif">, etc., for general Friedmann-Robertson-Walker models with matter,
+vacuum energy, and curvature.
+<P>
+<BR> <HR>
+<UL> 
+<LI> <A NAME=tex2html99 HREF="node9.html#SECTION00041000000000000000"> GRAFIC Usage</A>
+<UL> 
+<LI> <A NAME=tex2html100 HREF="node10.html#SECTION00041100000000000000"> GRAFIC Input 1: Using linger.dat for transfer functions</A>
+<LI> <A NAME=tex2html101 HREF="node11.html#SECTION00041200000000000000"> GRAFIC Input 2: Using an analytical transfer function</A>
+<LI> <A NAME=tex2html102 HREF="node12.html#SECTION00041300000000000000"> GRAFIC Input 3: Scale-free spectrum</A>
+<LI> <A NAME=tex2html103 HREF="node13.html#SECTION00041400000000000000"> GRAFIC Output</A>
+</UL>
+</UL>
+<BR> <HR><A NAME=tex2html97 HREF="node9.html"><IMG ALIGN=BOTTOM ALT="next" SRC="file:/usr/local/lib/latex2html/icons/next_motif.gif"></A>   <A NAME=tex2html95 HREF="cosmics.html"><IMG ALIGN=BOTTOM ALT="up" SRC="file:/usr/local/lib/latex2html/icons/up_motif.gif"></A>   <A NAME=tex2html89 HREF="node7.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="file:/usr/local/lib/latex2html/icons/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html98 HREF="node9.html"> GRAFIC Usage</A>
+<B>Up:</B> <A NAME=tex2html96 HREF="cosmics.html">COSMICS: Cosmological Initial Conditions </A>
+<B> Previous:</B> <A NAME=tex2html90 HREF="node7.html"> DELTAT: Evaluate CMB </A>
+<BR> <HR> <P>
+<BR> <HR>
+<P><ADDRESS>
+<I>Edmund Bertschinger <BR>
+Mon Jun 12 01:14:50 EDT 1995</I>
+</ADDRESS>
+</BODY>
+

@@ -1,0 +1,706 @@
+ID=F0141
+URL=http://www.vbip.com/iphelper/get_tcp_stats.asp
+SIZE=52526
+DATE=09/07/2002
+TIME=13:15:31
+DATASET=Visual Basic
+HTML=
+<html>
+
+<head>
+<title>Visual Basic and IP Helper API: How to retrieve TCP statistics</title>
+<meta name="description" content="The GetTcpStatistics function of the IP Helper API allows to retrieve the TCP statistics for the local computer. In the screenshot of the sample application you can see what information can be retrieved with that function">
+<meta name="keywords" content="ip helper api, GetTcpStatistics, connection, system tray, TCP, API, Visual Basic, function">
+<meta name="ROBOTS" content="INDEX,FOLLOW">
+
+	<link rel="stylesheet" type="text/css" href="../../vbip_nn.css">
+
+</head>
+
+<body bgcolor="#FFFFFF">
+<form name="GlobalForm" ID="GlobalForm">
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100%">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="120"><img border="0" src="../_borders/vbip_logo3.gif" width="132" height="50"></td>
+          <td valign="middle">
+				<p align="center">
+              <!-- start BITS ad HTML -- top of page -- 468x60 banner www.bitsonthewire.com         --> 
+               <iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=0" width=468 height=60 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no> 
+                 <a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=1">
+                   <img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=1&siteid=1126&ad_type=0">
+                 </a></iframe> 
+              <!-- stop BITS ad HTML -- top of page -- 468x60 banner                                --> 
+				&nbsp;
+              <a href="http://www.amazon.com/exec/obidos/redirect-home/vbipvisualbasici">
+              <img border="0" src="../images/gnused120x60.gif" width="120" height="60"></a></p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+      <hr noshade color="#FF9933">
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+    <p class="barsidecaption">
+    	<a href="../default.asp">Home</a> -
+      	<a href="../whatsnew.asp"> What's New</a> - <a href="../tools.asp"> Tools&amp;Technologies</a> -
+      	<a href="../resources.asp"> Resources</a> - <a href="../resources/books/default.asp">Books</a>
+        - <a href="../forum/">Forum</a>
+    </p>
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+      <hr noshade color="#FF9933">
+    </td>
+  </tr>
+</table>
+
+<table width="100%" cellspacing="1" cellpadding="2" bordercolor="#800000" border="1">
+  <tr>
+    <td width="100%" bgcolor="#FF9933">
+      <font color="#FFFFCC">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="37%">
+          <SCRIPT LANGUAGE=javascript>
+          <!--
+          if(navigator.appName.indexOf('Microsoft')>=0)
+          {
+          document.write('<a HREF="javascript:void(0);" class="tbcaption" onClick="window.external.AddFavorite(location.href, document.title);">Add to Favorites</a>');
+          }
+          // -->
+          </SCRIPT>
+          </td>
+          <td width="63%">
+            <p align="right" class="tbcaption"><a href="../default.asp" class="tbcaption">Home</a> -
+            <a href="../tools.asp" class="tbcaption">Tools&amp;Technologies</a> -
+            <a href="default.asp" class="tbcaption">IP Helper API</a> - How to
+            retrieve TCP statistics</td>
+        </tr>
+      </table>
+      </font>
+    </td>
+  </tr>
+</table>
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+
+<!--table-->
+    <td width="125" valign="top"  style="border-left: 1px solid #800000; border-right: 1px solid #800000; " bgcolor="#FF9933">
+
+    <table border="0" width="100%">
+     <tr>
+        <td width="100%" bgcolor="#FFCC00" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " height="20">
+          <p align="center" class="barsidecaption">[Advertisement]</td>
+      </tr>
+      <tr>
+        <td width="100%" style="border: 1px solid #800000; " height="120">
+<!-- start BITS ad HTML -- first 125x125 banner www.bitsonthewire.com                 --> 
+<iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=-6" width=125 height=125 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no>
+<a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=3"><img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=3&siteid=1126&ad_type=-6"></a></iframe> 
+<!-- stop BITS ad HTML -- 125x125 banner                                             --> 	
+        </td>
+      </tr>
+         
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Search vbip.com]</td>
+      </tr>
+      <tr>
+      
+        <td valign="top" width="100%" height="21">
+        
+			<input type="text" size="7" name="search_site">&nbsp;
+			<input type="button"  value="Go" onclick='location.href="http://www.vbip.com/search2/search.asp?Realm=vbip.com&Match=1&Terms="+document.GlobalForm.search_site.value;'>	
+		
+        </td>
+      </tr>
+         
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Search other VB sites]</td>
+      </tr>
+      <tr>
+        <td valign="top" width="100%" height="21">
+        
+			<input type="text" size="7" name="search_web">&nbsp;
+			<input type="button"  value="Go" onclick='location.href="http://www.vbip.com/search2/search.asp?Realm=Other+VB+Websites&Match=1&Terms="+document.GlobalForm.search_web.value;'>	
+		      
+      </tr>
+     
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Featured Book]</td>
+      </tr>
+      <tr>
+        <td valign="top" width="100%" height="21">
+<center><center>
+<a href="http://www.vbip.com/appdev.asp">
+<img src="http://www.vbip.com/images/appdev120x240.jpg">
+</a>
+</center></center>
+        </td>
+      </tr>
+     
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Newsletter]</td>
+      </tr>
+      <tr>
+        <td width="100%" height="56">
+          <form method="POST" action="../sub.asp" onSubmit="">
+            <table border="0" width="100%" cellspacing="0">
+              <tr>
+                <td width="84%">
+                <input type="text" name="T1" size="8" style="font-family: Tahoma; color: #800000; font-size: 8pt; background-color: #FFCC99; border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " value="your e-mail"></td>
+                <td width="16%"><input type="submit" value="Sub" name="B1" style="font-family: Tahoma; font-size: 8pt; color: #800000"></td>
+              </tr>
+              <tr>
+                <td width="100%" colspan="2"><input type="radio" value="V1" checked name="R1"><span class="barsidecaption">HTML</span>
+                  <input type="radio" name="R1" value="V2"><span class="barsidecaption">Text</span></td>
+              </tr>
+            </table>
+          </form>
+        </td>
+      </tr>
+
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+      <p align="center" class="barsidecaption">
+      [Partners]
+      </tr>
+	
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.vbcity.com" target="_blank"><img border="0" src="..//images/vbcity2_100x30.gif" width="100" height="30"></a>
+  </tr>
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.vbweb.co.uk/" target="_blank"><img border="0" src="..//images/vbweb_button.gif" width="100" height="30"></a>
+  </tr>  
+      <tr>
+        <td width="100%" height="12" align="center">
+      <a href="http://www.vbwire.com" target="_blank"><img border="0" src="..//images/VBWire-btn.gif" width="100" height="30"></a>
+      </tr>
+
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.developersdex.com/vb" target="_blank"><img border="0" src="..//images/vbdex.gif" width="100" height="30"></a>
+  </tr>  
+  <tr>
+        <td width="100%" height="3">
+        <center>
+        <!-- BEGIN ACKY CODE -->
+		<a href="http://www.acky.net" target="_blank"><img
+		src="http://www.acky.net/banners/ackbut3.gif" width="88" height="31"
+		border="0" alt="Acky.net is your one stop shop for all of your web
+		developing needs"></a>
+		<!-- END ACKY CODE -->
+		</center>
+  </tr>
+    </table>
+
+    </td>
+    <td valign="top" bgcolor="#FFFFFF">
+      <blockquote>
+        <p><b><font face="Arial"><a href="../winsock_control.asp"><br>
+        </a>
+        </font></b><img border="0" src="iphelper-banner.gif"></p>
+        <p class="ChapterTitle">
+    How to retrieve TCP statistics</p>
+                  <table border="0" width="90%" cellspacing="0" cellpadding="0" height="44">
+            <tr>
+              <td width="100%" height="15" colspan="3">
+        <hr noshade size="1" color="#FF9933">
+              </td>
+            </tr>
+            <tr>
+              <td width="16" bgcolor="#FFFFCC" height="21" valign="top" style="border: 1px solid #FF9933" class="tbcaption">
+                <p align="center">
+                <a href="files/tcpstats.zip">
+                <img border="0" src="../images/download-icon4.gif" align="right"></a></td>
+              <td width="40%" bgcolor="#FF9933" height="21" class="tbcaption">
+                <p>&nbsp;<a class="tbcaption" href="files/tcpstats.zip">Download 
+                TCP statistics project</a></td>
+              <td width="57%" bgcolor="#FF9933" height="21" class="tbcaption">
+              &nbsp;</td>
+            </tr>
+            <tr>
+              <td width="100%" height="15" colspan="3">
+        <hr noshade size="1" color="#FF9933">
+              </td>
+            </tr>
+          </table>
+        <p>The GetTcpStatistics function of the IP Helper API allows to retrieve the TCP statistics for the
+        local computer. In the screenshot of
+    the sample application you can see what information can be retrieved with
+        that function:        
+        </p>
+        <p align="center">
+    <img border="0" src="images/get_tcp_stats_01.gif">        
+        </p>
+        <p>
+    I use this application every day, it works as an &quot;is my Internet
+    connection still alive?&quot; indicator. It resides in the system tray and imitates
+    behavior of the DUN system tray icon. I think, it is a very useful feature
+    :), if you use the LAN connection to access the Internet.        
+        </p>
+        <p align="center">
+    <img border="0" src="images/get_tcp_stats_02.gif">        
+        </p>
+        <p>
+    Usage of the GetTcpStatistics function is very simple, you will see how to
+    use it in the source code below. To implement the system tray icon I have
+    used source code from MS KB article.        
+        </p>
+        <table border='0' width='90%' bgcolor='#F8F8F8' cellspacing='0' cellpadding='2' style="border-collapse: collapse" bordercolor="#111111">
+  <tr>
+    <td width='100%'>
+      <p class='code'><font color="#000080">Option&nbsp;Explicit&nbsp;</font><br>
+&nbsp;<br>
+<font color="#008000">'user&nbsp;defined&nbsp;type&nbsp;required&nbsp;by&nbsp;Shell_NotifyIcon&nbsp;API&nbsp;call&nbsp;</font><br>
+<font color="#000080">Private&nbsp;Type&nbsp;</font>NOTIFYICONDATA&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cbSize&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;hwnd&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;uId&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;uFlags&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;uCallBackMessage&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;hIcon&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;szTip&nbsp;<font color="#000080">As&nbsp;String&nbsp;</font>*&nbsp;64&nbsp;<br>
+<font color="#000080">End&nbsp;Type&nbsp;</font><br>
+&nbsp;<br>
+<font color="#008000">'constants&nbsp;required&nbsp;by&nbsp;Shell_NotifyIcon&nbsp;API&nbsp;call:&nbsp;</font><br>
+<font color="#000080">Private&nbsp;Const&nbsp;</font>NIM_ADD&nbsp;=&nbsp;&H0&nbsp;<br>
+<font color="#000080">Private&nbsp;Const&nbsp;</font>NIM_MODIFY&nbsp;=&nbsp;&H1&nbsp;<br>
+<font color="#000080">Private&nbsp;Const&nbsp;</font>NIM_DELETE&nbsp;=&nbsp;&H2&nbsp;<br>
+<font color="#000080">Private&nbsp;Const&nbsp;</font>NIF_MESSAGE&nbsp;=&nbsp;&H1&nbsp;<br>
+<font color="#000080">Private&nbsp;Const&nbsp;</font>NIF_ICON&nbsp;=&nbsp;&H2&nbsp;<br>
+<font color="#000080">Private&nbsp;Const&nbsp;</font>NIF_TIP&nbsp;=&nbsp;&H4&nbsp;<br>
+<font color="#000080">Private&nbsp;Const&nbsp;</font>WM_MOUSEMOVE&nbsp;=&nbsp;&H200&nbsp;<br>
+<font color="#000080">Private&nbsp;Const&nbsp;</font>WM_LBUTTONDOWN&nbsp;=&nbsp;&H201&nbsp;&nbsp;&nbsp;<font color="#008000">'Button&nbsp;down&nbsp;</font><br>
+<font color="#000080">Private&nbsp;Const&nbsp;</font>WM_LBUTTONUP&nbsp;=&nbsp;&H202&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'Button&nbsp;up&nbsp;</font><br>
+<font color="#000080">Private&nbsp;Const&nbsp;</font>WM_LBUTTONDBLCLK&nbsp;=&nbsp;&H203&nbsp;<font color="#008000">'Double-click&nbsp;</font><br>
+<font color="#000080">Private&nbsp;Const&nbsp;</font>WM_RBUTTONDOWN&nbsp;=&nbsp;&H204&nbsp;&nbsp;&nbsp;<font color="#008000">'Button&nbsp;down&nbsp;</font><br>
+<font color="#000080">Private&nbsp;Const&nbsp;</font>WM_RBUTTONUP&nbsp;=&nbsp;&H205&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'Button&nbsp;up&nbsp;</font><br>
+<font color="#000080">Private&nbsp;Const&nbsp;</font>WM_RBUTTONDBLCLK&nbsp;=&nbsp;&H206&nbsp;<font color="#008000">'Double-click&nbsp;</font><br>
+&nbsp;<br>
+<font color="#000080">Private&nbsp;Declare&nbsp;Function&nbsp;</font>SetForegroundWindow&nbsp;<font color="#000080">Lib&nbsp;<font color="#808080">"user32"</font></font>&nbsp;(<font color="#000080">ByVal&nbsp;</font>hwnd&nbsp;<font color="#000080">As&nbsp;Long</font>)&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font><br>
+<font color="#000080">Private&nbsp;Declare&nbsp;Function&nbsp;</font>Shell_NotifyIcon&nbsp;<font color="#000080">Lib&nbsp;<font color="#808080">"shell32"</font></font>&nbsp;<font color="#000080">Alias&nbsp;<font color="#808080">"Shell_NotifyIconA"</font></font>&nbsp;_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<font color="#000080">ByVal&nbsp;</font>dwMessage&nbsp;<font color="#000080">As&nbsp;Long</font>,&nbsp;pnid&nbsp;<font color="#000080">As&nbsp;</font>NOTIFYICONDATA)&nbsp;<font color="#000080">As&nbsp;Boolean&nbsp;</font><br>
+&nbsp;<br>
+<font color="#000080">Private&nbsp;</font>nid&nbsp;<font color="#000080">As&nbsp;</font>NOTIFYICONDATA&nbsp;<br>
+&nbsp;<br>
+<font color="#008000">'user&nbsp;defined&nbsp;type&nbsp;required&nbsp;by&nbsp;GetTcpStatistics&nbsp;API&nbsp;call&nbsp;</font><br>
+<font color="#000080">Private&nbsp;Type&nbsp;</font>MIB_TCPSTATS&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dwRtoAlgorithm&nbsp;<font color="#000080">As&nbsp;Long&nbsp;<font color="#008000">'//&nbsp;timeout&nbsp;algorithm&nbsp;</font></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;dwRtoMin&nbsp;<font color="#000080">As&nbsp;</font>Long &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'//&nbsp;minimum&nbsp;timeout&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;dwRtoMax&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'//&nbsp;maximum&nbsp;timeout&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;dwMaxConn&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'//&nbsp;maximum&nbsp;connections&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;dwActiveOpens&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font>&nbsp;<font color="#008000">'//&nbsp;active&nbsp;opens&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;dwPassiveOpens&nbsp;<font color="#000080">As&nbsp;Long&nbsp;<font color="#008000">'//&nbsp;passive&nbsp;opens&nbsp;</font></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;dwAttemptFails&nbsp;<font color="#000080">As&nbsp;Long&nbsp;<font color="#008000">'//&nbsp;failed&nbsp;attempts&nbsp;</font></font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;dwEstabResets&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font>&nbsp;<font color="#008000">'//&nbsp;establised&nbsp;connections&nbsp;reset&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;dwCurrEstab&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font>&nbsp;&nbsp;&nbsp;<font color="#008000">'//&nbsp;established&nbsp;connections&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;dwInSegs&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'//&nbsp;segments&nbsp;received&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;dwOutSegs&nbsp;<font color="#000080">As&nbsp;</font>Long &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'//&nbsp;segment&nbsp;sent&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;dwRetransSegs&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font>&nbsp;<font color="#008000">'//&nbsp;segments&nbsp;retransmitted&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;dwInErrs&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'//&nbsp;incoming&nbsp;errors&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;dwOutRsts&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'//&nbsp;outgoing&nbsp;resets&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;dwNumConns&nbsp;<font color="#000080">As&nbsp;</font>Long &nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'//&nbsp;cumulative&nbsp;connections&nbsp;</font><br>
+<font color="#000080">End&nbsp;Type&nbsp;</font><br>
+&nbsp;<br>
+<font color="#000080">Private&nbsp;Declare&nbsp;Function&nbsp;</font>GetTcpStatistics&nbsp;<font color="#000080">Lib&nbsp;<font color="#808080">"iphlpapi.dll"</font></font>&nbsp;(pStats&nbsp;<font color="#000080">As&nbsp;</font>MIB_TCPSTATS)&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font><br>
+&nbsp;<br>
+<font color="#000080">Private&nbsp;Sub&nbsp;</font>cmdExit_Click()&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Unload&nbsp;Me&nbsp;<br>
+<font color="#000080">End&nbsp;Sub&nbsp;</font><br>
+&nbsp;<br>
+<font color="#000080">Private&nbsp;Sub&nbsp;</font>cmdHide_Click()&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Me.Hide&nbsp;<br>
+<font color="#000080">End&nbsp;Sub&nbsp;</font><br>
+&nbsp;<br>
+<font color="#000080">Private&nbsp;Sub&nbsp;</font>Form_Load()&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'Configure&nbsp;the&nbsp;ListView&nbsp;control&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">With&nbsp;</font>ListView1.ListItems&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add&nbsp;,&nbsp;,&nbsp;<font color="#808080">"Timeout&nbsp;algorithm"</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add&nbsp;,&nbsp;,&nbsp;<font color="#808080">"Minimum&nbsp;timeout"</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add&nbsp;,&nbsp;,&nbsp;<font color="#808080">"Maximum&nbsp;timeout"</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add&nbsp;,&nbsp;,&nbsp;<font color="#808080">"Maximum&nbsp;connections"</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add&nbsp;,&nbsp;,&nbsp;<font color="#808080">"Active&nbsp;opens"</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add&nbsp;,&nbsp;,&nbsp;<font color="#808080">"Passive&nbsp;opens"</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add&nbsp;,&nbsp;,&nbsp;<font color="#808080">"Failed&nbsp;attempts"</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add&nbsp;,&nbsp;,&nbsp;<font color="#808080">"Establised&nbsp;connections&nbsp;reset"</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add&nbsp;,&nbsp;,&nbsp;<font color="#808080">"Established&nbsp;connections"</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add&nbsp;,&nbsp;,&nbsp;<font color="#808080">"Segments&nbsp;received"</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add&nbsp;,&nbsp;,&nbsp;<font color="#808080">"Segment&nbsp;sent"</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add&nbsp;,&nbsp;,&nbsp;<font color="#808080">"Segments&nbsp;retransmitted"</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add&nbsp;,&nbsp;,&nbsp;<font color="#808080">"Incoming&nbsp;errors"</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add&nbsp;,&nbsp;,&nbsp;<font color="#808080">"Outgoing&nbsp;resets"</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add&nbsp;,&nbsp;,&nbsp;<font color="#808080">"Cumulative&nbsp;connections"</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">End&nbsp;With&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'The&nbsp;system&nbsp;tray&nbsp;code&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'the&nbsp;form&nbsp;must&nbsp;be&nbsp;fully&nbsp;visible&nbsp;before&nbsp;calling&nbsp;Shell_NotifyIcon&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;Me.Show&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Me.Refresh&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">With&nbsp;</font>nid&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.cbSize&nbsp;=&nbsp;Len(nid)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.hwnd&nbsp;=&nbsp;Me.hwnd&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.uId&nbsp;=&nbsp;vbNull&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.uFlags&nbsp;=&nbsp;NIF_ICON&nbsp;<font color="#000080">Or&nbsp;</font>NIF_TIP&nbsp;<font color="#000080">Or&nbsp;</font>NIF_MESSAGE&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.uCallBackMessage&nbsp;=&nbsp;WM_MOUSEMOVE&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.hIcon&nbsp;=&nbsp;ImageList1.ListImages(4).Picture&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.szTip&nbsp;=&nbsp;<font color="#808080">"TCP&nbsp;Statistics"</font>&nbsp;&&nbsp;vbNullChar&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">End&nbsp;With&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'    &nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;Shell_NotifyIcon&nbsp;NIM_ADD,&nbsp;nid&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+<font color="#000080">End&nbsp;Sub&nbsp;</font><br>
+&nbsp;<br>
+<font color="#000080">Private&nbsp;Sub&nbsp;</font>Form_MouseMove(Button&nbsp;<font color="#000080">As&nbsp;Integer</font>,&nbsp;Shift&nbsp;<font color="#000080">As&nbsp;Integer</font>,&nbsp;X&nbsp;<font color="#000080">As&nbsp;Single</font>,&nbsp;Y&nbsp;<font color="#000080">As&nbsp;Single</font>)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'this&nbsp;procedure&nbsp;receives&nbsp;the&nbsp;callbacks&nbsp;from&nbsp;the&nbsp;System&nbsp;Tray&nbsp;icon.&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Dim&nbsp;</font>Result&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Dim&nbsp;</font>msg&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'the&nbsp;value&nbsp;of&nbsp;X&nbsp;will&nbsp;vary&nbsp;depending&nbsp;upon&nbsp;the&nbsp;scalemode&nbsp;setting&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">If&nbsp;</font>Me.ScaleMode&nbsp;=&nbsp;vbPixels&nbsp;<font color="#000080">Then&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg&nbsp;=&nbsp;X&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Else&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg&nbsp;=&nbsp;X&nbsp;/&nbsp;Screen.TwipsPerPixelX&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">End&nbsp;If&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Select&nbsp;Case&nbsp;</font>msg&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Case&nbsp;</font>WM_LBUTTONUP&nbsp;<font color="#008000">'514&nbsp;restore&nbsp;form&nbsp;window&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Me.WindowState&nbsp;=&nbsp;vbNormal&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Result&nbsp;=&nbsp;SetForegroundWindow(Me.hwnd)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Me.Show&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Case&nbsp;</font>WM_LBUTTONDBLCLK&nbsp;<font color="#008000">'515&nbsp;restore&nbsp;form&nbsp;window&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Me.WindowState&nbsp;=&nbsp;vbNormal&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Result&nbsp;=&nbsp;SetForegroundWindow(Me.hwnd)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Me.Show&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Case&nbsp;</font>WM_RBUTTONUP&nbsp;<font color="#008000">'517&nbsp;display&nbsp;popup&nbsp;menu&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Result&nbsp;=&nbsp;SetForegroundWindow(Me.hwnd)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Me.PopupMenu&nbsp;Me.mPopupSys&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">End&nbsp;Select&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+<font color="#000080">End&nbsp;Sub&nbsp;</font><br>
+&nbsp;<br>
+<font color="#000080">Private&nbsp;Sub&nbsp;</font>Form_Resize()&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'this&nbsp;is&nbsp;necessary&nbsp;to&nbsp;assure&nbsp;that&nbsp;the&nbsp;minimized&nbsp;window&nbsp;is&nbsp;hidden&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">If&nbsp;</font>Me.WindowState&nbsp;=&nbsp;vbMinimized&nbsp;<font color="#000080">Then&nbsp;</font>Me.Hide&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+<font color="#000080">End&nbsp;Sub&nbsp;</font><br>
+&nbsp;<br>
+<font color="#000080">Private&nbsp;Sub&nbsp;</font>Form_Unload(Cancel&nbsp;<font color="#000080">As&nbsp;Integer</font>)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'this&nbsp;removes&nbsp;the&nbsp;icon&nbsp;from&nbsp;the&nbsp;system&nbsp;tray&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;Shell_NotifyIcon&nbsp;NIM_DELETE,&nbsp;nid&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+<font color="#000080">End&nbsp;Sub&nbsp;</font><br>
+&nbsp;<br>
+<font color="#000080">Private&nbsp;Sub&nbsp;</font>ListView1_ItemClick(<font color="#000080">ByVal&nbsp;</font>Item&nbsp;<font color="#000080">As&nbsp;</font>MSComctlLib.ListItem)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+   &nbsp;<font color="#000080">Select&nbsp;Case&nbsp;</font>Item.Index&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Case&nbsp;</font>1&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblDesc.Caption&nbsp;=&nbsp;<font color="#808080">"Specifies&nbsp;the&nbsp;retransmission&nbsp;time-out&nbsp;"</font>&nbsp;&&nbsp;_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#808080">"(RTO)&nbsp;algorithm&nbsp;in&nbsp;use."</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Case&nbsp;</font>2&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblDesc.Caption&nbsp;=&nbsp;<font color="#808080">"Specifies&nbsp;the&nbsp;minimum&nbsp;retransmission&nbsp;time-out"</font>&nbsp;&&nbsp;_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#808080">"&nbsp;value&nbsp;in&nbsp;milliseconds."</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Case&nbsp;</font>3&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblDesc.Caption&nbsp;=&nbsp;<font color="#808080">"Specifies&nbsp;the&nbsp;maximum&nbsp;retransmission&nbsp;time-out&nbsp;"</font>&nbsp;&&nbsp;_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#808080">"value&nbsp;in&nbsp;milliseconds."</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Case&nbsp;</font>4&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblDesc.Caption&nbsp;=&nbsp;<font color="#808080">"Specifies&nbsp;the&nbsp;maximum&nbsp;number&nbsp;of&nbsp;connections.&nbsp;"</font>&nbsp;&&nbsp;_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#808080">"If&nbsp;this&nbsp;member&nbsp;is&nbsp;-1,&nbsp;the&nbsp;maximum&nbsp;number&nbsp;of&nbsp;"</font>&nbsp;&&nbsp;_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#808080">"connections&nbsp;is&nbsp;dynamic."</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Case&nbsp;</font>5&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblDesc.Caption&nbsp;=&nbsp;<font color="#808080">"Specifies&nbsp;the&nbsp;number&nbsp;of&nbsp;active&nbsp;opens.&nbsp;In&nbsp;an&nbsp;"</font>&nbsp;&&nbsp;_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#808080">"active&nbsp;open,&nbsp;the&nbsp;client&nbsp;is&nbsp;initiating&nbsp;a&nbsp;connection"</font>&nbsp;&&nbsp;_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#808080">"&nbsp;with&nbsp;the&nbsp;server."</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Case&nbsp;</font>6&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblDesc.Caption&nbsp;=&nbsp;<font color="#808080">"Specifies&nbsp;the&nbsp;number&nbsp;of&nbsp;passive&nbsp;opens.&nbsp;In&nbsp;a&nbsp;passive&nbsp;"</font>&nbsp;&&nbsp;_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#808080">"open,&nbsp;the&nbsp;server&nbsp;is&nbsp;listening&nbsp;for&nbsp;a&nbsp;connection"</font>&nbsp;&&nbsp;_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#808080">"&nbsp;request&nbsp;from&nbsp;a&nbsp;client."</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Case&nbsp;</font>7&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblDesc.Caption&nbsp;=&nbsp;<font color="#808080">"Specifies&nbsp;the&nbsp;number&nbsp;of&nbsp;failed&nbsp;connection&nbsp;attempts."</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Case&nbsp;</font>8&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblDesc.Caption&nbsp;=&nbsp;<font color="#808080">"Specifies&nbsp;the&nbsp;number&nbsp;of&nbsp;established&nbsp;connections&nbsp;"</font>&nbsp;&&nbsp;_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#808080">"that&nbsp;have&nbsp;been&nbsp;reset."</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Case&nbsp;</font>9&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblDesc.Caption&nbsp;=&nbsp;<font color="#808080">"Specifies&nbsp;the&nbsp;number&nbsp;of&nbsp;currently&nbsp;established&nbsp;connections."</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Case&nbsp;</font>10&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblDesc.Caption&nbsp;=&nbsp;<font color="#808080">"Specifies&nbsp;the&nbsp;number&nbsp;of&nbsp;segments&nbsp;received."</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Case&nbsp;</font>11&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblDesc.Caption&nbsp;=&nbsp;<font color="#808080">"Specifies&nbsp;the&nbsp;number&nbsp;of&nbsp;segments&nbsp;transmitted.&nbsp;"</font>&nbsp;&&nbsp;_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#808080">"This&nbsp;number&nbsp;does&nbsp;not&nbsp;include&nbsp;retransmitted&nbsp;segments."</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Case&nbsp;</font>12&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblDesc.Caption&nbsp;=&nbsp;<font color="#808080">"Specifies&nbsp;the&nbsp;number&nbsp;of&nbsp;segments&nbsp;retransmitted."</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Case&nbsp;</font>13&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblDesc.Caption&nbsp;=&nbsp;<font color="#808080">"Specifies&nbsp;the&nbsp;number&nbsp;of&nbsp;errors&nbsp;received."</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Case&nbsp;</font>14&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblDesc.Caption&nbsp;=&nbsp;<font color="#808080">"Specifies&nbsp;the&nbsp;number&nbsp;of&nbsp;segments&nbsp;transmitted&nbsp;with&nbsp;"</font>&nbsp;&&nbsp;_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#808080">"the&nbsp;reset&nbsp;flag&nbsp;set."</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Case&nbsp;</font>15&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lblDesc.Caption&nbsp;=&nbsp;<font color="#808080">"Specifies&nbsp;the&nbsp;cumulative&nbsp;number&nbsp;of&nbsp;connections."</font>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">End&nbsp;Select&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+<font color="#000080">End&nbsp;Sub&nbsp;</font><br>
+&nbsp;<br>
+<font color="#000080">Private&nbsp;Sub&nbsp;</font>Timer1_Timer()&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;UpdateStats&nbsp;<br>
+<font color="#000080">End&nbsp;Sub&nbsp;</font><br>
+&nbsp;<br>
+<font color="#000080">Private&nbsp;Sub&nbsp;</font>UpdateStats()&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Dim&nbsp;</font>tStats&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">As&nbsp;</font>MIB_TCPSTATS&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Static&nbsp;</font>tStaticStats&nbsp;<font color="#000080">As&nbsp;</font>MIB_TCPSTATS&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Dim&nbsp;</font>lRetValue&nbsp;<font color="#000080">As&nbsp;Long&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Dim&nbsp;</font>blnIsSent&nbsp;<font color="#000080">As&nbsp;Boolean&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Dim&nbsp;</font>blnIsRecv&nbsp;<font color="#000080">As&nbsp;Boolean&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;lRetValue&nbsp;=&nbsp;GetTcpStatistics(tStats)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">With&nbsp;</font>tStats&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+       &nbsp;<font color="#000080">If&nbsp;Not&nbsp;</font>tStaticStats.dwRtoAlgorithm&nbsp;=&nbsp;.dwRtoAlgorithm&nbsp;<font color="#000080">Then&nbsp;</font>_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListView1.ListItems(1).SubItems(1)&nbsp;=&nbsp;.dwRtoAlgorithm&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">If&nbsp;Not&nbsp;</font>tStaticStats.dwRtoMin&nbsp;=&nbsp;.dwRtoMin&nbsp;<font color="#000080">Then&nbsp;</font>_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListView1.ListItems(2).SubItems(1)&nbsp;=&nbsp;.dwRtoMin&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">If&nbsp;Not&nbsp;</font>tStaticStats.dwRtoMax&nbsp;=&nbsp;.dwRtoMax&nbsp;<font color="#000080">Then&nbsp;</font>_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListView1.ListItems(3).SubItems(1)&nbsp;=&nbsp;.dwRtoMax&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">If&nbsp;Not&nbsp;</font>tStaticStats.dwMaxConn&nbsp;=&nbsp;.dwMaxConn&nbsp;<font color="#000080">Then&nbsp;</font>_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListView1.ListItems(4).SubItems(1)&nbsp;=&nbsp;.dwMaxConn&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">If&nbsp;Not&nbsp;</font>tStaticStats.dwActiveOpens&nbsp;=&nbsp;.dwActiveOpens&nbsp;<font color="#000080">Then&nbsp;</font>_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListView1.ListItems(5).SubItems(1)&nbsp;=&nbsp;.dwActiveOpens&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">If&nbsp;Not&nbsp;</font>tStaticStats.dwPassiveOpens&nbsp;=&nbsp;.dwPassiveOpens&nbsp;<font color="#000080">Then&nbsp;</font>_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListView1.ListItems(6).SubItems(1)&nbsp;=&nbsp;.dwPassiveOpens&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">If&nbsp;Not&nbsp;</font>tStaticStats.dwAttemptFails&nbsp;=&nbsp;.dwAttemptFails&nbsp;<font color="#000080">Then&nbsp;</font>_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListView1.ListItems(7).SubItems(1)&nbsp;=&nbsp;.dwAttemptFails&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">If&nbsp;Not&nbsp;</font>tStaticStats.dwEstabResets&nbsp;=&nbsp;.dwEstabResets&nbsp;<font color="#000080">Then&nbsp;</font>_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListView1.ListItems(8).SubItems(1)&nbsp;=&nbsp;.dwEstabResets&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">If&nbsp;Not&nbsp;</font>tStaticStats.dwCurrEstab&nbsp;=&nbsp;.dwCurrEstab&nbsp;<font color="#000080">Then&nbsp;</font>_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListView1.ListItems(9).SubItems(1)&nbsp;=&nbsp;.dwCurrEstab&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">If&nbsp;Not&nbsp;</font>tStaticStats.dwInSegs&nbsp;=&nbsp;.dwInSegs&nbsp;<font color="#000080">Then&nbsp;</font>_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListView1.ListItems(10).SubItems(1)&nbsp;=&nbsp;.dwInSegs&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">If&nbsp;Not&nbsp;</font>tStaticStats.dwOutSegs&nbsp;=&nbsp;.dwOutSegs&nbsp;<font color="#000080">Then&nbsp;</font>_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListView1.ListItems(11).SubItems(1)&nbsp;=&nbsp;.dwOutSegs&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">If&nbsp;Not&nbsp;</font>tStaticStats.dwRetransSegs&nbsp;=&nbsp;.dwRetransSegs&nbsp;<font color="#000080">Then&nbsp;</font>_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListView1.ListItems(12).SubItems(1)&nbsp;=&nbsp;.dwRetransSegs&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">If&nbsp;Not&nbsp;</font>tStaticStats.dwInErrs&nbsp;=&nbsp;.dwInErrs&nbsp;<font color="#000080">Then&nbsp;</font>_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListView1.ListItems(13).SubItems(1)&nbsp;=&nbsp;.dwInErrs&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">If&nbsp;Not&nbsp;</font>tStaticStats.dwOutRsts&nbsp;=&nbsp;.dwOutRsts&nbsp;<font color="#000080">Then&nbsp;</font>_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListView1.ListItems(14).SubItems(1)&nbsp;=&nbsp;.dwOutRsts&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">If&nbsp;Not&nbsp;</font>tStaticStats.dwNumConns&nbsp;=&nbsp;.dwNumConns&nbsp;<font color="#000080">Then&nbsp;</font>_&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListView1.ListItems(15).SubItems(1)&nbsp;=&nbsp;.dwNumConns&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">End&nbsp;With&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;blnIsRecv&nbsp;=&nbsp;(tStats.dwInSegs&nbsp;>&nbsp;tStaticStats.dwInSegs)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;blnIsSent&nbsp;=&nbsp;(tStats.dwOutSegs&nbsp;>&nbsp;tStaticStats.dwOutSegs)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">If&nbsp;</font>blnIsRecv&nbsp;<font color="#000080">And&nbsp;</font>blnIsSent&nbsp;<font color="#000080">Then&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Set&nbsp;</font>Image1.Picture&nbsp;=&nbsp;ImageList2.ListImages(4).Picture&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nid.hIcon&nbsp;=&nbsp;ImageList1.ListImages(4).Picture&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">ElseIf&nbsp;</font>(<font color="#000080">Not&nbsp;</font>blnIsRecv)&nbsp;<font color="#000080">And&nbsp;</font>blnIsSent&nbsp;<font color="#000080">Then&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Set&nbsp;</font>Image1.Picture&nbsp;=&nbsp;ImageList2.ListImages(3).Picture&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nid.hIcon&nbsp;=&nbsp;ImageList1.ListImages(3).Picture&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">ElseIf&nbsp;</font>blnIsRecv&nbsp;<font color="#000080">And&nbsp;</font>(<font color="#000080">Not&nbsp;</font>blnIsSent)&nbsp;<font color="#000080">Then&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Set&nbsp;</font>Image1.Picture&nbsp;=&nbsp;ImageList2.ListImages(2).Picture&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nid.hIcon&nbsp;=&nbsp;ImageList1.ListImages(2).Picture&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">ElseIf&nbsp;Not&nbsp;</font>(blnIsRecv&nbsp;<font color="#000080">And&nbsp;</font>blnIsSent)&nbsp;<font color="#000080">Then&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">Set&nbsp;</font>Image1.Picture&nbsp;=&nbsp;ImageList2.ListImages(1).Picture&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;nid.hIcon&nbsp;=&nbsp;ImageList1.ListImages(1).Picture&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#000080">End&nbsp;If&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'Modify&nbsp;the&nbsp;system&nbsp;tray&nbsp;icon&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;Shell_NotifyIcon&nbsp;NIM_MODIFY,&nbsp;nid&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;tStaticStats&nbsp;=&nbsp;tStats&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+<font color="#000080">End&nbsp;Sub&nbsp;</font><br>
+&nbsp;<br>
+<font color="#000080">Private&nbsp;Sub&nbsp;</font>mPopExit_Click()&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'called&nbsp;when&nbsp;user&nbsp;clicks&nbsp;the&nbsp;popup&nbsp;menu&nbsp;Exit&nbsp;command&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;Unload&nbsp;Me&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+<font color="#000080">End&nbsp;Sub&nbsp;</font><br>
+&nbsp;<br>
+<font color="#000080">Private&nbsp;Sub&nbsp;</font>mPopRestore_Click()&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'called&nbsp;when&nbsp;the&nbsp;user&nbsp;clicks&nbsp;the&nbsp;popup&nbsp;menu&nbsp;Restore&nbsp;command&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;Me.WindowState&nbsp;=&nbsp;vbNormal&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Result&nbsp;=&nbsp;SetForegroundWindow(Me.hwnd)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Me.Show&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<font color="#008000">'&nbsp;</font><br>
+<font color="#000080">End&nbsp;Sub&nbsp;</font><br>
+      </p>
+    </td>
+  </tr>
+</table>
+        <p>        
+    <hr noshade color="#FF9933">
+    <table width="90%" align="center" border="0">
+      <tr>
+        <td width="25%">
+          <img border="0" src="../../images/comments.gif">
+        </td>
+        <td width="75%">
+          Please, post here only feedback for the article/tutorial/sample you
+          have read above.<br>
+          If you have any question and like to get an answer, post your messages in the <a href="http://www.vbip.com/forum/">Forum</a>.
+        <td>
+      </tr>
+    </table>
+    
+    
+        <p>
+        <form name="newcomm" method="POST" action="../../add_comments.asp">
+          <p><input align="right" border="0" src="../../images/addyours2.gif" name="I1" type="image"></p>
+          <input type="hidden" name="page" value="/iphelper/get_tcp_stats.asp">
+          <input type="hidden" name="title">
+	  <input type="hidden" name="actionID" value="add">
+        </form>
+        <SCRIPT LANGUAGE="JavaScript">
+        	{document.newcomm.title.value = document.title}
+        </SCRIPT>
+	<br>
+        <p>
+        <hr noshade color="#FF9933">
+</p> 
+      </blockquote>    
+<p><center>
+<!-- start BITS ad HTML -- bottom of page 468x60 banner www.bitsonthewire.com         --> 
+  <iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=2" width=468 height=60 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no> 
+    <a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=2">
+      <p>
+      <img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=2&siteid=1126&ad_type=2">
+    </a>
+  </iframe> 
+<!-- stop BITS ad HTML -- bottom of page 468x60 banner                                --> 
+</center></p>
+    </td>
+</table>
+<table border="1" width="100%" cellspacing="1" cellpadding="2" bordercolor="#800000">
+  <tr>
+    <td width="100%" bgcolor="#FF9933">
+      <font color="#FFFFCC">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="37%"></td>
+          <td width="63%">
+            <p align="right" class="tbcaption"><a href="../default.asp" class="tbcaption">Home</a> -
+            <a href="../tools.asp" class="tbcaption">Tools&amp;Technologies</a> -
+            <a href="default.asp" class="tbcaption">IP Helper API</a> - How to
+            retrieve TCP statistics
+          </td>
+        </tr>
+      </table>
+      </font>
+    </td>
+  </tr>
+</table>
+&nbsp;<table border="0" width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="121" valign="top">
+<!-- START OF WEBTRENDS LIVE TAG -->
+<!-- Copyright 2001 NetIQ Corporation -->
+<!--  For privacy concerns, check our Privacy Policy at http://www.webtrendslive.com/privacy_policy.htm -->
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+// Modification of this code is not allowed and will permanently disable your account!
+// SiteName:  Visual Basic Internet Programming
+function wtl_Tag4_27048()
+{
+	function D8( d)
+	{
+		var fwd=1, seed= new Date('01/01/2000'), key= "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+		var s= key.charAt( d.getFullYear()-2000)+key.charAt( d.getMonth()+1)+key.charAt( d.getDate());
+		s+= key.charAt( d.getHours())+key.charAt( d.getMinutes())+key.charAt( d.getSeconds());
+		while( seed.getDay()!=fwd) seed= new Date(seed.getTime() + 86400000);
+		var w= Math.floor( (d.getTime()-(seed.getTime()+86400000)) / 604800000 );
+		s+= key.charAt( (w-(w%16))/16 );
+		s+= key.charAt( w%16);
+		return s;
+	}
+
+	var t = new Date();
+	var W="tagver=4&si=27048&fw=1&bn=13";
+	W+="&tz="+escape(t.getTimezoneOffset());
+	W+="&ch="+escape(t.getHours());
+	W+="&cl="+escape(D8(t));
+	W+="&ti="+escape(document.title);
+	W+="&url="+escape(window.document.URL);
+	W+="&rf="+escape(window.document.referrer);
+	W+="&js=Yes";
+	W+="&ul="+(navigator.appName=="Netscape"?navigator.language:navigator.userLanguage);
+	if(typeof(screen)=="object")
+	{
+	W+="&sr="+screen.width+"x"+screen.height;
+	W+="&cd="+screen.colorDepth;
+	W+="&jo="+(navigator.javaEnabled()?"Yes":"No");
+	}
+	
+	
+	document.write('<A TARGET="_blank" HREF="http://www.webtrendslive.com/redirect.asp?siteID=27048">');
+	document.write('<IMG ID="WTL_TAG" BORDER="0" WIDTH="100" HEIGHT="30" ALT="This Site Tracked by WebTrendsLive." SRC="http://p.wtlive.com/S003-00-9-14-186109-27048/button4.asp?'+W+'">');
+	document.write('</A>');
+	
+}	
+
+wtl_Tag4_27048();
+//-->
+</SCRIPT>
+
+
+<NOSCRIPT>
+<A TARGET="_blank" HREF="http://www.webtrendslive.com/redirect.asp?siteID=27048">
+<IMG BORDER="0" WIDTH="100" HEIGHT="30" ALT="This Site Tracked by WebTrendsLive." SRC="http://p.wtlive.com/S003-00-9-14-186109-27048/button4.asp?tagver=4&si=27048&fw=1&bn=13&js=No&"></A></NOSCRIPT>
+
+
+<!-- END OF WEBTRENDS LIVE TAG -->
+
+     
+      </td>
+    <td>
+<p align="center" class="barsidecaption"><a href="../default.asp">Home</a> | <a href="../whatsnew.asp">What's
+New</a> | <a href="../tools.asp"> Tools
+&amp; Technologies</a> | <a href="../resources.asp">Resources</a> | <a href="../resources/books/default.asp">Books</a>
+ | <a href="../forum/">Forum</a></p>
+<p align="center" class="barsidecaption">Report about any problems and errors to <a href="mailto:webmaster@vbip.com">webmaster@vbip.com</a><br>
+Copyright © 1998 - 2002 by <a href="mailto:oleg@vbip.com"> Oleg Gdalevich</a></p>
+    </td>
+    <td valign="top" width="140">
+<p align="center">
+<a target="_blank" href="http://www.amazon.com/exec/obidos/ASIN/B00005AFI2/vbipvisualbasici">
+<img border="0" src="../images/frontpage_button.gif" align="right" width="100" height="38"></a>
+    </td>
+  </tr>
+</table>
+</body>
+
+</html>

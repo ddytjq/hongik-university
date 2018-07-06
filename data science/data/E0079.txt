@@ -1,0 +1,560 @@
+ID=E0079
+URL=http://www.le.ac.uk/cc/iss/tutorials/cprog/ccccfanp.html
+SIZE=24700
+DATE=12/07/02
+TIME=19:17:11
+DATASET=C
+HTML=<!-- Filename: ccccfanp.html -->
+<!-- Author: mc39/rjm1 -->
+<!-- Supplied by: Richard Mobbs -->
+<!-- Created: 02-09-95 -->
+<!-- Expires: 02-09-96 -->
+
+<HTML>
+
+<HEAD>
+
+<TITLE>Computer Centre: Introduction to C Programming Course</TITLE>
+
+</HEAD> 
+
+<BODY>
+
+<H1><IMG ALT="[CWC logo]" ALIGN=middle SRC="http://www.le.ac.uk/images/compcen.gif" > Functions and Prototypes</H1>
+
+<P>
+<HR>
+
+<H2>Objectives</H2>
+<P>Having read this section you should be able to:
+<OL>
+<LI>program using correctly defined <B>C</B> functions
+<LI>pass the value of local variables into your <B>C</B> functions
+</OL>
+<HR>
+<P>
+
+<A NAME="FB"></A>
+<H3>Functions - C's Building Blocks</H3>
+
+Some programmers might consider it a bit early to introduce the <B>C </B>function - but we think you can't get to it soon enough. It isn't a difficult idea and it is incredibly useful. You could say that you only really start to find out what <B>C</B> programming is all about when you start using functions.
+
+<P><B>C</B> functions are the equivalent of what in other languages would be called <I>subroutines</I> or <I>procedures</I>. If you are familiar with another language you also need to know that <B>C</B> only has functions, so don't spend time looking for the definition of subroutines or procedures - in <B>C</B> the function does everything!
+
+<P>A function is simply a chunk of <B>C</B> code (statements) that you have grouped together and given a name. The value of doing this is that you can use that "chunk" of code repeatedly simply by writing its name. For example, if you want to create a function that prints the word "<TT><B>Hello</B></TT>" on the screen and adds one to variable called <B><TT>total</TT></B> then the chunk of <B>C</B> code that you want to turn into a function is just:
+
+<P>
+<PRE>
+<B>printf("Hello");
+total = total + l;
+</B>
+</PRE>
+
+<P>To turn it into a function you simply wrap the code in a pair of curly brackets to convert it into a single <I>compound statement</I> and write the name that you want to give it in front of the brackets:
+
+<P>
+
+<PRE>
+<B>
+demo()
+ {
+  printf("Hello");
+  total = total + 1;
+ }
+</B>
+</PRE>
+
+<P>Don't worry for now about the curved brackets after the function's name. Once you have defined your function you can
+use it within a program:
+
+<P>
+<PRE>
+<B>
+main()
+ {
+  demo();
+ }
+</B>
+</PRE>
+
+In this program the instruction <B><TT>demo ()</TT></B>; is entirely equivalent to writing out all of the statements in the function. What we have done is to create an new <B>C</B> function and this, of course, is the power of functions. When you are first introduced to the idea of functions, or their equivalent in other languages, it is easy to fall into the trap of thinking that they are only useful when you want to use a block of code more than once.
+
+<P>Functions are useful here but they have a more important purpose. If you are creating a long program then functions allow you to split it into "bite-sized" chunks which you can work on in isolation. As every <B>C </B>programmer knows, "<I>functions are the building blocks of programs</I>."
+
+<P>
+<HR>
+<P>
+
+<A NAME="FL"></A>
+<H3>Functions and Local Variables</H3>
+
+Now that the philosophy session is over we have to return to the details - because as it stands the <B><TT>demo</TT></B> function will not 
+work. The problem is that the variable <B><TT>total</TT></B> isn't declared anywhere. A function is a complete program sub-unit in its own right and you can declare variables within it just as you can within the <B><TT>main</TT></B> program. If you look at the <B><TT>main</TT></B> program we have been using you will notice it is in fact a function that just happens to be called "main"! So to make <B><TT>demo</TT></B> work we have to add the declaration of the variable total:
+
+<P>
+<PRE>
+<B>
+demo()
+ {
+  int total; 
+  printf("Hello"); 
+  total=total+1; 
+ }
+</B>
+</PRE>
+
+<P>Now this raises the question of where exactly <B><TT>total</TT></B> is a valid variable. You can certainly use <B><TT>total</TT></B> within the function that declares it - this much seems reasonable - but what about other functions and, in particular, what about 
+the <B><TT>main</TT></B> program? The simple answer is that <TT><B>total</B></TT> is a variable that belongs to the <B><TT>demo</TT></B> function. It cannot be used in other functions, it doesn't even exist in other functions and it certainly has nothing to do with any variable of the same name that you declare within other functions.
+
+<P>This is what we hinted at when we said that functions were <I>isolated 
+chunks of code</I>. Their isolation is such that variables 
+declared within the function can only be used within that function. These variables are known as <I><B>local variables</B></I> and as their name suggests are local to the function they have been declared in. If you are used to a language where every variable is usable all the time this might seem silly and restrictive - but it isn't. It's what makes it possible to break a large program down into smaller and more manageable chunks.
+
+<P>The fact that <B><TT>total</TT></B> is only usable within the <B><TT>demo</TT></B> function is one thing - but notice we said that it only existed within 
+this function, which is a more subtle point. The variables that a function declares are created when the function is 
+started and destroyed when the function is finished. So if the intention is to use <B><TT>total</TT></B> to count the number of times the <B<TT>>demo</TT></B> function is used - forget it! Each time <TT><B>demo</B></TT> is used the variable <B><TT>total</TT></B> is created afresh, and at the end of the function the variable goes up in a puff of smoke along with its value. So no matter how many times you run <B><TT>demo total</TT></B> will only ever reach a value of 1, assuming that it's initialised to 0.
+
+<P>
+<HR>
+<P>
+
+<A NAME="MC"></A>
+<H3>Making The Connections</H3>
+
+Functions are isolated, and whats more nothing survives after they have finished. Put like this a function doesn't seem to 
+be that useful because you can't get data values in, you can't get data values out, and they don't remember anything that happens to them!
+
+<P>To be useful there has to be a way of getting data into and out of a function, and this is the role of the curved brackets. You can define special variables called <I>parameters</I> which are used to carry data values into a function. Parameters are listed and declared in between the () brackets in the function's definition. For example:
+
+<P>
+<PRE>
+<B>
+ sum( int a, int b)
+ {
+  int result; 
+  result=a + b;
+ }
+</B>
+</PRE>
+
+defines a function called <B><TT>sum</TT></B> with two parameters <TT><B>a</B></TT> and <TT><B>b</B></TT>, both <B>integers</B>. Notice that the result variable is declared in the usual way within the body of the function. Also, notice that the parameters <TT><B>a</B></TT> and <TT><B>b</B></TT> are used within the function in the same way as normal variables - which indeed they are. What is more, they are still <I><B>local variables</B></I> and have nothing at all to do with any variables called <TT><B>a</B></TT> and <TT><B>b</B></TT> defined in any other function.
+
+<P>The only way in which parameters are any different is that you can give them initial values when the function starts by writing the values between the round brackets. So
+
+<P><B><TT>sum(l,2);</TT></B>
+
+<P>is a call to the <TT><B>sum</B></TT> function with <TT><B>a</B></TT> set to 1 and <TT><B>b</B></TT> set to 2 and so <B><TT>result</TT></B> is set to 3. You can also initialise parameters to the result of expressions such as:
+
+<P><B><TT>sum(x+2,z*10);</TT></B>
+
+<P>which will set <TT><B>a</B></TT> equal to whatever <TT><B>x+2</B></TT> works out to be and <TT><B>b</B></TT> equal to whatever <B><TT>z*10</TT></B> works out to be.
+
+<P>As a simpler case you can also set a parameter to the value in a single variable - for example:
+
+<P><B><TT>sum(x,y);</TT> </B>
+
+<P>will set <TT><B>a</B></TT> to the value stored in <TT><B>x</B></TT> and <TT><B>b</B></TT> to the value stored in <TT><B>y</B></TT>.
+
+<P>Parameters are the main way of getting values into a function, but how do we get values out? There is no point in expecting the <B<TT>>result</TT></B> variable to somehow magically get its value out of the <B><TT>sum</TT></B> function - after all, it is a <I>local variable</I> and is destroyed when <B><TT>sum</TT></B> is finished. You might try something like:
+
+<P> 
+<PRE>
+<B>
+ sum(int a, int b, int result)
+ {
+  int result;
+  result = a + b;
+ }
+</B>
+</PRE>
+
+but it doesn't work. Parameters are just ordinary variables that are set to an initial value when the function starts
+running - they don't pass values back to the program that used the function. That is:
+
+<P><B><TT>sum(l,2,r);</TT></B>
+
+<P>doesn't store 1+2 in <TT><B>r</B></TT> because the value in <TT><B>r</B></TT> is used to initialise the value in <B><TT>result</TT></B> and not vice versa. You can even try
+
+<P><B><TT>sum(l,2,result);</TT></B>
+
+<P>and it still will not work - the variable <B><TT>result</TT></B> within the function has nothing to do with the variable <B><TT>result</TT></B> used in any other program.
+
+<P>The simplest way to get a value out of a function is to use the <B><TT>return</TT></B> instruction. A function can return a value via its name - it's as if the name was a variable and had a value. The value that is returned is specified by the instruction:
+
+<P>
+
+<B><TT>return <I>value</I>;</TT></B>
+
+<P>which can occur anywhere within the function, not just as the last instruction - however, a <B><TT>return</TT></B> always terminates the function and returns control back to the calling function. The only complication is that as the function's name is used to return the value it has to be given a <I>data type</I>. This is achieved by writing the data type in front of the function's name. For example:
+
+<P><B><TT>int sum(a,b);</TT></B>
+
+<P>So now we can at last write the correct version of the <TT><B>sum</B></TT> function:
+
+<P>
+<PRE>
+<B>
+ int sum(int a, int b)
+  {
+   int result;
+   result = a + b;
+   return result;
+  }
+</B>
+</PRE>
+
+<P>and to use it you would write something like:
+
+<P><B><TT>r=sum(1,2);</TT></B>
+
+<P>which would add 1 to 2 and store the result in <TT><B>r</B></TT>. You can use a function anywhere that you can use a variable. For example,
+
+<P><TT><B>r=sum(1,2)*3</B></TT>
+
+<P>is perfectly OK, as is 
+
+<P><B><TT>r=3+sum(1,2)/n-10</TT></B>
+
+<P>Obviously, the situation with respect to the number of <I>inputs</I> and <I>outputs</I> of a function isn't equal. That is you can create as many parameters as you like but a function can <B><TT>return</TT></B> only a single value. (Later on we will have to find ways of allowing functions to return more than one value.)
+
+<P>So to summarise: a function has the general form:
+
+<P>
+<PRE>
+<B>
+ type FunctionName(type declared parameter list)
+  {
+   statements that make up the function
+  }
+</B>
+</PRE>
+
+and of course a function can contain any number of <B><TT>return </TT></B> statements to specify its return value and bring the function to an end.
+
+<P>There are some special cases and defaults we need to look at before moving on. You don't have to specify a parameter list if you don't want to use any parameters - but you still need the empty brackets! You don't have to assign the function
+a type in which case it defaults to <B><TT>int</TT></B>. A function doesn't have to return a value and the program that makes use of a function doesn't have to save any value it does return. For example, it is perfectly OK to use:
+
+<P><B><TT>sum(1,2);</TT></B>
+
+<P>which simply throws away the result of adding 1 to 2. As this sort of thing offends some programmers you can use the data type <B><TT>void</TT></B> to indicate that a function doesn't return a value. For example:
+
+<P><B><TT>void demo();</TT></B>
+
+<P>is a function with no parameters and no return value. <P><TT><B>void</B></TT> is an <B>ANSI C</B> standard data type.
+
+<P>The <B><TT>break</TT></B> statement covered in a previous section can be used to exit a function. The <B><TT>break</TT></B> statement is usually linked with an <B><TT>if</TT></B> statement checking for a particular value. For example:
+
+<P><B><TT>if (x==1) break;</TT></B>
+
+<P>If <TT><B>x</B></TT> contained <B><TT>1</TT></B> then the fuction would exit and return to the calling program.
+
+<P>
+<HR> 
+<P>
+
+<A NAME="FP"></A>
+<H3>Functions and Prototypes</H3>
+
+Where should a function's definition go in relation to the entire program - before or after <TT><B>main()</B></TT>? The only requirement is that the function's <B>type</B> has to be known before it is actually used. One way is to place the function definition earlier in the program than it is used - for example, before <B><TT>main()</TT></B>. The only problem is that most <B>C</B> programmers would rather put the main program at the top of the program listing. The solution is to declare the function separately at the start of the program. For example:<P>
+
+<PRE>
+<B>
+ int sum();
+ main()
+  {
+   etc...</B>
+</PRE>
+
+declares the name <B><TT>sum</TT></B> to be a function that returns an <B>integer</B>. As long as you declare functions before they are used you can put the actual definition anywhere you like.<P>
+
+By default if you don't declare a function before you use it then it is assumed to be an <B><TT>int</TT></B> function - which is usually, but not always, correct. It is worth getting into the habit of putting function declarations at the start of your programs because this makes them easier to convert to full <B>ANSI C</B>.
+
+<P>
+<HR>
+<P>
+
+<A NAME="ANSI"></A>
+<H3>What is ANSI C?</H3>
+
+When <B>C</B> was first written the standard was set by its authors Kernighan and Ritche - hence "K&R C". In 1990, an
+international <B><A HREF="http://www.le.ac.uk/CWIS/AS/CC/GL/ccgla.html#24">ANSI</A></B> standard for <B>C</B> was established which differs from K&AMPR C in a number of ways.
+
+<P>The only really important difference is the use of function prototypes. To allow the compiler to check that you are using
+functions correctly <B>ANSI C</B> allows you to include a <B>function prototype</B> which gives the type of the function and the type of each parameter before you define the function. For example, a prototype for the <B><TT>sum</TT></B> function would be:
+
+<P><B><TT>int sum(int,int);</TT></B>
+
+<P>meaning <B><TT>sum</TT></B> is an <B><TT>int</TT></B> function which takes two <B><TT>int</TT></B> parameters. Obviously, if you are in the habit of declaring functions then this is a small modification. The only other major change is that you can declare parameter types along with the function as in:
+
+<P>
+<PRE>
+<B>int sum(int a, int b);
+{</B>
+</PRE>
+
+rather than:
+
+<P>
+<PRE>
+<B>int sum(a,b)
+int a,b;
+{</B>
+</PRE>
+
+<P> was used in the original K&AMP;R C. Again, you can see that this is just a small change. Notice that even if you are using an <B>ANSI</B> compiler you don't have to use prototypes and the K&R version of the code will work perfectly well.
+
+<P>
+<HR>
+<P>
+<A NAME="SL"></A>
+<H3>The Standard Library Functions</H3>
+
+Some of the "commands" in <B>C</B> are not really "commands" at all but are functions. For example, we have been using <B><TT>printf</TT></B> and <B><TT>scanf</TT></B> to do input and output, and we have used <B><TT>rand</TT></B> to generate random numbers - all three are functions. 
+
+<P>There are a great many standard functions that are included with <B>C</B> 
+compilers and while these are not really part of the language, in the sense that you can re-write them if you really want to, most <B>C</B> programmers think of them as fixtures and fitings. Later in the course we will look into the mysteries of how <B>C</B> gains access to these standard functions and how we can extend the range of the standard library. But for now a list of the most common libraries and a brief description of the most useful functions they contain follows:
+
+<P>
+<UL>
+<LI><B>stdio.h: I/O functions:</B>
+<UL>
+<LI><B>getchar()</B> returns the next character typed on the keyboard.
+<LI><B>putchar()</B> outputs a single character to the screen.
+<LI><B>printf() </B> as previously described
+<LI><B>scanf()</B>   as previously described
+</UL>
+<P>
+<LI><B>string.h: String functions</B>
+<UL>
+<LI><B>strcat()</B> concatenates a copy of str2 to str1
+<LI><B>strcmp()</B> compares two strings
+<LI><B>strcpy()</B> copys contents of str2 to str1
+</UL>
+<P>
+<LI><B>ctype.h: Character functions</B>
+<UL>
+<LI><B>isdigit()</B> returns non-0 if arg is digit 0 to 9
+<LI><B>isalpha()</B> returns non-0 if arg is a letter of the alphabet
+<LI><B>isalnum()</B> returns non-0 if arg is a letter or digit
+<LI><B>islower()</B> returns non-0 if arg is lowercase letter
+<LI><B>isupper()</B> returns non-0 if arg is uppercase letter
+</UL>
+<P>
+<LI><B>math.h: Mathematics functions</B>
+<UL>
+<LI><B>acos()</B> returns arc cosine of arg
+<LI><B>asin()</B> returns arc sine of arg
+<LI><B>atan()</B> returns arc tangent of arg
+<LI><B>cos()</B>  returns cosine of arg
+<LI><B>exp()</B>  returns natural logarithim e
+<LI><B>fabs()</B> returns absolute value of num
+<LI><B>sqrt()</B> returns square root of num
+</UL>
+<P>
+<LI><B>time.h: Time and Date functions</B>
+<UL>
+<LI><B>time()</B>     returns current calender time of system
+<LI><B>difftime()</B> returns difference in secs between two times
+<LI><B>clock()</B>    returns number of system clock cycles since program execution
+</UL>
+<P>
+<LI><B>stdlib.h:Miscellaneous functions</B>
+<UL>
+<LI><B>malloc()</B>  provides dynamic memory allocation, covered in future sections
+<LI><B>rand() </B>   as already described previously
+<LI><B>srand()</B>   used to set the starting point for rand()
+</UL>
+<P>
+</UL>
+
+<P>
+<HR>
+<P>
+
+<H3>Throwing The Dice</H3>
+
+As an example of how to use functions, we conclude this section with a program that, while it isn't state of the art, does show that there are things you can already do with <B>C</B>. It also has to be said that some parts of the program can be written more neatly with just a little more <B>C</B> - but that's for later. All the program does is to generate a random number in the range 1 to 6 and displays a dice face with the appropriate pattern.
+
+<P>The main program isn't difficult to write because we are going to adopt the traditional programmer's trick of assuming that any function needed already exists. This approach is called <I>stepwise refinement</I>, and although its value as a
+programming method isn't clear cut, it still isn't a bad way of organising things:
+
+<P>
+<PRE>
+<B>
+main()
+ {
+   int r;
+   char ans;
+
+   ans = getans();
+
+   while(ans== 'y')
+    {
+      r = randn(6);
+      blines(25);
+      if (r==1) showone();
+      if (r==2) showtwo();
+      if (r==3) showthree();
+      if (r==4) showfour();
+      if (r==5) showfive();
+      if (r==6) showsix();
+      blines(21);
+      ans = getans();
+    }
+
+   blines(2);
+ }
+</B>
+</PRE>
+
+<P>If you look at <TT><B>main()</B></TT> you might be a bit mystified at first. It is clear that the list of <B><TT>if</TT></B> statements pick out one of the functions <B><TT>showone</TT></B>, <B><TT>showtwo</TT></B> etc. and so these must do the actual printing of the dot patterns - but what is <B><TT>blines</TT></B>, what is <B><TT>getans</TT></B> and why are we using <TT><B>randn()</B></TT>? The last time we used a random number generator it was called <B><TT>rand()</TT></B>!
+
+<P>The simple answers are that <TT><B>blines(n)</B></TT> will print <TT><B>n</B></TT> blank lines, <TT><B>getans()</B></TT> asks the user a question and waits for the single letter answer, and <TT><B>randn(n)</B></TT> is a new random number generator function that produces a random integer in the range 1 to <TT><B>n</B></TT> - but to know this you would have written the main program. We decided what functions would make our task easier and named them. The next step is to write the code to fill in the details of each of the functions. There is nothing to stop me assuming
+that other functions that would make my job easier already exist. This is the main principle of <I>stepwise refinement</I> - never write any code if you can possibly invent another function! Let's start with <TT><B>randn()</B></TT>.
+
+<P>This is obviously an <B><TT>int</TT></B> function and it can make use of the existing <TT><B>rand()</B></TT> function in the standard library
+
+<P>
+<PRE>
+<B>
+int randn(int n)
+ {
+   return rand()%n + 1;
+ }
+</B>
+</PRE>
+
+<P>The single line of the body of the function just returns the remainder of the random number after dividing by <TT><B>n</B></TT> - <TT><B>%</TT></B> is the
+remainder operator - plus 1. An alternative would be to use a temporary variable to store the result and then return this
+value. You can also use functions within the body of other functions.
+
+<P>Next <B><TT>getans()</TT></B>
+
+<P>
+<PRE>
+<B>
+char getans()
+ {
+   int ans;
+
+   printf("Throw y/n ?");
+   ans = -1;
+   while (ans == -1)
+    {
+      ans=getchar();
+    }
+   return ans;
+}
+</B>
+</PRE>
+
+<P>This uses the standard <B><TT>int</TT></B> function <B><TT>getchar()</TT></B> which reads the next character from the keyboard and returns its ASCII code or -1 if there isn't a key pressed. This function tends to vary in its behaviour according to the implementation you are
+using. Often it needs a carriage return pressed before it will return anything - so if you are using a different compiler and the program just hangs, try pressing "y" followed the by <B>Enter</B> or <B>Return</B> key.
+
+<P>The <TT><B>blines(n)</B></TT> function simply has to use a <B><TT>for</TT></B> loop to print the specified number of lines:
+
+<P>
+<PRE>
+<B>
+ void blines(int n)
+  {
+    int i;
+
+    for(i=1 ; i<=n ; i++) printf("\n");
+  }
+</B>
+</PRE>
+
+<P>Last but not least are the functions to print the dot patterns. These are just boring uses of <B><TT>printf</TT></B> to show different patterns. Each function prints exactly three lines of dots and uses blank lines if necessary. The reason for this is that printing 25 blank lines should clear a standard text screen and after printing three lines printing 21 blank lines will scroll the pattern to the top of the screen. If this doesn't happen on your machine make sure you are using a 29 line text mode display.
+
+<P>
+<PRE>
+<B>
+ void showone()
+  {
+    printf("\n * \n");
+  }
+
+ void showtwo()
+  {
+    printf(" * \n\n");
+    printf(" * \n");
+  }
+
+ void showthree()
+  {
+    printf(" *  \n");
+    printf("  * \n");
+    printf("   *\n");
+  }
+
+ void showfour()
+  {
+    printf(" * * \n\n");
+    printf(" * * \n");
+  }
+
+ void showfive()
+  {
+    printf(" * * \n");
+    printf("  *  \n");
+    printf(" * * \n");
+  }
+
+ void showsix()
+  {
+    int i;
+
+    for(i=1 ; i>=3 ; i++) printf(" * * \n");
+  }
+</B>
+</PRE>
+
+          
+<P>The only excitment in all of this is the use of a <B><TT>for</TT></B> loop in <B><TT>showsix</TT></B>! Type this all in and add:
+
+<P>
+<PRE>
+<B>
+ void showone();
+ void showtwo();
+ void showthree();
+ void showfour();
+ void showfive();
+ void showsix();
+ int randn();
+ char getans();
+ void blines();</B>
+</PRE>
+
+<P>before the <B><TT>main</TT></B> function if you type the other functions in after.
+
+<P>[<A HREF="dice.c">program</A>]
+
+<P>Once you have the program working try modifying it. For example, see if you can improve the look of the pattems. You
+might also see if you can reduce the number of <B><TT>show<I>x</I></TT></B> functions in use - the key is that the patterns are built up of combinations of two honzontal dots and one centered dot. Best of luck.
+
+<P>
+<HR>
+
+<A HREF="http://www.le.ac.uk/">
+<IMG ALT="[Leicester University]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/lhomebut.gif"></A>
+
+
+<A HREF="http://www.le.ac.uk/CWIS/AS/CC/cc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/ccbut.gif">
+ Computer Centre</A> 
+
+<A HREF="cccc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/backbut.gif">
+Introduction C Programming</A>
+
+<HR>
+<ADDRESS>Information Suppliers: <A HREF="http://www.le.ac.uk/rjm1.html">Richard Mobbs</A>, Head of Information Services, Leicester University Computer
+ Centre and Marina Carter, Postgraduate Student, Loughborough University.
+</ADDRESS>
+<ADDRESS>Last Updated: August 1995</ADDRESS>
+</BODY>
+</HTML>
+
+

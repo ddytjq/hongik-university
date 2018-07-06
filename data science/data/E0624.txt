@@ -1,0 +1,103 @@
+ID=E0624
+URL=http://www.hh.se/stud/d98rolb/ansi/strncmp().html
+SIZE=3208
+DATE=12/07/02
+TIME=19:22:49
+DATASET=C
+HTML=<html>
+<head>
+  <title>strncmp()</title>
+  <meta name="Generator" content="GuideML V1.6">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+<body>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="strncat().html"><img src="prev.gif" alt="PREV" border=0></a><a href="strncpy().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+<hr>
+<pre>
+strncmp-Compare strings, length limited
+
+Synopsis
+
+        #include &#060;string.h&#062;
+
+        x = strncmp(a,b,n);
+
+        int x;                     /* comparison result */
+        const char *a,*b;    /* strings being compared */
+        size_t n;
+
+Description
+
+        This function compares two NULL-terminated strings using the ASCII
+        collating sequence.  No more than n characters are compared.
+
+        The relative collating sequence of the strings is indicated by the
+        sign of the return value, as follows:
+
+            Sign      Meaning
+            ----      -------
+            negative  first string is below the second
+            zero      strings are equal
+            positive  first string is above the second
+
+        If the strings have different lengths, the shorter one is treated
+        as if it were extended with zeroes.
+
+
+Example
+
+        #include &#060;stdio.h&#062;
+        #include &#060;string.h&#062;
+
+        void result(char *name, int r)
+        {
+            char *p;
+
+            if (r == 0)
+            {
+                p = &quot;is equal to&quot;;
+            }
+            if (r &#060; 0)
+            {
+                p = &quot;is less than&quot;;
+            }
+            if (r &#062; 0)
+            {
+                p = &quot;is greater than&quot;;
+            }
+            printf(&quot;%s string A %s string Bn&quot;,name,p);
+        }
+
+        void main(void)
+        {
+            char a[256], b[256];
+            int n;
+
+            while(1)
+            {
+                printf(&quot;Enter string A: &quot;);
+                if (fgets(a,sizeof(a),stdin) == NULL)
+                {
+                    break;
+                }
+                printf(&quot;Enter string B: &quot;);
+                if (fgets(b,sizeof(b),stdin) == NULL)
+                {
+                    break;
+                }
+                printf(&quot;Enter maximum compare length: &quot;);
+                scanf(&quot;%d&quot;,&amp;n);
+                result(&quot;strncmp: &quot;,strncmp(a,b,n));
+            }
+            printf(&quot;n&quot;);
+        }
+
+See Also
+
+        <a href="strcmp().html"> strcmp </a>
+</pre>
+<hr>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="strncat().html"><img src="prev.gif" alt="PREV" border=0></a><a href="strncpy().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+</body>
+</html>
+

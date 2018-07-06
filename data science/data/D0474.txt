@@ -1,0 +1,748 @@
+ID=D0474
+URL=http://www.javaworld.com/javaworld/jw-12-2000/jw-1229-valframe.html
+SIZE=48946
+DATE=16/07/02
+TIME=14:48:04
+DATASET=Java
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title> Validation with pure Java</title>
+<!-- ssilog 7814 -->
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<meta name="keywords" content=" validation, introspection, Java Beans, Java">
+<meta name="description" content="
+The importance of employing a good data-validation framework cannot be overestimated. Eventually, someone (maybe even yourself!) is going to reuse the classes you've created. Unless your objects come with a built-in, robust data-validation mechanism that requires little maintenance, you'll need to advise that someone about the valid data ranges accepted by those objects. The core Java API has everything you need to solve this problem in the most elegant way. In this article, you will build a foundation for the data-validation framework whose grown-up version has been implemented successfully in large-scale commercial projects. (1,500 words)
+">
+<meta name="date" content="2000-12-29">
+<META NAME="DC.Date" CONTENT="2000-12-29">
+<basefont face="verdana, arial, helvetica" size="3" />
+<style type="text/css">
+            code {font-size: 90%; font-family: monospace;}
+            pre {font-size: 90%; font-family: monospace;}
+            td {font-size: 90%;}
+</style>
+<script language="javascript">
+<!--// IDG.net Scripts
+            function mail2Friend () {
+                window.parent.location = "/MailToFriend?url=" + escape(document.location);
+            }
+
+            function openBrWindow() {
+                win=window.open("http://www.javaworld.com/channel_content/jw-story-feedback.shtml",'Feedback','width=600,height=330,toolbar=no,location=no,directories=no,menubar=no,scrollbars=yes,resizable=yes');
+            }
+            //-->
+        </script>
+    </head>
+<body bgcolor="#ffffff" text="#000000" link="#990033" vlink="#990033" alink="#990033" topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" marginheight="0" marginwidth="0">
+<table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td colspan="2" width="186" bgcolor="#006699"><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0 ></a></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- START TOP 468x60 BANNER -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=636656?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=636656?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=636656?" border="0" height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer1" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- END TOP 468x60 BANNER --></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="26" valign="top" align="left" bgcolor="#ffffff"><img height=8 src="http://www.javaworld.com/images/c_whtbottom.gif" width=8 border=0 ></td>
+                <td width="100%"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.global/idgpixel7.18.00;sz=1x1;ord=636656?" border=0 height="1" width="1"><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.usa.jw/usajw.081501;sz=1x1;ord=636656?" border=0 height="1" width="1"></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160" align="middle" valign="center" nowrap><nobr><font face="Verdana, Arial, Sans-serif" color="#ffffff" size="2">December 2000</font></nobr><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="8" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltlft.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="100%" align="middle" valign="center">    <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">HOME</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/features/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FEATURED TUTORIALS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/columns/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">COLUMNS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/news-reviews/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">NEWS & REVIEWS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://forums.idg.net/webx?13@@.ee6b802"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FORUM</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/resources/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">JW RESOURCES</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/info/jw-about-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">ABOUT JW</font></a></td>
+        </tr>
+    </table></td>
+                <td bgcolor="#006699" width="8" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltrt.gif" width=8 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr valign="top">
+                <td bgcolor="#006699" width="160" align="middle" valign="top">
+                    <table width="160" border="0" cellspacing="0" cellpadding="0" bgcolor="#006699" summary="">
+                        <tr>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                            <td align="center">
+                                <form action="http://www.javaworld.com/isearch" method="GET" name="search">
+                                    <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /><br />
+                                    <input type="text" name="qt" size="12" maxlength="2047" /><br />
+                                    <input type="image" value="search" src="http://www.javaworld.com/images/button_blue.gif" border="0" width="97" height="18" alt="GO" /><br />
+                                    <input type="hidden" name="site" value="javaworld"><br />
+                                   <!-- <a href="http://www.google.com/"><img src="http://www.javaworld.com/images/google-power-fp.gif" width="108" height="45" border="0" alt="Google.com"></a>-->
+                                    <input type="hidden" name="ms" value="1">
+                                    <input type="hidden" name="tid" value="1">
+                                    <input type="hidden" name="st" value="1">
+                                    <input type="hidden" name="rf" value="0">
+                                   
+                                </form>
+                            </td>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                        </tr>
+                        <tr>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td><img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <a href="http://www.javaworld.com/archives/index-year.html"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>ARCHIVE</strong></font></a><br>
+                                <img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <strong><a href="http://www.javaworld.com/channel_content/jw-topical-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff">TOPICAL INDEX</font></a></strong></font><br><table cellspacing="0" cellpadding="0" border="0" summary="">
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/channel_content/jw-core-index.shtml"><font color="#ffffff">Core Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-enterprise-index.shtml"><font color="#ffffff">Enterprise Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-micro-index.shtml"><font color="#ffffff">Micro Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-applied-index.shtml"><font color="#ffffff">Applied Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-community-index.shtml"><font color="#ffffff">Java Community</font></a></strong></font><br /></td>
+                        </tr>
+                    </table><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-qna-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA Q&A INDEX</strong></font></a><br /><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-tips-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA TIPS INDEX</strong></font></a><br /> <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br /><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#CCCCCC"><strong>JavaWorld Services</strong></font><br /><img alt="" height="4" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /><table cellspacing="0" cellpadding="0" border="0" summary=""><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /><img alt="" height="7" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /></td><td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/subscribe"><font color="#ffffff">Free JavaWorld newsletters</font></a></strong></font></td></tr><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://javaworld.pricegrabber.com"><font color="#ffffff">ProductFinder </font></a></strong></font></td></tr><tr> <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/white-paper/index.shtml"><font color="#ffffff">White Paper Library</font></a></strong></font></td></tr>
+</table>
+<img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br />
+</td>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                        </tr>
+                        <tr valign="bottom">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_gryblbottom.gif" width=8 ></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr>
+                       <td width="8" bgcolor="#cccccc"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                           <td align="middle" bgcolor="#cccccc"><!-- SKYSCRAPER AD START HERE -->
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=636656?" width="120" height="600" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=skyscraper;sz=120x600;tile=3;ord=636656?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;skyscraper=med;sz=120x600;tile=3;ord=636656?" border=0 height="600" width="120"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer3" visibility="hidden" width=120 height=600></ILAYER>
+<!-- SKYSCRAPER AD ENDS HERE -->
+</td>
+                       <td width="8" bgcolor="#cccccc"><img height=8 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr valign="top">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_grybltop.gif" width=8 ></td>
+                        </tr>
+                    </table>
+                    <img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                    <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                <td width="100%">
+                    <!-- ## MAIN CONTENT STARTS HERE ### -->
+                    <font face="verdana, arial, helvetica" size="3">
+                        <strong></strong>
+                        <p>
+                            <h1 align="CENTER"> Validation with pure Java</h1>
+                            <h3 align="CENTER"> Build a solid foundation for the data-validation framework with the core Java API</h3>
+                        </p>
+                        <!--<BLOCKQUOTE><STRONG>Summary</STRONG><BR>-->
+                        <BLOCKQUOTE>
+<STRONG>Summary</STRONG><BR>
+
+The importance of employing a good data-validation framework cannot be overestimated. Eventually, someone (maybe even yourself!) is going to reuse the classes you've created. Unless your objects come with a built-in, robust data-validation mechanism that requires little maintenance, you'll need to advise that someone about the valid data ranges accepted by those objects. The core Java API has everything you need to solve this problem in the most elegant way. In this article, you will build a foundation for the data-validation framework whose grown-up version has been implemented successfully in large-scale commercial projects. <em>(1,500 words)</em>
+</BLOCKQUOTE>
+                        <!--</BLOCKQUOTE>-->
+                        <a href="http://www.javaworld.com/feedback" target="Feedback"><STRONG>By   Victor Okunev</STRONG></a>
+                        <p><img src="http://www.javaworld.com/images/rule_ltblue.gif" width="100%" height="2"><br />
+                           <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                           <a href="/javaworld/jw-12-2000/jw-1229-valframe_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><br /></p>
+                         <font size=-1>  <!-- REPLACE PAGECOUNT --></font>
+                        <p><!-- START BIG AD (336x280) -->
+<table align="right" border="0" cellpadding="0" cellspacing="0"><tr valign="bottom" align="center"><td><font face="verdana, arial, geneva, sans-serif" color="#999999" size="-2">Advertisement</font></td></tr><tr><td><table border=1 bordercolor="#cccccc" cellspacing="5" cellpadding="0"><tr><td>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=636656" width="336" height="280" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=636656"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=636656" border=0 height="280" width="336"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer5" visibility="hidden" width=336 height=280></ILAYER>
+</td></tr></table></td></tr></table>
+<!-- END BIG AD (336x280) --></p>
+                        <p><P>
+<img align="left" width="24" height="29" src="/javaworld/abcs/T.gif" alt="T">he idea of <em>constrained</em> properties in Java is not new. Since JDK 1.1, a legion of JavaBeans developers has used a powerful framework found in the <code>java.beans</code> package to enforce data-validation rules. Unfortunately, the rest of us -- who are not in the business of crafting "reusable software components that can be manipulated visually in a builder tool" -- quite often attempt to reinvent the wheel by abandoning the core Java approach in favor of various proprietary solutions. The externalization of data-validation rules is the area where you can see the most creativity. An interesting XML-based approach was recently proposed in the <a href="#resources">"Validation with Java and XML Schema"</a> series of <em>JavaWorld</em>. While admiring XML technology, I believe that Java has everything needed to solve the issue in the most elegant way. To show you, I invite you to rediscover some of the real gems found in the <code>java.beans</code> package. They will help you build a few useful classes and learn a couple of interesting tricks. <P>
+The logic behind constrained properties in Java is quite simple. Before accepting a new data value, the object (owner of the constrained property) makes sure it is accepted by all interested parties that may veto it. Such a "request for approval" is delivered to every registered <code>java.beans.VetoableChangeListener</code> in the form of a <code>java.beans.PropertyChangeEvent</code> object. If one or more vetoes have been issued, the proposed data value is rejected. A veto is presented by a <code>java.beans.PropertyVetoException</code>. Generally speaking, the complexity of the rules enforced by those listeners has no limit and depends only on the project's requirements and the developer's creativity. The objective of this exercise is to learn how to deal with the most generic data-validation criteria that you can apply to most objects. <P>
+First, let's create a class called <code>BusinessObject</code> with a simple numeric property. Next, I'll show how you can modify the property into a constrained one to see how it differs from the simple one. <P>
+<CODE><P>
+<BR>
+
+public class BusinessObject {<BR>
+
+<BR>
+
+&nbsp;&nbsp;private int numericValue;<BR>
+
+<BR>
+
+&nbsp;&nbsp;public void setNumericValue(int newNumericValue) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;numericValue = newNumericValue;<BR>
+
+&nbsp;&nbsp;}<BR>
+
+<BR>
+
+&nbsp;&nbsp;public int getNumericValue() {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;return numericValue;<BR>
+
+&nbsp;&nbsp;}<BR>
+
+}<BR>
+</CODE><P>
+Please note that the only property of this class will silently accept any value of the proper type. To make it constrained, a vetoable event needs to be produced and distributed to the consumers. A utility class called <code>java.beans.VetoableChangeSupport</code> was designed specifically to fulfill this set of responsibilities. A new class called <code>ConstrainedObject</code> will manage all the arrangements with this utility class, thereby being a good loving parent for the <code>BusinessObject</code>. Speaking of consumers, we need to build another custom class called <code>Validator</code> that hosts generic data-validation algorithms. It is going to be the only consumer of the vetoable events in our framework. This simplified approach deviates from the rules of the JavaBeans game (check <a href="#resources">JavaBeans API Specification</a> for details), which requires presenting every constrained property as a bound one and providing support for handling multiple listeners. This deviation is perfectly acceptable, since you are not building a JavaBean here, but it's still worth mentioning. <P>
+<CODE><P>
+<BR>
+
+import java.beans.*;<BR>
+
+<BR>
+
+/**<BR>
+* The responsibility of the ConstrainedObject is to delegate generic data entry<BR>
+* validation responsibilities to the {@link Validator} and provide<BR>
+* subclasses with transparent interface to it.<BR>
+*/<BR>
+
+public class ConstrainedObject {<BR>
+
+<BR>
+
+&nbsp;&nbsp;private VetoableChangeSupport vetoableSupport = new VetoableChangeSupport(this);<BR>
+
+<BR>
+
+&nbsp;&nbsp;/**<BR>
+
+&nbsp;&nbsp; * Creates a new object with generic property validator<BR>
+
+&nbsp;&nbsp; */<BR>
+
+&nbsp;&nbsp;public ConstrainedObject() {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;vetoableSupport.addVetoableChangeListener(new Validator());<BR>
+
+&nbsp;&nbsp;}<BR>
+
+<BR>
+
+&nbsp;&nbsp;/**<BR>
+
+&nbsp;&nbsp; * This method will be used by subclasses to validate a new value in<BR>
+
+&nbsp;&nbsp; * the constrained properties of the int type. It can be easily overloaded<BR>
+
+&nbsp;&nbsp; * to deal with other primitive types as well.<BR>
+
+&nbsp;&nbsp; * @param propertyName The programmatic name of the property that is about to change.<BR>
+
+&nbsp;&nbsp; * @param oldValue The old value of the property.<BR>
+
+&nbsp;&nbsp; * @param newValue The new value of the property.<BR>
+
+&nbsp;&nbsp; */<BR>
+
+&nbsp;&nbsp;protected void validate(String propertyName, int oldValue, int newValue) throws PropertyVetoException {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;vetoableSupport.fireVetoableChange(propertyName, new Integer(oldValue), new Integer(newValue));<BR>
+
+&nbsp;&nbsp;}<BR>
+
+}<BR>
+</CODE><P>
+For the sake of keeping the code compact, the <code>ConstrainedObject</code> provides a method that validates <code>int</code> properties only. You can easily overload this method for the other types as well. If you do so, just make sure to wrap all the primitive types in their respective wrappers since <code>PropertyChangeEvent</code> delivers old and new values as references types. Now you are ready to issue a second revision of the <code>BusinessObject</code>: <P>
+<CODE><P>
+<BR>
+
+import java.beans.*;<BR>
+
+<BR>
+
+/**<BR>
+* This example class actually uses data-validation services defined in this framework.<BR>
+*/<BR>
+
+public class BusinessObject extends ConstrainedObject {<BR>
+
+<BR>
+
+&nbsp;&nbsp;private int numericValue;<BR>
+
+<BR>
+
+&nbsp;&nbsp;public void setNumericValue(int newNumericValue) throws PropertyVetoException {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;// validate proposed value<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;validate("numericValue", numericValue, newNumericValue);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;// the new value is approved, since no exceptions were thrown<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;numericValue = newNumericValue;<BR>
+
+&nbsp;&nbsp;}<BR>
+
+<BR>
+
+&nbsp;&nbsp;public int getNumericValue() {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;return numericValue;<BR>
+
+&nbsp;&nbsp;}<BR>
+
+}<BR>
+</CODE><P>
+As you see, the setter method now looks a bit more complicated than before.  It is a small price to pay for having a constrained property. Now you must build a <code>Validator</code>, which is the most interesting part of this exercise. This is where you learn how to externalize data-validation rules using nothing but pure Java. <P>
+<CODE><P>
+<BR>
+
+import java.beans.*;<BR>
+
+<BR>
+
+public class Validator implements VetoableChangeListener {<BR>
+
+<BR>
+
+&nbsp;&nbsp;public void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;// do the validation here<BR>
+
+&nbsp;&nbsp;}<BR>
+
+}<BR>
+</CODE><P>
+That code skeleton is just a starting point, but it demonstrates what is available at the beginning of the validation process. Surprisingly, it has a lot of information. From <code>PropertyChangeEvent</code> you can learn about the constrained property's object source, the name of the property itself, and its existing and proposed values. With that information handy, you can use the power of <em>introspection</em> to inquire about the property's additional information. What information should you look for? Validation rules, of course! A class <code>java.beans.Introspector</code> was designed solely for the purpose of collecting extra information about a target class. The information is provided in the form of a <code>java.beans.BeanInfo</code> object, which in this example, you may request with a simple call like this: <P>
+<CODE><P>
+<BR>
+
+BeanInfo info = Introspector.getBeanInfo(evt.getSource().getClass());<BR>
+</CODE><P>
+The <code>Introspector</code> may collect <code>BeanInfo</code> in two ways. First it tries to get explicit information about the target class by looking for a class with the same name except for its <code>BeanInfo</code> suffix. In this case, it will look for a class named <code>BusinessObjectBeanInfo</code>. If for any reason such a class is not available, then the <code>Introspector</code> tries its best to dynamically build a <code>BeanInfo</code> object by using low-level reflection. <P>
+Although a fascinating subject, the implicit introspection is obviously not what you are going to rely upon in your quest for validation rules. One great thing about the <code>BeanInfo</code> class is its relation to the target class, which can be defined as a "rock-solid loose coupling." The absence of references from the target class makes the coupling very loose. Should the validation rules change, you just need to update and recompile the <code>BeanInfo</code> class without possibly affecting the target class. Clearly defined naming rules that are documented in the core Java API make compiling rock solid. This is where the rules-externalization approach with <code>BeanInfo</code> beats its proprietary-implemented counterparts hands down. <P>
+Before you start building the explicit <code>BeanInfo</code> class, I have to mention that you can load it with a variety of descriptors concerning the class itself, or its methods and events, not just the properties. Thanks to the creators of Java, you don't have to provide all that information. The <code>Introspector</code> picks up what is available explicitly and then performs its implicit analysis magic. Therefore, you can concentrate on the property descriptors only. <P>
+To describe a property's data-validation rules, you use the <code>java.beans.PropertyDescriptor</code> class. Looking at the documentation, you'll discover that this class has the facilities to provide every imaginable piece of information about the property, including data-validation rules! You use the <code>setValue</code> method to define the rules as a set of named attributes. Here is how you can constrain the bounds for the numeric property <code>numericValue</code>: <P>
+<CODE><P>
+<BR>
+
+PropertyDescriptor _numericValue = new PropertyDescriptor("numericValue", targetClass, "getNumericValue", "setNumericValue");<BR>
+
+_numericValue.setValue("maxVal", new Integer(100));<BR>
+
+_numericValue.setValue("minVal", new Integer(-100));<BR>
+</CODE><P>
+The only weak point here is that you cannot rely on the power of the Java compiler to check the spelling of the attribute's names. Using a predefined set of constants can easily fix that. The class <code>Validator</code> is a good candidate for hosting such constants: <P>
+<CODE><P>
+<BR>
+
+public static final String MAX_VALUE = "maxValue";<BR>
+
+public static final String MIN_VALUE = "minValue";<BR>
+</CODE><P>
+So now, you can rewrite the same rules more safely. With all this in mind, let's build a final revision of the <code>BeanInfo</code> class: <P>
+<CODE><P>
+<BR>
+
+import java.beans.*;<BR>
+
+<BR>
+
+public class BusinessObjectBeanInfo extends SimpleBeanInfo {<BR>
+
+<BR>
+
+&nbsp;&nbsp;Class targetClass = BusinessObject.class;<BR>
+
+<BR>
+
+&nbsp;&nbsp;public PropertyDescriptor[] getPropertyDescriptors() {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;try&nbsp;&nbsp;{<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PropertyDescriptor numericValue = new PropertyDescriptor("numericValue", targetClass, "getNumericValue", "setNumericValue");<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;numericValue.setValue(Validator.MAX_VALUE, new Integer(100));<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;numericValue.setValue(Validator.MIN_VALUE, new Integer(-100));<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PropertyDescriptor[] pds = new PropertyDescriptor[] {numericValue};<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return pds;<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;} catch(IntrospectionException ex) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex.printStackTrace();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return null;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;}<BR>
+
+}<BR>
+</CODE><P>
+Finally, you complete the <code>Validator</code> so it can retrieve and analyze the information. It will use a handy method for retrieving a <code>PropertyDescriptor</code> from the <code>BeanInfo</code> by the property's programmatic name. In case the property was not found for any reason, the method will notify the caller with a self-explanatory exception. <P>
+<CODE><P>
+<BR>
+
+import java.beans.*;<BR>
+
+<BR>
+
+/**<BR>
+* This class implements generic data-validation mechanism that is based on the external<BR>
+* rules defined in the BeanInfo class.<BR>
+*/<BR>
+
+public class Validator implements VetoableChangeListener {<BR>
+
+<BR>
+
+&nbsp;&nbsp;public static final String MAX_VALUE = "maxValue";<BR>
+
+&nbsp;&nbsp;public static final String MIN_VALUE = "minValue";<BR>
+
+<BR>
+
+&nbsp;&nbsp;/**<BR>
+
+&nbsp;&nbsp; * The only method required by {@link VetoableChangeListener} interface.<BR>
+
+&nbsp;&nbsp; */<BR>
+
+&nbsp;&nbsp;public void vetoableChange(PropertyChangeEvent evt) throws PropertyVetoException {<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;try {<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// here we hope to retrieve explicitly defined additional information<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// about the object-source of the constrained property<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BeanInfo info = Introspector.getBeanInfo(evt.getSource().getClass());<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// find a property descriptor by given property name<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PropertyDescriptor descriptor = getDescriptor(evt.getPropertyName(), info);<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Integer max = (Integer) descriptor.getValue(MAX_VALUE);<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// check if new value is greater than allowed<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if( max != null && max.compareTo(evt.getNewValue()) &lt; 0 ) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// complain!<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new PropertyVetoException("Value " + evt.getNewValue() + " is greater than maximum allowed " + max, evt);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Integer min = (Integer) descriptor.getValue(MIN_VALUE);<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// check if new value is less than allowed<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if( min != null && min.compareTo(evt.getNewValue()) &gt; 0 ) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// complain!<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new PropertyVetoException("Value " + evt.getNewValue() + " is less than minimum allowed " + min, evt);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;} catch (IntrospectionException ex) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex.printStackTrace();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;}<BR>
+
+<BR>
+
+&nbsp;&nbsp;/**<BR>
+
+&nbsp;&nbsp; * This utility method tries to fetch a PropertyDescriptor from BeanInfo object by given property<BR>
+
+&nbsp;&nbsp; * name.<BR>
+
+&nbsp;&nbsp; * @param name the programmatic name of the property<BR>
+
+&nbsp;&nbsp; * @param info the bean info object that will be searched for the property descriptor.<BR>
+
+&nbsp;&nbsp; * @throws IllegalArgumentException if a property with given name does not exist in the given<BR>
+
+&nbsp;&nbsp; * BeanInfo object.<BR>
+
+&nbsp;&nbsp; */<BR>
+
+&nbsp;&nbsp;private PropertyDescriptor getDescriptor(String name, BeanInfo info) throws IllegalArgumentException {<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;PropertyDescriptor[] pds = info.getPropertyDescriptors();<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;for( int i=0; i&lt;pds.length; i++) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if( pds[i].getName().equals(name) ) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return pds[i];<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;throw new IllegalArgumentException("Property " + name + " not found.");<BR>
+
+&nbsp;&nbsp;}<BR>
+
+}<BR>
+</CODE><P>
+Well, believe it or not, that's it! You have all the pieces in place now and are ready to test your data validation. This simple driver does just that: <P>
+<CODE><P>
+<BR>
+
+/**<BR>
+* A simple application that tries to cause data-validation exception<BR>
+* condition.<BR>
+*/<BR>
+
+public class Driver {<BR>
+
+<BR>
+
+&nbsp;&nbsp;public static void main(String[] args) {<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;try {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessObject source = new BusinessObject();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;source.setNumericValue(10);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println("Value accepted: " + source.getNumericValue());<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;source.setNumericValue(-10);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println("Value accepted: " + source.getNumericValue());<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;source.setNumericValue(101);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// we should never reach this line<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println("Value accepted: " + source.getNumericValue());<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;} catch (Exception ex) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex.printStackTrace();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;}<BR>
+
+}<BR>
+</CODE><P>
+When you run the application, you will see that the line <code>source.setNumericValue(101)</code> causes a <code>PropertyVetoException</code> with the following message: "Value 101 is greater than maximum allowed 100." Frankly, it is not often that exceptions make me happy. I guess this case is an exception. <P><FONT SIZE="+1"><STRONG> Conclusion </STRONG></FONT><BR>
+
+In this short article, we have achieved quite a lot. I have shown you that the core Java API has everything you need to build a simple and robust data-validation mechanism. In addition, I've shown you how to build this mechanism into a framework whose grown-up version I successfully implemented in actual large-scale commercial projects. Of course I do not "hand bomb" either <code>BusinessObject</code> or <code>BeanInfo</code> classes, since the number of properties in the financial business object I deal with sometimes reaches a couple hundred. With my team, I have built an application that automatically generates Java code for those classes based on the information from the data dictionary. With this approach it takes no time at all to adjust the rules if needed. Looking at the code you may notice that the only package you had to import was <code>java.beans</code>. I hope that you will have a greater appreciation for it after reading this article. Please feel free to modify and improve the classes built here. After all, it is just a proof of concept. <IMG HEIGHT="12" WIDTH="22" SRC="http://www.idg.net/microsites/javaworld/javaworld/icons/jw-dingbat.gif"><P><br /></p>
+                        <font size=-1><!-- REPLACE PAGEURLS --> </font>
+                        <p>
+                            <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                            <a href="/javaworld/jw-12-2000/jw-1229-valframe_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><STRONG>About the author</STRONG><BR>
+Sun Certified Java Programmer <a href="http://www.javaworld.com/javaworld/feedback/jw-feedback-form.html" target="_blank">Victor Okunev</a> is a design architect of the R&D team for <a href="http://www.plexus.ca">Plexus Systems Design</a> of Vancouver. With an M.S. in computer science from Moscow State Institute of Radio Engineering, Electronics, and Automation, Okunev has more than 10 years' experience in software development, primarily on enterprise-scale applications. He also teaches Java classes for <a href="http://www.learningtree.ca">Learning Tree International</a>, snowboards, and enjoys sea and whitewater kayaking.
+<br /></p>
+                        <p><ul><A NAME="resources"></a><STRONG>Resources</STRONG>
+<BR>
+
+<LI>Download the source code to this article: <BR><A HREF="http://www.javaworld.com/jw-12-2000/valframe/valframe.zip">http://www.javaworld.com/jw-12-2000/valframe/valframe.zip
+</A><BR>
+
+
+<LI>Learn the JavaBeans concepts from the best source: JavaBeans API Specification: <BR><A HREF="http://java.sun.com/products/javabeans/docs/spec.html">http://java.sun.com/products/javabeans/docs/spec.html
+</A><BR>
+
+
+<LI>Use this online tutorial to get up to speed with the content of <code>java.beans</code> package: <BR><A HREF="http://java.sun.com/docs/books/tutorial/javabeans/index.html">http://java.sun.com/docs/books/tutorial/javabeans/index.html
+</A><BR>
+
+
+<LI>The series "Validation with Java and XML Schema" by Brett McLaughlin describes an XML approach for validating data with Java:
+
+<ul>
+<li><a href="http://javaworld.com/javaworld/jw-09-2000/jw-0908-validation.html">Part 1. Learning the Value of Data Validation and Why Pure Java Isn't the Complete Solution for Handling It</a></li>
+<li><a href="http://javaworld.com/javaworld/jw-10-2000/jw-1013-validation2.html">Part 2. Using XML Schema for Constraining Java Data</li> 
+<li><a href="http://javaworld.com/javaworld/jw-11-2000/jw-1110-validation3.html">Part 3. Parsing XML Schema to Validate Data</a></li>
+<li><a href="http://javaworld.com/javaworld/jw-12-2000/jw-1208-validation4.html">Part 4. Building Java Representations of Schema Constraints and Applying Them to Java Data</a></li>
+</ul>
+
+<LI>For a complete listing of Mark Johnson's <strong>JavaBeans</strong> columns in <em>JavaWorld</em>: <BR><A HREF="http://www.javaworld.com/javaworld/topicalindex/jw-ti-beans.html">http://www.javaworld.com/javaworld/topicalindex/jw-ti-beans.html
+</A><BR>
+
+
+<LI>For a complete listing of all <strong>JavaBeans</strong>-related articles on <em>JavaWorld</em>: <BR><A HREF="http://www.javaworld.com/javaworld/topicalindex/jw-ti-jbeans.html">http://www.javaworld.com/javaworld/topicalindex/jw-ti-jbeans.html
+</A><BR>
+
+
+<LI>Sign up for the <em>JavaWorld This Week</em> free weekly email newsletter and keep up with what's new at <em>JavaWorld</em>: <BR><A HREF="http://www.idg.net/jw-subscribe">http://www.idg.net/jw-subscribe
+</A><BR>
+
+
+</ul><br /></p>
+                        <!-- REPLACE SIDEBAR -->
+                    </font>
+                    <!-- ## MAIN CONTENT ENDS HERE ### -->
+                </td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="168" nowrap><nobr><img src="http://www.javaworld.com/images/spacer.gif" width=160 height=8 border=0 ><img src="http://www.javaworld.com/images/c_bllftbottom.gif" width=8 height=8 border=0 ></nobr></td>
+                <td width="100%"><img src="http://www.javaworld.com/images/spacer.gif" width=1 height=1 border=0 ></td>
+                <td width="8"><img src="http://www.javaworld.com/images/spacer.gif" width=8 height=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="186" bgcolor="#006699" align="middle"><nobr><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2"></font></nobr><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0></a></td>
+                <td bgcolor="#cccccc" width="8" valign="bottom"><img height=8 src="http://www.javaworld.com/images/c_blgrylftbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- BOTTOM 468x60 AD STARTS HERE -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=636656?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=636656?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=636656?" border=0 height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer4" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- BOTTOM 468x60 AD ENDS HERE -->
+</td>
+                <td width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table bgcolor="#006699" align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="100%" align="middle" valign="center">    <font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">
+        <p>
+            <br />
+            <a href="http://www.javaworld.com"><font color="#ffffff">HOME</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/features/index.shtml"><font color="#ffffff">FEATURED TUTORIALS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/columns/index.shtml"><font color="#ffffff">COLUMNS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/news-reviews/index.shtml"><font color="#ffffff">NEWS & REVIEWS</font></a>&nbsp;|&nbsp;
+            <a href="http://forums.idg.net/webx?13@@.ee6b802"><font color="#ffffff">FORUM</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/resources/index.shtml"><font color="#ffffff">JW RESOURCES</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/info/jw-about-index.shtml"><font color="#ffffff">ABOUT JW</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/feedback"><font color="#ffffff">FEEDBACK</font></a>
+        </p>
+        <p>
+
+            <a href="http://www.javaworld.com/javaworld/common/jw-copyright.html"><font color="#ffffff">Copyright © 2002</font></a> JavaWorld.com, an IDG Communications company
+        </p>
+    </font>
+</td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+            <tr>
+                <td width="100%" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_blrtbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <!--TOP_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=636656?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer1.pageX,layer1.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--125x125-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=med;sz=125x125;tile=2;ord=636656?" width=125 height=125 visibility="hidden" onLoad="moveToAbsolute(layer2.pageX,layer2.pageY);clip.height=125;clip.width=125;visibility='show';">
+</LAYER>
+
+<!--SKYSCRAPER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=636656?" width=120 height=600 visibility="hidden" onLoad="moveToAbsolute(layer3.pageX,layer3.pageY);clip.height=600;clip.width=120;visibility='show';">
+</LAYER>
+
+<!--BOTTOM_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=636656?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer4.pageX,layer4.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--Big AD-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=636656" width=336 height=280 visibility="hidden" onLoad="moveToAbsolute(layer5.pageX,layer5.pageY);clip.height=280;clip.width=336;visibility='show';">
+</LAYER>
+    </body>
+<!-- stories1 -->
+<!-- DOCID 658561 -->
+</html>
+

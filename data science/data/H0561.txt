@@ -1,0 +1,1096 @@
+ID=H0561
+URL=http://www.bioresearchonline.com/bizsolution/aPartner.asp?PartnerURL=http%3A%2F%2Fservice%2Ebfast%2Ecom%2Fbfast%2Fclick%3Fbfmid%3D1293048%26siteid%3D39431542%26bfpage%3Drfq
+SIZE=37333
+DATE=11/07/2002
+TIME=17:06:11
+DATASET=Biology
+HTML=
+<html>
+
+
+
+<head>
+
+
+
+
+<Script language="JavaScript">
+Offercounter = 0
+
+function spaceTrim(InString) {
+	var LoopCtrl=true;
+	while (LoopCtrl) {
+		if (InString.indexOf("  ") != -1) {
+			Temp = InString.substring(0, InString.indexOf("  "))
+			InString = Temp + InString.substring(InString.indexOf("  ")+1, 
+				InString.length)
+		} else
+			LoopCtrl = false;
+	}
+	if (InString.substring(0, 1) == " ")
+		InString = InString.substring(1, InString.length)
+	if (InString.substring (InString.length-1) == " ")
+		InString = InString.substring(0, InString.length-1)
+	return (InString);
+}
+
+function isUSZip (InString)  {
+	if (InString.length==0) 
+		return (false);
+	if ((InString.length!=5) && (InString.length!=10))
+		return (false);
+	RefString="1234567890-";
+	for (Count=0; Count < InString.length; Count++)  {
+		TempChar= InString.substring (Count, Count+1);
+		if (RefString.indexOf (TempChar, 0)==-1)	return (false);
+	}
+	return (true);
+}
+
+function stripChar (InString, StripThis)  {
+	OutString="";
+	for (Count=0; Count < InString.length; Count++)  {
+		TempChar=InString.substring (Count, Count+1);
+		if (TempChar!=StripThis)
+			OutString=OutString+TempChar;
+	}
+	return (OutString);
+}
+
+function Validate (form){
+	ErrorText="";
+	AllTrue= true;
+
+	if (!customername(form))   AllTrue = false;
+	if (!street(form))         AllTrue = false;
+	if (!city(form))           AllTrue = false;
+	if (!state(form))          AllTrue = false;
+	if (!zipcode(form))        AllTrue = false;
+	if (!phone(form))          AllTrue = false;
+	if (!email(form))          AllTrue = false;
+	if (!checkoffercode(form))      AllTrue = false;
+	if (!checknumemps(form))	AllTrue = false;
+
+	if(!AllTrue) {
+		alertext= "The following errors were noted:"+"\n\n"+ErrorText;
+
+		alert(alertext);
+		return;
+		}
+	else{
+		form.submit();
+		}
+}
+function checkoffercode(form){
+
+so = new Object();
+su = new Object();
+so[0] = 17;
+so[1] = "AE-A";
+so[2] = "AO-A";
+so[3] = "R-A";
+so[4] = "E-A";
+so[5] = "U-A";
+so[6] = "B-A";
+so[7] = "I-A";
+so[8] = "D-A";
+so[9] = "G-A";
+so[10] = "T-A";
+so[11] = "N-A";
+so[12] = "C-A";
+so[13] = "A-ALC";
+so[14] = "	A-EX";
+so[15] = "A-DM";
+so[16] = "A-SM";
+so[17] = "TC-A";
+
+
+su[0] = 17;
+su[1] = "AE-B";
+su[2] = "AO-B";
+su[3] = "R-B";
+su[4] = "E-B";
+su[5] = "U-B";
+su[6] = "B-B";
+su[7] = "I-B";
+su[8] = "D-B";
+su[9] = "G-B";
+su[10] = "T-B";
+su[11] = "N-B";
+su[12] = "C-B";
+su[13] = "B-ALC";
+su[14] = "B-EX";
+su[15] = "B-DM";
+su[16] = "B-SM";
+su[17] = "TC-B";
+
+	
+	if ((!ifExistsString(form.freeoffer)) && (!ifExistsString(form.specialoffer))) return (true);
+	Offercounter ++;
+		
+	if (!ifExistsString(form.freeoffer)){
+
+		if (Offercounter > 2){
+			form.specialoffer.value="Unknown";
+			return(true);
+			}
+			
+			Ctrl = form.specialoffer;
+			if (spaceTrim(Ctrl.value) ==""){
+				form.specialoffer.value="Enter Code";
+				form.specialoffer.focus();
+				form.specialoffer.select();
+				alert("Special Offer Code cannot be blank")
+				ErrorText += "Special offer code cannot be blank."+"\n";
+				form.specialoffer.value="Enter Code";
+				form.specialoffer.focus();
+				form.specialoffer.select();
+				return (false);
+				}
+
+				tempcode = Ctrl.value.toUpperCase();
+				var found = false;
+								
+	for (count = 1; count <= so[0]; count++){
+			if (stripChar(tempcode,"-") == stripChar(so[count],"-")){
+				form.specialoffer.value = so[count];
+				found = true;
+				break;
+				}
+		}
+			if (found)	{
+				form.specialoffer.value = so[count];
+				return (true);
+				}else{
+			form.specialoffer.value="Enter Code";
+			form.specialoffer.focus();
+			form.specialoffer.select();
+			alert("Invalid Code: Please check your brochure for the code.");				
+			ErrorText += "Invalid special offer code."+"\n";
+			return (false);
+			}
+		}
+
+	if (!ifExistsString(form.specialoffer)){
+
+
+			Ctrl = form.freeoffer;
+			if (spaceTrim(Ctrl.value) ==""){
+					if (Offercounter > 2){
+					form.freeoffer.value="Unknown";
+					return(true);
+					}
+
+				form.freeoffer.value="Enter Code";
+				form.freeoffer.focus();
+				form.freeoffer.select();
+				alert("Free Offer Code cannot be blank")
+				ErrorText += "Free offer code cannot be blank."+"\n";
+				form.freeoffer.value="Enter Code";
+				form.freeoffer.focus();
+				form.freeoffer.select();
+				return (false);
+				}
+
+				tempcode = Ctrl.value.toUpperCase();
+				var found = false;
+	for (count = 1; count <= su[0]; count++){
+			if (stripChar(tempcode,"-") == stripChar(su[count],"-")){
+				form.freeoffer.value = su[count];
+				found = true;
+				break;
+				}
+		}
+			if (found)	{
+				form.freeoffer.value = su[count];
+				return (true);
+				}else{
+				if (Offercounter > 2){
+					form.freeoffer.value="Unknown";
+					return(true);
+					}
+				form.freeoffer.value="Enter Code";
+				form.freeoffer.focus();
+				form.freeoffer.select();
+				alert("Invalid Code: Please check your brochure for the code.");				
+				ErrorText += "Invalid free offer code."+"\n";
+				return (false);
+			}
+		}
+}
+function customername(form){
+
+	Ctrl = form.FName;
+	if (spaceTrim(Ctrl.value) == "") {
+		ErrorText += "Your first name cannot be blank."+"\n";
+		return (false);
+		}
+	Ctrl = form.LName;
+	if (spaceTrim(Ctrl.value) == "") {
+		ErrorText += "Your last name cannot be blank."+"\n";
+		return (false);
+		}
+	return(true);
+}
+function street(form){
+
+	Ctrl = form.Address_1;
+	if (spaceTrim(Ctrl.value) == "") {
+		ErrorText += "Address 1 cannot be blank."+"\n";
+		return (false);
+		}
+	else{
+		return (true);
+		}
+}
+function city(form){
+
+	Ctrl = form.City;
+	if (spaceTrim(Ctrl.value) == "") {
+		ErrorText += "The City cannot be blank."+"\n";
+		return (false);
+		}
+	else{
+		return (true);
+		}
+}
+function state(form){
+var USStateCodes = "AL|AK|AS|AZ|AR|CA|CO|CT|DE|DC|FM|FL|GA|GU|HI|ID|IL|IN|IA|KS|KY|LA|ME|MH|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|MP|OH|OK|OR|PW|PA|PR|RI|SC|SD|TN|TX|UT|VT|VI|VA|WA|WV|WI|WY|AE|AA|AE|AE|AP";
+
+	Ctrl = form.State;
+	if (spaceTrim(Ctrl.value) == "") {
+		ErrorText += "The State/Province cannot be blank."+"\n";
+		return (false);
+		}
+	
+	if ((USStateCodes.indexOf(Ctrl.value.toUpperCase()) != -1) && (Ctrl.value.length == 2)){
+		return (true);
+		}
+	else{
+		ErrorText += "The State/Province is not valid."+"\n";
+		return (false);
+		}
+}
+function zipcode(form){
+
+	Ctrl = form.Zip;
+	if (isUSZip(Ctrl.value)){
+		return(true);
+		}
+	else{
+		ErrorText += "The Zip/Postal Code is not valid."+"\n";
+		return (false);
+		}
+}
+
+function phone(form){
+
+	Ctrl = form.Phone;
+        fon = Ctrl.value
+	if (spaceTrim(Ctrl.value) == "") {
+		ErrorText += "The Phone Number cannot be blank."+"\n";
+		return (false);
+		}
+	return (true);
+}
+
+var reEmail = /^.+\@.+\..+$/
+
+function email(form){
+	Ctrl = form.email;
+	if (spaceTrim(Ctrl.value) == "") {
+		ErrorText += "The EMail address cannot be blank."+"\n";
+		return (false);
+		}
+	if (reEmail.test(Ctrl.value)){
+         return (true);
+         }
+    else {
+		ErrorText += "The EMail address is an invalid format."+"\n";
+		return (false);
+		}
+    
+
+}	
+function ifExists (CheckVar) {
+	CheckVar = "" + CheckVar; 
+	if (CheckVar == "<undefined>"){
+		return (false);
+	}else{
+		return (true);
+	}
+}
+function ifExistsString (CheckVar) {
+	if (CheckVar == null){
+		return (false);
+	}else{
+		return (true);
+}
+}
+
+function checknumemps(form){
+
+	Ctrl = form.Number_Employees;
+        fon = Ctrl.value
+	if (spaceTrim(Ctrl.value) == "") {
+		ErrorText += "The Number of Employees cannot be blank."+"\n";
+		return (false);
+		}
+		
+	if (isNaN(spaceTrim(Ctrl.value))) {
+		ErrorText += "Please enter a number for the Number of Employees."+"\n";
+		return (false);
+		}
+	if (Ctrl.value<1) {
+		ErrorText += "Number of Employees cannot be zero."+"\n";
+		return (false);
+		}
+	return (true);
+}
+
+</Script>
+
+
+<title>Bizfon, Inc., phone systems for small business - Contact Me Form</title>
+<meta name="description" content="Bizfon is a company that is dedicated to improving the communication systems of small businesses.  Fill out a request for a quote, or our contact form and we would be happy to assist you.  Our Live On-Line Sales Help is here to help you as well.  Bizfon, phone systems for small businesses with something to say.">
+<meta name="keywords" content="Bizfon, bizfon confidentiality, Bizfon quote, contact form, quote request form, bizfon quote request form, bizfon quote form, Bizfone, Bizfon Inc., BizPhone, Telephone System, Telephone Systems, telephone system, small office phone systems, Phone, Phone Systems, Phones, phone, phones, Telecommunications, Communications, telecommunications ">
+
+<link rel="stylesheet" type="text/css" href="include/styles.css">
+
+<script language="JavaScript1.2" src="include/drpmenu1.js"></script>
+
+
+<meta name="Microsoft Border" content="tlb">
+</head>
+
+<body topmargin="112" leftmargin="125" marginheight="115" marginwidth="125" onLoad="onloadstuff();"><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td>
+
+<div id="hometemplate" style="position:absolute; left:0px; top:1px; width:120px; height:30px; z-index: 1; border: 0px none #000000; visibility: visible"> 
+  <a name="top"></a> <img src="images/hometemplate.gif" border="0" width="120" height="30"> 
+   </div>
+<div id="homelink" style="position:absolute; left:80px; top:1px; width:120px; height:20px; z-index: 2; border: 0px none #000000; visibility: visible"> 
+        <a href="default.htm" class="tophome">HOME</a> 
+</div>
+<div id="tag" style="position:absolute; left:0px; top:20px; width:120px; height:106px; z-index: 1; border: 0px none #000000; visibility: visible"> 
+     <img src="images/litetag.gif" border="0" width="120" height="106">
+</div>
+
+<div style="position: absolute; left: 190; top: 12"> 
+	<img src="images/newtopimage.gif" align="absbottom" border="0" width="255" height="92"  > 
+</div>
+
+ 
+<div id="QMARK" style="position:absolute; left:535px; top:20px; width:100px; height:35px; z-index:4;  border: 1px none #000000; visibility: visible">
+	<a href="gotquestions.asp" onMouseOut="MM_swapImgRestore()" onMouseover="MM_swapImage('qcircle','','images/qcircle.gif','1')"><img src="images/qcircledwn.gif" border="0" name="qcircle" width="100" height="33"></a><br>
+</div>
+<div id="QMARK" style="position:absolute; left:535px; top:60px; width:100px; height:35px; z-index:4;  border: 1px none #000000; visibility: visible">
+	<a href="shoppingcart.asp" onMouseOut="MM_swapImgRestore()" onMouseover="MM_swapImage('ncart','','images/ncartup.gif','1')"><img src="images/ncartdwn.gif" border="0" name="ncart" width="100" height="38"></a><br>
+</div>
+
+ <div id="callme" style="position: absolute; left:450px; top:40px; width:53px; height:13px; z-index:102; background-color:#FFFFFF; layer-background-color:#FFFFFF; border: 1px none #000000; visibility: visible"> 
+  <a href="javascript:callmenow();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('callmenow','','images/callme.gif','1')"> 
+  <img name="callmenow" border="0" src="images/live.gif" width="53" height="13"></a> 
+</div>
+
+	<script>
+	var isIE4, isNav4, isNav6;
+    if (navigator.appVersion.charAt(0) == "4")
+    {
+        if (navigator.appName.indexOf("Explorer") >= 0)
+        {
+            isIE4 = true;
+        }
+        else
+        {
+            isNav4 = true;
+        }
+    }
+    else if (navigator.appVersion.charAt(0) > "4")
+    {
+        isNav6 = true;
+    }
+    
+    			if (isIE4){
+			callme.style.top = "40";
+			}else if (isNav6){
+			styleObject = document.getElementById( "callme" );
+			styleObject = styleObject.style;
+			styleObject["top"] = "43";
+			}
+</script>
+</td></tr><!--msnavigation--></table><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td valign="top" width="1%">
+
+
+<!-- the following form action works on boss, but not on any other server -->
+<div id="searchdiv" style="position:absolute; left:0px; top:123px; width:120px; height:40px; z-index:1;  border: 0px none #000000; visibility: visible"> 
+	<layer name="searchdivx" position="absolute" left="0px" top="0px" >
+  <table width="120" border="0" height="53" bordercolor="#FFFFFF" cellpadding="0" cellspacing="0">
+      <form name="searchform" action="../../_vti_bin/shtml.dll/search.htm" method="POST">
+    <tr> 
+         <td width="120" height="37"  background="images/search.gif" align="LEFT" valign="bottom">
+          <input type="text" size="10" name="search" id="searchx">
+          <input type="hidden" name="VTI-GROUP" value="0">
+        </td>
+     </tr>
+     </form>
+	<tr><td width="120" height="5" bgcolor="#639ace">&nbsp;</td></tr>
+	</table>
+	</layer>
+	</div>
+
+	
+	
+<div id="GO" style="position:absolute; left:82px; top:110px; width:40px; height:53px; z-index:50; border: 0px none #000000; visibility: visible">
+<layer  position="relative" left="0px" top="0px" visibility="show" z-index="150">
+<a href="javascript:submitform();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('sform','','images/gorunner.gif','1')"><img name="sform" border="0" src="images/go.gif" width="39" height="53" ></a>
+</layer>
+</div>
+
+<div id="Layer1" style="position:absolute; left:3px; top:421px; width:111px; height:14px; z-index:57">
+<layer position="relative" left="0px" top="0px">
+</layer>
+</div>
+
+
+
+
+<div id="Layer2" style="position:absolute; left:10px; top:435px; width:97px; height:37px; z-index:58">
+<layer position="relative" left="0px" top="7px">
+</layer>
+</div>
+
+<!--COMMENTED OUT DUE TO TROUBLE WITH HEY SITE    JFM 19/25/01 -->
+<!--<div id="heybutton" style="position: absolute; top: 333px; left: 30px; width: 60px; height: 97px; z-index:1"> -->
+<!--<layer position="relative" left="0px" top="0px" z-index="1">-->
+  <!--heyButton code here--><!-- <a onClick="javascript: heyButtonClicked();" href="#" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('hey','','images/btn_hey_f2.gif','1')"><img name="hey" border="0" src="../images/btn_hey.gif" width="60" height="75"></a> -->
+<!--</layer>-->
+<!--</div>-->
+
+<!-- this is a fake div necessary due to vagaries in netscape -->
+<!-- If it's not here, the next div's a-tags don't work -->
+<!-- I make no apology, netscape is weird.  -->
+<div id="fake" style="position:absolute; left:240px; top:109px; width:210px; height:127px; z-index:50; visibility: hidden">
+ <LAYER NAME="fakex" position="absolute" left="0px" top="0px" visibility="hidden" bgcolor="ffffff" >
+<table bgcolor="#FFFFCC" border=1 width="210" cellpadding="0" bordercolor="#000000" style="z-index: 40; border: 1 solid #000000" cellspacing="0" >
+<tr bordercolordark="ffffcc" bordercolorlight="ffffcc">
+<td bordercolordark="#FFFFCC" bordercolorlight="#FFFFCC" width="210" style="border-style: solid; border-color: #ffffcc">
+&nbsp;
+</TD>
+</TR>
+</TABLE>
+</LAYER>
+</div>
+<!-- end of fake div -->
+
+<div id="leftprod" style="position: absolute; left: 125; top: 178; width: 110; height: 120; z-index: 52; visibility: hidden"><!-- Image with table --> 
+<layer name="leftprodx" position="relative" left="125px" top="178px" visibility="hidden" bgcolor="ffffff"><!-- Image with table --> 
+<table bgcolor="#FFFFCC" border=1 width="93" cellpadding="0" bordercolor="#000000" style="border: 1 solid #000000" cellspacing="0" >
+<tr bordercolordark="ffffcc" bordercolorlight="ffffcc">
+<td bordercolordark="#ffffcc" bordercolorlight="#ffffcc" width="93" style="border-style: solid; border-color: #FFFFCC">
+<FONT face="TAHOMA" size="2"> 
+	<a class="menu_r" href="bizfon680.htm" 		onMouseOut="settime('leftprod');" onMouseOver="droptime('leftprod');" >Bizfon System</a><br>
+	<a class="menu_r" href="solutions.htm" 		onMouseOut="settime('leftprod');" onMouseOver="droptime('leftprod');">Solutions</a><br>
+	<a class="menu_r" href="telephones.htm" 		onMouseOut="settime('leftprod');" onMouseOver="droptime('leftprod');">Telephones</a><br>
+	<a class="menu_r" href="voice_vault_card.htm" onMouseOut="settime('leftprod');" onMouseOver="droptime('leftprod');">Voice Vault Card</a><br>
+	<a class="menu_r" href="accessories.htm" 		onMouseOut="settime('leftprod');" onMouseOver="droptime('leftprod');" >Accessories</a><br>
+	<a class="menu_r" href="sales_terms.htm" 		onMouseOut="settime('leftprod');" onMouseOver="droptime('leftprod');" >Sales Terms</a><br>
+	<a class="menu_r" href="shoppingcart.asp" 		onMouseOut="settime('leftprod');" onMouseOver="droptime('leftprod');" >Shopping Cart</a>
+</font>
+</TD>
+</TR>
+</TABLE>
+</layer>
+</div>
+
+<div id="leftserv" style="position: absolute; left: 125; top: 202; width: 130; height: 116; z-index: 52; visibility: hidden"><!-- Image with table --> 
+<LAYER NAME="leftservx" position="absolute" left="125px" top="202px" visibility="hidden" bgcolor="ffffff" >
+<table bgcolor="#FFFFCC" border=1 width="130" cellpadding="0" bordercolor="#000000" style="border: 1 solid #000000" cellspacing="0" >
+<tr bordercolordark="ffffcc" bordercolorlight="ffffcc">
+<td bordercolordark="#FFFFCC" bordercolorlight="#FFFFCC" width="130" style="border-style: solid; border-color: #FFFFCC">
+<FONT face="TAHOMA" size="2"> 
+<a class="menu_r" href="services.htm" onMouseOut="settime('leftserv');" onMouseOver="droptime('leftserv');" >Service Offerings</a><br>
+<a class="menu_r" href="services.htm#bizcare" onMouseOut="settime('leftserv');" onMouseOver="droptime('leftserv');" >BizCare Complete</a><br>
+<a class="menu_r" href="services.htm#installation" onMouseOut="settime('leftserv');" onMouseOver="droptime('leftserv');"  >Installations</a><br>
+<a class="menu_r" href="services.htm#warranty" onMouseOut="settime('leftserv');" onMouseOver="droptime('leftserv');" >Warranties</a><br>
+<a class="menu_r" href="services.htm#provoice" onMouseOut="settime('leftserv');" onMouseOver="droptime('leftserv');" >ProVoice Recordings</a><br>
+<a class="menu_r" href="gotquestions.asp" onMouseOut="settime('leftserv');" onMouseOver="droptime('leftserv');" >Contact Us</a><br>
+<a class="menu_r" href="ordertrack.htm" onMouseOut="settime('leftserv');" onMouseOver="droptime('leftserv');" >Order Tracking</a>
+</font>
+</TD>
+</TR>
+</TABLE>
+</LAYER>
+</div>
+
+<div id="leftdemo" style="position:absolute; left:125; top:227; width:119; height:25; z-index:53; visibility: hidden"><!-- Image with table --> 
+<layer name="leftdemox" position="absolute" left="125px" top="227px" visibility="hidden" bgcolor="ffffff"><!-- Image with table --> 
+<table bgcolor="#FFFFCC" border=1 bordercolor="#000000" width="119" cellpadding="0" style="border: 1 solid #000000" cellspacing="0">
+<tr bordercolordark="ffffcc" bordercolorlight="ffffcc">
+<td bordercolordark="#FFFFCC" bordercolorlight="#FFFFCC" width="119" style="border-style: solid; border-color: #FFFFCC">
+<FONT face="TAHOMA" size="2"> 
+	<a class="menu_r" href="products.htm" onMouseOut="settime('leftdemo');" onMouseOver="droptime('leftdemo');" >Learn More</a><br>
+	<a class="menu_r" href="audiopage.htm" onMouseOut="settime('leftdemo');" onMouseOver="droptime('leftdemo');" >Audio Demo</a>
+</FONT>
+</TD>
+</TR>
+</TABLE>
+</layer>
+</div>
+
+<div id="leftres" style="position:absolute; left:125px; top:252px; width:170px; height:150px; z-index:54; visibility: hidden"><!-- Image with table --> 
+<layer name="leftresx" position="absolute" left="125px" top="252px" visibility="hidden" bgcolor="ffffff"><!-- Image with table --> 
+<table bgcolor="#FFFFCC" border=1 bordercolor="#000000" width="170" cellpadding="0" style="border: 1 solid #000000" cellspacing="0">
+<tr bordercolordark="ffffcc" bordercolorlight="ffffcc">
+<td bordercolordark="#FFFFCC" bordercolorlight="#FFFFCC" width="170" style="border-style: solid; border-color: #FFFFCC">
+<FONT face="TAHOMA" size="2"> 
+   	<a class="menu_r" href="library.htm" onMouseOut="settime('leftres');" onMouseOver="droptime('leftres');" >Library Homepage</a><br>
+	<a class="menu_r" href="contactform2.asp" onMouseOut="settime('leftres');" onMouseOver="droptime('leftres');" >Contact Me !</a><br>
+	<a class="menu_r" href="testimonials.htm" onMouseOut="settime('leftres');" onMouseOver="droptime('leftres');" >Customer Testimonials</a><br>
+	<a class="menu_r" href="working_smart.htm" onMouseOut="settime('leftres');" onMouseOver="droptime('leftres');" >Working Smart-Free Guide</a><br>
+	<a class="menu_r" href="faq_list.asp" onMouseOut="settime('leftres');" onMouseOver="droptime('leftres');" >FAQ</a><br>
+	<a class="menu_r" href="howtoorder.htm" onMouseOut="settime('leftres');" onMouseOver="droptime('leftres');" >How to Order</a><br>
+	<a class="menu_r" href="special_offers_program.htm" onMouseOut="settime('leftres');" onMouseOver="droptime('leftres');" >Special Offers</a><br>
+	<a class="menu_r" href="ordertrack.htm" onMouseOut="settime('leftres');" onMouseOver="droptime('leftres');" >Order Watch</a><br>
+	<a class="menu_r" href="javascript:callmenow();" onMouseOut="settime('leftres');" onMouseOver="droptime('leftres');" >Call Me Now - Live!</a><br>
+	<a class="menu_r" href="gotquestions.asp" onMouseOut="settime('leftres');" onMouseOver="droptime('leftres');" >Order By Phone</a><br>
+	<a class="menu_r" href="shoppingcart.asp" onMouseOut="settime('leftres');" onMouseOver="droptime('leftres');" >Shopping Cart</a>
+
+</font>
+</TD>
+</TR>
+</TABLE>
+</layer>
+</div>
+
+<div id="leftcorp" style="position:absolute; left:125px; top:277px; width:135px; height:46px; z-index:55; visibility: hidden"><!-- Image with table --> 
+<layer name="leftcorpx" position="absolute" left="125px" top="277px" visibility="hidden" bgcolor="ffffff"><!-- Image with table --> 
+<table bgcolor="#FFFFCC" border=1 bordercolor="#000000" width="135" cellpadding="0" style="border: 1 solid #000000" cellspacing="0">
+<tr bordercolordark="ffffcc" bordercolorlight="ffffcc">
+<td bordercolordark="#FFFFCC" bordercolorlight="#FFFFCC" width="135" style="border-style: solid; border-color: #FFFFCC">
+<FONT face="TAHOMA" size="2"> 
+	<a class="menu_r" href="inthenews.htm" onMouseOut="settime('leftcorp');" onMouseOver="droptime('leftcorp');" >Bizfon In The News</a><br>
+	<a class="menu_r" href="press_releases.htm" onMouseOut="settime('leftcorp');" onMouseOver="droptime('leftcorp');" >Press Releases</a><br>
+	<a class="menu_r" href="advertising_copy.htm" onMouseOut="settime('leftcorp');" onMouseOver="droptime('leftcorp');" >Bizfon Advertising</a><br>
+	<a class="menu_r" href="about_us.asp" onMouseOut="settime('leftcorp');" onMouseOver="droptime('leftcorp');" >About Us</a><br>
+	<a class="menu_r" href="careers.htm" onMouseOut="settime('leftcorp');" onMouseOver="droptime('leftcorp');" >Careers</a><br>
+	<a class="menu_r" href="market_profile.htm" onMouseOut="settime('leftcorp');" onMouseOver="droptime('leftcorp');" >Market Profile</a><br>
+	<a class="menu_r" href="confidentiality.htm" onMouseOut="settime('leftcorp');" onMouseOver="droptime('leftcorp');" >Privacy + Confidentiality</a><br>
+	<a class="menu_r" href="Copyright.htm" onMouseOut="settime('leftcorp');" onMouseOver="droptime('leftcorp');" >Copyright</a><br>
+	<a class="menu_r" href="y2k_info.htm" onMouseOut="settime('leftcorp');" onMouseOver="droptime('leftcorp');" >Y2K</a><br>
+<!--	<a class="menu_r" href="../executive_profiles.htm" onMouseOut="settime('leftcorp');" onMouseOver="droptime('leftcorp');" >Executive Profiles</a><br>-->
+	<a class="menu_r" href="gotquestions.asp" onMouseOut="settime('leftcorp');" onMouseOver="droptime('leftcorp');" >Contact Us</a>
+
+</font>
+</TD>
+</TR>
+</TABLE>
+</layer>
+</div>
+<div id="leftpart" style="position:absolute; left:125px; top:302px; width:120px; height:25px; z-index:56; visibility: hidden"><!-- Image with table --> 
+<layer name="leftpartx" position="absolute" left="125px" top="302px" visibility="hidden" bgcolor="ffffff"><!-- Image with table --> 
+<table bgcolor="#FFFFCC" border=1 bordercolor="#000000" width="120" cellpadding="0" style="border: 1 solid #000000" cellspacing="0">
+<tr bordercolordark="ffffcc" bordercolorlight="ffffcc">
+<td bordercolordark="#FFFFCC" bordercolorlight="#FFFFCC" width="120" style="border-style: solid; border-color: #FFFFCC">
+<FONT face="TAHOMA" size="2"> 
+ 	<a class="menu_r" href="affiliateredirect.asp" onMouseOut="settime('leftpart');" onMouseOver="droptime('leftpart');" >Web Affiliate</a><BR>
+	<a class="menu_r" href="dealerredirect.asp" onMouseOut="settime('leftpart');" onMouseOver="droptime('leftpart');" >Resellers & Dealers</a>
+
+</font>
+</TD>
+</TR>
+</TABLE>
+</layer>
+</div>
+
+<div id="lnavbar" style="position:absolute; left:0px; top:176px; width:120px; height:150px; z-index:2; visibility: visible"><!-- Image with table --> 
+<layer position="absolute" left="0px" top="176px">
+  <table border="0" cellpadding="0" cellspacing="0" width="120">
+    <!-- fwtable fwsrc="lnavbar.png" fwbase="lnavbar.gif" --> 
+    <tr> <!-- Shim row, height 1. --> 
+      <td><img src="images/shim.gif" width="120" height="1" border="0"></td>
+      <td><img src="images/shim.gif" border="0" width="1" height="1"></td>
+    </tr>
+    <tr valign="top"><!-- row 1 --> 
+      <td><a href="products.htm" onMouseOut="MM_swapImgRestore();settime('leftprod');"  onMouseOver="MM_swapImage('lnavbar_r01_c1','','images/lnavbar_r01_c1_f2.gif',1);droptime('leftprod');ShowTheMenu('leftprod')" onClick="MM_goToURL('parent','products.htm');return document.MM_returnValue" ><img name="lnavbar_r01_c1" src="images/lnavbar_r01_c1.gif" border="0" width="120" height="20"></a></td>
+      <td></td>
+    </tr>
+    <tr valign="top"><!-- row 2 --> 
+      <td><img name="lnavbar_r02_c1" src="images/639ace.gif" border="0" width="120" height="5"></td>
+      <td><img src="images/shim.gif" width="1" height="5" border="0"></td>
+    </tr>
+    <tr valign="top"><!-- row 3 --> 
+      <td><a href="services.htm" onMouseOut="MM_swapImgRestore();settime('leftserv')"  onMouseOver="MM_swapImage('lnavbar_r03_c1','','images/lnavbar_r03_c1_f2.gif',1);droptime('leftserv');ShowTheMenu('leftserv')" onClick="MM_goToURL('parent','services.htm');return document.MM_returnValue" ><img name="lnavbar_r03_c1" src="images/lnavbar_r03_c1.gif" border="0" width="120" height="20"></a></td>
+      <td><img src="images/shim.gif" width="1" height="20" border="0"></td>
+    </tr>
+    <tr valign="top"><!-- row 4 --> 
+      <td><img name="lnavbar_r04_c1" src="images/639ace.gif" border="0" width="120" height="5"></td>
+      <td><img src="images/shim.gif" width="1" height="5" border="0"></td>
+    </tr>
+    <tr valign="top"><!-- row 5 --> 
+      <td><a href="audiopage.htm" onMouseOut="MM_swapImgRestore();settime('leftdemo')"  onMouseOver="MM_swapImage('lnavbar_r05_c1','','images/lnavbar_r05_c1_f2.gif',1);droptime('leftdemo');ShowTheMenu('leftdemo')" onClick="MM_goToURL('parent','audiopage.htm');return document.MM_returnValue" ><img name="lnavbar_r05_c1" src="images/lnavbar_r05_c1.gif" border="0" width="120" height="20"></a></td>
+      <td><img src="images/shim.gif" width="1" height="20" border="0"></td>
+    </tr>
+    <tr valign="top"><!-- row 6 --> 
+      <td><img name="lnavbar_r06_c1" src="images/639ace.gif" border="0" width="120" height="5"></td>
+      <td><img src="images/shim.gif" width="1" height="5" border="0"></td>
+    </tr>
+    <tr valign="top"><!-- row 7 --> 
+      <td><a href="library.htm" onMouseOut="MM_swapImgRestore();settime('leftres')"  onMouseOver="MM_swapImage('lnavbar_r07_c1','','images/lnavbar_r07_c1_f2.gif',1);droptime('leftres');ShowTheMenu('leftres')" onClick="MM_goToURL('parent','library.htm');return document.MM_returnValue" ><img name="lnavbar_r07_c1" src="images/lnavbar_r07_c1.gif" border="0" width="120" height="20"></a></td>
+      <td><img src="images/shim.gif" width="1" height="20" border="0"></td>
+    </tr>
+    <tr valign="top"><!-- row 8 --> 
+      <td><img name="lnavbar_r08_c1" src="images/639ace.gif" border="0" width="120" height="5"></td>
+      <td><img src="images/shim.gif" width="1" height="5" border="0"></td>
+    </tr>
+    <tr valign="top"><!-- row 9 --> 
+      <td><a href="about_us.asp" onMouseOut="MM_swapImgRestore();settime('leftcorp')"  onMouseOver="MM_swapImage('lnavbar_r09_c1','','images/lnavbar_r09_c1_f2.gif',1);droptime('leftcorp');ShowTheMenu('leftcorp')" onClick="MM_goToURL('parent','about_us.htm');return document.MM_returnValue" ><img name="lnavbar_r09_c1" src="images/lnavbar_r09_c1.gif" border="0" width="120" height="20"></a></td>
+      <td><img src="images/shim.gif" width="1" height="20" border="0"></td>
+    </tr>
+    <tr valign="top"><!-- row 10 --> 
+      <td><img name="lnavbar_r10_c1" src="images/639ace.gif" border="0" width="120" height="5"></td>
+      <td><img src="images/shim.gif" width="1" height="5" border="0"></td>
+    </tr>
+    <tr valign="top"><!-- row 11 --> 
+      <td><a href="#" onMouseOut="MM_swapImgRestore();settime('leftpart')"  onMouseOver="MM_swapImage('lnavbar_r11_c1','','images/lnavbar_r11_c1_f2.gif',1);droptime('leftpart');ShowTheMenu('leftpart')" ><img name="lnavbar_r11_c1" src="images/lnavbar_r11_c1.gif" border="0" width="120" height="20"></a></td>
+      <td><img src="images/shim.gif" width="1" height="20" border="0"></td>
+    </tr>
+    <tr valign="top"><!-- row 12 --> 
+      <td><img name="lnavbar_r12_c1" src="images/639ace.gif" border="0" width="120" height="5"></td>
+      <td><img src="images/shim.gif" width="1" height="5" border="0"></td>
+    </tr>
+  </table>
+  </layer>
+</div>
+
+<div id="menutab" style="position:absolute; left:120px; top:302px; width:5px; height:1px; z-index:56; visibility: hidden"><!-- Image with table --> 
+<layer name="menutabx" position="absolute" left="120px" top="302px" visibility="hidden" ><!-- Image with table --> 
+<img src="images/1pxblhor.gif" border="0" width="5" height="1">
+</layer>
+</div>
+<div id="leftyellow" style="position:absolute; left:0px; top:0px; width:120px; height:640px; z-index:0">
+<layer name="leftyellowx" postion="absolute" left="0px" top="0px" z-index="0">
+<img src="images/639ace.gif" width="120px" height="640px" border="0">
+</layer>
+</div>
+		<!-- hidden fields --> 
+ 		<form name="heyButtonForm">
+  		<input type="hidden" name="accountid" value="2020">
+  
+  		<input type="hidden" name="priority" value="2">
+  		<input type="hidden" name="expiration" value="0">
+  
+  		<input type="hidden" name="groups" value="2020\Sales">
+  		<input type="hidden" name="skills" value="2020\All">	
+  
+  		<input type="hidden" name="URL_1" value="http://www.bizfon.com">
+  		<input type="hidden" name="URL_DESC_1" value="current page">
+  
+  		<input type="hidden" name="URL_2" value="http://www.yahoo.com">
+  		<input type="hidden" name="URL_DESC_2" value="yahoo">
+
+		</form>
+
+</td><td valign="top" width="24"></td><!--msnavigation--><td valign="top">
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td>
+
+<script language="JavaScript1.2">
+	//change the color of the left navbar entry
+	x=MM_findObj("lnavbar_r07_c1");x.src = "images/lnavbar_r07_c1_f2.gif";
+</script>
+
+
+
+<table width="480" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td valign="top" align="left" width="480">
+      <p align="left"><br>
+      
+      
+      <img border="0" src="images/quoterequest.gif" style="position: absolute; left: 135; top: 125; z-index: 2" >
+      <p align="center"><a href="Confidentiality.htm"><span style="font-size: 10pt"><br>
+      <br>Bizfon Confidentiality of Information Statement</span></a></p>
+      <p><span style="font-size: 10pt">Please fill out this short form and press 
+      Submit (required fields are bolded.)&nbsp; A qualified representative will 
+      contact you shortly.&nbsp; Please indicate the best method and best time for 
+      us to contact you with a quote.</span></p>
+      <p>&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="490">
+
+    <!--webbot BOT="GeneratedScript" PREVIEW=" " startspan --><script Language="JavaScript"><!--
+function FrontPage_Form3_Validator(theForm)
+{
+
+  if (theForm.FName.value == "")
+  {
+    alert("Please enter a value for the \"FName\" field.");
+    theForm.FName.focus();
+    return (false);
+  }
+
+  if (theForm.FName.value.length < 1)
+  {
+    alert("Please enter at least 1 characters in the \"FName\" field.");
+    theForm.FName.focus();
+    return (false);
+  }
+
+  if (theForm.FName.value.length > 40)
+  {
+    alert("Please enter at most 40 characters in the \"FName\" field.");
+    theForm.FName.focus();
+    return (false);
+  }
+
+  var chkVal = theForm.FName.value;
+  var prsVal = chkVal;
+  if (chkVal != "" && !(prsVal != "%20"))
+  {
+    alert("Please enter a value not equal to \"%20\" in the \"FName\" field.");
+    theForm.FName.focus();
+    return (false);
+  }
+
+  if (theForm.LName.value == "")
+  {
+    alert("Please enter a value for the \"LName\" field.");
+    theForm.LName.focus();
+    return (false);
+  }
+
+  if (theForm.Company.value == "")
+  {
+    alert("Please enter a value for the \"Company\" field.");
+    theForm.Company.focus();
+    return (false);
+  }
+
+  if (theForm.Company.value.length > 100)
+  {
+    alert("Please enter at most 100 characters in the \"Company\" field.");
+    theForm.Company.focus();
+    return (false);
+  }
+
+  if (theForm.Address_1.value == "")
+  {
+    alert("Please enter a value for the \"Address_1\" field.");
+    theForm.Address_1.focus();
+    return (false);
+  }
+
+  if (theForm.City.value == "")
+  {
+    alert("Please enter a value for the \"City\" field.");
+    theForm.City.focus();
+    return (false);
+  }
+
+  if (theForm.State.value == "")
+  {
+    alert("Please enter a value for the \"State\" field.");
+    theForm.State.focus();
+    return (false);
+  }
+
+  if (theForm.State.value.length < 2)
+  {
+    alert("Please enter at least 2 characters in the \"State\" field.");
+    theForm.State.focus();
+    return (false);
+  }
+
+  if (theForm.State.value.length > 2)
+  {
+    alert("Please enter at most 2 characters in the \"State\" field.");
+    theForm.State.focus();
+    return (false);
+  }
+
+  if (theForm.Zip.value == "")
+  {
+    alert("Please enter a value for the \"Zip\" field.");
+    theForm.Zip.focus();
+    return (false);
+  }
+
+  var checkOK = "0123456789-";
+  var checkStr = theForm.Zip.value;
+  var allValid = true;
+  var decPoints = 0;
+  var allNum = "";
+  for (i = 0;  i < checkStr.length;  i++)
+  {
+    ch = checkStr.charAt(i);
+    for (j = 0;  j < checkOK.length;  j++)
+      if (ch == checkOK.charAt(j))
+        break;
+    if (j == checkOK.length)
+    {
+      allValid = false;
+      break;
+    }
+    allNum += ch;
+  }
+  if (!allValid)
+  {
+    alert("Please enter only digit characters in the \"Zip\" field.");
+    theForm.Zip.focus();
+    return (false);
+  }
+
+  if (theForm.Country.value == "")
+  {
+    alert("Please enter a value for the \"Country\" field.");
+    theForm.Country.focus();
+    return (false);
+  }
+
+  if (theForm.Phone.value == "")
+  {
+    alert("Please enter a value for the \"Phone\" field.");
+    theForm.Phone.focus();
+    return (false);
+  }
+
+  if (theForm.email.value == "")
+  {
+    alert("Please enter a value for the \"email\" field.");
+    theForm.email.focus();
+    return (false);
+  }
+
+  if (theForm.Comments.value == "")
+  {
+    alert("Please enter a value for the \"Comments\" field.");
+    theForm.Comments.focus();
+    return (false);
+  }
+
+  if (theForm.Comments.value.length > 255)
+  {
+    alert("Please enter at most 255 characters in the \"Comments\" field.");
+    theForm.Comments.focus();
+    return (false);
+  }
+  return (true);
+}
+//--></script><!--webbot BOT="GeneratedScript" endspan --><form method="POST" action="formprocessor.asp" onsubmit="return FrontPage_Form3_Validator(this)" name="FrontPage_Form3" >
+		
+		
+
+      <table border="0" cellpadding="0" cellspacing="0" width="361">
+
+
+        <tr>
+          <td width="361"><strong><span style="font-size: 10pt">Your&nbsp; First
+            Name:</span></strong></td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt; z-index: 0"><!--webbot
+            bot="Validation" B-Value-Required="TRUE" I-Minimum-Length="1"
+            I-Maximum-Length="40" S-Validation-Constraint="Not equal to"
+            S-Validation-Value="%20" --><input type="text" name="FName" size="40" maxlength="40" style="z-index: 0;" z-order="0"></span></td>
+        </tr>
+        <tr>
+          <td width="361"><strong><span style="font-size: 10pt">Your Last Name</span></strong><img border="0" src="images/1pxtrans.gif" height="25" width="1">
+          </td>
+        </tr>
+        <tr>
+          <td width="361"><!--webbot bot="Validation" B-Value-Required="TRUE"
+            --><input type="text" name="LName" size="40"></td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt">Company:</span><img border="0" src="images/1pxtrans.gif" height="25" width="1">
+          </td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt"><!--webbot
+            bot="Validation" B-Value-Required="TRUE" I-Maximum-Length="100" --><input type="text" name="Company" size="40" maxlength="100"></span></td>
+        </tr>
+        <tr>
+          <td width="361"><strong><span style="font-size: 10pt">Address1</span></strong><img border="0" src="images/1pxtrans.gif" height="25" width="1">
+          </td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt"><!--webbot
+            bot="Validation" B-Value-Required="TRUE" --><input type="text" name="Address_1" size="30"></span></td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt">Address
+          2</span><img border="0" src="images/1pxtrans.gif" height="25" width="1">
+          </td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt"><input type="text" name="Address_2" size="30"></span></td>
+        </tr>
+        <tr>
+          <td width="361"><strong><span style="font-size: 10pt">City</span></strong><img border="0" src="images/1pxtrans.gif" height="25" width="1">
+          </td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt"><!--webbot
+            bot="Validation" B-Value-Required="TRUE" --><input type="text" name="City" size="30"></span></td>
+        </tr>
+        <tr>
+          <td width="361"><strong><span style="font-size: 10pt">State / Province</span></strong><img border="0" src="images/1pxtrans.gif" height="25" width="1">
+          </td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt"><!--webbot
+            bot="Validation" B-Value-Required="TRUE" I-Minimum-Length="2"
+            I-Maximum-Length="2" --><input type="text" name="State" size="4" maxlength="2"></span></td>
+        </tr>
+        <tr>
+          <td width="361"><strong><span style="font-size: 10pt">ZIP / Postal Code</span></strong><img border="0" src="images/1pxtrans.gif" height="25" width="1">
+          </td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt"><!--webbot
+            bot="Validation" S-Data-Type="Integer" S-Number-Separators="x"
+            B-Value-Required="TRUE" --><input type="text" name="Zip" size="10"></span></td>
+        </tr>
+        <tr>
+          <td width="361"><strong><span style="font-size: 10pt">Country</span></strong><img border="0" src="images/1pxtrans.gif" height="25" width="1">
+          </td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt"><!--webbot
+            bot="Validation" B-Value-Required="TRUE" --><input type="text" name="Country" size="20" value="United States"></span></td>
+        </tr>
+        <tr>
+          <td width="361"><strong><span style="font-size: 10pt">Phone</span></strong><img border="0" src="images/1pxtrans.gif" height="25" width="1">
+          </td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt"><!--webbot
+            bot="Validation" B-Value-Required="TRUE" --><input type="text" name="Phone" size="20"></span></td>
+        </tr>
+        <tr>
+          <td width="361"><strong><span style="font-size: 10pt">E-mail address</span></strong><img border="0" src="images/1pxtrans.gif" height="25" width="1">
+          </td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt"><!--webbot
+            bot="Validation" B-Value-Required="TRUE" --><input type="text" name="email" size="30"></span></td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt">Best
+          Time to call</span><img border="0" src="images/1pxtrans.gif" height="25" width="1">
+          </td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt"><input type="text" name="Best_Time" size="30" value="Weekdays 9 to 5 Eastern Time"></span></td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt">Best
+          way to contact you:</span><img border="0" src="images/1pxtrans.gif" height="25" width="1">
+          </td>
+        </tr>
+        <tr>
+          <td width="361" valign="top"><span style="font-size: 10pt"><input type="radio" value="Phone" checked name="Way_to_Contact">Phone&nbsp;&nbsp;&nbsp;&nbsp; <input type="radio" name="Way_to_Contact" value="email">email&nbsp;&nbsp;&nbsp;&nbsp; <input type="radio" name="Way_to_Contact" value="regular_mail">regular mail</span>&nbsp;
+          </td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt">Your type of business:</span><img border="0" src="images/1pxtrans.gif" height="25" width="1">
+          </td>
+        </tr>
+        <tr>
+          <td width="361">
+            <span style="font-size: 10pt">
+              <select name="Type_of_Business" size="1">
+					<OPTION SELECTED VALUE='Unknown'>  --  Select One --  </OPTION><OPTION VALUE='Accounting/Tax Preparation'>Accounting/Tax Preparation</OPTION><OPTION VALUE='Advertising/Design/Marketing'>Advertising/Design/Marketing</OPTION><OPTION VALUE='Architect'>Architect</OPTION><OPTION VALUE='Architecture'>Architecture</OPTION><OPTION VALUE='Barber / Hairstylist'>Barber / Hairstylist</OPTION><OPTION VALUE='Business Services'>Business Services</OPTION><OPTION VALUE='Computer Hardware/Software'>Computer Hardware/Software</OPTION><OPTION VALUE='Consultants - Advertising/Marketing'>Consultants - Advertising/Marketing</OPTION><OPTION VALUE='Consultants - Other'>Consultants - Other</OPTION><OPTION VALUE='Consultants - Public Relations'>Consultants - Public Relations</OPTION><OPTION VALUE='Consultants - Technical'>Consultants - Technical</OPTION><OPTION VALUE='Consultants - Training'>Consultants - Training</OPTION><OPTION VALUE='Contractor/Construction'>Contractor/Construction</OPTION><OPTION VALUE='Dentist'>Dentist</OPTION><OPTION VALUE='Employment/Recruiting Agency'>Employment/Recruiting Agency</OPTION><OPTION VALUE='Engineering'>Engineering</OPTION><OPTION VALUE='Entertainment'>Entertainment</OPTION><OPTION VALUE='Finance (General)'>Finance (General)</OPTION><OPTION VALUE='Financial Planning'>Financial Planning</OPTION><OPTION VALUE='Food Services'>Food Services</OPTION><OPTION VALUE='Franchise'>Franchise</OPTION><OPTION VALUE='Funeral Home'>Funeral Home</OPTION><OPTION VALUE='Government'>Government</OPTION><OPTION VALUE='HealthCare'>HealthCare</OPTION><OPTION VALUE='Hotel/Lodging'>Hotel/Lodging</OPTION><OPTION VALUE='Import/Export'>Import/Export</OPTION><OPTION VALUE='Insurance'>Insurance</OPTION><OPTION VALUE='Internet'>Internet</OPTION><OPTION VALUE='Laboratory'>Laboratory</OPTION><OPTION VALUE='Landscape Contractor'>Landscape Contractor</OPTION><OPTION VALUE='Law Office/Legal Services'>Law Office/Legal Services</OPTION><OPTION VALUE='Manufacturer's Rep'>Manufacturer's Rep</OPTION><OPTION VALUE='Manufacturing'>Manufacturing</OPTION><OPTION VALUE='Mortgage'>Mortgage</OPTION><OPTION VALUE='Newspaper'>Newspaper</OPTION><OPTION VALUE='Non-Profit'>Non-Profit</OPTION><OPTION VALUE='Other'>Other</OPTION><OPTION VALUE='Painting'>Painting</OPTION><OPTION VALUE='Photography/Film Studio'>Photography/Film Studio</OPTION><OPTION VALUE='Physician'>Physician</OPTION><OPTION VALUE='Publishing/Printing'>Publishing/Printing</OPTION><OPTION VALUE='Real Estate/Real Estate Management'>Real Estate/Real Estate Management</OPTION><OPTION VALUE='Recreation'>Recreation</OPTION><OPTION VALUE='Recruiter'>Recruiter</OPTION><OPTION VALUE='Religious Org.'>Religious Org.</OPTION><OPTION VALUE='Reseller - Cellular'>Reseller - Cellular</OPTION><OPTION VALUE='Reseller - Consultant'>Reseller - Consultant</OPTION><OPTION VALUE='Reseller - Distributor'>Reseller - Distributor</OPTION><OPTION VALUE='Reseller - Interconnect'>Reseller - Interconnect</OPTION><OPTION VALUE='Reseller - Network Integrator'>Reseller - Network Integrator</OPTION><OPTION VALUE='Reseller - Other'>Reseller - Other</OPTION><OPTION VALUE='Reseller - Retail'>Reseller - Retail</OPTION><OPTION VALUE='Reseller - Software Developer'>Reseller - Software Developer</OPTION><OPTION VALUE='Reseller - VAR'>Reseller - VAR</OPTION><OPTION VALUE='Residential'>Residential</OPTION><OPTION VALUE='Retail'>Retail</OPTION><OPTION VALUE='Schools / Universities'>Schools / Universities</OPTION><OPTION VALUE='Telecommunications'>Telecommunications</OPTION><OPTION VALUE='Transportation'>Transportation</OPTION><OPTION VALUE='Travel Agent'>Travel Agent</OPTION><OPTION VALUE='Unknown'>Unknown</OPTION><OPTION VALUE='Wholesale/Distribution'>Wholesale/Distribution</OPTION>
+          		</select>
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt"><b>Number of employees at your location:</b></span><img border="0" src="images/1pxtrans.gif" height="25" width="1">
+          </td>
+        </tr>
+        <tr>
+          <td width="361"><input type="text" name="Number_Employees" size="9">
+          </td>
+        </tr>
+        <tr>
+          <td width="361" height="16"><span style="font-size: 10pt">How did you hear about Bizfon?</span><img border="0" src="images/1pxtrans.gif" height="25" width="1">
+          </td>
+        </tr>
+        <tr>
+          <td width="361">
+            <select size="1" name="lead_source">
+              <option value="default" selected>  -- Select One --  </option>
+              <option value="Contact Me">Current Bizfon Customer</option>
+              <option value="1313 Unknown">Brochure &quot;30 Reasons&quot;</option>
+              <option value="Direct Mail - Unknown">Brochure - Other</option>
+              <option value="5111 Referrals">Referral</option>
+              <option value="Web Search Engine">Internet Search</option>
+              <option value="Magazine - Unknown">Magazine Ad</option>
+              <option value="Yellow Pages - Unknown">Yellow Pages</option>
+              <option value="Trade Show Lead">Trade Show</option>
+              <option value="Contact Me">Other</option>
+            </select></td>
+        </tr>
+        <tr>
+          <td width="361">
+            <span style="font-size: 10pt">
+              <br>Comments:
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt"><!--webbot
+            bot="Validation" B-Value-Required="TRUE" I-Maximum-Length="255" --><textarea rows="3" name="Comments" cols="40"></textarea></span></td>
+        </tr>
+        <tr>
+          <td width="361"><img src="images/space.gif" width="1" height="30" alt="space.gif (43 bytes)"></td>
+        </tr>
+        <tr>
+          <td width="361"><span style="font-size: 10pt">&nbsp;&nbsp;&nbsp;&nbsp;
+          <input type="button" value="Submit" name="Submit" OnClick="JavaScript:Validate(this.form)"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="reset" value="Reset" name="Reset"></span></td>
+        </tr>
+      </table>
+      
+      <input type="hidden" name="SourceID" value="00394315425398893670">
+      
+    </form>
+
+    </td>
+  </tr>
+</table>&nbsp;</table>&nbsp;<!--msnavigation--></td></tr><!--msnavigation--></table><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td>
+<div align="left">
+
+<table border="0" width="580" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="580"></td>
+  </tr>
+  <tr>
+    <td width="580">
+      <p align="center">
+      <font face="Franklin Gothic Book" size="1">
+      <a href="default.htm">
+      Home</a>&nbsp;<font color="#FF0000">|</font>   <a href="Services.htm">Customer Support</a>
+      <font color="#FF0000">|</font>  <a href="gotquestions.asp">Contact Us</a>
+      <font color="#FF0000">|</font>  <a href="Library.htm">Resources</a>&nbsp;<font color="#FF0000">|</font> <a href="About_us.asp">About Us</a>
+      <font color="#FF0000">|</font> <a href="Careers.htm">Careers</a>&nbsp;|
+      <a href="affiliateredirect.asp">Affiliates</a>&nbsp;<br>
+      &nbsp;<a href="dealerredirect.asp">Dealers</a> <font color="#FF0000">|</font>
+      <a href="Copyright.htm">Copyright</a>&nbsp;<font color="#FF0000">|</font> 
+      <a href="Sales_terms.htm">Terms &amp; Conditions</a>&nbsp;<font color="#FF0000">|</font>
+      <a href="Confidentiality.htm">Privacy &amp; Confidentiality</a><font color="#FF0000">&nbsp;|</font> <a href="mailto:webmaster@bizfon.com">Webmaster</A>
+      <font color="#FF0000">|</font><a href="frequently_asked_questions.asp">FAQ</A><br>
+      </font></td>
+  </tr>
+</table>
+</div>
+</td></tr><!--msnavigation--></table></body>
+</html>
+
+
+
+
+
+
+
+

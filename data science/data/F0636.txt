@@ -1,0 +1,668 @@
+ID=F0636
+URL=http://www.vbip.com/winsock-api/tcptable/tcptable-01.asp
+SIZE=33489
+DATE=09/07/2002
+TIME=13:23:57
+DATASET=Visual Basic
+HTML=
+<html>
+
+<head>
+<title>Visual Basic and Winsock API - Improved TCP Table sample application</title>
+<meta name="description" content="TCP Table sample application demonstrates how to use IP Helper and Winsock APIs with Visual Basic in order to get all the TCP connections of the local system.">
+<meta name="keywords" content="Visual Basic, Winsock, Winsock API, IP Helper, TCP, function, TCP table, port, host">
+<meta name="ROBOTS" content="INDEX,FOLLOW">
+
+	<link rel="stylesheet" type="text/css" href="../../../vbip_nn.css">
+
+</head>
+
+<body bgcolor="#FFFFFF">
+<form name="GlobalForm" ID="GlobalForm">
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100%">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="120"><img border="0" src="../../_borders/vbip_logo3.gif" width="132" height="50"></td>
+          <td valign="middle">
+				<p align="center">
+              <!-- start BITS ad HTML -- top of page -- 468x60 banner www.bitsonthewire.com         --> 
+               <iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=0" width=468 height=60 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no> 
+                 <a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=1">
+                   <img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=1&siteid=1126&ad_type=0">
+                 </a></iframe> 
+              <!-- stop BITS ad HTML -- top of page -- 468x60 banner                                --> 
+				&nbsp;
+              <a href="http://www.amazon.com/exec/obidos/redirect-home/vbipvisualbasici">
+              <img border="0" src="../../images/gnused120x60.gif" width="120" height="60"></a></p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+      <hr noshade color="#FF9933">
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+    <p class="barsidecaption">
+    	<a href="../../default.asp">Home</a> -
+      	<a href="../../whatsnew.asp"> What's New</a> - <a href="../../tools.asp"> Tools&amp;Technologies</a> -
+      	<a href="../../resources.asp"> Resources</a> - <a href="../../resources/books/default.asp">Books</a>
+        - <a href="../../forum/">Forum</a>
+    </p>
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+      <hr noshade color="#FF9933">
+    </td>
+  </tr>
+</table>
+
+<table width="100%" cellspacing="1" cellpadding="2" bordercolor="#800000" border="1">
+  <tr>
+    <td width="100%" bgcolor="#FF9933">
+      <font color="#FFFFCC">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="37%">
+          <SCRIPT LANGUAGE=javascript>
+          <!--
+          if(navigator.appName.indexOf('Microsoft')>=0)
+          {
+          document.write('<a HREF="javascript:void(0);" class="tbcaption" onClick="window.external.AddFavorite(location.href, document.title);">Add to Favorites</a>');
+          }
+          // -->
+          </SCRIPT>
+          </td>
+          <td width="63%">
+            <p align="right" class="tbcaption"><a href="../../default.asp" class="tbcaption">Home</a> -
+            <a href="../../tools.asp" class="tbcaption">Tools&amp;Technologies</a> -
+            <a href="../default.asp" class="tbcaption">Winsock API</a> - 
+            Improved TCP Table sample application
+          </td>
+        </tr>
+      </table>
+      </font>
+    </td>
+  </tr>
+</table>
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+
+<!--table-->
+    <td width="125" valign="top"  style="border-left: 1px solid #800000; border-right: 1px solid #800000; " bgcolor="#FF9933">
+
+    <table border="0" width="100%">
+     <tr>
+        <td width="100%" bgcolor="#FFCC00" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " height="20">
+          <p align="center" class="barsidecaption">[Advertisement]</td>
+      </tr>
+      <tr>
+        <td width="100%" style="border: 1px solid #800000; " height="120">
+<!-- start BITS ad HTML -- first 125x125 banner www.bitsonthewire.com                 --> 
+<iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=-6" width=125 height=125 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no>
+<a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=3"><img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=3&siteid=1126&ad_type=-6"></a></iframe> 
+<!-- stop BITS ad HTML -- 125x125 banner                                             --> 	
+        </td>
+      </tr>
+         
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Search vbip.com]</td>
+      </tr>
+      <tr>
+      
+        <td valign="top" width="100%" height="21">
+        
+			<input type="text" size="7" name="search_site">&nbsp;
+			<input type="button"  value="Go" onclick='location.href="http://www.vbip.com/search2/search.asp?Realm=vbip.com&Match=1&Terms="+document.GlobalForm.search_site.value;'>	
+		
+        </td>
+      </tr>
+         
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Search other VB sites]</td>
+      </tr>
+      <tr>
+        <td valign="top" width="100%" height="21">
+        
+			<input type="text" size="7" name="search_web">&nbsp;
+			<input type="button"  value="Go" onclick='location.href="http://www.vbip.com/search2/search.asp?Realm=Other+VB+Websites&Match=1&Terms="+document.GlobalForm.search_web.value;'>	
+		      
+      </tr>
+     
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Featured Book]</td>
+      </tr>
+      <tr>
+        <td valign="top" width="100%" height="21">
+<center><script src="http://rcm.amazon.com/e/cm?t=vbipvisualbasici&l=st1&search=winsock&mode=books&p=8&o=1" type="text/JavaScript"></script><noscript>
+<MAP NAME="boxmap"><AREA SHAPE="RECT" COORDS="14, 200, 103, 207" HREF="http://rcm.amazon.com/e/cm/privacy-policy.html?o=1"><AREA COORDS="0,0,10000,10000" HREF="http://www.amazon.com/exec/obidos/redirect-home/vbipvisualbasici"></MAP><img src="http://rcm-images.amazon.com/images/G/01/rcm/120x240.gif" width="120" height="240" border="0" usemap="#boxmap" alt="Shop at Amazon.com">
+</noscript>
+</center>
+        </td>
+      </tr>
+     
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Newsletter]</td>
+      </tr>
+      <tr>
+        <td width="100%" height="56">
+          <form method="POST" action="../../sub.asp" onSubmit="">
+            <table border="0" width="100%" cellspacing="0">
+              <tr>
+                <td width="84%">
+                <input type="text" name="T1" size="8" style="font-family: Tahoma; color: #800000; font-size: 8pt; background-color: #FFCC99; border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " value="your e-mail"></td>
+                <td width="16%"><input type="submit" value="Sub" name="B1" style="font-family: Tahoma; font-size: 8pt; color: #800000"></td>
+              </tr>
+              <tr>
+                <td width="100%" colspan="2"><input type="radio" value="V1" checked name="R1"><span class="barsidecaption">HTML</span>
+                  <input type="radio" name="R1" value="V2"><span class="barsidecaption">Text</span></td>
+              </tr>
+            </table>
+          </form>
+        </td>
+      </tr>
+
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+      <p align="center" class="barsidecaption">
+      [Partners]
+      </tr>
+	
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.vbcity.com" target="_blank"><img border="0" src="../..//images/vbcity2_100x30.gif" width="100" height="30"></a>
+  </tr>
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.vbweb.co.uk/" target="_blank"><img border="0" src="../..//images/vbweb_button.gif" width="100" height="30"></a>
+  </tr>  
+      <tr>
+        <td width="100%" height="12" align="center">
+      <a href="http://www.vbwire.com" target="_blank"><img border="0" src="../..//images/VBWire-btn.gif" width="100" height="30"></a>
+      </tr>
+
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.developersdex.com/vb" target="_blank"><img border="0" src="../..//images/vbdex.gif" width="100" height="30"></a>
+  </tr>  
+  <tr>
+        <td width="100%" height="3">
+        <center>
+        <!-- BEGIN ACKY CODE -->
+		<a href="http://www.acky.net" target="_blank"><img
+		src="http://www.acky.net/banners/ackbut3.gif" width="88" height="31"
+		border="0" alt="Acky.net is your one stop shop for all of your web
+		developing needs"></a>
+		<!-- END ACKY CODE -->
+		</center>
+  </tr>
+    </table>
+
+    </td>
+    <td valign="top" bgcolor="#FFFFFF">
+      <blockquote>
+        <p><b><font face="Arial"><a href="../../winsock_control.asp"><br>
+        </a><img border="0" src="../winsock-api-banner.gif">
+        </font></b></p>
+        <p class="ChapterTitle"><span lang="en-us">Improved TCP Table sample 
+        application</span></p>
+          <table border="0" width="90%" cellspacing="0" cellpadding="0" height="44">
+            <tr>
+              <td width="100%" height="15" colspan="3">
+        <hr noshade size="1" color="#FF9933">
+              </td>
+            </tr>
+            <tr>
+              <td width="16" bgcolor="#FFFFCC" height="21" valign="top" style="border: 1px solid #FF9933" class="tbcaption">
+                <p align="center">
+                <a href="TcpTable.zip">
+                <img border="0" src="../../images/download-icon4.gif" align="right"></a></td>
+              <td width="40%" bgcolor="#FF9933" height="21" class="tbcaption">
+                <p>&nbsp;<a class="tbcaption" href="TcpTable.zip">Download 
+                <span lang="en-us">TcpTable</span> sample project</a></td>
+              <td width="57%" bgcolor="#FF9933" height="21" class="tbcaption">
+              <p align="right" class="tbcaption">
+              &nbsp;</td>
+            </tr>
+            <tr>
+              <td width="100%" height="15" colspan="3">
+        <hr noshade size="1" color="#FF9933">
+              </td>
+            </tr>
+          </table>
+        <p><span lang="en-us">In the <a href="../../iphelper">IP Helper API 
+        section</a> of the website you can find the
+        <a href="../../iphelper/get_tcp_table.asp">TCP Table sample application</a> 
+        that demonstrates how to use the <i>GetTcpTable</i> function of the <i>
+        IP Helper API</i> in order to retrieve information on all the TCP 
+        connections of the local system. Since we have got some knowledge of the 
+        Winsock API that can be used to modify this app, I decided to create 
+        another version of the example to demonstrate how the Winsock API 
+        functions (which we already know) work in action.</span></p>
+        <p align="center"><img border="0" src="tcptable-01.gif"></p>
+        <p><span lang="en-us">The  information, retrieved by the GetTcpTable 
+        function, is presented as an array 
+        of the <font face="Courier New">MIB_TCPROW</font> structure:</span></p>
+        <p class="code"><span lang="en-us"><font color="#000080">Type</font> 
+        MIB_TCPROW<br>
+&nbsp;&nbsp;&nbsp; dwState&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#000080">
+        As Long</font><br>
+&nbsp;&nbsp;&nbsp; dwLocalAddr&nbsp; <font color="#000080">As Long</font><br>
+&nbsp;&nbsp;&nbsp; dwLocalPort&nbsp; <font color="#000080">As Long</font><br>
+&nbsp;&nbsp;&nbsp; dwRemoteAddr <font color="#000080">As Long</font><br>
+&nbsp;&nbsp;&nbsp; dwRemotePort <font color="#000080">As Long</font><br>
+        <font color="#000080">End Type</font></span></p>
+        <p><span lang="en-us">The members of the structure, which contain host 
+        addresses, store an address as a <font face="Courier New">Long</font> value. Each part of the address is 
+        stored in a byte of the 4-bytes <font face="Courier New">Long</font> value.</span></p>
+        <p align="center">
+        <img border="0" src="../gethostbyaddr/gethostbyaddr-01.gif"></p>
+        <p><span lang="en-us">In the
+        <a href="../gethostbyaddr/gethostbyaddr-01.asp">&quot;How to get host name 
+        by&nbsp;IP address&quot;</a> tutorial we learned how to use the <b>inet_addr</b> 
+        Winsock API function to convert an IP address, presented in dotted 
+        notation, into a <font face="Courier New">Long</font> (4-bytes) value. 
+        As you can expect, the Winsock API provides us with the function that 
+        allows to do a reverse operation. The <b>inet_ntoa</b> function receives 
+        the internet address as a <font face="Courier New">Long</font> value and returns a pointer to the string 
+        that contains an IP address in dotted notation.</span></p>
+        <p class="code"><span lang="en-us"><font color="#000080">Declare 
+        Function</font> inet_ntoa <font color="#000080">Lib</font> &quot;ws2_32.dll&quot; 
+        (<font color="#000080">ByVal</font> inn <font color="#000080">As Long</font>)
+        <font color="#000080">As Long</font></span></p>
+        <p><span lang="en-us">Now using the <font face="Courier New">
+        StringFromPointer</font> function, created in the 
+        <a href="../template/template-02.asp">first tutorial</a>, we can 
+        create a very simple function that retrieves IP address from a
+        <font face="Courier New">Long</font> value:</span></p>
+        <table border='0' width='90%' bgcolor='#F8F8F8' cellspacing='0' cellpadding='2'>
+  <tr>
+    <td width='100%'>
+      <p class='code'><font color="#000080">Private Function</font> 
+      GetIpFromLong(lngIPAddress <font color="#000080">As Long</font>)
+      <font color="#000080">As String</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span>GetIpFromLong = 
+      StringFromPointer(inet_ntoa(lngIPAddress))<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#008000">'</font><br>
+      <font color="#000080">End Function</font></p>
+    </td>
+  </tr>
+</table>
+        <p><span lang="en-us">To get a host name by that 
+        <font face="Courier New">Long</font> value we must use 
+        the <b>gethostbyaddr</b> function. See the
+        <a href="../gethostbyaddr/gethostbyaddr-01.asp">&quot;How to get host name 
+        by&nbsp;IP address&quot;</a> for more info. For the TCP Table example we are using 
+        the <font face="Courier New">HostNameFromLong</font> custom function:</span></p>
+        <table border='0' width='90%' bgcolor='#F8F8F8' cellspacing='0' cellpadding='2'>
+  <tr>
+    <td width='100%'>
+      <p class='code'><font color="#000080">Private Function</font> 
+      HostNameFromLong(lngInetAdr <font color="#000080">As Long</font>)
+      <font color="#000080">As String</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#000080">Dim</font> 
+      lngPtrHostEnt <span lang="en-us">&nbsp;</span><font color="#000080">As 
+      Long</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#000080">Dim</font> 
+      lngPtrHostName <font color="#000080">As Long</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#000080">Dim</font> 
+      strHostName <span lang="en-us">&nbsp;&nbsp; </span><font color="#000080">
+      As String</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#000080">Dim</font> 
+      udtHostEnt <span lang="en-us">&nbsp;&nbsp;&nbsp; </span>
+      <font color="#000080">As</font> HOSTENT<br>
+      <font color="#008000"><span lang="en-us">&nbsp;&nbsp;&nbsp; </span>'<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span>'Get the pointer to the 
+      HostEnt structure</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span>lngPtrHostEnt = 
+      gethostbyaddr(lngInetAdr, 4, 1)<br>
+      <font color="#008000"><span lang="en-us">&nbsp;&nbsp;&nbsp; </span>'<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span>'Copy data into the HostEnt 
+      structure</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span>RtlMoveMemory udtHostEnt,
+      <font color="#000080">ByVal</font> lngPtrHostEnt, LenB(udtHostEnt)<br>
+      <font color="#008000"><span lang="en-us">&nbsp;&nbsp;&nbsp; </span>'<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span>'Prepare the buffer to 
+      receive a string</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span>strHostName = String(256, 0)<br>
+      <font color="#008000"><span lang="en-us">&nbsp;&nbsp;&nbsp; </span>'<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span>'Copy the host name into the 
+      strHostName variable</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span>RtlMoveMemory ByVal 
+      strHostName, <font color="#000080">ByVal</font> udtHostEnt.hName, 256<br>
+      <font color="#008000"><span lang="en-us">&nbsp;&nbsp;&nbsp; </span>'<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span>'Cut received string by first 
+      chr(0) character</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span>strHostName = 
+      Left(strHostName, InStr(1, strHostName, Chr(0)) - 1)<br>
+      <font color="#008000"><span lang="en-us">&nbsp;&nbsp;&nbsp; </span>'<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span>'Return the found value</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span>HostNameFromLong = 
+      strHostName<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#008000">'</font><br>
+      <font color="#000080">End Function</font></p>
+    </td>
+  </tr>
+</table>
+        <p><span lang="en-us">The port numbers, returned by the <b>GetTcpTable</b> 
+        function in the <b>MIB_TCPROW</b> structure, are in the network byte 
+        order. So we need to convert them into the host byte order to get real 
+        values. Look at the <a href="../byteorder/byte-ordering-01.asp">
+        &quot;Changing the byte order&quot;</a> article to get more on using the special 
+        function for changing the byte ordering.</span></p>
+        <table border='0' width='90%' bgcolor='#F8F8F8' cellspacing='0' cellpadding='2'>
+  <tr>
+    <td width='100%'>
+      <p class='code'><font color="#000080">Private Function</font> 
+      GetPortNumber(lngPort <font color="#000080">As Long</font>)
+      <font color="#000080">As Long</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span>GetPortNumber = 
+      IntegerToUnsigned(ntohs(UnsignedToInteger(lngPort)))<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#008000">'</font><br>
+      <font color="#000080">End Function</font></p>
+    </td>
+  </tr>
+</table>
+        <p><span lang="en-us">Some port numbers can say more then just a numeric 
+        value. If that value is in the range of well-known port numbers, we can 
+        find out what service is used by the giving connection. We have already 
+        examined the <a href="../getserviceinfo/getserviceinfo-01.asp">
+        retrieving service information</a>. </span></p>
+        <table border='0' width='90%' bgcolor='#F8F8F8' cellspacing='0' cellpadding='2'>
+  <tr>
+    <td width='100%'>
+      <p class='code'><font color="#000080">Private Function</font> 
+      GetServiceByPort(lngPortNumber <font color="#000080">As Long</font>)
+      <font color="#000080">As String</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#000080">Dim</font> 
+      lngRetValue <font color="#000080">As Long</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#000080">Dim</font> 
+      udt_servent <font color="#000080">As</font> servent<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#000080">If</font> 
+      GetPortNumber(lngPortNumber) = 80 <font color="#000080">Then</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      GetServiceByPort = &quot;http&quot;<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#000080">Exit Function</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#000080">ElseIf</font> 
+      GetPortNumber(lngPortNumber) = 443 <font color="#000080">Then</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      GetServiceByPort = &quot;https&quot;<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#000080">Exit Function</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#000080">End If</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span>lngRetValue = 
+      getservbyport(UnsignedToInteger(lngPortNumber), 0&amp;)<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#000080">If</font> 
+      lngRetValue <span lang="en-us">&lt;&gt;</span> 0 <font color="#000080">Then</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      RtlMoveMemory udt_servent, lngRetValue, LenB(udt_servent)<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#000080">If</font> Len(udt_servent.s_name) &gt; 0
+      <font color="#000080">Then</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </span>GetServiceByPort = StringFromPointer(udt_servent.s_name)<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#000080">End If</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#000080">End If</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#008000">'</font><br>
+      <font color="#000080">End Function</font></p>
+    </td>
+  </tr>
+</table>
+        <p><span lang="en-us">And, finally, a new feature is added to the 
+        application. Now you can delete any TCP connection. It has nothing to do 
+        with the Winsock API since the <b>SetTcpEntry</b> function is used, 
+        which is from the IP Helper API.</span></p>
+        <table border='0' width='90%' bgcolor='#F8F8F8' cellspacing='0' cellpadding='2'>
+  <tr>
+    <td width='100%'>
+      <p class='code'><font color="#000080">Private Sub</font> cmdKill_Click()<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#000080">Dim</font> 
+      TcpTableRow <font color="#000080">As</font> MIB_TCPROW<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#000080">Dim</font> 
+      lngRetValue <font color="#000080">As Long</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#000080">If Not</font> 
+      ListView1.SelectedItem <font color="#000080">Is Nothing Then</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      TcpTableRow = arrTcpTableRows(ListView1.SelectedItem.Index)<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      TcpTableRow.dwState = MIB_TCP_STATE_DELETE_TCB<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      lngRetValue = SetTcpEntry(TcpTableRow)<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#000080">If</font> lngRetValue = 0 <font color="#000080">Then</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </span>MsgBox &quot;The connection was deleted successfully.&quot;, vbInformation<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#000080">Else</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </span>MsgBox &quot;Cannot delete the connection.&quot;, vbExclamation<br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#000080">End If</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+      <font color="#008000">'</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#000080">End If</font><br>
+      <span lang="en-us">&nbsp;&nbsp;&nbsp; </span><font color="#008000">'</font><br>
+      <font color="#000080">End Sub</font></p>
+    </td>
+  </tr>
+</table>
+<p>        
+    <hr noshade color="#FF9933">
+    <table width="90%" align="center" border="0">
+      <tr>
+        <td width="25%">
+          <img border="0" src="../../../images/comments.gif">
+        </td>
+        <td width="75%">
+          Please, post here only feedback for the article/tutorial/sample you
+          have read above.<br>
+          If you have any question and like to get an answer, post your messages in the <a href="http://www.vbip.com/forum/">Forum</a>.
+        <td>
+      </tr>
+    </table>
+    
+    
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../../comment.asp?370">HostNameFromLong gives null ptr for 0.0.0.0</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Henri Friday, June 01, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../../comment.asp?393">get name from IP-address</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">HappyRick Wednesday, June 27, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../../comment.asp?557">Program crashes...</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Kashbi Sunday, October 14, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../../comment.asp?563">Crashes for me too...</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Mikey Tuesday, October 16, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../../comment.asp?567">Windows 2000 Server  Error</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">r-22 Wednesday, October 17, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../../comment.asp?627">Crash resolution</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Laurent Chesnais Saturday, December 01, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../../comment.asp?652">getting error.. WSAEINTR is undefined </a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">thirumal Wednesday, December 19, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../../comment.asp?665">RE: getting error.. WSAEINTR is undefined </a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">cormer Saturday, December 29, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../../comment.asp?743">Crash on win2K server</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">itay Saturday, February 23, 2002</font></i>	
+			</p>
+			
+        <p>
+        <form name="newcomm" method="POST" action="../../../add_comments.asp">
+          <p><input align="right" border="0" src="../../../images/addyours2.gif" name="I1" type="image"></p>
+          <input type="hidden" name="page" value="/winsock-api/tcptable/tcptable-01.asp">
+          <input type="hidden" name="title">
+	  <input type="hidden" name="actionID" value="add">
+        </form>
+        <SCRIPT LANGUAGE="JavaScript">
+        	{document.newcomm.title.value = document.title}
+        </SCRIPT>
+	<br>
+        <p>
+        <hr noshade color="#FF9933">
+</p>   
+      </blockquote>
+<p><center>
+<!-- start BITS ad HTML -- bottom of page 468x60 banner www.bitsonthewire.com         --> 
+  <iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=2" width=468 height=60 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no> 
+    <a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=2">
+      <p>
+      <img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=2&siteid=1126&ad_type=2">
+    </a>
+  </iframe> 
+<!-- stop BITS ad HTML -- bottom of page 468x60 banner                                --> 
+</center></p>
+    </td>
+</table>
+<table border="1" width="100%" cellspacing="1" cellpadding="2" bordercolor="#800000">
+  <tr>
+    <td width="100%" bgcolor="#FF9933">
+      <font color="#FFFFCC">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="37%"></td>
+          <td width="63%">
+            <p align="right" class="tbcaption"><a href="../../default.asp" class="tbcaption">Home</a> -
+            <a href="../../tools.asp" class="tbcaption">Tools&amp;Technologies</a> -
+            <a href="../default.asp" class="tbcaption">Winsock API</a> - 
+            Improved TCP Table sample application
+          </td>
+        </tr>
+      </table>
+      </font>
+    </td>
+  </tr>
+</table>
+&nbsp;<table border="0" width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="121" valign="top">
+<!-- START OF WEBTRENDS LIVE TAG -->
+<!-- Copyright 2001 NetIQ Corporation -->
+<!--  For privacy concerns, check our Privacy Policy at http://www.webtrendslive.com/privacy_policy.htm -->
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+// Modification of this code is not allowed and will permanently disable your account!
+// SiteName:  Visual Basic Internet Programming
+function wtl_Tag4_27048()
+{
+	function D8( d)
+	{
+		var fwd=1, seed= new Date('01/01/2000'), key= "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+		var s= key.charAt( d.getFullYear()-2000)+key.charAt( d.getMonth()+1)+key.charAt( d.getDate());
+		s+= key.charAt( d.getHours())+key.charAt( d.getMinutes())+key.charAt( d.getSeconds());
+		while( seed.getDay()!=fwd) seed= new Date(seed.getTime() + 86400000);
+		var w= Math.floor( (d.getTime()-(seed.getTime()+86400000)) / 604800000 );
+		s+= key.charAt( (w-(w%16))/16 );
+		s+= key.charAt( w%16);
+		return s;
+	}
+
+	var t = new Date();
+	var W="tagver=4&si=27048&fw=1&bn=13";
+	W+="&tz="+escape(t.getTimezoneOffset());
+	W+="&ch="+escape(t.getHours());
+	W+="&cl="+escape(D8(t));
+	W+="&ti="+escape(document.title);
+	W+="&url="+escape(window.document.URL);
+	W+="&rf="+escape(window.document.referrer);
+	W+="&js=Yes";
+	W+="&ul="+(navigator.appName=="Netscape"?navigator.language:navigator.userLanguage);
+	if(typeof(screen)=="object")
+	{
+	W+="&sr="+screen.width+"x"+screen.height;
+	W+="&cd="+screen.colorDepth;
+	W+="&jo="+(navigator.javaEnabled()?"Yes":"No");
+	}
+	
+	
+	document.write('<A TARGET="_blank" HREF="http://www.webtrendslive.com/redirect.asp?siteID=27048">');
+	document.write('<IMG ID="WTL_TAG" BORDER="0" WIDTH="100" HEIGHT="30" ALT="This Site Tracked by WebTrendsLive." SRC="http://p.wtlive.com/S003-00-9-14-186109-27048/button4.asp?'+W+'">');
+	document.write('</A>');
+	
+}	
+
+wtl_Tag4_27048();
+//-->
+</SCRIPT>
+
+
+<NOSCRIPT>
+<A TARGET="_blank" HREF="http://www.webtrendslive.com/redirect.asp?siteID=27048">
+<IMG BORDER="0" WIDTH="100" HEIGHT="30" ALT="This Site Tracked by WebTrendsLive." SRC="http://p.wtlive.com/S003-00-9-14-186109-27048/button4.asp?tagver=4&si=27048&fw=1&bn=13&js=No&"></A></NOSCRIPT>
+
+
+<!-- END OF WEBTRENDS LIVE TAG -->
+
+     
+      </td>
+    <td>
+<p align="center" class="barsidecaption"><a href="../../default.asp">Home</a> | <a href="../../whatsnew.asp">What's
+New</a> | <a href="../../tools.asp"> Tools
+&amp; Technologies</a> | <a href="../../resources.asp">Resources</a> | <a href="../../resources/books/default.asp">Books</a>
+ | <a href="../../forum/">Forum</a></p>
+<p align="center" class="barsidecaption">Report about any problems and errors to <a href="mailto:webmaster@vbip.com">webmaster@vbip.com</a><br>
+Copyright © 1998 - 2002 by <a href="mailto:oleg@vbip.com"> Oleg Gdalevich</a></p>
+    </td>
+    <td valign="top" width="140">
+<p align="center">
+<a target="_blank" href="http://www.amazon.com/exec/obidos/ASIN/B00005AFI2/vbipvisualbasici">
+<img border="0" src="../../images/frontpage_button.gif" align="right" width="100" height="38"></a>
+    </td>
+  </tr>
+</table>
+</body>
+
+</html>

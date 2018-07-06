@@ -1,0 +1,486 @@
+ID=E0565
+URL=http://www.research.att.com/~bs/3rd_printing14.html
+SIZE=13223
+DATE=12/07/02
+TIME=19:22:18
+DATASET=C
+HTML=<html>
+<head>
+<title>Stroustrup: Errata for 3rd/13th printing of The C++ Programming Language</title>
+</head>
+<body bgcolor="FFFBFB">
+<center>
+<a href="homepage.html">homepage</a>
+|
+<a href="C++.html">C++ links</a>
+|
+<a href="bs_faq.html">FAQ</a>
+|
+<a href="bs_faq2.html">technical FAQ</a>
+|
+<a href="glossary.html">glossary</a>
+|
+<a href="compilers.html">compilers</a>
+|
+<a href="papers.html">publications</a>
+|
+<a href="3rd.html">TC++PL</a>
+|
+<a href="dne.html">D&E</a>
+|
+<a href="bio.html">bio</a>
+|
+<a href="interviews.html">interviews</a>
+|
+<a href="applications.html">applications</a>
+|
+<a href="http://www.research.att.com">AT&T Research</a>
+</center>
+<center>
+<h1>Errata for 3rd/13th printing of The C++ Programming Language</h1>
+</center>
+Errata for
+<a href="homepage.html">
+Bjarne Stroustrup</a>:
+<a href="3rd.html">
+The C++ Programming Language (special edition)</a>,
+Addison-Wesley, 2000. ISBN0-201-70073-5.
+Errata for the 3rd printing yielding the 4th printing.
+Also for the 13th printing of "The C++ Programming Language (3rd edition)"
+yielding the 14th printing.
+<hr>
+<h2>Errors and Clarifications</h2>
+<hr>
+<a href="3rd_notes.pdf">Chapter 1</a>:
+<p>
+<a href="3rd_tour.pdf">Chapter 2</a>:
+<p>
+<a href="3rd_tour2.pdf">Chapter 3</a>:
+<p>
+Chapter 6:
+<p>
+pp 109-110:
+	s/left=left+term() and left=left-term)
+could have been used without changing the meaning of the program.
+However, left+=term() and left-=term(/
+	left=left+term(true) and left=left-term(true)
+could have been used without changing the meaning of the program.
+However, left+=term(true) and left-=term(true)/
+<p>
+pg 125	s/The increment
+operators are particularly useful for incrementing and decrementing
+variables in loops./The ++ and --
+operators are particularly useful for incrementing and decrementing
+variables in loops./
+pg 129	Add comments to first example:
+<pre>
+	void* operator new(size_t);		// allocate space for individual object
+	void operator delete(void* p);		// if (p) deallocate space allocated using operator new()
+	void* operator new[](size_t);		// allocate space for array
+	void operator delete[](void* p);	// if (p) deallocate space allocated using operator new[]()
+</pre>
+<p>
+pg 130	s/an enumeration to an integral type/an integral type to an enumeration/
+<p>
+Chapter 8:
+<p>
+pg 195	s/depending on where in a class stack/
+	depending on where in the function call stack/
+<p>
+Chapter 9:
+<p>
+pg 202: Improved last example:
+<pre>
+	#ifdef __cplusplus	// for C++ compilers only (9.2.4)
+	namespace std {		// the standard library is defined in namespace std (8.2.9)
+	extern "C" {		// stdio functions have C linkage (9.2.4)
+	#endif
+		/* ... */
+		int printf(const char*, ...);
+		/* ... */
+	#ifdef __cplusplus
+	}
+	}
+	// ...
+	using std::printf;	// make printf available in global namespace
+	// ...
+	#endif
+</pre>
+<p>
+Chapter 10:
+<p>
+pg 246	Replace the last sentence before 10.4.5 by:
+	"Exceptions can be used to report failure to copy (14.4.6.2).
+	See E.3.3 for techniques for writing exception-safe copy operations."
+<p>
+pg 247	s/reverse order of construction./reverse order of construction after
+	the body of the class' own destructor has been executed./
+<p>
+Chapter 11:
+<p>
+pg 265	s/basic type/built-in type (sec4.1.1)/
+<p>
+pg 273	s/basic type/built-in type/
+<p>
+pg 275	s/basic type/built-in type/ twice
+<p>
+Chapter 13:
+<p>
+pg 346	Replace the last sentence after the long example by:
+	"However, the definition of operations such as == and !=
+	must be expressed in terms of both the
+	container and its elements,
+	so the element type needs to be passed to
+	the container template.
+	The resulting container type is then passed to Basic_ops."
+<p>
+Chapter 15:
+<p>
+pg 408	s/If p is of type T* or of an accessible base class of T,/
+	If p is of type T* or of a type D* where T is a base class of D,/
+<p>
+pg 416	s/map< const char*, Layout> layout_table;/
+	map< string, Layout> layout_table;/
+<p>
+pg 422	Improve example:
+<pre>
+	void Employee::operator delete(void* p, size_t s)
+	{
+		if (p) {	// delete only if p!=0; see sec6.2.6, sec6.2.6.2
+			// assume `p' points to `s' bytes of memory allocated by Employee::operator new()
+			// and free that memory for reuse
+		}
+	}
+</pre>
+<p>
+pg 342	s/static_cast/reinterpret_cast/ twice
+<p>
+Chapter 16:
+<p>
+pg 434	s/fabs(),//
+<p>
+Chapter 17:
+<p>
+pg 482	Improvement to reflect standard corrigendum:
+<pre>
+template < class T1, class T2> pair< T1,T2> std::make_pair(T1 t1, T2 t2)
+{
+	return pair< T1,T2>(t1,t2);
+}
+</pre>
+<p>
+Chapter 18:
+<p>
+pg 538	replace the second example with
+<p>
+	For a call random_shuffle(b,e,r), the generator is called with
+	the number of elements in the sequence as its argument: r(e-b).
+	The generator must return a value in the range [0,e-b).
+	If My_rand is such a generator, we might shuffle a deck of cards
+	like this:
+<pre>
+	void f(deque< Card>& dc, My_rand& r)
+	{
+		random_shuffle(dc.begin(),dc.end(),r);
+		// ...
+	}
+</pre>
+<p>
+Chapter 19:
+<p>
+pg 562	s/ getting a const iterator for a non-const iterator./
+	getting a const iterator for a non-const container./
+<p>
+pg 568	Add at the end of the first paragraph:
+	"Note that deallocate() differs from operator delete()
+	(sec 6.2.6) in that its pointer argument may not be zero."
+<p>
+Chapter 20:
+<p>
+pg 600-601	Expand the section describing conversion functions to:
+<p>
+	In < stdlib.h> and < cstdlib> ,
+	the standard library provides useful functions for converting strings
+	representing numeric values into numeric values. For example:
+<p>
+<pre>
+	double atof(const char* p);			// convert p[] to double  (``alpha to floating'')
+	double strtod(const char* p, char** end);	// convert p[] to double (``string to double'')
+	int atoi(const char* p);			// convert p[] to int, assuming base 10
+	long atol(const char* p);			// convert p[] to long, assuming base 10
+	long strtol(const char* p, char** end, int b);	// convert p[] to long, assuming base b
+</pre>
+<p>
+These functions ignore leading whitespace.
+If the input string doesn't represent a number, zero is returned.
+For example, the value of atoi("seven") is 0.
+<p>
+If end is non-zero in a call strtol(p,end,b),
+the position of the first unread character in the input string is made
+available by assigning it to *end. If b==0,
+a number is interpreted the way a C++ integer literal is (4.4.1);
+for example, a 0x prefix means hexadecimal, 0 means octal, etc.
+<p>
+It is undefined what happens if atof(), atoi(), or atol()
+converts a value that cannot be represented as its respective return type.
+If the input string for strtol()
+represents a number that cannot be represented as a long int
+or if the input string for strtod() represents a number that cannot be
+represented as a double, errno
+(16.1.2, 22.3) is set to ERANGE
+and an appropriately huge or tiny value is returned.
+<p>
+Except for the error handling, atof(s) is equivalent to strtod(s,0),
+atoi(s) is equivalent to int(strtol(s,0,10)),
+and atol(s) is equivalent to strtol(s,0,10).
+<p>
+Chapter 21;
+<p>
+pg 621	s/badbit/failbit/
+<p>
+pg 621	Add at the bottom:
+	"If a format error is found, the stream state is set to
+	failbit. The state is not set to badbit because the stream
+	itself isn't corrupted. A user could reset the stream (using
+	clear()) and might be able to skip
+	past the problem and extract useful data from the stream."
+<p>
+pg 629	better:
+<pre>
+template<class Ch, class Tr>
+basic_ostream< Ch,Tr>& operator<<(basic_ostream< Ch,Tr>& os, const smanip& m)
+{
+	m.f(os,m.i);
+	return os;
+}
+</pre>
+<p>
+pg 629	better:
+<pre>
+ios_base& set_precision(ios_base& s, int n)	// helper
+{
+	s.precision(n);	// call the member function
+	return s;
+}
+</pre>
+<p>
+pg 652	s/with an initial 0x//
+<p>
+pg 652	s/with an initial 0X//
+<p>
+Appendix A:
+<p>
+pg 808	s/extern const volatile clock;/extern const volatile long clock;/
+<p>
+pg 809: In class-head replace
+<pre>
+	class-key nested-name-specifier template template-id base-clause(opt
+</pre>
+with
+<pre>
+	class-key nested-name-specifier(opt template-id base-clause(opt
+</pre>
+<a href="3rd_compat.pdf">Appendix B</a>:
+<p>
+Appendix C:
+<p>
+pg 855:	replace the first two sentences of the paragraph following the
+	first example of C.13.3 by:
+"To declare a template as a template parameter, we must specify its
+required arguments.
+For example, we specify that Xrefd 's template parameter C
+is a template class that takes a single type argument.
+If we didn't, we wouldn't be able to use specializations of C."
+<p>
+pg 867	s/template Calls_foo< Shape*>::constraints();/
+	template void Calls_foo< Shape*>::constraints(Shape*);/
+<p>
+<a href="3rd_loc0.html">Appendix D</a>:
+<p>
+pg 880	Change the comment in the example:
+<pre>
+	sort(v.begin(),v.end());	// sort using < to compare elements
+</pre>
+<p>
+pg 884	s/falilure state/fail state/
+<p>
+pg 891	s/public virtual function do_compare()/protected virtual function do_compare()/
+<p>
+pg 893	s/: numpunct< char>(r) { }/: std::numpunct< char>(r) { }/
+<p>
+pg 894	The output at the default format and precision is:
+<pre>
+	style A: 12345678 *** 1.23457e+06
+	style B: 12 345 678 *** 1,23457e+06
+</pre>
+<p>
+pg 896	s/fill()/this->fill()/
+<p>
+pg 898	s/eos,state/eos,*this,state/
+<p>
+pg 899	s/DKr/DKK/
+<p>
+pg 899	s/money_punct's/moneypunct's/
+<p>
+pg 900	s/FrF/FRF/
+<p>
+pg 900	s/DKr/DKK/ twice
+<p>
+pg 900	s/Usually, the last character is a space./
+	The last character is a terminating zero./
+<p>
+pg 901	s/DKr/DKK/ twice
+<p>
+pg 901	Correct:
+<pre>
+	char_type do_decimal_point() const { return '.'; }
+	char_type do_thousands_sep() const { return ','; }
+</pre>
+<p>
+pg 904	A better input function:
+<pre>
+istream& operator>>(istream& s, Money& m)
+{
+	istream::sentry guard(s);		// see 21.3.8
+	if (guard) try {
+		ios_base::iostate state = 0; 	// good
+		istreambuf_iterator< char> eos;
+		string str;
+
+		use_facet< money_get< char> >(s.getloc()).get(s,eos,true,state,str);
+
+		if (state==0 || state==ios_base::eofbit) {	// set value only if get() succeeded
+			long int i = strtol(str.c_str(),0,0);	// for strtol(), see 20.4.1
+			if (errno==ERANGE)
+				state |= ios_base::failbit;
+			else
+				m = i;	// set value only if conversion to long int succeeded
+			s.setstate(state);
+		}
+	}
+	catch (...) {
+		handle_ioexception(s);	// see D.4.2.2
+	}
+	return s;
+}
+</pre>
+<p>
+I use the get() that reads into a string because reading into a double
+and then converting to a long int could lead to loss of precision.
+<p>
+pg 909	s/sloppy: no protection against buffer overflow/
+	sloppy: hope strftime() will never produce more than 20 characters/
+<p>
+pg 912	s/The default reads a time/The default get_date() reads a date/
+<p>
+pg 915	s/see _io.sentry/see 21.3.8/
+<p>
+pg 927	s/always_no_conv/always_noconv/
+<p>
+pg 929	Correct:
+<pre>
+	void do_close(catalog cat) const
+	{
+		if (catalogs.size()<=cat) catalogs.erase(catalogs.begin()+cat);
+	}
+</pre>
+<p>
+pg 933	s/such as 12 May 1995/such as 12 5 1995/
+<p>
+<a href="3rd_safe0.html">Appendix E</a>:
+<p>
+pg 945: After the second example, add:
+	However, the default swap() implementation don't suit our needs for
+	vector_base because it copies and destroys a vector_base.
+	Consequently, we provide a specialization:
+<pre>
+	template< class T> void swap(vector_base< T>& a, vector_base<T>& b)
+	{
+		swap(a.a,b.a); swap(a.v,b.v); swap(a.space,b.space); swap(a.last,b.last);
+	}
+</pre>
+<p>
+<hr>
+<h2>Typos</h2>
+<hr>
+<p>
+Chapter 13:
+<p>
+pg 349	s/the member of the set/the members of the set/
+<p>
+Chapter 14:
+<p>
+pg 373	s/need to allocate/needs to allocate/
+<p>
+Chapter 16:
+<p>
+pg 452 s/and initial_not() (is the initial letter different from p?)/
+	 and initial_not(x) (is the initial letter different from x?)/
+<p>
+pg 468	s/criteria/criterion/
+<p>
+Chapter 18:
+<p>
+pg 531	s/The the/The/
+<p>
+pg 542	s/comes first/come first/
+<p>
+Chapter 19:
+<p>
+pg 552	s/terms combinations/terms of combinations/
+<p>
+Chapter 20:
+<p>
+pg 590	s/interprete/interpret/
+<p>
+pg 602	s/c_str() produce/c_str() to produce/
+<p>
+pg 602	s/rather that/rather than/
+<p>
+Chapter 21:
+<p>
+pg 617	s/a call of is::operator void*()/a call of istream::operator void*() for is./
+<p>
+pg 630	s/A call width(n) function/A call width(n)/
+<p>
+pg 639	s/ and do experiment./ and experiment./
+<p>
+<a href="3rd_compat.pdf">Appendix B</a>:
+<p>
+pg 815	s/to try port/try to port/ 
+<p>
+<a href="3rd_loc0.pdf">Appendix D</a>:
+<p>
+pg 880	s/rather then C-style strings./rather than C-style strings./
+<p>
+<center>
+<a href="homepage.html">homepage</a>
+|
+<a href="C++.html">C++ links</a>
+|
+<a href="bs_faq.html">FAQ</a>
+|
+<a href="bs_faq2.html">technical FAQ</a>
+|
+<a href="glossary.html">glossary</a>
+|
+<a href="compilers.html">compilers</a>
+|
+<a href="papers.html">publications</a>
+|
+<a href="3rd.html">TC++PL</a>
+|
+<a href="dne.html">D&E</a>
+|
+<a href="bio.html">bio</a>
+|
+<a href="interviews.html">interviews</a>
+|
+<a href="applications.html">applications</a>
+|
+<a href="http://www.research.att.com">AT&T Research</a>
+</center>
+</body>
+</html>
+
+

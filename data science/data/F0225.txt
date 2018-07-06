@@ -1,0 +1,176 @@
+ID=F0225
+URL=http://www.mvps.org/btmtz/shformat
+SIZE=8882
+DATE=09/07/2002
+TIME=13:17:05
+DATASET=Visual Basic
+HTML=<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<link rel="StyleSheet" href="../styles.css" type="text/css">
+<title>SHFormatDrive</title>
+</head>
+
+<body bgcolor="#FFFFE1" text="#000000" link="#008000" vlink="#008000" alink="#008000">
+<div align="center"><center>
+
+<table border="0" cellspacing="4" width="620">
+  <tr>
+    <td valign="top" rowspan="3" width="190" height="138"><img src="../images/vbpslogo2.gif" alt="vbpslogo2.gif (19593 bytes)" WIDTH="190" HEIGHT="124"></td>
+    <td valign="bottom" width="100%" height="50" colspan="2"><strong><br>
+    <font size="5" face="Arial">Brad's VB-32 Programs &amp; Samples</font></strong></td>
+  </tr>
+  <tr>
+    <td width="100%" height="38" colspan="2"><hr color="#FF9933">
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" width="600" height="38"><font size="2" face="Arial">Posted: 06/26/97,
+    last update: 06/26/97</font></td>
+    <td valign="top" width="20" height="38"><font size="2" face="Arial"><p align="right"><a href="../index.html">Home</a></font></td>
+  </tr>
+</table>
+</center></div><div align="center"><center>
+
+<table border="0" cellspacing="2" width="620">
+  <tr>
+    <td valign="top" width="100%"><font size="2" face="Arial"><strong>The undocumented
+    SHFormatDrive function</strong><br>
+    <br>
+    I keep seeing people ask about this function so I thought I'd take a shot at it. This is
+    as far as I got verifying the info floating around the Deja News database at <a href="http://www.dejanews.com/">http://www.dejanews.com/</a> Because at the time of this
+    writing the function is not documented by MS, I'm assuming the info found there was
+    obtained through trial and error. I definitely confirmed the info below through my own
+    trial and error, and suggest you verify everything for yourself as well. The parameter and
+    constant names are obviously a result of personal preference.<br>
+    <br>
+    <strong>Note:</strong><br>
+    <br>
+    This function behaves differently on Win95 &amp; WinNT4 (see the iCapacity, iFormatType
+    &amp; return value descriptions). The Win95 implementation seems OK. But considering the
+    different dialog options on WinNT, and that I'm running it on the FAT file system &amp;
+    with no compression, other parameter values may be available.<br>
+    <br>
+    <strong>Overview:</strong><br>
+    <br>
+    The SHFormatDrive brings up the system-defined Format dialog box and selects specified
+    options....</font><pre><font face="Courier New" size="2" color="#000080"><span>Declare Function SHFormatDrive Lib &quot;shell32&quot; _
+                            (ByVal hwndOwner As Long, _
+                             ByVal iDrive As Long, _
+                             ByVal iCapacity As Long, _
+                             ByVal iFormatType As Long) As Long</span></font></pre>
+    <div align="left"><table border="0" width="600" cellspacing="4" cellpadding="0">
+      <tr>
+        <td valign="top" align="left" nowrap width="83"><strong><font size="2" face="Arial">Parameter</font></strong></td>
+        <td valign="top" align="left" nowrap width="6"></td>
+        <td valign="top" align="left" width="469"><strong><font size="2" face="Arial">Description</font></strong></td>
+      </tr>
+      <tr>
+        <td valign="top" align="left" nowrap width="83"><strong><font size="2" face="Arial">hwndOwner</font></strong></td>
+        <td valign="top" align="left" nowrap width="6"></td>
+        <td valign="top" align="left" width="469"><font size="2" face="Arial">Handle of the owner
+        window for the dialog box.</font></td>
+      </tr>
+      <tr>
+        <td valign="top" align="left" nowrap width="83"><strong><font size="2" face="Arial">iDrive</font></strong></td>
+        <td valign="top" align="left" nowrap width="6"></td>
+        <td valign="top" align="left" width="469"><font size="2" face="Arial">Value specifying the
+        zero-based system drive index (A = 0, B = 1, etc.)</font></td>
+      </tr>
+      <tr>
+        <td valign="top" align="left" nowrap width="83"><strong><font size="2" face="Arial">iCapacity</font></strong></td>
+        <td valign="top" align="left" nowrap width="6"></td>
+        <td valign="top" align="left" width="469"><font size="2" face="Arial">Value specifying the
+        formatted capacity of the drive; the corresponding item is selected in the Capacity combo
+        box.<br>
+        </font><div align="left"><table border="0" cellspacing="4" width="100%" cellpadding="0">
+          <tr>
+            <td valign="bottom"><font size="2" face="Arial"><strong>Win95:</strong><br>
+            SHFD_CAPACITY_DEFAULT = 0&nbsp; 'default drive capacity<br>
+            SHFD_CAPACITY_360 = 3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' 360KB,
+            applies to 5.25&quot; drives only<br>
+            SHFD_CAPACITY_720 = 5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' 720KB,
+            applies to 3.5&quot; drives only<br>
+            <strong><br>
+            WinNT(?):</strong><br>
+            ...?</font></td>
+          </tr>
+        </table>
+        </div></td>
+      </tr>
+      <tr>
+        <td valign="top" align="left" nowrap width="83"><strong><font size="2" face="Arial">iFormatType</font></strong></td>
+        <td valign="top" align="left" nowrap width="6"></td>
+        <td valign="top" align="left" width="469"><font size="2" face="Arial">Value specifying the
+        format operation, the corresponding option button is selected in the Format type group
+        box.<br>
+        </font><div align="left"><table border="0" cellspacing="4" width="100%" cellpadding="0">
+          <tr>
+            <td valign="bottom"><font size="2" face="Arial"><strong>Win95:</strong><br>
+            SHFD_FORMAT_QUICK = 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' quick format<br>
+            SHFD_FORMAT_FULL = 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' full format<br>
+            SHFD_FORMAT_SYSONLY = 2&nbsp; ' copies system files only<br>
+            <strong><br>
+            WinNT(?):</strong><br>
+            SHFD_FORMAT_FULL = 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' full format<br>
+            SHFD_FORMAT_QUICK = 1&nbsp;&nbsp;&nbsp; ' quick format</font></td>
+          </tr>
+        </table>
+        </div></td>
+      </tr>
+    </table>
+    </div><p><strong><font size="2" face="Arial">Return values</font></strong></p>
+    <table border="0" cellpadding="0" cellspacing="4">
+      <tr>
+        <td valign="top" align="left"><strong><font size="2" face="Arial">Win95:</font></strong></td>
+        <td valign="top" align="left"></td>
+      </tr>
+      <tr>
+        <td valign="top" align="center"><font size="2" face="Arial">-3</font></td>
+        <td valign="top" align="left"><font size="2" face="Arial">failure, drive can't be
+        formatted (either doesn't exist or contains files in use by Windows)</font></td>
+      </tr>
+      <tr>
+        <td valign="top" align="center"><font size="2" face="Arial">-2</font></td>
+        <td valign="top" align="left"><font size="2" face="Arial">operation cancelled</font></td>
+      </tr>
+      <tr>
+        <td valign="top" align="center"><font size="2" face="Arial">-1</font></td>
+        <td valign="top" align="left"><font size="2" face="Arial">operation attempted but
+        completed unsuccessfully</font></td>
+      </tr>
+      <tr>
+        <td valign="top" align="center"><font size="2" face="Arial">6(?)</font></td>
+        <td valign="top" align="left"><font size="2" face="Arial">operation completed successfully</font></td>
+      </tr>
+      <tr>
+        <td valign="top" align="left"><font size="2" face="Arial">&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
+        <td valign="top" align="left"></td>
+      </tr>
+      <tr>
+        <td valign="top" align="left"><font size="2" face="Arial"><strong>WinNT:</strong></font></td>
+        <td valign="top" align="left"></td>
+      </tr>
+      <tr>
+        <td valign="top" align="center"><font size="2" face="Arial">-1</font></td>
+        <td valign="top" align="left"><font size="2" face="Arial">dialog was shown</font></td>
+      </tr>
+      <tr>
+        <td valign="top" align="center"><font size="2" face="Arial">0</font></td>
+        <td valign="top" align="left"><font size="2" face="Arial">error, dialog not shown</font></td>
+      </tr>
+    </table>
+    <p><font size="2" face="Arial">SHFormatDrive can also be passed to rundll32 and run from a
+    command line via:</font></p>
+    <blockquote>
+      <p><font face="Arial" size="2" color="#000080">rundll32.exe shell32.dll,SHFormatDrive</font></p>
+    </blockquote>
+    <p><font size="2" face="Arial">but it's command line parameters don't seem to be
+    recognized.</font></td>
+  </tr>
+</table>
+</center></div>
+</body>
+</html>
+

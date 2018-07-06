@@ -1,0 +1,98 @@
+ID=G0468
+URL=http://arcturus.mit.edu/cosmics/doc-html/node7.html
+SIZE=7327
+DATE=09/07/2002
+TIME=16:18:42
+DATASET=Astronomy
+HTML=<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95 (Thu Jan 19 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> DELTAT: Evaluate CMB Anisotropy Spectrum</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" DELTAT: Evaluate CMB Anisotropy Spectrum">
+<meta name="keywords" value="cosmics">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html87 HREF="node8.html"><IMG ALIGN=BOTTOM ALT="next" SRC="file:/usr/local/lib/latex2html/icons/next_motif.gif"></A>   <A NAME=tex2html85 HREF="cosmics.html"><IMG ALIGN=BOTTOM ALT="up" SRC="file:/usr/local/lib/latex2html/icons/up_motif.gif"></A>   <A NAME=tex2html79 HREF="node6.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="file:/usr/local/lib/latex2html/icons/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html88 HREF="node8.html"> GRAFIC: Gaussian Random </A>
+<B>Up:</B> <A NAME=tex2html86 HREF="cosmics.html">COSMICS: Cosmological Initial Conditions </A>
+<B> Previous:</B> <A NAME=tex2html80 HREF="node6.html"> Linger Output</A>
+<BR> <HR> <P>
+<H1><A NAME=SECTION00030000000000000000> DELTAT: Evaluate CMB Anisotropy Spectrum</A></H1>
+<P>
+The photon temperature angular power spectrum is given by an integral
+over spatial wavenumbers as [<A HREF="node15.html#mab1">3</A>]
+<P><A NAME=cls>&#160;</A><IMG  ALIGN=BOTTOM ALT="" SRC="img71.gif"><P>
+where <IMG  ALIGN=MIDDLE ALT="" SRC="img72.gif"> is the power spectrum of the primeval potential <IMG  ALIGN=MIDDLE ALT="" SRC="img73.gif"> for
+isentropic initial conditions, or of the fluctuating density component for
+isocurvature initial conditions, and <IMG  ALIGN=MIDDLE ALT="" SRC="img74.gif"> is the total
+temperature fluctuation (summed over polarizations) at the conformal time
+<IMG  ALIGN=BOTTOM ALT="" SRC="img75.gif"> corresponding to the ending redshift of <tt>linger</tt>.  The angular
+power spectrum is related to the angular correlation function <IMG  ALIGN=MIDDLE ALT="" SRC="img76.gif">
+(here <IMG  ALIGN=BOTTOM ALT="" SRC="img77.gif"> is an angle, not <IMG  ALIGN=BOTTOM ALT="" SRC="img78.gif">!) by
+<P><A NAME=angcor>&#160;</A><IMG  ALIGN=BOTTOM ALT="" SRC="img79.gif"><P>
+where <IMG  ALIGN=MIDDLE ALT="" SRC="img80.gif"> is a Legendre polynomial.  <tt>Deltat</tt> performs the numerical
+quadrature in equation (<A HREF="node7.html#cls">2</A>) using Romberg integration of a continuous
+<IMG  ALIGN=MIDDLE ALT="" SRC="img81.gif"> interpolated from the values stored in <tt>lingerg.dat</tt>
+using cubic splines.  The radiation transfer functions undergo damped
+oscillations with slowly-varying amplitude and phase at fixed <IMG  ALIGN=BOTTOM ALT="" SRC="img82.gif">:
+<IMG  ALIGN=MIDDLE ALT="" SRC="img83.gif"> (<IMG  ALIGN=MIDDLE ALT="" SRC="img84.gif"> is a spherical Bessel
+function).  It is difficult to determine or fit <IMG  ALIGN=MIDDLE ALT="" SRC="img85.gif"> and <IMG  ALIGN=MIDDLE ALT="" SRC="img86.gif">,
+so instead we use the numerically computed values of <IMG  ALIGN=MIDDLE ALT="" SRC="img87.gif">,
+interpolated with a spline.  The point of this discussion is that
+<IMG  ALIGN=MIDDLE ALT="" SRC="img88.gif"> oscillates rapidly, with a period of about <IMG  ALIGN=MIDDLE ALT="" SRC="img89.gif">;
+<IMG  ALIGN=MIDDLE ALT="" SRC="img90.gif"> Mpc today.  Thus, our interpolation
+method requires sampling in <b>k</b> with <IMG  ALIGN=BOTTOM ALT="" SRC="img91.gif"> or better.
+Although this sampling requirement is stringent, the advantage of our method
+is that the spline provides an excellent fit and the Romberg integration
+provides an extremely precise numerical quadrature.  Even with this
+precision, <tt>Deltat</tt> runs much more quickly than <tt>linger</tt> for
+a full Boltzmann run.
+<P>
+The user of <tt>deltat</tt> also needs to note that the integral in equation
+(<A HREF="node7.html#cls">2</A>) must be carried to <IMG  ALIGN=MIDDLE ALT="" SRC="img92.gif">
+to get all significant contributions (to a level of 0.15%); for higher <b>k</b>
+the radiation transfer functions are negligible.  The user can experiment
+with these parameters.
+<P>
+<tt>Deltat</tt> is easy to run.  Prompted by the program, the user must
+input the following: <IMG  ALIGN=MIDDLE ALT="" SRC="img93.gif"> and <b>n</b>; <IMG  ALIGN=MIDDLE ALT="" SRC="img94.gif">; and the
+<tt>lingerg.dat</tt> filename from <tt>linger</tt> (the name should be changed
+to avoid overwriting the file by later <tt>linger</tt> runs).  The first
+parameter requested by <tt>deltat</tt> is simply the maximum <b>l</b> to compute
+<IMG  ALIGN=MIDDLE ALT="" SRC="img95.gif">; <tt>deltat</tt> uses the minimum of this value and the <IMG  ALIGN=MIDDLE ALT="" SRC="img96.gif">
+for the radiation transfer functions in <tt>lingerg.dat</tt>.  The parameter
+<b>n</b> is related to the logarithmic slope of the primeval power spectrum <IMG  ALIGN=MIDDLE ALT="" SRC="img97.gif">
+in equation (<A HREF="node7.html#cls">2</A>): <IMG  ALIGN=MIDDLE ALT="" SRC="img98.gif">.  The offset of 4 is due to
+the unfortunate usage in cosmology of <b>n</b> for the logarithmic slope of
+the power spectrum of the gauge-invariant total density fluctuation
+<IMG  ALIGN=MIDDLE ALT="" SRC="img99.gif"> and not the physically relevant quantities.  For the standard
+scale-invariant Harrison-Zel'dovich spectrum, <b>n=1</b> for both isentropic
+and isocurvature fluctuations.  The third numerical parameter,
+<IMG  ALIGN=MIDDLE ALT="" SRC="img100.gif">, is simply a flag instructing the program to extract
+<IMG  ALIGN=MIDDLE ALT="" SRC="img101.gif"> for <IMG  ALIGN=MIDDLE ALT="" SRC="img102.gif"> from <tt>lingerg.dat</tt> and write it
+to an ascii file.  The user could do this by writing a small program, but
+often it is useful to plot one of the radiation transfer functions as a
+sanity check when one is in no mood to write such a program.
+<P>
+The output of <tt>Deltat</tt> is equally simple: an ascii file <tt>deltat.dat</tt>
+containing 3 header lines (the same 2 as <tt>linger.dat</tt>, plus an extra header
+line giving <b>n</b>), followed by <b>l</b> and the net power <IMG  ALIGN=MIDDLE ALT="" SRC="img103.gif"> in the left
+and right columns, respectively.  Additionally, if <IMG  ALIGN=MIDDLE ALT="" SRC="img104.gif">, an ascii file <tt>deltal.dat</tt> is created containing one
+header line with <IMG  ALIGN=MIDDLE ALT="" SRC="img105.gif"> followed by <b>k</b> and <IMG  ALIGN=MIDDLE ALT="" SRC="img106.gif"> in the
+left and right columns, respectively.
+<P>
+<BR> <HR><A NAME=tex2html87 HREF="node8.html"><IMG ALIGN=BOTTOM ALT="next" SRC="file:/usr/local/lib/latex2html/icons/next_motif.gif"></A>   <A NAME=tex2html85 HREF="cosmics.html"><IMG ALIGN=BOTTOM ALT="up" SRC="file:/usr/local/lib/latex2html/icons/up_motif.gif"></A>   <A NAME=tex2html79 HREF="node6.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="file:/usr/local/lib/latex2html/icons/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html88 HREF="node8.html"> GRAFIC: Gaussian Random </A>
+<B>Up:</B> <A NAME=tex2html86 HREF="cosmics.html">COSMICS: Cosmological Initial Conditions </A>
+<B> Previous:</B> <A NAME=tex2html80 HREF="node6.html"> Linger Output</A>
+<BR> <HR> <P>
+<BR> <HR>
+<P><ADDRESS>
+<I>Edmund Bertschinger <BR>
+Mon Jun 12 01:14:50 EDT 1995</I>
+</ADDRESS>
+</BODY>
+

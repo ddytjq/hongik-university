@@ -1,0 +1,107 @@
+ID=D0357
+URL=http://www-2.cs.cmu.edu/~jch/java/tools.html
+SIZE=4136
+DATE=16/07/02
+TIME=14:43:59
+DATASET=Java
+HTML=<html>
+<head>
+<title>Tools for Optimizing Java</title>
+<base href="http://www.cs.cmu.edu/~jch/java/tools.html">
+<meta name="author" content="Jonathan Hardwick">
+<meta name="description" content="Tools you can use to profile and benchmark your Java programs."> 
+<meta name="keywords" content="optimization, optimising, optimisation, tools, development, profiling, benchmarking."> 
+</head>
+
+<body>
+<h1 align=center>Tools for Optimizing Java</h1>
+<p align=center><font face="Helvetica" size=-1>
+[ <b><a href="optimization.html">index</a></b> ]
+[ <a href="benchmarks.html">benchmarks</a>
+ | <a href="compilers.html">compilers</a> 
+ | <a href="maintainability.html">maintainability</a>
+ | <a href="resources.html">resources</a>
+ | <a href="rules.html">rules</a> 
+ | <a href="size.html">size</a>
+ | <a href="speed.html">speed</a> ]
+</font></p>
+<hr size=1 noshade>
+
+<blockquote>
+<dl>
+  
+<dt><b><a name="profile">Profiling:</a></b>
+<dd>To profile a (single-threaded) application, use <tt><a
+    href="http://java.sun.com/products/JDK/tools/solaris/java.html">java
+    -prof</a></tt>.  To profile an applet, use <tt>java -prof
+    sun.applet.AppletViewer myfile.html</tt> (tip from <a
+    href="mailto:dmoore9@access.digex.net">David Moore</a>).  The profile file
+    can then be analyzed using a tool such as <a
+    href="http://www.inetmi.com/~gwhi/ProfileViewer/ProfileViewer.html">Profile
+    Viewer</a> or <a
+    href="http://www.physics.orst.edu/~bulatov/HyperProf/">HyperProf</a>.
+    You can also use the profiling tools built into an IDE such as
+    <!-- <a
+    href="http://www.sourcecraft.com:4800/about/netcraft/">NetCraft</a> or -->
+    <a href="http://www.vsonline.com/">VisionSoft</a>
+
+    <p>Note that commercial profilers such as <a
+    href="http://www.optimizeit.com/">Optimize It!</a> can profile both time
+    and memory.
+    <img alt="[NEW]" width=31 height=12 src="new.gif">
+    <p>
+    
+<dt><b>Disassembly:</b>
+<dd>Use <tt><a href="http://java.sun.com/products/JDK/tools/solaris/javap.html">javap -c</a></tt> 
+    to see the bytecode that your Java is compiled into:
+<pre>
+	javac -O test.java
+	javap -c test | more
+</pre>
+    To understand the bytecode, read the
+    <a href="http://java.sun.com/doc/language_vm_specification.html">Java
+    VM spec</a>.<p>
+    
+<dt><b><a name="timing">Timing:</a></b>
+<dd>Write a timing harness to wrap around code fragments so that
+    you can benchmark them.  You can either adapt the old thread-based
+    <a href="http://www.javasoft.com/applets/applets/performance/">HotJava
+    Performance Tests</a>, or just use a simple
+    loop.  Note that <tt>system.currentTimeMillis()</tt> 
+    returns the time of day, not the process time, so all benchmarking
+    should be done on an idle machine.  Call <tt>system.gc()</tt>
+    before every timing run to minimize inconsistent results due to
+    garbage collection in the middle of a run.  On systems with
+    sub-millisecond clocks you can use native methods to access them (e.g.,
+    <tt>gettimeofday()</tt> or <tt>getrusage()</tt> on Unix
+    systems).<p>
+    
+<dt><b><a name="memoryuse">Memory use:</a></b>
+<dd>You can write a memory-use harness in just the same way you'd write
+    a timing harness, replacing calls to
+    <tt>system.currentTimeMillis()</tt> with calls to
+    <pre>
+	long freemem ()	{
+	  System.gc();
+	  return Runtime.getRuntime().freeMemory();
+	}
+    </pre>
+    (tip from <a href="http://rainbow.rmi.net/~glenm">Glen McCluskey</a>).
+</dl>
+</blockquote>
+
+<hr size=1 noshade>
+<center><table width="100%" cellspacing=0 cellpadding=0 border=0>
+  <tr>
+    <td align=left><font size=-1>http://www.cs.cmu.edu/~jch/java/tools.html</font></td>
+    <td align=right><font size=-1>Tools for Optimizing Java</font></td>
+  </tr>
+  <tr>
+    <td align=left><font size=-1><!-- hhmts start -->Last modified: Wed 18 Mar 1998<!-- hhmts end --></font></td>
+    <td align=right><font size=-1>Copyright &#169 1996, 1997 <a
+    href="http://www.cs.cmu.edu/~jch/">Jonathan Hardwick</a></font></td>
+  </tr>
+</table></center>
+</body>
+</html>
+

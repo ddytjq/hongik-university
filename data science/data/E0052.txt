@@ -1,0 +1,436 @@
+ID=E0052
+URL=http://www.le.ac.uk/cc/iss/tutorials/cprog/ccccstrc.html
+SIZE=25784
+DATE=12/07/02
+TIME=19:16:51
+DATASET=C
+HTML=<!-- Filename: ccccstrc.html -->
+<!-- Author: mc39/rjm1 -->
+<!-- Supplied by: Richard Mobbs -->
+<!-- Created: 02-09-95 -->
+<!-- Expires: 02-09-96 -->
+
+<HTML>
+<HEAD>
+
+<TITLE>Computer Centre: Introduction to C Programming Course</TITLE>
+
+</HEAD> 
+
+<BODY>
+
+<H1><IMG ALT="[CWC logo]" ALIGN=middle SRC="http://www.le.ac.uk/images/compcen.gif" > Structures</H1>
+
+<HR>
+<H2>Objectives</H2>
+<P>This section contains some very advanced but important features of the <B>C</B> programming language.
+<P>Having read this section you should be able to:
+<OL>
+<LI>program using a structure rather than several arrays.
+<LI>how pointer can be used in combination with structures to form linked list.
+</OL>
+<HR>
+<P>
+
+<H3>Structures</H3>
+
+The array is an example of a data structure. It takes simple data types like <B><TT>int</TT></B>, <B><TT>char</TT></B> or <B><TT>double</TT></B> and organises them into a linear array of elements. The array serves most but not all of the needs of the typical <B>C</B> program. The restriction is that an array is composed of elements all of the same type. At first this seems perfectly reasonable. After all why would you want an array to be composed of twenty <B><TT>chars</TT></B> and two <B><TT>ints</TT></B>? Well this sort of mixture of data types working together is one of the most familiar of data structures. Consider for a moment a record card which records <I>name</I>, <I>age</I> and <I>salary</I>. The name would have to be stored as a <B>string</B>, i.e. an array of chars terminated with an ASCII null character, and the age and salary could be <B><TT>ints</TT></B>.
+
+<P>At the moment the only way we can work with this collection of data is as separate variables. This isn't as convenient as a <I>single data structure</I> using a single name and so the <B>C</B> language provides <B><TT>struct</TT></B>. At first it is easier to think of this as a record - although it's a little more versatile than this suggests.
+
+<P>
+<HR>
+<P>
+
+<A NAME="DT"></A>
+<H3>Defining A New Type</H3>
+
+Declaring a <B><TT>struct</TT></B> is a two-stage process. The first stage defines a new data type that has the required structure which can then be used to declare as many variables with the same structure as required. This two-stage process is often confusing at first - especially as it results in the need to think up multiple names with the same general meaning - but it really is quite simple. For example, suppose we need to store a name, age and salary as a single structure. You would first define the new data type using:
+
+<P>
+<PRE>
+<B>
+struct emprec
+ {
+   char name[25];
+   int age;
+   int pay;
+ };
+</B>
+</PRE>
+
+and then you would declare a new variable:
+
+<P><B><TT>struct emprec employee</TT></B>
+
+<P>Notice that the new variable is called <B><TT>employee</TT></B> and it is of type <B><TT>emprec</TT></B> which has been defined earlier. You see what we mean about duplicating names - <B><TT>emprec</TT></B> is the name of the general <B><I>employee record structure </I></B> and <B><TT>employee</TT></B> is a particular example of this general type. It might help to compare the situation with that of a general <B><TT>int</TT></B> type and a particular <B><TT>int</TT></B> variable such as <B><TT>count</TT></B> - <B><TT>emprec</TT></B> is a type like <TT><B>int</B></TT> and <B><TT>employee</TT></B> is a variable like <B><TT>count</TT></B>. You can see that in general you can define a structure using:
+
+<P>
+<PRE>
+<B>
+struct name
+ {
+  <I>list of component variables</I>
+ };
+</B>
+</PRE>
+
+<P>and you can have as long a list of component variables as you need. Once defined you can declare as many examples of the new type as you like using:
+
+<P><B><TT>struct <I>name list of variables</I>;</TT></B>
+
+<P>For example:
+
+<P><B><TT>struct emprec employee, oldemploy, newemploy;</TT></B>
+
+<P>and so on. If you want to you can also declare a structure variable within the type definition by writing its name before the final semi-colon. For example:
+
+<P>
+<PRE>
+<B>
+struct emprec
+ {
+   char name[25];
+   int age;
+   int pay;
+ } employee;
+</B>
+</PRE>          
+
+<P>defines the structure and declares a structure variable called <B><TT>employee</TT></B>. The only trouble with this form is that not many <B>C</B> programmers use it and many will even think that it is an error! So how do we use a <B><TT>struct</TT></B>?
+
+<P>When you first start working with arrays it seems obvious that you access the individual elements of the array using an index as in <TT><B>a[i]</B></TT> for the ith element of the array, but how to get at the individual components of a structure? The answer is that you have to use qualified names. You first give the name of the structure variable and then the name of the component separated by a dot. For example, given:
+
+<P><B><TT>struct emprec employee</TT></B>
+
+<P>then:
+
+<P><B><TT>employee.age</TT></B>
+
+<P>is an <B><TT>int</TT></B> and:
+
+<P><B><TT>employee.name</TT></B>
+
+<P>is a <B><TT>char</TT></B> array. Once you have used a qualified name to get down to the level of a component then it behaves like a normal variable of the type. For example:
+
+<P><B><TT>employee.age=32;</TT></B>
+
+<P>is a valid assignment to an <B><TT>int</TT></B> and:
+
+<P><B><TT>employee.name[2] = 'X';</TT></B>
+
+<P>is a valid assignment to an element of the <B><TT>char</TT></B> array. Notice that the qualified name uses the structure variable name and not the structure type name. You can also define a structure that includes another structure as a component and of course that structure can contain another structure and so on. In this case you simply use the name of each structure in turn, separated by dots, until you reach a final component that isn't a structure. For example, if you declare a <B><TT>struct firm</TT></B> which includes a component <B><TT>employee</TT></B> which is an <B><TT>emprec</TT></B> then:
+
+<P><B><TT>firm.employee.age</TT></B>
+
+<P>is an <B><TT>int</TT></B>. You may be feeling a little disappointed at the way in which structures are used. When you first meet arrays it is obvious how useful they are because the array index is an integer which can be used within a loop to process vast amounts of data in a few lines of code. When you first meet the <TT><B>struct</B></TT> it just doesn't have the same obvious advantages. Because you have to write out a full qualified name to get at each of the components of the <B><TT>struct</TT></B> you can't automate the processing in the same way. However this is reasonable enough when you remember that each component of a <B><TT>struct</TT></B> can be a different data type! The point is that the value of a <TT><B>struct</B></TT> is different to that of an array. A <B><TT>struct</TT></B> can be used to wrap up a group of variables which form a coherent entity.
+
+<P>For example, <B>C</B> has no facilities for manipulating complex numbers but this is easy enough to put right using a <B><TT>struct</TT></B> and a few functions. A complex number is composed of two parts - a real and imaginary part - which can be implemented as single or double precision values. This suggests defining a new <TT><B>struct</B></TT> type:
+
+<P>
+<PRE>
+<B>
+struct comp
+ {
+   float real;
+   float imag;
+ };
+</B>
+</PRE>
+
+<P>After this you can declare new complex variables using something like:
+
+<P><B><TT>struct comp a,b;</TT></B>
+
+<P>The new complex variables cannot be used as if they were simple variables - because they are not. Most versions,
+of the <B>C</B> language do allow you to assign structures so you could write:
+
+<P><B><TT>a=b;</TT></B>
+
+<P>as shorthand for
+
+<P>
+<PRE>
+<B>
+ a.real=b.real;
+ a.imag=b.imag;
+</B>
+</PRE>
+
+<P>Being able to assign structures is even more useful when they are bigger. However you can't expect <B>C</B> to sort out what you mean by <B><TT>c = a + b - </TT></B> for this you have to write out the rule for addition as:
+
+<P>
+<PRE>
+<B>
+ c.real=a.real+b.real;
+ c.imag=a.imag+b.imag;
+</B>
+</PRE>
+
+<P>
+<HR>
+<P>
+<A NAME="SF"></A>
+<H3>Structures and Functions</H3>
+
+Of course a sensible alternative to writing out the addition each time is to define a function to do the same job - but this raises the question of passing structures as parameters. Fortunately this isn't a big problem. Most <B>C</B> compilers, will allow you to pass entire structures as parameters and return entire structures. As with all <B>C</B> parameters structures are passed by value and so if you want to allow a function to alter a parameter you have to remember to pass a <B><I>pointer</I></B> to a <TT><B>struct</B></TT>. Given that you can pass and return <B><TT>structs</TT></B> the function is fairly easy:
+
+<P>
+<PRE>
+<B>
+struct comp add(struct comp a , struct comp b)
+{
+ struct comp c;
+ c.real=a.real+b.real;
+ c.imag=a.imag+ b.imag;
+ return c;
+}
+</B>
+</PRE>
+
+<P>After you have defined the add function you can write a complex addition as:
+
+<P><B><TT>x=add(y,z)</TT></B>
+
+<P>which isn't too far from the <B><TT>x=y+z</TT></B> that you would really like to use. Finally notice that passing a <B><TT>struct</TT></B> by value might use up rather a lot of memory as a complete copy of the structure is made for the function.
+
+<P>
+<HR>
+<P>
+<A NAME="PS"></A>
+<H3>Pointers to Structures</H3>
+
+You can define a pointer to a structure in the same way as any pointer to any type. For example:
+
+<P><B><TT>struct emprec *ptr</TT></B>
+
+<P>defines a pointer to an <B><TT>emprec</TT></B>. You can use a pointer to a <TT><B>struct</B></TT> in more or less the same way as any pointer but the use of qualified names makes it look slightly different For example:
+
+<P><B><TT>(*ptr).age</TT></B>
+
+<P>is the age component of the <B><TT>emprec</TT></B> structure that <B><TT>ptr</TT></B> points at - i.e. an <B><TT>int</TT></B>. You need the brackets because '.' has a higher priority than '*'. The use of a pointer to a <TT><B>struct</B></TT> is so common, and the pointer notation so ugly, that there is an equivalent and more elegant way of writing the same thing. You can use:
+
+<P><B><TT>prt->age</TT></B>
+
+<P>to mean the same thing as <B><TT>(*ptr).age</TT></B>. The notation gives a clearer idea of what is going on - <B><TT>prt</TT></B> points (i.e. <B><TT>-></TT></B>) to the structure and <B><TT>.age</TT></B> picks out which component of the structure we want. Interestingly until <B>C++</B> became popular the <B><TT>-></TT></B> notation was relatively rare and given that many <B>C</B> text books hardly mentioned it this confused many experienced <B>C</B> programmers!
+
+<P>There are many reasons for using a pointer to a <TT><B>struct</B></TT> but one is to make two way communication possible within functions. For example, an alternative way of writing the complex number addition function is:
+
+<P>
+<PRE>
+<B>
+void comp add(struct comp *a , struct comp *b , struct comp *c)
+ {
+  c->real=a->real+b->real;
+  c->imag=a->imag+b->imag;
+ }
+</B>
+</PRE>
+
+<P>In this case <TT><B>c</B></TT> is now a pointer to a <B><TT>comp struct</TT></B> and the function would be used as:
+
+<P><B><TT>add(&x,&y,&z);</TT></B>
+
+<P>Notice that in this case the address of each of the structures is passed rather than a complete copy of the structure - hence the saving in space. Also notice that the function can now change the values of <TT><B>x</B></TT>, <TT><B>y</B></TT> and <TT><B>z</B></TT> if it wants to. It's up to you to decide if this is a good thing or not!
+
+<P>
+<HR>
+<P>
+<A NAME="MC"></A>
+<H3>Malloc</H3>
+
+Now we come to a topic that is perhaps potentially the most confusing. So far we have allowed the <B>C</B> compiler to work out how to allocate storage. For example when you declare a variable:
+
+<P><B><TT>int a;</TT></B>
+
+<P>the compiler sorts out how to set aside some memory to store the integer. More impressive is the way that
+
+<P><B><TT>int a[50]</TT></B>
+
+<P>sets aside enough storage for 50 <B><TT>ints</TT></B> and sets the name <TT><B>a</B></TT> to point to the first element. Clever though this may be it is just static storage. That is the storage is allocated by the compiler before the program is run - but what can you do if you need or want to create new variables as your program is running? The answer is to use <B><I>pointers</I></B> and the <B><TT>malloc</TT></B> function. The statement:
+
+<P><B><TT>ptr=malloc(size);</TT></B>
+
+<P>reserves size bytes of storage and sets the pointer <B><TT>ptr</TT></B> to point to the start of it. This sounds excessively primitive - who wants a few bytes of storage and a pointer to it? You can make <B><TT>malloc</TT></B> look a little more appealing with a few cosmetic changes. The first is that you can use the <TT><B>sizeof</B></TT> function to allocate storage in multiples of a given type. For example:
+
+<P><B><TT>sizeof(int)</TT></B>
+
+<P>returns a number that specifies the number of bytes needed to store an <B><TT>int</TT></B>. Using <TT><B>sizeof</B></TT> you can allocate storage using <B><TT>malloc</TT></B> as:
+
+<P><B><TT>ptr= malloc(sizeof(int)*N)</TT></B>
+
+<P>where <TT><B>N</B></TT> is the number of <B><TT>ints</TT></B> you want to create. The only problem is what does <B><TT>ptr</TT></B> point at? The compiler needs to know what the pointer points at so that it can do pointer arithmetic correctly. In other words, the compiler can only interpret <TT><B>ptr++</B></TT> or <TT><B>ptr=ptr+1</B></TT> as an instruction to move on to the next <B><TT>int</TT></B> if it knows that the <TT><B>ptr</B></TT> is a <I>pointer</I> to an <TT><B>int</B></TT>. This works as long as you define the <TT><B>ptr</B></TT> to be a pointer to the type of variable that you want to work with. Unfortunately this raises the question of how <B><TT>malloc</TT></B> knows what the type of the <B>pointer</B> variable is - unfortunately it doesn't.
+
+<P>To solve this problem you can use a <I><B>TYPE cast</B></I>. This <B>C</B> play on words is a mechanism to force a value to a specific type. All you have to do is write the <B><I>TYPE</I></B> specifier in brackets before the value. So:
+
+<P><B><TT>ptr = (*int) malloc(sizeof(int)*N)</TT></B>
+
+<P>forces the value returned by <B><TT>malloc</TT></B> to be a pointer to <B><TT>int</TT></B>. Now you can see how a simple idea ends up looking complicated. OK, so now we can acquire some memory while the program is running, but how can we use it? There are some simple ways of using it and some very subtle mistakes that you can make in trying to use it! For example, suppose during a program you suddenly decide that you need an <B><TT>int</TT></B> array with 50 elements. You didn't know this before the program started, perhaps because the information has just been typed in by the user. The easiest solution is to use:
+
+<P><B><TT>int *ptr;</TT> </B>
+
+<P>and then later on:
+
+<P><B><TT>ptr = (*int) malloc(sizeof(int)*N)</TT></B>
+
+<P>where <TT><B>N</B></TT> is the number of elements that you need. After this definition you can use <TT><B>ptr</B></TT> as if it was a conventional array. For example:
+
+<P><B><TT>ptr[i]</TT></B>
+
+<P>is the ith element of the array. The trap waiting for you to make a mistake is when you need a few more elements of the array. You can't simply use <B><TT>malloc</TT></B> again to get the extra elements because the block of memory that the next <B><TT>malloc</TT></B> allocates isn't necessarily next to the last lot. In other words, it might not simply tag on to the end of the first array and any assumption that it does might end in the program simply overwriting areas of memory that it doesn't own.
+
+<P>Another fun error that you are not protected against is losing an area of memory. If you use <B><TT>malloc</TT></B> to reserve memory it is vital that you don't lose the pointer to it. If you do then that particular chunk of memory isn't available for your program to use until it is restarted.
+
+<P>
+<HR>
+<P>
+<A NAME="LL"></A>
+<H3>Structures and Linked Lists</H3>
+
+You may be wondering why <B><TT>malloc</TT></B> has been introduced right after the structure. The answer is that the dynamic allocation of memory and the <TT><B>struct</B></TT> go together a bit like the array and the <B><TT>for</TT></B> loop. The best way to explain how this all fits together is via a simple example. You can use <B><TT>malloc</TT></B> to create as many variables as you want as the program runs, but how do you keep track of them? For every new variable you create you also need an extra pointer to keep track of it. The solution to this otherwise tricky problem is to define a <B><TT>struct</TT></B> which has a pointer as one of its components. For example:
+
+<P>
+<PRE>
+<B>
+struct list
+ {
+  int data;
+  struct list *ptr;
+ };
+</B>
+</PRE>
+
+<P>This defines a structure which contains a single <B><TT>int</TT></B> and - something that looks almost paradoxical - a pointer to the structure that is being defined. All you really need to know is that this is reasonable and it works. Now if you use <B><TT>malloc</TT></B> to create a new <TT><B>struct</B></TT> you also automatically get a new pointer to the <TT><B>struct</B></TT>. The final part of the solution is how to make use of the pointers. If you start off with a single 'starter' pointer to the <TT><B>struct</B></TT> you can create the first new <B><TT>struct</TT></B> using <B><TT>malloc</TT></B> as:
+
+<P>
+<PRE>
+<B>
+struct list *star;
+start = (*struct list) malloc(sizeof(list))
+</B>
+</PRE>
+
+<P>After this start points to the first and only example of the <TT><B>struct</B></TT>. You can store data in the struct using statements like:
+
+<P><B><TT>start->data=value;</TT></B>
+
+<P>The next step is to create a second example of the <TT><B>struct</B></TT>:
+
+<P><B><TT>start = (*struct list) malloc(sizeof(list));</TT></B>
+
+<P>This does indeed give us a new <TT><B>struct</B></TT> but we have now lost the original because the pointer to it has been overwritten by the pointer to the new <TT><B>struct</B></TT>. To avoid losing the original the simplest solution is to use:
+
+<P>
+<PRE>
+<B>
+struct list *start,newitem;
+newitem = (*struct list) malloc(sizeof(list));
+start->prt=start;
+start=newitem;
+</B>
+</PRE>
+          
+<P>This stores the location of the new <B><TT>struct</TT></B> in <B><I>newitem</I></B>. Then it stores the pointer to the existing <TT><B>struct</B></TT> into the <B>newitem's pointer</B> and sets the start of the list to be the <B><TT>newitem</TT></B>. Finally the start of the list is set to point at the new <B><TT>struct</TT></B>. This procedure is repeated each time a new structure is created with the result that a linked list of structures is created. The pointer start always points to the first <TT><B>struct</B></TT> in the list and the <TT><B>prt</B></TT> component of this <B><TT>struct</TT></B> points to the next and so on. You should be able to see how to write a program that examines or prints the data in each of the structures. For example:
+
+<P>
+<PRE>
+<B>
+thisptr=start;
+while (1==1)
+ {
+  printf("%d",thisprt-> data);
+  thisprt=thisprt->prt;
+ }
+</B>
+</PRE>
+          
+<P>This first sets <B><TT>thisptr</TT></B> to the start of the list, prints the data in the first element and then gets the pointer to the next <TT><B>struct</B></TT> in the list and so on. How does the program know it has reached the end of the list? At the moment it just keeps going into the deep and uncharted regions of your machine's memory! To stop it we have to mark the end of the list using a null pointer. Usually a pointer value of 0 is special in that it never occurs in a pointer pointing at a valid area of memory. You can use 0 to initialise a pointer so that you know it isn't pointing at anything real. So all we have to do is set the last pointer in the list to 0 and then test for it That is:
+
+<P>
+<PRE>
+<B>
+thisptr=start;
+while (thisptr!=0)
+ {
+  printf("%d",thisprt->data);
+  thisprt=thisprt-> prt;
+ }
+</B>
+</PRE>
+
+<P>To be completely correct you should <B>TYPE cast 0</B> to be a pointer to the <TT><B>struct</B></TT> in question. That is:
+
+<P><B><TT>while (thisptr!=(struct list*)0)</TT></B>
+
+<P>By generally mucking about with <B><TT>pointers</TT></B> stored in the list you can rearrange it, access it, sort it, delete items and do anything you want to. Notice that the structures in the list can be as complicated as you like and, subject to there being enough memory, you can create as many structures as you like.
+
+<P>You can use the same sort of technique to create even more complicated list structures. For example you can introduce another pointer into each structure and a pointer to the end of the list so that you can work your way along it in the other direction - <B>a doubly linked list</B>. You can create <B>stacks</B>, <B>queues</B>, <B>deques</B>, <B>trees</B> and so on. The rest of the story is a matter of either inventing these data structures for yourself or looking them up in a suitable book.
+
+<P>
+<HR>
+<P>
+<A NAME="CP"></A>
+<H3>Structures and C++</H3>
+
+The reason why structures are even more important for today's budding <B>C</B> programmer is that they turn into <I>classes</I> in C++. A <I>class</I> is a structure where you can define components that are functions. In this case the same distinction between a data <B>TYPE</B> and an example of the <B>TYPE</B>, i.e. a variable, is maintained only now the instances of the <I>class</I> include functions as well as data. The same qualified naming system applies to the <I>class</I> and the use of pointers and the <TT><B>-></B></TT> operator. As this is the basis of <B>C++</B>'s object-oriented features it is important to understand.
+
+<P>
+<HR>
+<P>
+<A NAME="HF"></A>
+<H3>Header Files</H3>
+
+The final mystery of <B>C</B> that needs to be discussed is the <B><I>header file</I></B>. This started off as a simple idea, a convenience to make programming easier. If you have a standard set of instructions that you want to insert in a lot of programs that you are writing then you can do it using the <B><TT>#include</TT></B> statement.
+
+<P>The <B><TT>#</TT></B> symbol at the start indicates that this isn't a <B>C</B> statement but one for the <B>C</B> pre-processor which looks at the text file before the compiler gets it. The <B><TT>#include</TT></B> tells the pre-processor to read in a text file and treat it as if it was part of the program's text. For example:
+
+<P><B><TT>#include "copy.txt"</TT></B>
+
+<P>could be used to include a copyright notice stored in the file <B><TT>copy.txt</TT></B>. However the most common use of the <B><TT>#include</TT></B> is to define <B><I>constants</I></B> and <I><B>macros</B></I>. The <B>C</B> pre-processor is almost a language in its own right For example, if you define the identifier <B><TT>NULL</TT></B> as:
+
+<P><B><TT>#define NULL 0</TT></B>
+
+<P>then whenever you use <B><TT>NULL</TT></B> in your program the pre-processor substitutes 0. In most cases you want these definitions to be included in all your programs and so the obvious thing to do is to create a separate file that you can <B><TT>#include</TT></B>.
+
+<P>This idea of using standard include files has spiralled out of all proportions. Now such include files are called <B><I>header files</I></B> and they are distinguished by ending in the extension <B><TT>.h</TT></B>. A header file is generally used to define all of the functions, variables and constants contained in any function library that you might want to use. The header file <B><TT>stdio.h</TT></B> should be used if you want to use the two standard I/O functions <B><TT>printf</TT></B> and <B><TT>scanf</TT></B>. The standard libraries have been covered in a previous section.
+
+<P>This sort of use of header files is simple enough but over time more and more standard elements of the <B>C</B> environment have been moved into header files. The result is that header files become increasingly mysterious to the beginner. Perhaps they reach their ultimate in complexity as part of the Windows development environment So many constants and macros are defined in the Windows header files that they amount to hundreds of lines! As another example of how you could use a header file consider the complex structure defined earlier. At the moment it looks messy to declare a new complex variable as:
+
+<P><B><TT>struct comp a,b;</TT></B>
+
+<P>If you want to make the complex TYPE look like other data types all you need is a single <B><TT>#define</TT></B>
+
+<P><B><TT>#define COMPLEX struct comp</TT></B>
+
+<P>After this you can write:
+
+<P><B><TT>COMPLEX a,b;</TT></B>
+
+<P>and the pre-processor will automatically replace <B><TT>COMPLEX</TT></B> by <TT><B>struct comp</B></TT> for you when you compile the program. Put this <B><TT>#define</TT></B> and any others needed to make the complex number type work and you have the makings of a <B><TT>complex.h</TT></B>  header fileof your very own.
+
+<P>
+<HR>
+
+<A HREF="http://www.le.ac.uk/">
+
+<IMG ALT="[Leicester University]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/lhomebut.gif"></A>
+
+
+
+
+
+<A HREF="http://www.le.ac.uk/CWIS/AS/CC/cc.html"><IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/ccbut.gif"> Computer Centre</A>   
+
+<A HREF="cccc.html"><IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/backbut.gif"> Introduction C Programming</A>
+
+<HR>
+<ADDRESS>Information Suppliers: <A HREF="http://www.le.ac.uk/rjm1.html">Richard Mobbs</A>, Head of Information Services, Leicester University Computer
+ Centre and Marina Carter, Postgraduate Student, Loughborough University.
+</ADDRESS>
+
+<ADDRESS>Last Updated: September 1995</ADDRESS>
+
+</BODY>
+</HTML>
+
+

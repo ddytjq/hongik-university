@@ -1,0 +1,440 @@
+ID=C0148
+URL=http://www.1st-on-line.com/travel/travel_qq_form.asp
+SIZE=9246
+DATE=10/07/2002
+TIME=13:19:22
+DATASET=Insurance Agencies
+HTML=
+<html>
+<head>
+<title>FIRSTONLINE INSURANCE</title>
+<script language="javascript">
+<!-- 
+
+
+function trimString (str) 
+{//trims away leading & trailing spaces
+  while (str.charAt(0) == ' ')
+    str = str.substring(1);
+  while (str.charAt(str.length - 1) == ' ')
+    str = str.substring(0, str.length - 1);
+  return str;
+}
+
+function checkData(checkfield,fieldname,type)
+{
+//function checks 'checkfield' for 'type' of data
+//displays error with relation to 'fieldname'
+//types are: alpha,digit,ralpha,rdigit
+//if r is placed in front of type field is required
+var checkOK='';
+var typeString='';
+var checkStr = trimString(new String(checkfield));//trim the string
+var allValid = true;
+var requiredValid = true;
+var decPoints = 0;
+var allNum = "";
+
+	//if r is first letter of type check the strip it off
+	var typeCheck = (type.substring(0,1)=='r') ? type.substring(1,type.length) : type;
+	
+	//what type of check are we doing
+	if (typeCheck == "alpha")
+	{
+		var checkOK="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ'.,*/+-_;:@'\"0123456789";
+		var typeString="alphanumeric";
+	}
+	else if (typeCheck =="digit")
+	{
+		var checkOK = "0123456789-.,";
+		var typeString="numeric";		
+	}
+	else if (typeCheck =="email" && RegExp) //object detect RegeExp
+	{
+		//var emailReg = "^[\\w-_\.]*[\\w-_\.]\@[\\w]\.+[\\w]+[\\w]$";
+    	//var regex = new RegExp(emailReg);     	
+		var regex = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+		if (!regex.test(checkStr) && checkStr.length != 0)
+		{
+			alert(fieldname+" is not a vaild email address.");
+			requiredValid = false;
+		}
+	}
+	//end of what type of check are we doing
+		
+	if (type.substring(0,1)=="r"  && checkStr.length==0)
+	{
+		alert(fieldname + " is a required field");
+		requiredValid = false
+	}
+    
+  	if (checkStr == ".")
+ 	{
+  	allValid = false
+	}
+
+	if (checkOK != '')
+	{	
+  		for (i = 0;  i < checkStr.length;  i++)
+  		{
+    		ch = checkStr.charAt(i);
+    		for (j = 0;  j < checkOK.length;  j++)
+      			if (ch == checkOK.charAt(j))
+        			break;
+    		if (j == checkOK.length)
+    		{
+      			allValid = false;
+      			break;
+    		}
+    		if (ch == ".")
+    		{
+      			allNum += ".";
+      			decPoints++;
+    		}
+    		else if (ch != ",")
+      			allNum += ch;
+  		}
+	}	  
+
+  	if (!allValid)
+  	{
+    	alert("Please enter only "+typeString+" characters in the "+fieldname);
+    	return (false);
+  	}
+
+  	if (decPoints > 1)
+  	{
+    	alert("Please enter a valid number in "+fieldname);
+    	return (false);
+  	}
+	
+  	return true && requiredValid;
+ }
+ 
+ function radioValidator(theRadio,radioName,limit)
+ {
+ 	//chech the radio or check box group
+ 	//the radio group is represented by an array
+ 	//of radio button
+	if (!limit)
+		var limit = 1;
+ 	var valid = true;
+	var checkedNumber = 0;
+ 	var radioChecked=false; //used to check if any of the radio buttons checked
+ 	//loop through radio buttons
+ 	for (var index=0;index<theRadio.length;index++)
+ 	{	
+ 		if (theRadio[index].checked)
+		{
+			radioChecked=true;
+			checkedNumber++;
+		}
+ 	}
+ 	if (!radioChecked) // have they filled it out
+ 	{
+		alert("Please answer " + radioName);
+		valid = false;
+ 	}
+	if (checkedNumber > limit) // have they checked too many
+	{
+		alert("Please select only " + limit + " value(s) for " + radioName);
+		valid = false;
+	}
+
+	return valid;
+ }
+ 
+ function formValidator(theForm,elementsArray,nameArray,typeArray)
+ {
+ 	var ok = true;
+ 	for (var index=0;index<elementsArray.length;index++)
+	{
+		if (typeArray[index].substring(0,5) == "radio")
+		{
+			var limit = typeArray[index].substring(5,7);
+			if (!limit)
+				limit=1;
+			evalString = "radioValidator(theForm."+elementsArray[index]+",'"+nameArray[index]+"',"+limit+")";
+		}
+		else
+			evalString = "checkData(theForm."+elementsArray[index]+".value,"+"'"+nameArray[index]+"','"+typeArray[index]+"')";
+			
+		if ( eval(evalString) )
+			ok=ok && true		
+		else
+			ok=ok && false		
+	}
+	return ok;		
+ }
+
+function checkForm(theForm)
+{
+	var fieldArray = new Array("password","fname","lname","email");
+	var nameArray = new Array("Password","First Name","Last Name","Email");
+	var typeArray = new Array("ralpha","alpha","r","remail");
+	return formValidator(theForm,fieldArray,nameArray,typeArray);
+}
+//-->
+</script>
+</head>
+<BODY   BGCOLOR="#ccff00"  TEXT="#333366" LINK="#333366" VLINK="#333366" ALINK="#336666" marginwidth=0 marginheight=0>
+<!---outer table-----><table cellpadding=0 cellspacing=0 border=0 width="100%">
+<tr valign=top><td height=1><img src=../pics/line.gif width=610 height=1 border=0></td></tr>
+<tr valign=top><td align=left>
+
+<!---home table----->
+<table cellpadding=0 cellspacing=0 border=0>
+
+
+<tr><td>
+
+
+
+<table border=0 cellpadding=5 width=500><!---FORM FIELDS TABLE--->
+
+<tr valign=top>
+<td colspan=2>
+<font size=4 face=arial,helvetica><b>
+ONLINE TRAVEL INSURANCE QUOTATION REQUEST</b>
+</font></td>
+</tr>
+
+
+<tr valign=top>
+<td colspan=2>
+<form name="travelForm" action="travel_process_form.asp" method="POST">
+<input type=hidden name="recipient" value="macrae@cqm.co.uk">
+<font face=arial,helvetica size=3>
+
+<B>ANNUAL & SINGLE TRIP INSURANCE FROM £13</B></font><P>
+<font face=arial,helvetica size=2>
+OUR ANNUAL COVER IS up to 45 days for any one trip, but with an unlimited number of trips in any one insurance year.<p>
+
+All trips must be for personal pleasure but may include business providing that these involve only non manual work.<p>
+
+We can only accept insurance from persons up to and including the age of 69. All persons to be covered by this policy must reside permanently at the policyholders' address.<p>
+
+We do not provide cover in respect of claims arising from any pre-existing medical condition - except where declared to us below and accepted by underwriters.<p>
+
+
+<b>Typical benefits of the scheme are as follows</b><p>
+<ul>
+<li><b>Medical and other expenses</b>:
+<ul>
+<li>a) Journeys outside of the UK  - £5,000,000
+<li>b) Journeys within the UK - £10,000
+<li>c) Surgery following repatriation - £5,000
+</ul>
+
+<li><b>Personal Liability</b>:  - £2,000,000
+<li><b>Personal Accident</b>:  - £25,000
+<li><b>Legal Expenses</b>:  - £50,000
+<li><b>Cancellation/Curtailment</b>:  - £5,000
+<li><b>Personal Money</b>:  - £500*
+<li><b>Personal Baggage</b>:  - £1500**
+
+<li><b>Travel delay</b>:
+<ul>
+<li>a) Compensation  - £250
+<li>b) Cancellation - £5,000
+</ul>
+
+<li><b>Missed Departure</b>:  - £1000
+<li><b>Delayed Baggage</b>:  - £250
+</ul>
+
+* Loss of cash, currency and banknotes is limited to £300
+** A single article limit of £300 and a valuable limit of £300 apply
+
+</font></td><td></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Password</b></font><br>
+<font size=1 face=arial,helvetica>You will use this to access your on-line proposal after we notify you that it is ready.<br>(One word, use letters; a-z and numbers; 0-9 only.)</font></td><td><input type="text" name="password" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Title</b></font></td><td><input type="text" name="title" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+First Name(s)</b></font></td><td><input type="text" name="fname" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Surname</b></font></td><td><input type="text" name="lname" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Address</b></font></td><td><TEXTAREA NAME="address" ROWS=8 COLS=46></TEXTAREA></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Postcode</b></font></td><td><input type="text" name="postcode" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+E-mail</b></font></td><td><input type="text" name="email" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Telephone No.</b></font></td><td><input type="text" name="telephone" size=50></td>
+</tr>
+
+<tr valign=top> <td></td>
+<td align=righ><font size=4 face=arial,helvetica size="2"><b>
+Please select "Single Trip"<br>or "Annual Cover".</b></font></td>
+</tr>
+
+<tr valign=top>
+	<td  align=right><font face=arial,helvetica size="2"><b></b></font></td>
+	<td>
+<table cellpaddding=3 cellspacing=0 border=0>
+<tr valign=top><td><INPUT TYPE=radio NAME=tripType VALUE="single"></td><td><font face=arial,helvetica size="2">Single Trip</font></td></tr>
+<tr valign=top><td><INPUT TYPE=radio NAME=tripType VALUE="annual"></td><td><font face=arial,helvetica size="2">Annual Cover</font></td></tr>
+</table>
+
+</td>
+</tr>
+
+
+
+<tr valign=top> <td></td>
+<td align=righ><font size=4 face=arial,helvetica size="2"><b>
+Please indicate your choice of area to be covered.</b></font></td>
+</tr>
+
+<tr valign=top>
+	<td  align=right><font face=arial,helvetica size="2"><b></b></font></td>
+	<td>
+<table cellpaddding=3 cellspacing=0 border=0>
+<tr valign=top><td><INPUT TYPE=radio NAME=area VALUE="area1"></td><td><font face=arial,helvetica size="2">United Kingdom<br>(Great Britain, Northern Ireland, Channel Islands, Isle of Man)</font></td></tr>
+<tr valign=top><td><INPUT TYPE=radio NAME=area VALUE="area2"></td><td><font face=arial,helvetica size="2">The Continent of Europe<br>(Includes the Mediterranean Islands, Canary Islands, Madeira, Jordan and all countries bordering the Mediterranean except Libya and Albania.)</font></td></tr>
+<tr valign=top><td><INPUT TYPE=radio NAME=area VALUE="area3"></td><td><font face=arial,helvetica size="2">World-wide<br>(Excluding USA and Canada)</font></td></tr>
+<tr valign=middle><td><INPUT TYPE=radio NAME=area VALUE="area4"></td><td><font face=arial,helvetica size="2">World-wide</font></td></tr>
+</table>
+
+</td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Intended  date of Cover</b></font></td><td><input type="text" name="dateOfCover" size=50></td>
+</tr>
+
+<tr valign=top> <td></td>
+<td align=righ><font size=3 face=arial,helvetica><b>
+Please give details of all persons to be insured.</b></font></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Name</b></font></td><td><font face=arial,helvetica>
+<input type="text" name="person1" size=50><br>
+Date of Birth: <input type="text" name="dob1" size=30><br>
+Medical Condition: <input type="text" name="medic1" size=30><br>
+</font></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Name</b></font></td><td><font face=arial,helvetica>
+<input type="text" name="person2" size=50><br>
+Date of Birth: <input type="text" name="dob2" size=30><br>
+Medical Condition: <input type="text" name="medic2" size=30><br>
+</font></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Name</b></font></td><td><font face=arial,helvetica>
+<input type="text" name="person3" size=50><br>
+Date of Birth: <input type="text" name="dob3" size=30><br>
+Medical Condition: <input type="text" name="medic3" size=30><br>
+</font></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Name</b></font></td><td><font face=arial,helvetica>
+<input type="text" name="person4" size=50><br>
+Date of Birth: <input type="text" name="dob4" size=30><br>
+Medical Condition: <input type="text" name="medic4" size=30><br>
+</font></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Name</b></font></td><td><font face=arial,helvetica>
+<input type="text" name="person5" size=50><br>
+Date of Birth: <input type="text" name="dob5" size=30><br>
+Medical Condition: <input type="text" name="medic5" size=30><br>
+</font></td>
+</tr>
+
+<!--tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Date of Cover</b></font></td><td><input type="text" name="dateOfCover" size=50></td>
+</tr-->
+
+
+<tr valign=top>
+<td align=right></td>
+<td><font face=arial,helvetica size="2">
+<b>How did you hear about 1st-on-line.com?</b><br>
+<select NAME="howDidYouFindUs">
+	<option value="">Please select...</option>
+	<option value="advert">Advertisement?</option>
+	<option value="link">Link from other web site?</option>
+	<option value="letter">Letter?</option>
+	<option value="recommendation">Recommendation?</option>
+	<option value="searchEngine">Search Engine. If so which one?</option>
+</select><p>
+
+<b>Which Search Engine?</b>&nbsp;<input type=text name="whichSearchEngine">
+
+</font></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right>
+<input type="checkbox" name="mailing" value="NO"></td>
+<td><font face=arial,helvetica size="1">
+We send a monthly e-mail update of news and special offers to our customers.<br>
+Please tick if you do not wish to receive this email.
+</font></td>
+</tr>
+
+<tr valign=top>
+<td></td>
+<td> 
+<input type="Hidden" name="quickQuote" value="1">
+<input type="button" value="Send this form" onclick="if (checkForm(document.travelForm)) submit()">
+<INPUT NAME="Clear" TYPE=Reset VALUE="Clear">
+<input type="button" value="check this form" onclick="checkForm(document.travelForm)">
+<br></form></td> </tr>
+</table><!---END FORM FIELDS TABLE--->
+
+
+
+</td></tr>
+
+</table>
+<!---end home table----->
+
+
+</td></tr></table><!---end outer table----->
+</BODY>
+</html>
+

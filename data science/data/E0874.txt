@@ -1,0 +1,300 @@
+ID=E0874
+URL=http://www.bcbdev.com/articles/wwwtc1answer.htm
+SIZE=10885
+DATE=12/07/02
+TIME=19:25:20
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: Articles</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2>
+<IMG SRC="../images/articlebuilding.gif" BORDER=0 HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 HSPACE="0" >
+</TD>
+</TR>
+<TR>
+<TD WIDTH="7" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">      <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">         <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">      <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">          <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">       <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+
+<H2>
+What's wrong with this code? Volume #1
+</H2>
+<HR>
+<H4>
+The assignment operator
+</H4>
+<P>
+The assignment operator for the <TT>Foo</TT> class contains a common programming mistake.
+Assignment operators should almost always pass their arguments by const reference. A lot of
+programmers leave out the const part, and just pass by reference. When you forget the const
+keyword, the code will usually continue to compile and run correctly. However, the code
+example in this issue demonstrates a situation where const cannot be omitted. Recall that
+the original assignment operator looked like this:
+</P>
+<pre>
+Foo<b>&</b> <b>operator</b><b>=</b><b>(</b> Foo <b>&</b>rhs<b>)</b>
+<b>{</b>
+    cout <b><<</b> <font color="blue">"assignment"</font> <b><<</b> endl<b>;</b>
+    <b>return</b> <b>*</b><b>this</b><b>;</b>
+<b>}</b>
+</pre>
+
+<P>
+The compilation error occurred where an object was being assigned a
+return value from a function.
+</P>
+<pre>
+foo1 <b>=</b> GetAFoo<b>(</b><b>)</b><b>;</b>   <font color="navy">// generates compiler error</font>
+</pre>
+<P>
+So why does this assignment fail to compile, when the assignment to <TT>foo2</TT>
+compiles without error?
+</P>
+<pre>
+foo2 <b>=</b> foo1<b>;</b>        <font color="navy">// compiles OK</font>
+</pre>
+<P>
+The difference is that <TT>GetAFoo</TT> returns a <TT>Foo</TT> object by value.
+Return objects are temporary objects, and temporary objects are const objects.
+You cannot modify a temporary object. <TT>foo1</TT> on the other hand, is not
+a temporary object, which means that it is not a const object.
+</P>
+<P>
+The assignment operator for <TT>Foo</TT> takes a non-const object by reference.
+The compiler will not pass const objects to a function that take references to
+non-const objects. Why? Because when you pass a value by reference, the function has
+the power to alter the original object. The compiler must ensure that const objects
+are not changed.
+</P>
+<P>
+Because the foo assignment operator did not list the <TT>const</TT> keyword, the
+compiler will not try to use it for temporary objects. Since no other suitable
+assignment operator is available that takes const parameters, the compiler issues
+an error.
+</P>
+<P>
+The solution to this problem is to change the assignment operator so it takes a
+constant reference.
+</P>
+<pre>
+<b>class</b> Foo
+<b>{</b>
+<b>public</b><b>:</b>
+    <b>...</b>
+    Foo<b>&</b> <b>operator</b><b>=</b><b>(</b><b>const</b> Foo <b>&</b>rhs<b>)</b>
+    <b>{</b>
+        cout <b><<</b> <font color="blue">"assignment"</font> <b><<</b> endl<b>;</b>
+        <b>return</b> <b>*</b><b>this</b><b>;</b>
+    <b>}</b>
+<b>}</b><b>;</b>
+</pre>
+<P>
+Once this change is made to the <TT>Foo</TT> class, the code example compiles
+and runs without error. Here is the output of the program after making this correction.
+Note that the comments were added to explain the output.
+</P>
+<PRE>
+default constructor         // construct foo1
+default constructor         // construct foo2
+default constructor         // construct foo inside GetAFoo
+copy construction           // copy foo to temporary return object
+destructor                  // destory local foo in GetAFoo
+assignment                  // assign temp return object to foo1
+destructor                  // destory temp object
+assignment                  // assign foo1 to foo2
+destructor                  // end of main, destroy foo1
+destructor                  // and destroy foo2.
+</PRE>
+<P>
+In addition to fixing the compilation error, there are a couple of ways to streamline
+the code. The first change involves the <TT>GetAFoo</TT> function, which originally looked like
+this:
+</P>
+<pre>
+Foo GetAFoo<b>(</b><b>)</b>
+<b>{</b>
+    Foo foo<b>;</b>
+    <b>return</b> foo<b>;</b>
+<b>}</b>
+</pre>
+<P>
+As it stands, this code will construct two <TT>Foo</TT> objects. The first is the <TT>foo</TT> variable that
+you see in the code. The second object is the return object for the function. The <TT>foo</TT>
+variable is constructed with the default constructor for the <TT>Foo</TT> class. The temporary
+return object is created with the copy constructor. The debug statements from the program shows how and
+when these two objects are created and destroyed.
+<P>
+<PRE>
+...
+default constructor  // creates foo variable
+copy construction    // construct temp return object
+destructor           // destroy foo because it is out of scope
+assignment           // call assignment operator and pass temp object
+destructor           // delete temp object
+...
+</PRE>
+<P>
+As this output shows, calling the <TT>GetAFoo</TT> function results in the construction and
+deletion of two <TT>Foo</TT> objects. Because <TT>GetAFoo</TT> does not use the local <TT>foo</TT> variable
+for anything, we can streamline the function by eliminating the variable. The new and improved
+<TT>GetAFoo</TT> function looks like this:
+</P>
+<pre>
+Foo GetAFoo<b>(</b><b>)</b>
+<b>{</b>
+    <b>return</b> Foo<b>(</b><b>)</b><b>;</b>
+<b>}</b>
+</pre>
+
+<P>
+<TABLE WIDTH="75%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Note" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Note:</b>
+<hr size = 1>
+This optimization is called the <i>Return Value Optimization</I>. Compilers do not have
+to provide this optimization, but most of them do. All versions of C++Builder implement this
+optimization. Scott Meyers discusses this optimization technique in his book
+<A TARGET=_top HREF="http://www.amazon.com/exec/obidos/ISBN=020163371X/cbuilderfoundatiA/">More
+Effective C++</A>.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+
+<P>
+This code eliminates the temporary variable, the copy constructor that was needed to initialize
+it, and the destructor that was needed to deallocate it. The debug output from the streamlined function
+looks like this.
+</P>
+<PRE>
+...
+default constructor   // create return object with default constructor
+assignment            // pass return object to assignment operator
+destructor            // destroy return object
+...
+</PRE>
+<P>
+There is one other place where the code can be improved. Notice how the <TT>main</TT> function creates and initializes
+the two <TT>Foo</TT> objects.
+</P>
+<pre>
+<b>int</b> main<b>(</b><b>)</b>
+<b>{</b>
+    Foo foo1<b>;</b>           <font color="navy">// default constructor</font>
+    Foo foo2<b>;</b>           <font color="navy">// default constructor</font>
+    foo1 <b>=</b> GetAFoo<b>(</b><b>)</b><b>;</b>   <font color="navy">// Assignment</font>
+    foo2 <b>=</b> foo1<b>;</b>        <font color="navy">// Assignment</font>
+    <b>return</b> <font color="blue">0</font><b>;</b>
+<b>}</b>
+</pre>
+<P>
+When <TT>main</TT> is structured like this, four function calls are needed to initialize two objects. When can reduce
+this to two calls if by eliminating the use of the default constructors.
+</P>
+<pre>
+<b>int</b> main<b>(</b><b>)</b>
+<b>{</b>
+    Foo foo1<b>(</b>GetAFoo<b>(</b><b>)</b><b>)</b><b>;</b> <font color="navy">// copy constructor</font>
+    Foo foo2<b>(</b>foo1<b>)</b><b>;</b>      <font color="navy">// copy constructor</font>
+    <b>return</b> <font color="blue">0</font><b>;</b>
+<b>}</b>
+</pre>
+
+<P>
+Ironically, this code enhancement eliminates the use of the assignment operator, and the assignment operator was the
+original cause of our compiler errors. After making these improvements to the code, the final source should look like this:
+</P>
+<pre>
+<font color="green">#include &lt;iostream></font>
+
+<b>using</b> <b>namespace</b> std<b>;</b>
+
+<b>class</b> Foo
+<b>{</b>
+<b>public</b><b>:</b>
+    Foo<b>(</b><b>)</b>
+    <b>{</b>
+        cout <b><<</b> <font color="blue">"default constructor"</font> <b><<</b> endl<b>;</b>
+    <b>}</b>
+    Foo<b>(</b><b>const</b> Foo <b>&</b><b>)</b>
+    <b>{</b>
+        cout <b><<</b> <font color="blue">"copy construction"</font> <b><<</b> endl<b>;</b>
+    <b>}</b>
+
+    <b>~</b>Foo<b>(</b><b>)</b>
+    <b>{</b>
+        cout <b><<</b> <font color="blue">"destructor"</font> <b><<</b> endl<b>;</b>
+    <b>}</b>
+
+    Foo<b>&</b> <b>operator</b><b>=</b><b>(</b><b>const</b> Foo <b>&</b>rhs<b>)</b>
+    <b>{</b>
+        cout <b><<</b> <font color="blue">"assignment"</font> <b><<</b> endl<b>;</b>
+        <b>return</b> <b>*</b><b>this</b><b>;</b>
+    <b>}</b>
+<b>}</b><b>;</b>
+
+
+Foo GetAFoo<b>(</b><b>)</b>
+<b>{</b>
+    <b>return</b> Foo<b>(</b><b>)</b><b>;</b>
+<b>}</b>
+
+<b>int</b> main<b>(</b><b>)</b>
+<b>{</b>
+    Foo foo1<b>(</b>GetAFoo<b>(</b><b>)</b><b>)</b><b>;</b>
+    Foo foo2<b>(</b>foo1<b>)</b><b>;</b>
+    <b>return</b> <font color="blue">0</font><b>;</b>
+<b>}</b>
+</pre>
+<P>
+That does it for this edition of "What's wrong with this code?" Unless of course, you can
+find more ways to improve the final version of the code. Since this is the first edition
+of w3TC, I would be interested in your feedback. Do you like these sorts of articles, or did this
+article suck as much as the code that was in it? Feedback is welcome. If you have ideas for future articles,
+I would be happy to hear them. Just click the email link at the bottom of the page.
+</P>
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2002 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

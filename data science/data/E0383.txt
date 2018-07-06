@@ -1,0 +1,394 @@
+ID=E0383
+URL=http://www.troubleshooters.com/codecorn/littperl/perlloop.htm
+SIZE=10154
+DATE=12/07/02
+TIME=19:20:25
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>Looping and Branching in PERL</TITLE>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="description" CONTENT="Debugging and Troubleshooting Source Code including MS Access, C++, Delphi, FoxPro, MFC, SQL, Visual Basic">
+   <META NAME="keywords" CONTENT="debugging, troubleshooting, Source Code, Access, C++, Delphi, FoxPro, MFC, Microsoft Foundation Classes, SQL, Visual Basic">
+   <META NAME="FORMATTER" CONTENT="Microsoft FrontPage 1.1">
+   <META NAME="Author" CONTENT="Steve Litt">
+   <META NAME="Description" CONTENT="Perl Programming">
+   <META NAME="KeyWords" CONTENT="Perl, CGI">
+   <META NAME="GENERATOR" CONTENT="Mozilla/3.01Gold (Win95; U) [Netscape]">
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFF0" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000" BACKGROUND="../../tcbk.gif">
+
+<H2 ALIGN=CENTER><A NAME="top"></A><A HREF="../../troubleshooters.htm">Troubleshooters.Com</A>
+and <A HREF="../index.htm">Code Corner</A> Present</H2>
+
+<H1 ALIGN=CENTER><A HREF="index.htm">Steve Litt's PERLs of Wisdom</A>:<BR>
+Looping and Branching in PERL<BR>
+(With Snippets)</H1>
+
+<CENTER><P><A HREF="../../cpyright.htm">Copyright (C) 1998 by Steve Litt</A></P></CENTER>
+
+<P>
+<HR></P>
+
+<H1>Contents</H1>
+
+<UL>
+<LI><A HREF="#Branching">Branching</A></LI>
+
+<LI><A HREF="#Comparators">Comparators</A></LI>
+
+<LI><A HREF="#Looping">Looping</A></LI>
+
+<LI><A HREF="#LoopingThroughFile">Looping Through a File</A></LI>
+
+<LI><A HREF="#LoopingThroughList">Looping Trhough a List</A></LI>
+</UL>
+
+<H1><A NAME="Branching"></A>Branching</H1>
+
+<P>Check this out:</P>
+
+<PRE>if ($president eq &quot;Bill Clinton&quot;)
+   {
+   print &quot;$president: After 1992.\n&quot;;
+   }
+elsif($president eq &quot;George Bush&quot;)
+   {
+   print &quot;$president: 1989 through 1992.\n&quot;;
+   }
+else
+   {
+   print &quot;$president: Before 1989\n&quot;;
+   }</PRE>
+
+<H3>Note the following:</H3>
+
+<UL>
+<LI>Each condition is inside parenthesis</LI>
+
+<LI>Each action, even if only one statement, is enclosed in curly brackets.
+Note the difference from C/C++.</LI>
+
+<LI>Note the use of the elsif keyword.</LI>
+
+<LI>Note the use of the eq keyword for non-numeric equality comparisions.</LI>
+</UL>
+
+<H3>The unless Keyword</H3>
+
+<P>If you're like me, you think this is ugly:</P>
+
+<PRE>if(!($president eq &quot;Bill Clinton&quot;))</PRE>
+
+<P>You'll be glad to know you can do this:</P>
+
+<PRE>unless($president eq &quot;Bill Clinton&quot;)</PRE>
+
+<P>However, keep in mind that C/C++/Java/Delphi programmers will pause
+and scratch their head because they're not used to the concept of a negative
+if.</P>
+
+<H3>Other Constructs</H3>
+
+<PRE>$president eq &quot;Bill Clinton&quot; or print &quot;Former president\n&quot;;</PRE>
+
+<P>This means the same as</P>
+
+<PRE>if(!($president eq &quot;Bill Clinton&quot;))
+ {print &quot;Former president\n&quot;;}</PRE>
+
+<P>Most PERL programmers also work in other languages, and the former construct
+will give them vertigo. The saved if, parentheses, exclamation, and curly
+brackets aren't worth it. The one exception is the standard file open construct:</P>
+
+<PRE>open(CONFIG, &quot;c:\\config.sys&quot;) or die &quot;Could not open config.sys.&quot;;</PRE>
+
+<P>Now here's one guaranteed to get C++ programmers queazy:</P>
+
+<PRE>print &quot;Current president\n&quot; if $president eq &quot;Bill Clinton&quot;;</PRE>
+
+<P>Note that now you needn't put the conditional expression in parentheses.
+This means the same as:</P>
+
+<PRE>if($president eq &quot;Bill Clinton)
+  {print &quot;Current president\n&quot;}</PRE>
+
+<P>When everyone uses PERL, the former construct will be readable. Until
+then, I'd suggest using the good old &quot;if first&quot; construct.</P>
+
+<P>There are other constructs which are so way out I won't even discuss
+them. Please just remember the person reading your code probably works
+mainly in C++ or Java.</P>
+
+<H1><A NAME="Comparators"></A>Comparators</H1>
+
+<P>The following simple comparators work in if statements, loops, etc.
+Note there are tons more comparators, but they can be synthesized with
+those below. Note also that any comparison can include a regular expression,
+which has its <A HREF="perlreg.htm">own page</A> in this website.</P>
+
+<TABLE BORDER=1 >
+<TR ALIGN=CENTER VALIGN=TOP>
+<TD>
+<H3>Comparison</H3>
+</TD>
+
+<TD>
+<H3>Numeric</H3>
+</TD>
+
+<TD>
+<H3>Non-Numeric</H3>
+</TD>
+</TR>
+
+<TR ALIGN=CENTER VALIGN=TOP>
+<TD>
+<PRE>Equality</PRE>
+</TD>
+
+<TD>
+<PRE>==</PRE>
+</TD>
+
+<TD>
+<PRE>eq</PRE>
+</TD>
+</TR>
+
+<TR ALIGN=CENTER VALIGN=TOP>
+<TD>
+<PRE>Non equality</PRE>
+</TD>
+
+<TD>
+<PRE>!=</PRE>
+</TD>
+
+<TD>
+<PRE>ne</PRE>
+</TD>
+</TR>
+
+<TR ALIGN=CENTER VALIGN=TOP>
+<TD>
+<PRE>Greater than</PRE>
+</TD>
+
+<TD>
+<PRE>&gt;</PRE>
+</TD>
+
+<TD>
+<PRE>gt</PRE>
+</TD>
+</TR>
+
+<TR ALIGN=CENTER VALIGN=TOP>
+<TD>
+<PRE>Greater or equal</PRE>
+</TD>
+
+<TD>
+<PRE>&gt;=</PRE>
+</TD>
+
+<TD>
+<PRE>ge</PRE>
+</TD>
+</TR>
+
+<TR ALIGN=CENTER VALIGN=TOP>
+<TD>
+<PRE>Less than</PRE>
+</TD>
+
+<TD>
+<PRE>&lt;</PRE>
+</TD>
+
+<TD>
+<PRE>lt</PRE>
+</TD>
+</TR>
+
+<TR ALIGN=CENTER VALIGN=TOP>
+<TD>
+<PRE>Less or equal</PRE>
+</TD>
+
+<TD>
+<PRE>&lt;=</PRE>
+</TD>
+
+<TD>
+<PRE>le</PRE>
+</TD>
+</TR>
+</TABLE>
+
+<H1><BR>
+<A NAME="Looping"></A>Looping</H1>
+
+<H3>Top Testers</H3>
+
+<PRE>while(ENABLER_EXPRESSION)
+  {ACTIONS}</PRE>
+
+<PRE>until(DISABLER_EXPRESSION)
+  {ACTIONS}</PRE>
+
+<H4>Note:</H4>
+
+<UL>
+<LI>The test expression is tested <B>before</B> the action, so the action
+<B>might not</B> happen.</LI>
+
+<LI>The test expression must be in parenthesis most of the time.</LI>
+
+<LI>The test expression can be any expression that could appear in an if
+statement.</LI>
+
+<LI>The action must be in curly brackets.</LI>
+
+<LI>until is simply the negation of while. until($x) could be written as
+while(!($x)).</LI>
+</UL>
+
+<P>PERL also has the handy for() statement:</P>
+
+<PRE>for ($i = 1; $i &lt; 10; $i++)
+ {
+ ACTIONS;
+ }</PRE>
+
+<H4>Note:</H4>
+
+<UL>
+<LI>EXACTLY like C for statement, except the actions must be surrounded
+by curly brackets even if there's only one action statement.</LI>
+
+<LI>Here's the order of execution:</LI>
+
+<UL>
+<LI>Initializer: $i = 1</LI>
+
+<LI>Test: $i &lt; 10</LI>
+
+<LI>Action (assuming test was positive): ACTIONS</LI>
+
+<LI>Incrementer: $i++</LI>
+</UL>
+
+<LI>The test expression is tested <B>before</B> the action, so the action
+<B>might not</B> happen.</LI>
+
+<LI>The test expression can be any expression that could appear in an if
+statement.</LI>
+</UL>
+
+<H3>Bottom Testers</H3>
+
+<PRE>do
+  {ACTIONS}
+while (ENABLER_EXPRESSION);</PRE>
+
+<PRE>do
+  {ACTIONS}
+until (DISABLER_EXPRESSION);</PRE>
+
+<H4>Note:</H4>
+
+<UL>
+<LI>The test expression is tested <B>after</B> the action, so the action
+<B>will</B> happen at least once.</LI>
+
+<LI>The test expression must be in parenthesis most of the time.</LI>
+
+<LI>The test expression can be any expression that could appear in an if
+statement.</LI>
+
+<LI>The action must be in curly brackets.</LI>
+
+<LI>until is simply the negation of while. until($x) could be written as
+while(!($x)).</LI>
+
+<LI>Often more efficient but less modular and maintainable than top testers.
+Usually accompanied by a priming read and a post-write.</LI>
+</UL>
+
+<H1><BR>
+<A NAME="LoopingThroughFile"></A>Looping Through a File</H1>
+
+<P>This opens autoexec.bat for input, autoexec.rem for output, and copies
+only the lines that aren't remmed out. Note that this has only one line
+of the file in memory at a time, so it's useful for extremely large files.</P>
+
+<PRE>open(INPUT,  &quot;autoexec.bat&quot;);
+open(OUTPUT, &quot;&gt;autoexec.rem&quot;);   # The &gt; means open for write, 
+                                 #  over original if existed.
+
+while (&lt;INPUT&gt;)
+  {
+  my($line) = $_;  #preserve $_, the line just read, nomatter what
+  chomp $line;     #blow off trailing newline
+
+  unless($line =~ /^\s*rem/i)    #see <A HREF="perlreg.htm">regular expressions</A> for explanation
+    {
+    print OUTPUT &quot;$line\n&quot;;      #write the non-remmed autoexec command
+    }
+  }
+close(INPUT);
+close(OUTPUT);</PRE>
+
+<H1><A NAME="LoopingThroughList"></A>Looping Through a List</H1>
+
+<P>There's a special construct, called <B>foreach</B>, for looping through
+a list. It automatically assigns the next element of the list to a scaler.
+The construct is like this:</P>
+
+<PRE>foreach SCALAR (LIST)
+ {ACTIONS} </PRE>
+
+<P>Here's a file dup detector that uses this construct. Note that since
+the entire list is in memory, this isn't suitable for files that may attain
+a huge size.</P>
+
+<PRE>my(@allLines);                   #declare list to hold all file lines
+my($line);                       #declare local scalar for each line
+my($dupCount);
+my($lastLine);                   #declare scaler to hold previous line
+@allLines = sort(&lt;INPUT_FILE&gt;);  #put all lines of input file into list
+                                 # sort list for duplicate detection
+$lastLine=&quot;~~~ ~~&quot;;              #no break first time
+$dupCount = 0;
+foreach $line (@allLines)        #one by one, put next element into scalar
+  {
+  chomp($line);                  #blow off trailing newline
+  if($line eq $lastLine)         #if duplicate of previous line
+    {
+    print &quot;$lastLine\n&quot;;
+    $dupCount++;
+    }
+  $lastLine = $line;
+  }
+print &quot;-----------------\n&quot;;
+print &quot;$dupCount Duplicates.\n&quot;;</PRE>
+
+<P>
+<HR></P>
+
+<P>&nbsp;[ <A HREF="../../troubleshooters.htm">Troubleshooters.com</A>
+| <A HREF="../index.htm">Code Corner</A> | <A HREF="mailto:slitt@troubleshooters.com">Email
+Steve Litt</A> ] </P>
+
+<P><A HREF="../../cpyright.htm#top"><IMG SRC="../../images/biglcpyr.gif" BORDER=0 HEIGHT=30 WIDTH=30></A>
+<A HREF="../../cpyright.htm#top">Copyright (C)1998 by Steve Litt</A> --
+<A HREF="../../cpyright.htm#top">Legal</A></P>
+
+<P>&nbsp;</P>
+
+</BODY>
+</HTML>
+

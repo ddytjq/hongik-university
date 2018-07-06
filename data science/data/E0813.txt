@@ -1,0 +1,203 @@
+ID=E0813
+URL=http://www.delorie.com/djgpp/v2faq/faq18_11.html
+SIZE=9786
+DATE=12/07/02
+TIME=19:24:43
+DATASET=C
+HTML=<html><head><title>DJGPP FAQ -- Hardware interrupt hooking has its subtleties</title>
+<base href="http://www.delorie.com/djgpp/v2faq/faq18_11.html">
+</head><body><center><!-- BEGIN RICH-MEDIA BURST! CODE --> 
+     <script language="JavaScript"> 
+     <!-- /* (C) 1997-1999 BURST! Media, LLC. All Rights Reserved.*/ 
+     var TheAdcode = 'ad1954a'; 
+     var bN = navigator.appName; 
+     var bV = parseInt(navigator.appVersion); 
+     var base='http://www.burstnet.com/'; 
+     var Tv='/5337'; 
+     var agt=navigator.userAgent.toLowerCase(); 
+     if (bN=='Netscape'){ 
+          if ((bV>=4)&&(agt.indexOf("mac")==-1))
+     {  document.write('<s'+'cript src="'+ 
+           base+'cgi-bin/ads/'+TheAdcode+'.cgi/RETURN-CODE/JS' 
+           +Tv+'">'); 
+          document.write('</'+'script>');    
+     } 
+          else if (bV>=3) {document.write('<'+'a href="'+base+'ads/'+ 
+             TheAdcode+'-map.cgi'+Tv+'"target=_top>'); 
+             document.write('<img src="' + base + 'cgi-bin/ads/' + 
+             TheAdcode + '.cgi' + Tv + '" ismap width=468 height=60' + 
+             ' border=0 alt="Click Here"></a>');} 
+      } 
+     if (bN=='Microsoft Internet Explorer') 
+      document.write('<ifr'+'ame id=BURST src="'+base+'cgi-bin/ads/'
+     + 
+       TheAdcode + '.cgi' + Tv + '/RETURN-CODE" width=468 height=60' + 
+       'marginwidth=0 marginheight=0 hspace=0 vspace=0 ' + 
+       'frameborder=0 scrolling=no></ifr'+'ame>'); 
+     // --> 
+     </script> 
+     <noscript><a href="http://www.burstnet.com/ads/ad1954a-map.cgi" target=_top> 
+     <img src="http://www.burstnet.com/cgi-bin/ads/ad1954a.cgi" 
+      width=468 height=60 border=0 alt="Click Here"></a> 
+     </noscript> 
+     <!-- END BURST CODE --> 
+<table width=100% border=0 cellspacing=0 cellpadding=3><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">www.delorie.com</a>/<a href="/djgpp/" target="_top">djgpp</a>/<a href="/djgpp/v2faq/" target="_top">v2faq</a>/faq18_11.html</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/search/">search</a> &nbsp;
+</b></font></small></td>
+</tr></table><a href="bulktrap.html"></a></center>
+
+Node:<a name="HW%20Int%20pitfalls">HW Int pitfalls</a>,
+Next:<a rel=next href="faq18_12.html">Inline Asm</a>,
+Previous:<a rel=previous href="faq18_10.html">_go32 vs __dpmi</a>,
+Up:<a rel=up href="faq18.html">Low-level</a>
+<br>
+
+<h2>18.11 Hardware interrupt hooking has its subtleties</h2>
+
+<p><em><strong>Q</strong>: I did everything you tell me to install the interrupt handler
+correctly, but my program occasionally still hangs<small>...</small>.</em>
+
+<br><p>
+<p><em><strong>Q</strong>: From time to time my program crashes with a message "Page Fault
+in RMCB".  What's that?</em>
+
+<br><p>
+<p><strong>A</strong>:  Hooking interrupts in DJGPP (and in protected mode in general)
+has a few subtle aspects.  In general, hardware interrupt handling in
+DJGPP v2.x is rock solid <strong>if you play by the rules</strong>. 
+Unfortunately, the rules are a bit tricky.
+
+<p>One cause of your problems might be that your interrupt handler or some
+memory location it uses get paged out because of the virtual memory
+mechanism, or because your program spawned a child program.  In that
+case, the interrupt might cause a call to a non-existent service
+routine, with the obvious results.  You should lock all the memory pages
+that your handler accesses by calling the
+<code>__dpmi_lock_linear_region</code> library function.  This also means in
+practice that you should write your handler in assembly, as described in
+<a href="faq18_9.html">how to set an interrupt handler</a>, above.  You can disable virtual memory, or put
+<code>_CRT0_FLAG_LOCK_MEMORY</code> into <code>_crt0_startup_flags</code> to make
+sure nothing is paged out (but then your program might not have enough
+memory to run, unless you run on memory-abundant systems).
+
+<p>When CWSDPMI detects that your handler accesses memory that is not
+locked, it aborts your program with a message saying "Page Fault in
+RMCB".  This can happen if your program installs a callback for
+some real-mode service, like the mouse callback, as well as if you
+install a hardware interrupt handler; in both of these cases you need to
+lock all the memory touched by your handler or by functions it calls. 
+CWSDPMI aborts your program if your program attempts to page while an
+interrupt handler or a real-mode callback are active, because paging
+uses DOS file I/O.  Since DOS is non-reentrant, if the hardware
+interrupt handler was called in a middle of another DOS call, paging
+could badly damage your hard disk<a rel=footnote href="faq25.html"><sup>37</sup></a>.  By refusing to page in these cases, CWSDPMI ensures
+the stability of your system and integrity of your files.  You pay for
+that stability by having to lock all code and data touched by the
+handler.
+
+<p>Another problem might be that the hardware peripheral you use generates
+a lot of interrupts.  Due to specifics of hardware interrupts handling
+in protected mode, there is a substantial overhead involved with
+reflection of interrupts between real and protected modes.  For
+instance, on a 486DX/33 this reflection might consume up to 3000 clocks;
+on a 386SX/16, even a 1KHz clock might eat up 1/2 of available cycles. 
+One user reported that a 120 MHz Pentium will be able to service up to
+45-50K interrupts per second before exhausting its CPU resources, and a
+486DX/50 is capable of about half that number.  If your hardware fires
+too many interrupts, your CPU might not be able to keep up.  A good rule
+of thumb is to consider 20KHz as the breaking point, if your program
+needs to do something non-trivial besides servicing interrupts.  If you
+are beyond that interrupt rate, consider reducing the interrupt
+frequency, or move some of the processing done inside the interrupt
+handler to some other place.  Use a ring-0 DPMI server such as CWSDPR0
+or PMODE/DJ (of these two, the latter is the faster one) which don't
+swap interrupt stacks--this will reduce the overhead of the interrupt
+reflection to some degree.  If your handler is written in C, write it in
+assembly and make sure it doesn't chain.  And most important--make sure
+your program keeps the processor completely in protected mode while
+handling high-frequency interrupts: avoid unnecessary library calls,
+disk I/O, BIOS calls, and anything else that could generate a mode
+switch.  For example, using BIOS services to wait a certain period of
+time while interrupts come in is clearly a bad idea when the interrupts
+come at high frequency.
+
+<p>Installing a good memory manager will usually also remove most of the
+mode switch overhead, since a memory manager runs the CPU in V86 mode,
+where hardware interrupts are delivered in protected mode by the
+processor, without any need for a mode switch.
+
+<p>Preventing the program from paging (by installing enough physical RAM
+and using memory efficiently) will also help keeping the CPU in
+protected mode, since paging is done by calling DOS in real mode.  By
+keeping your processor in protected mode as much as you can, you avoid
+the expensive mode switches when the interrupts are reflected to your PM
+handler.
+
+<p>If all that still doesn't help, install a real-mode handler.
+
+<p>Some losing memory managers, notably EMM386, were reported to induce a
+high interrupt handling overhead.  In one case, a user reported an
+increase in the maximum interrupt rate his program could support from 2
+KHz to 6 KHz after uninstalling EMM386.
+
+<p>Still another possibility is that you use a non-default <code>sbrk</code>
+algorithm in your program.  Check if the header file <code>crt0.h</code> is
+included anywhere in the program, and if so, if the
+<code>_CRT0_FLAG_UNIX_SBRK</code> bit in the <code>_crt0_startup_flags</code>
+variable is set by the program.  If it is, then a hardware interrupt
+which happens at the wrong time could crash your machine, especially if
+you run under Windows 3.X.
+
+<p>You should also keep in mind that the DPMI server can decide to handle
+some of the interrupts itself and not pass them to your program,
+although this is rare.  For example, Windows 9X won't pass the
+<kbd>Ctrl-Alt-Del</kbd> combination to your keyboard interrupt handler, but
+will rather act on it itself; QDPMI sometimes processes <kbd>Ctrl-C</kbd>
+keypresses so that your program never sees them, etc.  Sometimes, but
+not always, you can change some configuration option to make some keys
+get to your handler (e.g., the Alt-TAB setting on the Windows3.X
+<code>.PIF</code> file).
+
+<p>If the above still doesn't explain your problem, then post your code on
+the <a href="mailto:djgpp@delorie.com">DJGPP mailing list</a> or
+the <a href="news:comp.os.msdos.djgpp">comp.os.msdos.djgpp news group</a>, tell there how it fails and somebody will
+usually have a solution or a work-around for you.
+
+<p><hr>
+
+
+
+<br clear=both></p>
+<a href="bulktrap.html"></a><table width=100% border=0 cellspacing=0 cellpadding=3><tr>
+<td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/users/dj/" target="_top">webmaster</a> &nbsp;
+<a href="/donations.html" target="_top">donations</a> &nbsp;
+<a href="/store/books/" target="_top">bookstore</a> &nbsp;
+</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">delorie software</a> &nbsp;
+<a href="/privacy.html" target="_top">privacy</a> &nbsp;
+</b></font></small></td>
+</tr><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/copyright.html" target="_top">Copyright © 2001</a> &nbsp;
+<a href="/users/eliz/" target="_top">by Eli Zaretskii</a> &nbsp;
+</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+Updated Apr 2001 &nbsp;
+</b></font></small></td>
+</tr></table>
+<center><iframe
+ SRC="http://www.burstnet.com/cgi-bin/ads/ba1954a.cgi/RETURN-CODE/if/5337/"
+ scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"
+ width="468" height="60"><A target="_top"
+ HREF="http://www.burstnet.com/ads/ba1954a-map.cgi/5337"><IMG SRC="http://www.burstnet.com/cgi-bin/ads/ba1954a.cgi/5337"
+ border="0" width="468" height="60" alt="Please support our sponsor."></A></iframe><br><small><i>Please take a moment to fill out
+this <a href="http://survey.burstmedia.com/cgi-win/client.exe?Burst,welcome,ad1954a,2000">visitor survey</a></i></small>
+<br><small><i>You can help support this site by
+visiting the advertisers that sponsor it! (only once each, though)</i></small>
+</center>
+</body></html>
+
+

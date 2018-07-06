@@ -1,0 +1,197 @@
+ID=E0433
+URL=http://www.troubleshooters.com/codecorn/littperl/perlfile.htm
+SIZE=6522
+DATE=12/07/02
+TIME=19:20:52
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>PERL File Input, Output and Sorting</TITLE>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="description" CONTENT="Debugging and Troubleshooting Source Code including MS Access, C++, Delphi, FoxPro, MFC, SQL, Visual Basic">
+   <META NAME="keywords" CONTENT="debugging, troubleshooting, Source Code, Access, C++, Delphi, FoxPro, MFC, Microsoft Foundation Classes, SQL, Visual Basic">
+   <META NAME="FORMATTER" CONTENT="Microsoft FrontPage 1.1">
+   <META NAME="Author" CONTENT="Steve Litt">
+   <META NAME="Description" CONTENT="File access in PERL">
+   <META NAME="KeyWords" CONTENT="PERL,File,Input,Output,Sorting">
+   <META NAME="GENERATOR" CONTENT="Mozilla/3.01Gold (Win95; U) [Netscape]">
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFF0" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000" BACKGROUND="../../tcbk.gif">
+
+<H2 ALIGN=CENTER><A NAME="top"></A><A HREF="../../troubleshooters.htm">Troubleshooters.Com</A>
+and <A HREF="../index.htm">Code Corner</A> Present</H2>
+
+<H1 ALIGN=CENTER><A HREF="index.htm">Steve Litt's PERLs of Wisdom</A>:<BR>
+<FONT SIZE=+4>PERL File Input, Output and Sorting<BR>
+</FONT>(With Snippets)</H1>
+
+<CENTER><P><A HREF="../../cpyright.htm">Copyright (C) 1998 by Steve Litt</A></P></CENTER>
+
+<P>
+<HR></P>
+
+<H1><A NAME="Contents"></A>Contents</H1>
+
+<LI><A HREF="#Introduction">Introduction</A></LI>
+
+<LI><A HREF="#FileOutputInPERL">File Output In PERL</A></LI>
+
+<LI><A HREF="#FileInputinPERL">File Input in PERL</A></LI>
+
+<LI><A HREF="#FileConversionExample">File Conversion Example</A></LI>
+
+<H1><A NAME="Introduction"></A>Introduction</H1>
+
+<P>File input and output is an integral part of every programming language.
+PERL has complete file input and output capabilities, but it has especially
+handy syntax for line-at-a-time sequential input. Since PERL's strengths
+are in text manipulation/parsing, this is especially important, and will
+be well covered on this web page. Also covered will be sequential file
+output. This website will not discuss fixed record reads or random i/o.</P>
+
+<P>Because writing files in PERL is actually simpler, we'll start with
+output, then move to input.</P>
+
+<H1><A NAME="FileOutputInPERL"></A>File Output In PERL</H1>
+
+<TABLE BORDER=1 >
+<TR>
+<TD>
+<PRE>$append = 0;
+if ($append)
+  {
+  open(MYOUTFILE, &quot;&gt;filename.out&quot;);  #open for write, overwrite
+  }
+else
+  {
+  open(MYOUTFILE, &quot;&gt;&gt;filename.out&quot;); #open for write, append
+  }
+print MYOUTFILE &quot;Timestamp: &quot;;      #write text, no newline
+print MYOUTFILE &amp;timestamp();       #write text-returning fcn
+print MYOUTFILE &quot;\n&quot;;               #write newline</PRE>
+
+<PRE>#*** Print freeform text, semicol required ***
+print MYOUTFILE &lt;&lt;&quot;MyLabel&quot;;
+Steve was here
+and now is gone
+but left his name
+to carry on.
+MyLabel</PRE>
+
+<PRE>#*** Close the file ***
+close(MYOUTFILE);</PRE>
+</TD>
+</TR>
+</TABLE>
+
+<H1><A NAME="FileInputinPERL"></A>File Input in PERL</H1>
+
+<P>Opening for Read requires no angle brackets in the filename. If you
+wish, you can put in a left angle bracket &lt;, which means &quot;input
+file&quot;. It's good practice to close any files you open. Files can be
+read line by line, or the entire contents of the file can be dumped into
+a list, with each list element being a line. Here is an example of a program
+that reads a file, capitalizes each line, and prints it to the screen:</P>
+
+<H2>Reading a File a Line at a Time</H2>
+
+<TABLE BORDER=1 >
+<TR>
+<TD>
+<PRE>open(MYINPUTFILE, &quot;&lt;filename.out&quot;);
+while(&lt;MYINPUTFILE&gt;)
+   {
+   # Good practice to store $_ value because
+   #  subsequent operations may change it.
+   my($line) = $_;
+
+   # Good practice to always strip the trailing
+   #  newline from the line.
+   chomp($line);
+
+   # Convert the line to upper case.
+   $line =~ tr/[a-z]/[A-Z]/;
+
+   # Print the line to the screen and add a newline
+   print &quot;$line\n&quot;;
+   }</PRE>
+</TD>
+</TR>
+</TABLE>
+
+<H2>Reading a Whole File at Once</H2>
+
+<P>Sometimes it's easier to read a whole file into a list, especially with
+complex break logic, read-ahead totals, or sorting. Here's a program that
+reads a file and prints it in sorted order:</P>
+
+<TABLE BORDER=1 >
+<TR>
+<TD>
+<PRE>open(MYINPUTFILE, &quot;&lt;filename.out&quot;); # open for input
+my(@lines) = &lt;MYINPUTFILE&gt;;         # read file into list
+@lines = sort(@lines);              # sort the list
+my($line);
+foreach $line (@lines)              # loop thru list
+   {
+   print &quot;$line&quot;;                   # print in sort order
+   }
+close(MYINPUTFILE);</PRE>
+</TD>
+</TR>
+</TABLE>
+
+<H1><A NAME="FileConversionExample"></A>File Conversion Example</H1>
+
+<P>PERL is exceptionally good at file conversion. Here's an example where
+each line in the file has 3 fields (in this order): A 5 digit zip code,
+a 20 char name (first last) and a mm/dd/yy birth date. You want to change
+it to a 16 char last name, a 10 char first name, a mm/dd/yyyy birth date,
+and a 5 digit zip. For simplicity, assume names have no spaces (no Mary
+Anns, no Van Gelders). Here's a 21 line program to do the conversion:</P>
+
+<TABLE BORDER=1 >
+<TR>
+<TD>
+<PRE>open(MYINPUTFILE, &quot;&lt;filename.in&quot;);
+open(MYOUTPUTFILE, &quot;&gt;filename.out&quot;);
+while(&lt;MYINPUTFILE&gt;)
+    {
+    my($line) = $_;
+    chomp($line);
+    if($line =~ m|(\d{5})(.{20})(\d\d)/(\d\d)/(\d\d)|)
+       {
+       my($zip,$name,$mm,$dd,$yy) = ($1,$2,$3,$4,$5);
+       if($yy &gt; 10)
+          {$yy += 1900}
+       else
+          {$yy += 2000}
+       my($first, $last) = split(/ /, $name);
+       $line = sprintf(&quot;%-16s%-10s%02d/%02d/%04d%5d&quot;,
+                        $last,$first,$mm,$dd,$yy,$zip);
+       print MYOUTPUTFILE &quot;$line\n&quot;;
+       }
+    }
+close(MYINPUTFILE);
+close(MYOUTPUTFILE);</PRE>
+</TD>
+</TR>
+</TABLE>
+
+<P>
+<HR></P>
+
+<P>&nbsp;[ <A HREF="../../troubleshooters.htm">Troubleshooters.com</A>
+| <A HREF="../index.htm">Code Corner</A> | <A HREF="mailto:slitt@troubleshooters.com">Email
+Steve Litt</A> ] </P>
+
+<P><A HREF="../../cpyright.htm#top"><IMG SRC="../../images/biglcpyr.gif" BORDER=0 HEIGHT=30 WIDTH=30></A>
+<A HREF="../../cpyright.htm#top">Copyright (C)1998 by Steve Litt</A> --
+<A HREF="../../cpyright.htm#top">Legal</A></P>
+
+<P>&nbsp;</P>
+
+</BODY>
+</HTML>
+

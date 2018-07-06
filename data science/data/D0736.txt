@@ -1,0 +1,537 @@
+ID=D0736
+URL=http://www.javaworld.com/javaworld/jw-12-2000/jw-1208-clones.html
+SIZE=44820
+DATE=16/07/02
+TIME=14:56:52
+DATASET=Java
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title> Reduce EJB network traffic with astral clones</title>
+<!-- ssilog 7814 -->
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<meta name="keywords" content=" EJB, network traffic">
+<meta name="description" content="
+Because of the numerous remote set methods that have to be called when working with EJBs, even the simplest data-entry screens produce performance problems. Working with a client-side astral clone of a bean implementation provides an elegant and nearly transparent approach to resolve these problems. In this article, Martijn Res describes the simple yet powerful technique of using astral clones. (1,800 words)
+">
+<meta name="date" content="2000-12-08">
+<META NAME="DC.Date" CONTENT="2000-12-08">
+<basefont face="verdana, arial, helvetica" size="3" />
+<style type="text/css">
+            code {font-size: 90%; font-family: monospace;}
+            pre {font-size: 90%; font-family: monospace;}
+            td {font-size: 90%;}
+</style>
+<script language="javascript">
+<!--// IDG.net Scripts
+            function mail2Friend () {
+                window.parent.location = "/MailToFriend?url=" + escape(document.location);
+            }
+
+            function openBrWindow() {
+                win=window.open("http://www.javaworld.com/channel_content/jw-story-feedback.shtml",'Feedback','width=600,height=330,toolbar=no,location=no,directories=no,menubar=no,scrollbars=yes,resizable=yes');
+            }
+            //-->
+        </script>
+    </head>
+<body bgcolor="#ffffff" text="#000000" link="#990033" vlink="#990033" alink="#990033" topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" marginheight="0" marginwidth="0">
+<table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td colspan="2" width="186" bgcolor="#006699"><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0 ></a></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- START TOP 468x60 BANNER -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=945494?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=945494?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=945494?" border="0" height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer1" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- END TOP 468x60 BANNER --></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="26" valign="top" align="left" bgcolor="#ffffff"><img height=8 src="http://www.javaworld.com/images/c_whtbottom.gif" width=8 border=0 ></td>
+                <td width="100%"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.global/idgpixel7.18.00;sz=1x1;ord=945494?" border=0 height="1" width="1"><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.usa.jw/usajw.081501;sz=1x1;ord=945494?" border=0 height="1" width="1"></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160" align="middle" valign="center" nowrap><nobr><font face="Verdana, Arial, Sans-serif" color="#ffffff" size="2">December 2000</font></nobr><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="8" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltlft.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="100%" align="middle" valign="center">    <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">HOME</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/features/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FEATURED TUTORIALS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/columns/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">COLUMNS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/news-reviews/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">NEWS & REVIEWS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://forums.idg.net/webx?13@@.ee6b802"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FORUM</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/resources/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">JW RESOURCES</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/info/jw-about-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">ABOUT JW</font></a></td>
+        </tr>
+    </table></td>
+                <td bgcolor="#006699" width="8" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltrt.gif" width=8 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr valign="top">
+                <td bgcolor="#006699" width="160" align="middle" valign="top">
+                    <table width="160" border="0" cellspacing="0" cellpadding="0" bgcolor="#006699" summary="">
+                        <tr>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                            <td align="center">
+                                <form action="http://www.javaworld.com/isearch" method="GET" name="search">
+                                    <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /><br />
+                                    <input type="text" name="qt" size="12" maxlength="2047" /><br />
+                                    <input type="image" value="search" src="http://www.javaworld.com/images/button_blue.gif" border="0" width="97" height="18" alt="GO" /><br />
+                                    <input type="hidden" name="site" value="javaworld"><br />
+                                   <!-- <a href="http://www.google.com/"><img src="http://www.javaworld.com/images/google-power-fp.gif" width="108" height="45" border="0" alt="Google.com"></a>-->
+                                    <input type="hidden" name="ms" value="1">
+                                    <input type="hidden" name="tid" value="1">
+                                    <input type="hidden" name="st" value="1">
+                                    <input type="hidden" name="rf" value="0">
+                                   
+                                </form>
+                            </td>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                        </tr>
+                        <tr>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td><img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <a href="http://www.javaworld.com/archives/index-year.html"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>ARCHIVE</strong></font></a><br>
+                                <img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <strong><a href="http://www.javaworld.com/channel_content/jw-topical-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff">TOPICAL INDEX</font></a></strong></font><br><table cellspacing="0" cellpadding="0" border="0" summary="">
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/channel_content/jw-core-index.shtml"><font color="#ffffff">Core Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-enterprise-index.shtml"><font color="#ffffff">Enterprise Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-micro-index.shtml"><font color="#ffffff">Micro Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-applied-index.shtml"><font color="#ffffff">Applied Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-community-index.shtml"><font color="#ffffff">Java Community</font></a></strong></font><br /></td>
+                        </tr>
+                    </table><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-qna-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA Q&A INDEX</strong></font></a><br /><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-tips-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA TIPS INDEX</strong></font></a><br /> <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br /><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#CCCCCC"><strong>JavaWorld Services</strong></font><br /><img alt="" height="4" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /><table cellspacing="0" cellpadding="0" border="0" summary=""><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /><img alt="" height="7" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /></td><td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/subscribe"><font color="#ffffff">Free JavaWorld newsletters</font></a></strong></font></td></tr><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://javaworld.pricegrabber.com"><font color="#ffffff">ProductFinder </font></a></strong></font></td></tr><tr> <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/white-paper/index.shtml"><font color="#ffffff">White Paper Library</font></a></strong></font></td></tr>
+</table>
+<img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br />
+</td>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                        </tr>
+                        <tr valign="bottom">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_gryblbottom.gif" width=8 ></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr>
+                       <td width="8" bgcolor="#cccccc"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                           <td align="middle" bgcolor="#cccccc"><!-- SKYSCRAPER AD START HERE -->
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=945494?" width="120" height="600" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=skyscraper;sz=120x600;tile=3;ord=945494?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;skyscraper=med;sz=120x600;tile=3;ord=945494?" border=0 height="600" width="120"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer3" visibility="hidden" width=120 height=600></ILAYER>
+<!-- SKYSCRAPER AD ENDS HERE -->
+</td>
+                       <td width="8" bgcolor="#cccccc"><img height=8 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr valign="top">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_grybltop.gif" width=8 ></td>
+                        </tr>
+                    </table>
+                    <img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                    <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                <td width="100%">
+                    <!-- ## MAIN CONTENT STARTS HERE ### -->
+                    <font face="verdana, arial, helvetica" size="3">
+                        <strong></strong>
+                        <p>
+                            <h1 align="CENTER"> Reduce EJB network traffic with astral clones</h1>
+                            <h3 align="CENTER"> Use the bean implementation outside the container to avoid remote calls</h3>
+                        </p>
+                        <!--<BLOCKQUOTE><STRONG>Summary</STRONG><BR>-->
+                        <BLOCKQUOTE>
+<STRONG>Summary</STRONG><BR>
+
+Because of the numerous remote set methods that have to be called when working with EJBs, even the simplest data-entry screens produce performance problems. Working with a client-side <em>astral clone</em> of a bean implementation provides an elegant and nearly transparent approach to resolve these problems. In this article, Martijn Res describes the simple yet powerful technique of using astral clones. <em>(1,800 words)</em>
+</BLOCKQUOTE>
+                        <!--</BLOCKQUOTE>-->
+                        <a href="http://www.javaworld.com/feedback" target="Feedback"><STRONG>By   Martijn Res</STRONG></a>
+                        <p><img src="http://www.javaworld.com/images/rule_ltblue.gif" width="100%" height="2"><br />
+                           <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                           <a href="/javaworld/jw-12-2000/jw-1208-clones_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><br /></p>
+                         <font size=-1>  <!-- REPLACE PAGECOUNT --></font>
+                        <p><!-- START BIG AD (336x280) -->
+<table align="right" border="0" cellpadding="0" cellspacing="0"><tr valign="bottom" align="center"><td><font face="verdana, arial, geneva, sans-serif" color="#999999" size="-2">Advertisement</font></td></tr><tr><td><table border=1 bordercolor="#cccccc" cellspacing="5" cellpadding="0"><tr><td>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=945494" width="336" height="280" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=945494"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=945494" border=0 height="280" width="336"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer5" visibility="hidden" width=336 height=280></ILAYER>
+</td></tr></table></td></tr></table>
+<!-- END BIG AD (336x280) --></p>
+                        <p><P>
+<img align="left" width="24" height="29" src="/javaworld/abcs/T.gif" alt="T">he Java 2 Platform, Enterprise Edition specifies the Java community's standard for enterprise distributed computing. Included in this standard are Enterprise JavaBeans (EJB), which provide a set of programming rules and standard interfaces to build business objects. You can deploy these objects in an application server that you don't have to build yourself. The application server provides an environment in which the business objects can run efficiently and reliably, participating in distributed transactions and persisting in a relational database. <P>
+Although this strong model frees developers to concentrate on the business logic instead of inventing and building transactionality and database mappings themselves, it is too rigid for distributed computing in the real world. The real world's sluggish networks slow the performance of several cooperating business objects running on different machines. Also, simple data entry by a user creating or editing a business object can run too slowly if, for example, a frontend JavaServer Pages (JSP) engine is not running on the same machine as the business object, or if a person is using a Java client on a workstation. <P>
+In general, if an entity bean is not in the same location as the process performing the task and the network is a bottleneck, either the process must come to the data, or the data must come to the process. An example of the former option is a session bean that performs a certain task on behalf of a remote client. The classic client-server model is an implementation of the latter alternative, but I use another approach that I call <em>astral cloning.</em> <P>
+In this article, I will explain how to use an entity bean implementation as a client-side cached version of the bean. The implementation runs outside the application server, having an "outer-container" experience, hence the term <em>astral clone.</em> Many developers use some kind of caching to make a distributed system perform. Astral cloning provides a better version of the solution proposed by Thomas Davis in "Direct Network Traffic of EJBs" (<em>JavaWorld,</em> November 1999; see <a href="#resources">Resources</a> for a direct link) with respect to encapsulation of business logic into one object and transparency to the client-side code. <P>
+<strong>Note: </strong> This article presumes that you are familiar with EJB programming. Also, I explain astral cloning and its consequences as it relates to container-managed entity beans only.
+<P><FONT SIZE="+1"><STRONG> Astral cloning </STRONG></FONT><BR>
+To explain how to implement astral clones, I will first illustrate how an entity bean typically works. <P>
+<center><P>
+<TABLE CELLPADDING="5" BORDER="0"><TR><TD><P>
+<center><P>
+<IMG VSPACE="3" WIDTH="387" HEIGHT="202" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-12-2000/images/jw-1208-clones1.gif"><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+Figure 1. Standard invocation through a stub </STRONG></FONT></center><P>
+</TD></TR></TABLE><P>
+</center><P>
+Figure 1 shows how a client calls several methods on a generated stub that implements the bean interface. Using RMI, the stub delegates these calls to the container, which is generated to run the bean implementation's instances. Finally, the container calls the bean implementation's right instance. <P>
+Instead of calling a remote bean, we can create a local copy of this bean -- an astral clone -- using the following steps: <P>
+<ol> <li>Declare a method <code>getAstralClone()</code> in the entity bean interface</li> <P>
+<li>Let the actual entity bean implement this method by returning a reference to itself (<code>this</code>) </li> <P>
+<li>When a client calls <code>getAstralClone()</code> on the remote entity bean, a bean's clone is returned through serialization/deserialization (standard RMI behavior)</li> <P>
+<li>The client now has local access to what once were remote methods</li> </ol> <P>
+Figure 2 illustrates how the astral clone operates. <P>
+<center><P>
+<TABLE CELLPADDING="5" BORDER="0"><TR><TD><P>
+<center><P>
+<IMG VSPACE="3" WIDTH="420" HEIGHT="203" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-12-2000/images/jw-1208-clones2.gif"><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+Figure 2. Invocation of an astral clone </STRONG></FONT></center><P>
+</TD></TR></TABLE><P>
+</center><P>
+Working on an astral clone produces the following advantages: <P>
+<ul> <li>Better performance results when calling numerous <code>get()</code>, <code>set()</code>, or other methods on the bean.</li> <P>
+<li>One object definition (class) guards the consistency of the object's state. This is important, because it means that you can keep <em>all</em> of an object's  business logic in one place, including input validation.  Input validation normally tends to scatter throughout the system when developers try other approaches to optimize it. </li> <P>
+<li>The client code only slightly differs from the code required for calling the original bean through its stub. </li> </ul> <P>
+Let's take a look at a simple container-managed <code>PersonBean</code> example: <P>
+<CODE><P>
+<BR>
+
+public interface Person {<BR>
+
+<BR>
+
+&nbsp;&nbsp; public String getName() throws RemoteException;<BR>
+
+<BR>
+
+&nbsp;&nbsp; public void setName(String aName) throws RemoteException;<BR>
+
+<BR>
+
+&nbsp;&nbsp; public int getAge() throws RemoteException;<BR>
+
+<BR>
+
+&nbsp;&nbsp; public setBirthDay(Calendar aDate)<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throws SomeValidationException, RemoteException;<BR>
+
+}<BR>
+</CODE><P>
+Note that the <code>Person</code> interface cannot be used as an EJB interface, because it does not extend <code>EJBObject</code>. I have separated the functional requirements of a person from the technical implementation details, like using EJB. The following code fragment declares the bean interface: <P>
+<CODE><P>
+<BR>
+
+public interface EJBPerson extends Person, EJBObject {<BR>
+
+<BR>
+
+&nbsp;&nbsp; // return an astral clone<BR>
+
+&nbsp;&nbsp; public Person getAstralClone() throws RemoteException;<BR>
+
+}<BR>
+</CODE><P>
+The bean implementation <code>PersonBean</code> defines the <code>getAstralClone()</code> method, in addition to the other <code>Person</code> methods, like so: <P>
+<CODE><P>
+<BR>
+
+&nbsp;&nbsp; // return an astral clone<BR>
+
+&nbsp;&nbsp; public Person getAstralClone() throws RemoteException {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return this;<BR>
+
+&nbsp;&nbsp; }<BR>
+</CODE><P>
+To make this piece of code work, <code>PersonBean</code> has to implement the following two interfaces: <P>
+<ul> <li><code>java.io.Serializable</code>, so that it can return itself as the return value of the RMI call</li> <P>
+<li><code>Person</code>, to (1) compile the previous code fragment and (2) enable the client to talk with <code>PersonBean</code> as an astral clone in the same way that it talks with the <code>EJBPerson</code> stub</li> </ul> <P>
+Figure 3 shows the relationships between the various interfaces and classes. <P>
+<center><P>
+<TABLE CELLPADDING="5" BORDER="0"><TR><TD><P>
+<center><P>
+<IMG VSPACE="3" WIDTH="313" HEIGHT="201" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-12-2000/images/jw-1208-clones3.gif"><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+Figure 3. Class diagram of the PersonBean example </STRONG></FONT></center><P>
+</TD></TR></TABLE><P>
+</center><P>
+My company used the astral cloning technique in a suite of components we developed for a Dutch bank's treasury. For accessing static data -- entity beans that do not change often, like currencies and holiday calendars -- the technique has drastically improved the performance of the trading framework and realtime rates calculation engine, which heavily depend on this data. Using this practical experience, in the sections below I will elaborate on the nuts and bolts of astral cloning, including: <P>
+<ul> <li>What to do with the <code>EntityContext</code> </li> <P>
+<li>How to ensure that an entity bean, when used as an astral clone, initializes and behaves in the same way that it does when running inside the container</li> <P>
+<li>How to handle instance variables that are not part of the bean's persistent state </li> <P>
+<li>How to make an astral clone thread safe</li> <P>
+<li>How to use an astral clone to update the original bean</li> </ul> <P><STRONG> EntityContext </STRONG><BR>
+When working with astral clones, you must first figure out what to do with the <code>EntityContext</code>, as described in the <code>javax.ejb</code> package: <P>
+<blockquote> The <code>EntityContext</code> interface provides an instance with access to the container-provided runtime context of an entity enterprise bean instance. The container passes the <code>EntityContext</code> interface to an entity enterprise Bean instance after the instance has been created. </blockquote> <P>
+(You can find a link to the full javadoc for <code>EntityContext</code> in <a href="#resources">Resources</a> below.) <P>
+Every entity bean must have a <code>javax.ejb.EntityContext</code> instance variable. However, the container-provided value this variable holds cannot be expected to function outside the container (or the value might not be serializable, and therefore not transportable using RMI). So you must declare this variable as follows: <P>
+<CODE><P>
+<BR>
+
+&nbsp;&nbsp; private <strong>transient</strong> EntityContext context;<BR>
+</CODE><P>
+Whenever you want to reference <code>context</code>, you must first check if it is <code>null</code>. If the <code>context</code> returns <code>null</code>, you are dealing with an astral clone.
+<P><STRONG> Clone initialization </STRONG><BR>
+After initialization, the astral clone should have the same state as its contained original bean after the container activates and loads the bean; both now are ready to be used by the client. In the case of container-managed entity beans, the container calls the <code>ejbLoad()</code> method immediately after populating the instance variables with values from the database. You might have placed statements in this method to make the instance ready for usage. <P>
+But nothing calls <code>ejbLoad()</code> automatically on the astral clone after creation by deserialization. Therefore, you must call this method on the clone after retrieving the clone with the <code>getAstralClone()</code> method. However, I prefer to leave the <code>ejbLoad()</code> method empty, and use the lazy initialization programming idiom to execute the omitted statements. <P>
+For example, if the <code>person</code> table in the database has a field <code>partner_id</code>, then you might want to initialize a <code>partner</code> instance variable in the <code>ejbLoad()</code> method with an EJB reference to the partner bean, and use the <code>partner</code> variable in the rest of the bean. However, it is better to leave <code>ejbLoad()</code> empty, and use a <code>getPartner()</code> method in the rest of the bean, which looks something like this: <P>
+<CODE><P>
+<BR>
+
+&nbsp;&nbsp; private Person getPartner() throws FinderException, RemoteException {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (partner_id == null) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return null;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// only retrieve the partner once, and only if needed<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (partner == null) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; partner = getPersonHome().findByPK(new PersonPK(partner_id));<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return partner;<BR>
+
+&nbsp;&nbsp; }<BR>
+</CODE><P><STRONG> Nonpersistent fields </STRONG><BR>
+Instance variables in your entity bean, like the previously mentioned <code>partner</code> variable, are not part of the persistent state, but do contain already calculated results. You should declare such variables either as nontransient, with serializable calculated values, or as transient, with values lazily recalculated when accessed.
+<P>
+Be aware of variables containing the stubs of other EJBs or EJB homes: the generated stubs are not meant to be portable across the network. They must be replaced with the more robust network references to EJB objects or homes, respectively <code>javax.ejb.Handle</code>s and <code>javax.ejb.HomeHandle</code>s. But, to reiterate: you can make these variables transient and let the astral clone retrieve the stubs if needed. <P><STRONG> Thread safety </STRONG><BR>
+Calling the bean implementation directly, instead of through a stub and container, might produce threading problems. I suggest the following to solve these issues: <P>
+<ul> <li>Don't use the bean from multiple threads, and document that astral usage of the bean as not thread safe.</li> <P>
+<li>Synchronize critical methods or code sections. This should not affect the way a bean runs in a container, except for a small performance penalty -- small, that is, relative to the overhead the container adds.</li> <P>
+<li>Allow the <code>getAstralClone()</code> to return a synchronized wrapper.</li> <P>
+<li>An immutable object is also thread safe, and sometimes the client only wants to use a read-only (or immutable) astral clone. One simple way to obtain a read-only astral clone is to return a wrapper around the astral clone, which blocks all methods that modify the bean.</li> <P>
+</ul> <P><STRONG> State synchronization </STRONG><BR>
+Now that we have tackled the common problems and issues, we can add a bit more functionality: update the original bean with a modified astral clone. You can declare a state synchronization method in the <code>EJBPerson</code> interface: <P>
+<CODE><P>
+<BR>
+
+&nbsp;&nbsp; // synchronize state with astral clone<BR>
+
+&nbsp;&nbsp; public void syncAstralClone(PersonBean aClone) throws RemoteException;<BR>
+</CODE><P>
+and implement it in the <code>PersonBean</code> like so: <P>
+<CODE><P>
+<BR>
+
+&nbsp;&nbsp; public void syncAstralClone(PersonBean aClone) throws RemoteException {<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// check if 'this' instance is contained ...<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (this.context == null) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new RemoteException("'this' must be contained");<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// ... and aClone is really astral<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (aClone.context != null) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new RemoteException("'aClone' must be astral");<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// sync the persistent state<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setName(aClone.name);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setBirthDay(aClone.birthDay);<BR>
+
+&nbsp;&nbsp; }<BR>
+</CODE><P>
+Consider completing the following in the <code>syncAstralClone(...)</code> method: <P>
+<ul> <li>Check that the primary keys of the original and the astral clone are equal</li> <P>
+<li>Call the <code>ejbLoad()</code> method if it contains further initialization of the instance </li> <P>
+<li>Implement some kind of protection against the racing condition as described in Thomas Davis's "Direct Network Traffic of EJBs" </li> </ul> <P><FONT SIZE="+1"><STRONG> Conclusion </STRONG></FONT><BR>
+Astral cloning elegantly optimizes network traffic, while leaving the client-side coding almost unchanged. The client talks to the astral clone through the same interface as it would to a stub. Further, one class definition contains all of a business object's logic, including input validation, which increases the maintainability of your system. <P>
+Working with astral clones might leave you asking for more: a client-side implementation of the home interface could make working with astral clones even more transparent. Such an astral home could implement the finders by delegating them to the remote home and wrapping the returning iterator in another iterator, which returns an astral clone with every <code>next()</code> call. A contained bean could notify astral homes that its state has changed so that the astral homes could synchronize the state of the astral clone. An astral home could participate in distributed transactions by enlisting itself to these transactions as a <code>javax.transaction.xa.XAResource</code>, and then synchronize states of original beans to those of modified astral clones when a transaction commits. <P>
+These features would be nice, but the last two look quite difficult to implement. I welcome your ideas and comments for implementing these features. 
+<IMG HEIGHT="12" WIDTH="22" SRC="http://www.idg.net/microsites/javaworld/javaworld/icons/jw-dingbat.gif"><P><br /></p>
+                        <font size=-1><!-- REPLACE PAGEURLS --> </font>
+                        <p>
+                            <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                            <a href="/javaworld/jw-12-2000/jw-1208-clones_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><STRONG>About the author</STRONG><BR>
+<a href="http://www.javaworld.com/javaworld/feedback/jw-feedback-form.html" target="_blank">Martijn Res</a> works as a system architect at a small and innovative company in the Netherlands called Virgil. He participates in the development of a large online trading system for treasury products using EJB and JSP. Martijn lives in Amsterdam where he spends his free time in front of the computer trying to make groovy tunes.
+<br /></p>
+                        <p><ul><A NAME="resources"></a><STRONG>Resources</STRONG>
+<BR>
+
+<LI>EJB 1.1 specifications from Sun: <BR><A HREF="http://java.sun.com/products/ejb/docs.html">http://java.sun.com/products/ejb/docs.html
+</A><BR>
+
+
+<LI> <code>EntityContext</code> javadoc: <BR><A HREF="http://java.sun.com/j2ee/j2sdkee/techdocs/api/javax/ejb/EntityContext.html">http://java.sun.com/j2ee/j2sdkee/techdocs/api/javax/ejb/EntityContext.html
+</A><BR>
+
+
+<LI>For a J2EE overview: <BR><A HREF="http://www.javasoft.com/j2ee">http://www.javasoft.com/j2ee
+</A><BR>
+
+
+<LI>Read Thomas Davis's suggestion for directing network traffic of EJBs in "Direct Network Traffic of EJBs" (<em>JavaWorld,</em> November 1999): <BR><A HREF="http://www.javaworld.com/javaworld/jw-11-1999/jw-11-ejb.html">http://www.javaworld.com/javaworld/jw-11-1999/jw-11-ejb.html
+</A><BR>
+
+
+<LI>For more <em>JavaWorld</em> stories on EJBs, go to: <BR><A HREF="http://www.javaworld.com/javaworld/topicalindex/jw-ti-ejb.html">http://www.javaworld.com/javaworld/topicalindex/jw-ti-ejb.html
+</A><BR>
+
+
+<LI>Sign up for the <em>JavaWorld This Week</em> free weekly email newsletter and keep up with what's new at <em>JavaWorld</em>: <BR><A HREF="http://www.idg.net/jw-subscribe">http://www.idg.net/jw-subscribe
+</A><BR>
+
+
+</ul><br /></p>
+                        <!-- REPLACE SIDEBAR -->
+                    </font>
+                    <!-- ## MAIN CONTENT ENDS HERE ### -->
+                </td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="168" nowrap><nobr><img src="http://www.javaworld.com/images/spacer.gif" width=160 height=8 border=0 ><img src="http://www.javaworld.com/images/c_bllftbottom.gif" width=8 height=8 border=0 ></nobr></td>
+                <td width="100%"><img src="http://www.javaworld.com/images/spacer.gif" width=1 height=1 border=0 ></td>
+                <td width="8"><img src="http://www.javaworld.com/images/spacer.gif" width=8 height=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="186" bgcolor="#006699" align="middle"><nobr><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2"></font></nobr><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0></a></td>
+                <td bgcolor="#cccccc" width="8" valign="bottom"><img height=8 src="http://www.javaworld.com/images/c_blgrylftbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- BOTTOM 468x60 AD STARTS HERE -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=945494?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=945494?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=945494?" border=0 height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer4" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- BOTTOM 468x60 AD ENDS HERE -->
+</td>
+                <td width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table bgcolor="#006699" align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="100%" align="middle" valign="center">    <font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">
+        <p>
+            <br />
+            <a href="http://www.javaworld.com"><font color="#ffffff">HOME</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/features/index.shtml"><font color="#ffffff">FEATURED TUTORIALS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/columns/index.shtml"><font color="#ffffff">COLUMNS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/news-reviews/index.shtml"><font color="#ffffff">NEWS & REVIEWS</font></a>&nbsp;|&nbsp;
+            <a href="http://forums.idg.net/webx?13@@.ee6b802"><font color="#ffffff">FORUM</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/resources/index.shtml"><font color="#ffffff">JW RESOURCES</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/info/jw-about-index.shtml"><font color="#ffffff">ABOUT JW</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/feedback"><font color="#ffffff">FEEDBACK</font></a>
+        </p>
+        <p>
+
+            <a href="http://www.javaworld.com/javaworld/common/jw-copyright.html"><font color="#ffffff">Copyright © 2002</font></a> JavaWorld.com, an IDG Communications company
+        </p>
+    </font>
+</td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+            <tr>
+                <td width="100%" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_blrtbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <!--TOP_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=945494?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer1.pageX,layer1.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--125x125-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=med;sz=125x125;tile=2;ord=945494?" width=125 height=125 visibility="hidden" onLoad="moveToAbsolute(layer2.pageX,layer2.pageY);clip.height=125;clip.width=125;visibility='show';">
+</LAYER>
+
+<!--SKYSCRAPER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=945494?" width=120 height=600 visibility="hidden" onLoad="moveToAbsolute(layer3.pageX,layer3.pageY);clip.height=600;clip.width=120;visibility='show';">
+</LAYER>
+
+<!--BOTTOM_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=945494?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer4.pageX,layer4.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--Big AD-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=945494" width=336 height=280 visibility="hidden" onLoad="moveToAbsolute(layer5.pageX,layer5.pageY);clip.height=280;clip.width=336;visibility='show';">
+</LAYER>
+    </body>
+<!-- stories2 -->
+<!-- DOCID 658540 -->
+</html>
+

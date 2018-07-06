@@ -1,0 +1,197 @@
+ID=E0076
+URL=http://www.hh.se/stud/d98rolb/ansi/fopen().html
+SIZE=8902
+DATE=12/07/02
+TIME=19:17:10
+DATASET=C
+HTML=<html>
+<head>
+  <title>fopen()</title>
+  <meta name="Generator" content="GuideML V1.6">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+<body>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="fmod().html"><img src="prev.gif" alt="PREV" border=0></a><a href="fprintf().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+<hr>
+<pre>
+fopen-Open a level 2 file
+
+Synopsis
+
+        #include &#060;stdio.h&#062;
+
+        fp = fopen(name,&quot;mode&quot;);
+
+        FILE *fp;             /* file pointer */
+        const char *name;    /* file name */
+        const char *mode;    /* access mode string */
+
+Description
+
+        This function opens a file for buffered access. The name string
+        can be any valid filename and may include a device code and
+        directory path. The mode string specifies the values for each mode
+        (Create, Trunc, Read, Write, Append, and Translate) with which you
+        want to open the file.
+
+        NOTE:  Do not place the const keyword on the declarations for the
+        name and mode arguments in your program.  For information about
+        the const keyword, see the description of the Synopsis section at
+        the beginning of this chapter.
+
+        The values of the modes Create, Trunc, Read, Write, Append, and
+        Translate indicate how you want the file to be processed. The
+        following table describes the effect of each setting of these
+        modes.
+
+            Mode     Value  Effect
+            ----     -----  ------
+            Create    yes   The file will be created if it does not
+                            already exist.
+                      no    The function will fail if the file does not
+                            already exist.
+            Trunc     yes   If the file exists, it will be truncated
+                            (marked as empty).
+                      no    If the file exists, its current contents will
+                            not be disturbed.
+            Read      yes   The file can be read with functions such as
+                            <a href="fread().html"> fread </a> and <a href="fgetc().html"> fgetc </a>.  Also, the <a href="fseek().html"> fseek </a> function
+                            can be used to position the file before
+                            reading.
+                      no    The file cannot be read.
+            Write     yes   The file can be written with functions such as
+                            <a href="fwrite().html"> fwrite </a> and <a href="fputc().html"> fputc </a>.  Also, the <a href="fseek().html"> fseek </a> function
+                            can be used to position the file before
+                            writing.
+                      no    The file cannot be written, but see Append
+                            below.
+            Append    yes   The file can be written, but it is
+                            automatically positioned to the current
+                            end-of-file before each write operation.  This
+                            mode prevents existing data from being
+                            changed.
+                      no    Automatic positioning to the end-of-file is
+                            not done before a write operation.        Also,
+                            writes are not allowed unless the Write mode
+                            value is Yes.
+
+        Translate default
+
+        The external integer __fmode  is used to set mode A or mode B as
+        follows:
+
+            if (__fmode &amp; 0x8000)
+                set mode B
+            else set mode A
+
+            mode A
+                On a read operation, each carriage-return character (r)
+                is deleted, and the Control-Z character is treated as a
+                logical end-of-file mark. On a write operation, each
+                line-feed character (n) is expanded to a carriage return
+                followed by a line feed.
+
+            mode B
+                The data are unchanged as they are read or written.
+
+        The following table shows the list of values specified by each
+        mode string.
+
+            Mode
+            String  Create  Trunc  Read  Write        Append        Translate
+            ------  ------  -----  ----  -----        ------        ---------
+              r       no     no     yes    no          no         default
+              w       yes    yes    no           yes          no
+default
+              a       yes    no     no           no          yes
+default
+              r+      no     no     yes    yes          no         default
+              w+      yes    yes    yes    yes          no         default
+              a+      yes    no     yes    no          yes         default
+              ra      no     no     yes    no          no         mode A
+              wa      yes    yes    no           yes          no         mode
+A
+              aa      yes    no     no           no          yes         mode
+A
+              ra+     no     no     yes    yes          no         mode A
+              wa+     yes    yes    yes    yes          no         mode A
+              aa+     yes    no     yes    no          yes         mode A
+              rb      no     no     yes    no          no         mode B
+              wb      yes    yes    no           yes          no         mode
+B
+              ab      yes    no     no           no          yes         mode
+B
+              rb+     no     no     yes    yes          no         mode B
+              wb+     yes    yes    yes    yes          no         mode B
+              ab+     yes    no     yes    no          yes         mode B
+
+        If the file is successfully opened, the function returns a pointer
+        to a buffered I/O control block, which is defined in the header
+        file stdio.h.  Normally, you will not need to access any
+        information in the control block directly, but you should be very
+        careful not to disturb the block accidentally.        A common C
+        programming error is to accidentally mutilate one of these control
+        blocks, which can cause garbage to be written into a file.
+
+
+        Mode A open modes are an extension to the  standard, and you
+        should not use them in programs that you want to be
+        -compatible.
+
+Returns
+
+        A NULL pointer is returned if the file cannot be opened.  Consult
+        the external integers <a href="errno.html"> errno </a>
+
+        When a file is opened for both reading and writing, you should
+        call the <a href="fseek().html"> fseek </a> or <a href="rewind().html"> rewind </a> function when switching from reading to
+        writing or vice-versa.        It is not necessary to do this when you
+        begin writing after reading up to the end of the file.
+
+Example
+
+        /* This is an example of using fopen to write a copy */
+        /* file routine.  It returns 0 if the file copy was  */
+        /* successful; otherwise, it returns a -1.             */
+
+        #include &#060;stdio.h&#062;
+
+        int copy (char *infile, char *outfile)
+        {
+            FILE *in,*out;
+            char buf[100];
+            int i;
+
+            /* open the input file */
+            if ((in=fopen(infile,&quot;r&quot;))==NULL)
+                return(-1);
+            if ((out=fopen(outfile,&quot;wt&quot;))==NULL)
+            {
+                fclose(in);
+                return(-1);
+            }
+
+            /* copy the file contents */
+            while (i=fread(buf,1,100,in))
+                if (fwrite(buf,1,i,out)!=i)
+                    break;
+
+            /* now set up the return */
+            i=(ferror(in)||ferror(out))?-1:0;
+
+            /* close the files */
+            fclose(in);
+            fclose(out);
+            return(i);
+        }
+
+See Also
+
+        <a href="fclose().html"> fclose </a>, <a href="fgetc().html"> fgetc </a>, <a href="fgets().html"> fgets </a>, <a href="fputc().html"> fputc </a>, <a href="fputs().html"> fputs </a>, <a href="fread().html"> fread </a>,
+        <a href="freopen().html"> freopen </a>, <a href="fwrite().html"> fwrite </a>
+</pre>
+<hr>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="fmod().html"><img src="prev.gif" alt="PREV" border=0></a><a href="fprintf().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+</body>
+</html>
+

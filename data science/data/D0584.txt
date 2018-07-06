@@ -1,0 +1,472 @@
+ID=D0584
+URL=http://www.javaworld.com/javaworld/jw-08-2000/jw-0811-javadev.html
+SIZE=47172
+DATE=16/07/02
+TIME=14:52:04
+DATASET=Java
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title> Serve clients' specific protocol requirements with Brazil, Part 1</title>
+<!-- ssilog 7814 -->
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<meta name="keywords" content=" Brazil Web server, handlers, HTTP, JRMS, Jini, JMS, applets, JavaScript, Brazil Scripting Language, Java Developer">
+<meta name="description" content="
+
+In his last column, Rinaldo Di Giorgio discussed how to support X10 devices through a Brazil handler. This time, he begins a series that will utilize the Brazil Web server as an experimental application server.  The Brazil sever can deliver data to clients requiring such specific protocols or technologies as the simple HTTP via URL programming interface, the Java Reliable Multicast Service protocol, Java Message Service, and Jini. He will also show you how to use applets, JavaScript, and the Brazil Scripting Language to rapidly create Webpages. 
+(3,000 words)
+">
+<meta name="date" content="2000-08-11">
+<META NAME="DC.Date" CONTENT="2000-08-11">
+<basefont face="verdana, arial, helvetica" size="3" />
+<style type="text/css">
+            code {font-size: 90%; font-family: monospace;}
+            pre {font-size: 90%; font-family: monospace;}
+            td {font-size: 90%;}
+</style>
+<script language="javascript">
+<!--// IDG.net Scripts
+            function mail2Friend () {
+                window.parent.location = "/MailToFriend?url=" + escape(document.location);
+            }
+
+            function openBrWindow() {
+                win=window.open("http://www.javaworld.com/channel_content/jw-story-feedback.shtml",'Feedback','width=600,height=330,toolbar=no,location=no,directories=no,menubar=no,scrollbars=yes,resizable=yes');
+            }
+            //-->
+        </script>
+    </head>
+<body bgcolor="#ffffff" text="#000000" link="#990033" vlink="#990033" alink="#990033" topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" marginheight="0" marginwidth="0">
+<table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td colspan="2" width="186" bgcolor="#006699"><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0 ></a></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- START TOP 468x60 BANNER -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=697109?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=697109?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=697109?" border="0" height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer1" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- END TOP 468x60 BANNER --></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="26" valign="top" align="left" bgcolor="#ffffff"><img height=8 src="http://www.javaworld.com/images/c_whtbottom.gif" width=8 border=0 ></td>
+                <td width="100%"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.global/idgpixel7.18.00;sz=1x1;ord=697109?" border=0 height="1" width="1"><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.usa.jw/usajw.081501;sz=1x1;ord=697109?" border=0 height="1" width="1"></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160" align="middle" valign="center" nowrap><nobr><font face="Verdana, Arial, Sans-serif" color="#ffffff" size="2">August 2000</font></nobr><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="8" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltlft.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="100%" align="middle" valign="center">    <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">HOME</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/features/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FEATURED TUTORIALS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/columns/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">COLUMNS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/news-reviews/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">NEWS & REVIEWS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://forums.idg.net/webx?13@@.ee6b802"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FORUM</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/resources/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">JW RESOURCES</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/info/jw-about-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">ABOUT JW</font></a></td>
+        </tr>
+    </table></td>
+                <td bgcolor="#006699" width="8" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltrt.gif" width=8 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr valign="top">
+                <td bgcolor="#006699" width="160" align="middle" valign="top">
+                    <table width="160" border="0" cellspacing="0" cellpadding="0" bgcolor="#006699" summary="">
+                        <tr>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                            <td align="center">
+                                <form action="http://www.javaworld.com/isearch" method="GET" name="search">
+                                    <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /><br />
+                                    <input type="text" name="qt" size="12" maxlength="2047" /><br />
+                                    <input type="image" value="search" src="http://www.javaworld.com/images/button_blue.gif" border="0" width="97" height="18" alt="GO" /><br />
+                                    <input type="hidden" name="site" value="javaworld"><br />
+                                   <!-- <a href="http://www.google.com/"><img src="http://www.javaworld.com/images/google-power-fp.gif" width="108" height="45" border="0" alt="Google.com"></a>-->
+                                    <input type="hidden" name="ms" value="1">
+                                    <input type="hidden" name="tid" value="1">
+                                    <input type="hidden" name="st" value="1">
+                                    <input type="hidden" name="rf" value="0">
+                                   
+                                </form>
+                            </td>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                        </tr>
+                        <tr>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td><img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <a href="http://www.javaworld.com/archives/index-year.html"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>ARCHIVE</strong></font></a><br>
+                                <img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <strong><a href="http://www.javaworld.com/channel_content/jw-topical-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff">TOPICAL INDEX</font></a></strong></font><br><table cellspacing="0" cellpadding="0" border="0" summary="">
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/channel_content/jw-core-index.shtml"><font color="#ffffff">Core Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-enterprise-index.shtml"><font color="#ffffff">Enterprise Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-micro-index.shtml"><font color="#ffffff">Micro Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-applied-index.shtml"><font color="#ffffff">Applied Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-community-index.shtml"><font color="#ffffff">Java Community</font></a></strong></font><br /></td>
+                        </tr>
+                    </table><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-qna-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA Q&A INDEX</strong></font></a><br /><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-tips-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA TIPS INDEX</strong></font></a><br /> <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br /><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#CCCCCC"><strong>JavaWorld Services</strong></font><br /><img alt="" height="4" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /><table cellspacing="0" cellpadding="0" border="0" summary=""><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /><img alt="" height="7" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /></td><td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/subscribe"><font color="#ffffff">Free JavaWorld newsletters</font></a></strong></font></td></tr><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://javaworld.pricegrabber.com"><font color="#ffffff">ProductFinder </font></a></strong></font></td></tr><tr> <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/white-paper/index.shtml"><font color="#ffffff">White Paper Library</font></a></strong></font></td></tr>
+</table>
+<img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br />
+</td>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                        </tr>
+                        <tr valign="bottom">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_gryblbottom.gif" width=8 ></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr>
+                       <td width="8" bgcolor="#cccccc"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                           <td align="middle" bgcolor="#cccccc"><!-- SKYSCRAPER AD START HERE -->
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=697109?" width="120" height="600" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=skyscraper;sz=120x600;tile=3;ord=697109?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;skyscraper=med;sz=120x600;tile=3;ord=697109?" border=0 height="600" width="120"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer3" visibility="hidden" width=120 height=600></ILAYER>
+<!-- SKYSCRAPER AD ENDS HERE -->
+</td>
+                       <td width="8" bgcolor="#cccccc"><img height=8 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr valign="top">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_grybltop.gif" width=8 ></td>
+                        </tr>
+                    </table>
+                    <img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                    <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                <td width="100%">
+                    <!-- ## MAIN CONTENT STARTS HERE ### -->
+                    <font face="verdana, arial, helvetica" size="3">
+                        <strong> Java Developer</strong>
+                        <p>
+                            <h1 align="CENTER"> Serve clients' specific protocol requirements with Brazil, Part 1</h1>
+                            <h3 align="CENTER"> Learn how to build an application server that can deliver data to clients requiring different protocols </h3>
+                        </p>
+                        <!--<BLOCKQUOTE><STRONG>Summary</STRONG><BR>-->
+                        <BLOCKQUOTE>
+<STRONG>Summary</STRONG><BR>
+
+
+In his last column, Rinaldo Di Giorgio discussed how to support X10 devices through a Brazil handler. This time, he begins a series that will utilize the Brazil Web server as an experimental application server.  The Brazil sever can deliver data to clients requiring such specific protocols or technologies as the simple HTTP via URL programming interface, the Java Reliable Multicast Service protocol, Java Message Service, and Jini. He will also show you how to use applets, JavaScript, and the Brazil Scripting Language to rapidly create Webpages. 
+<em>(3,000 words)</em>
+</BLOCKQUOTE>
+                        <!--</BLOCKQUOTE>-->
+                        <a href="http://www.javaworld.com/feedback" target="Feedback"><STRONG>By  Rinaldo Di Giorgio</STRONG></a>
+                        <p><img src="http://www.javaworld.com/images/rule_ltblue.gif" width="100%" height="2"><br />
+                           <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                           <a href="/javaworld/jw-08-2000/jw-0811-javadev_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><br /></p>
+                         <font size=-1>  Page 1 of 2</font>
+                        <p><!-- START BIG AD (336x280) -->
+<table align="right" border="0" cellpadding="0" cellspacing="0"><tr valign="bottom" align="center"><td><font face="verdana, arial, geneva, sans-serif" color="#999999" size="-2">Advertisement</font></td></tr><tr><td><table border=1 bordercolor="#cccccc" cellspacing="5" cellpadding="0"><tr><td>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=697109" width="336" height="280" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=697109"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=697109" border=0 height="280" width="336"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer5" visibility="hidden" width=336 height=280></ILAYER>
+</td></tr></table></td></tr></table>
+<!-- END BIG AD (336x280) --></p>
+                        <p><P>
+<img align="left" width="27" height="29" src="/javaworld/abcs/R.gif" alt="R">eusing code to concurrently support different interface options is not an easy task for a developer. The purpose of this series is to facilitate this process by showing you how to build a simple application server that supports clients using any of the J2EE APIs. I will demonstrate how to deliver data from a device or other source to clients requiring a specific protocol or a delivery guarantee that must support multiple protocols. <P>
+Read the whole series on Brazil technology:
+<P>
+<ul> <li><a href="/javaworld/jw-08-2000/jw-0811-javadev.html">Part 1: Learn how to build an application server that can deliver data to clients requiring different protocols</a> </li> <li><a href="/javaworld/jw-10-2000/jw-1020-javadev.html">Part 2: How to support XML applications with the Brazil project</a> </li> <li><a href="/javaworld/jw-01-2001/jw-0126-javadev.html">Part 3: Economically sustain PQA, UP.SDK, and J2ME with the Brazil project</a></li> <li><a href="/javaworld/jw-04-2001/jw-0420-javadev.html">Part 4: Build multicast-aware apps with JRMS</a></li>  <li><a href="/javaworld/jw-08-2001/jw-0824-javadev.html">Part 5: Manage users and content with Brazil</a> </li> <li><a href="/javaworld/jw-07-2002/jw-0712-javadev.html">Part 6: Plug Jini, BeanShell, and JAXM into Brazil </a></li> </ul> <P>
+The Brazil Web server, which I introduced in my <a href="http://www.javaworld.com/javaworld/jw-05-2000/jw-0505-javadev.html">previous column</a>, will be implemented as an experimental application server. (See the sidebar below, <a href="#sidebar1" name="return1">Brazil: An extensible Java Web server</a>, for more information about the Brazil project.) In that article, I discussed how you can support X10 devices by means of a Brazil handler. This time around, the handlers, which realize specific interfaces for different connection protocols, will extend the Brazil Web server so that users can employ varying network protocols and technologies to connect to it.
+<P>
+Consider delivering data from a weather station to a mixture of users on the Internet, as shown in Figure 1: <P>
+<CENTER><P>
+<TABLE CELLPADDING="5" BORDER="0"><TR><TD><P>
+<CENTER><P>
+<IMG VSPACE="3" WIDTH="425" HEIGHT="224" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-08-2000/images/jw-0811-javadev1.gif"><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+Figure 1. Delivering data to diverse clients  </STRONG></FONT></CENTER><P>
+</TD></TR></TABLE><P>
+</CENTER><P>
+The figure demonstrates that you may have users on limited-bandwidth connections -- like radio links to handheld devices, pagers, phones, and PDAs -- and high client bandwidth multicast services -- like satellites telemetry applications requiring constant updates, and cable modem, DSL, and traditional modem users.  In future columns, we will examine prototypes that use a delegation model to utilize the technologies in the figure, while at the same time maximizing code reuse with simultaneous support for Jini, JRMS, RMI, JDBC, JMS, HTTP, applets, and JavaScript. <P>
+This article introduces an architecture that utilizes a Web server as a resource contention manager, a basic service provider (for file services), and a general supplier of an application service (for weather data). The Brazil Web server differs from current Web servers in that it is smaller and easier to comprehend, and provides users with an old abstraction -- property objects. Use of property objects with the Brazil Scripting Language (BSL) provides an integrated Web content delivery system with no out-of-band scripts, which allows easy access to data on the server. Thus, placing server data that is not a file on a Webpage becomes trivial.
+<P>
+The advantage of this approach is that the Web server also doubles as the foundation for delivering services to users with different requirements, yet utilizes the same code base and provides a unified interface to the varying protocol drivers. Often these services require some additional interfaces and/or management abilities. By using a variety of mechanisms, the Brazil Web server can provide authenticated, secure access to these services.
+<P>
+The server is a research prototype, and the concepts developed here are usable with commercial application servers as business needs merit. This series will provide the code needed to develop a simple test environment for working with different components of the J2EE architecture. See the <a href="#resources">Resources</a> section below for links to code for this article. 
+<P>
+In addition, I will discuss how you can create your own application server for small devices like the TINI board, which can interface devices to different protocols. Also see  the sidebar below, <a href="#sidebar2" name="return2">Brazil support for JMS</a>, for a discussion on implementing a JMS interface to the Brazil weather station.
+<P><FONT SIZE="+1"><STRONG> Requirements for the API/interface  </STRONG></FONT><BR>
+Users often have varying requirements concerning data delivery, and developers must keep these in mind when distributing information to them. Often developers encounter environments that, due to a lack of security knowledge, are hostile to Java. Such a case doesn't mean that you can't use Java in a deployment solution. The Brazil approach utilizes Java on the server with full support for Java on the client and with minimal impact on the work you have completed. For example, suppose a client stipulates that the browser cannot implement Java applets. You can utilize BSL and JavaScript to accomplish similar functionality. And if the situation changes, you can inexpensively provide the same functionality with the added benefits of applet-based user interfaces and security. Over time, this strategy may allow you to point out to users the merits of using Java technology on the client, an effort recently given new impetus by Sun with Java Web Start (see <a href="#resources">Resources</a>). <P>
+Consider the following simplified user infrastructure requirements in the table below. In addition to these requirements, the table also lists the technology selected to receive and deliver the data. These solutions are based specifically on each user's constraints.
+<P>
+<table align="center" bgcolor="#ccffff" width="85%" cellspacing="2" cellpadding="2" border="1"><caption align="bottom"><strong><font size="-1">User interface requirements</font></strong></caption> <tr valign="top"><P>
+<th>Constraints</th><P>
+<th>Proposed client technology</th><P>
+<th>Proposed server technology</th> </tr> <tr bgcolor="#99cccc" valign="top"><P>
+<td>Java or JavaScript through firewall</td><P>
+<td>BSL</td><P>
+<td>Template, file</td> </tr> <tr valign="top"><P>
+<td>JavaScript but no applets</td><P>
+<td>BSL or JavaScript</td><P>
+<td>Template, file</td> </tr> <tr bgcolor="#99cccc" valign="top"><P>
+<td>Unsigned applets</td><P>
+<td>BSL or JavaScript</td><P>
+<td>Template, file</td> </tr> <tr valign="top"><P>
+<td>Allows signed applets, but not to other ports (blocked at firewall)</td><P>
+<td>Applet using Brazil dictionaries</td><P>
+<td>Template, file</td> </tr> <tr bgcolor="#99cccc" valign="top"><P>
+<td>Minimize network traffic</td><P>
+<td>JRMS client</td><P>
+<td>JRMS handler</td> </tr> <tr valign="top"><P>
+<td>100 percent reliable messaging</td><P>
+<td>JMS client</td><P>
+<td>JMS handler or interface to UPI</td> </tr> <tr bgcolor="#99cccc" valign="top"><P>
+<td>Users need to create dynamic networks when they are in the vicinity of machinery</td><P>
+<td>JINI client</td><P>
+<td>JINI</td> </tr> </table> <P>
+<!-- break --><br /></p>
+                        <font size=-1><a href=jw-0811-javadev-p2.html>Next page ></a><br>Page 1  Serve clients' specific protocol requirements with Brazil, Part 1<br>Page 2 <a href=jw-0811-javadev-p2.html>The service -- a weather station</a><br> </font>
+                        <p>
+                            <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                            <a href="/javaworld/jw-08-2000/jw-0811-javadev_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><!-- REPLACE BIO --><br /></p>
+                        <p><ul><A NAME="resources"></a><STRONG>Resources</STRONG>
+<BR> 
+<li>"Serve Clients' Specific Protocol Requirements with Brazil," Rinaldo Di Giorgio <em>(JavaWorld):</em>
+
+<ul>
+<li><a href="/javaworld/jw-08-2000/jw-0811-javadev.html">Part 1: Learn how to build an application server that can deliver data to clients requiring different protocols</a> (August 2000)</li>
+
+<li><a href="/javaworld/jw-10-2000/jw-1020-javadev.html">Part 2: How to support XML applications with the Brazil project</a> (October 2000)</li>
+
+<li><a href="/javaworld/jw-01-2001/jw-0126-javadev.html">Part 3: Economically sustain PQA, UP.SDK, and J2ME with the Brazil project</a> (January 2001)</li>
+
+<li><a href="/javaworld/jw-04-2001/jw-0420-javadev.html">Part 4: Build multicast-aware apps with JRMS </a> (April 2001)</li>
+
+<li><a href="/javaworld/jw-08-2001/jw-0824-javadev.html">Part 5: Manage users and content with Brazil</a> (August 2001)</li>
+
+<li><a href="/javaworld/jw-07-2002/jw-0712-javadev.html">Part 6: Plug Jini, BeanShell, and JAXM into Brazil </a> (July 2002)</li>
+</ul>
+
+
+<LI>Weather station, source code, and examples: <BR><A HREF="http://24.228.0.167:8090/ ">http://24.228.0.167:8090/ 
+</A><BR>
+
+
+<LI>"How Handlers Work in Web-Accessible Home Automation," Rinaldo Di Giorgio, Colin Stevens, and Stephen Uhler (<em>JavaWorld,</em> May 2000): <BR><A HREF="http://www.javaworld.com/javaworld/jw-05-2000/jw-0505-javadev.html">http://www.javaworld.com/javaworld/jw-05-2000/jw-0505-javadev.html
+</A><BR>
+
+
+<LI>"An Introduction to the URL Programming Interface," Rinaldo Di Giorgio (<em>JavaWorld,</em> August 1999): <BR><A HREF="http://www.javaworld.com/javaworld/jw-08-1999/jw-09-javadev.html">http://www.javaworld.com/javaworld/jw-08-1999/jw-09-javadev.html
+</A><BR>
+
+
+<LI>"An Instrumentation Network for Weather Data on the Web," Rinaldo Di Giorgio and Brian Hindman (<em>JavaWorld,</em> May 1999) -- background on weather stations and the TMEX protocol: <BR><A HREF="http://www.javaworld.com/javaworld/jw-05-1999/jw-05-javadev.html">http://www.javaworld.com/javaworld/jw-05-1999/jw-05-javadev.html
+</A><BR>
+
+
+<LI>"Restricted-Channel Mulitcast in Java," Jason Scherer with contribution by Rinaldo Di Giorgio (<em>JavaWorld,</em> September 1998) -- discussion on JRMS: <BR><A HREF="http://www.javaworld.com/javaworld/jw-09-1998/jw-09-javadev.html">http://www.javaworld.com/javaworld/jw-09-1998/jw-09-javadev.html
+</A><BR>
+
+
+<LI>Download the Brazil Project Web server: <BR><A HREF="http://www.sun.com/research/brazil/">http://www.sun.com/research/brazil/
+</A><BR>
+
+ 
+<LI>Java Web Start: <BR><A HREF="http://java.sun.com/products/javawebstart/">http://java.sun.com/products/javawebstart/
+</A><BR>
+
+
+<LI>Brazil documentation and API: <BR><A HREF="http://www.sun.com/research">http://www.sun.com/research
+</A><BR>
+
+
+<LI>Java Message Queue: <BR><A HREF="http://www.sun.com/workshop/jmq ">http://www.sun.com/workshop/jmq 
+</A><BR>
+
+
+<LI>Java Message Service API: <BR><A HREF="http://java.sun.com/products/jms">http://java.sun.com/products/jms
+</A><BR>
+
+ 
+<LI>More about TINI: <BR><A HREF="http://www.ibutton.com/TINI ">http://www.ibutton.com/TINI 
+</A><BR>
+
+
+<LI>Register for the Jeather Jini group: <BR><A HREF="http://developer.jini.org/exchange/projects/jeather/ ">http://developer.jini.org/exchange/projects/jeather/ 
+</A><BR>
+
+
+Register for the Jini Global Positioning Service (JGPS) project: <BR><A HREF="http://developer.jini.org/exchange/projects/jeather/ ">http://developer.jini.org/exchange/projects/jeather/ 
+</A><BR>
+
+
+<LI>Register for the Jini Commerce project: <BR><A HREF="http://developer.jini.org/exchange/projects/jommerce/ ">http://developer.jini.org/exchange/projects/jommerce/ 
+</A><BR>
+
+
+<LI>More information on Jini: <BR><A HREF="http://www.jini.org/resources/">http://www.jini.org/resources/
+</A><BR>
+
+
+<LI>Software complexity measures and metrics: <BR><A HREF="http://www.sei.cmu.edu/activities/str/descriptions/halstead_body.html">http://www.sei.cmu.edu/activities/str/descriptions/halstead_body.html
+</A><BR>
+
+
+<LI>Maintainability index technique for measuring program maintainability: <BR><A HREF="http://www.sei.cmu.edu/activities/str/descriptions/mitmpm.html">http://www.sei.cmu.edu/activities/str/descriptions/mitmpm.html
+</A><BR>
+
+
+<LI>Function point analysis: <BR><A HREF="http://www.sei.cmu.edu/activities/str/descriptions/fpa_body.html">http://www.sei.cmu.edu/activities/str/descriptions/fpa_body.html
+</A><BR>
+
+
+<LI>Past <strong>Java Developer</strong> columns in <em>JavaWorld:</em> <BR><A HREF="http://www.javaworld.com/javaworld/topicalindex/jw-ti-javadev.html">http://www.javaworld.com/javaworld/topicalindex/jw-ti-javadev.html
+</A><BR>
+
+
+</ul><br /></p>
+                        <BR><BR>
+<DIV ALIGN="CENTER">
+<A NAME="sidebar1">
+<A NAME="sidebar">
+<TABLE CELLPADDING="3" CELLSPACING="0" BORDER="0">
+<TR>
+<TD BGCOLOR="#336699" ROWSPAN="1" COLSPAN="1">
+</TR>
+<TR>
+<TD BGCOLOR="#CCCCCC">
+<BR>
+ <font face="verdana, arial, helvetica" size="2"><P><H2 ALIGN="CENTER"> Brazil: An extensible Java Web server </H2><P><P><em>By Rinaldo Di Giorgio</em><br>   HTTP servers are the single most important component of the content delivery system for the Web. We have seen three generations of HTTP servers: <P><ol> <li>Initial CERN servers</li> <li>Netscape, Microsoft, Apache </li> <li>Java HTTP servers and Brazil</li> </ol> <P>We have made few advances in creating one size that fits all HTTP server products. Brazil, from Sun Labs, is a third-generation HTTP server. It uses well-established software engineering principles to support small, modular objects called <em>handlers.</em> Handlers implement specific abilities like file services and security services. Over 50 handlers implement a broad spectrum of services that developers can reuse. The Brazil architecture provides an extensible yet understandable framework for a developer looking to build small and possibly application-specific HTTP servers without incurring the high learning curves and administration costs of current servers. The Brazil architecture can scale to meet different requirements because application developers can extend the architecture independently. Brazil prototypes are running on large computers as HTTP servers, on workstations and PCs as personal Web servers, and on embedded computers such as TINI for HTTP-addressable devices and appliances. The goal is for devices like PDAs and cell phones to also service HTTP requests. <P><P><FONT SIZE="+1"><STRONG> Properties and Brazil </STRONG></FONT><BR><P><P><P>Brazil uses a delegation-based model with a flat namespace, and its developers are expected to make extensive use of Java collections. This technique helps prevent method explosion, a common problem in object-oriented languages. One of the metrics of complexity used by software engineers measures complexity through the equations listed in <a href="#resources">Resources</a>. <P>The Brazil architecture trades complexity in method signatures for a <code>Properties</code> object that, depending on your terminology preference, can contain unlimited numbers of attribute/value pairs or key/value pairs. The architecture relies heavily on this classical data dictionary, which contains values available to handlers. This does hinder performance; however, the benefits of a lack of global variables and the ability to augment the object store viewed by all handlers using key/value pairs far outweigh this performance disadvantage. Other approaches could easily provide 100 different methods for extracting the request information.  <P>Consider the case of a class with 10 field members. Classical techniques require 10 getters and setters to access the values. Brazil stores these values in their final format instead; thus, programmers can use the same two methods over and over: <P><CODE><P><BR><P><P>property.get()<BR><P><P><BR><P><P>property.set()<BR><P><P><P></CODE><P><P><P>The properties approach requires that you only know the names of the properties.  <P>Using a method to get and set each field can introduce a large number of methods, adding to complexity.  The sheer size and complexity introduced by having hundreds of methods to get and set values is potentially bewildering, and it is also possible that a necessary method will not be provided. In our case, the <code>Request</code> object could easily be given 100 methods for users.  <P>The Brazil design avoids these problems. When requests arrive, they are placed into a property collection, and programmers can rely on one or two methods to get and set properties.  <P>Automatic methods can then be used to generate required bean components. When a request arrives from a user, all of its parameters are stored as strings in a <code>Request</code> object as attribute/value pairs. <P>Due to complexity and maintenance issues, there are many Web applications for which having a database is not appropriate. Brazil allows simple object stores to be built, which can be easily accessed using BSL. By using this language, any Web developer can interact with a Web accessible data dictionary with minimal programming knowledge and effort. <P>:END_SIDEBAR <P>SIDEBAR: SIDEBAR_HEAD: Brazil support for JMS  <em>By Shivaram Mysore</em><br/>   As we progress deeper into the Internet era, innovators strive to create new devices that can connect and communicate with other new devices, with the goal being ubiquitous computing. However, many real-world applications involving machinery-to-network connectivity have not yet been built; the monitoring of geographically-distributed equipment is one example. Embedded devices might provide a starting point, but how do we extend messaging interconnectivity in this situation? Java-based messaging technologies represent a simple yet robust way of connecting embedded devices to other enterprise networks through message-oriented middleware.    Existing solutions can require expensive, sophisticated equipment and involve complicated setup. In addition, protocols often use an address-centered approach that requires that each device have an IP address. IP addresses are a headache to assign and manage, and their use in messaging results in a brittle architecture. To send a message, the sending machine must know the IP address of recipient. Any change in the location or availability of a device can result in delivery failure.    The Java Message Service API from Sun Microsystems offers a set of interfaces and associated semantics that define how a JMS client accesses the facilities of an enterprise messaging product from Java programs. This provides a common approach for Java programs to create, send, receive, and read an enterprise messaging system's messages.    The JMS client implementation can be minimal, implementing only point-to-point messaging (also called queue-based messaging) or publish/subscribe messaging. Because of footprint issues with embedded devices, an architecture like the one shown in Figure 2 is used.    IMAGE: images/jw-0811-javadev2.gif 300 283 CENTER Figure 2. JMS-Brazil integration :END_IMAGE <P>Here, Java Message Queue, an implementation of the JMS API, acts as the message broker (router, server) and produces secure, reliable messaging. <P>:END_SIDEBAR <P>SIDEBAR: SIDEBAR_HEAD: MessageBoard  <em>By Robert Englander</em><br/>   <P>MindStream Software is currently working on a technology called MessageBoard, which provides JMS messaging capability to embedded processors. The MessageBoard implementation offers a substantial subset of the JMS publish/subscribe domain for the Dallas semiconductor TINI board. Programmers can use the MessageBoard client-side classes to create TINI-based applications as message publishers and  subscribers. Figure 3 illustrates some architectural possibilities.  <P>IMAGE: images/jw-0811-javadev3.gif 383 427 CENTER Figure 3. JMS MessageBoard  :END_IMAGE <P><P>The MessageBoard architecture uses a lightweight proxy server that communicates with a wide variety of popular commercial JMS providers. This approach isolates the embedded system from the specifics of any particular JMS provider, due in part to the fact that these processors, when deployed, may not be easily accessible to modify software. MessageBoard also chooses the JMS provider independently of the software running on the TINI. The proxy server, as well as the client software, is written using 100 percent Java. To learn more about MindStream Software go to <a href="http://www.mindstrm.com">http://www.mindstrm.com</a>. To learn more about MessageBoard, go to <a href="http://www.mindstrm.com/products/message/index.html">http://www.mindstrm.com/products/message/index.html</a>. <P>
+<P ALIGN="RIGHT"><A HREF="#return1">Return to article</A></P>
+</FONT></TD>
+</TR>
+</TABLE>
+</A>
+</DIV>
+
+                    </font>
+                    <!-- ## MAIN CONTENT ENDS HERE ### -->
+                </td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="168" nowrap><nobr><img src="http://www.javaworld.com/images/spacer.gif" width=160 height=8 border=0 ><img src="http://www.javaworld.com/images/c_bllftbottom.gif" width=8 height=8 border=0 ></nobr></td>
+                <td width="100%"><img src="http://www.javaworld.com/images/spacer.gif" width=1 height=1 border=0 ></td>
+                <td width="8"><img src="http://www.javaworld.com/images/spacer.gif" width=8 height=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="186" bgcolor="#006699" align="middle"><nobr><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2"></font></nobr><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0></a></td>
+                <td bgcolor="#cccccc" width="8" valign="bottom"><img height=8 src="http://www.javaworld.com/images/c_blgrylftbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- BOTTOM 468x60 AD STARTS HERE -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=697109?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=697109?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=697109?" border=0 height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer4" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- BOTTOM 468x60 AD ENDS HERE -->
+</td>
+                <td width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table bgcolor="#006699" align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="100%" align="middle" valign="center">    <font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">
+        <p>
+            <br />
+            <a href="http://www.javaworld.com"><font color="#ffffff">HOME</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/features/index.shtml"><font color="#ffffff">FEATURED TUTORIALS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/columns/index.shtml"><font color="#ffffff">COLUMNS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/news-reviews/index.shtml"><font color="#ffffff">NEWS & REVIEWS</font></a>&nbsp;|&nbsp;
+            <a href="http://forums.idg.net/webx?13@@.ee6b802"><font color="#ffffff">FORUM</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/resources/index.shtml"><font color="#ffffff">JW RESOURCES</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/info/jw-about-index.shtml"><font color="#ffffff">ABOUT JW</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/feedback"><font color="#ffffff">FEEDBACK</font></a>
+        </p>
+        <p>
+
+            <a href="http://www.javaworld.com/javaworld/common/jw-copyright.html"><font color="#ffffff">Copyright © 2002</font></a> JavaWorld.com, an IDG Communications company
+        </p>
+    </font>
+</td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+            <tr>
+                <td width="100%" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_blrtbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <!--TOP_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=697109?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer1.pageX,layer1.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--125x125-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=med;sz=125x125;tile=2;ord=697109?" width=125 height=125 visibility="hidden" onLoad="moveToAbsolute(layer2.pageX,layer2.pageY);clip.height=125;clip.width=125;visibility='show';">
+</LAYER>
+
+<!--SKYSCRAPER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=697109?" width=120 height=600 visibility="hidden" onLoad="moveToAbsolute(layer3.pageX,layer3.pageY);clip.height=600;clip.width=120;visibility='show';">
+</LAYER>
+
+<!--BOTTOM_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=697109?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer4.pageX,layer4.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--Big AD-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=697109" width=336 height=280 visibility="hidden" onLoad="moveToAbsolute(layer5.pageX,layer5.pageY);clip.height=280;clip.width=336;visibility='show';">
+</LAYER>
+    </body>
+<!-- stories1 -->
+<!-- DOCID 658439 -->
+</html>
+

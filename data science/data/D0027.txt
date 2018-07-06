@@ -1,0 +1,799 @@
+ID=D0027
+URL=http://www.geocities.com/SiliconValley/Horizon/6481/AltUI11.html
+SIZE=32260
+DATE=16/07/02
+TIME=14:35:05
+DATASET=Java
+HTML=<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Migrating the Components to AWT 1.1</title>
+</head>
+
+<body bgcolor="#C0C0C0" text="#000000" link="#FF0000"
+vlink="#800080" alink="#0000FF">
+
+<p align="center"><a href="index.html#top" name="top"><img
+src="JavaDevPage.gif" alt="Java Developer's Page" align="middle"
+border="0" width="461" height="118"></a></p>
+
+<p>&nbsp;</p>
+
+<h1 align="center">Migrating the Components to AWT 1.1</h1>
+
+<p>&nbsp;</p>
+
+<p>In the <a href="AltUI10.html#top">previous</a> article, I
+showed how to create new components for the user interface. The
+components were based on AWT 1.0 and could be used in applets
+designed for browsers released before or after Java 1.1.</p>
+
+<p>The components must be modified if the programmers who use
+them wish to benefit by the AWT 1.1 advantages. Migration to the
+event model introduced by Java 1.1 will determine the most
+significant changes in the source code. This model will remain
+modern in Java 1.2 and probably in the next future releases.</p>
+
+<p>&nbsp;</p>
+
+<h3><b>Lightweight Components</b></h3>
+
+<p>In AWT 1.0, each component must owns an opaque native window.
+For the new components, the simplest way to respect this
+restriction is to extend java.awt.Canvas class.</p>
+
+<p>In AWT 1.1, the new components can derive directly from
+java.awt.Component. These components require no native
+data-structures or peer classes. For this reason, they are called
+<b>Lightweight </b>components.</p>
+
+<p>The first modification, which must be done in the source code,
+is the substitution of java.awt.Canvas - <a
+href="#AltButton_java" name="AltButton_back">AltButton</a>'s
+superclass<b>.</b> The AltButton class became Lightweight
+component because derive directly from java.awt.Component. The <a
+href="#AltCheckbox_java" name="AltCheckbox_back">AltCheckbox</a>
+class is now Lightweight component too because inherits from
+AltButton.</p>
+
+<p>Lightweight components are transparent. This is possible
+because they don't have a native window and update() method of
+the java.awt.Component class doesn't clear their background. The
+old AltButton class was relying on the actions of update().
+Therefore, three new lines must be added in the <b>paint()</b>
+method. They call setColor() and fillRect() methods of the
+java.awt.Graphics class.</p>
+
+<p>&nbsp;</p>
+
+<h3><b>Deprecated methods</b></h3>
+
+<p>The <b>deprecated</b> methods are methods whose use is
+allowed, but not recommended. Before deprecation, these methods
+had a normal statute and they were used in programs. The most
+frequently invoked reason for deprecation of a method is
+maintaining the consistency of names. For example, you must call
+now getSize() instead of size(). The new names of preferredSize()
+and minimumSize(), which AltButton overrides, are
+getPreferredSize() and getMinimumSize(). A simple renaming isn't
+sufficient because the layout managers written for AWT 1.0 call
+preferredSize() and minimumSize(). It is possible that somebody
+use such a layout manager without having the possibility to
+convert it to AWT 1.1 because he doesn't have access to the
+source code. For this reason the AltButton class overrides
+preferredSize() and minimumSize() methods and it declares them
+deprecated to avoid a warning from the compiler. </p>
+
+<p>If you analyze the source code of the java.awt.Component class
+then you will observe <b>the new methods (e.g.
+getPreferredSize()) call deprecated methods (e.g.
+preferredSize()).</b> I don't know if this is a good idea. If the
+situation would be inverse (e.g. preferredSize() would call
+getPreferredSize()) then AltButton would need to override only
+the getPreferredSize() and getMinimumSize() methods.</p>
+
+<p>To keep the similarity with the classes of the java.awt
+package, the get/setCurrent() methods of the <a
+href="#AltCheckboxGroup_java" name="AltCheckboxGroup_back">AltCheckboxGroup</a>
+class were deprecated and replaced with the new
+get/setSelectedCheckbox() methods. For keeping the consistency of
+names, the member variable currentChoice was renamed
+selectedCheckbox.</p>
+
+<p>The needed modifications in the source code are more
+complicated in the case of methods which became deprecated for
+other reasons than &quot;renaming for consistency.&quot; The
+action(), postEvent() and mouseXXX() methods are in this
+situation, because the entire event model from AWT 1.0 is now
+deprecated.</p>
+
+<p>&nbsp;</p>
+
+<h3><b>Delegation event model</b></h3>
+
+<p>In AWT 1.0, all events were instances of the java.awt.Event
+class. AWT 1.1 introduces a new package called java.awt.event,
+which contains &lt;EventType&gt;Event classes derived from
+java.awt.AWTEvent and &lt;EventType&gt;Listener interfaces. </p>
+
+<p>The Events are propagated from &quot;Sources&quot; to
+&quot;Listeners&quot;. The Sources are Components and the
+Listeners are classes that implement &lt;EventType&gt;Listener
+interfaces.</p>
+
+<p>The Listeners are registered / unregistered to Sources with
+the help of the add/remove&lt;EventType&gt;Listener methods. When
+they fire an event for which there are Listeners, the Sources
+call methods of the Listeners, and pass to them, as parameter,
+instances of the &lt;EventType&gt;Event classes.</p>
+
+<p>This event model is used by the Components at which Listener
+are registered or which call enableEvents() at initialization.
+The Components can use either the new model or the old one for
+compatibility, but not both in the same time. In the new model,
+the events don't propagate anymore in the component containment
+hierarchy, and this improves the performances.</p>
+
+<p>The AltButton class can be source of low level events:
+ComponentEvent, FocusEvent, KeyEvent and <b>MouseEvent</b>
+because inherits from java.awt.Component class, and implements
+java.awt.event.MouseListener interface, because it wishes to
+receive mouse events. To be able to listen the mouse events the
+instances of this class are registered to themselves as Listeners
+with the help of the addMouseListener() method, inherited from
+java.awt.Component.</p>
+
+<p>To keep similarity with java.awt.Button, the AltButton class
+became source of <b>ActionEvent</b> events<b>.</b> The
+addActionListener() and removeActionListener() methods add /
+remove Listeners for the ActionEvent events, which are fired when
+the buttons are pressed and released.</p>
+
+<p>&nbsp;</p>
+
+<h3><b>Dispatching events</b></h3>
+
+<p>If you want to dispatch an event then instead of postEvent()
+you should call dispatchEvent() of the java.awt.Component class.
+This is a final and public method. In its body it makes a single
+call to the <b>dispatchEventImpl()</b> method, which isn't public
+and which executes in four stages:</p>
+
+<p>1. It <b>preprocesses</b> the special events. If the type of
+the event is PaintEvent, then it calls paint() or update() method
+and returns. Other special events are those fired when the focus
+is gained (FOCUS_GAINED) or when a key is pressed / released
+(KEY_PRESSED / KEY_RELEASED).</p>
+
+<p>2. In the second stage, it <b>processes</b> the events. If
+eventEnabled() returns true then it calls processEvent() method.</p>
+
+<p>3. In the third stage, it <b>postprocesses</b> some of the
+events. Those KeyEevents, which no one has consumed, are
+propagated up the containment hierarchy to ensure the properly
+work of menu shortcuts and moving between components with TAB key
+(keyboard traversal).</p>
+
+<p>4. In the final, it passes the events to the component's peer,
+if there is one.</p>
+
+<p>The processEvent() method of the java.awt.Component class
+calls processComponentEvent(), processFocusEvent(),
+processKeyEvent(), processMouseEvent() or
+processMouseMotionEvent(). Only those call the right methods of
+objects that implement &lt;EventType&gt;Listener interfaces.</p>
+
+<p>&nbsp;</p>
+
+<h3><b>Firing events</b></h3>
+
+<p>The java.awt.Button class has an ActionListener member
+variable -- <b>actionListener -- </b>which is used by
+addActionListener() and removeActionListener() methods.</p>
+
+<p>The <b>eventEnabled()</b> method, inherited from
+java.awt.Component, is overridden to return true if the mask of
+events - eventMask - was set with enableEvents() or
+actionListener != null.</p>
+
+<p>The <b>processEvent()</b> is also overridden to call <b>processActionEvent()</b>
+if it's necessary. The latter one calls the actionPerformed()
+method of actionListener.</p>
+
+<p>Although the <strong>AltButton</strong> class has an
+actionListener member variable and it has
+add/removeActionListener() methods, it cannot proceed as
+java.awt.Button because it hasn't access either to eventMask or
+eventEnabled() (these are neither public nor protected). The only
+one possibility, that AltButton components fire ActionEvent
+events, is to call directly the actionPerformed() method of the
+actionListener variable. This thing is done by fireActionEvent()
+method without the help of dispatchEvent().</p>
+
+<p>The <strong>AltCheckbox</strong> class needs to intercept the
+ActionEvent events before they reach the Listeners. This can be
+done by overriding the fireActionEvent() method, in which the
+code that in previous version was found in action() method is
+moved. It isn't right to register a &quot;privileged&quot;
+Listener, which modify the state of the checkbox button, before
+the other Listeners receive the ActionEvent events. This solution
+isn't right because the order in which the Listeners receive the
+events must be considered arbitrary, so all Listeners must be
+&quot;equals&quot;. The AltCheckbox class doesn't implement the
+java.awt.ItemSelectable interface (like java.awt.Checkbox),
+because it would have had to fire redundant ActionEvent and
+ItemEvent events.</p>
+
+<p>&nbsp;</p>
+
+<h3><b>Filtering events</b></h3>
+
+<p>In the version of the Test applet, written for AWT 1.0, all
+events were intercepted by action() method, which was containing
+an if with seven branches. The events were differentiated by the
+target member variable of the Event class. In the AWT 1.1-based <a
+href="#Test_java" name="Test_back">version</a>, the action()
+method is eliminated and two new classes appear: <b>EastListener</b>
+and <b>SouthListener.</b> Both implement
+java.awt.event.ActionListener interface. The instances of these
+classes will be registered as Listeners to the buttons form east
+or south. They implement the same behavior as that implemented by
+the action() method for these buttons in the previous version.
+This makes possible the separation between the logic of the
+application and the user interface. This example doesn't
+demonstrate this very well because the logic of the application
+consists exactly in the establishing of the buttons' behavior.
+Even in this particular case, attaching an object (Listener) to
+each button makes the code more easy to understand and less error
+prone. Another advantage is that the events are dispatched to
+components only if they handle them. This filtering determines an
+improvement of the performances.</p>
+
+<p>&nbsp;</p>
+
+<h3><b>Improving UI performances</b></h3>
+
+<p>In the old version, the Test applet was receiving almost all
+events whose targets were the twelve buttons. MOUSE_DRAG and
+MOUSE_MOVE were between these events, even if the applet and the
+buttons needn't them. In the new version, the buttons receive
+from the AWT only a few mouse events because they need only
+these. The buttons don't receive MOUSE_DRAGGED or MOUSE_MOVED
+evens because no MouseMotionListener registers to them.</p>
+
+<p>But probably the most interesting thing is that the Applet and
+the Panels receive only a few events even if they use the old
+deprecated event model. They receive no mouse events because
+their entire area is covered now by Components that use the
+delegation-based event model. They also receive none of the
+ActionEvent events fired by buttons. If the applet wants to
+receive, for example, mouse events from buttons then it must
+implement the MouseListener interface and register to buttons as
+Listener. In this case it will use the new event model and will
+receive the mouse events intercepted by buttons, without to use
+Panels as intermediaries. So an event Source may have many
+Listeners, and a Listener may receive events from more than one
+Source.</p>
+
+<p>Java 1.1 offers more advantages than those mentioned in this
+article. For example, the .class files may be included in .jar
+archives to accelerate the download. But it's much more important
+that the new components are beans, so they are serializable.</p>
+
+<p>&nbsp;</p>
+
+<h3><b>Implementing persistency</b></h3>
+
+<p>Besides the advantages offered by AWT 1.1, there are many
+other reasons to migrate to Java 1.1. One of them is the
+possibility to serialize objects. The components presented in
+this article are serializable because they implement
+java.io.Serializable interface. In the <a
+href="AltUI11s.html#top">next</a> article I'll show you how to
+create a persistent user interface.</p>
+
+<p>&nbsp;</p>
+
+<h3><b>Resources</b></h3>
+
+<p>Lightweight UI Framework<br>
+<a
+href="http://java.sun.com/products/jdk/1.1/docs/guide/awt/designspec/lightweights.html"
+target="resource">http://java.sun.com/products/jdk/1.1/docs/guide/awt/designspec/lightweights.html</a></p>
+
+<p>Deprecated Methods in the 1.1 AWT<br>
+<a
+href="http://java.sun.com/products/jdk/1.1/docs/guide/awt/DeprecatedMethods.html"
+target="resource">http://java.sun.com/products/jdk/1.1/docs/guide/awt/DeprecatedMethods.html</a></p>
+
+<p>Delegation Event Model<br>
+<a
+href="http://java.sun.com/products/jdk/1.1/docs/guide/awt/designspec/events.html"
+target="resource">http://java.sun.com/products/jdk/1.1/docs/guide/awt/designspec/events.html</a></p>
+
+<p>&nbsp;</p>
+
+<h3><a name="AltButton_java"><strong>AltButton.java</strong></a></h3>
+
+<pre><font color="#A00000">// AltButton.java</font>
+
+<font color="#0000F0">import</font> java.awt.AWTEventMulticaster;
+<font color="#0000F0">import</font> java.awt.Color;
+<font color="#0000F0">import</font> java.awt.Dimension;
+<font color="#0000F0">import</font> java.awt.Font;
+<font color="#0000F0">import</font> java.awt.FontMetrics;
+<font color="#0000F0">import</font> java.awt.Graphics;
+<font color="#0000F0">import</font> java.awt.event.ActionEvent;
+<font color="#0000F0">import</font> java.awt.event.ActionListener;
+<font color="#0000F0">import</font> java.awt.event.MouseEvent;
+<font color="#0000F0">import</font> java.awt.event.MouseListener;
+
+<font color="#0000F0">public</font> <font color="#0000F0">class</font> AltButton <font
+color="#0000F0">extends</font> java.awt.Component <font
+color="#0000F0">implements</font> MouseListener
+{
+    <font color="#0000F0">private</font> String label;
+    <font color="#0000F0">private</font> String actionCommand;
+    <font color="#0000F0">protected</font> <font color="#0000F0">boolean</font> pressed;
+    <font color="#0000F0">private</font> ActionListener actionListener; 
+
+    <font color="#0000F0">public</font> AltButton()
+    {
+        <font color="#0000F0">this</font>(&quot;&quot;);
+    }
+
+    <font color="#0000F0">public</font> AltButton(String label)
+    {
+        setLabel(label);
+        setActionCommand(label);
+        pressed = false;
+        addMouseListener(<font color="#0000F0">this</font>);
+    }
+
+    <font color="#0000F0">public</font> String getLabel()
+    {
+        <font color="#0000F0">return</font> label;
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> setLabel(String label)
+    {
+        <font color="#0000F0">this</font>.label = label;
+        repaint();
+    }
+
+    <font color="#0000F0">public</font> String getActionCommand()
+    {
+        <font color="#0000F0">return</font> actionCommand;
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> setActionCommand(String actionCommand)
+    {
+        <font color="#0000F0">this</font>.actionCommand = actionCommand;
+    }
+
+    <font color="#0000F0">public</font> Dimension getMinimumSize() 
+    {
+        FontMetrics m = getFontMetrics(getFont());
+        <font color="#0000F0">int</font> w = 6 * m.charWidth('X');
+        <font color="#0000F0">if</font> (label != null)
+            w += m.stringWidth(label);
+        <font color="#0000F0">int</font> h = (<font
+color="#0000F0">int</font>) (m.getHeight() * 1.6);
+        <font color="#0000F0">return</font> <font color="#0000F0">new</font> Dimension(w, h);
+
+    }
+
+    <font color="#A00000">/**@deprecated*/</font>
+    <font color="#0000F0">public</font> Dimension minimumSize() 
+    {
+        <font color="#0000F0">return</font> getMinimumSize();
+    }
+
+    <font color="#0000F0">public</font> Dimension getPreferredSize()
+    {
+        <font color="#0000F0">return</font> getMinimumSize();
+    }
+
+    <font color="#A00000">/**@deprecated*/</font>
+    <font color="#0000F0">public</font> Dimension preferredSize()
+    {
+        <font color="#0000F0">return</font> getPreferredSize();
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">synchronized</font> <font
+color="#0000F0">void</font> addActionListener(ActionListener l) 
+    {
+        actionListener = AWTEventMulticaster.add(actionListener, l);
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">synchronized</font> <font
+color="#0000F0">void</font> removeActionListener(ActionListener l) 
+    {
+        actionListener = AWTEventMulticaster.remove(actionListener, l);
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> paint(Graphics g) 
+    {
+        Dimension sz = getSize();
+        g.setColor(getBackground());
+        g.fillRect(0, 0, sz.width, sz.height);
+        g.setColor(getForeground());
+        FontMetrics m = g.getFontMetrics();
+        <font color="#0000F0">int</font> w = m.stringWidth(label);
+        <font color="#0000F0">int</font> h = m.getHeight();
+        <font color="#0000F0">int</font> x = (sz.width - w) / 2;
+        <font color="#0000F0">int</font> y = (sz.height - h) / 2;
+        y += m.getLeading() + m.getAscent();
+        <font color="#0000F0">if</font> (label != null)
+            g.drawString(label, x, y);
+        g.setColor(Color.white);
+        g.draw3DRect(1, 1, sz.width-3, sz.height-3, !pressed);
+        g.draw3DRect(0, 0, sz.width-1, sz.height-1, !pressed);
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> mouseEntered(MouseEvent e)
+    {
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> mouseExited(MouseEvent e)
+    {
+        <font color="#0000F0">if</font> (pressed)
+        {
+            pressed = false;
+            repaint();
+        }
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> mousePressed(MouseEvent e)
+    {
+        pressed = true;
+        repaint();
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> mouseReleased(MouseEvent e)
+    {
+        <font color="#0000F0">if</font> (!pressed)
+            <font color="#0000F0">return</font>;
+        pressed = false;
+        repaint();
+        fireActionEvent();
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> mouseClicked(MouseEvent e)
+    {
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> fireActionEvent()
+    {
+        <font color="#0000F0">if</font> (actionListener != null) 
+        {
+            ActionEvent e = <font color="#0000F0">new</font> ActionEvent(<font
+color="#0000F0">this</font>, ActionEvent.ACTION_PERFORMED, actionCommand);
+            actionListener.actionPerformed(e);
+        }
+    }
+
+}
+</pre>
+
+<p><a href="#AltButton_back">Back to story</a></p>
+
+<p>&nbsp;</p>
+
+<h3><a name="AltCheckbox_java"><strong>AltCheckbox.java</strong></a></h3>
+
+<pre><font color="#A00000">// AltCheckbox.java</font>
+
+<font color="#0000F0">import</font> java.awt.Color;
+<font color="#0000F0">import</font> java.awt.Container;
+<font color="#0000F0">import</font> java.awt.Graphics;
+
+<font color="#0000F0">public</font> <font color="#0000F0">class</font> AltCheckbox <font
+color="#0000F0">extends</font> AltButton
+{
+    <font color="#0000F0">static</font> <font color="#0000F0">public</font> Color selBackColor = Color.red;
+    <font color="#0000F0">static</font> <font color="#0000F0">public</font> Color selForeColor = Color.white;
+    <font color="#0000F0">private</font> <font color="#0000F0">boolean</font> state;
+    <font color="#0000F0">private</font> AltCheckboxGroup group;
+
+    <font color="#0000F0">public</font> AltCheckbox()
+    {
+        <font color="#0000F0">this</font>(&quot;&quot;, false, null);
+    }
+
+    <font color="#0000F0">public</font> AltCheckbox(String label)
+    {
+        <font color="#0000F0">this</font>(label, false, null);
+    }
+
+    <font color="#0000F0">public</font> AltCheckbox(String label, <font
+color="#0000F0">boolean</font> state)
+    {
+        <font color="#0000F0">this</font>(label, state, null);
+    }
+
+    <font color="#0000F0">public</font> AltCheckbox(String label, <font
+color="#0000F0">boolean</font> state, AltCheckboxGroup group)
+    {
+        <font color="#0000F0">super</font>(label);
+        setState(state);
+        setCheckboxGroup(group);
+    }
+
+    <font color="#0000F0">public</font> AltCheckbox(String label, AltCheckboxGroup group, <font
+color="#0000F0">boolean</font> state)
+    {
+        <font color="#0000F0">this</font>(label, state, group);  
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">boolean</font> getState() 
+    {
+        <font color="#0000F0">return</font> state;
+    }
+    
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> setState(<font
+color="#0000F0">boolean</font> state) 
+    {
+        <font color="#0000F0">if</font> (state == <font
+color="#0000F0">this</font>.state)
+            <font color="#0000F0">return</font>;
+        <font color="#0000F0">this</font>.state = state;
+        <font color="#0000F0">if</font> (state &amp;&amp; group != null)
+            group.setSelectedCheckbox(<font color="#0000F0">this</font>);
+        <font color="#0000F0">if</font> (state)
+        {
+            setBackground(selBackColor);
+            setForeground(selForeColor);
+        }
+        <font color="#0000F0">else</font>
+        {
+            Container p = getParent();
+            <font color="#0000F0">if</font> (p != null)
+            {
+                setBackground(p.getBackground());
+                setForeground(p.getForeground());
+            }
+            <font color="#0000F0">else</font>
+            {
+                setBackground(null);
+                setForeground(null);
+            }
+        }
+        repaint();
+    }
+
+    <font color="#0000F0">public</font> AltCheckboxGroup getCheckboxGroup() 
+    {
+        <font color="#0000F0">return</font> group;
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> setCheckboxGroup(AltCheckboxGroup group) 
+    {
+        <font color="#0000F0">if</font> (<font color="#0000F0">this</font>.group == group)
+            <font color="#0000F0">return</font>;
+        <font color="#0000F0">if</font> (<font color="#0000F0">this</font>.group != null)
+            <font color="#0000F0">this</font>.group.setSelectedCheckbox(null);
+        <font color="#0000F0">this</font>.group = group;
+        <font color="#0000F0">if</font> (state &amp;&amp; group != null)
+            group.setSelectedCheckbox(<font color="#0000F0">this</font>);
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> fireActionEvent()
+    {
+        <font color="#0000F0">if</font> (group == null)
+            setState(!state);
+        <font color="#0000F0">else</font>
+            group.setSelectedCheckbox(<font color="#0000F0">this</font>);
+        <font color="#0000F0">super</font>.fireActionEvent();
+    }
+
+}
+</pre>
+
+<p><a href="#AltCheckbox_back">Back to story</a></p>
+
+<p>&nbsp;</p>
+
+<h3><a name="AltCheckboxGroup_java"><strong>AltCheckboxGroup.java</strong></a></h3>
+
+<pre><font color="#A00000">// AltCheckBoxGroup.java</font>
+
+<font color="#0000F0">public</font> <font color="#0000F0">class</font> AltCheckboxGroup <font
+color="#0000F0">implements</font> java.io.Serializable
+{
+    AltCheckbox selectedCheckbox = null;
+
+    <font color="#0000F0">public</font> AltCheckboxGroup() 
+    {
+    }
+
+    <font color="#0000F0">public</font> AltCheckbox getSelectedCheckbox() 
+    {
+        <font color="#0000F0">return</font> selectedCheckbox;
+    }
+
+    <font color="#A00000">/**@deprecated*/</font>
+    <font color="#0000F0">public</font> AltCheckbox getCurrent() 
+    {
+        <font color="#0000F0">return</font> getSelectedCheckbox();
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">synchronized</font> <font
+color="#0000F0">void</font> setSelectedCheckbox(AltCheckbox newChoice) 
+    {
+        <font color="#0000F0">if</font> (newChoice != null &amp;&amp; newChoice.getCheckboxGroup() != <font
+color="#0000F0">this</font>) 
+            <font color="#0000F0">return</font>;
+        AltCheckbox oldChoice = <font color="#0000F0">this</font>.selectedCheckbox;
+        <font color="#0000F0">if</font> (oldChoice == newChoice)
+            <font color="#0000F0">return</font>;
+        <font color="#0000F0">this</font>.selectedCheckbox = newChoice;
+        <font color="#0000F0">if</font> (oldChoice != null)
+            oldChoice.setState(false);
+        <font color="#0000F0">if</font> (newChoice != null)
+            newChoice.setState(true);
+    }
+
+    <font color="#A00000">/**@deprecated*/</font>
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> setCurrent(AltCheckbox newChoice)
+    {
+        setSelectedCheckbox(newChoice);
+    }
+
+}
+</pre>
+
+<p><a href="#AltCheckboxGroup_back">Back to story</a></p>
+
+<p>&nbsp;</p>
+
+<h3><a name="Test_java"><strong>Test.java</strong></a></h3>
+
+<pre><font color="#A00000">// Test.java</font>
+
+<font color="#0000F0">import</font> java.awt.Color;
+<font color="#0000F0">import</font> java.awt.Font;
+<font color="#0000F0">import</font> java.awt.GridLayout;
+<font color="#0000F0">import</font> java.awt.Panel;
+<font color="#0000F0">import</font> java.awt.event.ActionEvent;
+<font color="#0000F0">import</font> java.awt.event.ActionListener;
+
+<font color="#0000F0">public</font> <font color="#0000F0">class</font> Test <font
+color="#0000F0">extends</font> java.applet.Applet
+{
+    AltCheckboxGroup n, s;
+    AltCheckbox n1, n2, n3;
+    AltCheckbox s1, s2, s3;
+    AltCheckbox w1, w2, w3;
+    AltButton   e1, e2, e3;
+
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> init()
+    {
+        setBackground(Color.lightGray);
+        setForeground(Color.black);
+        setFont(<font color="#0000F0">new</font> Font(getFont().getName(), Font.PLAIN, 14));
+        setLayout(<font color="#0000F0">new</font> GridLayout(5,1));
+        Panel p;
+
+        p = <font color="#0000F0">new</font> Panel();
+        p.setLayout(<font color="#0000F0">new</font> GridLayout(1, 3));
+        n = <font color="#0000F0">new</font> AltCheckboxGroup();
+        n1 = <font color="#0000F0">new</font> AltCheckbox(&quot;Radio 1&quot;, false, n);
+        p.add(n1);
+        n2 = <font color="#0000F0">new</font> AltCheckbox(&quot;Radio 2&quot;, false, n);
+        p.add(n2);
+        n3 = <font color="#0000F0">new</font> AltCheckbox(&quot;Radio 3&quot;, false, n);
+        p.add(n3);
+        n.setSelectedCheckbox(n2);
+        add(p);
+
+        p = <font color="#0000F0">new</font> Panel();
+        p.setLayout(<font color="#0000F0">new</font> GridLayout(1, 2));
+        w1 = <font color="#0000F0">new</font> AltCheckbox(&quot;Check 1&quot;, true);
+        p.add(w1);
+        e1 = <font color="#0000F0">new</font> AltButton(&quot;Button 1&quot;);
+        e1.addActionListener(<font color="#0000F0">new</font> EastListener(w1));
+        p.add(e1);
+        add(p);
+
+        p = <font color="#0000F0">new</font> Panel();
+        p.setLayout(<font color="#0000F0">new</font> GridLayout(1, 2));
+        w2 = <font color="#0000F0">new</font> AltCheckbox(&quot;Check 2&quot;, false);
+        p.add(w2);
+        e2 = <font color="#0000F0">new</font> AltButton(&quot;Button 2&quot;);
+        e2.addActionListener(<font color="#0000F0">new</font> EastListener(w2));
+        p.add(e2);
+        add(p);
+
+        p = <font color="#0000F0">new</font> Panel();
+        p.setLayout(<font color="#0000F0">new</font> GridLayout(1, 2));
+        w3 = <font color="#0000F0">new</font> AltCheckbox(&quot;Check 3&quot;, true);
+        p.add(w3);
+        e3 = <font color="#0000F0">new</font> AltButton(&quot;Button 3&quot;);
+        e3.addActionListener(<font color="#0000F0">new</font> EastListener(w3));
+        p.add(e3);
+        add(p);
+
+        p = <font color="#0000F0">new</font> Panel();
+        p.setLayout(<font color="#0000F0">new</font> GridLayout(1, 3));
+        s = <font color="#0000F0">new</font> AltCheckboxGroup();
+        s1 = <font color="#0000F0">new</font> AltCheckbox(&quot;First&quot;, false, s);
+        s1.addActionListener(<font color="#0000F0">new</font> SouthListener(n, n1));
+        p.add(s1);
+        s2 = <font color="#0000F0">new</font> AltCheckbox(&quot;Second&quot;, false, s);
+        s2.addActionListener(<font color="#0000F0">new</font> SouthListener(n, n2));
+        p.add(s2);
+        s3 = <font color="#0000F0">new</font> AltCheckbox(&quot;Third&quot;, false, s);
+        s3.addActionListener(<font color="#0000F0">new</font> SouthListener(n, n3));
+        p.add(s3);
+        s.setSelectedCheckbox(s2);
+        add(p);
+    }
+
+}
+
+<font color="#0000F0">class</font> EastListener <font
+color="#0000F0">implements</font> ActionListener
+{
+    AltCheckbox w;
+
+    EastListener(AltCheckbox w)
+    {
+        <font color="#0000F0">this</font>.w = w;
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> actionPerformed(ActionEvent e)
+    {
+        w.setState(!w.getState());
+    }
+
+}
+
+<font color="#0000F0">class</font> SouthListener <font
+color="#0000F0">implements</font> ActionListener
+{
+    AltCheckboxGroup g;
+    AltCheckbox n;
+
+    SouthListener(AltCheckboxGroup g, AltCheckbox n)
+    {
+        <font color="#0000F0">this</font>.g = g;
+        <font color="#0000F0">this</font>.n = n;
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> actionPerformed(ActionEvent e)
+    {
+        g.setSelectedCheckbox(n);
+    }
+
+}
+</pre>
+
+<p><a href="#Test_back">Back to story</a></p>
+
+<hr>
+
+<p><br>
+The author of this page can be reached at <a
+href="mailto:andcio@hotmail.com">andcio@hotmail.com</a>. <br>
+<a href="InsideAWT.html#top">Back to Inside AWT</a><br>
+<a href="index.html#top">Back to Java Developer's Page</a> (Visit
+this page every month) <br>
+URL:
+http://www.geocities.com/SiliconValley/Horizon/6481/AltUI11.html <br>
+Last updated: December 30, 1998</p>
+
+<hr>
+
+<p align="center"><br>
+This page hosted by <a href="/"><img src="/pictures/gc_icon.gif"
+align="middle" border="0" width="88" height="31"></a> Get your
+own <a href="/">Free Homepage</a> </p>
+</body>
+</html>
+<!-- text below generated by server. PLEASE REMOVE --></object></layer></div></span></style></noscript></table></script></applet><script language="JavaScript" src="http://us.i1.yimg.com/us.yimg.com/i/mc/mc.js"></script><script language="JavaScript" src="http://us.geocities.com/js_source/geov2.js"></script><script language="javascript">geovisit();</script><noscript><img src="http://visit.geocities.com/visit.gif?1026499246" border=0 width=1 height=1></noscript>
+<IMG SRC="http://geo.yahoo.com/serv?s=76001067&t=1026499246" ALT=1 WIDTH=1 HEIGHT=1>
+

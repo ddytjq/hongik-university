@@ -1,0 +1,506 @@
+ID=E0250
+URL=http://www.delorie.com/djgpp/doc/ug/compiling/port16.html
+SIZE=16394
+DATE=12/07/02
+TIME=19:19:12
+DATASET=C
+HTML=<html><head><title>Guide: Porting 16-bit Applications to DJGPP</title>
+<base href="http://www.delorie.com/djgpp/doc/ug/compiling/port16.html">
+</head><body><center><!-- BEGIN RICH-MEDIA BURST! CODE --> 
+     <script language="JavaScript"> 
+     <!-- /* (C) 1997-1999 BURST! Media, LLC. All Rights Reserved.*/ 
+     var TheAdcode = 'ad1954a'; 
+     var bN = navigator.appName; 
+     var bV = parseInt(navigator.appVersion); 
+     var base='http://www.burstnet.com/'; 
+     var Tv='/6397'; 
+     var agt=navigator.userAgent.toLowerCase(); 
+     if (bN=='Netscape'){ 
+          if ((bV>=4)&&(agt.indexOf("mac")==-1))
+     {  document.write('<s'+'cript src="'+ 
+           base+'cgi-bin/ads/'+TheAdcode+'.cgi/RETURN-CODE/JS' 
+           +Tv+'">'); 
+          document.write('</'+'script>');    
+     } 
+          else if (bV>=3) {document.write('<'+'a href="'+base+'ads/'+ 
+             TheAdcode+'-map.cgi'+Tv+'"target=_top>'); 
+             document.write('<img src="' + base + 'cgi-bin/ads/' + 
+             TheAdcode + '.cgi' + Tv + '" ismap width=468 height=60' + 
+             ' border=0 alt="Click Here"></a>');} 
+      } 
+     if (bN=='Microsoft Internet Explorer') 
+      document.write('<ifr'+'ame id=BURST src="'+base+'cgi-bin/ads/'
+     + 
+       TheAdcode + '.cgi' + Tv + '/RETURN-CODE" width=468 height=60' + 
+       'marginwidth=0 marginheight=0 hspace=0 vspace=0 ' + 
+       'frameborder=0 scrolling=no></ifr'+'ame>'); 
+     // --> 
+     </script> 
+     <noscript><a href="http://www.burstnet.com/ads/ad1954a-map.cgi" target=_top> 
+     <img src="http://www.burstnet.com/cgi-bin/ads/ad1954a.cgi" 
+      width=468 height=60 border=0 alt="Click Here"></a> 
+     </noscript> 
+     <!-- END BURST CODE --> 
+<table width=100% border=0 cellspacing=0 cellpadding=3><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">www.delorie.com</a>/<a href="/djgpp/" target="_top">djgpp</a>/<a href="/djgpp/doc/" target="_top">doc</a>/ug/compiling/port16.html</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/search/">search</a> &nbsp;
+</b></font></small></td>
+</tr></table><a href="bulktrap.html"></a><big><big><b>Guide: Porting 16-bit Applications to DJGPP</b></big></big></td></p></center>
+
+
+<p><h2>Introduction</h2></p>
+
+<p>This chapter will describe some of the steps programmers face when
+porting their 16-bit DOS applications to DJGPP.  In this chapter I will
+cover the following: </p>
+
+<ul>
+<li> Compiler Specific Issues (Far memory, memory models, pointers)
+<li> Physical Ram vs. Linear Ram
+<li> Interrupts
+<li> Memory Layout (effects on physical ram and DMA)
+<li> Writing assembly routines for us TASM/MASM users
+</ul>
+
+<p>I will also <strong>assume</strong> the following of you, and your
+program(s):</p>
+
+<ul>
+<li> Your programs follow ANSI-C standards as closely as possible
+<li> Your programs actually work under 16-bit systems
+<li> You have the bare bone knowledge of how 32-bit programs work
+<li> You have access to the full DJGPP package, as well as
+     <a href="http://www.cryogen.com/nasm">NASM</a> (Netwide Assembler
+     Project)
+<li> You have patience, and will post questions to me if you don't
+     understand.
+</ul>
+
+<p>I do suggest that if you are new to 32-bit C compilers, that you read
+the section on <a href="runtime.html">Runtime Basics</a>.  </p>
+
+<p> If you have any comments, suggestions, or questions, feel free to
+contact the author of this section, Tom St Denis, via email: <a
+href="mailto:tomstdenis@goplay.com">tomstdenis@goplay.com</a></p>
+
+<p><hr></p>
+
+<p><h2>Compiler Specific</h2></p>
+
+<p><strong>Far Memory</strong>.  If you don't know what Far Memory is I
+suggest that you don't read this chapter, as it is assumed you know what
+this is already.  If you feel adventerous I will describe it anyways.
+Far Memory, on 80x86 systems anyways, is memory that is available to
+the program, via <em>segments and offsets</em>.  This means it
+requires a 32-bit pointer (16 bits for the segment, 16 bits for the offset) to
+access the ram.  <strong>Near Memory</strong> is defined as memory that can be
+accessed with <em>only a offset</em>.  This section covers the difference between
+the far and near memory.  Now in a 16-bit environment we would use
+<tt>far</tt> memory to get access to more then 64kb.  This is quite usefull as 16-bit
+applications may use upto <strong>1MB</strong> of ram.  However we don't have
+this problem in DJGPP, where it is a 32-bit environment.  DJGPP's memory
+model is similar to <strong>tiny</strong> model in 16-bit compilers, where
+there is <em>no far</em> memory, and <em>only offsets</em> are used.
+However in DJGPP we do not have the 64KB limit, so this poses no problem.  Since DJGPP uses
+<strong>32-bit offsets</strong> (instead of 16-bit offsets), we can
+access <strong>4GB</strong> of ram with DJGPP.  This is to say the
+pointers in DJGPP are 32-bits and contain only a offset part.</p>
+
+<p>Now that you understand the previous paragraph, porting your far
+model code, is just like porting it to tiny model.  Here are some
+simple steps:</p>
+
+<ul>
+<li> Convert all <tt>far</tt> pointers to pointers of unspecified type
+(<em>essentially a near pointer</em>).  For Example:
+</ul>
+
+<pre>
+void main(void)
+{
+  int far *a;
+  char far *b;
+  void far *c;
+}
+</pre>
+to:
+<pre>
+void main(void)
+{
+  int *a;
+  char *b;
+  void *c;
+}
+</pre>
+
+<ul>
+<li>Convert all memory functions with <strong>far</strong> as the first
+three letters to their respective <strong>tiny</strong> model calls.
+</ul>
+
+<pre>
+void main(void)
+{
+  void far *b = farcalloc(10000, 1);
+  farfree(b);
+}
+</pre>
+to: 
+<pre>
+void main(void)
+{
+  void *b = calloc(10000, 1);
+  free(b);
+}
+</pre>
+
+<ul>
+<li>Remove <tt>far</tt> before each of your functions.
+</ul>
+
+<pre>
+void far test(void);
+void far test2(void);
+</pre>
+to: 
+<pre>
+void test(void);
+void test2(void);
+</pre>
+
+<p>Another thing when porting far model ASM code to DJGPP (among
+other things) is to make sure you <em>don't</em> load the segment registers
+with anything.  Just load the <em>offset</em> you want to use.  Although it's
+worth noting that you should <em><strong>re-write</strong></em> all of your
+<em>inline assembly</em> and <em>external assembly</em> code so that you
+can take in account all the differences, between the two environments.  </p>
+
+<p>Just to remind you, although you are in a tiny memory model you are not
+restricted to <strong>64KB</strong>.  So don't worry about allocating more
+then 64KB at a time.  </p>
+
+<p>One last compiler specific issue.  DJGPP does not support the
+Intel\Borland style of <em>inline assembly</em>.  DJGPP has a more powerful
+inline assembly routines, more details can be found <a href="dj link me!">
+here</a>.  However later in this chapter, I discuss how to write assembly
+routines with NASM (intel style assembler), so that users of TASM or MASM do
+not have to learn the AT&T style assembler.</p>
+
+<p><hr></p>
+
+<p><h2>Physical Addressing vs. Linear Addressing</h2></p>
+
+<p><strong>Memory Addresses</strong> are very different in DJGPP then in
+16-bit real mode.  This is probably the most worth noting when writting
+graphics code, that must write to a <strong>physical</strong> address.  In a
+16-bit environment you could access the VGA ram (0xA000:0000) with: </p>
+
+<pre>
+void main(void)
+{
+  void far *scr = (void far *) 0xA0000000L;
+  scr[0] = 4;
+}
+</pre>
+
+<p>Where this would put a red pixel in the top-right of the screen.  However
+in DJGPP this would not work.  First off, it wouldn't work because the
+32-bit address (physical) of the VGA screen is 0xA0000 not 0xA0000000.
+It won't work for a second reason...  </p>
+
+<p><strong>Linear adressing</strong> is what we call the CPU mode when
+addresses are no longer <strong>physical</strong>.  Now this may seem like a
+silly thing to do but, using linear addresses has many features.  First
+off you get to use <strong>paging</strong>
+(aka <strong>Virtual Memory</strong>), and second, you can map physical ram
+to any address.  Linear addressing does have one drawback, it won't let you
+to use physical addresses as addresses (in DJGPP) because <em>they no longer
+map to where you think they will.</em>  So using 0xA0000 as a address will
+<strong>not work</strong>.  Some DOS extenders will allow you to use what is
+called a <strong>negative address</strong>, however DJGPP <strong>does
+not</strong> support this directly. </p>
+
+<p>So how do you do it then?  Good question, two different answers. </p>
+
+<p><strong>Enable 4GB near pointers</strong>, allowing you do use
+<strong>negative addressing</strong>,  This method is ok, if your code is
+100% bug free as <em>this removes memory protection from DJGPP</em>,  The
+best way to explain this is with a code snipet: </p>
+
+<pre>
+#include &lt;sys/nearptr.h&gt;
+
+void
+main(void)
+{
+  char *screen;
+
+  if (__djgpp_nearptr_enable() == 0) return ERROR; /* could happen */
+  screen = 0xa0000 + __djgpp_conventional_base;    
+  screen[0] = 4;
+  __djgpp_nearptr_disable();
+}
+</pre>
+
+<p>This example plots a red pixel in the top right hand corner of the screen.
+Now there are some problems with this method.  After you call any DPMI
+specific routine (which includes allocating ram) you <strong>have to
+recalculate</strong> the near pointer to the video ram.  That's why I suggest
+you calculate the address <em>after you initialize your program</em>.  With
+this method you can access the video ram directly as fast as accessing any
+other ram in your program.  Another reason why DJGPP does not support this
+directly, is that under Windows NT, you cannot use negative addresses.</p>
+
+<p><h2>OR</h2></p>
+<p>Use the <strong> DOS memory selector</strong>.  This method is similar to
+using <strong>far memory</strong> in your 16-bit compilers only it works
+slightly differently, since there are no far pointers in DJGPP.  Here is a
+code snippet: </p>
+
+<pre>
+#include &lt;dpmi.h&gt;
+
+void
+main(void)
+  {
+    _farsetsel(_dos_ds);
+    _farnspokeb(0xA0000, 4);
+  }                                 
+</pre>
+<p>This method is slightly slower then the first method, but is more secure.
+Do not worry, it is not too bad in performance if you can program it right,
+(for example, the <a href="http://www.talula.demon.co.uk/allegro/index.html">Allegro</a>
+game library uses this method).  This method is more reliable then the first
+method as you don't have to recalculate anything.  In this example, it draws
+a red pixel in the upper right hand corner in red.  Now you don't need to
+call <tt>_farsetsel</tt> for every write to the screen.  You have to call
+this once per function.  For example in a function that displays a bitmap,
+you would call <tt>_farsetsel</tt> once on the outside (near the top of the
+function).</p>
+
+<p>I suggest that you use the second method until you get more comfortable
+with DJGPP.  The second is a little slower then the first, but the first can
+cause problems if used incorrectly.  Also remember that the first method
+does not work in Windows NT, but the second method does.</p>
+
+<p><hr></p>
+
+<p><h2>Calling Interrupts</h2></p>
+
+<p>This section describes how to call real mode x86 interrupts with DJGPP.  
+In DJGPP it is not too differenent then calling interrupts with 16-bit compilers.
+The most important thing to note is that <em>you cannont use inline assembly
+to call real mode interrupts directly</em>.  If you have ever used the
+<tt>int86</tt> or <tt>int386</tt> functions then this one is pretty simple.
+I will start with a code snipet: </p>
+
+<pre>
+#include &lt;dpmi.h&gt;
+
+void
+main(void)
+{
+  __dpmi_regs r;
+
+  r.x.ax  = 0x13;
+  r.d.ebx = 0x10000;
+  r.h.cl  = 4;
+  r.h.dh  = 5;
+
+  __dpmi_int(0x10, &r);
+}
+</pre>
+<p>First off, the <tt>struct <strong>__dpmi_regs</strong></tt> is a structure to hold all of
+the 386 registers you wish to pass down to <em>real mode</em>.  To access
+the byte registers of <tt><strong>__dpmi_regs</strong></tt> you would use,
+<strong>__dpmi_regs.h.xx</strong>, where xx is the register
+(ah, al, bh, bl, etc...) is the register you wish to modify.  To access the
+word register you do the same for the byte registers but change the
+<strong>h</strong> with a <strong>x</strong>. Now to use the
+dword register just change the <strong>x</strong> with a <strong>d</strong>.</p>
+
+<p>Now as you can see this demo, passes 0x13 into the word< register
+ax, 0x10000 into the dword register ebx, 4 into the byte register cl, and 5
+into the byte register dh.  Then it calls interrupt 0x10, but note it calls
+this interrupt in <strong>real mode</strong>.</p>
+
+<p>When the interrupt is completed the structure you pass <tt>__dpmi_int</tt>
+will contain the new register values.  So you can read the result of the
+interrupt.  If you would like to see what the <tt>struct __dpmi_regs</tt> looks
+like just open the file <tt><strong>djgpp\include\dpmi.h</strong></tt>.</p>
+
+<p><hr></p>
+
+<p><h2>Memory Layout</h2></p>
+
+<p>This section does not provide any example code just some general info.  First
+as stated in the section '<strong>Physical vs. Linear</strong>' physical
+addresses are not valid in DJGPP.  This is important to note, but easy to fix.
+</p>
+
+<p>The second causes great difficulty.  Since addresses are not physical,
+devices that require physical addresses (such as <strong>DMA</strong>) are
+a little harder to program.  I do not know alot about DMA but I can warn you
+that you must consider three things.</p>
+
+<ul>
+<li>DMA memory blocks must be below <strong>16MB</strong>.
+<li>DMA memory blocks must be aligned on a <strong>64KB</strong> page boundary.
+<li>DMA requires that you pass the <em>physical</em> address of the block.
+</ul>
+
+<p>The easiest way I can think of getting around this is allocating a DOS
+memory block.  If you would like an example of this, I can dig one up and
+put it in this page. </p>
+
+<p><hr></p>
+
+<p><h2>Writing Assembly Code for DJGPP with NASM </h2></p>
+
+<p>This section describes how to write assembly routines for DJGPP with
+the Netwide Assembler. If you have any knowledge of assembly this section
+is quite easy to understand.  The syntax of NASM is quite simillar to TASM/MASM
+but a lot simpler too, and fast.  I will just show a code snippet and you
+can observe the differences.  </p>
+
+<pre>
+; TASM code
+P386
+model flat, c
+
+segment text USE32
+
+; int test(int a, int b)
+   PROC test
+      push ebp
+      mov ebp, esp
+
+      mov eax, [ebp+4]
+      add eax, [ebp+8]
+
+      inc [counter]
+
+      pop ebp
+      ret
+   ENDP
+
+ends
+
+segment data use32
+
+   counter dd 0
+
+ends
+
+end
+
+</pre>
+
+<p>As you can see from this routine, it just adds the two parameters together
+then updates a counter.  Not much too it, but shows the basics.  Now the
+NASM code</p>
+
+<pre>
+; NASM code
+[bits 32]
+
+[section .text]
+
+global _test
+_test:
+      push ebp
+      mov ebp, esp
+
+      mov eax, [ebp+4]
+      add eax, [ebp+8]
+
+      inc dword [counter]
+
+      pop ebp
+      ret
+   
+[section .data]
+
+counter dd 0
+
+;end of file
+</pre>
+
+<p>As you see the syntax is pretty much the same.  There are however some
+key things to note: </p>
+
+<ul>
+<li> There is no <tt>offset</tt> keyword.  For example:
+<pre>
+   mov eax, offset _dummy
+</pre>
+becomes:
+<pre>
+   mov eax, _dummy
+</pre>
+<li> To access a variable you cannot igonore the <strong>[]</strong>.
+<pre>
+   mov eax, _dummy
+</pre>
+becomes:
+<pre>
+   mov eax, [_dummy]
+</pre>
+<li> There is no <tt>ENDS</tt> keyword.
+<li> As of NASM 0.97, the <tt>align</tt> keyword does not work for COFF images.
+<li> The align keyword cannot be used in the definition of a segment
+but within the segment it can be used to align a label.
+<li> To specify operand size you would put the size (byte, word or dword) outside
+     the [] brackets.  (This is important for <tt>push pop inc dec</tt>) For example:
+<pre>
+   inc dword ptr [_dummy]
+</pre>
+becomes:
+<pre>
+   inc dword [_dummy]
+</pre>
+If you don't put the <tt>dword</tt> keyword in front NASM will not know
+the size of the data.
+<li> If you want to change the address size type (inside the []) you would
+     put the operand size keyword (byte, word or dword) in side.
+<li> Segment overrides go inside the [].
+<pre>
+   mov es:[_dummy], eax
+</pre>
+becomes:
+<pre>
+   mov [es:_dummy], eax
+</pre>
+<li> You cannot use multiple operands with <tt>push</tt> or <tt>pop</tt>
+<pre>
+   push eax ebx ecx
+</pre>
+becomes:
+<pre>
+   push eax
+   push ebx
+   push ecx
+</pre>
+<li> Labels in NASM are case sensitive.
+<li> NASM is simple to learn, just read the manual.
+<li> There is no P386, P486, P586 etc... mnemonics in NASM.  It always allows
+     you to use any 8086 to 80586 (5x86\6x86 too) opcodes.
+</ul>
+
+<p>That is about all you need to know about NASM/DJGPP to get started.  I
+suggest you read the NASM reference manual to find out more about NASM's
+powerful syntax.  </p>
+
+<p><hr></p>
+
+<p>This sums up this chapter.  I wish to make ammenmants to this section,
+such as better code snipets, and more detailed explanations.  If you have
+questions about any area presented here please email me. </p>
+
+<p>This section was provided by Tom St Denis</p>
+
+<p>Email questions or comments to: <a href="mailto:tomstdenis@goplay.com">
+tomstdenis@goplay.com</a> </p>
+
+

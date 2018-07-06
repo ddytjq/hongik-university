@@ -1,0 +1,79 @@
+ID=E0984
+URL=http://www.hh.se/stud/d98rolb/ansi/vfprintf().html
+SIZE=2866
+DATE=12/07/02
+TIME=19:26:26
+DATASET=C
+HTML=<html>
+<head>
+  <title>vfprintf()</title>
+  <meta name="Generator" content="GuideML V1.6">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+<body>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="va_start().html"><img src="prev.gif" alt="PREV" border=0></a><a href="vprintf().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+<hr>
+<pre>
+vfprintf-Formatted write of a varying-length argument list to a file
+
+Synopsis
+
+        #include &#060;stdarg.h&#062;
+        #include &#060;stdio.h&#062;
+
+        n = vfprintf(fp, ctl, args);
+
+        int n;                  /* number of characters written          */
+                          /*   or -1 for error                          */
+        FILE *fp;          /* file to be written to                  */
+        const char *ctl;  /* control string specifying formatting */
+        va_list args;          /* items to be formatted                  */
+
+Description
+
+        This function is identical in capabilities to the <a href="fprintf().html"> fprintf </a>
+        function, except that the argument list is passed as a va_list
+        instead of on the stack.  The argument list args must be
+        initialized by the caller with a <a href="va_start().html"> va_start </a> macro (and any preceding
+        <a href="va_arg().html"> va_arg </a> macros that it wants to call).  When terminated, it is the
+        responsibility of the caller to call the <a href="va_end().html"> va_end </a> macro on the
+        argument list.
+
+
+Returns
+
+        This function returns the number of characters written or, in the
+        case of an error, a -1.
+
+Example
+
+        #include &#060;stdio.h&#062;
+        #include &#060;stdarg.h&#062;
+
+        /* My own error function for a given error number */
+        void myerr(FILE *fp, int ernum, char *string, ...)
+        {
+            va_list arglist;
+
+            va_start(arglist, string);
+
+            fprintf(fp,&quot;ERR-%d: n&quot;,ernum);
+            vfprintf(fp, string, arglist);
+
+            va_end(arglist);
+        }
+
+        void main(void)
+        {
+            myerr(stderr, 205, __sys_errlist[205]);
+        }
+
+See Also
+
+        <a href="fprintf().html"> fprintf </a>
+</pre>
+<hr>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="va_start().html"><img src="prev.gif" alt="PREV" border=0></a><a href="vprintf().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+</body>
+</html>
+

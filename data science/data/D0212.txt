@@ -1,0 +1,196 @@
+ID=D0212
+URL=http://www.geocities.com/lkp550/java/lesson5.htm
+SIZE=10527
+DATE=16/07/02
+TIME=14:40:01
+DATASET=Java
+HTML=<html>
+<body background="notepad.gif">
+<table width=90% align=right><tr><td>
+<font face="arial">
+<center><h2><u>Lesson Five</u></h2></center>
+
+<p>Now we'll take a look at input, selection, and repetition. All the programs we will be writing be <b>interactive</b>, which means you and the programs you write will exchange communication. This will occur while the programs are in <b>run time</b>, or while the program is running. To provide the method to receive input, you must write <b>System.in.read()</b>. This method will tell the <i>System.out.print()</i> what the user typed from the keyboard. For example:<br>
+
+<br>
+<tt>
+public class UsersInitials<br>
+{<br>
+  public static void main(String[] args) throws Exception<br>
+  {<br>
+    char firstInit, middleInit, lastInit;<br>
+    System.out.print("Enter your first initial and press ENTER. ");<br>
+    firstInit = (char)System.in.read(); System.in.read(); System.in.read();<br>
+    System.out.print("Enter your second initial and press ENTER. ");<br>
+    middleInit = (char)System.in.read(); System.in.read(); System.in.read();<br>
+    System.out.print("Enter your third initial and press ENTER. ");<br>
+    lastInit = (char)System.in.read();<br>
+    System.out.println("Your initials are " + firstInit + middleInit + lastInit);<br>
+  }<br>
+}<br>
+</tt>
+
+<p>the program prompts the user to type his or her initials and type ENTER after each one. The words <b>throws Exception</b> passes the error situation to the operating system. The two extra <i>System.in.read();</i> statements absorb the ENTER key after the first one retrieves the information. Finally, the last <i>System.out.println("Your initials are " + firstInit + middleInit + lastInit);</i> echoes (or repeats) the users input back for the user for confirmation.
+
+<p>The proper way of designing programs that interact with the user is by way of creating flowcharts as diagrams that show the steps needed to complete the program. Flowcharts are especially useful when designing programs using <b>if()</b> statements. This next program is a fill-out form that uses <i>if()</i> and <i>if()...else</i> statements:<br>
+
+<br>
+<tt>
+public class FurnitureSizes<br>
+{<br>
+  public static void main(String[] args) throws Exception<br>
+  {<br>
+    char furnitureType, furnSize;<br>
+    System.out.println("Enter the type of wood you want the table to be made of");<br>
+    System.out.print("P for pine, ");<br>
+    System.out.print("O for oak, ");<br>
+    System.out.print("or M for mahogany. ");<br>
+    furnitureType = (char)System.in.read();System.in.read();System.in.read();<br>
+    System.out.println("Enter the size of table you want");<br>
+    System.out.print("L for large, S for small. ");<br>
+    furnSize = (char)System.in.read();<br>
+    System.out.print("The cost of tables made of ");<br>
+    if(furnitureType == 'P')<br>
+    {<br>
+    if(furnSize == 'L')<br>
+            System.out.println("pine is $135.");<br>
+    else<br>
+      System.out.println("pine is $100.");<br>
+    }<br>
+    else if(furnitureType == 'O')<br>
+    {<br>
+    if(furnSize == 'L')<br>
+      System.out.println("oak is $260.");<br>
+    else<br>
+      System.out.println("oak is $225.");<br>
+    }<br>
+    else if(furnitureType == 'M')<br>
+    {<br>
+    if(furnSize == 'L')<br>
+      System.out.println("mahogany is $345.");<br>
+    else<br>
+      System.out.println("mahogany is $310.");<br>
+    }<br>
+  }<br>
+}<br>
+</tt>
+
+<p>Notice the type of wood and the size of table gives you two different results. Using the <b>if</b> statement is called <b>decision making</b>. The program above allows the user to make the decision of what kind of wood the table is to be made out of and what size the table is to be. Once that decision is made, the user can find out how much the table is going to cost. You can also nest <b>if...else</b> statements within other if...else statements.
+
+<p>There are special characters that you can use in decision making. Say you asked a child to give you a number between 1 and 10, and the child said, "13". 13 is not between 1 and 10. To write an argument to take care of this, you'd need to compare the number given with the numbers you provided. This is where the <b>&&</b> (AND operator) comes in to play. You'd write your argument if(num >= 1 && num <= 10). The <b>||</b> (OR operator) can be used in cases such as the case of a character: if(letter == 'A' || letter == 'a').
+
+<p>Another way of making decisions is to use the <b>switch()</b> statement. With the <i>switch()</i> statement, everything is put in its' own catagory and read as needed. Below is <b>ChooseManager</b> program that calls the <b>Event</b> program for its' constructor and then uses the <i>switch()</i> statement along with the <i>case:, break;, and default;</i> statements.<br>
+
+<br>
+<tt>
+public class Event<br>
+{<br>
+  private char eventType;<br>
+  private double eventMinRate;<br>
+  public Event(char event, double rate)<br>
+  {<br>
+    eventType = event;<br>
+    eventMinRate = rate;<br>
+  }<br>
+  public char getEventType()<br>
+  {<br>
+    return eventType;<br>
+  }<br>
+  public double getEventMinRate()<br>
+  {<br>
+    return eventMinRate;<br>
+  }<br>
+}
+</tt>
+<br>
+
+<br>
+<tt>
+public class ChooseManager<br>
+{<br>
+  static final double CORP_RATE = 75.99;<br>
+  static final double PRI_RATE = 47.99;<br>
+  static final double NON_PROF_RATE = 40.99;<br>
+  public static void main(String[] args) throws Exception<br>
+  {<br>
+    char eventType;<br>
+    Event anEvent;<br>
+    System.out.println("Enter the type of event you are scheduling");<br>
+    System.out.println("C for a corporate event");<br>
+    System.out.println("P for a private event");<br>
+    System.out.println("N for a non-profit event");<br>
+    eventType = (char)System.in.read();<br>
+    while (eventType != 'C' && eventType != 'P' && eventType != 'N')<br>
+    {<br>
+    System.in.read(); System.in.read();<br>
+    System.out.println("Entry must be C or P or N!");<br>
+    eventType = (char)System.in.read();<br>
+    }<br>
+    System.out.print("The manager will be ");<br>
+    switch(eventType)<br>
+    {<br>
+      case 'C':<br>
+        System.out.println("Dustin Britt");<br>
+        anEvent = new Event(eventType, CORP_RATE);<br>
+        break;<br>
+      case 'P':<br>
+        System.out.println("Carmen Lindsey");<br>
+        anEvent = new Event(eventType, PRI_RATE);<br>
+        break;<br>
+      default:<br>
+        System.out.println("Robin Armanetti");<br>
+        anEvent = new Event(eventType, NON_PROF_RATE);<br>
+        break;<br>
+    }<br>
+    System.out.println("Event type is " + anEvent.getEventType());<br>
+    System.out.println("Minimum rate charged is $" + anEvent.getEventMinRate());<br>
+  }<br>
+}
+</tt>
+
+<p>The <i>switch()</i> statement takes the "eventType" and asks if the <i>case:</i> is "C", "P", or <i>default:</i> for "N", then prints the proper message accordingly. Notice that this program also features the <b>while</b> loop as well as the <b>AND (&&)</b>, and <b>NOT (!=)</b> operators, but not the <b>OR (||)</b> operator. These are allowed for the boolean (true or false) statement to work. In short, while <i>eventType</i> is not equal to "C", "P", and "N", the statement "Entry must be C or P or N!" must execute, otherwise produce the output from the <i>switch()</i> statement. Another looping command is the <b>for()</b> loop. The for() loop uses shortcut arithmetic operators. One of them are <b>++</b> and the other is <b>--</b>. If you wanted "num" to be incremented by one, you'd write <b>++num</b>. The same goes for decrementing. However, if you want to write "num = num + 1;" in shorthand, you'd write <b>num += 1;</b>. Here is an example of how a <i>for()</i> loop works:<br>
+
+<br>
+<tt>
+public class EvenInt<br>
+{<br>
+  public static void main(String[] args) throws Exception<br>
+  {<br>
+    int num, testNum;<br>
+    for(testNum = 1; testNum <= 100; ++testNum)<br>
+    {<br>
+    System.out.print(testNum + " is evenly divisible by ");<br>
+    for(num = 1; num < testNum; ++num)<br>
+      if(testNum%num == 0)<br>
+        System.out.print(num + "  ");<br>
+        // Print the number and two spaces<br>
+    System.out.println();<br>
+      if(testNum % 20 == 0)<br>
+      {<br>
+        System.out.println("Press ENTER to continue...");<br>
+        System.in.read(); System.in.read();<br>
+      }<br>
+    }<br>
+  }<br>
+}
+</tt>
+
+<p>As you can see, there are two <i>for()</i> loops in this program. The first one sets "testNum" to 1, says "process this loop until you've done it 100 times, then quit", and then adds 1 to "testNum". Nested inside the loop is an equation that uses modulo division (%) to determine when this loop ends. The second <i>for()</i> loop sets "num" to 1, says "as long as 'num' is less than 'testNum', process this loop", then adds 1 to "num". This loop also has a similar equation to find when the loop ends. However, it is designed to let the viewer see 20 lines at one time before going on to the next 20.
+
+<p><b><u>Question:</u></b> It seems as though these programs are the background of some similar forms I've filled out on the web. But, the thing is, I was able to type numbers. Why, after trying programs of my own like these, can't I use numbers?
+
+<p><b><u>Answer:</u></b> That's what we are going to cover next. The <i>System.in.read()</i> only reads character input, not integer. In order to read integers, you need to create an <b>array</b>.
+<br>
+
+<hr>
+<center><a href="lesson4.htm">Lesson Four</a> | <a href="http://www.geocities.com/lkp550/JAVAHUT.htm">Home</a> | <a href="lesson6.htm">Lesson Six</a><br>
+<br>
+If you have any questions or comments about this lesson, feel free to <a href="http://expertprofile.yahoo.com/lkp550?.tpid=383000187">click here</a> and leave me your message.</center>
+
+</font>
+</td></tr></table>
+</body>
+</html>
+<!-- text below generated by server. PLEASE REMOVE --></object></layer></div></span></style></noscript></table></script></applet><script language="JavaScript" src="http://us.i1.yimg.com/us.yimg.com/i/mc/mc.js"></script><script language="JavaScript" src="http://us.geocities.com/js_source/geov2.js"></script><script language="javascript">geovisit();</script><noscript><img src="http://visit.geocities.com/visit.gif?1026499531" border=0 width=1 height=1></noscript>
+<IMG SRC="http://geo.yahoo.com/serv?s=76001068&t=1026499531" ALT=1 WIDTH=1 HEIGHT=1>
+

@@ -1,0 +1,949 @@
+ID=E0224
+URL=http://gcc.gnu.org/onlinedocs/g77/
+SIZE=68258
+DATE=12/07/02
+TIME=19:18:54
+DATASET=C
+HTML=<html lang="en">
+<head>
+<title>Using and Porting GNU Fortran</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name=description content="Using and Porting GNU Fortran">
+<meta name=generator content="makeinfo 4.1">
+<link href="http://texinfo.org/" rel=generator-home>
+</head>
+<body>
+<h1>Using and Porting GNU Fortran</h1>
+Contributed by James Craig Burley (<a href="mailto:craig@jcb-sc.com">craig@jcb-sc.com</a>). 
+Inspired by a first pass at translating <code>g77-0.5.16/f/DOC</code> that
+was contributed to Craig by David Ronis (<a href="mailto:ronis@onsager.chem.mcgill.ca">ronis@onsager.chem.mcgill.ca</a>).
+
+
+<h2>Short Contents</h2>
+<ul>
+<li><a href="index.html#toc_Top">Introduction</a>
+<li><a href="index.html#toc_Copying">GNU GENERAL PUBLIC LICENSE</a>
+<li><a href="index.html#toc_GNU%20Free%20Documentation%20License">GNU Free Documentation License</a>
+<li><a href="index.html#toc_Contributors">Contributors to GNU Fortran</a>
+<li><a href="index.html#toc_Funding">Funding Free Software</a>
+<li><a href="index.html#toc_Funding%20GNU%20Fortran">Funding GNU Fortran</a>
+<li><a href="index.html#toc_Getting%20Started">Getting Started</a>
+<li><a href="index.html#toc_What%20is%20GNU%20Fortran%3f">What is GNU Fortran?</a>
+<li><a href="index.html#toc_G77%20and%20GCC">Compile Fortran, C, or Other Programs</a>
+<li><a href="index.html#toc_Invoking%20G77">GNU Fortran Command Options</a>
+<li><a href="index.html#toc_News">News About GNU Fortran</a>
+<li><a href="index.html#toc_Changes">User-visible Changes</a>
+<li><a href="index.html#toc_Language">The GNU Fortran Language</a>
+<li><a href="index.html#toc_Other%20Dialects">Other Dialects</a>
+<li><a href="index.html#toc_Compiler">The GNU Fortran Compiler</a>
+<li><a href="index.html#toc_Other%20Compilers">Other Compilers</a>
+<li><a href="index.html#toc_Other%20Languages">Other Languages</a>
+<li><a href="index.html#toc_Debugging%20and%20Interfacing">Debugging and Interfacing</a>
+<li><a href="index.html#toc_Collected%20Fortran%20Wisdom">Collected Fortran Wisdom</a>
+<li><a href="index.html#toc_Trouble">Known Causes of Trouble with GNU Fortran</a>
+<li><a href="index.html#toc_Open%20Questions">Open Questions</a>
+<li><a href="index.html#toc_Bugs">Reporting Bugs</a>
+<li><a href="index.html#toc_Service">How To Get Help with GNU Fortran</a>
+<li><a href="index.html#toc_Adding%20Options">Adding Options</a>
+<li><a href="index.html#toc_Projects">Projects</a>
+<li><a href="index.html#toc_Front%20End">Front End</a>
+<li><a href="index.html#toc_Diagnostics">Diagnostics</a>
+<li><a href="index.html#toc_Index">Index</a>
+</ul>
+
+
+<h2>Table of Contents</h2>
+<ul>
+<li><a name="toc_Top"></a>
+    <a href="index.html#Top">Introduction</a>
+<li><a name="toc_Copying"></a>
+    <a href="Copying.html#Copying">GNU GENERAL PUBLIC LICENSE</a>
+<ul>
+<li><a href="Copying.html#Copying">Preamble</a>
+<li><a href="Copying.html#Copying">How to Apply These Terms to Your New Programs</a>
+</ul>
+<li><a name="toc_GNU%20Free%20Documentation%20License"></a>
+    <a href="GNU-Free-Documentation-License.html#GNU%20Free%20Documentation%20License">GNU Free Documentation License</a>
+<ul>
+<li><a href="GNU-Free-Documentation-License.html#GNU%20Free%20Documentation%20License">ADDENDUM: How to use this License for your documents</a>
+</ul>
+<li><a name="toc_Contributors"></a>
+    <a href="Contributors.html#Contributors">Contributors to GNU Fortran</a>
+<li><a name="toc_Funding"></a>
+    <a href="Funding.html#Funding">Funding Free Software</a>
+<li><a name="toc_Funding%20GNU%20Fortran"></a>
+    <a href="Funding-GNU-Fortran.html#Funding%20GNU%20Fortran">Funding GNU Fortran</a>
+<li><a name="toc_Getting%20Started"></a>
+    <a href="Getting-Started.html#Getting%20Started">Getting Started</a>
+<li><a name="toc_What%20is%20GNU%20Fortran%3f"></a>
+    <a href="What-is-GNU-Fortran-.html#What%20is%20GNU%20Fortran%3f">What is GNU Fortran?</a>
+<li><a name="toc_G77%20and%20GCC"></a>
+    <a href="G77-and-GCC.html#G77%20and%20GCC">Compile Fortran, C, or Other Programs</a>
+<li><a name="toc_Invoking%20G77"></a>
+    <a href="Invoking-G77.html#Invoking%20G77">GNU Fortran Command Options</a>
+<ul>
+<li><a href="Option-Summary.html#Option%20Summary">Option Summary</a>
+<li><a href="Overall-Options.html#Overall%20Options">Options Controlling the Kind of Output</a>
+<li><a href="Shorthand-Options.html#Shorthand%20Options">Shorthand Options</a>
+<li><a href="Fortran-Dialect-Options.html#Fortran%20Dialect%20Options">Options Controlling Fortran Dialect</a>
+<li><a href="Warning-Options.html#Warning%20Options">Options to Request or Suppress Warnings</a>
+<li><a href="Debugging-Options.html#Debugging%20Options">Options for Debugging Your Program or GNU Fortran</a>
+<li><a href="Optimize-Options.html#Optimize%20Options">Options That Control Optimization</a>
+<li><a href="Preprocessor-Options.html#Preprocessor%20Options">Options Controlling the Preprocessor</a>
+<li><a href="Directory-Options.html#Directory%20Options">Options for Directory Search</a>
+<li><a href="Code-Gen-Options.html#Code%20Gen%20Options">Options for Code Generation Conventions</a>
+<li><a href="Environment-Variables.html#Environment%20Variables">Environment Variables Affecting GNU Fortran</a>
+</ul>
+<li><a name="toc_News"></a>
+    <a href="News.html#News">News About GNU Fortran</a>
+<li><a name="toc_Changes"></a>
+    <a href="Changes.html#Changes">User-visible Changes</a>
+<li><a name="toc_Language"></a>
+    <a href="Language.html#Language">The GNU Fortran Language</a>
+<ul>
+<li><a href="Direction-of-Language-Development.html#Direction%20of%20Language%20Development">Direction of Language Development</a>
+<li><a href="Standard-Support.html#Standard%20Support">ANSI FORTRAN 77 Standard Support</a>
+<ul>
+<li><a href="No-Passing-External-Assumed-length.html#No%20Passing%20External%20Assumed-length">No Passing External Assumed-length</a>
+<li><a href="No-Passing-Dummy-Assumed-length.html#No%20Passing%20Dummy%20Assumed-length">No Passing Dummy Assumed-length</a>
+<li><a href="No-Pathological-Implied-DO.html#No%20Pathological%20Implied-DO">No Pathological Implied-DO</a>
+<li><a href="No-Useless-Implied-DO.html#No%20Useless%20Implied-DO">No Useless Implied-DO</a>
+</ul>
+<li><a href="Conformance.html#Conformance">Conformance</a>
+<li><a href="Notation-Used.html#Notation%20Used">Notation Used in This Chapter</a>
+<li><a href="Terms-and-Concepts.html#Terms%20and%20Concepts">Fortran Terms and Concepts</a>
+<ul>
+<li><a href="Syntactic-Items.html#Syntactic%20Items">Syntactic Items</a>
+<li><a href="Statements-Comments-Lines.html#Statements%20Comments%20Lines">Statements, Comments, and Lines</a>
+<li><a href="Scope-of-Names-and-Labels.html#Scope%20of%20Names%20and%20Labels">Scope of Symbolic Names and Statement Labels</a>
+</ul>
+<li><a href="Characters-Lines-Sequence.html#Characters%20Lines%20Sequence">Characters, Lines, and Execution Sequence</a>
+<ul>
+<li><a href="Character-Set.html#Character%20Set">GNU Fortran Character Set</a>
+<li><a href="Lines.html#Lines">Lines</a>
+<li><a href="Continuation-Line.html#Continuation%20Line">Continuation Line</a>
+<li><a href="Statements.html#Statements">Statements</a>
+<li><a href="Statement-Labels.html#Statement%20Labels">Statement Labels</a>
+<li><a href="Order.html#Order">Order of Statements and Lines</a>
+<li><a href="INCLUDE.html#INCLUDE">Including Source Text</a>
+<li><a href="Cpp-style-directives.html#Cpp-style%20directives">Cpp-style directives</a>
+</ul>
+<li><a href="Data-Types-and-Constants.html#Data%20Types%20and%20Constants">Data Types and Constants</a>
+<ul>
+<li><a href="Types.html#Types">Data Types</a>
+<ul>
+<li><a href="Double-Notation.html#Double%20Notation">Double Notation</a>
+<li><a href="Star-Notation.html#Star%20Notation">Star Notation</a>
+<li><a href="Kind-Notation.html#Kind%20Notation">Kind Notation</a>
+</ul>
+<li><a href="Constants.html#Constants">Constants</a>
+<li><a href="Integer-Type.html#Integer%20Type">Integer Type</a>
+<li><a href="Character-Type.html#Character%20Type">Character Type</a>
+</ul>
+<li><a href="Expressions.html#Expressions">Expressions</a>
+<ul>
+<li><a href="-LOC--.html#%25LOC()">The <code>%LOC()</code> Construct</a>
+</ul>
+<li><a href="Specification-Statements.html#Specification%20Statements">Specification Statements</a>
+<ul>
+<li><a href="NAMELIST.html#NAMELIST"><code>NAMELIST</code> Statement</a>
+<li><a href="DOUBLE-COMPLEX.html#DOUBLE%20COMPLEX"><code>DOUBLE COMPLEX</code> Statement</a>
+</ul>
+<li><a href="Control-Statements.html#Control%20Statements">Control Statements</a>
+<ul>
+<li><a href="DO-WHILE.html#DO%20WHILE">DO WHILE</a>
+<li><a href="END-DO.html#END%20DO">END DO</a>
+<li><a href="Construct-Names.html#Construct%20Names">Construct Names</a>
+<li><a href="CYCLE-and-EXIT.html#CYCLE%20and%20EXIT">The <code>CYCLE</code> and <code>EXIT</code> Statements</a>
+</ul>
+<li><a href="Functions-and-Subroutines.html#Functions%20and%20Subroutines">Functions and Subroutines</a>
+<ul>
+<li><a href="-VAL--.html#%25VAL()">The <code>%VAL()</code> Construct</a>
+<li><a href="-REF--.html#%25REF()">The <code>%REF()</code> Construct</a>
+<li><a href="-DESCR--.html#%25DESCR()">The <code>%DESCR()</code> Construct</a>
+<li><a href="Generics-and-Specifics.html#Generics%20and%20Specifics">Generics and Specifics</a>
+<li><a href="REAL---and-AIMAG---of-Complex.html#REAL()%20and%20AIMAG()%20of%20Complex"><code>REAL()</code> and <code>AIMAG()</code> of Complex</a>
+<li><a href="CMPLX---of-DOUBLE-PRECISION.html#CMPLX()%20of%20DOUBLE%20PRECISION"><code>CMPLX()</code> of <code>DOUBLE PRECISION</code></a>
+<li><a href="MIL-STD-1753.html#MIL-STD%201753">MIL-STD 1753 Support</a>
+<li><a href="f77-f2c-Intrinsics.html#f77%2ff2c%20Intrinsics"><code>f77</code>/<code>f2c</code> Intrinsics</a>
+<li><a href="Table-of-Intrinsic-Functions.html#Table%20of%20Intrinsic%20Functions">Table of Intrinsic Functions</a>
+<ul>
+<li><a href="Abort-Intrinsic.html#Abort%20Intrinsic">Abort Intrinsic</a>
+<li><a href="Abs-Intrinsic.html#Abs%20Intrinsic">Abs Intrinsic</a>
+<li><a href="Access-Intrinsic.html#Access%20Intrinsic">Access Intrinsic</a>
+<li><a href="AChar-Intrinsic.html#AChar%20Intrinsic">AChar Intrinsic</a>
+<li><a href="ACos-Intrinsic.html#ACos%20Intrinsic">ACos Intrinsic</a>
+<li><a href="AdjustL-Intrinsic.html#AdjustL%20Intrinsic">AdjustL Intrinsic</a>
+<li><a href="AdjustR-Intrinsic.html#AdjustR%20Intrinsic">AdjustR Intrinsic</a>
+<li><a href="AImag-Intrinsic.html#AImag%20Intrinsic">AImag Intrinsic</a>
+<li><a href="AInt-Intrinsic.html#AInt%20Intrinsic">AInt Intrinsic</a>
+<li><a href="Alarm-Intrinsic.html#Alarm%20Intrinsic">Alarm Intrinsic</a>
+<li><a href="All-Intrinsic.html#All%20Intrinsic">All Intrinsic</a>
+<li><a href="Allocated-Intrinsic.html#Allocated%20Intrinsic">Allocated Intrinsic</a>
+<li><a href="ALog-Intrinsic.html#ALog%20Intrinsic">ALog Intrinsic</a>
+<li><a href="ALog10-Intrinsic.html#ALog10%20Intrinsic">ALog10 Intrinsic</a>
+<li><a href="AMax0-Intrinsic.html#AMax0%20Intrinsic">AMax0 Intrinsic</a>
+<li><a href="AMax1-Intrinsic.html#AMax1%20Intrinsic">AMax1 Intrinsic</a>
+<li><a href="AMin0-Intrinsic.html#AMin0%20Intrinsic">AMin0 Intrinsic</a>
+<li><a href="AMin1-Intrinsic.html#AMin1%20Intrinsic">AMin1 Intrinsic</a>
+<li><a href="AMod-Intrinsic.html#AMod%20Intrinsic">AMod Intrinsic</a>
+<li><a href="And-Intrinsic.html#And%20Intrinsic">And Intrinsic</a>
+<li><a href="ANInt-Intrinsic.html#ANInt%20Intrinsic">ANInt Intrinsic</a>
+<li><a href="Any-Intrinsic.html#Any%20Intrinsic">Any Intrinsic</a>
+<li><a href="ASin-Intrinsic.html#ASin%20Intrinsic">ASin Intrinsic</a>
+<li><a href="Associated-Intrinsic.html#Associated%20Intrinsic">Associated Intrinsic</a>
+<li><a href="ATan-Intrinsic.html#ATan%20Intrinsic">ATan Intrinsic</a>
+<li><a href="ATan2-Intrinsic.html#ATan2%20Intrinsic">ATan2 Intrinsic</a>
+<li><a href="BesJ0-Intrinsic.html#BesJ0%20Intrinsic">BesJ0 Intrinsic</a>
+<li><a href="BesJ1-Intrinsic.html#BesJ1%20Intrinsic">BesJ1 Intrinsic</a>
+<li><a href="BesJN-Intrinsic.html#BesJN%20Intrinsic">BesJN Intrinsic</a>
+<li><a href="BesY0-Intrinsic.html#BesY0%20Intrinsic">BesY0 Intrinsic</a>
+<li><a href="BesY1-Intrinsic.html#BesY1%20Intrinsic">BesY1 Intrinsic</a>
+<li><a href="BesYN-Intrinsic.html#BesYN%20Intrinsic">BesYN Intrinsic</a>
+<li><a href="Bit_Size-Intrinsic.html#Bit_Size%20Intrinsic">Bit_Size Intrinsic</a>
+<li><a href="BTest-Intrinsic.html#BTest%20Intrinsic">BTest Intrinsic</a>
+<li><a href="CAbs-Intrinsic.html#CAbs%20Intrinsic">CAbs Intrinsic</a>
+<li><a href="CCos-Intrinsic.html#CCos%20Intrinsic">CCos Intrinsic</a>
+<li><a href="Ceiling-Intrinsic.html#Ceiling%20Intrinsic">Ceiling Intrinsic</a>
+<li><a href="CExp-Intrinsic.html#CExp%20Intrinsic">CExp Intrinsic</a>
+<li><a href="Char-Intrinsic.html#Char%20Intrinsic">Char Intrinsic</a>
+<li><a href="ChDir-Intrinsic--subroutine-.html#ChDir%20Intrinsic%20(subroutine)">ChDir Intrinsic (subroutine)</a>
+<li><a href="ChMod-Intrinsic--subroutine-.html#ChMod%20Intrinsic%20(subroutine)">ChMod Intrinsic (subroutine)</a>
+<li><a href="CLog-Intrinsic.html#CLog%20Intrinsic">CLog Intrinsic</a>
+<li><a href="Cmplx-Intrinsic.html#Cmplx%20Intrinsic">Cmplx Intrinsic</a>
+<li><a href="Complex-Intrinsic.html#Complex%20Intrinsic">Complex Intrinsic</a>
+<li><a href="Conjg-Intrinsic.html#Conjg%20Intrinsic">Conjg Intrinsic</a>
+<li><a href="Cos-Intrinsic.html#Cos%20Intrinsic">Cos Intrinsic</a>
+<li><a href="CosH-Intrinsic.html#CosH%20Intrinsic">CosH Intrinsic</a>
+<li><a href="Count-Intrinsic.html#Count%20Intrinsic">Count Intrinsic</a>
+<li><a href="CPU_Time-Intrinsic.html#CPU_Time%20Intrinsic">CPU_Time Intrinsic</a>
+<li><a href="CShift-Intrinsic.html#CShift%20Intrinsic">CShift Intrinsic</a>
+<li><a href="CSin-Intrinsic.html#CSin%20Intrinsic">CSin Intrinsic</a>
+<li><a href="CSqRt-Intrinsic.html#CSqRt%20Intrinsic">CSqRt Intrinsic</a>
+<li><a href="CTime-Intrinsic--subroutine-.html#CTime%20Intrinsic%20(subroutine)">CTime Intrinsic (subroutine)</a>
+<li><a href="CTime-Intrinsic--function-.html#CTime%20Intrinsic%20(function)">CTime Intrinsic (function)</a>
+<li><a href="DAbs-Intrinsic.html#DAbs%20Intrinsic">DAbs Intrinsic</a>
+<li><a href="DACos-Intrinsic.html#DACos%20Intrinsic">DACos Intrinsic</a>
+<li><a href="DASin-Intrinsic.html#DASin%20Intrinsic">DASin Intrinsic</a>
+<li><a href="DATan-Intrinsic.html#DATan%20Intrinsic">DATan Intrinsic</a>
+<li><a href="DATan2-Intrinsic.html#DATan2%20Intrinsic">DATan2 Intrinsic</a>
+<li><a href="Date_and_Time-Intrinsic.html#Date_and_Time%20Intrinsic">Date_and_Time Intrinsic</a>
+<li><a href="DbesJ0-Intrinsic.html#DbesJ0%20Intrinsic">DbesJ0 Intrinsic</a>
+<li><a href="DbesJ1-Intrinsic.html#DbesJ1%20Intrinsic">DbesJ1 Intrinsic</a>
+<li><a href="DbesJN-Intrinsic.html#DbesJN%20Intrinsic">DbesJN Intrinsic</a>
+<li><a href="DbesY0-Intrinsic.html#DbesY0%20Intrinsic">DbesY0 Intrinsic</a>
+<li><a href="DbesY1-Intrinsic.html#DbesY1%20Intrinsic">DbesY1 Intrinsic</a>
+<li><a href="DbesYN-Intrinsic.html#DbesYN%20Intrinsic">DbesYN Intrinsic</a>
+<li><a href="Dble-Intrinsic.html#Dble%20Intrinsic">Dble Intrinsic</a>
+<li><a href="DCos-Intrinsic.html#DCos%20Intrinsic">DCos Intrinsic</a>
+<li><a href="DCosH-Intrinsic.html#DCosH%20Intrinsic">DCosH Intrinsic</a>
+<li><a href="DDiM-Intrinsic.html#DDiM%20Intrinsic">DDiM Intrinsic</a>
+<li><a href="DErF-Intrinsic.html#DErF%20Intrinsic">DErF Intrinsic</a>
+<li><a href="DErFC-Intrinsic.html#DErFC%20Intrinsic">DErFC Intrinsic</a>
+<li><a href="DExp-Intrinsic.html#DExp%20Intrinsic">DExp Intrinsic</a>
+<li><a href="Digits-Intrinsic.html#Digits%20Intrinsic">Digits Intrinsic</a>
+<li><a href="DiM-Intrinsic.html#DiM%20Intrinsic">DiM Intrinsic</a>
+<li><a href="DInt-Intrinsic.html#DInt%20Intrinsic">DInt Intrinsic</a>
+<li><a href="DLog-Intrinsic.html#DLog%20Intrinsic">DLog Intrinsic</a>
+<li><a href="DLog10-Intrinsic.html#DLog10%20Intrinsic">DLog10 Intrinsic</a>
+<li><a href="DMax1-Intrinsic.html#DMax1%20Intrinsic">DMax1 Intrinsic</a>
+<li><a href="DMin1-Intrinsic.html#DMin1%20Intrinsic">DMin1 Intrinsic</a>
+<li><a href="DMod-Intrinsic.html#DMod%20Intrinsic">DMod Intrinsic</a>
+<li><a href="DNInt-Intrinsic.html#DNInt%20Intrinsic">DNInt Intrinsic</a>
+<li><a href="Dot_Product-Intrinsic.html#Dot_Product%20Intrinsic">Dot_Product Intrinsic</a>
+<li><a href="DProd-Intrinsic.html#DProd%20Intrinsic">DProd Intrinsic</a>
+<li><a href="DSign-Intrinsic.html#DSign%20Intrinsic">DSign Intrinsic</a>
+<li><a href="DSin-Intrinsic.html#DSin%20Intrinsic">DSin Intrinsic</a>
+<li><a href="DSinH-Intrinsic.html#DSinH%20Intrinsic">DSinH Intrinsic</a>
+<li><a href="DSqRt-Intrinsic.html#DSqRt%20Intrinsic">DSqRt Intrinsic</a>
+<li><a href="DTan-Intrinsic.html#DTan%20Intrinsic">DTan Intrinsic</a>
+<li><a href="DTanH-Intrinsic.html#DTanH%20Intrinsic">DTanH Intrinsic</a>
+<li><a href="DTime-Intrinsic--subroutine-.html#DTime%20Intrinsic%20(subroutine)">DTime Intrinsic (subroutine)</a>
+<li><a href="EOShift-Intrinsic.html#EOShift%20Intrinsic">EOShift Intrinsic</a>
+<li><a href="Epsilon-Intrinsic.html#Epsilon%20Intrinsic">Epsilon Intrinsic</a>
+<li><a href="ErF-Intrinsic.html#ErF%20Intrinsic">ErF Intrinsic</a>
+<li><a href="ErFC-Intrinsic.html#ErFC%20Intrinsic">ErFC Intrinsic</a>
+<li><a href="ETime-Intrinsic--subroutine-.html#ETime%20Intrinsic%20(subroutine)">ETime Intrinsic (subroutine)</a>
+<li><a href="ETime-Intrinsic--function-.html#ETime%20Intrinsic%20(function)">ETime Intrinsic (function)</a>
+<li><a href="Exit-Intrinsic.html#Exit%20Intrinsic">Exit Intrinsic</a>
+<li><a href="Exp-Intrinsic.html#Exp%20Intrinsic">Exp Intrinsic</a>
+<li><a href="Exponent-Intrinsic.html#Exponent%20Intrinsic">Exponent Intrinsic</a>
+<li><a href="FDate-Intrinsic--subroutine-.html#FDate%20Intrinsic%20(subroutine)">FDate Intrinsic (subroutine)</a>
+<li><a href="FDate-Intrinsic--function-.html#FDate%20Intrinsic%20(function)">FDate Intrinsic (function)</a>
+<li><a href="FGet-Intrinsic--subroutine-.html#FGet%20Intrinsic%20(subroutine)">FGet Intrinsic (subroutine)</a>
+<li><a href="FGetC-Intrinsic--subroutine-.html#FGetC%20Intrinsic%20(subroutine)">FGetC Intrinsic (subroutine)</a>
+<li><a href="Float-Intrinsic.html#Float%20Intrinsic">Float Intrinsic</a>
+<li><a href="Floor-Intrinsic.html#Floor%20Intrinsic">Floor Intrinsic</a>
+<li><a href="Flush-Intrinsic.html#Flush%20Intrinsic">Flush Intrinsic</a>
+<li><a href="FNum-Intrinsic.html#FNum%20Intrinsic">FNum Intrinsic</a>
+<li><a href="FPut-Intrinsic--subroutine-.html#FPut%20Intrinsic%20(subroutine)">FPut Intrinsic (subroutine)</a>
+<li><a href="FPutC-Intrinsic--subroutine-.html#FPutC%20Intrinsic%20(subroutine)">FPutC Intrinsic (subroutine)</a>
+<li><a href="Fraction-Intrinsic.html#Fraction%20Intrinsic">Fraction Intrinsic</a>
+<li><a href="FSeek-Intrinsic.html#FSeek%20Intrinsic">FSeek Intrinsic</a>
+<li><a href="FStat-Intrinsic--subroutine-.html#FStat%20Intrinsic%20(subroutine)">FStat Intrinsic (subroutine)</a>
+<li><a href="FStat-Intrinsic--function-.html#FStat%20Intrinsic%20(function)">FStat Intrinsic (function)</a>
+<li><a href="FTell-Intrinsic--subroutine-.html#FTell%20Intrinsic%20(subroutine)">FTell Intrinsic (subroutine)</a>
+<li><a href="FTell-Intrinsic--function-.html#FTell%20Intrinsic%20(function)">FTell Intrinsic (function)</a>
+<li><a href="GError-Intrinsic.html#GError%20Intrinsic">GError Intrinsic</a>
+<li><a href="GetArg-Intrinsic.html#GetArg%20Intrinsic">GetArg Intrinsic</a>
+<li><a href="GetCWD-Intrinsic--subroutine-.html#GetCWD%20Intrinsic%20(subroutine)">GetCWD Intrinsic (subroutine)</a>
+<li><a href="GetCWD-Intrinsic--function-.html#GetCWD%20Intrinsic%20(function)">GetCWD Intrinsic (function)</a>
+<li><a href="GetEnv-Intrinsic.html#GetEnv%20Intrinsic">GetEnv Intrinsic</a>
+<li><a href="GetGId-Intrinsic.html#GetGId%20Intrinsic">GetGId Intrinsic</a>
+<li><a href="GetLog-Intrinsic.html#GetLog%20Intrinsic">GetLog Intrinsic</a>
+<li><a href="GetPId-Intrinsic.html#GetPId%20Intrinsic">GetPId Intrinsic</a>
+<li><a href="GetUId-Intrinsic.html#GetUId%20Intrinsic">GetUId Intrinsic</a>
+<li><a href="GMTime-Intrinsic.html#GMTime%20Intrinsic">GMTime Intrinsic</a>
+<li><a href="HostNm-Intrinsic--subroutine-.html#HostNm%20Intrinsic%20(subroutine)">HostNm Intrinsic (subroutine)</a>
+<li><a href="HostNm-Intrinsic--function-.html#HostNm%20Intrinsic%20(function)">HostNm Intrinsic (function)</a>
+<li><a href="Huge-Intrinsic.html#Huge%20Intrinsic">Huge Intrinsic</a>
+<li><a href="IAbs-Intrinsic.html#IAbs%20Intrinsic">IAbs Intrinsic</a>
+<li><a href="IAChar-Intrinsic.html#IAChar%20Intrinsic">IAChar Intrinsic</a>
+<li><a href="IAnd-Intrinsic.html#IAnd%20Intrinsic">IAnd Intrinsic</a>
+<li><a href="IArgC-Intrinsic.html#IArgC%20Intrinsic">IArgC Intrinsic</a>
+<li><a href="IBClr-Intrinsic.html#IBClr%20Intrinsic">IBClr Intrinsic</a>
+<li><a href="IBits-Intrinsic.html#IBits%20Intrinsic">IBits Intrinsic</a>
+<li><a href="IBSet-Intrinsic.html#IBSet%20Intrinsic">IBSet Intrinsic</a>
+<li><a href="IChar-Intrinsic.html#IChar%20Intrinsic">IChar Intrinsic</a>
+<li><a href="IDate-Intrinsic--UNIX-.html#IDate%20Intrinsic%20(UNIX)">IDate Intrinsic (UNIX)</a>
+<li><a href="IDiM-Intrinsic.html#IDiM%20Intrinsic">IDiM Intrinsic</a>
+<li><a href="IDInt-Intrinsic.html#IDInt%20Intrinsic">IDInt Intrinsic</a>
+<li><a href="IDNInt-Intrinsic.html#IDNInt%20Intrinsic">IDNInt Intrinsic</a>
+<li><a href="IEOr-Intrinsic.html#IEOr%20Intrinsic">IEOr Intrinsic</a>
+<li><a href="IErrNo-Intrinsic.html#IErrNo%20Intrinsic">IErrNo Intrinsic</a>
+<li><a href="IFix-Intrinsic.html#IFix%20Intrinsic">IFix Intrinsic</a>
+<li><a href="Imag-Intrinsic.html#Imag%20Intrinsic">Imag Intrinsic</a>
+<li><a href="ImagPart-Intrinsic.html#ImagPart%20Intrinsic">ImagPart Intrinsic</a>
+<li><a href="Index-Intrinsic.html#Index%20Intrinsic">Index Intrinsic</a>
+<li><a href="Int-Intrinsic.html#Int%20Intrinsic">Int Intrinsic</a>
+<li><a href="Int2-Intrinsic.html#Int2%20Intrinsic">Int2 Intrinsic</a>
+<li><a href="Int8-Intrinsic.html#Int8%20Intrinsic">Int8 Intrinsic</a>
+<li><a href="IOr-Intrinsic.html#IOr%20Intrinsic">IOr Intrinsic</a>
+<li><a href="IRand-Intrinsic.html#IRand%20Intrinsic">IRand Intrinsic</a>
+<li><a href="IsaTty-Intrinsic.html#IsaTty%20Intrinsic">IsaTty Intrinsic</a>
+<li><a href="IShft-Intrinsic.html#IShft%20Intrinsic">IShft Intrinsic</a>
+<li><a href="IShftC-Intrinsic.html#IShftC%20Intrinsic">IShftC Intrinsic</a>
+<li><a href="ISign-Intrinsic.html#ISign%20Intrinsic">ISign Intrinsic</a>
+<li><a href="ITime-Intrinsic.html#ITime%20Intrinsic">ITime Intrinsic</a>
+<li><a href="Kill-Intrinsic--subroutine-.html#Kill%20Intrinsic%20(subroutine)">Kill Intrinsic (subroutine)</a>
+<li><a href="Kind-Intrinsic.html#Kind%20Intrinsic">Kind Intrinsic</a>
+<li><a href="LBound-Intrinsic.html#LBound%20Intrinsic">LBound Intrinsic</a>
+<li><a href="Len-Intrinsic.html#Len%20Intrinsic">Len Intrinsic</a>
+<li><a href="Len_Trim-Intrinsic.html#Len_Trim%20Intrinsic">Len_Trim Intrinsic</a>
+<li><a href="LGe-Intrinsic.html#LGe%20Intrinsic">LGe Intrinsic</a>
+<li><a href="LGt-Intrinsic.html#LGt%20Intrinsic">LGt Intrinsic</a>
+<li><a href="Link-Intrinsic--subroutine-.html#Link%20Intrinsic%20(subroutine)">Link Intrinsic (subroutine)</a>
+<li><a href="LLe-Intrinsic.html#LLe%20Intrinsic">LLe Intrinsic</a>
+<li><a href="LLt-Intrinsic.html#LLt%20Intrinsic">LLt Intrinsic</a>
+<li><a href="LnBlnk-Intrinsic.html#LnBlnk%20Intrinsic">LnBlnk Intrinsic</a>
+<li><a href="Loc-Intrinsic.html#Loc%20Intrinsic">Loc Intrinsic</a>
+<li><a href="Log-Intrinsic.html#Log%20Intrinsic">Log Intrinsic</a>
+<li><a href="Log10-Intrinsic.html#Log10%20Intrinsic">Log10 Intrinsic</a>
+<li><a href="Logical-Intrinsic.html#Logical%20Intrinsic">Logical Intrinsic</a>
+<li><a href="Long-Intrinsic.html#Long%20Intrinsic">Long Intrinsic</a>
+<li><a href="LShift-Intrinsic.html#LShift%20Intrinsic">LShift Intrinsic</a>
+<li><a href="LStat-Intrinsic--subroutine-.html#LStat%20Intrinsic%20(subroutine)">LStat Intrinsic (subroutine)</a>
+<li><a href="LStat-Intrinsic--function-.html#LStat%20Intrinsic%20(function)">LStat Intrinsic (function)</a>
+<li><a href="LTime-Intrinsic.html#LTime%20Intrinsic">LTime Intrinsic</a>
+<li><a href="MatMul-Intrinsic.html#MatMul%20Intrinsic">MatMul Intrinsic</a>
+<li><a href="Max-Intrinsic.html#Max%20Intrinsic">Max Intrinsic</a>
+<li><a href="Max0-Intrinsic.html#Max0%20Intrinsic">Max0 Intrinsic</a>
+<li><a href="Max1-Intrinsic.html#Max1%20Intrinsic">Max1 Intrinsic</a>
+<li><a href="MaxExponent-Intrinsic.html#MaxExponent%20Intrinsic">MaxExponent Intrinsic</a>
+<li><a href="MaxLoc-Intrinsic.html#MaxLoc%20Intrinsic">MaxLoc Intrinsic</a>
+<li><a href="MaxVal-Intrinsic.html#MaxVal%20Intrinsic">MaxVal Intrinsic</a>
+<li><a href="MClock-Intrinsic.html#MClock%20Intrinsic">MClock Intrinsic</a>
+<li><a href="MClock8-Intrinsic.html#MClock8%20Intrinsic">MClock8 Intrinsic</a>
+<li><a href="Merge-Intrinsic.html#Merge%20Intrinsic">Merge Intrinsic</a>
+<li><a href="Min-Intrinsic.html#Min%20Intrinsic">Min Intrinsic</a>
+<li><a href="Min0-Intrinsic.html#Min0%20Intrinsic">Min0 Intrinsic</a>
+<li><a href="Min1-Intrinsic.html#Min1%20Intrinsic">Min1 Intrinsic</a>
+<li><a href="MinExponent-Intrinsic.html#MinExponent%20Intrinsic">MinExponent Intrinsic</a>
+<li><a href="MinLoc-Intrinsic.html#MinLoc%20Intrinsic">MinLoc Intrinsic</a>
+<li><a href="MinVal-Intrinsic.html#MinVal%20Intrinsic">MinVal Intrinsic</a>
+<li><a href="Mod-Intrinsic.html#Mod%20Intrinsic">Mod Intrinsic</a>
+<li><a href="Modulo-Intrinsic.html#Modulo%20Intrinsic">Modulo Intrinsic</a>
+<li><a href="MvBits-Intrinsic.html#MvBits%20Intrinsic">MvBits Intrinsic</a>
+<li><a href="Nearest-Intrinsic.html#Nearest%20Intrinsic">Nearest Intrinsic</a>
+<li><a href="NInt-Intrinsic.html#NInt%20Intrinsic">NInt Intrinsic</a>
+<li><a href="Not-Intrinsic.html#Not%20Intrinsic">Not Intrinsic</a>
+<li><a href="Or-Intrinsic.html#Or%20Intrinsic">Or Intrinsic</a>
+<li><a href="Pack-Intrinsic.html#Pack%20Intrinsic">Pack Intrinsic</a>
+<li><a href="PError-Intrinsic.html#PError%20Intrinsic">PError Intrinsic</a>
+<li><a href="Precision-Intrinsic.html#Precision%20Intrinsic">Precision Intrinsic</a>
+<li><a href="Present-Intrinsic.html#Present%20Intrinsic">Present Intrinsic</a>
+<li><a href="Product-Intrinsic.html#Product%20Intrinsic">Product Intrinsic</a>
+<li><a href="Radix-Intrinsic.html#Radix%20Intrinsic">Radix Intrinsic</a>
+<li><a href="Rand-Intrinsic.html#Rand%20Intrinsic">Rand Intrinsic</a>
+<li><a href="Random_Number-Intrinsic.html#Random_Number%20Intrinsic">Random_Number Intrinsic</a>
+<li><a href="Random_Seed-Intrinsic.html#Random_Seed%20Intrinsic">Random_Seed Intrinsic</a>
+<li><a href="Range-Intrinsic.html#Range%20Intrinsic">Range Intrinsic</a>
+<li><a href="Real-Intrinsic.html#Real%20Intrinsic">Real Intrinsic</a>
+<li><a href="RealPart-Intrinsic.html#RealPart%20Intrinsic">RealPart Intrinsic</a>
+<li><a href="Rename-Intrinsic--subroutine-.html#Rename%20Intrinsic%20(subroutine)">Rename Intrinsic (subroutine)</a>
+<li><a href="Repeat-Intrinsic.html#Repeat%20Intrinsic">Repeat Intrinsic</a>
+<li><a href="Reshape-Intrinsic.html#Reshape%20Intrinsic">Reshape Intrinsic</a>
+<li><a href="RRSpacing-Intrinsic.html#RRSpacing%20Intrinsic">RRSpacing Intrinsic</a>
+<li><a href="RShift-Intrinsic.html#RShift%20Intrinsic">RShift Intrinsic</a>
+<li><a href="Scale-Intrinsic.html#Scale%20Intrinsic">Scale Intrinsic</a>
+<li><a href="Scan-Intrinsic.html#Scan%20Intrinsic">Scan Intrinsic</a>
+<li><a href="Second-Intrinsic--function-.html#Second%20Intrinsic%20(function)">Second Intrinsic (function)</a>
+<li><a href="Second-Intrinsic--subroutine-.html#Second%20Intrinsic%20(subroutine)">Second Intrinsic (subroutine)</a>
+<li><a href="Selected_Int_Kind-Intrinsic.html#Selected_Int_Kind%20Intrinsic">Selected_Int_Kind Intrinsic</a>
+<li><a href="Selected_Real_Kind-Intrinsic.html#Selected_Real_Kind%20Intrinsic">Selected_Real_Kind Intrinsic</a>
+<li><a href="Set_Exponent-Intrinsic.html#Set_Exponent%20Intrinsic">Set_Exponent Intrinsic</a>
+<li><a href="Shape-Intrinsic.html#Shape%20Intrinsic">Shape Intrinsic</a>
+<li><a href="Short-Intrinsic.html#Short%20Intrinsic">Short Intrinsic</a>
+<li><a href="Sign-Intrinsic.html#Sign%20Intrinsic">Sign Intrinsic</a>
+<li><a href="Signal-Intrinsic--subroutine-.html#Signal%20Intrinsic%20(subroutine)">Signal Intrinsic (subroutine)</a>
+<li><a href="Sin-Intrinsic.html#Sin%20Intrinsic">Sin Intrinsic</a>
+<li><a href="SinH-Intrinsic.html#SinH%20Intrinsic">SinH Intrinsic</a>
+<li><a href="Sleep-Intrinsic.html#Sleep%20Intrinsic">Sleep Intrinsic</a>
+<li><a href="Sngl-Intrinsic.html#Sngl%20Intrinsic">Sngl Intrinsic</a>
+<li><a href="Spacing-Intrinsic.html#Spacing%20Intrinsic">Spacing Intrinsic</a>
+<li><a href="Spread-Intrinsic.html#Spread%20Intrinsic">Spread Intrinsic</a>
+<li><a href="SqRt-Intrinsic.html#SqRt%20Intrinsic">SqRt Intrinsic</a>
+<li><a href="SRand-Intrinsic.html#SRand%20Intrinsic">SRand Intrinsic</a>
+<li><a href="Stat-Intrinsic--subroutine-.html#Stat%20Intrinsic%20(subroutine)">Stat Intrinsic (subroutine)</a>
+<li><a href="Stat-Intrinsic--function-.html#Stat%20Intrinsic%20(function)">Stat Intrinsic (function)</a>
+<li><a href="Sum-Intrinsic.html#Sum%20Intrinsic">Sum Intrinsic</a>
+<li><a href="SymLnk-Intrinsic--subroutine-.html#SymLnk%20Intrinsic%20(subroutine)">SymLnk Intrinsic (subroutine)</a>
+<li><a href="System-Intrinsic--subroutine-.html#System%20Intrinsic%20(subroutine)">System Intrinsic (subroutine)</a>
+<li><a href="System_Clock-Intrinsic.html#System_Clock%20Intrinsic">System_Clock Intrinsic</a>
+<li><a href="Tan-Intrinsic.html#Tan%20Intrinsic">Tan Intrinsic</a>
+<li><a href="TanH-Intrinsic.html#TanH%20Intrinsic">TanH Intrinsic</a>
+<li><a href="Time-Intrinsic--UNIX-.html#Time%20Intrinsic%20(UNIX)">Time Intrinsic (UNIX)</a>
+<li><a href="Time8-Intrinsic.html#Time8%20Intrinsic">Time8 Intrinsic</a>
+<li><a href="Tiny-Intrinsic.html#Tiny%20Intrinsic">Tiny Intrinsic</a>
+<li><a href="Transfer-Intrinsic.html#Transfer%20Intrinsic">Transfer Intrinsic</a>
+<li><a href="Transpose-Intrinsic.html#Transpose%20Intrinsic">Transpose Intrinsic</a>
+<li><a href="Trim-Intrinsic.html#Trim%20Intrinsic">Trim Intrinsic</a>
+<li><a href="TtyNam-Intrinsic--subroutine-.html#TtyNam%20Intrinsic%20(subroutine)">TtyNam Intrinsic (subroutine)</a>
+<li><a href="TtyNam-Intrinsic--function-.html#TtyNam%20Intrinsic%20(function)">TtyNam Intrinsic (function)</a>
+<li><a href="UBound-Intrinsic.html#UBound%20Intrinsic">UBound Intrinsic</a>
+<li><a href="UMask-Intrinsic--subroutine-.html#UMask%20Intrinsic%20(subroutine)">UMask Intrinsic (subroutine)</a>
+<li><a href="Unlink-Intrinsic--subroutine-.html#Unlink%20Intrinsic%20(subroutine)">Unlink Intrinsic (subroutine)</a>
+<li><a href="Unpack-Intrinsic.html#Unpack%20Intrinsic">Unpack Intrinsic</a>
+<li><a href="Verify-Intrinsic.html#Verify%20Intrinsic">Verify Intrinsic</a>
+<li><a href="XOr-Intrinsic.html#XOr%20Intrinsic">XOr Intrinsic</a>
+<li><a href="ZAbs-Intrinsic.html#ZAbs%20Intrinsic">ZAbs Intrinsic</a>
+<li><a href="ZCos-Intrinsic.html#ZCos%20Intrinsic">ZCos Intrinsic</a>
+<li><a href="ZExp-Intrinsic.html#ZExp%20Intrinsic">ZExp Intrinsic</a>
+<li><a href="ZLog-Intrinsic.html#ZLog%20Intrinsic">ZLog Intrinsic</a>
+<li><a href="ZSin-Intrinsic.html#ZSin%20Intrinsic">ZSin Intrinsic</a>
+<li><a href="ZSqRt-Intrinsic.html#ZSqRt%20Intrinsic">ZSqRt Intrinsic</a>
+</ul>
+</ul>
+<li><a href="Scope-and-Classes-of-Names.html#Scope%20and%20Classes%20of%20Names">Scope and Classes of Symbolic Names</a>
+<ul>
+<li><a href="Underscores-in-Symbol-Names.html#Underscores%20in%20Symbol%20Names">Underscores in Symbol Names</a>
+</ul>
+<li><a href="I-O.html#I%2fO">I/O</a>
+<li><a href="Fortran-90-Features.html#Fortran%2090%20Features">Fortran 90 Features</a>
+</ul>
+<li><a name="toc_Other%20Dialects"></a>
+    <a href="Other-Dialects.html#Other%20Dialects">Other Dialects</a>
+<ul>
+<li><a href="Source-Form.html#Source%20Form">Source Form</a>
+<ul>
+<li><a href="Carriage-Returns.html#Carriage%20Returns">Carriage Returns</a>
+<li><a href="Tabs.html#Tabs">Tabs</a>
+<li><a href="Short-Lines.html#Short%20Lines">Short Lines</a>
+<li><a href="Long-Lines.html#Long%20Lines">Long Lines</a>
+<li><a href="Ampersands.html#Ampersands">Ampersand Continuation Line</a>
+</ul>
+<li><a href="Trailing-Comment.html#Trailing%20Comment">Trailing Comment</a>
+<li><a href="Debug-Line.html#Debug%20Line">Debug Line</a>
+<li><a href="Dollar-Signs.html#Dollar%20Signs">Dollar Signs in Symbol Names</a>
+<li><a href="Case-Sensitivity.html#Case%20Sensitivity">Case Sensitivity</a>
+<li><a href="VXT-Fortran.html#VXT%20Fortran">VXT Fortran</a>
+<ul>
+<li><a href="Double-Quote-Meaning.html#Double%20Quote%20Meaning">Meaning of Double Quote</a>
+<li><a href="Exclamation-Point.html#Exclamation%20Point">Meaning of Exclamation Point in Column 6</a>
+</ul>
+<li><a href="Fortran-90.html#Fortran%2090">Fortran 90</a>
+<li><a href="Pedantic-Compilation.html#Pedantic%20Compilation">Pedantic Compilation</a>
+<li><a href="Distensions.html#Distensions">Distensions</a>
+<ul>
+<li><a href="Ugly-Implicit-Argument-Conversion.html#Ugly%20Implicit%20Argument%20Conversion">Implicit Argument Conversion</a>
+<li><a href="Ugly-Assumed-Size-Arrays.html#Ugly%20Assumed-Size%20Arrays">Ugly Assumed-Size Arrays</a>
+<li><a href="Ugly-Complex-Part-Extraction.html#Ugly%20Complex%20Part%20Extraction">Ugly Complex Part Extraction</a>
+<li><a href="Ugly-Null-Arguments.html#Ugly%20Null%20Arguments">Ugly Null Arguments</a>
+<li><a href="Ugly-Conversion-of-Initializers.html#Ugly%20Conversion%20of%20Initializers">Ugly Conversion of Initializers</a>
+<li><a href="Ugly-Integer-Conversions.html#Ugly%20Integer%20Conversions">Ugly Integer Conversions</a>
+<li><a href="Ugly-Assigned-Labels.html#Ugly%20Assigned%20Labels">Ugly Assigned Labels</a>
+</ul>
+</ul>
+<li><a name="toc_Compiler"></a>
+    <a href="Compiler.html#Compiler">The GNU Fortran Compiler</a>
+<ul>
+<li><a href="Compiler-Limits.html#Compiler%20Limits">Compiler Limits</a>
+<li><a href="Run-time-Environment-Limits.html#Run-time%20Environment%20Limits">Run-time Environment Limits</a>
+<ul>
+<li><a href="Timer-Wraparounds.html#Timer%20Wraparounds">Timer Wraparounds</a>
+<li><a href="Year-2000--Y2K--Problems.html#Year%202000%20(Y2K)%20Problems">Year 2000 (Y2K) Problems</a>
+<li><a href="Array-Size.html#Array%20Size">Array Size</a>
+<li><a href="Character-variable-Length.html#Character-variable%20Length">Character-variable Length</a>
+<li><a href="Year-10000--Y10K--Problems.html#Year%2010000%20(Y10K)%20Problems">Year 10000 (Y10K) Problems</a>
+</ul>
+<li><a href="Compiler-Types.html#Compiler%20Types">Compiler Types</a>
+<li><a href="Compiler-Constants.html#Compiler%20Constants">Compiler Constants</a>
+<li><a href="Compiler-Intrinsics.html#Compiler%20Intrinsics">Compiler Intrinsics</a>
+<ul>
+<li><a href="Intrinsic-Groups.html#Intrinsic%20Groups">Intrinsic Groups</a>
+<li><a href="Other-Intrinsics.html#Other%20Intrinsics">Other Intrinsics</a>
+<ul>
+<li><a href="ACosD-Intrinsic.html#ACosD%20Intrinsic">ACosD Intrinsic</a>
+<li><a href="AIMax0-Intrinsic.html#AIMax0%20Intrinsic">AIMax0 Intrinsic</a>
+<li><a href="AIMin0-Intrinsic.html#AIMin0%20Intrinsic">AIMin0 Intrinsic</a>
+<li><a href="AJMax0-Intrinsic.html#AJMax0%20Intrinsic">AJMax0 Intrinsic</a>
+<li><a href="AJMin0-Intrinsic.html#AJMin0%20Intrinsic">AJMin0 Intrinsic</a>
+<li><a href="ASinD-Intrinsic.html#ASinD%20Intrinsic">ASinD Intrinsic</a>
+<li><a href="ATan2D-Intrinsic.html#ATan2D%20Intrinsic">ATan2D Intrinsic</a>
+<li><a href="ATanD-Intrinsic.html#ATanD%20Intrinsic">ATanD Intrinsic</a>
+<li><a href="BITest-Intrinsic.html#BITest%20Intrinsic">BITest Intrinsic</a>
+<li><a href="BJTest-Intrinsic.html#BJTest%20Intrinsic">BJTest Intrinsic</a>
+<li><a href="CDAbs-Intrinsic.html#CDAbs%20Intrinsic">CDAbs Intrinsic</a>
+<li><a href="CDCos-Intrinsic.html#CDCos%20Intrinsic">CDCos Intrinsic</a>
+<li><a href="CDExp-Intrinsic.html#CDExp%20Intrinsic">CDExp Intrinsic</a>
+<li><a href="CDLog-Intrinsic.html#CDLog%20Intrinsic">CDLog Intrinsic</a>
+<li><a href="CDSin-Intrinsic.html#CDSin%20Intrinsic">CDSin Intrinsic</a>
+<li><a href="CDSqRt-Intrinsic.html#CDSqRt%20Intrinsic">CDSqRt Intrinsic</a>
+<li><a href="ChDir-Intrinsic--function-.html#ChDir%20Intrinsic%20(function)">ChDir Intrinsic (function)</a>
+<li><a href="ChMod-Intrinsic--function-.html#ChMod%20Intrinsic%20(function)">ChMod Intrinsic (function)</a>
+<li><a href="CosD-Intrinsic.html#CosD%20Intrinsic">CosD Intrinsic</a>
+<li><a href="DACosD-Intrinsic.html#DACosD%20Intrinsic">DACosD Intrinsic</a>
+<li><a href="DASinD-Intrinsic.html#DASinD%20Intrinsic">DASinD Intrinsic</a>
+<li><a href="DATan2D-Intrinsic.html#DATan2D%20Intrinsic">DATan2D Intrinsic</a>
+<li><a href="DATanD-Intrinsic.html#DATanD%20Intrinsic">DATanD Intrinsic</a>
+<li><a href="Date-Intrinsic.html#Date%20Intrinsic">Date Intrinsic</a>
+<li><a href="DbleQ-Intrinsic.html#DbleQ%20Intrinsic">DbleQ Intrinsic</a>
+<li><a href="DCmplx-Intrinsic.html#DCmplx%20Intrinsic">DCmplx Intrinsic</a>
+<li><a href="DConjg-Intrinsic.html#DConjg%20Intrinsic">DConjg Intrinsic</a>
+<li><a href="DCosD-Intrinsic.html#DCosD%20Intrinsic">DCosD Intrinsic</a>
+<li><a href="DFloat-Intrinsic.html#DFloat%20Intrinsic">DFloat Intrinsic</a>
+<li><a href="DFlotI-Intrinsic.html#DFlotI%20Intrinsic">DFlotI Intrinsic</a>
+<li><a href="DFlotJ-Intrinsic.html#DFlotJ%20Intrinsic">DFlotJ Intrinsic</a>
+<li><a href="DImag-Intrinsic.html#DImag%20Intrinsic">DImag Intrinsic</a>
+<li><a href="DReal-Intrinsic.html#DReal%20Intrinsic">DReal Intrinsic</a>
+<li><a href="DSinD-Intrinsic.html#DSinD%20Intrinsic">DSinD Intrinsic</a>
+<li><a href="DTanD-Intrinsic.html#DTanD%20Intrinsic">DTanD Intrinsic</a>
+<li><a href="DTime-Intrinsic--function-.html#DTime%20Intrinsic%20(function)">DTime Intrinsic (function)</a>
+<li><a href="FGet-Intrinsic--function-.html#FGet%20Intrinsic%20(function)">FGet Intrinsic (function)</a>
+<li><a href="FGetC-Intrinsic--function-.html#FGetC%20Intrinsic%20(function)">FGetC Intrinsic (function)</a>
+<li><a href="FloatI-Intrinsic.html#FloatI%20Intrinsic">FloatI Intrinsic</a>
+<li><a href="FloatJ-Intrinsic.html#FloatJ%20Intrinsic">FloatJ Intrinsic</a>
+<li><a href="FPut-Intrinsic--function-.html#FPut%20Intrinsic%20(function)">FPut Intrinsic (function)</a>
+<li><a href="FPutC-Intrinsic--function-.html#FPutC%20Intrinsic%20(function)">FPutC Intrinsic (function)</a>
+<li><a href="IDate-Intrinsic--VXT-.html#IDate%20Intrinsic%20(VXT)">IDate Intrinsic (VXT)</a>
+<li><a href="IIAbs-Intrinsic.html#IIAbs%20Intrinsic">IIAbs Intrinsic</a>
+<li><a href="IIAnd-Intrinsic.html#IIAnd%20Intrinsic">IIAnd Intrinsic</a>
+<li><a href="IIBClr-Intrinsic.html#IIBClr%20Intrinsic">IIBClr Intrinsic</a>
+<li><a href="IIBits-Intrinsic.html#IIBits%20Intrinsic">IIBits Intrinsic</a>
+<li><a href="IIBSet-Intrinsic.html#IIBSet%20Intrinsic">IIBSet Intrinsic</a>
+<li><a href="IIDiM-Intrinsic.html#IIDiM%20Intrinsic">IIDiM Intrinsic</a>
+<li><a href="IIDInt-Intrinsic.html#IIDInt%20Intrinsic">IIDInt Intrinsic</a>
+<li><a href="IIDNnt-Intrinsic.html#IIDNnt%20Intrinsic">IIDNnt Intrinsic</a>
+<li><a href="IIEOr-Intrinsic.html#IIEOr%20Intrinsic">IIEOr Intrinsic</a>
+<li><a href="IIFix-Intrinsic.html#IIFix%20Intrinsic">IIFix Intrinsic</a>
+<li><a href="IInt-Intrinsic.html#IInt%20Intrinsic">IInt Intrinsic</a>
+<li><a href="IIOr-Intrinsic.html#IIOr%20Intrinsic">IIOr Intrinsic</a>
+<li><a href="IIQint-Intrinsic.html#IIQint%20Intrinsic">IIQint Intrinsic</a>
+<li><a href="IIQNnt-Intrinsic.html#IIQNnt%20Intrinsic">IIQNnt Intrinsic</a>
+<li><a href="IIShftC-Intrinsic.html#IIShftC%20Intrinsic">IIShftC Intrinsic</a>
+<li><a href="IISign-Intrinsic.html#IISign%20Intrinsic">IISign Intrinsic</a>
+<li><a href="IMax0-Intrinsic.html#IMax0%20Intrinsic">IMax0 Intrinsic</a>
+<li><a href="IMax1-Intrinsic.html#IMax1%20Intrinsic">IMax1 Intrinsic</a>
+<li><a href="IMin0-Intrinsic.html#IMin0%20Intrinsic">IMin0 Intrinsic</a>
+<li><a href="IMin1-Intrinsic.html#IMin1%20Intrinsic">IMin1 Intrinsic</a>
+<li><a href="IMod-Intrinsic.html#IMod%20Intrinsic">IMod Intrinsic</a>
+<li><a href="INInt-Intrinsic.html#INInt%20Intrinsic">INInt Intrinsic</a>
+<li><a href="INot-Intrinsic.html#INot%20Intrinsic">INot Intrinsic</a>
+<li><a href="IZExt-Intrinsic.html#IZExt%20Intrinsic">IZExt Intrinsic</a>
+<li><a href="JIAbs-Intrinsic.html#JIAbs%20Intrinsic">JIAbs Intrinsic</a>
+<li><a href="JIAnd-Intrinsic.html#JIAnd%20Intrinsic">JIAnd Intrinsic</a>
+<li><a href="JIBClr-Intrinsic.html#JIBClr%20Intrinsic">JIBClr Intrinsic</a>
+<li><a href="JIBits-Intrinsic.html#JIBits%20Intrinsic">JIBits Intrinsic</a>
+<li><a href="JIBSet-Intrinsic.html#JIBSet%20Intrinsic">JIBSet Intrinsic</a>
+<li><a href="JIDiM-Intrinsic.html#JIDiM%20Intrinsic">JIDiM Intrinsic</a>
+<li><a href="JIDInt-Intrinsic.html#JIDInt%20Intrinsic">JIDInt Intrinsic</a>
+<li><a href="JIDNnt-Intrinsic.html#JIDNnt%20Intrinsic">JIDNnt Intrinsic</a>
+<li><a href="JIEOr-Intrinsic.html#JIEOr%20Intrinsic">JIEOr Intrinsic</a>
+<li><a href="JIFix-Intrinsic.html#JIFix%20Intrinsic">JIFix Intrinsic</a>
+<li><a href="JInt-Intrinsic.html#JInt%20Intrinsic">JInt Intrinsic</a>
+<li><a href="JIOr-Intrinsic.html#JIOr%20Intrinsic">JIOr Intrinsic</a>
+<li><a href="JIQint-Intrinsic.html#JIQint%20Intrinsic">JIQint Intrinsic</a>
+<li><a href="JIQNnt-Intrinsic.html#JIQNnt%20Intrinsic">JIQNnt Intrinsic</a>
+<li><a href="JIShft-Intrinsic.html#JIShft%20Intrinsic">JIShft Intrinsic</a>
+<li><a href="JIShftC-Intrinsic.html#JIShftC%20Intrinsic">JIShftC Intrinsic</a>
+<li><a href="JISign-Intrinsic.html#JISign%20Intrinsic">JISign Intrinsic</a>
+<li><a href="JMax0-Intrinsic.html#JMax0%20Intrinsic">JMax0 Intrinsic</a>
+<li><a href="JMax1-Intrinsic.html#JMax1%20Intrinsic">JMax1 Intrinsic</a>
+<li><a href="JMin0-Intrinsic.html#JMin0%20Intrinsic">JMin0 Intrinsic</a>
+<li><a href="JMin1-Intrinsic.html#JMin1%20Intrinsic">JMin1 Intrinsic</a>
+<li><a href="JMod-Intrinsic.html#JMod%20Intrinsic">JMod Intrinsic</a>
+<li><a href="JNInt-Intrinsic.html#JNInt%20Intrinsic">JNInt Intrinsic</a>
+<li><a href="JNot-Intrinsic.html#JNot%20Intrinsic">JNot Intrinsic</a>
+<li><a href="JZExt-Intrinsic.html#JZExt%20Intrinsic">JZExt Intrinsic</a>
+<li><a href="Kill-Intrinsic--function-.html#Kill%20Intrinsic%20(function)">Kill Intrinsic (function)</a>
+<li><a href="Link-Intrinsic--function-.html#Link%20Intrinsic%20(function)">Link Intrinsic (function)</a>
+<li><a href="QAbs-Intrinsic.html#QAbs%20Intrinsic">QAbs Intrinsic</a>
+<li><a href="QACos-Intrinsic.html#QACos%20Intrinsic">QACos Intrinsic</a>
+<li><a href="QACosD-Intrinsic.html#QACosD%20Intrinsic">QACosD Intrinsic</a>
+<li><a href="QASin-Intrinsic.html#QASin%20Intrinsic">QASin Intrinsic</a>
+<li><a href="QASinD-Intrinsic.html#QASinD%20Intrinsic">QASinD Intrinsic</a>
+<li><a href="QATan-Intrinsic.html#QATan%20Intrinsic">QATan Intrinsic</a>
+<li><a href="QATan2-Intrinsic.html#QATan2%20Intrinsic">QATan2 Intrinsic</a>
+<li><a href="QATan2D-Intrinsic.html#QATan2D%20Intrinsic">QATan2D Intrinsic</a>
+<li><a href="QATanD-Intrinsic.html#QATanD%20Intrinsic">QATanD Intrinsic</a>
+<li><a href="QCos-Intrinsic.html#QCos%20Intrinsic">QCos Intrinsic</a>
+<li><a href="QCosD-Intrinsic.html#QCosD%20Intrinsic">QCosD Intrinsic</a>
+<li><a href="QCosH-Intrinsic.html#QCosH%20Intrinsic">QCosH Intrinsic</a>
+<li><a href="QDiM-Intrinsic.html#QDiM%20Intrinsic">QDiM Intrinsic</a>
+<li><a href="QExp-Intrinsic.html#QExp%20Intrinsic">QExp Intrinsic</a>
+<li><a href="QExt-Intrinsic.html#QExt%20Intrinsic">QExt Intrinsic</a>
+<li><a href="QExtD-Intrinsic.html#QExtD%20Intrinsic">QExtD Intrinsic</a>
+<li><a href="QFloat-Intrinsic.html#QFloat%20Intrinsic">QFloat Intrinsic</a>
+<li><a href="QInt-Intrinsic.html#QInt%20Intrinsic">QInt Intrinsic</a>
+<li><a href="QLog-Intrinsic.html#QLog%20Intrinsic">QLog Intrinsic</a>
+<li><a href="QLog10-Intrinsic.html#QLog10%20Intrinsic">QLog10 Intrinsic</a>
+<li><a href="QMax1-Intrinsic.html#QMax1%20Intrinsic">QMax1 Intrinsic</a>
+<li><a href="QMin1-Intrinsic.html#QMin1%20Intrinsic">QMin1 Intrinsic</a>
+<li><a href="QMod-Intrinsic.html#QMod%20Intrinsic">QMod Intrinsic</a>
+<li><a href="QNInt-Intrinsic.html#QNInt%20Intrinsic">QNInt Intrinsic</a>
+<li><a href="QSin-Intrinsic.html#QSin%20Intrinsic">QSin Intrinsic</a>
+<li><a href="QSinD-Intrinsic.html#QSinD%20Intrinsic">QSinD Intrinsic</a>
+<li><a href="QSinH-Intrinsic.html#QSinH%20Intrinsic">QSinH Intrinsic</a>
+<li><a href="QSqRt-Intrinsic.html#QSqRt%20Intrinsic">QSqRt Intrinsic</a>
+<li><a href="QTan-Intrinsic.html#QTan%20Intrinsic">QTan Intrinsic</a>
+<li><a href="QTanD-Intrinsic.html#QTanD%20Intrinsic">QTanD Intrinsic</a>
+<li><a href="QTanH-Intrinsic.html#QTanH%20Intrinsic">QTanH Intrinsic</a>
+<li><a href="Rename-Intrinsic--function-.html#Rename%20Intrinsic%20(function)">Rename Intrinsic (function)</a>
+<li><a href="Secnds-Intrinsic.html#Secnds%20Intrinsic">Secnds Intrinsic</a>
+<li><a href="Signal-Intrinsic--function-.html#Signal%20Intrinsic%20(function)">Signal Intrinsic (function)</a>
+<li><a href="SinD-Intrinsic.html#SinD%20Intrinsic">SinD Intrinsic</a>
+<li><a href="SnglQ-Intrinsic.html#SnglQ%20Intrinsic">SnglQ Intrinsic</a>
+<li><a href="SymLnk-Intrinsic--function-.html#SymLnk%20Intrinsic%20(function)">SymLnk Intrinsic (function)</a>
+<li><a href="System-Intrinsic--function-.html#System%20Intrinsic%20(function)">System Intrinsic (function)</a>
+<li><a href="TanD-Intrinsic.html#TanD%20Intrinsic">TanD Intrinsic</a>
+<li><a href="Time-Intrinsic--VXT-.html#Time%20Intrinsic%20(VXT)">Time Intrinsic (VXT)</a>
+<li><a href="UMask-Intrinsic--function-.html#UMask%20Intrinsic%20(function)">UMask Intrinsic (function)</a>
+<li><a href="Unlink-Intrinsic--function-.html#Unlink%20Intrinsic%20(function)">Unlink Intrinsic (function)</a>
+<li><a href="ZExt-Intrinsic.html#ZExt%20Intrinsic">ZExt Intrinsic</a>
+</ul>
+</ul>
+</ul>
+<li><a name="toc_Other%20Compilers"></a>
+    <a href="Other-Compilers.html#Other%20Compilers">Other Compilers</a>
+<ul>
+<li><a href="Dropping-f2c-Compatibility.html#Dropping%20f2c%20Compatibility">Dropping <code>f2c</code> Compatibility</a>
+<li><a href="Compilers-Other-Than-f2c.html#Compilers%20Other%20Than%20f2c">Compilers Other Than <code>f2c</code></a>
+</ul>
+<li><a name="toc_Other%20Languages"></a>
+    <a href="Other-Languages.html#Other%20Languages">Other Languages</a>
+<ul>
+<li><a href="Interoperating-with-C-and-C--.html#Interoperating%20with%20C%20and%20C++">Tools and advice for interoperating with C and C++</a>
+<ul>
+<li><a href="C-Interfacing-Tools.html#C%20Interfacing%20Tools">C Interfacing Tools</a>
+<li><a href="C-Access-to-Type-Information.html#C%20Access%20to%20Type%20Information">Accessing Type Information in C</a>
+<li><a href="f2c-Skeletons-and-Prototypes.html#f2c%20Skeletons%20and%20Prototypes">Generating Skeletons and Prototypes with <code>f2c</code></a>
+<li><a href="C---Considerations.html#C++%20Considerations">C++ Considerations</a>
+<li><a href="Startup-Code.html#Startup%20Code">Startup Code</a>
+</ul>
+</ul>
+<li><a name="toc_Debugging%20and%20Interfacing"></a>
+    <a href="Debugging-and-Interfacing.html#Debugging%20and%20Interfacing">Debugging and Interfacing</a>
+<ul>
+<li><a href="Main-Program-Unit.html#Main%20Program%20Unit">Main Program Unit (PROGRAM)</a>
+<li><a href="Procedures.html#Procedures">Procedures (SUBROUTINE and FUNCTION)</a>
+<li><a href="Functions.html#Functions">Functions (FUNCTION and RETURN)</a>
+<li><a href="Names.html#Names">Names</a>
+<li><a href="Common-Blocks.html#Common%20Blocks">Common Blocks (COMMON)</a>
+<li><a href="Local-Equivalence-Areas.html#Local%20Equivalence%20Areas">Local Equivalence Areas (EQUIVALENCE)</a>
+<li><a href="Complex-Variables.html#Complex%20Variables">Complex Variables (COMPLEX)</a>
+<li><a href="Arrays.html#Arrays">Arrays (DIMENSION)</a>
+<li><a href="Adjustable-Arrays.html#Adjustable%20Arrays">Adjustable Arrays (DIMENSION)</a>
+<li><a href="Alternate-Entry-Points.html#Alternate%20Entry%20Points">Alternate Entry Points (ENTRY)</a>
+<li><a href="Alternate-Returns.html#Alternate%20Returns">Alternate Returns (SUBROUTINE and RETURN)</a>
+<li><a href="Assigned-Statement-Labels.html#Assigned%20Statement%20Labels">Assigned Statement Labels (ASSIGN and GOTO)</a>
+<li><a href="Run-time-Library-Errors.html#Run-time%20Library%20Errors">Run-time Library Errors</a>
+</ul>
+<li><a name="toc_Collected%20Fortran%20Wisdom"></a>
+    <a href="Collected-Fortran-Wisdom.html#Collected%20Fortran%20Wisdom">Collected Fortran Wisdom</a>
+<ul>
+<li><a href="Advantages-Over-f2c.html#Advantages%20Over%20f2c">Advantages Over f2c</a>
+<ul>
+<li><a href="Language-Extensions.html#Language%20Extensions">Language Extensions</a>
+<li><a href="Diagnostic-Abilities.html#Diagnostic%20Abilities">Diagnostic Abilities</a>
+<li><a href="Compiler-Options.html#Compiler%20Options">Compiler Options</a>
+<li><a href="Compiler-Speed.html#Compiler%20Speed">Compiler Speed</a>
+<li><a href="Program-Speed.html#Program%20Speed">Program Speed</a>
+<li><a href="Ease-of-Debugging.html#Ease%20of%20Debugging">Ease of Debugging</a>
+<li><a href="Character-and-Hollerith-Constants.html#Character%20and%20Hollerith%20Constants">Character and Hollerith Constants</a>
+</ul>
+<li><a href="Block-Data-and-Libraries.html#Block%20Data%20and%20Libraries">Block Data and Libraries</a>
+<li><a href="Loops.html#Loops">Loops</a>
+<li><a href="Working-Programs.html#Working%20Programs">Working Programs</a>
+<ul>
+<li><a href="Not-My-Type.html#Not%20My%20Type">Not My Type</a>
+<li><a href="Variables-Assumed-To-Be-Zero.html#Variables%20Assumed%20To%20Be%20Zero">Variables Assumed To Be Zero</a>
+<li><a href="Variables-Assumed-To-Be-Saved.html#Variables%20Assumed%20To%20Be%20Saved">Variables Assumed To Be Saved</a>
+<li><a href="Unwanted-Variables.html#Unwanted%20Variables">Unwanted Variables</a>
+<li><a href="Unused-Arguments.html#Unused%20Arguments">Unused Arguments</a>
+<li><a href="Surprising-Interpretations-of-Code.html#Surprising%20Interpretations%20of%20Code">Surprising Interpretations of Code</a>
+<li><a href="Aliasing-Assumed-To-Work.html#Aliasing%20Assumed%20To%20Work">Aliasing Assumed To Work</a>
+<li><a href="Output-Assumed-To-Flush.html#Output%20Assumed%20To%20Flush">Output Assumed To Flush</a>
+<li><a href="Large-File-Unit-Numbers.html#Large%20File%20Unit%20Numbers">Large File Unit Numbers</a>
+<li><a href="Floating-point-precision.html#Floating-point%20precision">Floating-point precision</a>
+<li><a href="Inconsistent-Calling-Sequences.html#Inconsistent%20Calling%20Sequences">Inconsistent Calling Sequences</a>
+</ul>
+<li><a href="Overly-Convenient-Options.html#Overly%20Convenient%20Options">Overly Convenient Command-line Options</a>
+<li><a href="Faster-Programs.html#Faster%20Programs">Faster Programs</a>
+<ul>
+<li><a href="Aligned-Data.html#Aligned%20Data">Aligned Data</a>
+<li><a href="Prefer-Automatic-Uninitialized-Variables.html#Prefer%20Automatic%20Uninitialized%20Variables">Prefer Automatic Uninitialized Variables</a>
+<li><a href="Avoid-f2c-Compatibility.html#Avoid%20f2c%20Compatibility">Avoid f2c Compatibility</a>
+<li><a href="Use-Submodel-Options.html#Use%20Submodel%20Options">Use Submodel Options</a>
+</ul>
+</ul>
+<li><a name="toc_Trouble"></a>
+    <a href="Trouble.html#Trouble">Known Causes of Trouble with GNU Fortran</a>
+<ul>
+<li><a href="But-bugs.html#But-bugs">Bugs Not In GNU Fortran</a>
+<ul>
+<li><a href="Signal-11-and-Friends.html#Signal%2011%20and%20Friends">Signal 11 and Friends</a>
+<li><a href="Cannot-Link-Fortran-Programs.html#Cannot%20Link%20Fortran%20Programs">Cannot Link Fortran Programs</a>
+<li><a href="Large-Common-Blocks.html#Large%20Common%20Blocks">Large Common Blocks</a>
+<li><a href="Debugger-Problems.html#Debugger%20Problems">Debugger Problems</a>
+<li><a href="NeXTStep-Problems.html#NeXTStep%20Problems">NeXTStep Problems</a>
+<li><a href="Stack-Overflow.html#Stack%20Overflow">Stack Overflow</a>
+<li><a href="Nothing-Happens.html#Nothing%20Happens">Nothing Happens</a>
+<li><a href="Strange-Behavior-at-Run-Time.html#Strange%20Behavior%20at%20Run%20Time">Strange Behavior at Run Time</a>
+<li><a href="Floating-point-Errors.html#Floating-point%20Errors">Floating-point Errors</a>
+</ul>
+<li><a href="Known-Bugs.html#Known%20Bugs">Known Bugs In GNU Fortran</a>
+<li><a href="Missing-Features.html#Missing%20Features">Missing Features</a>
+<ul>
+<li><a href="Better-Source-Model.html#Better%20Source%20Model">Better Source Model</a>
+<li><a href="Fortran-90-Support.html#Fortran%2090%20Support">Fortran 90 Support</a>
+<li><a href="Intrinsics-in-PARAMETER-Statements.html#Intrinsics%20in%20PARAMETER%20Statements">Intrinsics in <code>PARAMETER</code> Statements</a>
+<li><a href="Arbitrary-Concatenation.html#Arbitrary%20Concatenation">Arbitrary Concatenation</a>
+<li><a href="SELECT-CASE-on-CHARACTER-Type.html#SELECT%20CASE%20on%20CHARACTER%20Type"><code>SELECT CASE</code> on <code>CHARACTER</code> Type</a>
+<li><a href="RECURSIVE-Keyword.html#RECURSIVE%20Keyword"><code>RECURSIVE</code> Keyword</a>
+<li><a href="Increasing-Precision-Range.html#Increasing%20Precision%2fRange">Increasing Precision/Range</a>
+<li><a href="Popular-Non-standard-Types.html#Popular%20Non-standard%20Types">Popular Non-standard Types</a>
+<li><a href="Full-Support-for-Compiler-Types.html#Full%20Support%20for%20Compiler%20Types">Full Support for Compiler Types</a>
+<li><a href="Array-Bounds-Expressions.html#Array%20Bounds%20Expressions">Array Bounds Expressions</a>
+<li><a href="POINTER-Statements.html#POINTER%20Statements">POINTER Statements</a>
+<li><a href="Sensible-Non-standard-Constructs.html#Sensible%20Non-standard%20Constructs">Sensible Non-standard Constructs</a>
+<li><a href="READONLY-Keyword.html#READONLY%20Keyword"><code>READONLY</code> Keyword</a>
+<li><a href="FLUSH-Statement.html#FLUSH%20Statement"><code>FLUSH</code> Statement</a>
+<li><a href="Expressions-in-FORMAT-Statements.html#Expressions%20in%20FORMAT%20Statements">Expressions in <code>FORMAT</code> Statements</a>
+<li><a href="Explicit-Assembler-Code.html#Explicit%20Assembler%20Code">Explicit Assembler Code</a>
+<li><a href="Q-Edit-Descriptor.html#Q%20Edit%20Descriptor">Q Edit Descriptor</a>
+<li><a href="Old-style-PARAMETER-Statements.html#Old-style%20PARAMETER%20Statements">Old-style PARAMETER Statements</a>
+<li><a href="TYPE-and-ACCEPT-I-O-Statements.html#TYPE%20and%20ACCEPT%20I%2fO%20Statements"><code>TYPE</code> and <code>ACCEPT</code> I/O Statements</a>
+<li><a href="STRUCTURE-UNION-RECORD-MAP.html#STRUCTURE%20UNION%20RECORD%20MAP"><code>STRUCTURE</code>, <code>UNION</code>, <code>RECORD</code>, <code>MAP</code></a>
+<li><a href="OPEN-CLOSE-and-INQUIRE-Keywords.html#OPEN%20CLOSE%20and%20INQUIRE%20Keywords"><code>OPEN</code>, <code>CLOSE</code>, and <code>INQUIRE</code> Keywords</a>
+<li><a href="ENCODE-and-DECODE.html#ENCODE%20and%20DECODE"><code>ENCODE</code> and <code>DECODE</code></a>
+<li><a href="AUTOMATIC-Statement.html#AUTOMATIC%20Statement"><code>AUTOMATIC</code> Statement</a>
+<li><a href="Suppressing-Space-Padding.html#Suppressing%20Space%20Padding">Suppressing Space Padding of Source Lines</a>
+<li><a href="Fortran-Preprocessor.html#Fortran%20Preprocessor">Fortran Preprocessor</a>
+<li><a href="Bit-Operations-on-Floating-point-Data.html#Bit%20Operations%20on%20Floating-point%20Data">Bit Operations on Floating-point Data</a>
+<li><a href="Really-Ugly-Character-Assignments.html#Really%20Ugly%20Character%20Assignments">Really Ugly Character Assignments</a>
+<li><a href="POSIX-Standard.html#POSIX%20Standard"><code>POSIX</code> Standard</a>
+<li><a href="Floating-point-Exception-Handling.html#Floating-point%20Exception%20Handling">Floating-point Exception Handling</a>
+<li><a href="Nonportable-Conversions.html#Nonportable%20Conversions">Nonportable Conversions</a>
+<li><a href="Large-Automatic-Arrays.html#Large%20Automatic%20Arrays">Large Automatic Arrays</a>
+<li><a href="Support-for-Threads.html#Support%20for%20Threads">Support for Threads</a>
+<li><a href="Enabling-Debug-Lines.html#Enabling%20Debug%20Lines">Enabling Debug Lines</a>
+<li><a href="Better-Warnings.html#Better%20Warnings">Better Warnings</a>
+<li><a href="Gracefully-Handle-Sensible-Bad-Code.html#Gracefully%20Handle%20Sensible%20Bad%20Code">Gracefully Handle Sensible Bad Code</a>
+<li><a href="Non-standard-Conversions.html#Non-standard%20Conversions">Non-standard Conversions</a>
+<li><a href="Non-standard-Intrinsics.html#Non-standard%20Intrinsics">Non-standard Intrinsics</a>
+<li><a href="Modifying-DO-Variable.html#Modifying%20DO%20Variable">Modifying <code>DO</code> Variable</a>
+<li><a href="Better-Pedantic-Compilation.html#Better%20Pedantic%20Compilation">Better Pedantic Compilation</a>
+<li><a href="Warn-About-Implicit-Conversions.html#Warn%20About%20Implicit%20Conversions">Warn About Implicit Conversions</a>
+<li><a href="Invalid-Use-of-Hollerith-Constant.html#Invalid%20Use%20of%20Hollerith%20Constant">Invalid Use of Hollerith Constant</a>
+<li><a href="Dummy-Array-Without-Dimensioning-Dummy.html#Dummy%20Array%20Without%20Dimensioning%20Dummy">Dummy Array Without Dimensioning Dummy</a>
+<li><a href="Invalid-FORMAT-Specifiers.html#Invalid%20FORMAT%20Specifiers">Invalid FORMAT Specifiers</a>
+<li><a href="Ambiguous-Dialects.html#Ambiguous%20Dialects">Ambiguous Dialects</a>
+<li><a href="Unused-Labels.html#Unused%20Labels">Unused Labels</a>
+<li><a href="Informational-Messages.html#Informational%20Messages">Informational Messages</a>
+<li><a href="Uninitialized-Variables-at-Run-Time.html#Uninitialized%20Variables%20at%20Run%20Time">Uninitialized Variables at Run Time</a>
+<li><a href="Portable-Unformatted-Files.html#Portable%20Unformatted%20Files">Portable Unformatted Files</a>
+<li><a href="Better-List-directed-I-O.html#Better%20List-directed%20I%2fO">Better List-directed I/O</a>
+<li><a href="Default-to-Console-I-O.html#Default%20to%20Console%20I%2fO">Default to Console I/O</a>
+<li><a href="Labels-Visible-to-Debugger.html#Labels%20Visible%20to%20Debugger">Labels Visible to Debugger</a>
+</ul>
+<li><a href="Disappointments.html#Disappointments">Disappointments and Misunderstandings</a>
+<ul>
+<li><a href="Mangling-of-Names.html#Mangling%20of%20Names">Mangling of Names in Source Code</a>
+<li><a href="Multiple-Definitions-of-External-Names.html#Multiple%20Definitions%20of%20External%20Names">Multiple Definitions of External Names</a>
+<li><a href="Limitation-on-Implicit-Declarations.html#Limitation%20on%20Implicit%20Declarations">Limitation on Implicit Declarations</a>
+</ul>
+<li><a href="Non-bugs.html#Non-bugs">Certain Changes We Don't Want to Make</a>
+<ul>
+<li><a href="Backslash-in-Constants.html#Backslash%20in%20Constants">Backslash in Constants</a>
+<li><a href="Initializing-Before-Specifying.html#Initializing%20Before%20Specifying">Initializing Before Specifying</a>
+<li><a href="Context-Sensitive-Intrinsicness.html#Context-Sensitive%20Intrinsicness">Context-Sensitive Intrinsicness</a>
+<li><a href="Context-Sensitive-Constants.html#Context-Sensitive%20Constants">Context-Sensitive Constants</a>
+<li><a href="Equivalence-Versus-Equality.html#Equivalence%20Versus%20Equality">Equivalence Versus Equality</a>
+<li><a href="Order-of-Side-Effects.html#Order%20of%20Side%20Effects">Order of Side Effects</a>
+</ul>
+<li><a href="Warnings-and-Errors.html#Warnings%20and%20Errors">Warning Messages and Error Messages</a>
+</ul>
+<li><a name="toc_Open%20Questions"></a>
+    <a href="Open-Questions.html#Open%20Questions">Open Questions</a>
+<li><a name="toc_Bugs"></a>
+    <a href="Bugs.html#Bugs">Reporting Bugs</a>
+<ul>
+<li><a href="Bug-Criteria.html#Bug%20Criteria">Have You Found a Bug?</a>
+<li><a href="Bug-Lists.html#Bug%20Lists">Where to Report Bugs</a>
+<li><a href="Bug-Reporting.html#Bug%20Reporting">How to Report Bugs</a>
+</ul>
+<li><a name="toc_Service"></a>
+    <a href="Service.html#Service">How To Get Help with GNU Fortran</a>
+<li><a name="toc_Adding%20Options"></a>
+    <a href="Adding-Options.html#Adding%20Options">Adding Options</a>
+<li><a name="toc_Projects"></a>
+    <a href="Projects.html#Projects">Projects</a>
+<ul>
+<li><a href="Efficiency.html#Efficiency">Improve Efficiency</a>
+<li><a href="Better-Optimization.html#Better%20Optimization">Better Optimization</a>
+<li><a href="Simplify-Porting.html#Simplify%20Porting">Simplify Porting</a>
+<li><a href="More-Extensions.html#More%20Extensions">More Extensions</a>
+<li><a href="Machine-Model.html#Machine%20Model">Machine Model</a>
+<li><a href="Internals-Documentation.html#Internals%20Documentation">Internals Documentation</a>
+<li><a href="Internals-Improvements.html#Internals%20Improvements">Internals Improvements</a>
+<li><a href="Better-Diagnostics.html#Better%20Diagnostics">Better Diagnostics</a>
+</ul>
+<li><a name="toc_Front%20End"></a>
+    <a href="Front-End.html#Front%20End">Front End</a>
+<ul>
+<li><a href="Overview-of-Sources.html#Overview%20of%20Sources">Overview of Sources</a>
+<li><a href="Overview-of-Translation-Process.html#Overview%20of%20Translation%20Process">Overview of Translation Process</a>
+<ul>
+<li><a href="g77stripcard.html#g77stripcard">g77stripcard</a>
+<li><a href="lex.c.html#lex.c">lex.c</a>
+<li><a href="sta.c.html#sta.c">sta.c</a>
+<li><a href="sti.c.html#sti.c">sti.c</a>
+<li><a href="stq.c.html#stq.c">stq.c</a>
+<li><a href="stb.c.html#stb.c">stb.c</a>
+<li><a href="expr.c.html#expr.c">expr.c</a>
+<li><a href="stc.c.html#stc.c">stc.c</a>
+<li><a href="std.c.html#std.c">std.c</a>
+<li><a href="ste.c.html#ste.c">ste.c</a>
+<li><a href="Gotchas--Transforming-.html#Gotchas%20(Transforming)">Gotchas (Transforming)</a>
+<ul>
+<li><a href="Gotchas--Transforming-.html#Gotchas%20(Transforming)">Multi-character Lexemes</a>
+<li><a href="Gotchas--Transforming-.html#Gotchas%20(Transforming)">Space-padding Lexemes</a>
+<li><a href="Gotchas--Transforming-.html#Gotchas%20(Transforming)">Bizarre Free-form Hollerith Constants</a>
+<li><a href="Gotchas--Transforming-.html#Gotchas%20(Transforming)">Hollerith Constants</a>
+<li><a href="Gotchas--Transforming-.html#Gotchas%20(Transforming)">Confusing Function Keyword</a>
+<li><a href="Gotchas--Transforming-.html#Gotchas%20(Transforming)">Weird READ</a>
+</ul>
+<li><a href="TBD--Transforming-.html#TBD%20(Transforming)">TBD (Transforming)</a>
+</ul>
+<li><a href="Philosophy-of-Code-Generation.html#Philosophy%20of%20Code%20Generation">Philosophy of Code Generation</a>
+<li><a href="Two-pass-Design.html#Two-pass%20Design">Two-pass Design</a>
+<ul>
+<li><a href="Two-pass-Code.html#Two-pass%20Code">Two-pass Code</a>
+<li><a href="Why-Two-Passes.html#Why%20Two%20Passes">Why Two Passes</a>
+</ul>
+<li><a href="Challenges-Posed.html#Challenges%20Posed">Challenges Posed</a>
+<li><a href="Transforming-Statements.html#Transforming%20Statements">Transforming Statements</a>
+<ul>
+<li><a href="Statements-Needing-Temporaries.html#Statements%20Needing%20Temporaries">Statements Needing Temporaries</a>
+<li><a href="Transforming-DO-WHILE.html#Transforming%20DO%20WHILE">Transforming DO WHILE</a>
+<li><a href="Transforming-Iterative-DO.html#Transforming%20Iterative%20DO">Transforming Iterative DO</a>
+<li><a href="Transforming-Block-IF.html#Transforming%20Block%20IF">Transforming Block IF</a>
+<li><a href="Transforming-SELECT-CASE.html#Transforming%20SELECT%20CASE">Transforming SELECT CASE</a>
+</ul>
+<li><a href="Transforming-Expressions.html#Transforming%20Expressions">Transforming Expressions</a>
+<li><a href="Internal-Naming-Conventions.html#Internal%20Naming%20Conventions">Internal Naming Conventions</a>
+</ul>
+<li><a name="toc_Diagnostics"></a>
+    <a href="Diagnostics.html#Diagnostics">Diagnostics</a>
+<ul>
+<li><a href="CMPAMBIG.html#CMPAMBIG"><code>CMPAMBIG</code></a>
+<li><a href="EXPIMP.html#EXPIMP"><code>EXPIMP</code></a>
+<li><a href="INTGLOB.html#INTGLOB"><code>INTGLOB</code></a>
+<li><a href="LEX.html#LEX"><code>LEX</code></a>
+<li><a href="GLOBALS.html#GLOBALS"><code>GLOBALS</code></a>
+<li><a href="LINKFAIL.html#LINKFAIL"><code>LINKFAIL</code></a>
+<li><a href="Y2KBAD.html#Y2KBAD"><code>Y2KBAD</code></a>
+</ul>
+<li><a name="toc_Index"></a>
+    <a href="Index.html#Index">Index</a>
+</ul>
+
+<p>
+Node:<a name="Top">Top</a>,
+Next:<a rel=next href="Copying.html#Copying">Copying</a>,
+Up:<a rel=up href="../index.html#DIR">(DIR)</a>
+<hr><br>
+
+<h2>Introduction</h2>
+
+<p>This manual documents how to run, install and port <code>g77</code>,
+as well as its new features and incompatibilities,
+and how to report bugs. 
+It corresponds to the GCC-3.2 version of <code>g77</code>.
+
+<p><em>Warning:</em> This document is still under development,
+and might not accurately reflect the <code>g77</code> code base
+of which it is a part. 
+Efforts are made to keep it somewhat up-to-date,
+but they are particularly concentrated
+on any version of this information
+that is distributed as part of a <em>released</em> <code>g77</code>.
+
+<p>In particular, while this document is intended to apply to
+the GCC-3.2 version of <code>g77</code>,
+only an official <em>release</em> of that version
+is expected to contain documentation that is
+most consistent with the <code>g77</code> product in that version.
+
+<ul>
+<li><a href="Copying.html#Copying">Copying</a>:          GNU General Public License says
+                    how you can copy and share GNU Fortran. 
+<li><a href="GNU-Free-Documentation-License.html#GNU%20Free%20Documentation%20License">GNU Free Documentation License</a>: 
+		    How you can copy and share this manual. 
+<li><a href="Contributors.html#Contributors">Contributors</a>:     People who have contributed to GNU Fortran. 
+<li><a href="Funding.html#Funding">Funding</a>:          How to help assure continued work for free software. 
+<li><a href="Funding-GNU-Fortran.html#Funding%20GNU%20Fortran">Funding GNU Fortran</a>:   How to help assure continued work on GNU Fortran.
+
+<p>
+</p><li><a href="Getting-Started.html#Getting%20Started">Getting Started</a>:  Finding your way around this manual. 
+<li><a href="What-is-GNU-Fortran-.html#What%20is%20GNU%20Fortran%3f">What is GNU Fortran?</a>:   How <code>g77</code> fits into the universe. 
+<li><a href="G77-and-GCC.html#G77%20and%20GCC">G77 and GCC</a>:      You can compile Fortran, C, or other programs. 
+<li><a href="Invoking-G77.html#Invoking%20G77">Invoking G77</a>:     Command options supported by <code>g77</code>. 
+<li><a href="News.html#News">News</a>:             News about recent releases of <code>g77</code>. 
+<li><a href="Changes.html#Changes">Changes</a>:          User-visible changes to recent releases of <code>g77</code>. 
+<li><a href="Language.html#Language">Language</a>:         The GNU Fortran language. 
+<li><a href="Compiler.html#Compiler">Compiler</a>:         The GNU Fortran compiler. 
+<li><a href="Other-Dialects.html#Other%20Dialects">Other Dialects</a>:   Dialects of Fortran supported by <code>g77</code>. 
+<li><a href="Other-Compilers.html#Other%20Compilers">Other Compilers</a>:  Fortran compilers other than <code>g77</code>. 
+<li><a href="Other-Languages.html#Other%20Languages">Other Languages</a>:  Languages other than Fortran. 
+<li><a href="Debugging-and-Interfacing.html#Debugging%20and%20Interfacing">Debugging and Interfacing</a>:   How <code>g77</code> generates code. 
+<li><a href="Collected-Fortran-Wisdom.html#Collected%20Fortran%20Wisdom">Collected Fortran Wisdom</a>:   How to avoid Trouble. 
+<li><a href="Trouble.html#Trouble">Trouble</a>:          If you have trouble with GNU Fortran. 
+<li><a href="Open-Questions.html#Open%20Questions">Open Questions</a>:   Things we'd like to know. 
+<li><a href="Bugs.html#Bugs">Bugs</a>:             How, why, and where to report bugs. 
+<li><a href="Service.html#Service">Service</a>:          How to find suppliers of support for GNU Fortran.
+
+<p>
+</p><li><a href="Adding-Options.html#Adding%20Options">Adding Options</a>:   Guidance on teaching <code>g77</code> about new options. 
+<li><a href="Projects.html#Projects">Projects</a>:         Projects for <code>g77</code> internals hackers. 
+<li><a href="Front-End.html#Front%20End">Front End</a>:        Design and implementation of the <code>g77</code> front end.
+
+<p>
+</p><li><a href="Diagnostics.html#Diagnostics">M</a>:    Diagnostics produced by <code>g77</code>.
+
+<p>
+</p><li><a href="Index.html#Index">Index</a>:            Index of concepts and symbol names. 
+</ul>
+
+</body></html>
+

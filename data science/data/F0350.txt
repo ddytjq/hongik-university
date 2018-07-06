@@ -1,0 +1,98 @@
+ID=F0350
+URL=http://www.geog.leeds.ac.uk/people/m.blake/magis/geog5080/lt3-4.htm
+SIZE=1991
+DATE=09/07/2002
+TIME=13:19:24
+DATASET=Visual Basic
+HTML=<HTML>
+
+<HEAD>
+<TITLE>Visual Basic Section 3: Scaling Coordinates to a Visual Basic Object</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF">
+<H2><A HREF="customgis.htm"><IMG SRC="icons/msvb.gif" ALT="Visual Basic Icon" ALIGN=middle BORDER=0></A>Scaling Coordinates to a Visual Basic Object</H2>
+
+<H3>The Algorithm</H3>
+
+<OL>
+<LI>
+<LI>
+<LI>
+<LI>
+<LI>
+<LI>
+<LI>
+</OL>
+
+<H3>The Code</H3>
+<PRE>
+<FONT COLOR="#0000FF">
+
+<FONT COLOR="#008000"></FONT>
+
+Sub PlotLine ()
+'##############################################
+'##############################################
+' PLOTLINE: Procedure for reading an plotting
+'           lines stored in ARC/INFO ungenerate
+'           format
+'##############################################
+' Required variables:
+
+Dim i As Integer, j As Integer, Percent As Integer
+
+
+
+' Set the mousepointer
+Screen.MousePointer = 11
+
+' Loop for each polygon
+For i = 1 To PolyNum
+
+    'Loop for each coordinate
+    For j = 1 To CoordNum(i) - 1
+        frmUPP.picDisplay.Line(Poly(i).X(j), Poly(i).Y(j)) -
+                              (Poly(i).X(j + 1), Poly(i).Y(j + 1)),
+                               QBColor(0)
+    Next j
+
+    ' Update screen details    
+    Percent = (i / PolyNum) * 100
+    msg = "Plotting polygons...." & Percent & "%"
+    frmUPP.Gauge1.Value = Percent
+    frmUPP.lblCaption.Caption = msg
+    DoEvents
+
+Next i
+
+' Set the mousepointer
+Screen.MousePointer = 0
+
+msg = "Done..."
+frmUPP.lblCaption.Caption = msg
+frmUPP.Gauge1.Value = 0
+
+End Sub
+
+
+</FONT>
+</PRE>
+<HR>
+Forward: <A HREF="lt3-4.htm" >Plotting Polygons</A>
+<BR>
+Back: <A HREF="lt3-2.htm" target=display >Reading an ARC/INFO Ungenerate File</A>
+<P>
+<FONT SIZE="2">
+<I>Author: <A HREF="http://www.geog.leeds.ac.uk/staff/m.blake/m.blake.html" >Marcus Blake  
+</A>(marcus@geog.leeds.ac.uk)</I>
+<br>
+<I>Webmaster: Ian Turton (ian@geog.leeds.ac.uk)</I>
+<P>
+<I>Last Updated: 19 February 1996 07:39:23</I>
+</FONT>
+
+
+
+</BODY>
+

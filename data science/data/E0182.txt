@@ -1,0 +1,137 @@
+ID=E0182
+URL=http://www.hh.se/stud/d98rolb/ansi/va_arg().html
+SIZE=4923
+DATE=12/07/02
+TIME=19:18:22
+DATASET=C
+HTML=<html>
+<head>
+  <title>va_arg()</title>
+  <meta name="Generator" content="GuideML V1.6">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+<body>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="ungetc().html"><img src="prev.gif" alt="PREV" border=0></a><a href="va_end().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+<hr>
+<pre>
+va_arg-Get an argument from a varying-length argument list
+
+Synopsis
+
+           #include &#060;stdarg.h&#062;
+
+           (arg_type) va_arg(va_list ap, arg_type);
+
+Description
+
+        The va_arg macro returns the value of the next argument in a
+        varying-length argument list.
+
+        The first argument, ap, is a work area of type va_list, which is
+        used by various macros defined in the file stdarg.h. (The va_list
+        must be initialized by a previous use of the <a href="va_start().html"> va_start </a> macro, and a
+        corresponding <a href="va_end().html"> va_end </a> should be called when processing of the
+        arguments is finished.
+
+        The second argument, arg_type, is the type of the argument that is
+        expected. The arg_type argument must be written in such a form
+        that arg_type * is the type of a pointer to an element of that
+        type. For example, char is a valid arg_type because char * is the
+        type of a pointer to a character. int(*)() is not a valid second
+        argument to the va_arg macro because int(*)()* is not a valid
+        type. (You can use typedef declarations to create usable synonyms
+        of this sort for any type.)
+
+        The results of the va_arg macro are unpredictable if the argument
+        values are not appropriate.
+
+        In certain cases, arguments are converted when they are passed to
+        another type.  For instance, char and short arguments are
+        converted to int, float to double, and array to pointer.  When
+        parameters of this sort are expected, the va_arg macro must be
+        issued with the type after conversion.        For example, va_arg(ap,
+        float) may fail to access a float argument value correctly, so
+        va_arg(ap, double) should be used.
+
+        NOTE:  There is no way to test whether a particular argument is
+        the last one in the list.  Attempting to access arguments after
+        the last one in the list produces unpredictable results.
+
+
+Returns
+
+        The va_arg macro returns the value of the next argument in the
+        list.  The type is always the same as the second argument to the
+        va_arg macro.
+
+Example
+
+        /*
+         * This example shows a function named concat,
+         * which can be used to concatenate any number
+         * of strings.        A simple call is concat(3,a,b,c).
+         * This should have the same effect as
+         *
+         *         strcat (a,b);
+         *         strcat (a,c);
+         *
+         * The first argument is the total number of strings.
+         */
+
+        #include &#060;stdarg.h&#062;
+        #include &#060;string.h&#062;
+        #include &#060;stdio.h&#062;
+
+        void concat (int count, ...);
+
+        void main(void)
+        {
+            char str[20] = &quot;abcd&quot;;
+
+            concat(4,str,&quot;efgh&quot;,&quot;ijkl&quot;,&quot;mnop&quot;);
+
+            printf(&quot;The concatenated string = %sn&quot;,str);
+        }
+
+        void concat (int count, ...)
+        {
+            va_list ap;
+            char *target, *source;
+
+            if (count &#060;=1)
+                return;
+
+            va_start(ap, count);
+
+            /* Get target string */
+            target = va_arg (ap, char *);
+
+            /* Point to string end */
+            target += strlen(target);
+
+            while (--count &#062; 0)
+            {
+                /* Get next source string */
+                source = va_arg(ap, char *);
+
+                /* Copy chars to target */
+                while (*source)
+                    *target++ = *source++;
+            }
+
+            /* Add final null */
+            *target = '0';
+
+            /* End arg list processing */
+            return;
+        }
+
+See Also
+
+        <a href="va_end().html"> va_end </a>, <a href="va_start().html"> va_start </a>
+</pre>
+<hr>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="ungetc().html"><img src="prev.gif" alt="PREV" border=0></a><a href="va_end().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+</body>
+</html>
+

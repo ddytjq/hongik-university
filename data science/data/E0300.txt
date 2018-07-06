@@ -1,0 +1,317 @@
+ID=E0300
+URL=http://www.delorie.com/djgpp/v2faq/faq18_9.html
+SIZE=15384
+DATE=12/07/02
+TIME=19:19:44
+DATASET=C
+HTML=<html><head><title>DJGPP FAQ -- How to hook hardware interrupts</title>
+<base href="http://www.delorie.com/djgpp/v2faq/faq18_9.html">
+</head><body><center><!-- BEGIN RICH-MEDIA BURST! CODE --> 
+     <script language="JavaScript"> 
+     <!-- /* (C) 1997-1999 BURST! Media, LLC. All Rights Reserved.*/ 
+     var TheAdcode = 'ad1954a'; 
+     var bN = navigator.appName; 
+     var bV = parseInt(navigator.appVersion); 
+     var base='http://www.burstnet.com/'; 
+     var Tv='/5313'; 
+     var agt=navigator.userAgent.toLowerCase(); 
+     if (bN=='Netscape'){ 
+          if ((bV>=4)&&(agt.indexOf("mac")==-1))
+     {  document.write('<s'+'cript src="'+ 
+           base+'cgi-bin/ads/'+TheAdcode+'.cgi/RETURN-CODE/JS' 
+           +Tv+'">'); 
+          document.write('</'+'script>');    
+     } 
+          else if (bV>=3) {document.write('<'+'a href="'+base+'ads/'+ 
+             TheAdcode+'-map.cgi'+Tv+'"target=_top>'); 
+             document.write('<img src="' + base + 'cgi-bin/ads/' + 
+             TheAdcode + '.cgi' + Tv + '" ismap width=468 height=60' + 
+             ' border=0 alt="Click Here"></a>');} 
+      } 
+     if (bN=='Microsoft Internet Explorer') 
+      document.write('<ifr'+'ame id=BURST src="'+base+'cgi-bin/ads/'
+     + 
+       TheAdcode + '.cgi' + Tv + '/RETURN-CODE" width=468 height=60' + 
+       'marginwidth=0 marginheight=0 hspace=0 vspace=0 ' + 
+       'frameborder=0 scrolling=no></ifr'+'ame>'); 
+     // --> 
+     </script> 
+     <noscript><a href="http://www.burstnet.com/ads/ad1954a-map.cgi" target=_top> 
+     <img src="http://www.burstnet.com/cgi-bin/ads/ad1954a.cgi" 
+      width=468 height=60 border=0 alt="Click Here"></a> 
+     </noscript> 
+     <!-- END BURST CODE --> 
+<table width=100% border=0 cellspacing=0 cellpadding=3><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">www.delorie.com</a>/<a href="/djgpp/" target="_top">djgpp</a>/<a href="/djgpp/v2faq/" target="_top">v2faq</a>/faq18_9.html</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/search/">search</a> &nbsp;
+</b></font></small></td>
+</tr></table><a href="bulktrap.html"></a></center>
+
+Node:<a name="Hardware%20interrupts">Hardware interrupts</a>,
+Next:<a rel=next href="faq18_10.html">_go32 vs __dpmi</a>,
+Previous:<a rel=previous href="faq18_8.html">RMCB</a>,
+Up:<a rel=up href="faq18.html">Low-level</a>
+<br>
+
+<h2>18.9 How to hook hardware interrupts</h2>
+
+<p><em><strong>Q</strong>: How do I register my DJGPP function as a hardware interrupt handler?</em>
+
+<br><p>
+<p><strong>A</strong>:  The optimal setup depends on the interrupt frequency and on the
+amount of processing it requires.  Therefore, only some basic
+considerations and techniques are listed below.  What combination of these
+is best for your application is up to you to decide.
+
+<p>First, some background.  Hardware interrupts can occur when the
+processor is either in real mode (like when your program calls some DOS
+service) or in protected mode.  When your program runs under a DPMI
+host, hardware interrupts are caught by the DPMI host and passed to
+protected mode first; only if unhandled, they are then reflected to real
+mode.  Therefore, in DPMI mode you can get away with installing only a
+protected-mode handler.  However, if the interrupts happen at a high
+frequency (say, more than 10 KHz), and if your program spends lots of
+time calling real-mode DOS/BIOS functions, then the overhead of the
+interrupt reflection from real to protected mode might be too painful,
+and you should consider installing a real-mode interrupt handler in
+addition to the protected-mode one.  Such a real-mode handler will be
+called <em>before</em> the interrupt gets to the DPMI host, and handle the
+interrupt entirely in real mode, so it must be written in assembly and
+located in conventional memory (below the 1MB mark).  If you need to
+hook an interrupt with both PM and RM handlers, you must hook the PM
+interrupt first, then the RM one (because hooking the PM interrupt
+modifies the RM one).  Also, you should know that some DPMI hosts don't
+allow you to hook the RM interrupt (CWSDPMI does), and some call both
+handlers, no matter in what mode the interrupt arrived (CWSDPMI will
+only call one of them); the only way to be sure is to try.
+
+<p>To install a protected-mode interrupt handler, you do this:
+
+<ul>
+<li>In general, your handler should be written in assembly to be
+bullet-proof.  You should lock<a rel=footnote href="faq25.html"><sup>35</sup></a> all the
+memory (code, data and stack) that could be touched by your handler
+during interrupt processing (this is virtually impossible if the handler
+is written in C), explicitly issue the `STI' instruction before `IRET',
+and perform all the other chores described in the DPMI spec (see <a href="faq22_6.html">DOS Protected Mode Interface Specification</a>).  To install an assembly handler, you should do this:
+
+<ul>
+<li>Call <code>__dpmi_get_protected_mode_interrupt_vector</code> and save the
+structure it returns (to restore the previous handler address before your
+program exits).
+
+<li>Lock all the memory your handler touches, the code of the handler
+itself, and any function it calls, with a series of calls to
+<code>__dpmi_lock_linear_region</code>.  Failure to lock memory accessed
+during the interrupt handling will cause your program to crash. 
+Alternatively, you could set the <code>_CRT0_FLAG_LOCK_MEMORY</code> bit in
+the <code>_crt0_startup_flags</code> variable, like this:
+
+<pre>#include &lt;crt0.h&gt;
+
+int _crt0_startup_flags = _CRT0_FLAG_LOCK_MEMORY;
+</pre>
+
+<p>Another possibility is to disable virtual memory by using CWSDPR0 as
+your DPMI server.
+
+</p><li>Finally, call <code>__dpmi_set_protected_mode_interrupt_vector</code> and pass
+it a pointer to a <code>__dpmi_paddr</code> structure filled with the value
+returned by <code>_my_cs()</code> in the <code>selector</code> field and the address
+of your function in the <code>offset32</code> field. 
+</ul>
+
+<li>If your handler function is written in C, you should generally call the
+<code>_go32_dpmi_XXX</code> functions instead of the bare-bones API wrappers
+whose names start with <code>__dpmi_.</code>  Specifically:
+
+<ul>
+<li>Call <code>_go32_dpmi_get_protected_mode_interrupt_vector.</code>  This
+function puts the selector and offset of the specified interrupt vector
+into the <code>pm_selector</code> and <code>pm_offset</code> fields of the structure
+pointed to by its second argument.  This data should be saved and later
+passed to <code>_go32_dpmi_set_protected_mode_interrupt_vector</code> to
+restore the vector on exit.
+
+<li>Call <code>_go32_dpmi_allocate_iret_wrapper,</code> passing it the address of
+your function in the <code>pm_offset</code> field and the value returned by
+<code>_my_cs()</code> in the <code>pm_selector</code> field.  The <code>pm_offset</code>
+field will get replaced with the address of the wrapper function which
+is a small assembler function that handles everything an interrupt
+handler should do on entry and before exit (and what the code GCC
+generates for an ordinary C function doesn't include); the effect is
+similar to using the <code>interrupt</code> or <code>_interrupt</code> keyword in
+other DOS-based compilers.
+
+<li>You then call <code>_go32_dpmi_set_protected_mode_interrupt_vector</code> with
+the address of the <code>_go32_dpmi_seginfo</code> structure you got from
+<code>_go32_dpmi_allocate_iret_wrapper</code>.
+
+<li>If you want your handler to chain to the previous handler, call
+<code>_go32_dpmi_chain_protected_mode_interrupt_vector.</code>  This will set
+up a wrapper function which, when called, will call your handler, then
+jump to the previous handler after your handler returns.  Put the
+address of your handler into the <code>pm_offset</code> field and the value of
+<code>_my_cs</code> into the <code>pm_selector</code> field of the
+<code>_go32_dpmi_seginfo</code> structure and pass a pointer to it to this
+function.  <code>_go32_dpmi_chain_protected_mode_interrupt_vector</code>
+allocates the wrapper internally, and also arranges for the interrupt to
+call your handler, so you need not call
+<code>_go32_dpmi_allocate_iret_wrapper</code> and
+<code>_go32_dpmi_set_protected_mode_interrupt_vector</code> functions
+yourself.  Also note that currently,
+<code>_go32_dpmi_chain_protected_mode_interrupt_vector</code> doesn't return
+to you the address of the wrapper it allocates, so that wrapper cannot
+be freed by your program.  It will be freed by the DJGPP exit code,
+though, so this issue is only of concern to programs that allocate and
+free lots of wrappers. 
+</ul>
+
+<p>The problem with writing handlers in C as above is that in practice you
+can't lock all of memory the handler itself uses, because there's no
+standard way of finding the size of the code of a C function, or the
+addresses on the stack used by C code.  Thus, this approach is generally
+unsuitable for production-quality software and should be used only when
+the program is known not to page (i.e., if only the physical memory is
+used).  You might consider disabling virtual memory to make sure your
+program doesn't page.  To accomplish this, either set the
+<code>_CRT0_FLAG_LOCK_MEMORY</code> bit in the <code>_crt0_startup_flags</code>
+variable, or use CWSDPR0 or PMODE/DJ as your DPMI host.  In fact, using
+one of these methods is the recommended way of debugging the first
+versions of a program that hooks hardware interrupts; only after you are
+sure that your basic machinery works should you move to testing it in a
+setup when paging might happen.
+
+<p>Additional considerations apply if your interrupt handler is a C<tt>++</tt>
+class member function.  First, you need to remember that member
+functions expect a hidden extra first parameter--this is important if
+you use member functions as callbacks.  Second, if the function is
+virtual, you will need to lock the class's virtual table.  Third, you
+need to lock the object itself, not only the method you call on it.
+
+<p>Note that <code>_CRT0_FLAG_LOCK_MEMORY</code> is only recommended for small
+programs that run on a machine where enough physical memory is always
+available, because the startup code currently doesn't test if memory is
+indeed locked, and if there's not enough physical memory installed to
+page in all of the memory your program needs, you can end up with
+unlocked or partially unlocked memory, which will crash your program. 
+If you want to make sure all memory is locked, use a DPMI server which
+disables paging.
+
+<p>Buffers in conventional memory (allocated via the
+<code>__dpmi_allocate_dos_memory</code> function and its equivalents)
+generally need not be locked, since most DPMI servers lock DOS memory by
+default.  For safer code, you could try to lock them, and if the call to
+<code>__dpmi_lock_linear_region</code> returns a failure indication, it means
+that the buffer is already locked.
+
+<p>It is possible to lock only the code and data segments of your program,
+but leave everything else unlocked.  The following code snippet shows
+how:
+
+<pre> #include &lt;crt0.h&gt;
+
+ int _crt0_startup_flags =
+   _CRT0_FLAG_LOCK_MEMORY | _CRT_FLAG_NONMOVE_SBRK;
+
+ int (main (void)
+ {
+   _crt0_startup_flags &amp;= ~_CRT0_FLAG_LOCK_MEMORY;
+   ...
+ }
+</pre>
+
+<p>This locks the <code>.data</code>, <code>.bss</code>, and <code>.text</code> segments of
+the program, and its stack, but doesn't lock the heap allocated after
+<code>main</code> is called. 
+</ul>
+
+<p>To install a real-mode interrupt handler, you do this:
+
+<ul>
+<li>Call <code>__dpmi_get_real_mode_interrupt_vector</code> and save the structure
+it returns (to restore the previous handler address before your program
+exits).
+
+<li>Allocate some conventional memory with <code>__dpmi_allocate_dos_memory</code>
+and put the code of your handler there with the <code>dosmemput</code> function. 
+(You could also call one of the functions which allocate a real-mode
+call-back, but these will cause a mode switch on every interrupt, which you
+want to avoid; otherwise there is no point in installing a real-mode
+handler, right?)
+
+<li>Put the address which <code>__dpmi_allocate_dos_memory</code> returned into a
+<code>__dpmi_raddr</code> structure (the lower 4 bits into <code>offset16</code>
+field, the rest into <code>segment</code> field), then call
+<code>__dpmi_set_real_mode_interrupt_vector.</code>
+</ul>
+
+<p>Note that Windows 9X is reported to call both the RM and PM handlers if
+both are installed, at least for some interrupts (CWSDPMI only invokes
+one of them).  So, if you want to play safe, you will need some kind of
+a semaphore variable that the two handlers could use so that only one of
+them actually handles the interrupt in any given case.
+
+<p>The DPMI spec says that 3 <em>software</em> interrupts are special, in
+that they also get reflected to a protected-mode handler.  These
+interrupts are: 1Ch (the timer tick interrupt), 23h (Keyboard Break
+interrupt), and 24h (Critical Error interrupt).  This means that, to
+catch these interrupts, you need to install a protected-mode handler
+only.  Unlike hardware interrupts, it doesn't make sense to install dual
+RM and PM handlers for these software interrupts.  In particular,
+Windows will call both RM and PM handlers if you install both, so you
+effectively wind up handling the same interrupt twice.
+
+<p>For examples of installing and using hardware interrupt handlers, see
+the sources of the Allegro library, the sample code written by
+<a href="mailto:bill@tanihwa.org">Bill Currie</a>, the Sound Blaster
+interrupt-driven functions, the <code>mkkbd</code> package, and the
+<code>libhw</code> library, described under <a href="faq22_4.html">sample DJGPP packages</a>. 
+<a href="mailto:alaric@abwillms.demon.co.uk">Alaric B. Williams</a> has written a
+<a href="http://www.abwillms.demon.co.uk/prog/djints.txt">tutorial on interrupt handling</a>.
+
+<p>The DJGPP User's Guide includes a <a href="http://www.delorie.com/djgpp/doc/ug/interrupts/hwirqs.html">chapter on hardware interrupts</a>, written by Peter
+Marinov, which includes sample code for hooking hardware interrupts.
+
+<p>The file <code>src/libc/go32/dpmiexcp.c</code> in the DJGPP library sources,
+<code>djlsrNNN.zip</code>, is one example of the subtleties involved with
+installing a real-mode interrupt handler.  The handlers themselves are
+in the file <code>src/libc/go32/exceptn.S</code>.
+
+<p><hr>
+
+
+
+<br clear=both></p>
+<a href="bulktrap.html"></a><table width=100% border=0 cellspacing=0 cellpadding=3><tr>
+<td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/users/dj/" target="_top">webmaster</a> &nbsp;
+<a href="/donations.html" target="_top">donations</a> &nbsp;
+<a href="/store/books/" target="_top">bookstore</a> &nbsp;
+</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">delorie software</a> &nbsp;
+<a href="/privacy.html" target="_top">privacy</a> &nbsp;
+</b></font></small></td>
+</tr><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/copyright.html" target="_top">Copyright © 2001</a> &nbsp;
+<a href="/users/eliz/" target="_top">by Eli Zaretskii</a> &nbsp;
+</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+Updated Apr 2001 &nbsp;
+</b></font></small></td>
+</tr></table>
+<center><iframe
+ SRC="http://www.burstnet.com/cgi-bin/ads/ba1954a.cgi/RETURN-CODE/if/5313/"
+ scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"
+ width="468" height="60"><A target="_top"
+ HREF="http://www.burstnet.com/ads/ba1954a-map.cgi/5313"><IMG SRC="http://www.burstnet.com/cgi-bin/ads/ba1954a.cgi/5313"
+ border="0" width="468" height="60" alt="Please support our sponsor."></A></iframe><br><small><i>Please take a moment to fill out
+this <a href="http://survey.burstmedia.com/cgi-win/client.exe?Burst,welcome,ad1954a,2000">visitor survey</a></i></small>
+<br><small><i>You can help support this site by
+visiting the advertisers that sponsor it! (only once each, though)</i></small>
+</center>
+</body></html>
+
+

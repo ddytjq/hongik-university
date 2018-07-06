@@ -1,0 +1,775 @@
+ID=D0282
+URL=http://www.javaworld.com/javaworld/jw-07-2002/jw-0712-javadev.html
+SIZE=55835
+DATE=16/07/02
+TIME=14:42:04
+DATASET=Java
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title> Serve clients' specific protocol requirements with Brazil, Part 6</title>
+<!-- ssilog 7814 -->
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<meta name="keywords" content=" Brazil Technology Toolkit, JAXM, XSL, XSLT Velocity, Jini, BeanShell, LDAP">
+<meta name="description" content="
+
+In this conclusion to his series on Brazil, Rinaldo Di Giorgio demonstrates how to use the following technologies with the Brazil toolkit: Jini, BeanShell, and the Java API for XML Messaging (JAXM). You can also use Brazil with many other technologies, including Xalan-Java, servlets, Velocity, and LDAP (the lightweight directory access protocol); Di Giorgio shows you how to get started with those as well. He'll also discuss the larger purpose of this series: to demonstrate how to use Brazil to support new technologies and APIs in ways that API developers might not have considered. For example, you would not commonly consider using the above technologies in a Web server. By understanding how these technologies work, you can better determine the right tool for your job. (2,900 words; July 12, 2002)
+">
+<meta name="date" content="2002-07-01">
+<META NAME="DC.Date" CONTENT="2002-07-01">
+<basefont face="verdana, arial, helvetica" size="3" />
+<style type="text/css">
+            code {font-size: 90%; font-family: monospace;}
+            pre {font-size: 90%; font-family: monospace;}
+            td {font-size: 90%;}
+</style>
+<script language="javascript">
+<!--// IDG.net Scripts
+            function mail2Friend () {
+                window.parent.location = "/MailToFriend?url=" + escape(document.location);
+            }
+
+            function openBrWindow() {
+                win=window.open("http://www.javaworld.com/channel_content/jw-story-feedback.shtml",'Feedback','width=600,height=330,toolbar=no,location=no,directories=no,menubar=no,scrollbars=yes,resizable=yes');
+            }
+            //-->
+        </script>
+    </head>
+<body bgcolor="#ffffff" text="#000000" link="#990033" vlink="#990033" alink="#990033" topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" marginheight="0" marginwidth="0">
+<table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td colspan="2" width="186" bgcolor="#006699"><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0 ></a></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- START TOP 468x60 BANNER -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=464137?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=464137?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=464137?" border="0" height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer1" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- END TOP 468x60 BANNER --></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="26" valign="top" align="left" bgcolor="#ffffff"><img height=8 src="http://www.javaworld.com/images/c_whtbottom.gif" width=8 border=0 ></td>
+                <td width="100%"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.global/idgpixel7.18.00;sz=1x1;ord=464137?" border=0 height="1" width="1"><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.usa.jw/usajw.081501;sz=1x1;ord=464137?" border=0 height="1" width="1"></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160" align="middle" valign="center" nowrap><nobr><font face="Verdana, Arial, Sans-serif" color="#ffffff" size="2">July 2002</font></nobr><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="8" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltlft.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="100%" align="middle" valign="center">    <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">HOME</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/features/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FEATURED TUTORIALS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/columns/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">COLUMNS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/news-reviews/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">NEWS & REVIEWS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://forums.idg.net/webx?13@@.ee6b802"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FORUM</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/resources/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">JW RESOURCES</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/info/jw-about-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">ABOUT JW</font></a></td>
+        </tr>
+    </table></td>
+                <td bgcolor="#006699" width="8" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltrt.gif" width=8 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr valign="top">
+                <td bgcolor="#006699" width="160" align="middle" valign="top">
+                    <table width="160" border="0" cellspacing="0" cellpadding="0" bgcolor="#006699" summary="">
+                        <tr>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                            <td align="center">
+                                <form action="http://www.javaworld.com/isearch" method="GET" name="search">
+                                    <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /><br />
+                                    <input type="text" name="qt" size="12" maxlength="2047" /><br />
+                                    <input type="image" value="search" src="http://www.javaworld.com/images/button_blue.gif" border="0" width="97" height="18" alt="GO" /><br />
+                                    <input type="hidden" name="site" value="javaworld"><br />
+                                   <!-- <a href="http://www.google.com/"><img src="http://www.javaworld.com/images/google-power-fp.gif" width="108" height="45" border="0" alt="Google.com"></a>-->
+                                    <input type="hidden" name="ms" value="1">
+                                    <input type="hidden" name="tid" value="1">
+                                    <input type="hidden" name="st" value="1">
+                                    <input type="hidden" name="rf" value="0">
+                                   
+                                </form>
+                            </td>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                        </tr>
+                        <tr>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td><img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <a href="http://www.javaworld.com/archives/index-year.html"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>ARCHIVE</strong></font></a><br>
+                                <img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <strong><a href="http://www.javaworld.com/channel_content/jw-topical-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff">TOPICAL INDEX</font></a></strong></font><br><table cellspacing="0" cellpadding="0" border="0" summary="">
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/channel_content/jw-core-index.shtml"><font color="#ffffff">Core Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-enterprise-index.shtml"><font color="#ffffff">Enterprise Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-micro-index.shtml"><font color="#ffffff">Micro Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-applied-index.shtml"><font color="#ffffff">Applied Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-community-index.shtml"><font color="#ffffff">Java Community</font></a></strong></font><br /></td>
+                        </tr>
+                    </table><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-qna-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA Q&A INDEX</strong></font></a><br /><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-tips-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA TIPS INDEX</strong></font></a><br /> <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br /><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#CCCCCC"><strong>JavaWorld Services</strong></font><br /><img alt="" height="4" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /><table cellspacing="0" cellpadding="0" border="0" summary=""><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /><img alt="" height="7" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /></td><td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/subscribe"><font color="#ffffff">Free JavaWorld newsletters</font></a></strong></font></td></tr><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://javaworld.pricegrabber.com"><font color="#ffffff">ProductFinder </font></a></strong></font></td></tr><tr> <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/white-paper/index.shtml"><font color="#ffffff">White Paper Library</font></a></strong></font></td></tr>
+</table>
+<img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br />
+</td>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                        </tr>
+                        <tr valign="bottom">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_gryblbottom.gif" width=8 ></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr>
+                       <td width="8" bgcolor="#cccccc"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                           <td align="middle" bgcolor="#cccccc"><!-- SKYSCRAPER AD START HERE -->
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=464137?" width="120" height="600" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=skyscraper;sz=120x600;tile=3;ord=464137?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;skyscraper=med;sz=120x600;tile=3;ord=464137?" border=0 height="600" width="120"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer3" visibility="hidden" width=120 height=600></ILAYER>
+<!-- SKYSCRAPER AD ENDS HERE -->
+</td>
+                       <td width="8" bgcolor="#cccccc"><img height=8 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr valign="top">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_grybltop.gif" width=8 ></td>
+                        </tr>
+                    </table>
+                    <img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                    <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                <td width="100%">
+                    <!-- ## MAIN CONTENT STARTS HERE ### -->
+                    <font face="verdana, arial, helvetica" size="3">
+                        <strong></strong>
+                        <p>
+                            <h1 align="CENTER"> Serve clients' specific protocol requirements with Brazil, Part 6</h1>
+                            <h3 align="CENTER"> Plug Jini, BeanShell, and JAXM into Brazil </h3>
+                        </p>
+                        <!--<BLOCKQUOTE><STRONG>Summary</STRONG><BR>-->
+                        <BLOCKQUOTE>
+<STRONG>Summary</STRONG><BR>
+
+
+In this conclusion to his series on Brazil, Rinaldo Di Giorgio demonstrates how to use the following technologies with the Brazil toolkit: Jini, BeanShell, and the Java API for XML Messaging (JAXM). You can also use Brazil with many other technologies, including Xalan-Java, servlets, Velocity, and LDAP (the lightweight directory access protocol); Di Giorgio shows you how to get started with those as well. He'll also discuss the larger purpose of this series: to demonstrate how to use Brazil to support new technologies and APIs in ways that API developers might not have considered. For example, you would not commonly consider using the above technologies in a Web server. By understanding how these technologies work, you can better determine the right tool for your job. (<em>2,900 words;</em> <strong>July 12, 2002</strong>)
+</BLOCKQUOTE>
+                        <!--</BLOCKQUOTE>-->
+                        <a href="http://www.javaworld.com/feedback" target="Feedback"><STRONG>By  Rinaldo Di Giorgio</STRONG></a>
+                        <p><img src="http://www.javaworld.com/images/rule_ltblue.gif" width="100%" height="2"><br />
+                           <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                           <a href="/javaworld/jw-07-2002/jw-0712-javadev_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><br /></p>
+                         <font size=-1>  Page 1 of 3</font>
+                        <p><!-- START BIG AD (336x280) -->
+<table align="right" border="0" cellpadding="0" cellspacing="0"><tr valign="bottom" align="center"><td><font face="verdana, arial, geneva, sans-serif" color="#999999" size="-2">Advertisement</font></td></tr><tr><td><table border=1 bordercolor="#cccccc" cellspacing="5" cellpadding="0"><tr><td>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=464137" width="336" height="280" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=464137"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=464137" border=0 height="280" width="336"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer5" visibility="hidden" width=336 height=280></ILAYER>
+</td></tr></table></td></tr></table>
+<!-- END BIG AD (336x280) --></p>
+                        <p><P>
+<img align="left" width="22" height="28" src="/javaworld/abcs/B.gif" alt="B">razil is a third-generation HTTP server that provides an extensible, understandable framework for building small, application-specific HTTP servers. In Parts 1 through 5 of this series, I discussed how to use Brazil technology to process content from various nontraditional sources, how to add to that content, and how to deliver that content to users via different delivery mechanisms and networks, such as applets, Java Reliable Multicast Service (JRMS), wireless clients, and plain HTML. In this final article of the series, I illustrate how to use the following technologies with Brazil:
+<P>
+<ul><li>Jini</li> <li>BeanShell</li> <li>JAXM (Java API for XML Messaging)</li></ul> <P>
+I also walk you through the first steps involved in integrating Brazil with Xalan-Java, servlets, Velocity, and LDAP (lightweight directory access protocol).
+<P>
+In some ways, this article resembles a shopping trip to Home Depot, where you purchase tools and gadgets not because you need them now, but because you <em>might</em> need them later. Many of you will not need the technologies listed above all at once or ever; however, you should know about them. So consider this article a short stroll down a short aisle in the open source world.
+<P>
+Read the whole series on Brazil technology:
+<P>
+<ul> <li><a href="/javaworld/jw-08-2000/jw-0811-javadev.html">Part 1: Learn how to build an application server that can deliver data to clients requiring different protocols</a> </li> <li><a href="/javaworld/jw-10-2000/jw-1020-javadev.html">Part 2: How to support XML applications with the Brazil project</a> </li> <li><a href="/javaworld/jw-01-2001/jw-0126-javadev.html">Part 3: Economically sustain PQA, UP.SDK, and J2ME with the Brazil project</a></li> <li><a href="/javaworld/jw-04-2001/jw-0420-javadev.html">Part 4: Build multicast-aware apps with JRMS</a></li>  <li><a href="/javaworld/jw-08-2001/jw-0824-javadev.html">Part 5: Manage users and content with Brazil</a> </li> <li><a href="/javaworld/jw-07-2002/jw-0712-javadev.html">Part 6: Plug Jini, BeanShell, and JAXM into Brazil </a></li> </ul> <P>
+In this article's examples, we will employ the Brazil server as a robust back plane to plug in various technologies using a combination of filters, handlers, and templates. <em>Handlers</em> provide basic functionality for accepting HTTP requests and dispatching to methods handling those requests; <em>filters</em> capture handlers' output and optionally modify the input for other filters, templates, or handlers to continue processing; and <em>templates</em> send HTML content through an HTML/XML parser to a set of templates. Each HTML/XML tag can dynamically invoke a Java method present in the templates. The dynamically generated content from the HTML/XML tag evaluation returns to the caller.
+<P><FONT SIZE="+1"><STRONG> Use Jini with Brazil </STRONG></FONT><BR>
+I frequently run 10 to 20 instances of Brazil on my servers and often lose track of them. The last thing I want to do is remember where they are and what they do. I looked for a solution that provided basic services for locating and determining the servers' status and capabilities, as well as services for administering many Brazil servers. I wanted a solution that didn't require special bash scripts and monitor daemons, as traditional Unix/Linux/Windows approaches often do. Those solutions don't scale well when you have thousands of servers and you forget what they do.
+<P>
+Jini's lookup and discovery features combined with leasing can provide more dynamic and accurate solutions. The basic idea is to use the Jini lookup services provided via <code>reggie</code>, so interested users can find and interact with various Web servers without knowing the servers' URLs and services. <code>reggie</code> is Sun Microsystems' implementation of the Jini lookup service and is an activatable service that <code>rmid</code> (Java RMI Activation System Daemon) controls.<P>
+The example I provide in this article deals only with a simple case and does not describe the services in great detail.  Interested readers might consider expanding the example to support UDDI (Universal Description, Discovery, and Integration) and WSDL (Web Services Description Language).
+<P><STRONG> Develop the application components </STRONG><BR>
+To register with the Brazil lookup service, we need a Jini lookup service and some client code. I provided some code to look up the registered services. In that example, which appears later in this section, I developed some additional scripts that allow you to start and stop <code>reggie</code> and <code>rmid</code>. You could also create a facility in Brazil that uses a <code>reggie</code> as a handler (an area requiring further research), allowing you, via a script or an <code>ExecHandler</code> interface, to start and manage the service without going to the operating system.  Because the <code>ExecHandler</code> allows the services to automatically start up, it ensures fewer errors in the deployment of many servers providing <code>reggie</code> services (see the <a href="#resources">Brazil documentation</a> for more information).
+<P>
+I wrote the <code>reggie</code> and <code>rmid</code> services in BeanShell. Before we move on, let's take a look at this tool in more detail. <P><STRONG> BeanShell </STRONG><BR>
+Written in Java, BeanShell is a small, free, embeddable Java source interpreter with object-scripting language features. It executes standard Java statements and expressions in addition to obvious scripting commands and syntax. BeanShell supports scripted objects as simple method closures like those in Perl and JavaScript (see <a href="#resources">Resources</a> for more information).
+<P>
+In prior <em>JavaWorld</em> articles, I discussed how to use Python and Tcl with Brazil technology. I like to program in one language everywhere; BeanShell allows me to use Java in yet another application space&#8212;in this case, scripting content on a Webpage&#8212;formerly occupied by languages like Tcl, Python, Perl, PHP (hypertext preprocessor), and Velocity.  (I will discuss Velocity later in this article.)
+<P>
+The following documentation from the <a href="#resources">Brazil toolkit</a> explains how BeanShell interfaces with Brazil as well as some of the configuration options available: 
+<P>
+<blockquote> The <code>BeanShellServerTemplate</code> looks for one of the starting tags <code>&lt;server language="beanshell"&gt;</code>, <code>&lt;beanshell&gt;</code>, or <code>&lt;bsh&gt;</code> in an HTML page and treats the following data up to the corresponding ending tag (<code>&lt;/server&gt;</code>, <code>&lt;/beanshell&gt;</code>, or <code>&lt;/bsh&gt;</code>) as a BeanShell script to evaluate. <P>
+The reason that BeanShell scripts are included in an HTML page is usually to generate dynamic, server-side content. After running this template, everything between and including the starting tag and the ending tag is replaced by all output written to the BeanShell output stream (if any). <P>
+All BeanShell fragments within a given page are evaluated in the same BeanShell interpreter. The BeanShell interpreter actually lives for the entire duration of this <code>Template</code> object, so the user can implement persistence across requests. </blockquote> <P>
+Later in this article, I will introduce two additional methods for transforming and/or scripting content on a Webpage: using XSLT (Extensible Stylesheet Language Transformations) and XML; and, separately, Velocity. <P>
+The two BeanShell scripts below demonstrate how to register and look up a service. The services we use are written for Brazil Web servers so they can register themselves with a Jini lookup and provide a service for facilitating management and control as well as distributed computing environments that offer Web server features and Jini abilities.
+<P>
+To register the Jini Brazil service in our example, we use BeanShell to script a lookup discovery and subsequent registration on a Webpage. In other words, the Brazil server interprets the Webpage as containing BeanShell code, first processing the BeanShell code and then returning the page to the browser. This offers tremendous value for advanced developers and provides a powerful scripting language, powerful enough to script Jini directly. <P>
+The BeanShell code that follows registers a service with a running Jini lookup service such as <code>reggie</code>. Let's go over the code in detail.
+<P>
+The <code>&lt;bsh&gt;</code> tag informs the server that BeanShell code follows. You code your import statements as you would with Java. I have not used any wild cards, so you can see the classes that we're using:  <CODE><P>
+ &lt;bsh&gt;<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;import java.io.IOException;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;import java.rmi.RemoteException;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;import net.jini.core.lookup .ServiceRegistration;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;import net.jini.core.entry.Entry;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;import net.jini.core.lookup.ServiceID;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;import net.jini.core.lookup.ServiceItem;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;import net.jini.core.lookup.ServiceTemplate;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;import net.jini.discovery.DiscoveryManagement;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;import net.jini.lease.LeaseRenewalManager;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;import net.jini.lookup.ServiceItemFilter;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;import net.jini.lookup.ServiceDiscoveryManager;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;import net.jini.core.lookup.ServiceRegistrar;<BR>
+</CODE><P>
+Set some parameters for the lease duration and other attributes:  <CODE><P>
+&nbsp;&nbsp;&nbsp;&nbsp; long LEASE_DUR = 60*1000;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;String PRODUCT = "Brazil Registration Service";<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;String MANUFACTURER = "Rinaldo DiGiorgio";<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;String VENDOR = MANUFACTURER;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;String VERSION = "Jini 1.2";<BR>
+</CODE><P>
+<code><a href="/javaworld/jw-07-2002/javadev/brazilattribute.txt" target="_blank">BrazilAttribute.java</a></code> contains the code for the Brazil attribute, which the lookup service uses. The example is simple. <code>BrazilAttribute.java</code> allows applications, other services, and users to look up services by requesting specific attributes.
+<P>
+The code below tells the lookup service that one of the attributes of the entity currently being registered is a location attribute: <CODE><P>
+&nbsp;&nbsp;&nbsp;&nbsp; Entry[] serviceAttrs = new Entry[] {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new BrazilAttribute("location"),<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;};<BR>
+</CODE><P>
+This silly little print method prints some diagnostics: <CODE><P>
+&nbsp;&nbsp;&nbsp;&nbsp; msg(String s) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.err.println(s);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;msg("Creating ServiceDiscoveryManager ...");<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;DiscoveryManagement discoveryMgr = null;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;LeaseRenewalManager leaseMgr = null;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;ServiceDiscoveryManager sdm = null;<BR>
+</CODE><P>
+As of Jini 1.2, the preferred mechanism for discovering services is the <code>ServiceDiscoveryManager</code>: <CODE><P>
+&nbsp;&nbsp;&nbsp;&nbsp; try {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sdm = new ServiceDiscoveryManager(discoveryMgr, leaseMgr);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;} catch (IOException ioe) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg("Trouble creating ServiceDiscoveryManager: " + ioe);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;discoveryMgr = sdm.getDiscoveryManager();<BR>
+
+<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;msg ( discoveryMgr.toString() );<BR>
+</CODE><P>
+Once we have a valid <code>DiscoveryManager</code> instance, register a Brazil service with the attributes supplied above in <code>serviceAttrs</code>: <CODE><P>
+&nbsp;&nbsp;&nbsp;&nbsp; try {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thread.sleep(1000*5);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;} catch ( Exception e ) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;if ( discoveryMgr != null ) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServiceRegistrar[] regs = discoveryMgr.getRegistrars();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for ( int k = 0; k &lt; regs.length; k++) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg("ServiceRegistrar found:" + regs[k]);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Register the service with the lookup service<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BrazilService bs = new BrazilService("hostname:port");<BR>
+</CODE><P>
+The Jini lookup service returns a reference to a service. Our goal is to use Jini to look up Brazil instances; we do that by registering services with specific attributes and then looking for these services by providing attributes to the <code>reggie</code> lookup service. The <a href="http://www.javaworld.com/javaworld/jw-07-2002/javadev/brazilservice.txt" target="_blank"><code>BrazilService</code></a> provides an example of some rudimentary interactions with a single instance of a Brazil server (there could be thousands of servers running).
+Register the Brazil service with the lookup: <CODE><P>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServiceItem srvcItem = new ServiceItem(null,bs,serviceAttrs);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for ( int h=0; h &lt; regs.length; h++) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServiceRegistration srvcRegistration = regs[h].register(srvcItem, LEASE_DUR);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg("Registered ServiceID:&nbsp;&nbsp;"+(srvcRegistration.getServiceID()).toString());<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} catch (RemoteException e) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg.println("RemoteException while registering the "+"Service: +service+"\n"+e.toString());<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.printStackTrace();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;sdm.terminate();<BR>
+
+&lt;/bsh&gt;<BR>
+</CODE><P>
+At the end of the above code, we register the <code>BrazilService</code> and terminate the <code>ServiceDiscoveryManager</code>. In our example, the <code>BrazilService</code> is associated with a running instance of a Brazil server. When the Brazil server starts, it registers itself with a Jini lookup service so that the other servers can find it using Jini lookup services. You can work with the leases to ensure that the registered servers are still up and operational, and enhance the <code>BrazilService</code> to include additional functionality.
+<P>
+Now that we have registered a service, how do we find it? To find a service matching the attributes we specified above, we can run our next example anywhere we wish.  <P>
+In this example, we look up and store the properties into the Brazil server's namespace, thereby making those properties available on a request, session, or server scope. When the user selects the URL for the code below, that code is processed along with the BSL (Brazil Scripting Language). Afterwards, Brazil's filter generates output.
+<P>
+Use BeanShell to look up the <code>BrazilService</code>:
+<CODE><P>
+ &lt;bsh&gt;<BR>
+
+<BR>
+
+import java.io.IOException;<BR>
+
+<BR>
+
+import BrazilService;<BR>
+
+import net.jini.core.entry.Entry;<BR>
+
+import net.jini.core.lookup.ServiceID;<BR>
+
+import net.jini.core.lookup.ServiceItem;<BR>
+
+import net.jini.core.lookup.ServiceTemplate;<BR>
+
+import net.jini.discovery.DiscoveryManagement;<BR>
+
+import net.jini.lease.LeaseRenewalManager;<BR>
+
+import net.jini.lookup.ServiceItemFilter;<BR>
+
+import net.jini.lookup.ServiceDiscoveryManager;<BR>
+
+<BR>
+
+msg(String s) {<BR>
+
+&nbsp;&nbsp; System.out.println(s);<BR>
+
+}<BR>
+</CODE><P>
+Create <code>ServiceDiscoveryManager</code> with null arguments for default behavior:  <CODE><P>
+&nbsp;&nbsp; msg("Creating ServiceDiscoveryManager ...");<BR>
+
+&nbsp;&nbsp; DiscoveryManagement discoveryMgr = null;<BR>
+
+&nbsp;&nbsp; LeaseRenewalManager leaseMgr = null;<BR>
+
+&nbsp;&nbsp; ServiceDiscoveryManager sdm = null;<BR>
+
+&nbsp;&nbsp; try {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sdm = new ServiceDiscoveryManager(discoveryMgr, leaseMgr);<BR>
+
+&nbsp;&nbsp; } catch (IOException ioe) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;err("Trouble creating ServiceDiscoveryManager: " + ioe);<BR>
+
+&nbsp;&nbsp; }<BR>
+
+&nbsp;&nbsp; discoveryMgr = sdm.getDiscoveryManager();<BR>
+
+<BR>
+
+&nbsp;&nbsp; Create ServiceTemplate for an anything based lookup<BR>
+
+<BR>
+
+&nbsp;&nbsp; ServiceID serviceID = null;<BR>
+
+&nbsp;&nbsp; Class[] serviceTypes = { null };<BR>
+
+&nbsp;&nbsp; Entry[] attrSetTemplates = null;<BR>
+
+<BR>
+
+&nbsp;&nbsp; ServiceTemplate tmpl = new ServiceTemplate(null, null, null);<BR>
+</CODE><P>
+Perform nonblocking lookup with no local filtering; sleep just before lookup to give the discovery process time to find any available lookup services: <CODE><P>
+&nbsp;&nbsp; try {<BR>
+
+&nbsp;&nbsp; Thread.sleep(5000);<BR>
+
+&nbsp;&nbsp; } catch (InterruptedException ie) {&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp; ServiceItem[] item = null;<BR>
+
+&nbsp;&nbsp; ServiceItemFilter filter = null;<BR>
+
+&nbsp;&nbsp; item = sdm.lookup(tmpl, 50, filter);<BR>
+</CODE><P>
+Display results, if any: <CODE><P>
+&nbsp;&nbsp; System.out.println("Length:" + item.length );<BR>
+
+&nbsp;&nbsp; request.props.put("jini.lookup.number" , Integer.toString(item.length));<BR>
+
+&nbsp;&nbsp; String ids = "";<BR>
+
+&nbsp;&nbsp; String key = "jini.lookup.srvcs.";<BR>
+
+&nbsp;&nbsp; for ( int k = 0; k &lt; item.length; k++) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String keyid = key + item[k].serviceID;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ids += item[k].serviceID + " ";<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg("Service type found, id=" + item[k].serviceID);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg("Service type found, service=" + item[k].service);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ( item[k].service instanceof BrazilService ) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BrazilService bs = item[k].service;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String s = keyid +&nbsp;&nbsp;".url";<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;request.props.put(s,bs.getURL());<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } catch ( Exception e ) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.printStackTrace();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Entry[] entry = item[k].attributeSets;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for ( int i = 0; i &lt; entry.length; i++) {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; msg("Service type found, attributes=" + entry[k] + <BR>
+
+"\n");<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;request.props.put(keyid , (item[k].service).toString());<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg("\n\n");<BR>
+
+&nbsp;&nbsp; }<BR>
+
+&nbsp;&nbsp; request.props.put("jini.lookup.ids" , ids);<BR>
+</CODE><P>
+Tidy up: <P>
+<CODE><P>
+&nbsp;&nbsp; sdm.terminate();&lt;/bsh&gt;<BR>
+</CODE><P>
+Once the BeanShell code processes, the following BSL generates some output for a user. We could also have generated XML or taken other actions. Here's the generated code: <CODE><P>
+ &lt;!--&nbsp;&nbsp; Display results--&gt;<BR>
+
+&lt;center&gt;<BR>
+
+&lt;if not name=jini.lookup.number value="0"&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;Found &lt;get jini.lookup.number&gt; services&lt;/h1&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;table&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tr&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th&gt;Service ID&lt;/th&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th&gt;Name&lt;/th&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;th&gt;Location&lt;/th&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tr&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;foreach name=j property=jini.lookup.ids&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tr&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;&lt;get name=j&gt; &lt;/td&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;&lt;get name=jini.lookup.srvcs.${j}&gt;&nbsp;&nbsp;&lt;/td&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;if name=jini.lookup.srvcs.${j}.url&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tag&gt;a href=&lt;get name=jini.lookup.srvcs.${j}.url&gt;&lt;/tag&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;get <BR>
+
+name=jini.lookup.srvcs.${j}.url&gt;&lt;/a&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/td&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/if&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/tr&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/foreach&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/table&gt;<BR>
+
+&lt;else&gt;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;No service found, activation system or reggie is <BR>
+
+down&lt;/H1&gt;<BR>
+
+&lt;/if&gt;<BR>
+
+&lt;/center&gt;<BR>
+</CODE><P>
+Brazil instances can register themselves with a Jini lookup service by scripting the code required for registration with BeanShell and using the two classes <code>BrazilService.java</code> and <code>BrazilAttribute.java</code> for the required Jini attribute class and the actual service. In our example, the <code>BrazilService</code> returns only a URL to get to this service. Serious applications can expand upon this approach to retrieve more complex objects.
+<P>
+<!-- break --><br /></p>
+                        <font size=-1><a href=jw-0712-javadev-p2.html>Next page ></a><br>Page 1  Serve clients' specific protocol requirements with Brazil, Part 6<br>Page 2 <a href=jw-0712-javadev-p2.html>Use JAXM with Brazil</a><br>Page 3 <a href=jw-0712-javadev-p3.html>Use Brazil with even more technologies </a><br> </font>
+                        <p>
+                            <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                            <a href="/javaworld/jw-07-2002/jw-0712-javadev_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><!-- REPLACE BIO --><br /></p>
+                        <p><ul><A NAME="resources"></a><STRONG>Resources</STRONG>
+<BR>
+
+
+<li>"Serve Clients' Specific Protocol Requirements with Brazil," Rinaldo Di Giorgio <em>(JavaWorld):</em>
+
+<ul>
+<li><a href="/javaworld/jw-08-2000/jw-0811-javadev.html">Part 1: Learn how to build an application server that can deliver data to clients requiring different protocols</a> (August 2000)</li>
+
+<li><a href="/javaworld/jw-10-2000/jw-1020-javadev.html">Part 2: How to support XML applications with the Brazil project</a> (October 2000)</li>
+
+<li><a href="/javaworld/jw-01-2001/jw-0126-javadev.html">Part 3: Economically sustain PQA, UP.SDK, and J2ME with the Brazil project</a> (January 2001)</li>
+
+<li><a href="/javaworld/jw-04-2001/jw-0420-javadev.html">Part 4: Build multicast-aware apps with JRMS </a> (April 2001)</li>
+
+<li><a href="/javaworld/jw-08-2001/jw-0824-javadev.html">Part 5: Manage users and content with Brazil</a> (August 2001)</li>
+
+<li><a href="/javaworld/jw-07-2002/jw-0712-javadev.html">Part 6: Plug Jini, BeanShell, and JAXM into Brazil </a> (July 2002)</li>
+</ul>
+
+<LI>Code examples for this article: <BR><A HREF="http://www.brazilhandlers.com:9090 ">http://www.brazilhandlers.com:9090 
+</A><BR>
+
+
+<LI>Jini docs, examples, and downloads: <BR><A HREF="http://www.jini.org/">http://www.jini.org/
+</A><BR>
+
+
+<LI>BeanShell docs, examples, and downloads: <BR><A HREF="http://www.beanshell.org/">http://www.beanshell.org/
+</A><BR>
+
+
+<LI>JAXM docs, examples, and downloads: <BR><A HREF="http://java.sun.com/xml/jaxm/">http://java.sun.com/xml/jaxm/
+</A><BR>
+
+
+<LI>Xalan homepage: <BR><A HREF="http://xml.apache.org/xalan-j/index.html">http://xml.apache.org/xalan-j/index.html
+</A><BR>
+
+
+<LI>Velocity docs, examples, and downloads: <BR><A HREF="http://jakarta.apache.org/velocity/index.html">http://jakarta.apache.org/velocity/index.html
+</A><BR>
+
+
+<LI>Brazil download site, which includes a description of how to use the Brazil toolkit with BeanShell and Xalan: <BR><A HREF="http://www.experimentalstuff.com/Technologies/Brazil/index.html">http://www.experimentalstuff.com/Technologies/Brazil/index.html
+</A><BR>
+
+
+<LI>"Start Up the Velocity Template Engine," Geir Magnusson Jr. (<em>JavaWorld,</em> December 2001): <BR><A HREF="http://www.javaworld.com/javaworld/jw-12-2001/jw-1228-velocity.html ">http://www.javaworld.com/javaworld/jw-12-2001/jw-1228-velocity.html 
+</A><BR>
+
+
+<LI>Read more from <strong>Java Developer:</strong> <BR><A HREF="http://www.javaworld.com/columns/jw-developer-index.shtml">http://www.javaworld.com/columns/jw-developer-index.shtml
+</A><BR>
+
+
+<LI>For more articles on servers, browse the <strong>Java Application Servers</strong> section of <em>JavaWorld'</em>s Topical Index: <BR><A HREF="http://www.javaworld.com/channel_content/jw-appserv-index.shtml">http://www.javaworld.com/channel_content/jw-appserv-index.shtml
+</A><BR>
+
+
+<LI>For more articles on Jini, check out the following resources:
+
+
+<ul><li>Browse the <strong>Jini</strong> section of <em>JavaWorld'</em>s Topical Index: <br /> <a href="http://www.javaworld.com/channel_content/jw-jini-index.shtml">http://www.javaworld.com/channel_content/jw-jini-index.shtml</a></li>
+
+<li>Search through articles in <em>JavaWorld'</em>s <strong>Jiniology</strong> column: <br /> <a href="http://www.javaworld.com/columns/jw-jiniology-index.shtml">http://www.javaworld.com/columns/jw-jiniology-index.shtml</a> </li></ul>
+
+<LI>Browse the <strong>Servlets</strong> section of <em>JavaWorld'</em>s Topical Index: <BR><A HREF="http://www.javaworld.com/channel_content/jw-servlets-index.shtml">http://www.javaworld.com/channel_content/jw-servlets-index.shtml
+</A><BR>
+
+
+<LI>Browse the <strong>Java and XML</strong> section of <em>JavaWorld'</em>s Topical Index: <BR><A HREF="http://www.javaworld.com/channel_content/jw-xml-index.shtml ">http://www.javaworld.com/channel_content/jw-xml-index.shtml 
+</A><BR>
+
+
+<LI>Sign up for <em>JavaWorld'</em>s free weekly <em>Enterprise Java</em> email newsletter: <BR><A HREF="http://www.javaworld.com/jw-subscribe">http://www.javaworld.com/jw-subscribe
+</A><BR>
+
+
+<LI>Get under the hood of the technologies shaping the future in our <strong>Enterprise Java</strong> discussion: <BR><A HREF="http://forums.idg.net/webx?50@@.ee6b80a ">http://forums.idg.net/webx?50@@.ee6b80a 
+</A><BR>
+
+
+<li>You'll find a wealth of IT-related articles from our sister publications at <a href="http://www.idg.net/jump?id=1100">IDG.net</a><br />
+</ul><br /></p>
+                        <!-- REPLACE SIDEBAR -->
+                    </font>
+                    <!-- ## MAIN CONTENT ENDS HERE ### -->
+                </td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="168" nowrap><nobr><img src="http://www.javaworld.com/images/spacer.gif" width=160 height=8 border=0 ><img src="http://www.javaworld.com/images/c_bllftbottom.gif" width=8 height=8 border=0 ></nobr></td>
+                <td width="100%"><img src="http://www.javaworld.com/images/spacer.gif" width=1 height=1 border=0 ></td>
+                <td width="8"><img src="http://www.javaworld.com/images/spacer.gif" width=8 height=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="186" bgcolor="#006699" align="middle"><nobr><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2"></font></nobr><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0></a></td>
+                <td bgcolor="#cccccc" width="8" valign="bottom"><img height=8 src="http://www.javaworld.com/images/c_blgrylftbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- BOTTOM 468x60 AD STARTS HERE -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=464137?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=464137?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=464137?" border=0 height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer4" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- BOTTOM 468x60 AD ENDS HERE -->
+</td>
+                <td width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table bgcolor="#006699" align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="100%" align="middle" valign="center">    <font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">
+        <p>
+            <br />
+            <a href="http://www.javaworld.com"><font color="#ffffff">HOME</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/features/index.shtml"><font color="#ffffff">FEATURED TUTORIALS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/columns/index.shtml"><font color="#ffffff">COLUMNS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/news-reviews/index.shtml"><font color="#ffffff">NEWS & REVIEWS</font></a>&nbsp;|&nbsp;
+            <a href="http://forums.idg.net/webx?13@@.ee6b802"><font color="#ffffff">FORUM</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/resources/index.shtml"><font color="#ffffff">JW RESOURCES</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/info/jw-about-index.shtml"><font color="#ffffff">ABOUT JW</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/feedback"><font color="#ffffff">FEEDBACK</font></a>
+        </p>
+        <p>
+
+            <a href="http://www.javaworld.com/javaworld/common/jw-copyright.html"><font color="#ffffff">Copyright © 2002</font></a> JavaWorld.com, an IDG Communications company
+        </p>
+    </font>
+</td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+            <tr>
+                <td width="100%" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_blrtbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <!--TOP_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=464137?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer1.pageX,layer1.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--125x125-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=med;sz=125x125;tile=2;ord=464137?" width=125 height=125 visibility="hidden" onLoad="moveToAbsolute(layer2.pageX,layer2.pageY);clip.height=125;clip.width=125;visibility='show';">
+</LAYER>
+
+<!--SKYSCRAPER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=464137?" width=120 height=600 visibility="hidden" onLoad="moveToAbsolute(layer3.pageX,layer3.pageY);clip.height=600;clip.width=120;visibility='show';">
+</LAYER>
+
+<!--BOTTOM_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=464137?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer4.pageX,layer4.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--Big AD-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=464137" width=336 height=280 visibility="hidden" onLoad="moveToAbsolute(layer5.pageX,layer5.pageY);clip.height=280;clip.width=336;visibility='show';">
+</LAYER>
+    </body>
+<!-- stories1 -->
+<!-- DOCID 886843 -->
+</html>
+

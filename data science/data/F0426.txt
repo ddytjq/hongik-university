@@ -1,0 +1,785 @@
+ID=F0426
+URL=http://www.vbip.com/miscellaneous/Speech-Recognition.asp
+SIZE=38948
+DATE=09/07/2002
+TIME=13:20:28
+DATASET=Visual Basic
+HTML=
+<html>
+
+<head>
+<title>Writing Your First Speech Recognition Program</title>
+<meta name="description" content="I recently came upon a project where a program can take in voice commands and perform tasks like opening a program or a file in Windows without any mouse or keyboard input. At first, I thought that was some fancy coding stuff going on that was out of my league. Well guess what, on a closer investigation its not. In fact, programming voice recognition into a software is very simple and I am going to demonstrate how in this article.">
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta name="ROBOTS" content="INDEX,FOLLOW">
+
+	<link rel="stylesheet" type="text/css" href="../../vbip_nn.css">
+
+</head>
+
+<body bgcolor="#FFFFFF">
+<form name="GlobalForm" ID="GlobalForm">
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100%">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="120"><img border="0" src="../_borders/vbip_logo3.gif" width="132" height="50"></td>
+          <td valign="middle">
+				<p align="center">
+              <!-- start BITS ad HTML -- top of page -- 468x60 banner www.bitsonthewire.com         --> 
+               <iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=0" width=468 height=60 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no> 
+                 <a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=1">
+                   <img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=1&siteid=1126&ad_type=0">
+                 </a></iframe> 
+              <!-- stop BITS ad HTML -- top of page -- 468x60 banner                                --> 
+				&nbsp;
+              <a href="http://www.amazon.com/exec/obidos/redirect-home/vbipvisualbasici">
+              <img border="0" src="../images/gnused120x60.gif" width="120" height="60"></a></p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+      <hr noshade color="#FF9933">
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+    <p class="barsidecaption">
+    	<a href="../default.asp">Home</a> -
+      	<a href="../whatsnew.asp"> What's New</a> - <a href="../tools.asp"> Tools&amp;Technologies</a> -
+      	<a href="../resources.asp"> Resources</a> - <a href="../resources/books/default.asp">Books</a>
+        - <a href="../forum/">Forum</a>
+    </p>
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+      <hr noshade color="#FF9933">
+    </td>
+  </tr>
+</table>
+
+<table width="100%" cellspacing="1" cellpadding="2" bordercolor="#800000" border="1">
+  <tr>
+    <td width="100%" bgcolor="#FF9933">
+      <font color="#FFFFCC">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="37%">
+          <SCRIPT LANGUAGE=javascript>
+          <!--
+          if(navigator.appName.indexOf('Microsoft')>=0)
+          {
+          document.write('<a HREF="javascript:void(0);" class="tbcaption" onClick="window.external.AddFavorite(location.href, document.title);">Add to Favorites</a>');
+          }
+          // -->
+          </SCRIPT>
+          </td>
+          <td width="63%">
+            <p align="right" class="tbcaption">
+            <a href="../default.asp" class="tbcaption">Home</a> -
+            <a href="../tools.asp" class="tbcaption">Tools&amp;Technologies</a> - Miscellaneous 
+            - Speech Recognition
+          </td>
+        </tr>
+      </table>
+      </font>
+    </td>
+  </tr>
+</table>
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+
+<!--table-->
+    <td width="125" valign="top"  style="border-left: 1px solid #800000; border-right: 1px solid #800000; " bgcolor="#FF9933">
+
+    <table border="0" width="100%">
+     <tr>
+        <td width="100%" bgcolor="#FFCC00" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " height="20">
+          <p align="center" class="barsidecaption">[Advertisement]</td>
+      </tr>
+      <tr>
+        <td width="100%" style="border: 1px solid #800000; " height="120">
+<!-- start BITS ad HTML -- first 125x125 banner www.bitsonthewire.com                 --> 
+<iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=-6" width=125 height=125 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no>
+<a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=3"><img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=3&siteid=1126&ad_type=-6"></a></iframe> 
+<!-- stop BITS ad HTML -- 125x125 banner                                             --> 	
+        </td>
+      </tr>
+         
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Search vbip.com]</td>
+      </tr>
+      <tr>
+      
+        <td valign="top" width="100%" height="21">
+        
+			<input type="text" size="7" name="search_site">&nbsp;
+			<input type="button"  value="Go" onclick='location.href="http://www.vbip.com/search2/search.asp?Realm=vbip.com&Match=1&Terms="+document.GlobalForm.search_site.value;'>	
+		
+        </td>
+      </tr>
+         
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Search other VB sites]</td>
+      </tr>
+      <tr>
+        <td valign="top" width="100%" height="21">
+        
+			<input type="text" size="7" name="search_web">&nbsp;
+			<input type="button"  value="Go" onclick='location.href="http://www.vbip.com/search2/search.asp?Realm=Other+VB+Websites&Match=1&Terms="+document.GlobalForm.search_web.value;'>	
+		      
+      </tr>
+     
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Featured Book]</td>
+      </tr>
+      <tr>
+        <td valign="top" width="100%" height="21">
+<center><script src="http://rcm.amazon.com/e/cm?t=vbipvisualbasici&l=st1&search=vb%20net&mode=books&p=8&o=1" type="text/JavaScript"></script><noscript>
+<MAP NAME="boxmap"><AREA SHAPE="RECT" COORDS="14, 200, 103, 207" HREF="http://rcm.amazon.com/e/cm/privacy-policy.html?o=1"><AREA COORDS="0,0,10000,10000" HREF="http://www.amazon.com/exec/obidos/redirect-home/vbipvisualbasici"></MAP><img src="http://rcm-images.amazon.com/images/G/01/rcm/120x240.gif" width="120" height="240" border="0" usemap="#boxmap" alt="Shop at Amazon.com">
+
+</noscript>
+
+</center>
+        </td>
+      </tr>
+     
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Newsletter]</td>
+      </tr>
+      <tr>
+        <td width="100%" height="56">
+          <form method="POST" action="../sub.asp" onSubmit="">
+            <table border="0" width="100%" cellspacing="0">
+              <tr>
+                <td width="84%">
+                <input type="text" name="T1" size="8" style="font-family: Tahoma; color: #800000; font-size: 8pt; background-color: #FFCC99; border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " value="your e-mail"></td>
+                <td width="16%"><input type="submit" value="Sub" name="B1" style="font-family: Tahoma; font-size: 8pt; color: #800000"></td>
+              </tr>
+              <tr>
+                <td width="100%" colspan="2"><input type="radio" value="V1" checked name="R1"><span class="barsidecaption">HTML</span>
+                  <input type="radio" name="R1" value="V2"><span class="barsidecaption">Text</span></td>
+              </tr>
+            </table>
+          </form>
+        </td>
+      </tr>
+
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+      <p align="center" class="barsidecaption">
+      [Partners]
+      </tr>
+	
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.vbcity.com" target="_blank"><img border="0" src="..//images/vbcity2_100x30.gif" width="100" height="30"></a>
+  </tr>
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.vbweb.co.uk/" target="_blank"><img border="0" src="..//images/vbweb_button.gif" width="100" height="30"></a>
+  </tr>  
+      <tr>
+        <td width="100%" height="12" align="center">
+      <a href="http://www.vbwire.com" target="_blank"><img border="0" src="..//images/VBWire-btn.gif" width="100" height="30"></a>
+      </tr>
+
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.developersdex.com/vb" target="_blank"><img border="0" src="..//images/vbdex.gif" width="100" height="30"></a>
+  </tr>  
+  <tr>
+        <td width="100%" height="3">
+        <center>
+        <!-- BEGIN ACKY CODE -->
+		<a href="http://www.acky.net" target="_blank"><img
+		src="http://www.acky.net/banners/ackbut3.gif" width="88" height="31"
+		border="0" alt="Acky.net is your one stop shop for all of your web
+		developing needs"></a>
+		<!-- END ACKY CODE -->
+		</center>
+  </tr>
+    </table>
+
+    </td>
+    <td valign="top" bgcolor="#FFFFFF">
+      <blockquote>
+        <p class="ChapterTitle"><br>
+        <img border="0" src="../images/speech.gif" align="right"><span lang="en-us">Writing Your First 
+              Speech Recognition Program</span></p>
+        <p><b><font face="Arial" size="2" color="#800000">
+              by John T. Yung</font></b></p>
+          <hr noshade color="#FF9933" size="1">
+        <p>I recently came upon a project where a program can take in voice 
+        commands and perform tasks like opening a program or a file in Windows 
+        without any mouse or keyboard input. At first, I thought that was some 
+        fancy coding stuff going on that was out of my league. Well guess what, 
+        on a closer investigation its not. In fact, programming voice 
+        recognition into a software is very simple and I am going to demonstrate 
+        how in this article.</p>
+        <p>Microsoft have been developing voice recognition for a few years now 
+        and they have a website specialize in that ( 
+        http://www.microsoft.com/speech ). In order to start programming voice 
+        command recognition, you must have Microsoft Speech Recognition Engine 
+        installed. To download a copy, visit this site ( 
+        http://www.microsoft.com ) to get it.</p>
+        <div align="center">
+          <center>
+          <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="50" id="AutoNumber2" height="441">
+            <tr>
+              <td width="100%" height="432">
+              <p align="center"><b><font size="3" face="Times New Roman">
+              <span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman; font-weight: bold">
+              <img width="482" height="432" src="Speech1.gif" v:shapes="_x0000_i1025"></span></font></b></td>
+            </tr>
+            <tr>
+              <td width="100%" height="1"></td>
+            </tr>
+            <tr>
+              <td width="100%" height="13"><b>(pic. 1) In the components Dialog 
+              select Microsoft Direct Speech Recognition to have the component 
+              available to your project. This option is only available if you 
+              have the Microsoft Speech Engine installed.</b></td>
+            </tr>
+          </table>
+          </center>
+        </div>
+        <p>So let's start a project in Visual Basic. Select Standard EXE and 
+        when all the given codes and forms are loaded, go to Project \ 
+        Components. In the Components dialog, find and select the Microsoft 
+        Direct Speech Recognition (pic. 1). Remember, this option is available 
+        only if you have the Microsoft Speech Engine installed. Now, an icon 
+        button that looks like an ear, yes an ear, should appear in the Toolbox 
+        bar (pic. 2), that is the Speech Recognition component. Click on the 
+        button and draw it out on the form. Now your form will have the DirectSR 
+        component icon and also shown in the code window (pic. 3). DirectSR 
+        stands for &quot;Direct Speech Recognition&quot; and you guessed it, DirectSS 
+        stands for &quot;Direct Speech Synthesis&quot;.</p>
+        <div align="center">
+          <center>
+          <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="41%" id="AutoNumber3">
+            <tr>
+              <td width="100%">
+              <p align="center"><b><font size="3" face="Times New Roman">
+              <span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman; font-weight: bold">
+              <img width="197" height="52" src="Speech2.gif" v:shapes="_x0000_i1025"></span></font></b></td>
+            </tr>
+            <tr>
+              <td width="100%">&nbsp;</td>
+            </tr>
+            <tr>
+              <td width="100%">
+              <p align="center"><b>(pic. 2) An Ear icon will appear in the 
+              toolbar representing the DirectSR component.</b></td>
+            </tr>
+          </table>
+          </center>
+        </div>
+        <p>Now in the code window of the form with the DirectSR, select DirectSR 
+        on the top right pull down menu. Pull down the menu to the right of that 
+        and you can see the various methods, events and properties the DirectSR 
+        component provides. In this article the one DirectSR we will concern 
+        ourselves with is the PhraseFinish procedure. This is the procedure that 
+        will be called by DirectSR when it has finish processing a voice command<span lang="en-us">.</span></p>
+        </blockquote>
+        <div align="center">
+          <center>
+          <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="63%" id="AutoNumber4">
+            <tr>
+              <td width="100%">
+              <p align="center"><b><font size="3" face="Times New Roman">
+              <span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman; font-weight: bold">
+              <img width="640" height="239" src="Speech3.gif" v:shapes="_x0000_i1025"></span></font></b></td>
+            </tr>
+            <tr>
+              <td width="100%">&nbsp;</td>
+            </tr>
+            <tr>
+              <td width="100%"><b>(pic. 3) With the Code Window Select DirectSR1 
+              in top left pull down menu and select PhraseFinish in the top 
+              right pull down menu.</b></td>
+            </tr>
+          </table>
+          </center>
+        </div>
+        <blockquote>
+        <p>When you select PhraseFinish, the code that is put in place for you 
+        is the following:</p>
+        <table border='0' width='90%' bgcolor='#F8F8F8' cellspacing='0' cellpadding='2'>
+  <tr>
+    <td width='100%'>
+      <pre><font color="#000080">Private Sub</font> DirectSR1_PhraseFinish(<font color="#000080">ByVal</font> flags <font color="#000080">As Long</font>, _
+<span lang="en-us">    </span><font color="#000080">ByVal</font> beginhi <font color="#000080">As Long</font>, <font color="#000080">ByVal</font> beginlo <font color="#000080">As Long</font>, <font color="#000080">ByVal</font> endhi <font color="#000080">As Long</font>, _
+<span lang="en-us">    </span><font color="#000080">ByVal</font> endlo <font color="#000080">As Long</font>, <font color="#000080">ByVal</font> Phrase <font color="#000080">As String</font>, <font color="#000080">ByVal</font> parsed <font color="#000080">As String</font>, <font color="#000080">_
+    ByVal</font> results <font color="#000080">As Long</font>)
+</pre>
+    </td>
+  </tr>
+</table>
+        <p>There's a lot of parameters you say. But don't be frightened, the one 
+        that we will need to be concern with is the Phrase parameter, this is 
+        the parameter string that will contain the recognized word that was 
+        processed by the DirectSR engine.</p>
+        <p>Now that we got that set up, we will have to input a set of words for 
+        the Speech Engine to recognize. The job is very simple, we just feed in 
+        the set of words during the Form's Onload procedure. But how do we do 
+        that you ask? Simple, DirectSR have two ways for you to feed the words 
+        in, they are DirectSR1.GrammarFromString which takes in a String 
+        variable that contains the words and DirectSR1.GrammarFromFile which 
+        takes in a file path to a file that contains the words in a text file. 
+        Simple enough? The method we will use is DirectSR1.GrammarFromString 
+        because this provides the greatest flexibility because you can 
+        dynamically add additional words to the engine and still add words in 
+        from a file like DirectSR1.GrammarFromFile by putting the text in the 
+        file into a variable.</p>
+        <p>In the Load function of the form input the following code:</p>
+        <table border='0' width='90%' bgcolor='#F8F8F8' cellspacing='0' cellpadding='2'>
+  <tr>
+    <td width='100%'>
+      <pre><font color="#000080">Dim</font> totaldata <font color="#000080">As String </font>
+
+totaldata = totaldata _
+    &amp; &quot;&lt;start&gt;=Notepad&quot; &amp; vbCrLf _
+    &amp; &quot;&lt;start&gt;=Volume&quot; &amp; vbCrLf _
+    &amp; &quot;&lt;start&gt;=Media Player&quot; &amp; vbCrLf
+
+   
+    DirectSR1.GrammarFromString (totaldata)
+    DirectSR1.Activate
+</pre>
+    </td>
+  </tr>
+</table>
+        <p>So this is how the string looks. For each line that contains a word, 
+        a tag &quot;&lt;start&gt;=&quot; is used to signify a word that follows for the DirectSR 
+        to recognize. In the sample code, three words are used, they are 
+        Notepad, Volume and Media Player. Guess what? Right, we will use these 
+        words for the voice command to load these programs. In addition, the 
+        DirectSR1.Activate is used to start the engine to begin recognizing 
+        voice commands. DirectSR1.Deactivate is used to stop the engine from 
+        recognizing voice commands.</p>
+        <p>We are almost set. All we have to do is return to the PhraseFinish 
+        procedure to parse the command. From here on is pretty simple, remember 
+        that the Phrase parameter is all we need to be concern about, well here 
+        is how we do it in the following code.</p>
+        <table border='0' width='90%' bgcolor='#F8F8F8' cellspacing='0' cellpadding='2'>
+  <tr>
+    <td width='100%'>
+      <pre><font color="#000080">Dim</font> sFile <font color="#000080">As String
+Dim</font> noth <font color="#000080">As Long
+
+Select Case</font> Phrase
+	<font color="#000080">Case</font> &quot;Notepad&quot;
+		sFile = &quot;\system32\notepad.exe&quot;
+
+		noth = ShellExecute(0, &quot;OPEN&quot;, _
+			Environ(&quot;SystemRoot&quot;) &amp; sFile, &quot;&quot;, &quot;&quot;, 1)	
+	<font color="#000080">Case</font> &quot;Volume&quot;
+		sFile = &quot;\system32\sndvol32.exe&quot;
+
+		noth = ShellExecute(0, &quot;OPEN&quot;, _
+			Environ(&quot;SystemRoot&quot;) &amp; sFile, &quot;&quot;, &quot;&quot;, 1)
+	
+	<font color="#000080">Case</font> &quot;Media Player:
+		sFile = &quot;C:\Program Files\Windows Media Player\mplayer2.exe&quot;
+   
+		noth = ShellExecute(0, &quot;OPEN&quot;, _
+			sFile, &quot;&quot;, &quot;&quot;, 1)
+
+<font color="#000080">End Select</font>
+</pre>
+    </td>
+  </tr>
+</table>
+        <p>Here is the low down or lodown :). When the DirectSR recognizes a 
+        sound, it will process the sound into a word that may closely match the 
+        one you provided. If it matches, the Phrase variable will contain the 
+        matched word. And lo and behold, the code we use is a Select Case just 
+        for the Phrase variable for the words we fed in the engine in the load 
+        function. When a match occurs we will use an API function ShellExecute() 
+        to load the program.</p>
+        <p>To declare the API put the following code on top of the form module.</p>
+        <table border='0' width='90%' bgcolor='#F8F8F8' cellspacing='0' cellpadding='2'>
+  <tr>
+    <td width='100%'>
+      <pre><font color="#000080">Declare Function</font> ShellExecute <font color="#000080">Lib</font> &quot;shell32.dll&quot; _
+    <font color="#000080">Alias</font> &quot;ShellExecuteA&quot; (<font color="#000080">ByVal</font> hwnd <font color="#000080">As Long</font>, <font color="#000080">ByVal</font> _
+    lpOperation <font color="#000080">As String</font>, <font color="#000080">ByVal</font> lpFile <font color="#000080">As String</font>, <font color="#000080">ByVal</font> _
+    lpParameters <font color="#000080">As String</font>, <font color="#000080">ByVal</font> lpDirectory <font color="#000080">As String</font>, _
+    <font color="#000080">ByVal</font> nShowCmd <font color="#000080">As Long</font>) <font color="#000080">As Long</font>
+</pre>
+    </td>
+  </tr>
+</table>
+        <p>The core of the sample is basically done, however, as you know, 
+        nothing is really done without some style with the GUI. Here is the 
+        plan, lets put a button on the form to stop the recognition engine and 
+        also to start the engine when its stopped. Also, lets put a label to 
+        show the status of the engine and the recognized word.</p>
+        <p>Place a label on the form. Next place a bottom on the form and double 
+        click on the button to open the code. Place the following code inside:</p>
+        <table border='0' width='90%' bgcolor='#F8F8F8' cellspacing='0' cellpadding='2'>
+  <tr>
+    <td width='100%'>
+      <pre><font color="#000080">Private Sub</font> Command1_Click()
+    <font color="#000080">Select Case</font> Command3.Caption
+    <font color="#000080">Case Is</font> = &quot;Disable&quot;
+        DirectSR1.Deactivate
+        Command3.Caption = &quot;Enable&quot;
+        Labe11 = &quot;Disabled&quot;
+    <font color="#000080">Case Is</font> = &quot;Enable&quot;
+        DirectSR1.Activate
+        Command3.Caption = &quot;Disable&quot;
+        Labe11 = &quot;Ready&quot;
+<font color="#000080">    End Select
+End Sub</font>
+</pre>
+    </td>
+  </tr>
+</table>
+        <p>The code is straight forward. A select case to test the caption of 
+        the button. If Disable, Deactivate engine, set button caption to 
+        &quot;Enable&quot; and set the label caption to &quot;Disabled&quot;. If Enable, Activate 
+        engine, set button caption to &quot;Disable&quot; and set the label caption to 
+        &quot;Ready&quot;. Remember, its label caption and button caption, two different 
+        things.</p>
+        <p>Okay fellow disciples, we are almost home. The final styling we will 
+        do is to show the Phrase in the label so the user will know what was 
+        spit out by speech engine. We can accomplish this by putting some code 
+        in the PhraseFinish procedure.</p>
+        <p>Put the following code in PhraseFinish procedure.</p>
+        <table border='0' width='90%' bgcolor='#F8F8F8' cellspacing='0' cellpadding='2'>
+  <tr>
+    <td width='100%'>
+      <pre><font color="#000080">If</font> Phrase &lt;&gt; &quot;&quot; <font color="#000080">Then</font> 
+<span lang="en-us">    </span>Label1.caption = &quot;Matched word is &quot; &amp; Phrase
+	
+<font color="#000080">Else</font> : Label1.caption = &quot;No word matched&quot;
+<font color="#000080">End <span lang="en-us">I</span>f </font>
+</pre>
+    </td>
+  </tr>
+</table>
+        <p>Save your project and keep it close to you. Press F5 and let the baby 
+        run. Say the commands like Notepad and watch the program open. Radically 
+        cool right?! Puts a whole new meaning to &quot;Hey Mom, no hands!&quot;. As you 
+        can see, this is only the beginning and the potential of voice command 
+        is as far as your imagination will take you. In our next article, we 
+        will add more features to the program like, having our computer talk 
+        back to you. I can see some user arguing with their computer already. 
+        Well good luck and happy programming.</p>
+        <p class="ArticleH2">About the Author</p>
+        <blockquote>
+        <p><b>John Yung</b> is a MCSD Visual Basic programmer base in New York. 
+        He works for Webadviso Inc and also does consulting work for companies 
+        to develop programs in various areas such as ADO, MSXML, Voice 
+        Recognition, User interface design and etc. He develops his own search 
+        engine website at <a target="_blank" href="http://www.debuting.com/">
+        http://www.debuting.com</a>. In his free time, he enjoys taking bike 
+        trips, site seeing and watching movies. He can be contacted by email
+        <a href="mailto:johntyung@yahoo.com">johntyung@yahoo.com</a> for help 
+        and contracting.</p>
+        </blockquote>
+        <hr noshade color="#FF9933">
+<p align="center">
+<script src="http://rcm.amazon.com/e/cm?t=vbipvisualbasici&l=st1&search=Speech%20Recognition&mode=books&p=15&o=1" type="text/JavaScript"></script><noscript>
+<MAP NAME="boxmap"><AREA SHAPE="RECT" COORDS="7, 224, 96, 232" HREF="http://rcm.amazon.com/e/cm/privacy-policy.html?o=1"><AREA COORDS="0,0,10000,10000" HREF="http://www.amazon.com/exec/obidos/redirect-home/vbipvisualbasici"></MAP><img src="http://rcm-images.amazon.com/images/G/01/rcm/468x240.gif" width="468" height="240" border="0" usemap="#boxmap" alt="Shop at Amazon.com"></noscript>
+</p>
+        
+<p>        
+    <hr noshade color="#FF9933">
+    <table width="90%" align="center" border="0">
+      <tr>
+        <td width="25%">
+          <img border="0" src="../../images/comments.gif">
+        </td>
+        <td width="75%">
+          Please, post here only feedback for the article/tutorial/sample you
+          have read above.<br>
+          If you have any question and like to get an answer, post your messages in the <a href="http://www.vbip.com/forum/">Forum</a>.
+        <td>
+      </tr>
+    </table>
+    
+    
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?424">It Did not work</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Shaolin_Monk Tuesday, July 17, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?428">Speech Recognition in VB</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Gabriel S. Wednesday, July 18, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?441">It didn't work either.</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Carlos Wednesday, August 01, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?442">It didn't work either.</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Carlos Wednesday, August 01, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?452">It didn't work</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Ki Friday, August 03, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?468">a mistake in the command names?</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Matias Sunday, August 19, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?469">Speech Recognition Does not work</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">sam Monday, August 20, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?490">MAPI controls Didn't work</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">compstud Saturday, September 01, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?491">Mine didn't work either</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Missi Saturday, September 01, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?492">Mine didn't work either</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Missi Saturday, September 01, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?496">phrase_finish event never fire</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">wee Monday, September 03, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?497">phrase_finish event never fire</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">changchyi Monday, September 03, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?498">phrase_finish event never fire</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">changchyi Monday, September 03, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?512">Hei guys, i found the solution !!!</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">changchyi Friday, September 07, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?547">did anyone actually ever got this 2 work?</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">zzzreyes Saturday, October 06, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?550">Hey Guys, I am one of you all.</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Yogesh Panchal Sunday, October 07, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?576">My program is working</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Jayan Tuesday, October 23, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?581">Not Working</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">binuchandran Monday, October 29, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?583">solution</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Yigit Meltem Monday, October 29, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?596">those having problems with speech recognition</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Rydal Friday, November 02, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?597">OK. HERE is what you need to make it work</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Dvocha Friday, November 02, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?612">Recognize and Talk Back</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">leo de velez Saturday, November 17, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?638">We plan to develop Voice iver Chat  Engine</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">VijayNT Tuesday, December 11, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?653">no, no! what's this?</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">markus Thursday, December 20, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?694">Text to speech converter</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Shakti Singh Thursday, January 10, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?705">phrase_finish event never fires</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Klaus Offensperger Sunday, January 20, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?730">Got it to work</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Cristian Gugiu Wednesday, February 06, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?773">DirectSR1_PhraseFinish not called</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Said Rouhani Saturday, March 16, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?785">Must try and give complete information</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Akash Friday, March 22, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?790">Works Great - need additional info.</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Ryan Johnson Monday, March 25, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?840">Why dont you include the VB project file??</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Venkateshwar Rao Thota Saturday, April 27, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?860">Speech C++ and problems in VB</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Rodrigo Schejtman Tuesday, May 14, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?811">Download 68MB of SDK???? sheeesh!!!</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Faraz Azhar Tuesday, April 09, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?871">NOT ONLY HIS.NOBODYS' FREE PROG WORK!!</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">selva Tuesday, May 21, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?883">To make program work</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Kevin Lee Legge Thursday, May 23, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?957">Help on Direct SS/ Text-To-Speech</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Govarthanan Monday, July 01, 2002</font></i>	
+			</p>
+			
+        <p>
+        <form name="newcomm" method="POST" action="../../add_comments.asp">
+          <p><input align="right" border="0" src="../../images/addyours2.gif" name="I1" type="image"></p>
+          <input type="hidden" name="page" value="/miscellaneous/Speech-Recognition.asp">
+          <input type="hidden" name="title">
+	  <input type="hidden" name="actionID" value="add">
+        </form>
+        <SCRIPT LANGUAGE="JavaScript">
+        	{document.newcomm.title.value = document.title}
+        </SCRIPT>
+	<br>
+        <p>
+        <hr noshade color="#FF9933">
+</p>   
+      </blockquote>
+<p><center>
+<!-- start BITS ad HTML -- bottom of page 468x60 banner www.bitsonthewire.com         --> 
+  <iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=2" width=468 height=60 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no> 
+    <a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=2">
+      <p>
+      <img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=2&siteid=1126&ad_type=2">
+    </a>
+  </iframe> 
+<!-- stop BITS ad HTML -- bottom of page 468x60 banner                                --> 
+</center></p>
+    </td>
+</table>
+<table border="1" width="100%" cellspacing="1" cellpadding="2" bordercolor="#800000">
+  <tr>
+    <td width="100%" bgcolor="#FF9933">
+      <font color="#FFFFCC">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="37%"></td>
+          <td width="63%">
+      <font color="#FFFFCC">
+            <p align="right" class="tbcaption">
+            <a href="../default.asp" class="tbcaption">Home</a> -
+            <a href="../tools.asp" class="tbcaption">Tools&amp;Technologies</a> - Miscellaneous 
+            - Speech Recognition
+          </font>
+          </td>
+        </tr>
+      </table>
+      </font>
+    </td>
+  </tr>
+</table>
+&nbsp;<table border="0" width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="121" valign="top">
+<!-- START OF WEBTRENDS LIVE TAG -->
+<!-- Copyright 2001 NetIQ Corporation -->
+<!--  For privacy concerns, check our Privacy Policy at http://www.webtrendslive.com/privacy_policy.htm -->
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+// Modification of this code is not allowed and will permanently disable your account!
+// SiteName:  Visual Basic Internet Programming
+function wtl_Tag4_27048()
+{
+	function D8( d)
+	{
+		var fwd=1, seed= new Date('01/01/2000'), key= "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+		var s= key.charAt( d.getFullYear()-2000)+key.charAt( d.getMonth()+1)+key.charAt( d.getDate());
+		s+= key.charAt( d.getHours())+key.charAt( d.getMinutes())+key.charAt( d.getSeconds());
+		while( seed.getDay()!=fwd) seed= new Date(seed.getTime() + 86400000);
+		var w= Math.floor( (d.getTime()-(seed.getTime()+86400000)) / 604800000 );
+		s+= key.charAt( (w-(w%16))/16 );
+		s+= key.charAt( w%16);
+		return s;
+	}
+
+	var t = new Date();
+	var W="tagver=4&si=27048&fw=1&bn=13";
+	W+="&tz="+escape(t.getTimezoneOffset());
+	W+="&ch="+escape(t.getHours());
+	W+="&cl="+escape(D8(t));
+	W+="&ti="+escape(document.title);
+	W+="&url="+escape(window.document.URL);
+	W+="&rf="+escape(window.document.referrer);
+	W+="&js=Yes";
+	W+="&ul="+(navigator.appName=="Netscape"?navigator.language:navigator.userLanguage);
+	if(typeof(screen)=="object")
+	{
+	W+="&sr="+screen.width+"x"+screen.height;
+	W+="&cd="+screen.colorDepth;
+	W+="&jo="+(navigator.javaEnabled()?"Yes":"No");
+	}
+	
+	
+	document.write('<A TARGET="_blank" HREF="http://www.webtrendslive.com/redirect.asp?siteID=27048">');
+	document.write('<IMG ID="WTL_TAG" BORDER="0" WIDTH="100" HEIGHT="30" ALT="This Site Tracked by WebTrendsLive." SRC="http://p.wtlive.com/S003-00-9-14-186109-27048/button4.asp?'+W+'">');
+	document.write('</A>');
+	
+}	
+
+wtl_Tag4_27048();
+//-->
+</SCRIPT>
+
+
+<NOSCRIPT>
+<A TARGET="_blank" HREF="http://www.webtrendslive.com/redirect.asp?siteID=27048">
+<IMG BORDER="0" WIDTH="100" HEIGHT="30" ALT="This Site Tracked by WebTrendsLive." SRC="http://p.wtlive.com/S003-00-9-14-186109-27048/button4.asp?tagver=4&si=27048&fw=1&bn=13&js=No&"></A></NOSCRIPT>
+
+
+<!-- END OF WEBTRENDS LIVE TAG -->
+
+     
+      </td>
+    <td>
+<p align="center" class="barsidecaption"><a href="../default.asp">Home</a> | <a href="../whatsnew.asp">What's
+New</a> | <a href="../tools.asp"> Tools
+&amp; Technologies</a> | <a href="../resources.asp">Resources</a> | <a href="../resources/books/default.asp">Books</a>
+ | <a href="../forum/">Forum</a></p>
+<p align="center" class="barsidecaption">Report about any problems and errors to <a href="mailto:webmaster@vbip.com">webmaster@vbip.com</a><br>
+Copyright © 1998 - 2002 by <a href="mailto:oleg@vbip.com"> Oleg Gdalevich</a></p>
+    </td>
+    <td valign="top" width="140">
+<p align="center">
+<a target="_blank" href="http://www.amazon.com/exec/obidos/ASIN/B00005AFI2/vbipvisualbasici">
+<img border="0" src="../images/frontpage_button.gif" align="right" width="100" height="38"></a>
+    </td>
+  </tr>
+</table>
+</body>
+
+</html>

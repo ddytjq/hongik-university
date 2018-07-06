@@ -1,0 +1,159 @@
+ID=D0238
+URL=http://www-2.cs.cmu.edu/~jch/java/size.html
+SIZE=7143
+DATE=16/07/02
+TIME=14:41:00
+DATASET=Java
+HTML=<html>
+<head>
+<title>Optimizing Java for Size</title>
+<base href="http://www.cs.cmu.edu/~jch/java/size.html">
+<meta name="author" content="Jonathan Hardwick">
+<meta name="description" content="How to make your Java programs smaller.">
+<meta name="keywords" content="code, space, smaller, optimize, optimise, optimising">
+</head>
+
+<body>
+<h1 align=center>Optimizing Java for Size</h1>
+<p align=center><font face="Helvetica" size=-1>
+[ <b><a href="optimization.html">index</a></b> ]
+[ <a href="benchmarks.html">benchmarks</a>
+ | <a href="compilers.html">compilers</a>
+ | <a href="maintainability.html">maintainability</a>
+ | <a href="resources.html">resources</a>
+ | <a href="rules.html">rules</a>
+ | <a href="speed.html">speed</a>
+ | <a href="tools.html">tools</a> ]
+</font></p>
+<hr size=1 noshade>
+
+<blockquote>
+Reducing code size is particularly important for Java applets, since it
+directly affects the time taken to download an applet.  I'll list 
+those issues specific to download times first, followed by general
+space-saving techniques.
+
+<dl>
+
+<dt><b>Use JAR (or zip, or CAB) files:</b>
+<dd>To avoid the overhead of loading individual class and data files, JDK 1.1
+    supports <a href="http://www.javasoft.com/products/jdk/1.1/docs/guide/jar/index.html">Java 
+    archive (JAR) files</a>.  Previously, JDK 1.02 and Netscape Navigator 3.0
+    supported <a href="http://www.io.org/~mentor1/960604/f.html">zip
+    files</a>, while Microsoft Internet Explorer 3.0 supported <!--
+    href="http://www.microsoft.com/workshop/java/cab.htm" -->CAB files.
+    <p>
+    
+<!-- <dt><b>Use as few classes as possible:</b>
+<dd>Minimize the number of classes in your applet, since loading each
+    class file over the web typically involves setting up a new TCP/IP
+    connection, which is a relatively slow operation.<p> -->
+
+<!-- <dt><b>Use a web server with HTTP keepalive:</b>
+<dd>Recent web servers (e.g., <a href="http://hoohoo.ncsa.uiuc.edu">NCSA</a>
+    and <a href="http://www.apache.org">Apache</a>) can be configured to use
+    HTTP keepalive.  When matched with a similarly-equipped browser (e.g.,
+    Netscape Navigator) this reuses TCP/IP connections, which is much faster
+    than creating new ones.<p> -->
+
+<dt><b>Don't reinvent API classes:</b>
+<dd>Use or extend a class from the <a
+    href="http://java.sun.com/products/JDK/1.0.2/api/">Java API</a>
+    wherever possible.  Sun has written the classes so that you don't have to.
+    If you hate browsing through the online API, I recommend the annotated
+    version in <cite><a href="http://www.ora.com/catalog/javanut/">Java
+    in a Nutshell</a></cite>.<p>
+    
+<dt><b>Exploit inheritance:</b>
+<dd>Use inheritance in your own code: the more methods you can inherit,
+    the less code you have to write.<p>
+    
+<dt><b>Turn on compiler optimization:</b>
+<dd>Use <tt><a
+    href="http://java.sun.com/products/JDK/tools/solaris/javac.html">javac -O</a></tt>.
+    This inlines functions (which makes the bytecode bigger) and
+    removes line numbers (which makes it smaller).  Unless you use <i>lots</i>
+    of inlinable functions, the removal of line numbers will dominate and your
+    bytecode will get smaller.  However, note that things can sometimes be
+    inlined when they shouldn't -- see the <a href="compilers.html">compilers
+    page</a> for details.
+<p>
+<dt><b>Separate out common code:</b>
+<dd>Put code that is used in several different places into its own
+    method (the reverse of inlining code for speed).<p>
+    
+<dt><b><a name="arrayinit">Don't initialize big arrays:</a></b>
+<dd>Although array initialization is a single statement in Java, the generated
+    bytecode inserts one element at a time.  If you've got a big array, this
+    requires a <b>lot</b> of bytecode.  You can save space by storing your
+    data in a String and then parsing it into your array at runtime (tip from
+    <a href="mailto:andrew@sdsu.edu">Andrew Scherpbier</a>).<p>
+
+<dt><b>Dates are big (not just broken)</b>
+<dd><tt>Date</tt> objects take a surprising amount of space for something with
+    such limited functionality.  If you're storing a lot of them, considering
+    using longs instead, and recreating <tt>Date</tt> objects from them as
+    necessary (tip from <a href="mailto:lugrin@morgan.com">Jean-Marc
+    Lugrin</a>).<p> 
+    
+<dt><b>Use short names:</b>
+<dd>The names of visible entities (i.e., class, method and instance
+    variable names) are listed in full in the class file, so using short names
+    actually saves space.  Code obfuscators such as
+    <a href="http://www.sbktech.org/hashjava.html">Hashjava</a>, <a
+    href="http://www.primenet.com/~ej/">Jobe</a>, <a
+    href="http://www.monmouth.com/~neil/Obfuscate.html">Obfuscate</a> and
+    <a href="http://www.e-t.com/jshrink.html">Jshrink</a> will
+    rewrite your class files to use shorter (and incomprehensible) names. <p>
+
+<dt><b>Put static final constants in interfaces:</b>
+<dd>Constants defined using <tt>static final</tt> are included in the class
+    file as well as being inlined.  If you instead define them in an interface
+    that you then implement, you can avoid this extra space overhead (tip from
+    <a href="mailto:pjh@gas.physics.usu.edu">Paul Hepworth</a>).<p>
+
+<dt><b>Watch for string concatenation:</b>
+<dd>Using <b><tt>+</tt></b> as a string concatenation operator will result in
+    a method call if the operands are not compile-time constants.  Unrolling a
+    loop to eliminate string concatenation can therefore save space (tip from
+    <a href="http://www.ee.ryerson.ca:8080/~elf/">Luis Fernandes</a>).  Again,
+    this might not be worth the effort.  For example, the following loop is
+    compiled into 48 bytes of bytecode:
+<pre>
+  for (int i = 0; i &lt; 3; i++){
+    imgs[i] = getImage (getCodeBase(), "G" + i + ".gif");
+  }
+</pre>
+    By unrolling the loop we eliminate the runtime concatenations and reduce
+    the size of the bytecode to 39 bytes:
+<pre>
+  imgs[0] = getImage (getCodeBase(), "G0.gif");
+  imgs[1] = getImage (getCodeBase(), "G1.gif");
+  imgs[2] = getImage (getCodeBase(), "G2.gif");
+</pre>
+    Note that the three instances of <tt>getCodeBase()</tt> are a good
+    candidate for <a href="compilers.html#cse">common subexpression
+    elimination</a>.
+    <!--
+<dt><b>Count to zero in loops:</b>
+<dd>Counting down to 0 in a for loop saves 1 bytecode over
+    counting up (<a href="examples.html#countingdown">ditto</a>).
+    -->
+</dl>
+</blockquote>
+
+<hr size=1 noshade>
+<center><table width="100%" cellspacing=0 cellpadding=0 border=0>
+  <tr>
+    <td align=left><font size=-1>http://www.cs.cmu.edu/~jch/java/size.html</font></td>
+    <td align=right><font size=-1>Optimizing Java for Size</font></td>
+  </tr>
+  <tr>
+    <td align=left><font size=-1><!-- hhmts start -->Last modified: Wed 18 Mar 1998<!-- hhmts end --></font></td>
+    <td align=right><font size=-1>Copyright &#169 1996, 1997 <a
+    href="http://www.cs.cmu.edu/~jch/">Jonathan Hardwick</a></font></td>
+  </tr>
+</table></center>
+</body>
+</html>
+

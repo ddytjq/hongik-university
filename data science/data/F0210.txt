@@ -1,0 +1,158 @@
+ID=F0210
+URL=http://www.chez.com/scribe/en/com_us.htm
+SIZE=8226
+DATE=09/07/2002
+TIME=13:16:41
+DATASET=Visual Basic
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML lang="en">
+<head>
+<title>VBA51 - COM</title>
+<LINK rel="stylesheet" type="text/css" href="../global.css">
+<meta name="description" content="ActiveX and Visual Basic">
+<meta name="keywords" content="COM, ActiveX, Interface, Object, QueryInterface">
+<script type="text/javascript" src="../global.js"></script>
+</head>
+
+<BODY class="legacy">
+<SCRIPT type="text/javascript"><!--
+writeMenu('March 15, 1999 - March 31, 2001');
+//-->
+</SCRIPT>
+
+<TABLE align="right"><TR><TD>
+<!-- BEGIN WEBSIDESTORY CODE -->
+<!-- COPYRIGHT 1997-2000 WEBSIDESTORY, INC. ALL RIGHTS RESERVED. U.S.PATENT PENDING. Privacy notice at: http://websidestory.com/privacy -->
+<!-- webbot bot="HTMLMarkup" startspan -->
+<p align="center"><A HREF="http://rd1.hitbox.com/rd?acct=WQ5909151KCE94EN0&p=s">
+<IMG SRC="http://hg1.hitbox.com/HG?hc=wf200&l=y&hb=WQ5909151KCE94EN0&cd=1&n=COM" height=62 width=88 ALT="Click Here!" border=0></A></p>
+<!-- webbot bot="HTMLMarkup" endspan -->
+<!-- END WEBSIDESTORY CODE  -->
+</TD></TR></TABLE>
+
+<h1>COM</h1>
+<ul>
+<li><a href="#Overview">Overview</a>
+<li><a href="#Using a type library">Using a type library (TLB file)</a>
+<li><a href="#Writing">Writing a type library</a>
+<ul>
+<li><a href="#Interface">Interface</a>
+<li><a href="#Module">Module</a>
+</ul>
+<li><a href="#ActiveX DLL">ActiveX DLL</a>
+<li><a href="#COM+">COM+</a>
+</ul>
+<hr>
+
+<h2><a name="Overview">Overview</a></h2>
+COM also known as the "Component Object Model" is a step further in object oriented programming. Objects are now no more a characteristic of a given programming language but are included in the Operating System. COM defines a common way for objects to be managed. These objects are in a binary format to allow their use from virtually any language. It should be even possible to write an object in a language and to enhance this object using another language (aggregation). Using a special compiler (MKTYPLIB or the more recent MIDL compiler) it is possible to describe objects written in any given language (or also DLL functions). The produced TLB files can then be used from Visual Basic (or other language I guess) to be able to use these objects from within VB as if they were native VB objects.<br>
+Information about COM :
+<ul>
+<li><a href="http://www.microsoft.com/com" target="_top">Microsoft COM Information Site</a>
+<li><a href="http://www.microsoft.com/oledev/olecom/Com_modl.htm" target="_top">The Component Object Model : Technical Overview</a>
+</ul>
+<hr>
+
+<h2><a name="Using a type library">Using a type library (TLB file)</h2>
+To use a type library from Visual Basic, under the "Project" menu, choose the "References" option and select the relevant library. If the needed library is not shown in the list, use first the browse button to select the corresponding TLB file. If you load a project that references a missing library, the load time will be longer than usual. In this case, "MISSING" will be shown before the library name that is not found...<br>
+The type library is then used as a sort of dictionary where VB finds all the necessary informations for creating objects, calling methods or API functions described by this library. These informations - and only those that are needed to call what you use from the library - are used and included in the final EXE file. For example, when you create an object by using its name, VB finds in the library a unique number that identifies this particular object. This number will be used as an argument of a function that creates every object. As a result the TLB file is not needed at runtime. You don't have to distribute the TLB file with your EXE file.
+<br>
+These informations are left unchanged when binary objects are updated. Updated objects are seen as new objects (in fact new "interfaces", see <a href="directx/dxvb_us.htm#QueryInterface">QueryInterface</a> for some more information about that). This allows old applications to still runs against an updated set of objects. To take advantage of new objects capabilities, you'll have to change the name you're using. For example, an application using a Direct3DRMFrame object still runs against a DirectX 5 runtime. However if you want to take advantage of new methods added to this object, you'll have to use Direct3DRMFrame2 object that gives access to the new RayPick method.
+<hr>
+
+<h2><a name="Writing">Writing a type library</a></h2>
+Using a type library is an efficient manner to access either COM objects or even any API. A wise use of TLB file is a TLB file that would allow to access the Win32 API without having to deal with copying and pasting parts of the win32api.txt file.<br>
+To write a library file, you'll need only the MKTYPLIB (or more recent MIDL) compiler that you'll find in the tools/unsupprtd/typlib directory on the Visual Basic CD-ROM (Enterprise or Pro edition, not provided with the learning edition).
+The compiler will create a TLB file from the provided ODL source file (or IDL for the MIDL compiler).<br>
+The overall structure of an ODL file is as follow :
+<pre>
+<h4>
+[&ltattributes&gt]
+library &ltLibraryName&gt
+{
+    &ltDeclarations&gt
+    [&ltattributes&gt]
+    interface &ltInterfaceName&gt
+    {
+        &ltDeclarations&gt
+    }
+    [&ltattributes&gt]
+    module &ltModuleName&gt
+    {
+        &ltDeclarations&gt
+    }
+}
+</h4></pre>
+An interface section allow to describe a COM objects. A module section allow to describes functions contained in a DLL file. The name of the concerned DLL is provided in the <attributes> part. The description of a DLL entry is as follow :
+[entry(&ltEntryName&gt)]
+&ltResultType&gt &ltFunctionName&gt (&ltArguments&gt);
+It could be for example :
+[entry("GetWindowsDirectory")]
+LPSTR GetWindowsDirectory();
+<hr>
+
+<h2><a name="Interface">Interface</a></h2>
+<pre><h4>
+[uuid(279AFA83-4981-11CE-A521-0020AF0BE560)]
+interface DirectSound:IUnknown
+{
+    HRESULT CreateSoundBuffer(LPCDSBUFFERDESC arg1,LPDIRECTSOUNDBUFFER *arg2,LPUNKNOWN arg3);
+    HRESULT GetCaps(LPDSCAPS arg1);
+    HRESULT DuplicateSoundBuffer(LPDIRECTSOUNDBUFFER arg1,LPDIRECTSOUNDBUFFER * arg2);
+    <...>
+}
+</h4></pre>
+In this case you just have to specify the UUID for this interface and describe the methods of this object... The interface name is the one that will be exposed to VB. You don't really need to use a particular name as the compiled VB code will create the object by using the uuid not the name.
+<hr>
+
+<h2><a name="Module">Module</a></h2>
+<pre><h4>
+[uuid(220bb1c5-c09b-11d0-8253-00805f2a72ab),dllname("d3drm.dll")]
+module D3DRMModule
+{
+    [entry("Direct3DRMCreate")]
+    HRESULT Direct3DRMCreate(LPDIRECT3DRM *lplpDirect3DRM);
+    [entry("D3DRMCreateColorRGB")]
+    D3DCOLOR D3DRMCreateColorRGB(D3DVALUE red,D3DVALUE green,D3DVALUE blue);
+    <...>
+}
+</h4></pre>
+The uuid is just a unique number to identify this module (in this case the value doesn't matter as the function will be retrieved by using the name of the DLL and the name of the function. Just create your own with UUIDGEN) You have also  to specify the DLL name. Then specify each function with the "official" name and the function prototype... With MIDL you don't need to speciy attributes for parameters. If you"re using MKTYPLIB, you'll have to. However as this is just a "hint" you could just use always the [in] attribute...
+<hr>
+
+<h2><a name="ActiveX DLL">ActiveX DLL</a></h2>
+Type Libraries are build in ActiveX DLL files so that you can write a VB DLL and once referenced in another products use whatever you enclosed in this file. For example to use Enterprise wide utilities from Office applications...
+<hr>
+
+<h2><a name="COM+">COM+</a></h2>
+Seems that COM+ will provide runtime services for handling objects. From what I understood the idea is that the description of an object is now part of the object itself. So if it's a COM+ object, the description is included and the object can be used without any other requirements from any language supporting COM+ ! This could be the case - just a guess - for DirectX 6 and Visual Basic 6.0 (or it is too late in the dev. cycle ?)...
+<hr>
+<DIV align="center"><h5>&copy; <a href="mail.htm">Patrice Scribe</a>, 1997</h5></DIV>
+</body>
+</html><!-- -->
+</noscript>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+<!--
+var rnd = Math.floor(Math.random() * 9) + 1 ; 
+if (rnd <= 4) { 
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/default','pub','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=470,height=120');
+} else if(rnd == 5) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre4','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=200,height=200');
+} else if(rnd == 6) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre2','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=200,height=200');
+} else if(rnd >= 7) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=200,height=200');
+}
+// -->
+</SCRIPT>
+
+<script language="javascript">
+WEBO_ZONE=122;
+WEBO_PAGE=1;
+weboplus_ok=0;
+</script>
+<script language="javascript"
+src="http://js.libertysurf.fr/chez/weborama/weboscopeplus.js"></SCRIPT>
+<SCRIPT>if(weboplus_ok==1){weboplus_zp(WEBO_ZONE,WEBO_PAGE);}
+</script>
+

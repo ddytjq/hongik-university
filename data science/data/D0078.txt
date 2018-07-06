@@ -1,0 +1,137 @@
+ID=D0078
+URL=http://www.ejbtut.com/SessionCreate.jsp
+SIZE=6431
+DATE=16/07/02
+TIME=14:36:26
+DATASET=Java
+HTML=<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.75 [en] (Win98; U) [Netscape]">
+   <meta name="Description" content="EJB Tutorial">
+   <meta name="Keywords" content="JSP Tutorial">
+   <meta name="KeyWords" content="EJB Tutorial">
+   <title>EJB Tutorial</title>
+</head>
+<body>
+&nbsp;
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0 COLS=1 WIDTH="100%" >
+<tr>
+<td>
+<center><b><font size=+3>EJB Tutorial</font></b>
+<br><img SRC="ejbtut.gif" ></center>
+</td>
+</tr>
+
+<tr>
+<td><i><font size=-1><a href="/">Tutorial Index Page</a></font></i>
+<h2>
+Creating a Session Bean</h2>
+Session beans have a framework similar to entity beans, but a little simpler.&nbsp;
+They have a remote interface and a home interface, but no primary key.&nbsp;
+They also do not need to be backed by a database or other form of permanent
+storage.
+<p>Again, we will be using Blizzard to generate our basic framework.
+<p>Our session bean will be a stock-price quoting agent.&nbsp; It will
+live on a machine where current stock prices are available.&nbsp; (We will
+just put a file with stock prices in it, in some fixed place like C:\StockPrices.txt!)&nbsp;
+The clients of the session bean will be able to specify a stock and obtain
+its current price.
+<p>To create the session bean, run the Blazix EJB wizard Blizzard, and
+select "Create a Session bean".&nbsp;&nbsp; Fill in the bean name, package
+name and diretory name.&nbsp; Select "stateful" and "let the container
+manage transacton boundaries".&nbsp;&nbsp; Add data items "stock" (String)
+and "price" (float).&nbsp; We do not want a "setter" for "price", but make
+sure to provide a setter for "stock".&nbsp; Sample input is shown below.
+<p><img SRC="SessionWiz.gif" >
+<p>Build the framework examine the files created by the wizard.&nbsp; Look
+in the remote interface, the home interface and the bean class.&nbsp; Everything
+is similar to the entity beans, but there is no primary key and therefore
+no findByPrimary key.
+<p>Now we need to modify the framework so that the stock prices are read
+from a file on the system.&nbsp; Create a file, e.g. "C:\StockPrices.txt"
+and place some lines in it of the form
+<br><tt>symbol: price</tt>
+<br>Or you can just download this <a href="StockPrices.txt">sample file</a>.
+<p>In the bean implementation file StockQuotesBean.java, add an import
+for java.io.* and delete the member variable "price".&nbsp; Also remove
+the "price" argument to the "ejbCreate" method and remove the statement
+where the "price" member variable is getting set.
+<p>Change the implementation of "getPrice()" as follows.
+<p><tt>&nbsp;public float getPrice() throws java.rmi.RemoteException,</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+java.io.IOException</tt>
+<br><tt>&nbsp;{</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; BufferedReader reader;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; reader = new BufferedReader(</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+new FileReader( "C:\\StockPrices.txt" ));</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; String line;</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; String prefix = stock.toLowerCase() +
+":";</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; while (( line = reader.readLine()) !=
+null ) {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( line.toLowerCase().startsWith(
+prefix )) {</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+line = line.substring( prefix.length());</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+reader.close();</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return Float.parseFloat( line.trim());</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; }</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; reader.close();</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; throw new java.rmi.RemoteException( "Not
+found" );</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; // In product-level coding we would define
+an exception</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; // class for this, but for this sample
+we</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp; // will just put RemoteException to dual
+use!</tt>
+<br><tt>&nbsp;}</tt>
+<p>Notice that we have changed the function signature.&nbsp; Therefore
+go into the remote interface <tt>StockQuotes.java</tt> and add <tt>java.io.IOException</tt>
+to the exceptions-list of "getPrice()".
+<p>Similarly, change the <tt>create</tt> signature in <tt>StockQuotesHome.java</tt>
+and remove "<tt>price</tt>".
+<p>As before, create the bean by running the commands in the .cmd file.
+<p><i>Exercise:</i>&nbsp; Build another entity bean called "<tt>BankAccount</tt>".&nbsp;
+This bean maintains an account for various users and lets them add and
+substract amounts to it (perhaps the clients are tellers or ATMs!)&nbsp;
+For now, keep a list of account names and their current balances in an
+"accounts" text file.&nbsp; (Later, we will use JDBC for this purpose.)&nbsp;
+The bean needs two data members, "<tt>name</tt>" and "<tt>balance</tt>".&nbsp;
+There should be no setter for "<tt>balance</tt>".&nbsp; Add a "<tt>credit</tt>"
+and a "<tt>debit</tt>" methods to the remote interface.&nbsp; Implement
+<tt>getBalance</tt>,
+<tt>credit</tt>
+and <tt>debit</tt> by reading the file, and modifying it.&nbsp; To keep
+things simple, "<tt>credit</tt>" and "<tt>debit</tt>" can just read the
+lines of the file and write them to a temporary file.&nbsp; If the line
+matches the current "<tt>name</tt>", they should write the new balance
+instead of what was in the file.&nbsp; When done, delete the existing accounts
+file and rename the temporary file to be the new accounts file.
+<br>&nbsp;</td>
+</tr>
+
+<tr>
+<td>
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%" >
+<tr>
+<td><a href="SessionDeploy.jsp">Next tutorial: Deploying the Session Bean</a></td>
+
+<td>
+<div align=right><font size=-1><a href="Index.html#contents">Contents</a></font></div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+</body>
+</html>
+

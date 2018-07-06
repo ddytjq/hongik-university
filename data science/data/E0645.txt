@@ -1,0 +1,268 @@
+ID=E0645
+URL=http://www.bcbdev.com/faqs/faq79.htm
+SIZE=13978
+DATE=12/07/02
+TIME=19:23:02
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+
+<H3>
+Q: Create a shortcut on the desktop
+</H3>
+<BR>
+<H3>Answer</H3>
+<P>
+The API provides a COM interface called <TT>IShellLink</TT> that allows you create a shortcut. To create a shortcut
+on the desktop, you instantiate an <TT>IShellLink</TT> object, fill in its attributes, and save the link to the desktop
+directory.
+</P>
+<P>
+The code example below demonstrates how to make a shortcut. In this example, the shortcut is saved to the root
+of the <TT>C:\</TT> drive.
+</P>
+<pre>
+<font color="navy">//----------------------------------------------------------------------</font>
+<font color="green">#include &lt;shlobj.h></font>
+
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button1Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// Allow the user to find a file with a common dialog box,</font>
+    <font color="navy">// then create a shortcut to that file.</font>
+    <b>if</b><b>(</b>OpenDialog1<b>-></b>Execute<b>(</b><b>)</b><b>)</b>
+        CreateShortCut<b>(</b>OpenDialog1<b>-></b>FileName<b>)</b><b>;</b>
+<b>}</b>
+<font color="navy">//----------------------------------------------------------------------</font>
+<b>void</b> TForm1<b>:</b><b>:</b>CreateShortCut<b>(</b><b>const</b> AnsiString <b>&</b>file<b>)</b>
+<b>{</b>
+    <font color="navy">// IShellLink allows us to create the shortcut.   </font>
+    <font color="navy">// IPersistFile saves the link to the hard drive. </font>
+    IShellLink<b>*</b> pLink<b>;</b>
+    IPersistFile<b>*</b> pPersistFile<b>;</b>
+
+    <font color="navy">// First, we have to initialize the COM library</font>
+    <b>if</b><b>(</b>SUCCEEDED<b>(</b>CoInitialize<b>(</b>NULL<b>)</b><b>)</b><b>)</b>
+    <b>{</b>
+        <font color="navy">// If CoInitialize doesn't fail, then instantiate an </font>
+        <font color="navy">// IShellLink object by calling CoCreateInstance.</font>
+        <b>if</b><b>(</b>SUCCEEDED<b>(</b>CoCreateInstance<b>(</b>CLSID_ShellLink<b>,</b> NULL<b>,</b>
+                                      CLSCTX_INPROC_SERVER<b>,</b>
+                                      IID_IShellLink<b>,</b> <b>(</b><b>void</b> <b>*</b><b>*</b><b>)</b> <b>&</b>pLink<b>)</b><b>)</b><b>)</b>
+        <b>{</b>
+            <font color="navy">// if that succeeds, then fill in the shortcut attributes</font>
+            pLink<b>-></b>SetPath<b>(</b>file<b>.</b>c_str<b>(</b><b>)</b><b>)</b><b>;</b>
+            pLink<b>-></b>SetDescription<b>(</b><font color="blue">"Woo hoo, look at Homer's shortcut"</font><b>)</b><b>;</b>
+            pLink<b>-></b>SetShowCmd<b>(</b>SW_SHOW<b>)</b><b>;</b>
+
+            <font color="navy">// Now we need to save the shortcut to the hard drive. The</font>
+            <font color="navy">// IShellLink object also implements the IPersistFile interface.</font>
+            <font color="navy">// Get the IPersistFile part of the object using QueryInterface.</font>
+            <b>if</b><b>(</b>SUCCEEDED<b>(</b>pLink<b>-></b>QueryInterface<b>(</b>IID_IPersistFile<b>,</b>
+                                               <b>(</b><b>void</b> <b>*</b><b>*</b><b>)</b><b>&</b>pPersistFile<b>)</b><b>)</b><b>)</b>
+            <b>{</b>
+                <font color="navy">// If that succeeds, then call the Save method of the</font>
+                <font color="navy">// IPersistFile object to write the shortcut to the desktop.</font>
+                WideString strShortCutLocation<b>(</b><font color="blue">"C:\\bcbshortcut.lnk"</font><b>)</b><b>;</b>
+                pPersistFile<b>-></b>Save<b>(</b>strShortCutLocation<b>.</b>c_bstr<b>(</b><b>)</b><b>,</b> TRUE<b>)</b><b>;</b>
+                pPersistFile<b>-></b>Release<b>(</b><b>)</b><b>;</b>
+            <b>}</b>
+            pLink<b>-></b>Release<b>(</b><b>)</b><b>;</b>
+        <b>}</b>
+
+        <font color="navy">// Calls to CoInitialize need a corresponding CoUninitialize call</font>
+        CoUninitialize<b>(</b><b>)</b><b>;</b>
+    <b>}</b>
+<b>}</b>
+<font color="navy">//----------------------------------------------------------------------</font>
+</pre>
+<P>
+If you execute this code, you should see a new shortcut file in the root of your <TT>C:\</TT> drive.
+This is cool, but the purpose of this FAQ is to create a shortcut on the desktop. The preceeding example
+code does not save the shortcut to the proper place
+</P>
+<P>
+To make the shortcut appear on the desktop instead of on the root of the drive, we simply need to change
+where we save the shortcut LNK file to. We can borrow code from the FAQ on
+<A TARGET=_top HREF="faq80.htm">determining the location of special folders</A> to find the path to the Windows Desktop
+directory. Once we know where the desktop directory is, we can save our shortcut file to that directory. After doing
+that, Windows will display the shortcut icon on the desktop. The code below shows a new version of the
+<TT>CreateShortCut</TT> that saves the shortcut to the windows desktop
+</P>
+
+<pre>
+<font color="navy">//----------------------------------------------------------------------</font>
+<b>void</b> TForm1<b>:</b><b>:</b>CreateShortCut<b>(</b><b>const</b> AnsiString <b>&</b>file<b>)</b>
+<b>{</b>
+    IShellLink<b>*</b> pLink<b>;</b>
+    IPersistFile<b>*</b> pPersistFile<b>;</b>
+    LPMALLOC      ShellMalloc<b>;</b>
+    LPITEMIDLIST  DesktopPidl<b>;</b>
+    <b>char</b> DesktopDir<b>[</b>MAX_PATH<b>]</b><b>;</b>
+
+    <font color="navy">// We are going to create a pidl, and it will need to be</font>
+    <font color="navy">// freed by the shell mallocator. Get the shell mallocator</font>
+    <font color="navy">// object using API SHGetMalloc function. Return if failure.</font>
+    <b>if</b><b>(</b>FAILED<b>(</b>SHGetMalloc<b>(</b><b>&</b>ShellMalloc<b>)</b><b>)</b><b>)</b>
+        <b>return</b><b>;</b>
+
+    <font color="navy">// use the API to get a pidl for the desktop directory</font>
+    <font color="navy">// if function fails, return without proceeding</font>
+    <b>if</b><b>(</b>FAILED<b>(</b>SHGetSpecialFolderLocation<b>(</b>NULL<b>,</b>
+                                         CSIDL_DESKTOPDIRECTORY<b>,</b>
+                                         <b>&</b>DesktopPidl<b>)</b><b>)</b><b>)</b>
+        <b>return</b><b>;</b>
+
+    <font color="navy">// Now convert the pidl to a character string</font>
+    <font color="navy">// return if function fails</font>
+    <b>if</b><b>(</b><b>!</b>SHGetPathFromIDList<b>(</b>DesktopPidl<b>,</b> DesktopDir<b>)</b><b>)</b>
+    <b>{</b>
+        ShellMalloc<b>-></b>Free<b>(</b>DesktopPidl<b>)</b><b>;</b>
+        ShellMalloc<b>-></b>Release<b>(</b><b>)</b><b>;</b>
+        <b>return</b><b>;</b>
+    <b>}</b>
+
+    <font color="navy">// At this point, we are done with the pidl and the</font>
+    <font color="navy">// mallocator, so free them up</font>
+    ShellMalloc<b>-></b>Free<b>(</b>DesktopPidl<b>)</b><b>;</b>
+    ShellMalloc<b>-></b>Release<b>(</b><b>)</b><b>;</b>
+
+    <b>if</b><b>(</b>SUCCEEDED<b>(</b>CoInitialize<b>(</b>NULL<b>)</b><b>)</b><b>)</b>
+    <b>{</b>
+        <b>if</b><b>(</b>SUCCEEDED<b>(</b>CoCreateInstance<b>(</b>CLSID_ShellLink<b>,</b> NULL<b>,</b>
+                                      CLSCTX_INPROC_SERVER<b>,</b>
+                                      IID_IShellLink<b>,</b> <b>(</b><b>void</b> <b>*</b><b>*</b><b>)</b> <b>&</b>pLink<b>)</b><b>)</b><b>)</b>
+        <b>{</b>
+            pLink<b>-></b>SetPath<b>(</b>file<b>.</b>c_str<b>(</b><b>)</b><b>)</b><b>;</b>
+            pLink<b>-></b>SetDescription<b>(</b><font color="blue">"Woo hoo, look at Homer's shortcut"</font><b>)</b><b>;</b>
+            pLink<b>-></b>SetShowCmd<b>(</b>SW_SHOW<b>)</b><b>;</b>
+
+            <b>if</b><b>(</b>SUCCEEDED<b>(</b>pLink<b>-></b>QueryInterface<b>(</b>IID_IPersistFile<b>,</b>
+                                               <b>(</b><b>void</b> <b>*</b><b>*</b><b>)</b><b>&</b>pPersistFile<b>)</b><b>)</b><b>)</b>
+            <b>{</b>
+
+                WideString strShortCutLocation<b>(</b>DesktopDir<b>)</b><b>;</b>
+                strShortCutLocation <b>+</b><b>=</b> <font color="blue">"\\bcbshortcut.lnk"</font><b>;</b>
+                pPersistFile<b>-></b>Save<b>(</b>strShortCutLocation<b>.</b>c_bstr<b>(</b><b>)</b><b>,</b> TRUE<b>)</b><b>;</b>
+                pPersistFile<b>-></b>Release<b>(</b><b>)</b><b>;</b>
+            <b>}</b>
+            pLink<b>-></b>Release<b>(</b><b>)</b><b>;</b>
+        <b>}</b>
+        CoUninitialize<b>(</b><b>)</b><b>;</b>
+    <b>}</b>
+<b>}</b>
+<font color="navy">//----------------------------------------------------------------------</font>
+</pre>
+
+<H3>Don't get bogged down in the COM</H3>
+<P>
+Creating shortcuts involves some use of COM. It is important not to let yourself get bogged down in the complexities
+of COM. COM is just another way of creating and using objects. It may be helpful to think of the COM code in this
+FAQ in terms of equivalent code in C++. Pretend that the <TT>IShellLink</TT> and <TT>IPersistFile</TT> objects are no
+different that other objects that you create with new and delete. It is also helpful to ignore the error handling code
+so that you can see what is really happening.
+</P>
+<PRE>
+<B>COM code</B>                                   <B>C++ psuedo-equivalent</B>
+IShellLink*   pLink;                       TShellLink   *Link;
+IPersistFile* pPersistFile;                TPersistFile *PersistFile;
+
+CoInitialize();
+
+                                           <FONT COLOR="Navy">// CoCreateInstance is like new</FONT>  
+CoCreateInstance(CLSID_ShellLink,          Link = new TShellLink;
+                 NULL,
+                 CLSCTX_INPROC_SERVER,
+                 IID_IShellLink,
+                 (void **) &pLink)
+
+                                           <FONT COLOR="Navy">// These are like member functions</FONT>
+pLink-&gt;SetPath(file.c_str());              Link-&gt;SetPath(file.c_str());
+pLink-&gt;SetShowCmd(SW_SHOW);                Link-&gt;SetShowCmd(SW_SHOW);
+
+
+                                           <FONT COLOR="Navy">// QueryInterface is like casting</FONT>
+pLink-&gt;QueryInterface(IID_IPersistFile     PersistFile =
+               (void **)&pPersistFile)))      dynamic_cast&LT;TPersistFile*&GT;(Link);
+
+pPersistFile-&gt;Save("C:\\", TRUE);          PersistFile-&GT;Save("C:\\");
+
+
+                                           <FONT COLOR="Navy">// Release is like delete</FONT>
+pPersistFile-&gt;Release();                   delete PersistFile
+pLink-&gt;Release();                          delete Link;
+
+CoUninitialize();
+</PRE>
+<H3>IShellLink Interface</H3>
+The example code in this FAQ only called three <TT>IShellLink</TT> methods:
+<TT>SetPath</TT>, <TT>SetDescritpion</TT>, and <TT>SetShowCmd</TT>. The <TT>IShellLink</TT> interface supports several
+other member functions. The list below summarizes the most useful functions.
+</P>
+<PRE><UL><LI>SetArguments            Command-line arguments passed to program
+<LI>SetDescription          Sets description (not sure where this is used)
+<LI>SetHotkey               Creates global hot key for the shortcut
+<LI>SetIconLocation         Allows you to specify the icon for the shortcut
+<LI>SetIDList               pidl replacement for SetPath
+<LI>SetPath                 File that you are creating the shortcut for
+<LI>SetShowCmd              Hide, minimize, or maximize the program
+<LI>SetWorkingDirectory     Initial working directory for program
+<LI>GetXXX                  Each Set function has a corresponding Get function</UL></PRE>
+<P>
+See the API help file for more info on <TT>IShellLink</TT>.
+</P>
+
+<BR>
+<TABLE  BORDER=1 CELLPADDING=10 CELLSPACING=0 WIDTH="100%">
+<TR> <TD colspan = 2><B>Downloads for this FAQ</B> </TD> </TR>
+<TR> <TD><TT><A HREF="http://www.bcbdev.com/ftp/source/shortcut.zip" >shortcut.zip </A></TT></TD> <TD>BCB3 project creates a shortcut on the desktop.</TD> </TR>
+<TR> <TD><TT><A HREF="http://www.bcbdev.com/ftp/source/shortcutx.zip">shortcutx.zip</A></TT></TD> <TD>Same as shortcut.zip. Includes an EXE. Download is 138 k.</TD> </TR>
+</TABLE>
+
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

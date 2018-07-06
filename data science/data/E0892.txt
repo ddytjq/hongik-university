@@ -1,0 +1,208 @@
+ID=E0892
+URL=http://www.bcbdev.com/faqs/faq42.htm
+SIZE=10474
+DATE=12/07/02
+TIME=19:25:32
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+
+<H3>
+Q: Customize the system menu of a form
+</H3>
+<BR>
+<H3>Answer</H3>
+<P>
+Before you attempt to modify the system menu of your program, you might want to
+ask yourself why you want to do this. Modifying the system menu of a program is
+not a standard practice. While testing the code for this FAQ, I ran various programs
+on my computer to see which programs customize their system menus. None of the following
+programs modify their system menus: RegEdit, Explorer, Word, Excel, Outlook, MS Dev Studio,
+Internet Explorer, Netscape 4.0, the Windows Calc program, BC++ 5, C++Builder, Delphi,
+MS Paint, Notepad, MS Hearts, Laplink, MSDN InfoViewer, and InstallShield. In fact, I could
+only find two programs that did modify the system menu: the character map utility, and the
+window that surrounds a DOS box. If you feel that modifying the system menu makes sense in
+your program, then read through the following set of steps.
+</P>
+<P>
+<B>Step 1:</B>  Modifying the system menu requires that you use direct API calls.
+The VCL does not encapsulate the system menu (although
+you might be able to find a freeware control for the system menu). Use the
+<TT>GetSystemMenu</TT> API function to obtain a menu handle to the system menu. Then use the
+API functions to add or delete your menu items. This code modifies the system menu of the
+main form at startup.
+</P>
+<pre>
+<font color="green">#define IDS_CUSTOMID 0x1000    </font><font color="navy">// menu ID</font>
+
+<b>__fastcall</b> TForm1<b>:</b><b>:</b>TForm1<b>(</b>TComponent<b>*</b> Owner<b>)</b>
+    <b>:</b> TForm<b>(</b>Owner<b>)</b>
+<b>{</b>
+  <b>const</b> AnsiString MenuString <b>=</b> <font color="blue">"Custom Menu"</font><b>;</b>
+  MENUITEMINFO info <b>=</b> <b>{</b>  <b>sizeof</b><b>(</b>MENUITEMINFO<b>)</b><b>,</b>
+                         MIIM_TYPE <b>|</b> MIIM_STATE <b>|</b> MIIM_ID <b>,</b>
+                         MFT_STRING<b>,</b>                 <font color="navy">// menu type is string</font>
+                         MFS_ENABLED<b>,</b>                <font color="navy">// menu item is enabled</font>
+                         IDS_CUSTOMID<b>,</b>               <font color="navy">// id of menu item</font>
+                         NULL<b>,</b>                       <font color="navy">// no sub menu</font>
+                         NULL<b>,</b>                       <font color="navy">// no check bitmap</font>
+                         NULL<b>,</b>                       <font color="navy">// no uncheck bitmap</font>
+                         <font color="blue">0</font><b>,</b>                          <font color="navy">// no item data</font>
+                         MenuString<b>.</b>c_str<b>(</b><b>)</b><b>,</b>         <font color="navy">// string of menu item</font>
+                         <font color="blue">0</font><b>}</b><b>;</b>                         <font color="navy">// last item not used</font>
+
+
+  <font color="navy">// obtain the menu handle for the system menu</font>
+  HMENU SysMenu <b>=</b> GetSystemMenu<b>(</b>Handle<b>,</b> FALSE<b>)</b><b>;</b>
+
+  <font color="navy">// Insert the new menu item just after the close menu item. If the TRUE</font>
+  InsertMenuItem <b>(</b>SysMenu<b>,</b> SC_CLOSE<b>,</b> TRUE<b>,</b> <b>&</b>info<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+<B>Step 2:</B> Now you need to add code that will respond to the message that is
+sent when the user selects the new menu item from the system menu. Add a message
+map and a function prototype to the include file of your form. Then code the
+function body in the source file.
+</P>
+<pre>
+<font color="navy">//-------------------------------------------------------------</font>
+<font color="navy">// Inside the header file</font>
+<font color="navy">//</font>
+<b>class</b> TForm1 <b>:</b> <b>public</b> TForm
+<b>{</b>
+<b>__published</b><b>:</b>	<font color="navy">// IDE-managed Components</font>
+<b>private</b><b>:</b>	<font color="navy">// User declarations</font>
+  <b>void</b> <b>__fastcall</b> WMSysCommand<b>(</b>TWMSysCommand <b>&</b>Msg<b>)</b><b>;</b>
+<b>public</b><b>:</b>		<font color="navy">// User declarations</font>
+    <b>__fastcall</b> TForm1<b>(</b>TComponent<b>*</b> Owner<b>)</b><b>;</b>
+
+BEGIN_MESSAGE_MAP
+  MESSAGE_HANDLER<b>(</b>WM_SYSCOMMAND<b>,</b>TWMSysCommand<b>,</b>WMSysCommand<b>)</b>
+END_MESSAGE_MAP<b>(</b>TForm<b>)</b>
+<b>}</b><b>;</b>
+<font color="navy">//-------------------------------------------------------------</font>
+
+
+<font color="navy">//-------------------------------------------------------------</font>
+<font color="navy">// Inside the CPP file</font>
+<font color="navy">//</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>WMSysCommand<b>(</b>TWMSysCommand <b>&</b>Msg<b>)</b>
+<b>{</b>
+  <b>if</b><b>(</b> Msg<b>.</b>CmdType <b>==</b> IDS_CUSTOMID<b>)</b>
+  <b>{</b>
+    Width <b>-</b><b>=</b><font color="blue">5</font><b>;</b>
+    Height <b>-</b><b>=</b><font color="blue">5</font><b>;</b>
+    Msg<b>.</b>Result <b>=</b> <b>true</b><b>;</b>
+  <b>}</b>
+  <b>else</b>
+    TForm<b>:</b><b>:</b>Dispatch<b>(</b><b>&</b>Msg<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+<B>Note:</B> When you add menu items to the system menu, use menu IDs that are lower
+than <TT>0xF000</TT> to avoid conflicting with the IDs of the default system menu items.
+</P>
+<P>
+<B>Note:</B> Once you obtain the <TT>HMENU</TT> handle to the system menu, you can use that
+handle to call any of the API menu functions. These include <TT>DeleteMenu</TT>,
+<TT>SetMenuItemInfo</TT>, and the functions that check, highlight, and put bitmaps on menu
+items.
+</P>
+<P>
+<B>Note:</B> Menu items from the main menu of your program send <TT>WM_COMMAND</TT> messages
+to your window when the user selects an item. The system menu sends <TT>WM_SYSCOMMAND</TT>
+messages.</P>
+<P>
+<B>Note:</B> The <TT>wParam</TT> parameter of the <TT>WM_SYSCOMMAND</TT> message contains
+the menu ID for the item that was clicked. The <TT>TWMSysCommand</TT> message structure maps
+<TT>wParam</TT> to the <TT>CmdType</TT> structure item.
+</P>
+<P>
+<B>Note:</B> The system menu will initially contain the default system menu items for
+a form. These include minimize and close commands. These commands have built in IDs
+(<TT>SC_CLOSE</TT>, <TT>SC_MINIMIZE</TT>, etc). Normally, you will want to pass messages for
+the default system menu items on to the default handler. The default items will not function
+if you forget to pass the message on. If you want to intercept on of the default menu
+handlers, you will need to mask off the lower for bits of the <TT>CmdType</TT> parameter.
+According to the MSDN documentation, the last 4 bits in the <TT>wParam</TT> parameter in a
+<TT>WM_SYSCOMMAND</TT> message are reserved for internal use. This applies only to the
+default system menu items that are created by windows. You don't need to mask <TT>CmdType</TT>
+when handling commands sent by items that you have added to the menu. Here is a modified
+version of the handler to show what I mean:
+</P>
+<pre>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>WMSysCommand<b>(</b>TWMSysCommand <b>&</b>Msg<b>)</b>
+<b>{</b>
+  <b>if</b><b>(</b> Msg<b>.</b>CmdType <b>==</b> IDS_CUSTOMID<b>)</b>
+  <b>{</b>
+    Width <b>-</b><b>=</b><font color="blue">5</font><b>;</b>
+    Height <b>-</b><b>=</b><font color="blue">5</font><b>;</b>
+    Msg<b>.</b>Result <b>=</b> <b>true</b><b>;</b>
+  <b>}</b>
+  <b>else</b> <b>if</b> <b>(</b> <b>(</b>Msg<b>.</b>CmdType <b>&</b> <font color="blue">0xFFF0</font><b>)</b> <b>==</b> SC_CLOSE<b>)</b>
+    Application<b>-></b>MessageBox<b>(</b><font color="blue">"I don't want to close."</font><b>,</b><font color="blue">"test"</font><b>,</b>MB_OK<b>)</b><b>;</b>
+  <b>else</b>
+    TForm<b>:</b><b>:</b>Dispatch<b>(</b><b>&</b>Msg<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+<B>Note:</B> The technique above works, but keep in mind that the minimize, restore,
+and close push buttons on the title bar of a program also send <TT>WM_SYSCOMMAND</TT> messages.
+Intercepting the <TT>SC_CLOSE</TT> command from the system menu also prevents the user from
+closing the program via the close button.
+</P>
+<P>
+<B>Note:</B> The system menu for the hidden application window is different from
+the system menu for a form. This plays a role when the user activates the system
+menu of the application while the application is minimzed. When the user brings up
+the system menu by right clicking on the program's taskbar icon, the system menu
+of the application window will appear, which differs from the system menu of a form.
+</p>   
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

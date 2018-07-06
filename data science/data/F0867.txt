@@ -1,0 +1,719 @@
+ID=F0867
+URL=http://www.vbwm.com/forums/default.asp
+SIZE=35465
+DATE=09/07/2002
+TIME=13:26:50
+DATASET=Visual Basic
+HTML=
+
+<!--
+if (strAuthType = "nt") then
+	call NTauthenticate()
+	if (ChkAccountReg() = "1") then
+		call NTUser()
+	end if
+end if
+
+strDBNTUserName = Request.Cookies(strUniqueID & "User")("Name")
+strDBNTFUserName = Request.Form("Name")
+if strAuthType = "nt" then
+	strDBNTUserName = Session(strCookieURL & "userID")
+	strDBNTFUserName = Session(strCookieURL & "userID")
+end if
+
+select case Request.Form("Method_Type")
+	case "login"
+		select case chkUser(strDBNTFUserName, Request.Form("Password"))
+			case 1, 2, 3, 4
+				Call DoCookies(Request.Form("SavePassword"))
+				strLoginStatus = 1
+			case else
+				strLoginStatus = 0
+			end select
+	case "logout"
+		Call ClearCookies()
+end select
+-->
+
+<html>
+
+<head>
+<title>VBWM Forums</title>
+<meta name="copyright" content="This code is Copyright (C) 2000-01 Michael Anderson and Pierre Gorissen">
+
+<script language="JavaScript">
+<!-- hide from JavaScript-challenged browsers
+function openWindow(url) {
+  popupWin = window.open(url,'new_page','width=400,height=400')
+}
+function openWindow2(url) {
+  popupWin = window.open(url,'new_page','width=400,height=450')
+}
+function openWindow3(url) {
+  popupWin = window.open(url,'new_page','width=400,height=450,scrollbars=yes')
+}
+function openWindow4(url) {
+  popupWin = window.open(url,'new_page','width=400,height=525')
+}
+function openWindow5(url) {
+  popupWin = window.open(url,'new_page','width=450,height=525,scrollbars=yes,toolbars=yes,menubar=yes,resizable=yes')
+}
+// done hiding -->
+</script>
+<!--
+<style type=text/css>
+a:link    {color:darkblue;text-decoration:underline}
+a:visited {color:blue;text-decoration:underline}
+a:hover   {color:red;text-decoration:underline}
+input.radio {background: #EEEEEE; color:#000000}
+</style>
+-->
+</head>
+
+
+
+
+<body bgColor="white" text="black" link="darkblue" aLink="red" vLink="red">
+<a name="top"></a><font face="Verdana, Arial, Helvetica">
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+
+<head>
+
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<LINK REL=STYLESHEET TYPE="text/css" HREF="/vbwm_main.css">
+
+<script language="JavaScript">
+<!-- hide from JavaScript-challenged browsers
+function openResourceWin(url) {
+  popupWin = window.open(url,'vbwmPopup','width=700,height=500,toolbar=yes,status=yes,resizable=yes,scrollbars=yes,menubar=yes');
+}
+function clearSearchBox()
+{
+  var txtBox = document.topSearchForm.txtTopSearch;
+  if (txtBox.value = 'Enter keywords here.') { 
+    txtBox.value='';
+  }
+}
+// done hiding -->
+</script>
+</head>
+
+<body>
+
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100%">
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#CC6633" height="52">
+  <form method="POST" action="/forums/default.asp?authaction=login">
+  <tr>
+    <td width="100%"><a href="http://www.vbwm.com/"><img
+      border="0" src="/images/topheader/left.gif" width="280"
+      height="48"></a></td>
+    <td><table border="0"
+      width="250" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="50%" class="system-smlheader">login:</td>
+        <td width="50%">
+          <input type="text" name="Name" size="10" tabindex="1" class="orange">
+        </td>
+        <td rowspan="2"><nobr><input type="image"
+           border="0" src="/images/topheader/login.gif"
+           width="76" height="48"><a href="/forums/policy.asp"><img border="0"
+           src="/images/topheader/createacct.gif" width="139"
+           height="48"></a></nobr></td>
+      </tr>
+      <tr>
+        <td width="50%" class="system-smlheader">password:</td>
+        <td width="50%">
+          <input type="password" name="Password" size="10" tabindex="2" class="orange">
+        </td>
+      </tr>
+      </table></td>
+  </tr>
+  </form>
+</table>
+<table cellpadding="0" cellspacing="0" width="100%" bgcolor="#999999" border="0">
+  <form name="topSearchForm" action="/resources/search.asp" method="POST">
+  <input type="hidden" name="SearchBox" value="1">
+  <input type="hidden" name="Type" value="All">
+  <tr>
+    <td><input type="image" src="/images/topheader/searchicon.gif" width="60"
+      height="62" border="0" onmousedown="clearSearchBox();"></td>
+    <td valign="center"><input type="text" name="Words" size="18" id="txtTopSearch"
+      value="Enter keywords here." class="orange" onfocus="clearSearchBox();"></td>
+    <td><a href="/forums/active.asp"><img src="/images/topheader/activetopics.gif"
+      width="88" height="62" border="0"></a><a
+      href="mailto:editor@vbwm.com"><img src="/images/topheader/contactus.gif"
+      width="85" height="62" border="0"></a></nobr></td>
+    <td align="right"><a
+      href="http://www.bitsonthewire.com/adrdrmanager.asp?loc=1"><img
+      src="http://www.bitsonthewire.com/admanager.asp?loc=1&siteid=11&ad_type=0"
+      border="0"></a></td>
+  </tr>
+  </form>
+</table>
+    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+      <tr>
+        <td width="150" valign="top">
+        
+    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse"
+    width="150" id="AutoNumber5" background="/images/sitestructure/sidebar-left-middle.gif">
+    
+      <tr>
+        <td width="150" colspan="3">
+        
+        <img border="0" src="/images/sitestructure/sidebar-left-top.gif" width="150" height="30"></td>
+        
+      </tr>
+      <tr>
+        
+        <td width="5">&nbsp;</td>
+        <td width="115">
+        
+              <a href="/" class=sidebar title="Go to the main page.">Home</a><br>
+              <a href="/resources" class=sidebar title="View thousands of links to resources around the Internet.">Resources</a><br>
+              <a href="/resources/default.asp?page=UserSubmissions" class=sidebar title="Code, tips, and tricks. Submit your own.">Code &amp; Tip Library</a><br>
+              <a href="/forums" class=sidebar title="Post your questions and help someone else by posting an answer.">Message Board</a><br>
+              <a href="/articles" class=sidebar title="Original articles from leading authors in the VB/ASP field.">Articles</a><br>
+              <a href="/news" class=sidebar title="News articles and press releases from VB companies.">News</a><br>
+              <a href="/learnvb/" class=sidebar title="Our beginners site. Find tutorials and books that can help you learn VB.">LearnVB</a><br>
+              <a href="/learnvb/tutorials.asp" class=sidebar title="Excellent tutorials from this site and around the web.">Tutorials</a><br>
+              <a href="/vendors" class=sidebar title="Find information on a particular tool or company.">Vendors</a><br>
+              <a href="/resources/default.asp?page=Jobs" class=sidebar title="Sites that offer jobs to Visual Basic programmers.">Job Market</a><br>
+              <a href="/mediazone" class=sidebar title="Find out how to advertise your services and products on one of the largest VB sites on the Internet.">Advertising</a><br>
+              <a href="/about" class=sidebar tile="Information on our purpose here at VBWM.COM.">About Us</a><br>
+                
+        </td>
+        
+        <td width="30">&nbsp;</td>
+        
+      </tr>
+      <tr>
+        
+        <td width="150" colspan="3">
+        <img border="0" src="/images/sitestructure/sidebar-left-bottom.gif" width="150" height="34"></td>
+        
+      </tr>
+    </table>
+ 
+        <div align="center"><center>
+          <a href="http://www.bitsonthewire.com/adrdrmanager.asp?loc=3">
+          <img border="0" src="http://www.bitsonthewire.com/admanager.asp?loc=3&siteid=11&ad_type=-6"></a>
+        </center></div>
+
+        </td>
+        <td width="100%" valign="top">
+        <table border="0" width="100%" height="10" cellspacing="0" cellpadding="0">
+          <tr>
+            <td width="100%"><img src="/images/pixel.gif" width="1" height="10"</td>
+          </tr>
+        </table> 
+
+        <table border="1" width="100%" bgcolor="#EEEEEE"
+        bordercolor="#FFCC99" cellspacing="0" cellpadding="0"
+        width="100%">
+          <tr>
+            <td width="100%">
+            <table border="0" width="100%" cellspacing="0" cellpadding="4">
+            <tr><td width="100%" align="top" class=system>
+
+
+<table align="center" border="0" cellPadding="0" cellSpacing="0" width="100%">
+  <tr>
+    <td valign="top" width="50%"><a href="default.asp"><img alt="VBWM Forums" border="0" src="/msgboard/msgboard.gif"></a></td>
+    <td align="center" valign="top" width="50%">
+    <table border="0" cellPadding="2" cellSpacing="0">
+      <tr>
+        <td align="center"><font face="Verdana, Arial, Helvetica" size="1">
+        <a href="active.asp" title="See what topics have been active since your last visit...">Active Topics</a>
+        |
+        <a href="members.asp" title="Current members of these forums...">Members</a>
+        |
+        <a href="search.asp" title="Perform a search by keyword, date, and/or name...">Search</a>
+        |
+        <a href="faq.asp" title="Answers to Frequently Asked Questions...">FAQ</a>
+
+        </font></td>
+      </tr>
+
+   </table>
+   </td>
+ </tr>
+</table>
+<table align="center" border="0" cellPadding="0" cellSpacing="0" width="95%">
+  <tr>
+    <td>
+</font>
+</font>
+</font>
+</font>
+</font>
+</font>
+<table border=0 width="100%" cellspacing=0 cellpadding=0 align=center>
+  <tr>
+    <td>
+		<table width="100%" border="0">
+	      <tr><td align="right">
+          </td></tr>
+		</table>
+     </td>
+   </tr>
+   <tr>
+     <td>
+    &nbsp;&nbsp;
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#AAAAAA">
+    <table border=0 width="100%" cellspacing=1 cellpadding=4>
+      <tr>
+        <td align=center bgcolor="#EEEEEE" nowrap valign="top"><b><font face="Verdana, Arial, Helvetica" size="2" color="black">	 &nbsp;	</b></font></td>
+        <td align=center bgcolor="#EEEEEE" nowrap valign="top"><font face="Verdana, Arial, Helvetica" size="2" color="black">Forum</font></td>
+        <td align=center bgcolor="#EEEEEE" nowrap valign="top"><font face="Verdana, Arial, Helvetica" size="2" color="black">Topics</font></td>
+        <td align=center bgcolor="#EEEEEE" nowrap valign="top"><font face="Verdana, Arial, Helvetica" size="2" color="black">Posts</font></td>
+        <td align=center bgcolor="#EEEEEE" nowrap valign="top"><font face="Verdana, Arial, Helvetica" size="2" color="black">Last&nbsp;Post</font></td>
+        <td align=center bgcolor="#EEEEEE" nowrap valign="top"><font face="Verdana, Arial, Helvetica" size="2" color="black">Moderator(s)</font></td>
+        <td align=center bgcolor="#EEEEEE">
+&nbsp;        </td>
+      </tr>
+      <tr>
+        <td bgcolor="#AAAAAA" colspan="6" valign=top><a href="/forums/default.asp?HideCat2=Y"><img src="icon_minus.gif" width="10" height="10" border="0" alt="Collapse This Category"></a>&nbsp;<a href="default.asp?CAT_ID=2"><font face="Verdana, Arial, Helvetica" size="2" color="#000000"><b>VB .NET</b></font></a>&nbsp;&nbsp;</td>
+        <td bgcolor="#AAAAAA" align=center valign=top nowrap><b><font face="Verdana, Arial, Helvetica" size="2">
+        </font></b></td>
+      </tr>
+      <tr>
+        <td bgcolor="whitesmoke" align=center valign=top>
+        <a href="forum.asp?FORUM_ID=3"><IMG src='icon_folder_new.gif' height=15 width=15 border=0 hspace=0 alt='New Posts'></a>        </td>
+        <td bgcolor="whitesmoke" valign="top">
+        <font face="Verdana, Arial, Helvetica" size="2"><a href="forum.asp?FORUM_ID=3">Controls and Components (VB.NET)</a><br>
+        <font color="midnightblue" face="Verdana, Arial, Helvetica" size="1">
+ 
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">27</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">55</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap><font face="Verdana, Arial, Helvetica" color="midnightblue" size="1">
+        <b>07/02/2002</b><br>
+         14:22:14<br>by: <a href="pop_profile.asp?mode=display&id=1219">EdgeDCU</a>
+
+        </font></td>
+        <td bgcolor="whitesmoke" align=left valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">
+        &nbsp;
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="whitesmoke" align=center valign=top>
+        <a href="forum.asp?FORUM_ID=4"><IMG src='icon_folder_new.gif' height=15 width=15 border=0 hspace=0 alt='New Posts'></a>        </td>
+        <td bgcolor="whitesmoke" valign="top">
+        <font face="Verdana, Arial, Helvetica" size="2"><a href="forum.asp?FORUM_ID=4">Database Programming (VB.NET)</a><br>
+        <font color="midnightblue" face="Verdana, Arial, Helvetica" size="1">
+ 
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">16</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">33</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap><font face="Verdana, Arial, Helvetica" color="midnightblue" size="1">
+        <b>07/09/2002</b><br>
+         05:02:09<br>by: <a href="pop_profile.asp?mode=display&id=1282">madhushanbhog</a>
+
+        </font></td>
+        <td bgcolor="whitesmoke" align=left valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">
+        &nbsp;
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="whitesmoke" align=center valign=top>
+        <a href="forum.asp?FORUM_ID=2"><IMG src='icon_folder_new.gif' height=15 width=15 border=0 hspace=0 alt='New Posts'></a>        </td>
+        <td bgcolor="whitesmoke" valign="top">
+        <font face="Verdana, Arial, Helvetica" size="2"><a href="forum.asp?FORUM_ID=2">General Coding Techniques/Questions (VB.NET)</a><br>
+        <font color="midnightblue" face="Verdana, Arial, Helvetica" size="1">
+ 
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">59</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">124</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap><font face="Verdana, Arial, Helvetica" color="midnightblue" size="1">
+        <b>07/02/2002</b><br>
+         08:09:20<br>by: <a href="pop_profile.asp?mode=display&id=684">doyle</a>
+
+        </font></td>
+        <td bgcolor="whitesmoke" align=left valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">
+        &nbsp;
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="whitesmoke" align=center valign=top>
+        <a href="forum.asp?FORUM_ID=5"><IMG src='icon_folder_new.gif' height=15 width=15 border=0 hspace=0 alt='New Posts'></a>        </td>
+        <td bgcolor="whitesmoke" valign="top">
+        <font face="Verdana, Arial, Helvetica" size="2"><a href="forum.asp?FORUM_ID=5">Web Forms and other Web development (VB.NET)</a><br>
+        <font color="midnightblue" face="Verdana, Arial, Helvetica" size="1">
+ 
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">7</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">25</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap><font face="Verdana, Arial, Helvetica" color="midnightblue" size="1">
+        <b>07/01/2002</b><br>
+         11:45:42<br>by: <a href="pop_profile.asp?mode=display&id=1205">msbob2</a>
+
+        </font></td>
+        <td bgcolor="whitesmoke" align=left valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">
+        &nbsp;
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="#AAAAAA" colspan="6" valign=top><a href="/forums/default.asp?HideCat4=Y"><img src="icon_minus.gif" width="10" height="10" border="0" alt="Collapse This Category"></a>&nbsp;<a href="default.asp?CAT_ID=4"><font face="Verdana, Arial, Helvetica" size="2" color="#000000"><b>Web Development</b></font></a>&nbsp;&nbsp;</td>
+        <td bgcolor="#AAAAAA" align=center valign=top nowrap><b><font face="Verdana, Arial, Helvetica" size="2">
+        </font></b></td>
+      </tr>
+      <tr>
+        <td bgcolor="whitesmoke" align=center valign=top>
+        <a href="forum.asp?FORUM_ID=14"><IMG src='icon_folder.gif' height=15 width=15 border=0 hspace=0 alt='Old Posts'></a>        </td>
+        <td bgcolor="whitesmoke" valign="top">
+        <font face="Verdana, Arial, Helvetica" size="2"><a href="forum.asp?FORUM_ID=14">ASP (Classic) - General Forum</a><br>
+        <font color="midnightblue" face="Verdana, Arial, Helvetica" size="1">
+Talk about issues with VBScript in standard ASP pages. This is not the place for ASP.NET questions.
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">0</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">0</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap><font face="Verdana, Arial, Helvetica" color="midnightblue" size="1">
+        <b>06/13/2002</b><br>
+         23:57:55
+        </font></td>
+        <td bgcolor="whitesmoke" align=left valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">
+        &nbsp;
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="whitesmoke" align=center valign=top>
+        <a href="forum.asp?FORUM_ID=15"><IMG src='icon_folder.gif' height=15 width=15 border=0 hspace=0 alt='Old Posts'></a>        </td>
+        <td bgcolor="whitesmoke" valign="top">
+        <font face="Verdana, Arial, Helvetica" size="2"><a href="forum.asp?FORUM_ID=15">ASP.NET General Forum</a><br>
+        <font color="midnightblue" face="Verdana, Arial, Helvetica" size="1">
+Use this forum for ASP.NET specific questions. If you are building using VB.NET to build a Web Forms-based ASP.NET application, please use the "Web Forms..." forum in the VB.NET section.
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">0</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">0</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap><font face="Verdana, Arial, Helvetica" color="midnightblue" size="1">
+        <b>06/13/2002</b><br>
+         23:59:33
+        </font></td>
+        <td bgcolor="whitesmoke" align=left valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">
+        &nbsp;
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="#AAAAAA" colspan="6" valign=top><a href="/forums/default.asp?HideCat3=Y"><img src="icon_minus.gif" width="10" height="10" border="0" alt="Collapse This Category"></a>&nbsp;<a href="default.asp?CAT_ID=3"><font face="Verdana, Arial, Helvetica" size="2" color="#000000"><b>Visual Basic 6.0</b></font></a>&nbsp;&nbsp;</td>
+        <td bgcolor="#AAAAAA" align=center valign=top nowrap><b><font face="Verdana, Arial, Helvetica" size="2">
+        </font></b></td>
+      </tr>
+      <tr>
+        <td bgcolor="whitesmoke" align=center valign=top>
+        <a href="forum.asp?FORUM_ID=6"><IMG src='icon_folder_new.gif' height=15 width=15 border=0 hspace=0 alt='New Posts'></a>        </td>
+        <td bgcolor="whitesmoke" valign="top">
+        <font face="Verdana, Arial, Helvetica" size="2"><a href="forum.asp?FORUM_ID=6">Controls and Components (VB6)</a><br>
+        <font color="midnightblue" face="Verdana, Arial, Helvetica" size="1">
+Use this forum for topics relating to controls and components such as TextBox, ComboBox, ListBox, and other controls.
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">126</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">323</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap><font face="Verdana, Arial, Helvetica" color="midnightblue" size="1">
+        <b>07/09/2002</b><br>
+         07:58:17<br>by: <a href="pop_profile.asp?mode=display&id=1293">Garfield</a>
+
+        </font></td>
+        <td bgcolor="whitesmoke" align=left valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">
+        &nbsp;
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="whitesmoke" align=center valign=top>
+        <a href="forum.asp?FORUM_ID=7"><IMG src='icon_folder_new.gif' height=15 width=15 border=0 hspace=0 alt='New Posts'></a>        </td>
+        <td bgcolor="whitesmoke" valign="top">
+        <font face="Verdana, Arial, Helvetica" size="2"><a href="forum.asp?FORUM_ID=7">Database programming (VB6)</a><br>
+        <font color="midnightblue" face="Verdana, Arial, Helvetica" size="1">
+ 
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">169</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">418</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap><font face="Verdana, Arial, Helvetica" color="midnightblue" size="1">
+        <b>07/09/2002</b><br>
+         07:02:01<br>by: <a href="pop_profile.asp?mode=display&id=1295">highend</a>
+
+        </font></td>
+        <td bgcolor="whitesmoke" align=left valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">
+        &nbsp;
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="whitesmoke" align=center valign=top>
+        <a href="forum.asp?FORUM_ID=8"><IMG src='icon_folder_new.gif' height=15 width=15 border=0 hspace=0 alt='New Posts'></a>        </td>
+        <td bgcolor="whitesmoke" valign="top">
+        <font face="Verdana, Arial, Helvetica" size="2"><a href="forum.asp?FORUM_ID=8">General Coding Techniques/Questions (VB6)</a><br>
+        <font color="midnightblue" face="Verdana, Arial, Helvetica" size="1">
+ 
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">430</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">1227</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap><font face="Verdana, Arial, Helvetica" color="midnightblue" size="1">
+        <b>07/08/2002</b><br>
+         19:59:27<br>by: <a href="pop_profile.asp?mode=display&id=1287">lakewise</a>
+
+        </font></td>
+        <td bgcolor="whitesmoke" align=left valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">
+        &nbsp;
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="whitesmoke" align=center valign=top>
+        <a href="forum.asp?FORUM_ID=9"><IMG src='icon_folder_new.gif' height=15 width=15 border=0 hspace=0 alt='New Posts'></a>        </td>
+        <td bgcolor="whitesmoke" valign="top">
+        <font face="Verdana, Arial, Helvetica" size="2"><a href="forum.asp?FORUM_ID=9">Internet development (VB6)</a><br>
+        <font color="midnightblue" face="Verdana, Arial, Helvetica" size="1">
+Use this forum for topics relating to Internet programming using VB 6.0.
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">21</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">46</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap><font face="Verdana, Arial, Helvetica" color="midnightblue" size="1">
+        <b>07/04/2002</b><br>
+         23:49:54<br>by: <a href="pop_profile.asp?mode=display&id=904">nparray</a>
+
+        </font></td>
+        <td bgcolor="whitesmoke" align=left valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">
+        &nbsp;
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="#AAAAAA" colspan="6" valign=top><a href="/forums/default.asp?HideCat1=Y"><img src="icon_minus.gif" width="10" height="10" border="0" alt="Collapse This Category"></a>&nbsp;<a href="default.asp?CAT_ID=1"><font face="Verdana, Arial, Helvetica" size="2" color="#000000"><b>Miscellaneous</b></font></a>&nbsp;&nbsp;</td>
+        <td bgcolor="#AAAAAA" align=center valign=top nowrap><b><font face="Verdana, Arial, Helvetica" size="2">
+        </font></b></td>
+      </tr>
+      <tr>
+        <td bgcolor="whitesmoke" align=center valign=top>
+        <a href="forum.asp?FORUM_ID=10"><IMG src='icon_folder_new.gif' height=15 width=15 border=0 hspace=0 alt='New Posts'></a>        </td>
+        <td bgcolor="whitesmoke" valign="top">
+        <font face="Verdana, Arial, Helvetica" size="2"><a href="forum.asp?FORUM_ID=10">General Discussion</a><br>
+        <font color="midnightblue" face="Verdana, Arial, Helvetica" size="1">
+ 
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">59</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">141</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap><font face="Verdana, Arial, Helvetica" color="midnightblue" size="1">
+        <b>07/06/2002</b><br>
+         14:50:51<br>by: <a href="pop_profile.asp?mode=display&id=1270">j_lemp</a>
+
+        </font></td>
+        <td bgcolor="whitesmoke" align=left valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">
+        &nbsp;
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="whitesmoke" align=center valign=top>
+        <a href="forum.asp?FORUM_ID=13"><IMG src='icon_folder.gif' height=15 width=15 border=0 hspace=0 alt='Old Posts'></a>        </td>
+        <td bgcolor="whitesmoke" valign="top">
+        <font face="Verdana, Arial, Helvetica" size="2"><a href="forum.asp?FORUM_ID=13">Installation and Setup</a><br>
+        <font color="midnightblue" face="Verdana, Arial, Helvetica" size="1">
+Discussion on installation and setup options and problems with VB applications. This section is the area to discuss problems with distribution of your application.
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">4</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">10</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap><font face="Verdana, Arial, Helvetica" color="midnightblue" size="1">
+        <b>06/24/2002</b><br>
+         05:41:20<br>by: <a href="pop_profile.asp?mode=display&id=396">sangitapise</a>
+
+        </font></td>
+        <td bgcolor="whitesmoke" align=left valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">
+        &nbsp;
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="whitesmoke" align=center valign=top>
+        <a href="forum.asp?FORUM_ID=11"><IMG src='icon_folder_new.gif' height=15 width=15 border=0 hspace=0 alt='New Posts'></a>        </td>
+        <td bgcolor="whitesmoke" valign="top">
+        <font face="Verdana, Arial, Helvetica" size="2"><a href="forum.asp?FORUM_ID=11">Site Administration & Future Direction</a><br>
+        <font color="midnightblue" face="Verdana, Arial, Helvetica" size="1">
+Post changes you'd like to see at the site. Also, if you are interested in becoming a moderator, see this forum for more information.
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">19</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">61</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap><font face="Verdana, Arial, Helvetica" color="midnightblue" size="1">
+        <b>07/05/2002</b><br>
+         11:41:43<br>by: <a href="pop_profile.asp?mode=display&id=1014">Dunghill_Dave</a>
+
+        </font></td>
+        <td bgcolor="whitesmoke" align=left valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">
+        &nbsp;
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="whitesmoke" align=center valign=top>
+        <a href="forum.asp?FORUM_ID=12"><img src="icon_folder_locked.gif" height=15 width=15 border=0 hspace=0alt="Category Locked"></a>        </td>
+        <td bgcolor="whitesmoke" valign="top">
+        <font face="Verdana, Arial, Helvetica" size="2"><a href="forum.asp?FORUM_ID=12">Site Announcements</a><br>
+        <font color="midnightblue" face="Verdana, Arial, Helvetica" size="1">
+This is where we'll post new articles and sections of the site.
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">9</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">9</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap><font face="Verdana, Arial, Helvetica" color="midnightblue" size="1">
+        <b>06/14/2002</b><br>
+         00:02:36<br>by: <a href="pop_profile.asp?mode=display&id=1">Admin</a>
+
+        </font></td>
+        <td bgcolor="whitesmoke" align=left valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">
+        &nbsp;
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="whitesmoke" align=center valign=top>
+        <a href="forum.asp?FORUM_ID=16"><IMG src='icon_folder_new.gif' height=15 width=15 border=0 hspace=0 alt='New Posts'></a>        </td>
+        <td bgcolor="whitesmoke" valign="top">
+        <font face="Verdana, Arial, Helvetica" size="2"><a href="forum.asp?FORUM_ID=16">VBWM Administration List</a><br>
+        <font color="midnightblue" face="Verdana, Arial, Helvetica" size="1">
+This section is available to members who are assisting in the development at VBWM.COM.
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">2</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">12</font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap><font face="Verdana, Arial, Helvetica" color="midnightblue" size="1">
+        <b>07/03/2002</b><br>
+         04:37:47<br>by: <a href="pop_profile.asp?mode=display&id=984">PinoyEdge</a>
+
+        </font></td>
+        <td bgcolor="whitesmoke" align=left valign=top><font face="Verdana, Arial, Helvetica" color="midnightblue" size="2">
+        &nbsp;
+        </font></td>
+        <td bgcolor="whitesmoke" align=center valign=top nowrap>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="#AAAAAA" colspan="7"><font face="Verdana, Arial, Helvetica" size="2" color="#000000" size="+1"><b>Statistics</b></font></td>
+      </tr>
+      <tr>
+        <td rowspan="4" bgcolor="whitesmoke">&nbsp;</td>
+        <td bgcolor="whitesmoke" colspan="6">
+        <font face="Verdana, Arial, Helvetica" size="1">502 Members have  made 2484 posts in 15 forums, with the last post on <a href="topic.asp?TOPIC_ID=974">07/09/2002 07:58:17</a> by: <a href="pop_profile.asp?mode=display&id=1293">Garfield</a>.          </font>
+          </td>
+        </tr>
+        <tr>
+        <td bgcolor="whitesmoke" colspan="6">
+        <font face="Verdana, Arial, Helvetica" size="1">There are  currently 948  topics and 72 <a href="active.asp">active topics</a> since you last visited.</font>
+        </td>
+      </tr>
+      <tr>
+        <td bgcolor="whitesmoke" colspan="6">
+        <font face="Verdana, Arial, Helvetica" size="1">Please welcome our newest member:
+        <a href="pop_profile.asp?mode=display&id=1295">highend</a>.</font>
+          </td>
+        </tr>
+    </table>
+    </td>
+  </tr>
+  <tr>
+    <td>
+    <table width="100%">
+      <tr>
+        <td>
+        <font face="Verdana, Arial, Helvetica" size="1">
+        <img alt="New Posts" src="icon_folder_new.gif" width="15" height="15"> Contains new posts since last visit.<br>
+        <img alt="Old Posts" src="icon_folder.gif" width="15" height="15"> No new posts since the last visit.<br>
+        </font>
+        </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+
+<table width=100% border=0 bgcolor="white" cellpadding="0" cellspacing = "4"> 
+  <tr bgcolor="white">
+    <td bgcolor="white">
+    <table border=0 width="100%" align="center" cellpadding="4" cellspacing="0">
+      <tr>
+        <td bgcolor="whitesmoke" align=left valign=top nowrap><font face="Verdana, Arial, Helvetica" size="1">
+        <p align=left>VBWM Forums</p>
+        </font></td>
+        <td bgcolor="whitesmoke" align=right valign=top nowrap><font face="Verdana, Arial, Helvetica" size="1">
+        <p align=right>© 2002 BowmanSoft, Inc.</p>
+        </font></td>
+        <td bgcolor="whitesmoke" width=10 nowrap><a href="#top"><img src="icon_go_up.gif" height=15 width=15 border="0" align="right" alt="Go To Top Of Page"></a></font></td>    
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+
+<table border=0 width="100%" align="center" cellpadding="4" cellspacing="0">
+  <tr>
+    <td align="right"><font face="Verdana, Arial, Helvetica" size="1">
+    <a href="http://forum.snitz.com"><acronym title="Powered By: Snitz Forums 2000 Version 3.3.03">Snitz Forums 2000</acronym></a>
+
+    </font></td>
+  </tr>
+</table>
+    </td>
+  </tr>
+</table>
+
+</td></tr></table></td></tr></table>
+<img src="/images/pixel.gif" width=10 height=2>         
+        <table border="0" width="100%" height="10" cellspacing="0" cellpadding="0">
+          <tr>
+            <td width="100%"></td>
+          </tr>
+        </table>
+        <div align="center"><center>
+          <a href="http://www.bitsonthewire.com/adrdrmanager.asp?loc=2">
+          <img border="0" src="http://www.bitsonthewire.com/admanager.asp?loc=2&siteid=11&ad_type=2"></a>
+        </center></div>
+        </td>
+		<td width="10">
+		  <img src="/images/pixel.gif" width=10 height=1>
+        </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+</body>
+
+</html>
+
+
+<!--
+</body>
+<!-- timer
+<center>
+<font face="Verdana, Arial, Helvetica" size="1">30008.39</font>
+</center>
+end timer
+</html>
+-->
+

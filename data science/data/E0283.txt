@@ -1,0 +1,412 @@
+ID=E0283
+URL=http://www.troubleshooters.com/codecorn/littperl/perlcgi.htm
+SIZE=14539
+DATE=12/07/02
+TIME=19:19:30
+DATASET=C
+HTML=<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="description" content="Debugging and Troubleshooting Source Code including MS Access, C++, Delphi, FoxPro, MFC, SQL, Visual Basic">
+   <meta name="keywords" content="debugging, troubleshooting, Source Code, Access, C++, Delphi, FoxPro, MFC, Microsoft Foundation Classes, SQL, Visual Basic">
+   <meta name="FORMATTER" content="Microsoft FrontPage 1.1">
+   <meta name="Author" content="Steve Litt">
+   <meta name="Description" content="Hello World in Perl and CGI">
+   <meta name="KeyWords" content="PERL, CGI, Hello World">
+   <meta name="GENERATOR" content="Mozilla/4.5 [en] (Win98; U) [Netscape]">
+   <title>Perl CGI Web Forms</title>
+</head>
+<body text="#000000" bgcolor="#FFFFF0" link="#0000EE" vlink="#551A8B" alink="#FF0000" background="../../tcbk.gif">
+
+<center>
+<h2>
+<a NAME="top"></a><a href="../../troubleshooters.htm">Troubleshooters.Com</a>
+and <a href="../index.htm">Code Corner</a> Present</h2></center>
+
+<center>
+<h1>
+<a href="index.htm">Steve Litt's PERLs of Wisdom</a>:<br>
+<font size=+4>Perl CGI Web Forms<br>
+</font>(With Snippets)</h1></center>
+
+<center><a href="../../cpyright.htm">Copyright (C) 1998, 2000 by Steve
+Litt</a></center>
+
+<p>
+<hr>
+<center><table BORDER COLS=1 WIDTH="50%" BGCOLOR="#FFCCCC" >
+<tr>
+<td>
+<center><b>NOTE: If you're looking for the CGI source code to display man
+pages in a browser, it's at:</b>
+<br><b><a href="../../linux/quickhacks.htm#Manpagesformattedashtml">../../linux/quickhacks.htm#Manpagesformattedashtml</a>.</b></center>
+</td>
+</tr>
+</table></center>
+
+<p>Interfacing forms with CGI can be gruesome. Or it can be easy. This
+page gives you advice and tools to make form/CGI interfacing easy.
+<ol>
+<li>
+Make sure you know all the info on the <a href="perlhelo.htm">PERL HELLO
+WORLD page</a>.</li>
+
+<li>
+<a href="#MakeForm">Make the form.</a></li>
+
+<li>
+<a href="#GetOutput.">Get the form's output.</a></li>
+
+<li>
+<a href="#BatchFile">Set up a batch file to edit/compile/test your cgi
+script.</a></li>
+
+<li>
+<a href="#Test">Test on the server.</a></li>
+</ol>
+See also: <a href="#WritesFile">If your script writes a file</a>.
+<br><a href="#cgiform">Making a Form with CGI</a>
+<br>&nbsp;
+<h1>
+<a NAME="MakeForm"></a>Make the form.</h1>
+I'd recommend the MS Frontpage editor, or any other tool that makes forms
+easy. Put all the fields you expect to have. Get the page pretty much the
+way you want it. <b>Set the submit button's action to stdin.cgi.
+</b>Then
+FTP the page up to your server.
+<h1>
+<a NAME="GetOutput."></a>Get the form's output.</h1>
+
+<ol>
+<li>
+Put stdin.cgi on the server, in the same directory as the form. It's shown
+below. Modify as necessary for your server (probably just first line).</li>
+
+<table BORDER BGCOLOR="#CCFFFF" >
+<tr>
+<td>
+<pre><tt>#!/usr/bin/perl
+print "Content-type: text/html\n\n";
+print "Output of form. Copy next line into clipboard:&lt;P>\n";
+while(&lt;STDIN>)
+&nbsp; {
+&nbsp; chomp($_);
+&nbsp; print "$_&lt;br>\n";
+&nbsp; }
+print "Copy previous line into clipboard&lt;P>\n";</tt></pre>
+</td>
+</tr>
+</table>
+
+<li>
+Make it <a href="chmod.htm">executable</a>:</li>
+
+<br><a href="chmod.htm">chmod</a> a+x stdin.cgi
+<li>
+Use your browser to hit the form. Fill in all fields with recognizable
+and memorable info. Then click the submit button. A web page like this
+should appear. Note that the middle line has been truncated in this example
+to save space, but on your browser it might go on for hundreds or thousands
+of characters:</li>
+
+<table BORDER BGCOLOR="#FFFFCC" >
+<tr>
+<td>
+<pre><font size=-1>Output of form. Copy next line into clipboard:
+
+OrganizationName=orgname&amp;OrganizationType=Choose+closest+business+...
+Copy previous line into clipboard</font></pre>
+</td>
+</tr>
+</table>
+
+<li>
+Highlight and copy the middle line, and paste it into an editor on your
+local machine. Save it as STD.IN. You'll work continuously with this file
+to refine the real CGI script for your form. You can repeat the procedures
+in this section to make different test files.</li>
+</ol>
+
+<h1>
+<a NAME="BatchFile"></a>Set up a batch file to edit/compile/test your cgi
+script.</h1>
+Here's the TESTFORM.BAT batch file:
+<br>&nbsp;
+<table BORDER BGCOLOR="#CCFFFF" >
+<tr>
+<td>
+<pre>set REQUEST_METHOD=POST</pre>
+
+<pre>rem SET NEXT LINE TO LINE LENGTH OF FILE STD.IN
+set CONTENT_LENGTH=2795
+perl myscript.cgi &lt; std.in > testform.htm</pre>
+
+<pre>rem NEXT LINE RUNS YOUR BROWSER LOADING TESTFORM.HTM
+e:\nsgold3\navigator\program\netscape.exe d:\at\perl\testform.htm</pre>
+</td>
+</tr>
+</table>
+
+<p>You might want to put it in a loop with an editor so you can have a
+continuous edit/compile/test environment.
+<h1>
+<a NAME="Test"></a>Test on the server.</h1>
+After your CGI script does just what you want, FTP it up to the proper
+directory on the server and <a href="chmod.htm">make it executable</a>
+with <tt><a href="chmod.htm">chmod</a> a+x myscript.cgi</tt>.
+<p>On your machine, change the form's action from stdin.cgi to your cgi
+script (myscript.cgi in this example). FTP it up to the server.
+<p>Test with your browser, and troubleshoot as necessary.
+<h1>
+<a NAME="WritesFile"></a>If your script writes a file</h1>
+If your script creates a file, you must make sure to <a href="chmod.htm">change
+the access</a> to the directory holding the file with:
+<pre><a href="chmod.htm">chmod</a> a+w mydirectory</pre>
+Once the file is created, the file is owned by http or whatever, not by
+you. You can't delete it (except with a perlscript called from a web page).
+However, for securities sake, once it's created, you can deny write access
+to the directory with
+<pre><a href="chmod.htm">chmod</a> a-w mydirectory</pre>
+The perlscript will still be able to write the file, because http (or whatever)
+owns it.
+<br>&nbsp;
+<h1>
+<a NAME="cgiform"></a>Making a Form With CGI</h1>
+Here's about the simplest CGI form maker. Put it in hello.cgi, chmod it
+read and execute for all, and access it from a browser. You should see
+the words "Hello World" on the screen. Be sure to run the following command:
+<pre>chmod a+rx hello.cgi</pre>
+The first time you create this file, and any time you get a "forbidden"
+response.
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<tr>
+<td>
+<pre>#!/usr/bin/perl -w</pre>
+
+<pre># PUBLIC DOMAIN, NO WARRANTEE. USE AT YOUR OWN RISK
+
+use strict;</pre>
+
+<pre>print "Content-type: text/html\n\n";
+print "&lt;html>&lt;body>\n";
+print "Hello World&lt;p>\n";
+print "&lt;/html>&lt;/body>\n";</pre>
+</td>
+</tr>
+</table>
+
+<p>Once you have this file running, copy it to helloform.cgi and modify
+it by placing the form writing code in a subroutine. This is essential
+for future building:
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<tr>
+<td>
+<pre>#!/usr/bin/perl -w
+
+# PUBLIC DOMAIN, NO WARRANTEE. USE AT YOUR OWN RISK
+
+use strict;
+
+sub MakePage()
+&nbsp; {
+&nbsp; print "Content-type: text/html\n\n";
+&nbsp; print "&lt;html>&lt;body>\n";
+&nbsp; print "Hello World&lt;br>\n";
+&nbsp; print "&lt;/html>&lt;/body>\n";
+&nbsp; }
+
+MakePage();</pre>
+</td>
+</tr>
+</table>
+
+<p>Note that stdin.cgi was coded earlier on this page, and outputs the
+form information in a raw form. Assuming you leave the field contents at
+their default "Hello World", the output after you click the submit button
+will appear as follows:
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#FFFFCC" >
+<tr>
+<td>
+<pre>Output of form. Copy next line into clipboard:
+
+TXhelloField=Hello+World&amp;BXsub=Submit
+Copy previous line into clipboard</pre>
+</td>
+</tr>
+</table>
+
+<p>You can see that controls are separated by ampersand (&amp;) signs,
+and each control name is separated from its value by an equal sign (=).
+Also evident is that spaces are represented by plus signs. What you don't
+see in this example is that punctuation is represented by by a percent
+sign followed by a two hex digit representation of the character's ascii
+value. Place the string "&lt;&lt;??==%%>>" in the field, and the output
+now looks like this:
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#FFFFCC" >
+<tr>
+<td>
+<pre>Output of form. Copy next line into clipboard:
+
+TXhelloField=%3C%3C%3F%3F%3D%3D%25%25%3E%3E&amp;BXsub=Submit
+Copy previous line into clipboard</pre>
+</td>
+</tr>
+</table>
+
+<p>To explore the representation of various characters, copy helloform.cgi
+to testchars.cgi, which is coded as follows:
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<tr>
+<td>
+<pre>#!/usr/bin/perl -w
+
+
+use strict;
+
+sub MakeString()
+&nbsp; {
+&nbsp; my($string) = "";
+&nbsp; my($i);
+&nbsp; foreach $i (32..126)
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; $string .= chr($i) unless ($i == 34);
+&nbsp;&nbsp;&nbsp; }
+&nbsp; return($string);
+&nbsp; }
+
+sub MakePage()
+&nbsp; {
+&nbsp; print "Content-type: text/html\n\n";
+&nbsp; print "&lt;html>&lt;head>&lt;title>Hello World Form&lt;/title>&lt;/head>&lt;body>\n";
+
+&nbsp; print "&lt;center>&lt;big>&lt;big>&lt;big>&lt;strong>\n";
+&nbsp; print "Hello World Form&lt;p>\n";
+&nbsp; print "&lt;/strong>&lt;/big>&lt;/big>&lt;/big>\n";
+
+&nbsp; print "&lt;FORM ACTION=\"./stdin.cgi\" METHOD=\"POST\">\n";
+&nbsp; print "The Field...&lt;br>\n";
+&nbsp; print "&lt;input type=\"text\" name=\"TXhelloField\" size=\"100\" \n";
+&nbsp; print "value=\"" . MakeString() . "\">\n";
+&nbsp; print "&lt;INPUT type=\"submit\" name=\"BXsub\" value=\"Submit\">\n";
+&nbsp; print "&lt;/form>";&nbsp;
+
+&nbsp; print "&lt;/body>&lt;/html>\n";&nbsp;
+&nbsp; }
+
+MakePage();</pre>
+</td>
+</tr>
+</table>
+
+<p>Note the MakeString() function, which constructs a string consisting
+of all characters of decimal ascii values 32 (space) to 126 (~) except
+34 (>), which would interfere with the html. After pressing the submit
+button, stdin.cgi shows the following output:
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#FFFFCC" >
+<tr>
+<td>
+<pre>Output of form. Copy next line into clipboard:
+
+TXhelloField=+%21%23%24%25%26%27%28%29*%2B%2C-.%2F0123456789%3A%3B%3C%3D%3E%3F%40ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B%5C%5D%5E_%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D%7E&amp;BXsub=Submit
+Copy previous line into clipboard</pre>
+</td>
+</tr>
+</table>
+
+<p>Basically, digits and letters (lower and upper case) come through as
+themselves, spaces come through as plus signs, while all other characters
+come through as a percent sign (%) followed by a hex representation of
+the character. Remembering that form controls are separated by ampersands
+(&amp;), and each control's name is separated from its value by an equal
+sign (=), we're ready to write a decode function.
+<h2>
+Writing the Decode Function</h2>
+Start by changing the form action in testchars.cgi from stdin.cgi to decode.cgi,
+and copy stdin.cgi to decode.cgi, and of course make it read and execute
+for all. Test to make sure that everything still works the same.
+<p>Now add the decode function. Here's the English description of what
+it must do. First it must replace each plus sign with a space. Then it
+must replace each percent sign followed by two hex digits with the character
+whose ascii value is equal to the number defined by the two hex digits.
+Here's one way to do that.
+<p>Start with an empty return string. Split the incoming string into a
+list at percent signs. If the first character of the string is a percent
+sign, throw away the first list element. Otherwise copy the first element's
+string into the return string, and then throw away the first element. From
+this point forth, every list element's first two characters are a hex representation
+of a character, so for each append that char, and then append the rest
+of the element's string. Here's the code:
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<tr>
+<td>
+<pre>#!/usr/bin/perl
+
+sub decode($)
+&nbsp; {
+&nbsp; $_[0] =~ s/\+/ /g;&nbsp;&nbsp; ### Change + to space
+&nbsp; my(@parts) = split /%/, $_[0];
+&nbsp; my($returnstring) = "";
+
+&nbsp; (($_[0] =~ m/^\%/) ? (shift(@parts)) : ($returnstring = shift(@parts)));
+
+&nbsp; my($part);
+&nbsp; foreach $part (@parts)
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; $returnstring .= chr(hex(substr($part,0,2)));
+&nbsp;&nbsp;&nbsp; my($tail) = substr($part,2);
+&nbsp;&nbsp;&nbsp; $returnstring .= $tail if (defined($tail));
+&nbsp;&nbsp;&nbsp; }
+&nbsp; return($returnstring);
+&nbsp; }
+
+print "Content-type: text/html\n\n";
+print "Output of form. Copy next line into clipboard:&lt;P>\n";
+while(&lt;STDIN>)
+&nbsp; {
+&nbsp; chomp($_);
+&nbsp; print decode($_);
+&nbsp; print "&lt;br>\n";
+&nbsp; }
+print "Copy previous line into clipboard&lt;P>\n";</pre>
+</td>
+</tr>
+</table>
+
+<p>Notice in the preceding code that we coded the decode algorithm, and
+instead of printing the raw form output as in stdin.cgi, we run it through
+decode. The result is a string remarkably like the one typed in.
+<p>The preceding was only the lowest level of decoding. Form output inserts
+ampersands (&amp;) to delineate controls (typically form fields and buttons),
+and within those controls, inserts equal signs (=) to separate the control's
+name from its data. What you really want to do is to use the form's output
+to populate a hash whose keys are control names and whose values are the
+controls' data values. Each of the values must be run through decode in
+order to
+<br>&nbsp;
+<p>First separate the controls at the ampersands. Then for each control
+create a hash entry whose key is the control's name, and whose value is
+the decode of its value. The decode is simply to replace each plus sign
+with a&nbsp; space, and for each percent sign followed by two hex digits,
+substitute the ascii character whose value is that hex digit. Here's decode.cgi,
+with function decode, which returns the control hash:
+<br>
+<hr>
+<p>&nbsp;[ <a href="../../troubleshooters.htm">Troubleshooters.com</a>
+| <a href="../index.htm">Code Corner</a> | <a href="mailto:slitt@troubleshooters.com">Email
+Steve Litt</a> ]
+<p><a href="../../cpyright.htm#top"><img SRC="../../images/biglcpyr.gif" BORDER=0 height=30 width=30></a><a href="../../cpyright.htm#top">Copyright
+(C)1998 by Steve Litt</a> --
+<a href="../../cpyright.htm#top">Legal</a>
+<br>&nbsp;
+<br>&nbsp;
+</body>
+</html>
+

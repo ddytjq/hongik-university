@@ -1,0 +1,170 @@
+ID=F0123
+URL=http://www.chez.com/scribe/en/assembly/index.htm
+SIZE=11229
+DATE=09/07/2002
+TIME=13:15:08
+DATASET=Visual Basic
+HTML=<HTML>
+<HEAD>
+<LINK rel="stylesheet" type="text/css" href="../..//global.css">
+</HEAD>
+<BODY>
+<TABLE class="menu" width="100%"><TR><TD class="header">
+<A href="../index.htm">Home</A> - <A href="../about/index.htm">About</A> - Assembly - <A href="../directx/index.htm">DirectX</A> - <A href="../opengl/index.htm">OpenGL</A> - <A href="../dotnet/index.htm">.NET</A> - <A href="../psdk/index.htm">Platform SDK</A> - <A href="../downloads/index.htm">Downloads</A> - <A href="../links/index.htm">Links</A></TD>
+<TD class="header" style="text-align:right">September 13, 1998</TD></TR></TABLE><TABLE align="right"><TR><TD><!-- BEGIN WEBSIDESTORY CODE -->
+<!-- COPYRIGHT 1997-2001 WEBSIDESTORY, INC. ALL RIGHTS RESERVED. U.S.PATENT PENDING. Privacy notice at: http://websidestory.com/privacy -->
+<!-- webbot bot="HTMLMarkup" startspan -->
+<script language="javascript">
+var _pn="en - Assembly"; //page name
+var _acct="WQ5909151KCE94EN7";   //account number
+var _pndef="title";var _hcv=65;var _mn="wf200";
+var _lp=location.protocol.indexOf('https')==0?"https://":"http://";
+var _gn="hg1.hitbox.com";function _ps(_h){if(_h.indexOf("en - Assembly")==0) {
+if (_pndef=="title"){return document.title?document.title:_pndef;}else{
+var _g=location.pathname;_h=_g.substring(_g.lastIndexOf("/")+1,_g.length);
+if(_h==""){return _pndef};}};return _h;}var _sv=10;var _bn=navigator.appName;
+if(_bn.substring(0,9)=="Microsoft"){_bn="MSIE";};var _bv=Math.round(parseFloat(navigator.appVersion)*100);
+if((_bn=="MSIE")&&(parseInt(_bv)==2))_bv=301;var _rf=escape(document.referrer);_pn=_ps(_pn);
+var _hbfa="<a href='http://rd1.hitbox.com/rd?acct="+_acct+"' target=_top><img src='";
+var _hbfc="' border=0 width=125 height=125></a><div><font face='MS Sans Serif,Arial,Helvetica '"+
+"size=1><a href='http://counter.hitbox.com/a/hitboxfree.cgi' target='_blank'>privacy</a></font></div>";
+var _hbfb="";</script><script language="javascript1.1" id="_hbc">_sv=11;</script><script
+language="javascript1.1" src="http://stats.hitbox.com/js/hbf.js"></script><script language="javascript">
+if(_hbfb.length!=0){document.write(_hbfa+_hbfb+_hbfc);}else{if((_rf=="undefined")||(_rf=="")){
+_rf="bookmark";};document.write(_hbfa+_lp+_gn+"/HG?hc="+_mn+"&hb="+_acct+"&n="+escape(_pn)+
+"&cd=1&hv=6"+"&bn="+escape(_bn)+"&bv="+_bv+"&ss=na&sc=na&dt=&sv="+_sv+"&ja=na&ln=na&pl=&rf="+_rf+_hbfc);}
+</script><noscript><a href="http://rd1.hitbox.com/rd?acct=WQ5909151KCE94EN7" target=_top><img
+src = "http://hg1.hitbox.com/HG?hc=wf200&cd=1&hv=6&ce=u&hb=WQ5909151KCE94EN7&n=en - Assembly"
+border="0" width=125 height=125></a><div><font face="MS Sans Serif,Arial,Helvetica" size=1><a
+href="http://counter.hitbox.com/a/hitboxfree.cgi" target="_blank">privacy</a></font></div>
+</noscript><!--//-->
+
+<!-- webbot bot="HTMLMarkup" endspan -->
+<!-- END WEBSIDESTORY CODE  -->
+</TD></TR></TABLE>
+<H1>Assembly</H1>
+<P><STRONG>Note</STRONG> : DirectX 8.0 includes pixel and vertex processing capabilities (pixel and vertex "shader"). Check the DirectX 8.0 <A href="http://www.microsoft.com/hwdev/meltdown/">Meltdown slides</A> for more information...</P>
+<P>Visual Basic provides several methods to gain access to the DirectDraw surface :
+<UL>
+<LI>Draw methods are available but they use the usual GDI which incurs the usual overhead of device independance
+<LI>GetLockedArray allows to access the surface memory as an array
+<LI>you could also create a surface that points directly to a user defined Visual Basic array
+<LI>at last the Lock method allows to retrieve a pointer to the surface memory.
+</UL>
+We'll have a look here at this last method. We'll use then an assembly DLL that uses this memory location as well as the "size" of this surface to perform a simple treatment on each of those memory cells. Note that though usable, the <CODE>DDSURFACEDESC2.lpSurface</CODE> member is hidden in the DirectX 7 wrapper.</P>
+<p>Most languages (including C or C++) have now an inline assembler to overcome limitations when the time comes to go "closer to the metal". This page will show how to create DLLs using <a href="http://www.web-sites.co.uk/nasm/">The Netwide Assembler</a> a.k.a. NASM, a free assembler, and the linker that ships with Visual Basic 5 (or even Visual Basic 5 Control Creation Edition that is *freely* available on the Internet). You could use also MASM, the Microsoft Macro Assembler, that is part of the <A href="http://www.microsoft.com/ddk">Windows 2000 DDK</A>.</P>
+<p>The reputation of difficulty tied to assembly language lies probably in the fact that, as assembly offers only those instructions that are directly executed by the processor, a quite simple task could requires numerous instructions (unless calling subroutines). Also, when dealing in the past with a video card, you had to have a whole reference documentation, to know how to alter your card settings to do exactly what you needed resulting in somewhat incomprehensible instructions, for someone without the knowledge of the underlying card "registers". With DirectX, we can work just on the exposed memory area without having to deal with our graphic card "registers" and our routines should be kept quite simple.</p>
+Another solution would be to use C or C++ but it would be not necessarly easier if you are new to both C and Assembly, and sometimes you would have still to use assembly to get maximum speed. Last but not least, the money investment for such a tool, would have been probably a bit excessive, to say the less, for our needs...</p>
+
+<h2>Instant start for assembly newcomers</h2>
+Assembly language offers only instructions that are directly executed by the processor.
+<ul>
+<li>"Registers" are a sort of predefined internal processor memory area where you can store values and treat them very quickly (as the processor doesn't have to read them from the main memory).
+<li>The "stack" is an area of memory where you can "'push" (write) values. Once a value is pushed the "stack pointer" is changed so that the next pushed value doesn't overwrite the previous one. Of course, you can "pop" (read) these values in the reverse order they were pushed (the last value pushed will be the next popped). Similarly the "stack pointer" is changed so that the next value is retrieved if you "pop" again. This mechanism is used to store temporarily values (especially to pass and retrieve parameters when calling a subroutine).
+</ul>
+</p>
+<H2>The asmBltNot routine</H2>
+<p>Download <A href="../../downloads/assembly.zip">assembly.zip</A> (35.9 Kb).</p>
+<TABLE border=1 align="center">
+<TR><TH>Assembler</TH><TH>Source file</TH><TH>Compile file</TH><TH>Resulting DLL</TH></TR>
+<TR><TD>NASMW</TD><TD>BltNot.nasm</TD><TD>NASM.BAT</TD><TD>BltNot.dll</TD></TR>
+<TR><TD>MASM</TD><TD>BltNot.masm</TD><TD>MASM.BAT</TD><TD>BltNot.dll</TD></TR>
+</TABLE>
+Our first assembly language routine will "reverse" the content of a DirectDraw surface. The Visual Basic equivalent is roughly (SurfaceMemory is supposed to be a Long array for our DirectDraw surface) :
+<TABLE class="code" width="100%"><TR><TD><PRE>
+Do
+    SurfaceMemory(LastIndex) = Not SurfaceMemory(LastIndex)
+    LastIndex = LastIndex -1
+Loop Until LastIndex = 0
+SurfaceMemory(0) = Not SurfaceMemory(0)    <SPAN class="comment">' We'll see why !</SPAN>
+</PRE></TD></TR></TABLE>
+Note that we don't have to specify the start address of the array... The assembly routine for this is (BltNot.<STRONG>nasm</STRONG>, check BltNot.<STRONG>masm</STRONG> if you are using MASM instead of NASMW) :
+<TABLE class="code" width="100%"><TR><TD><PRE>
+; Source file for NASM
+CODE		SEGMENT USE32
+                GLOBAL _DllMain
+_DllMain:       mov     eax,0ffffffffh
+		retn	12
+                GLOBAL asmBltNot         ; Callable by other modules...
+		EXPORT asmBltNot         ; ...and is a DLL entry point
+asmBltNot:	enter	0,0              ; Prepare stack
+		mov	eax,[ebp+8]      ; "Start" to eax register
+		mov	ecx,[ebp+12]     ; "LastIndex" to ecx register
+treat:		not	DWORD [eax+ecx*4]; Change memory
+                loopnz  treat            ; Decrement ecx, loop if not zero
+		not	DWORD [eax]      ; Treat last dword !
+		leave                    ; Clean stack
+		retn	8                ; Return to caller
+		ENDS
+		END
+</PRE></TD></TR></TABLE>
+<p>_DllMain is just our DLL initialization function that does nothing else than returning a non zero value to the caller (through the eax register). As the same mnemonics are used for our "core" routine, we're not going to give further explanation about this one.</p>
+<p>Then comes the more interesting asmBltNot routine. We are making available this routine to external modules, using GLOBAL. Additionaly, EXPORT allows us to make this routine, a DLL entry point so that we are able to call this routine from Visual Basic using "Declare".</p>
+Parameters are pushed on the stack. "Enter" allows to have an easy access to the stack. Once "Enter" is executed :
+<ul>
+<li>The old ebp register value is pushed on the stack
+<li>The ebp register is pointing to the top of stack
+</ul>
+This way, the current layout for the stack is :
+<ul>
+<li>at [ebp], the old ebp value (the last value pushed)
+<li>at [ebp+4], the return address pushed on the stack by the caller (this one was pushed last by the caller)
+<li>at [ebp+8], the "Start" parameter value
+<li>at [ebp+12], the "LastIndex" parameter value (the first value pushed by the caller)
+</ul></p>
+<p>This make the following statement crystal clear : we are moving the value of the "Start" parameter to the eax register and then the value of the "LastIndex" parameter to the ecx register. We are reversing the bits of the long (dword) that is located at Start + LastIndex * 4. LOOPD allows to decrease ecx by 1 and to jump to the "treat" label if ecx is not yet zero. We have then still to treat the last Long value that is located at Start.</p>
+Once our treatment is finished, we are restoring the old ebp value and we are returning to the caller. Returning to the caller removes the return address from the stack but once it is done, we have still 8 bytes to remove from the stack (the total size of the two "Start" and "LastIndex" parameters).</p>
+<p>The provided Visual Basic module flip continously a still 640 x 480, 16 bits background. By using the "+" key, you can reverse the source image one time. By pressing the "n" key, you can reverse the image continuously.</p>
+With a minimal knowledge of assembly language, we have written a lightning fast treatment against a whole DirectDraw surface. Hope this first contact, will give you the curiosity to learn more about assembly language.</p>
+<H3>Assembling</H3>
+Once our routine is written in its asmBlt00.asm file, you can "assemble" the file by issuing the following command :
+<pre><h4>nasmw -f obj asmBlt00.asm</h4></pre>
+<P>Note : if you are using MASM, please check <STRONG>MASM</STRONG>.BAT instead of the <STRONG>NASM</STRONG>.BAT file...</P>
+The -f obj flag is just to specify the output format for our "object" file (NASM supports a number of other formats allowing to produce "object" files for other platforms).
+<p>The "mnemonic instructions" (that is human readable instructions) we have written are changed in their binary counterpart and some more information is stored in the resulting asmBlt00.obj file.</p>
+
+<h3>Linking</h3>
+The link step is performed by issuing the following command :
+<pre><h4>link /dll /export:asmBltNot /entry:DllMain asmBlt00.obj</h4></pre>
+The /dll flag is to build a DLL, /export allows us to specify which function(s) should be callable from external programs (our VB app), /entry is to specify the initialization function of our DLL (this one will be called when the DLL is first loaded). asmBlt00.obj is just the file we produced during the previous step.
+<p>The information enclosed in the obj file are now turned into the final DLL. This step could seem a bit uneccessary here but would make much more sense to you if our sample was build using numerous asm files. Each file could have been assembled separately with possibly some calls to  other files. The linker "resolves" all these calls and put these fragments under the final binary form (that is a DLL file).</p>
+<p>Execution of the BltNot routine we're going to construct using assembly language :
+<table>
+<tr><th>Original</th><th>After "BltNot"</th><th>After "BltNot" again</th></tr>
+<tr>
+<td><img src="../../images/bltnot1.gif" width=160 height=120></td>
+<td><img src="../../images/bltnot2.gif" width=160 height=120></td>
+<td><img src="../../images/bltnot1.gif" width=160 height=120></td>
+</tr>
+</table>
+<HR>
+<DIV class="copyright"><A href="../mail.htm">Patrice Scribe</A></DIV>
+</BODY>
+</HTML>
+<!-- -->
+</noscript>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+<!--
+var rnd = Math.floor(Math.random() * 9) + 1 ; 
+if (rnd <= 4) { 
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/default','pub','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=470,height=120');
+} else if(rnd == 5) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre4','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+} else if(rnd == 6) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre2','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+} else if(rnd >= 7) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+}
+// -->
+</SCRIPT>
+
+<script language="javascript">
+WEBO_ZONE=122;
+WEBO_PAGE=1;
+weboplus_ok=0;
+</script>
+<script language="javascript"
+src="http://js.libertysurf.fr/chez/weborama/weboscopeplus.js"></SCRIPT>
+<SCRIPT>if(weboplus_ok==1){weboplus_zp(WEBO_ZONE,WEBO_PAGE);}
+</script>
+

@@ -1,0 +1,417 @@
+ID=D0881
+URL=http://www.javaworld.com/javaworld/jw-12-2001/jw-1207-yesnoejb.html
+SIZE=43746
+DATE=16/07/02
+TIME=15:00:50
+DATASET=Java
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title> To EJB, or not to EJB?</title>
+<!-- ssilog 7814 -->
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<meta name="keywords" content=" EJB, J2EE, Enterprise Java, design, architecture">
+<meta name="description" content="
+
+Since J2EE's (Java 2 Platform, Enterprise Edition) earliest days, Enterprise JavaBean (EJB) technology has caused much controversy, with developers and architects constantly struggling to make best use of EJB in their projects. Consequently, our industry has spawned folklore and rules of thumb to guide us how best to use EJB -- some true, some out of date, and some pure fabrication. In this article, Humphrey Sheil explains when and how to use EJB in your J2EE application, as well as how to know when EJBs are not the right solution for you. (3,500 words; December 7, 2001)
+
+">
+<meta name="date" content="2001-12-01">
+<META NAME="DC.Date" CONTENT="2001-12-01">
+<basefont face="verdana, arial, helvetica" size="3" />
+<style type="text/css">
+            code {font-size: 90%; font-family: monospace;}
+            pre {font-size: 90%; font-family: monospace;}
+            td {font-size: 90%;}
+</style>
+<script language="javascript">
+<!--// IDG.net Scripts
+            function mail2Friend () {
+                window.parent.location = "/MailToFriend?url=" + escape(document.location);
+            }
+
+            function openBrWindow() {
+                win=window.open("http://www.javaworld.com/channel_content/jw-story-feedback.shtml",'Feedback','width=600,height=330,toolbar=no,location=no,directories=no,menubar=no,scrollbars=yes,resizable=yes');
+            }
+            //-->
+        </script>
+    </head>
+<body bgcolor="#ffffff" text="#000000" link="#990033" vlink="#990033" alink="#990033" topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" marginheight="0" marginwidth="0">
+<table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td colspan="2" width="186" bgcolor="#006699"><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0 ></a></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- START TOP 468x60 BANNER -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=346700?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=346700?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=346700?" border="0" height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer1" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- END TOP 468x60 BANNER --></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="26" valign="top" align="left" bgcolor="#ffffff"><img height=8 src="http://www.javaworld.com/images/c_whtbottom.gif" width=8 border=0 ></td>
+                <td width="100%"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.global/idgpixel7.18.00;sz=1x1;ord=346700?" border=0 height="1" width="1"><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.usa.jw/usajw.081501;sz=1x1;ord=346700?" border=0 height="1" width="1"></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160" align="middle" valign="center" nowrap><nobr><font face="Verdana, Arial, Sans-serif" color="#ffffff" size="2">December 2001</font></nobr><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="8" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltlft.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="100%" align="middle" valign="center">    <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">HOME</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/features/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FEATURED TUTORIALS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/columns/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">COLUMNS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/news-reviews/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">NEWS & REVIEWS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://forums.idg.net/webx?13@@.ee6b802"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FORUM</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/resources/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">JW RESOURCES</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/info/jw-about-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">ABOUT JW</font></a></td>
+        </tr>
+    </table></td>
+                <td bgcolor="#006699" width="8" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltrt.gif" width=8 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr valign="top">
+                <td bgcolor="#006699" width="160" align="middle" valign="top">
+                    <table width="160" border="0" cellspacing="0" cellpadding="0" bgcolor="#006699" summary="">
+                        <tr>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                            <td align="center">
+                                <form action="http://www.javaworld.com/isearch" method="GET" name="search">
+                                    <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /><br />
+                                    <input type="text" name="qt" size="12" maxlength="2047" /><br />
+                                    <input type="image" value="search" src="http://www.javaworld.com/images/button_blue.gif" border="0" width="97" height="18" alt="GO" /><br />
+                                    <input type="hidden" name="site" value="javaworld"><br />
+                                   <!-- <a href="http://www.google.com/"><img src="http://www.javaworld.com/images/google-power-fp.gif" width="108" height="45" border="0" alt="Google.com"></a>-->
+                                    <input type="hidden" name="ms" value="1">
+                                    <input type="hidden" name="tid" value="1">
+                                    <input type="hidden" name="st" value="1">
+                                    <input type="hidden" name="rf" value="0">
+                                   
+                                </form>
+                            </td>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                        </tr>
+                        <tr>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td><img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <a href="http://www.javaworld.com/archives/index-year.html"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>ARCHIVE</strong></font></a><br>
+                                <img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <strong><a href="http://www.javaworld.com/channel_content/jw-topical-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff">TOPICAL INDEX</font></a></strong></font><br><table cellspacing="0" cellpadding="0" border="0" summary="">
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/channel_content/jw-core-index.shtml"><font color="#ffffff">Core Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-enterprise-index.shtml"><font color="#ffffff">Enterprise Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-micro-index.shtml"><font color="#ffffff">Micro Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-applied-index.shtml"><font color="#ffffff">Applied Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-community-index.shtml"><font color="#ffffff">Java Community</font></a></strong></font><br /></td>
+                        </tr>
+                    </table><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-qna-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA Q&A INDEX</strong></font></a><br /><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-tips-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA TIPS INDEX</strong></font></a><br /> <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br /><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#CCCCCC"><strong>JavaWorld Services</strong></font><br /><img alt="" height="4" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /><table cellspacing="0" cellpadding="0" border="0" summary=""><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /><img alt="" height="7" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /></td><td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/subscribe"><font color="#ffffff">Free JavaWorld newsletters</font></a></strong></font></td></tr><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://javaworld.pricegrabber.com"><font color="#ffffff">ProductFinder </font></a></strong></font></td></tr><tr> <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/white-paper/index.shtml"><font color="#ffffff">White Paper Library</font></a></strong></font></td></tr>
+</table>
+<img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br />
+</td>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                        </tr>
+                        <tr valign="bottom">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_gryblbottom.gif" width=8 ></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr>
+                       <td width="8" bgcolor="#cccccc"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                           <td align="middle" bgcolor="#cccccc"><!-- SKYSCRAPER AD START HERE -->
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=346700?" width="120" height="600" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=skyscraper;sz=120x600;tile=3;ord=346700?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;skyscraper=med;sz=120x600;tile=3;ord=346700?" border=0 height="600" width="120"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer3" visibility="hidden" width=120 height=600></ILAYER>
+<!-- SKYSCRAPER AD ENDS HERE -->
+</td>
+                       <td width="8" bgcolor="#cccccc"><img height=8 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr valign="top">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_grybltop.gif" width=8 ></td>
+                        </tr>
+                    </table>
+                    <img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                    <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                <td width="100%">
+                    <!-- ## MAIN CONTENT STARTS HERE ### -->
+                    <font face="verdana, arial, helvetica" size="3">
+                        <strong></strong>
+                        <p>
+                            <h1 align="CENTER"> To EJB, or not to EJB?</h1>
+                            <h3 align="CENTER"> Addressing the issues and decisions that go into adopting an EJB-based solution</h3>
+                        </p>
+                        <!--<BLOCKQUOTE><STRONG>Summary</STRONG><BR>-->
+                        <BLOCKQUOTE>
+<STRONG>Summary</STRONG><BR>
+
+
+Since J2EE's (Java 2 Platform, Enterprise Edition) earliest days, Enterprise JavaBean (EJB) technology has caused much controversy, with developers and architects constantly struggling to make best use of EJB in their projects. Consequently, our industry has spawned folklore and rules of thumb to guide us how best to use EJB -- some true, some out of date, and some pure fabrication. In this article, Humphrey Sheil explains when and how to use EJB in your J2EE application, as well as how to know when EJBs are not the right solution for you. (<em>3,500 words;</em> <strong>December 7, 2001</strong>)
+
+</BLOCKQUOTE>
+                        <!--</BLOCKQUOTE>-->
+                        <a href="http://www.javaworld.com/feedback" target="Feedback"><STRONG>By  Humphrey Sheil</STRONG></a>
+                        <p><img src="http://www.javaworld.com/images/rule_ltblue.gif" width="100%" height="2"><br />
+                           <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                           <a href="/javaworld/jw-12-2001/jw-1207-yesnoejb_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><br /></p>
+                         <font size=-1>  Page 1 of 3</font>
+                        <p><!-- START BIG AD (336x280) -->
+<table align="right" border="0" cellpadding="0" cellspacing="0"><tr valign="bottom" align="center"><td><font face="verdana, arial, geneva, sans-serif" color="#999999" size="-2">Advertisement</font></td></tr><tr><td><table border=1 bordercolor="#cccccc" cellspacing="5" cellpadding="0"><tr><td>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=346700" width="336" height="280" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=346700"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=346700" border=0 height="280" width="336"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer5" visibility="hidden" width=336 height=280></ILAYER>
+</td></tr></table></td></tr></table>
+<!-- END BIG AD (336x280) --></p>
+                        <p><P>
+<blockquote> <em><img align="left" width="24" height="29" src="/javaworld/abcs/T.gif" alt="T">o EJB, or not to EJB: that is the question.<br> Whether 'tis nobler in the mind, to suffer<br> The slings and arrows of outrageous licensing;<br> Or to take arms against a sea of potential overheads and features,<br> And by opposing end them? To roll your own: to reinvent the wheel;<br> No more; and by reinvent, to say, we continue<br> The heart-ache of low-level systems maintained in-house,<br> and the thousand natural shocks<br> That flesh is heir to; 'tis a consummation<br> Devoutly to be avoided.</em> </blockquote> <P>
+(For Shakespeare's original "To be, or not to be," speech from <em>Hamlet,</em> see the <a href="#sidebar1" name="return1">sidebar</a>.) <P>
+Once you have forgiven me for taking Hamlet apart with a chainsaw, you will realize that the lines above sum up the quandary every J2EE (Java 2 Platform, Enterprise Edition) architect faces: Are you over engineering your solution by employing EJB (Enterprise JavaBean) technology when the signs point to a different approach, indeed, perhaps a different technology? On the other hand, if you decide not to specify an EJB-based solution, have you subsequently found that a sizeable chunk of your code (that must be maintained) handles tasks best addressed by a container or a server? <P>
+This article shares with you how I methodically answer these questions. <P>
+Before I begin, let me set your expectations and explain my motivations for writing this article. First up, I do not answer the EJB/not EJB question for you, but I do provide a toolkit with which you can answer that question for yourself. Second, I have no hidden agendas: I do not represent an EJB server vendor, so I won't push EJBs for everything. On the other hand, I do not represent a technology or technique competing with EJB, apart from presenting it to you here as an alternative, so I won't deride an EJB solution where it makes sense. <P>
+Indeed, my motivation for this article stems from reader requests following my last <em>JavaWorld</em> article, "<a href="http://www.javaworld.com/javaworld/jw-03-2001/jw-0330-ten.html">J2EE Project Dangers</a>." In that article, I briefly touched on the danger of over-engineering, specifically around EJBs. Many readers requested a more in-depth treatise on the subject -- so here it is! <P>
+With that in mind, I propose to proceed as follows: In order to understand if you need EJB, you must understand an EJB solution's main advantages and disadvantages. As with all technologies, EJB has its weak points, and knowing these weak points is the first step to avoiding them. Following the discussion on EJB's weaknesses, I briefly outline alternatives to an EJB-based solution, both inside and outside the Java/J2EE world. <P>
+The final section is a proofing check. When you reach this part of the article, you should be comfortable applying the principles previously outlined to any business scenario. In that section, I present a progressive scenario that requires a solution (I promise not to pick either a pet store or an ATM machine!), make my call on the EJB/no EJB decision, and let you agree or disagree with my reasoning. <P><FONT SIZE="+1"><STRONG> EJB advantages and disadvantages </STRONG></FONT><BR>
+Moving along, let's look at EJB's strong and weak points. In the disadvantages section, I also give solutions to commonly encountered EJB weaknesses. <P><STRONG> EJB advantages </STRONG><BR>
+First, let's examine the advantages that the EJB architecture and programming model provides: <P>
+<ol> <li><strong>The underpinning <a href="#resources">EJB specification</a>:</strong> Funnily enough, EJB's main advantage -- its specification -- also represents its biggest disadvantage, as you'll see below. The specification stipulates everything for EJB, from the various types, lifecycles, and restrictions, right through to roles and responsibilities. Many vendors' application servers conform to the specification, allowing you to select a best-of-breed solution. <P>
+EJB's universal nature offers application developers well-defined roles (I'll write the container and server, you write the business logic according to my APIs). Moreover, developers enjoy the certainty the spec delivers. Indeed, by choosing an EJB solution, developers benefit from a large skills pool, along with established best practices and open standards. Finally, found a show-stopper bug in your current server? If you have paid attention to portability issues in your design and implementation, with EJB you can circumvent it by moving to another vendor with minimum effort.</li> <P>
+<li><strong>Integration with the J2EE platform:</strong> Since Sun introduced EJB in 1997, a strong enterprise computing environment has grown up around it, including technologies such as servlets, JMS (Java Message Service), JSP (JavaServer Pages), the JCA (Java Connector Architecture), JDBC (Java Database Connectivity), security, and transaction management. Such integration enhances EJB's attractiveness as the J2EE platform includes so much other complementary technology. <P>
+For you, the application architect or developer, you can rest easy because no matter how complex your application, the integrated, fully featured J2EE platform can handle your requirements.</li> <P>
+<li><strong>Almost transparent scalability:</strong> Because you delegate so much to the container, the vendor can scale server-side resources to meet fluctuations in demand. I say "almost transparent" because developers are somewhat affected. In the case of horizontal scaling and entity beans, for example, where application servers are clustered, you usually need to modify deployment descriptors to let individual server instances know they are not the only processes accessing and modifying a persistent store.</li> <P>
+<li><strong>Free access and usage of complex resources:</strong> When you buy a specification-compliant EJB server, you receive important features for free, namely transaction and security management, resource pooling, JNDI (Java Naming and Directory Interface), component lifecycle management, and more -- representing heaps of systems-level code you would otherwise have to design, build, and maintain in-house.</li> <P>
+<li><strong>A strong and vibrant industry and community:</strong> All the major IT players, with the exception of Microsoft, support EJB and J2EE, which means you are investing in a technology in which many other people have also invested. That investment commitment means the technology will be around for a long time. Additionally, enterprise Java technology continuously improves. For example, the EJB specification is currently at 2.0, having evolved from 1.0 and 1.1; a pattern likely to continue.</li> </ol> <P><STRONG> EJB disadvantages </STRONG><BR>
+Surprise, surprise, despite all the marketing hype over the past three years, adopting an EJB solution does present some disadvantages. Even more surprising, despite what you may have read over the past six months about these disadvantages, they are almost all avoidable when you know how: <P>
+<ol> <li><strong>Large, complicated specification:</strong> In defense of Sun, no widely adopted distributed technology has avoided this pitfall; take a look at the CORBA specifications from the OMG (Object Management Group), or the architecture of Microsoft's .Net platform. Still, it would be good if there were a trail to follow in the specification for different roles. For example, EJB developers need only read Chapters 6 and 9 of the spec to understand session and entity beans. Additionally, in my experience two roles, not the six assumed in the spec, exist in practice: container/server providers and application providers, who build, assemble, deploy, and also administrate an EJB server. As such, the specification should reflect how EJBs are used in practice and how development teams are organized.</li> <P>
+<li><strong>Increased development time:</strong> I mention EJB development time in comparison to straight Java class development, not to other distributed environments. EJBs do take longer to develop, and when things go wrong, they can prove more difficult to debug, particularly because the bug might not be in your code but in the application server/container itself. Again, a difficult pitfall to avoid since the container gives you so much, but a disadvantage nonetheless. <P>
+However, timely and targeted training can solve this problem. Knowing what the container/server should provide (by understanding the specification) and knowing how the container/server provides this (vendor documentation, sometimes augmented by training) will reduce EJB development time dramatically. On a technical note, an IDE that supports the Java Platform Debugger Architecture (JPDA) also proves invaluable in tracking down bugs. </li> <P>
+<li><strong>Added complexity compared to straight Java classes:</strong> At a superficial level, you require three classes for every session bean, four for an entity bean, and you may additionally employ value objects to reduce network overhead, adding another class. And I haven't counted the deployment descriptors yet, one that stores standard EJB information, the other with vendor-specific information! <P>
+The solution: auto-generation. Tools like <a href="#resources">XDoclet</a> reduce the amount of code you have to write, and it's free! Most IDEs feature auto-generation capabilities too, but they tie you to one vendor, and usually in a GUI-driven mode too, which means no automated builds or tests -- not a great solution. <P>
+<li><strong>Potential to produce a more complex and costly solution than is necessary:</strong> The potential complexity and cost is a corollary of disadvantage number one concerning the complexity of the spec. Simply put, "If you don't get it, it will get you." That is, if you don't understand EJB, you won't take full advantage of it. Moreover, you will misuse parts of it and reinvent others, making your solution less maintainable and one that fails to capitalize on the advantages that make EJB a good idea in the first place. </li> <P>
+<li><strong>Continual specification revisions:</strong> No sooner have you deployed your shiny new EJB application than you see a new specification with newer features, rendering your application obsolete before it hits the streets. This situation, however, is unavoidable. As EJB technology matures, loose ends in earlier versions are tied up and new features added. Vendor release cycles contract in sympathy, and you need to move with them. Companies today upgrade application servers much more rapidly than they did databases three or four years ago, placing additional pressure on already tightened IT budgets.</li> </ol> <P>
+<!-- break --><br /></p>
+                        <font size=-1><a href=jw-1207-yesnoejb-p2.html>Next page ></a><br>Page 1  To EJB, or not to EJB?<br>Page 2 <a href=jw-1207-yesnoejb-p2.html>Alternative approaches</a><br>Page 3 <a href=jw-1207-yesnoejb-p3.html>EJB folklore</a><br> </font>
+                        <p>
+                            <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                            <a href="/javaworld/jw-12-2001/jw-1207-yesnoejb_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><!-- REPLACE BIO --><br /></p>
+                        <p><ul><A NAME="resources"></a><STRONG>Resources</STRONG>
+<BR>
+
+<li>See for yourself how I mutilated Shakespeare's original "To be, or not to be," speech from <em>Hamlet</em> in the <a href="#sidebar1" name="return1">sidebar</a>.
+
+<LI>Reader inquiries about my second <em>JavaWorld</em> article, "J2EE Project Dangers," (March 2001) prompted me to write the above article: <BR><A HREF="http://www.javaworld.com/javaworld/jw-03-2001/jw-0330-ten.html">http://www.javaworld.com/javaworld/jw-03-2001/jw-0330-ten.html
+</A><BR>
+
+
+<LI>You can download the Enterprise JavaBeans 2.0 Specification from: <BR><A HREF="http://java.sun.com/products/ejb/docs.html">http://java.sun.com/products/ejb/docs.html
+</A><BR>
+
+
+<LI>The Jakarta Project's free Ant build tool removes much of the pain in deploying EJBs to application servers, and, best of all, it's extensible: <BR><A HREF="http://jakarta.apache.org/ant">http://jakarta.apache.org/ant
+</A><BR>
+
+
+<LI>Check out XDoclet for an elegant way to reduce hand-maintained code and increase efficiency through auto-generation: <BR><A HREF="http://xdoclet.sourceforge.net">http://xdoclet.sourceforge.net
+</A><BR>
+
+
+<LI>"Designing Enterprise Applications with the J2EE Platform" (Sun Microsystems, 2001) from the <em>J2EE Blueprints</em> series offers good information on design patterns for EJB/J2EE projects: <BR><A HREF="http://java.sun.com/blueprints/guidelines/designing_enterprise_applications/index.html">http://java.sun.com/blueprints/guidelines/designing_enterprise_applications/index.html
+</A><BR>
+
+
+<LI>The OMG produces and maintains computer industry specifications for interoperable enterprise applications, most notably CORBA: <BR><A HREF="http://www.omg.org">http://www.omg.org
+</A><BR>
+
+
+<LI>Jini.org offers in-depth information about Jini and JavaSpaces: <BR><A HREF="http://www.jini.org">http://www.jini.org
+</A><BR>
+
+
+<LI>Sandstorm, an interesting technology out of the University of California, Berkeley, provides good information for scalable applications: <BR><A HREF="http://www.cs.berkeley.edu/~mdw/papers/seda-sosp01.pdf">http://www.cs.berkeley.edu/~mdw/papers/seda-sosp01.pdf
+</A><BR>
+
+
+<LI>For more information on .Net, check out this site, specifically designed to appeal to developers and architects: <BR><A HREF="http://gotdotnet.com/">http://gotdotnet.com/
+</A><BR>
+
+
+<LI>"Gartner: Don't Overspend on Application Server Tech," Scarlet Pruit (<em>NetworkWorldFusion,</em> August 2001) -- like all research notes, this one is refreshingly honest and wonderfully accurate: <BR><A HREF="http://www.nwfusion.com/news/2001/0821gartnerapp.html">http://www.nwfusion.com/news/2001/0821gartnerapp.html
+</A><BR>
+
+
+<LI>My first <em>JavaWorld</em> article, "Frameworks Save the Day" (September  2000), outlines the basic necessities of a J2EE framework and also an extension strategy. If you're not using a standard framework on your project, you are leaving yourself open to a whole raft of quality and maintenance issues:  <BR><A HREF="http://www.javaworld.com/javaworld/jw-09-2000/jw-0929-ejbframe.html">http://www.javaworld.com/javaworld/jw-09-2000/jw-0929-ejbframe.html
+</A><BR>
+
+
+<LI>Born and bred from XP (extreme programming) and JUnit, continuous integration makes your development cycle a lot easier: <BR><A HREF="http://www.martinfowler.com/articles/continuousIntegration.html">http://www.martinfowler.com/articles/continuousIntegration.html
+</A><BR>
+
+
+<LI>For more EJB stories, visit the <strong>Enterprise JavaBeans</strong> section of <em>JavaWorld</em>'s Topical Index: <BR><A HREF="http://www.javaworld.com/channel_content/jw-ejbs-index.shtml">http://www.javaworld.com/channel_content/jw-ejbs-index.shtml
+</A><BR>
+
+
+<LI>Discuss EJB in our <strong>Enterprise Java</strong> discussion: <BR><A HREF="http://forums.idg.net/webx?50@@.ee6b80a">http://forums.idg.net/webx?50@@.ee6b80a
+</A><BR>
+
+
+<LI>Sign up for <em>JavaWorld</em>'s free <em>Enterprise Java</em> newsletter: <BR><A HREF="http://www.javaworld.com/subscribe">http://www.javaworld.com/subscribe
+</A><BR>
+
+
+<li>You'll find a wealth of IT-related articles from our sister publications at <a href="http://www.idg.net/jump?id=1100">IDG.net</a>
+
+</ul><br /></p>
+                        <BR><BR>
+<DIV ALIGN="CENTER">
+<A NAME="sidebar1">
+<A NAME="sidebar">
+<TABLE CELLPADDING="3" CELLSPACING="0" BORDER="0">
+<TR>
+<TD BGCOLOR="#336699" ROWSPAN="1" COLSPAN="1">
+</TR>
+<TR>
+<TD BGCOLOR="#CCCCCC">
+<BR>
+ <font face="verdana, arial, helvetica" size="2">  <H2 ALIGN="CENTER"> Shakespeare's "To be, or not to be," from <em>Hamlet</em> </H2><P><P><P><blockquote> <em>To be, or not to be: that is the question:<br> Whether 'tis nobler in the mind to suffer<br> The slings and arrows of outrageous fortune,<br> Or to take arms against a sea of troubles,<br> And by opposing end them? To die: to sleep;<br> No more; and by a sleep to say we end<br> The heart-ache and the thousand natural shocks<br> That flesh is heir to, 'tis a consummation<br> Devoutly to be wish'd. To die, to sleep;<br> To sleep: perchance to dream: ay, there's the rub;<br> For in that sleep of death what dreams may come<br> When we have shuffled off this mortal coil,<br> Must give us pause: there's the respect<br> That makes calamity of so long life;<br> For who would bear the whips and scorns of time,<br> The oppressor's wrong, the proud man's contumely,<br> The pangs of despised love, the law's delay,<br> The insolence of office and the spurns<br> That patient merit of the unworthy takes,<br> When he himself might his quietus make<br> With a bare bodkin? who would fardels bear,<br> To grunt and sweat under a weary life,<br> But that the dread of something after death,<br> The undiscover'd country from whose bourn<br> No traveller returns, puzzles the will<br> And makes us rather bear those ills we have<br> Than fly to others that we know not of?<br> Thus conscience does make cowards of us all;<br> And thus the native hue of resolution<br> Is sicklied o'er with the pale cast of thought,<br> And enterprises of great pith and moment<br> With this regard their currents turn awry,<br> And lose the name of action.--Soft you now!<br> The fair Ophelia! Nymph, in thy orisons<br> Be all my sins remember'd.<br></em> </blockquote> <P><P>
+<P ALIGN="RIGHT"><A HREF="#return1">Return to article</A></P>
+</FONT></TD>
+</TR>
+</TABLE>
+</A>
+</DIV>
+
+                    </font>
+                    <!-- ## MAIN CONTENT ENDS HERE ### -->
+                </td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="168" nowrap><nobr><img src="http://www.javaworld.com/images/spacer.gif" width=160 height=8 border=0 ><img src="http://www.javaworld.com/images/c_bllftbottom.gif" width=8 height=8 border=0 ></nobr></td>
+                <td width="100%"><img src="http://www.javaworld.com/images/spacer.gif" width=1 height=1 border=0 ></td>
+                <td width="8"><img src="http://www.javaworld.com/images/spacer.gif" width=8 height=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="186" bgcolor="#006699" align="middle"><nobr><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2"></font></nobr><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0></a></td>
+                <td bgcolor="#cccccc" width="8" valign="bottom"><img height=8 src="http://www.javaworld.com/images/c_blgrylftbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- BOTTOM 468x60 AD STARTS HERE -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=346700?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=346700?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=346700?" border=0 height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer4" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- BOTTOM 468x60 AD ENDS HERE -->
+</td>
+                <td width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table bgcolor="#006699" align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="100%" align="middle" valign="center">    <font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">
+        <p>
+            <br />
+            <a href="http://www.javaworld.com"><font color="#ffffff">HOME</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/features/index.shtml"><font color="#ffffff">FEATURED TUTORIALS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/columns/index.shtml"><font color="#ffffff">COLUMNS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/news-reviews/index.shtml"><font color="#ffffff">NEWS & REVIEWS</font></a>&nbsp;|&nbsp;
+            <a href="http://forums.idg.net/webx?13@@.ee6b802"><font color="#ffffff">FORUM</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/resources/index.shtml"><font color="#ffffff">JW RESOURCES</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/info/jw-about-index.shtml"><font color="#ffffff">ABOUT JW</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/feedback"><font color="#ffffff">FEEDBACK</font></a>
+        </p>
+        <p>
+
+            <a href="http://www.javaworld.com/javaworld/common/jw-copyright.html"><font color="#ffffff">Copyright © 2002</font></a> JavaWorld.com, an IDG Communications company
+        </p>
+    </font>
+</td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+            <tr>
+                <td width="100%" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_blrtbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <!--TOP_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=346700?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer1.pageX,layer1.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--125x125-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=med;sz=125x125;tile=2;ord=346700?" width=125 height=125 visibility="hidden" onLoad="moveToAbsolute(layer2.pageX,layer2.pageY);clip.height=125;clip.width=125;visibility='show';">
+</LAYER>
+
+<!--SKYSCRAPER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=346700?" width=120 height=600 visibility="hidden" onLoad="moveToAbsolute(layer3.pageX,layer3.pageY);clip.height=600;clip.width=120;visibility='show';">
+</LAYER>
+
+<!--BOTTOM_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=346700?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer4.pageX,layer4.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--Big AD-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=346700" width=336 height=280 visibility="hidden" onLoad="moveToAbsolute(layer5.pageX,layer5.pageY);clip.height=280;clip.width=336;visibility='show';">
+</LAYER>
+    </body>
+<!-- stories1 -->
+<!-- DOCID 760265 -->
+</html>
+

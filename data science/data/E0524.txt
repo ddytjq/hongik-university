@@ -1,0 +1,510 @@
+ID=E0524
+URL=http://www.gotw.ca/gotw/059.htm
+SIZE=31618
+DATE=12/07/02
+TIME=19:21:53
+DATASET=C
+HTML=
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+
+
+<title>GotW #59: Exception-Safe Class Design, Part 1: Copy Assignment</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<link rel="stylesheet" type="text/css" href="../gotw.css">
+<meta name="Microsoft Theme" content="gotw 111, default">
+<meta name="Microsoft Border" content="tlb, default">
+</head>
+
+<body background="../_themes/gotw/glabkgnd.jpg" bgcolor="#CCFFFF" text="#000000" link="#008080" vlink="#008080" alink="#0000FF"  ><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><table border="0" cellspacing="0" width="100%">
+  <tr>
+    <td colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="6"><strong>
+    GotW #59</strong></font> <!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+
+
+
+<p align="left" style="margin-top: 0; margin-bottom: 0">
+
+<script language="JavaScript"><!--
+MSFPhover = 
+  (((navigator.appName == "Netscape") && 
+  (parseInt(navigator.appVersion) >= 3 )) || 
+  ((navigator.appName == "Microsoft Internet Explorer") && 
+  (parseInt(navigator.appVersion) >= 4 ))); 
+function MSFPpreload(img) 
+{
+  var a=new Image(); a.src=img; return a; 
+}
+// --></script><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav1n=MSFPpreload("../_derived/home_cmp_gotw110_hbtn.gif"); MSFPnav1h=MSFPpreload("../_derived/home_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1h.src" onmouseout="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1n.src"><img src="../_derived/home_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Home" align="middle" name="MSFPnav1"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav2n=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn.gif"); MSFPnav2h=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../news.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2h.src" onmouseout="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2n.src"><img src="../_derived/news.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="News &amp; Events" align="middle" name="MSFPnav2"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav3n=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav3h=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../resources/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3h.src" onmouseout="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3n.src"><img src="../resources/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Community Resources" align="middle" name="MSFPnav3"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav4n=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn.gif"); MSFPnav4h=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../consulting.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4h.src" onmouseout="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4n.src"><img src="../_derived/consulting.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Consulting Services" align="middle" name="MSFPnav4"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav5n=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn.gif"); MSFPnav5h=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../presentations.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5h.src" onmouseout="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5n.src"><img src="../_derived/presentations.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Presentations" align="middle" name="MSFPnav5"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav6n=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav6h=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../publications/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6h.src" onmouseout="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6n.src"><img src="../publications/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Publications" align="middle" name="MSFPnav6"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav7n=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav7h=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7h.src" onmouseout="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7n.src"><img src="_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Guru of the Week" align="middle" name="MSFPnav7"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav8n=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav8h=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../conv/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8h.src" onmouseout="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8n.src"><img src="../conv/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Conversations" align="middle" name="MSFPnav8"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav9n=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn.gif"); MSFPnav9h=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../search.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9h.src" onmouseout="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9n.src"><img src="../_derived/search.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Search GotW.ca" align="middle" name="MSFPnav9"></a>
+</p>
+
+
+
+
+    <!--mstheme--></font></td>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 0">
+      <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav10n=MSFPpreload("../_derived/back_cmp_gotw110_back.gif"); MSFPnav10h=MSFPpreload("../_derived/back_cmp_gotw110_back_a.gif"); }
+// --></script><a href="058.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10h.src" onmouseout="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10n.src"><img src="../_derived/back_cmp_gotw110_back.gif" width="100" height="20" border="0" alt="Prev" name="MSFPnav10"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav11n=MSFPpreload("../_derived/up_cmp_gotw110_up.gif"); MSFPnav11h=MSFPpreload("../_derived/up_cmp_gotw110_up_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11h.src" onmouseout="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11n.src"><img src="../_derived/up_cmp_gotw110_up.gif" width="100" height="20" border="0" alt="Up" name="MSFPnav11"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav12n=MSFPpreload("../_derived/next_cmp_gotw110_next.gif"); MSFPnav12h=MSFPpreload("../_derived/next_cmp_gotw110_next_a.gif"); }
+// --></script><a href="060.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12h.src" onmouseout="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12n.src"><img src="../_derived/next_cmp_gotw110_next.gif" width="100" height="20" border="0" alt="Next" name="MSFPnav12"></a><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td height="5" background="../images/bar.gif" colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td></tr><!--msnavigation--></table><!--msnavigation--><table dir="ltr" border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td valign="top" width="1%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<!--mstheme--></font><table border="0" cellspacing="0" bgcolor="#000000" cellpadding="0">
+  <tr>
+    <td><!--mstheme--><font face="Arial, Arial, Helvetica">
+    <!--mstheme--></font><table border="0" cellpadding="2" cellspacing="1" width="100%" height="483">
+        <tr>
+          <td align="center" bgcolor="#000000" colspan="2" height="16"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-top: 0; margin-bottom: 0"><a href="../news.htm"><b><font color="#FFFF00">News</font></b></a><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <font size="1" color="#0000FF">J<br>
+          U<br>
+          L<br>
+          Y</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-left: 3; margin-right: 3; margin-top: 0" align="center"><font size="1" color="#0000FF">
+            Print articles newly available online</font><!--mstheme--></font><table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%" id="AutoNumber1" bgcolor="#FFFFCC" bordercolordark="#006666" bordercolorlight="#99CCCC">
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill20.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 1&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000" bgcolor="#FFFFCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mxc++-item-4.htm">
+                <font color="#0000FF">Excerpt from MXC++, &quot;Extensible Templates: 
+                Via Inheritance or Traits?&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mcd_review.htm"><font color="#0000FF">
+                Book Review: Modern C++ Design</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill21.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 2: Namespaceops and 
+                Library Versioning&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+            </table><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;A Pragmatic Look at Exception Specifications&quot;<br>
+            </font><font size="1" color="#000080">The usefulness, or lack 
+            thereof, of exception specifications, and how results can vary 
+            across real-world compilers</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <a target="_blank" href="http://www.cuj.com/experts/2007/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;Getting to the Point&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">The Boost library has five 
+            smart pointers that provide a rich array [sic] of useful behaviors.</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font color="#0000FF" size="1">A<br>
+            U<br>
+          G<br>
+          U<br>
+          S<br>
+          T</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin:0 3; ">
+            <a target="_blank" href="http://www.cuj.com/experts/2008/sutter.htm"><i><b><font size="1" color="#0000FF">The New C++</font></b></i> <font size="1" color="#0000FF">
+            column, &quot;Smart(er) Pointers&quot;</font></a><font size="1" color="#000080"><br>
+            A closer look at one of the proposed new standard C++ library 
+            features -- smart pointers, particularly those in Boost and Loki, 
+            and a sneak peek at the usefulness of the proposed typedef templates</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin:0 3; ">
+          <a target="_blank" href="http://www.cuj.com/experts/2008/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;A Midsummer Night's Madness&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">A brew that mixes pointers, 
+          typedefs, and const</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin-top: 0; margin-bottom: 0">
+          <font size="1" color="#0000FF">S<br>
+          E<br>
+          P<br>
+          T<br>
+          E<br>
+          M<br>
+          B<br>
+          E<br>
+          R</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <font size="1" color="#0000FF">&quot;Standard C++ Meets Managed C++&quot;<br>
+            </font><font size="1" color="#000080">A survey of the main (in)compatibilities 
+            between Standard C++ and Microsoft’s managed extensions for C++, and 
+            how the two could converge</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;Export Restrictions, Part 1&quot;<br>
+            </font><font size="1" color="#000080">The scoop on export -- what 
+            some people think it does, what it actually does, and why it’s the 
+            most widely-ignored feature in the C++ standard</font><!--mstheme--></font></td>
+        </tr>
+      </table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p style="margin-top: 0; margin-bottom: 0">
+<img border="0" src="../images/140.gif" width="140" height="1"></p>
+
+<!--mstheme--></font></td><td valign="top" width="24"></td><!--msnavigation--><td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica">
+<!--mstheme--></font><table border="1" cellpadding="6" cellspacing="0" width="100%" bgcolor="#CCCCFF" bordercolordark="#006666" bordercolorlight="#99CCCC">
+  <tr>
+    <td width="100%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p align="center">This is the original GotW problem and solution
+      substantially as posted to Usenet. See the book <i><a href="../publications/mxc++.htm"><b>More
+      Exceptional C++</b></a></i> (Addison-Wesley, 2002) for the most current
+      solution to this GotW issue. The solutions in the book have been revised
+      and expanded since their initial appearance in GotW. The book versions
+      also incorporate corrections, new material, and conformance to the final
+      ANSI/ISO C++ standard.</p>
+    <!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <h2><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Exception-Safe Class Design, Part 1: Copy Assignment&nbsp;<font size="3"><br>
+      Difficulty: 7 / 10</font><!--mstheme--></font></h2>
+<p><i>Is it possible to make any C++ class strongly exception-safe, for example
+for its copy assignment operator? If so, how? What are the issues and
+consequences?</i></p>
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Problem<!--mstheme--></font></h3>
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">JG Questions<!--mstheme--></font></h4>
+<p><b><font size="4">1.</font></b>   What are the three common levels of
+exception safety? Briefly explain each one and why it is important.</p>
+<p><b><font size="4">2.</font></b>   What is the canonical form of strongly
+exception-safe copy assignment?</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Guru Questions<!--mstheme--></font></h4>
+<p><b><font size="4">3.</font></b>   Consider the following class:</p>
+<!--mstheme--></font><pre>    //  Example 3: The Cargill Widget Example
+    //
+    class Widget
+    {
+      // ...
+    private:
+      T1 t1_;
+      T2 t2_;
+    };</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Assume that any T1 or T2 operation might throw. Without changing the
+structure of the class, is it possible to write a strongly exception-safe
+Widget::operator=( const Widget&amp; )? Why or why not? Draw conclusions.</p>
+<p><b><font size="4">4.</font></b>   Describe and demonstrate a simple
+transformation that works on any class in order to make strongly exception-safe
+copy assignment possible and easy for that class. Where have we seen this
+transformation technique before in other contexts? Cite GotW issue number(s).</p>
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a name="Solution"></a>Solution<!--mstheme--></font></h3>
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Review: Exception Safety Canonical Forms<!--mstheme--></font></h4>
+
+<p><font color="#999933"><b><font size="4">1.</font></b>   What are the three
+common levels of exception safety? Briefly explain each one and why it is
+important.</font></p>
+<p>The canonical Abrahams Guarantees are as follows.</p>
+<p>1. Basic Guarantee: If an exception is thrown, no resources are leaked, and
+objects remain in a destructible and usable -- but not necessarily predictable
+-- state. This is the weakest usable level of exception safety, and is
+appropriate where client code can cope with failed operations that have already
+made changes to objects' state.</p>
+<p>2. Strong Guarantee: If an exception is thrown, program state remains
+unchanged. This level always implies global commit-or-rollback semantics,
+including that no references or iterators into a container be invalidated if an
+operation fails.</p>
+<p>In addition, certain functions must provide an even stricter guarantee in
+order to make the above exception safety levels possible:</p>
+<p>3. Nothrow Guarantee: The function will not emit an exception under any
+circumstances. It turns out that it is sometimes impossible to implement the
+strong or even the basic guarantee unless certain functions are guaranteed not
+to throw (e.g., destructors, deallocation functions). As we will see below, an
+important feature of the standard auto_ptr is that no auto_ptr operation will
+throw.</p>
+<p><font color="#999933"><b><font size="4">2.</font></b>   What is the canonical
+form of strongly exception-safe copy assignment?</font></p>
+
+<p>It involves two steps: First, provide a nonthrowing Swap() function that
+swaps the guts (state) of two objects:</p>
+
+<!--mstheme--></font><pre>  void T::Swap( T&amp; other ) throw()
+  {
+    // ...swap the guts of *this and other...
+  }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>Second, implement operator=() using the &quot;create a temporary and
+swap&quot; idiom:</p>
+
+<!--mstheme--></font><pre>  T&amp; T::operator=( const T&amp; other )
+  {
+    T temp( other ); // do all the work off to the side</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    Swap( temp );    // then &quot;commit&quot; the work using
+    return *this;    //  nonthrowing operations only
+  }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">The Cargill Widget Example<!--mstheme--></font></h4>
+<p>This brings us to the Guru questions, starting with a new exception safety
+challenge proposed by Tom Cargill:</p>
+<p><font color="#999933"><b><font size="4">3.</font></b>   Consider the
+following class:</font></p>
+<!--mstheme--></font><pre><font color="#999933">    //  Example 3: The Cargill Widget Example
+    //
+    class Widget
+    {
+      // ...
+    private:
+      T1 t1_;
+      T2 t2_;
+    };</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p><font color="#999933">Assume that any T1 or T2 operation might throw. Without
+changing the structure of the class, is it possible to write a strongly
+exception-safe Widget::operator=( const Widget&amp; )? Why or why not? Draw
+conclusions.</font></p>
+<p>Short answer: In general, no, it can't be done without changing the structure
+of Widget.</p>
+<p>In the Example 3 case, it's not possible to write a strongly exception-safe
+Widget::operator=() because there's no way that we can change the state of both
+of the t1_ and t2_ members atomically. Say that we attempt to change t1_, then
+attempt to change t2_. The problem is twofold:</p>
+<p>1. If the attempt to change t1_ throws, t1_ must be unchanged. That is, to
+make Widget::operator=() strongly exception-safe relies fundamentally on the
+exception safety guarantees provided by T1, namely that T1::operator=() (or
+whatever mutating function we are using) either succeeds or does not change its
+target. This comes close to requiring the strong guarantee of T1::operator=().
+(The same reasoning applies to T2::operator=().)</p>
+<p>2. If the attempt to change t1_ succeeds, but the attempt to change t2_
+throws, we've entered a &quot;halfway&quot; state and cannot in general roll
+back the change already made to t1_.</p>
+<p>Therefore, the way Widget is currently structured, its operator=() cannot be
+made strongly exception-safe.</p>
+<div align="right">
+  <!--mstheme--></font><table border="1" cellpadding="6" cellspacing="0" width="50%" align="right" bordercolordark="#006666" bordercolorlight="#99CCCC">
+    <tr>
+      <td width="100%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+        <p style="margin-top: 0; margin-bottom: 6">Note also that Cargill's
+        Widget Example isn't all that different from the following simpler case:</p>
+        <!--mstheme--></font><pre>  class Widget2  
+  {              
+    // ...       
+  private:       
+    T1 t1_;      
+  };             </pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+        <p>In the above code, problem #1 above still exists. If T1::operator=()
+        can throw in such a way that it has already started to modify the
+        target, there is no way to write a strongly exception-safe
+        Widget2::operator=() unless T1 provides suitable facilities through some
+        other function (but if T1 can do that, why doesn't it for
+        T1::operator=()?).<!--mstheme--></font></td>
+    </tr>
+  </table><!--mstheme--><font face="Arial, Arial, Helvetica">
+</div>
+<p>Our goal: To write a Widget::operator=() that is strongly exception-safe,
+without making any assumptions about the exception safety of any T1 or T2
+operation. Can it be done? Or is all lost?</p>
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">A Complete Solution: Using the Pimpl Idiom<!--mstheme--></font></h4>
+<p>The good news is that, even though Widget::operator=() can't be made strongly
+exception-safe without changing Widget's structure, the following simple
+transformation always works:</p>
+<p><font color="#999933"><b><font size="4">4.</font></b>   Describe and
+demonstrate a simple transformation that works on any class in order to make
+strongly exception-safe copy assignment possible and easy for that class. Where
+have we seen this transformation technique before in other contexts? Cite GotW
+issue number(s).</font></p>
+<p>The way to solve the problem is hold the member objects by pointer instead of
+by value, preferably all behind a single pointer with a Pimpl transformation
+(described in GotW issues like <a href="007.htm">7</a>, <a href="015.htm">15</a>,
+<a href="024.htm">24</a>, <a href="025.htm">25</a>, and <a href="028.htm">28</a>).</p>
+<p>Here is the canonical Pimpl exception-safety transformation:</p>
+<!--mstheme--></font><pre>  //  Example 4: The canonical solution to
+  //             Cargill's Widget Example
+  //
+  class Widget
+  {
+    Widget();  // initializes pimpl_ with new WidgetImpl
+    ~Widget(); // must be provided, because the implicit
+               //  version causes usage problems (see <a href="062.htm">GotW #62</a>)
+    // ...
+  private:
+    class WidgetImpl;
+    auto_ptr&lt;WidgetImpl&gt; pimpl_;
+    // ... provide copy construction and assignment
+    //     that work correctly, or suppress them ...
+  };</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>  class Widget::WidgetImpl
+  {
+  public:
+    // ...
+    T1 t1_;
+    T2 t2_;
+  };</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>Now we can easily implement a nonthrowing Swap(), which means we can easily
+implement exception-safe copy assignment: First, provide the nonthrowing Swap()
+function that swaps the guts (state) of two objects (note that this function can
+provide the nothrow guarantee because no auto_ptr operations are permitted to
+throw exceptions):</p>
+
+<!--mstheme--></font><pre>  void Widget::Swap( Widget&amp; other ) throw()
+  {
+    auto_ptr&lt;WidgetImpl&gt; temp( pimpl_ );
+    pimpl_ = other.pimpl_;
+    other.pimpl_ = temp;
+  }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>Second, implement the canonical form of operator=() using the &quot;create a
+temporary and swap&quot; idiom:</p>
+
+<!--mstheme--></font><pre>  Widget&amp; Widget::operator=( const Widget&amp; other )
+  {
+    Widget temp( other ); // do all the work off to the side</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    Swap( temp );    // then &quot;commit&quot; the work using
+    return *this;    //  nonthrowing operations only
+  }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">A Potential Objection, and Why It's Unreasonable<!--mstheme--></font></h4>
+<p>Some may object: &quot;Aha! Therefore this proves exception safety is
+unattainable in general, because you can't solve the general problem of making
+any arbitrary class strongly exception-safe without changing the class!&quot;</p>
+<p>Such a position is unreasonable and untenable. The Pimpl transformation, a
+minor structural change, IS the solution to the general problem. To say,
+&quot;no, you can't do that, you have to be able to make an arbitrary class
+exception-safe without any changes,&quot; is unreasonable for the same reason
+that &quot;you have to be able to make an arbitrary class meet New Requirement
+#47 without any changes&quot; is unreasonable.</p>
+<p>For example:</p>
+<p>Unreasonable Statement #1: &quot;Polymorphism doesn't work in C++ because you
+can't make an arbitrary class usable in place of a Base&amp; without changing it
+(to derive from Base).&quot;</p>
+<p>Unreasonable Statement #2: &quot;STL containers don't work in C++ because you
+can't make an arbitrary class usable in an STL container without changing it (to
+provide an assignment operator).&quot;</p>
+<p>Unreasonable Statement #3: &quot;Exception safety doesn't work in C++ because
+you can't make an arbitrary class strongly exception-safe without changing it
+(to put the internals in a Pimpl class).&quot;</p>
+<p>Clearly all the above arguments are equally bankrupt, and the Pimpl
+transformation is indeed the general solution to strongly exception-safe
+objects.</p>
+<p>So, what have we learned?</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Conclusion 1: Exception Safety Affects a Class's Design<!--mstheme--></font></h4>
+<p>Exception safety is never &quot;just an implementation detail.&quot; The
+Pimpl transformation is a minor structural change, but still a change. <a href="008.htm">GotW
+#8</a> shows another example of how exception safety considerations can affect
+the design of a class's member functions.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Conclusion 2: You Can Always Make Your Code (Nearly) Strongly Exception-Safe<!--mstheme--></font></h4>
+<p>There's an important principle here:</p>
+<blockquote>
+  <p align="center"><i>Just because a class you use isn't in the least
+  exception-safe is no reason that YOUR code that uses it can't be (nearly)
+  strongly exception-safe.</i></p>
+</blockquote>
+<p>Anybody can use a class that lacks a strongly exception-safe copy assignment
+operator and make that use exception-safe. The &quot;hide the details behind a
+pointer&quot; technique can be done equally well by either the Widget
+implementor or the Widget user... it's just that if it's done by the implementor
+it's always safe, and the user won't have to do this:</p>
+<!--mstheme--></font><pre>  class MyClass
+  {
+    auto_ptr&lt;Widget&gt; w_; // hold the unsafe-to-copy
+                         //  Widget at arm's length
+  public:
+    void Swap( MyClass&amp; other ) throw()
+    {
+      auto_ptr&lt;Widget&gt; temp( w_ );
+      w_ = other.w_;
+      other.w_ = temp;
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    MyClass&amp; operator=( const MyClass&amp; other )
+    {
+      /* canonical form */
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><pre>    // ... destruction, copy construction,
+    //     and copy assignment ...
+  };</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Conclusion 3: Use Pointers Judiciously<!--mstheme--></font></h4>
+<p>To quote Scott Meyers:</p>
+<blockquote>
+  <p><i>&quot;When I give talks on EH, I teach people two things:</i></p>
+  <p><i>&quot;- POINTERS ARE YOUR ENEMIES, because they lead to the kinds of
+  problems that auto_ptr is designed to eliminate.</i></p>
+</blockquote>
+
+<p>To wit, bald pointers should normally be owned by manager objects that own
+the pointed-at resource and perform automatic cleanup. Then Scott continues:</p>
+
+<blockquote>
+  <p><i>&quot;- POINTERS ARE YOUR FRIENDS, because operations on pointers can't
+  throw.</i></p>
+  <p><i>&quot;Then I tell them to have a nice day :-)</i></p>
+</blockquote>
+<p>Scott captures a fundamental dichotomy well. Fortunately, in practice you can
+and should get the best of both worlds:</p>
+<p>- USE POINTERS BECAUSE THEY ARE YOUR FRIENDS, because operations on pointers
+can't throw.</p>
+<p>- KEEP THEM FRIENDLY BY WRAPPING THEM IN MANAGER OBJECTS like auto_ptrs,
+because this guarantees cleanup. This doesn't compromise the nonthrowing
+advantages of pointers because auto_ptr operations never throw either (and you
+can always get at the real pointer inside an auto_ptr whenever you need to).</p>
+<p>Indeed, often the best way to implement the Pimpl idiom is exactly as shown
+in Example 4 above, by using a pointer (in order to take advantage of
+nonthrowing operations) while still wrapping the dynamic resource safely in an
+auto_ptr manager object. Just remember that now your object must provide its own
+copy construction and assignment with the right semantics for the auto_ptr
+member, or disable them if copy construction and assignment don't make sense for
+the class.<!--mstheme--></font><!--msnavigation--></td></tr><!--msnavigation--></table><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><h4 align="right"><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a href="../copyright.htm"><font size="2">Copyright ©
+2002 Herb Sutter</font></a><!--mstheme--></font></h4>
+
+<!--mstheme--></font></td></tr><!--msnavigation--></table></body>
+</html>
+

@@ -1,0 +1,255 @@
+ID=E0910
+URL=http://www.bcbdev.com/faqs/faq44.htm
+SIZE=10361
+DATE=12/07/02
+TIME=19:25:43
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+
+<H3>
+Q: Align structures on byte or word boundaries
+</H3>
+<BR>
+<H3>Answer:</H3>
+<P>
+Many BCB programmers have to work with source code that pre-dates C++Builder. For some
+programmers, this legacy code contains data structures that must be aligned on <TT>byte</TT> or
+<TT>word</TT> boundaries. Legacy code that is ported to C++Builder will malfunction if it
+requires <TT>byte</TT> or <TT>word</TT> alignment because by default, C++Builder projects
+utilize <TT>dword</TT> or <TT>quadword</TT> alignment.
+</P>
+<P>If you open a C++Builder project file in text mode, you will find a line that looks
+like this:</P>
+<PRE>
+    CFLAG1 = -Od -Hc -w -k -r- -y -v -vi- -c <B>-a4</B> -b- -w-par -w-inl -Vx -Ve -x
+</PRE>
+<P>
+Notice the <TT>-a4</TT> compiler option. Borland complilers use the <TT>-a</TT> command line option
+to control the alignment mode. <TT>-a4</TT> aligns data on <TT>dword</TT> boundaries. <TT>-a2</TT> aligns
+to <TT>word</TT> and <TT>-a1</TT> aligns to <TT>byte</TT>. BCB5 users may notice that the default compiler setting
+is <TT>-a8</TT> which aligns on a quadword boundary.
+</P>
+<P>
+If you have structures that require <TT>word</TT> or <TT>byte</TT>
+alignment, you might be tempted to edit the makefile and change the <TT>-a4</TT> to <TT>-a2</TT> or <TT>-a1</TT>.
+If you use BCB3 or BCB1, <B>don't</B> try this. The VCL requires <TT>dword</TT> alignment. Your BCB program will go down
+in flames if you fiddle with the makefile's alignment setting. Starting with BCB4, Borland added #pragma statements to
+all of the VCL header files to force the correct alignment for the VCL classes. In BCB4 and BCB5, you can change the <TT>-a</TT>
+compiler option if you want. However, to align certain structures, it is wiser to force those structures to the correct alignment,
+instead of relying on global project settings.
+</P>
+<H3>
+<TT>#pragma</TT> to the rescue
+</H3>
+Fortunately, C++Builder allows you to change the alignment scheme for certain
+portions of your source code. This allows you to properly align your data structures
+while keeping most of the source under the <TT>-a4</TT> or <TT>-a8</TT> compiler option. To alter the alignment
+of a single structure, surround the definition of the structure with <TT>#pragma pack</TT>
+commands. For example:
+</P>
+<pre>
+<font color="green">#pragma pack(1)              </font><font color="navy">// change to byte alignment</font>
+<b>struct</b> ByteAlignedStruct
+<b>{</b>
+    BYTE  bVar1<b>;</b>
+    BYTE  bVar2<b>;</b>
+    BYTE  bVar3<b>;</b>
+    WORD  wVar4<b>;</b>
+    DWORD dwVar5<b>;</b>
+<b>}</b><b>;</b>
+<font color="green">#pragma pack()               </font><font color="navy">// return to default alignment for the project</font>
+</pre>
+<P>
+The <TT>#pragma pack(1)</TT> statement switches the compiler into <TT>byte</TT> alignment mode.
+The parameter in the <TT>pack()</TT> statement determines the number of bytes to align on:
+1 = <TT>byte</TT> aligned, 2 = <TT>word</TT> aligned, 4 = <TT>dword</TT> aligned. The numbering scheme works
+the same way as <TT>-a</TT> compiler option. If the <TT>pack()</TT> parameter doesn't contain
+an argument, the alignment mode reverts back to the mode that is specified in
+the makefile. In BCB, the mode returns to <TT>dword</TT> alignment (<TT>quadword</TT> for BCB5).
+</P>
+<P>
+The <TT>pragma pack()</TT> command can span over several structures. This code
+aligns three structures to <TT>byte</TT> boundaries. When using this technique, make sure
+that you don't forget the last <TT>#pragma pack()</TT>.
+<pre>
+<font color="green">#pragma pack(1)</font>
+<b>struct</b>  Data1
+<b>{</b>
+    BYTE  bVar1<b>;</b>
+    BYTE  bVar2<b>;</b>
+    BYTE  bVar3<b>;</b>
+<b>}</b><b>;</b>
+
+<b>struct</b>  Data2
+<b>{</b>
+    BYTE bArray<b>[</b><font color="blue">25</font><b>]</b><b>;</b>
+<b>}</b><b>;</b>
+
+<b>struct</b> Data3
+<b>{</b>
+    BYTE bSize<b>;</b>
+    WORD wArray<b>[</b><font color="blue">100</font><b>]</b><b>;</b>
+<b>}</b>
+<font color="green">#pragma pack()</font>
+</pre>
+<H3>
+Sample code
+</H3>
+<P>
+The <TT>sizeof</TT> function is the best way to prove that <TT>#pragma pack()</TT> is performing
+the way you want it to. To verify that it works, create a new project, add three
+labels to the form, and then modify the main CPP file to match the code below
+</P>
+<pre>
+<font color="navy">//-----------------------------------------------------------------</font>
+<font color="green">#include &lt;vcl\vcl.h></font>
+<font color="green">#pragma hdrstop</font>
+
+<font color="green">#include "Unit1.h"</font>
+<font color="navy">//-----------------------------------------------------------------</font>
+<font color="green">#pragma resource "*.dfm"</font>
+TForm1 <b>*</b>Form1<b>;</b>
+
+<font color="green">#pragma pack(1)</font>
+<b>struct</b> ByteStruct
+<b>{</b>
+  BYTE  bVar1<b>;</b>
+  BYTE  bVar2<b>;</b>
+  BYTE  bVar3<b>;</b>
+  WORD  wVar4<b>;</b>
+  DWORD dwVar5<b>;</b>
+<b>}</b><b>;</b>
+
+<font color="green">#pragma pack(2)</font>
+<b>struct</b> WordStruct
+<b>{</b>
+  BYTE  bVar1<b>;</b>
+  BYTE  bVar2<b>;</b>
+  BYTE  bVar3<b>;</b>
+  WORD  wVar4<b>;</b>
+  DWORD dwVar5<b>;</b>
+<b>}</b><b>;</b>
+
+<font color="green">#pragma pack(4)</font>
+<b>struct</b> DwordStruct
+<b>{</b>
+  BYTE  bVar1<b>;</b>
+  BYTE  bVar2<b>;</b>
+  BYTE  bVar3<b>;</b>
+  WORD  wVar4<b>;</b>
+  DWORD dwVar5<b>;</b>
+<b>}</b><b>;</b>
+<font color="green">#pragma pack()</font>
+
+<font color="navy">//-----------------------------------------------------------------</font>
+<b>__fastcall</b> TForm1<b>:</b><b>:</b>TForm1<b>(</b>TComponent<b>*</b> Owner<b>)</b>
+    <b>:</b> TForm<b>(</b>Owner<b>)</b>
+<b>{</b>
+  Label1<b>-></b>Caption <b>=</b> <font color="blue">"Byte  align = "</font> <b>+</b> IntToStr<b>(</b><b>sizeof</b><b>(</b>ByteStruct<b>)</b><b>)</b><b>;</b>
+  Label2<b>-></b>Caption <b>=</b> <font color="blue">"Word  align = "</font> <b>+</b> IntToStr<b>(</b><b>sizeof</b><b>(</b>WordStruct<b>)</b><b>)</b><b>;</b>
+  Label3<b>-></b>Caption <b>=</b> <font color="blue">"DWord align = "</font> <b>+</b> IntToStr<b>(</b><b>sizeof</b><b>(</b>DwordStruct<b>)</b><b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+Run the program. The program will display 9 for the <TT>byte</TT> aligned structure,
+10 for the <TT>word</TT> aligned structure, and 12 for the <TT>dword</TT> aligned structure.
+</P>
+<H3>
+Notes:
+</H3>
+<P>
+1: Remember that the <TT>#pragma</TT> directive is unique to each compiler. Although
+many compilers support <TT>#pragma pack</TT>, don't be surprised if you find a compiler
+that doesn't support it. <TT>#pragma pack</TT> is not a language standard. In addition
+to <TT>#pragma pack</TT>, most compilers, including C++Builder, contain a host of other
+<TT>#pragma</TT> commands.
+</P>
+<P>
+2: BCB allows you to use <TT>#pragma</TT> to alter makefile options in certain parts of
+your code. The syntax is <TT>#pragma option -XX</TT> where XX is the option that you are
+altering. This technique can also be used to alter the data alignment setting.
+</P>
+<pre>
+<font color="green">#pragma option -a1           </font><font color="navy">// switch to -a1 byte alignment</font>
+<b>struct</b> ByteAlignedStruct
+<b>{</b>
+    BYTE  bVar1<b>;</b>
+    BYTE  bVar2<b>;</b>
+    BYTE  bVar3<b>;</b>
+    WORD  wVar4<b>;</b>
+    DWORD dwVar5<b>;</b>
+<b>}</b><b>;</b>
+<font color="green">#pragma option -a4           </font><font color="navy">// return to -a4</font>
+</pre>
+<P>
+BCB also supports stack based pushing and popping of compiler arguments. The code
+above could also be written like this:
+</P>
+<pre>
+<font color="green">#pragma option push -a1           </font><font color="navy">// switch to -a1 byte alignment</font>
+<b>struct</b> ByteAlignedStruct
+<b>{</b>
+    BYTE  bVar1<b>;</b>
+    BYTE  bVar2<b>;</b>
+    BYTE  bVar3<b>;</b>
+    WORD  wVar4<b>;</b>
+    DWORD dwVar5<b>;</b>
+<b>}</b><b>;</b>
+<font color="green">#pragma option pop           </font><font color="navy">// return to -a4</font>
+</pre>
+<P>
+This technique is safer than the first, because it does not assume that the
+original setting alignment setting was <TT>-a4</TT>. By simply using the
+<TT>pop</TT> directive, the compiler returns to whatever the original setting
+was in the project file. In BCB5, the default is <TT>-a8</TT>. In older versions
+of BCB, the default is <TT>-a4</TT>. The <TT>pop</TT> command makes your code
+less susceptible to problems when upgrading from version to version.
+</P>
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

@@ -1,0 +1,1611 @@
+ID=A0436
+URL=http://www.citibank.com/uk/portal/consumer/
+SIZE=31838
+DATE=27/06/02
+TIME=17:11:16
+DATASET=Commercial Banks
+HTML=<html>
+<head>
+<script>
+<!--
+level = 0;
+tabnum = 1;
+//-->
+</script>
+<script src="http://data.citibank.co.uk/uk2/main/ukfeed2.js"></script>
+<script type="text/javascript">
+
+// load buttons
+
+lm_on = new Image();	lm_on.src = "images/myaccounts/but_lm_on.gif"
+sun_on = new Image();	sun_on.src = "images/myaccounts/but_sun_on.gif"
+lmmy_on = new Image();	lmmy_on.src = "images/myaccounts/but_lmmy_on.gif"
+li_on = new Image();	li_on.src = "images/myaccounts/but_li_on.gif"
+at_on = new Image();	at_on.src = "images/myaccounts/but_at_on.gif"
+isa_at_on = new Image();	isa_at_on.src = "images/myaccounts/but_isa_at_on.gif"
+isa_lm_on = new Image();	isa_lm_on.src = "images/myaccounts/but_isa_lm_on.gif"
+en_on = new Image();	en_on.src = "images/myaccounts/but_en_on.gif"
+ot_on = new Image();	ot_on.src = "images/myaccounts/but_ot_on.gif"
+mld_at_on = new Image();	mld_at_on.src = "images/myaccounts/but_mld_at_on.gif"
+
+function buttonOver(whichButton) {
+	document.images[whichButton].src = "images/myaccounts/but_" + whichButton + "_on.gif"
+
+}
+
+function buttonOut(whichButton) {
+	document.images[whichButton].src =  "images/myaccounts/but_" + whichButton + ".gif"
+
+}
+
+	
+	var indexStart;
+	var cooked;
+	var pos;
+	var arIndexOut = new Array();
+	
+	indexStart=0;
+	
+	//FTSEYTD	arIndexOut[0]
+	//DJIYTD	arIndexOut[1]
+	//IXICYTD	arIndexOut[2]
+	//GDAXIYTD	arIndexOut[3]
+	
+	arIndexOut[0] = new Array();
+	arIndexOut[1] = new Array();
+	arIndexOut[2] = new Array();
+	arIndexOut[3] = new Array();
+	
+	arIndexOut[0]=0;
+	arIndexOut[1]=1;
+	arIndexOut[2]=2;
+	arIndexOut[3]=3;
+	
+	cooked = document.cookie;
+	
+	//does the index cookie exist
+	pos=cooked.indexOf("index");
+	
+	//alert(pos);
+	
+	if(pos>=0)
+	{
+		//cookie does exist so use the value to write out the index item
+		
+		var posStart, posEnd;
+		
+		posStart=cooked.indexOf("index=");
+		posEnd=cooked.indexOf(";",posStart);
+		
+		if(posEnd < 0)
+		{
+			posEnd=posStart + 7
+		}
+		
+		pos= cooked.substring(posStart+6,posEnd);
+		
+		//alert(pos);
+		
+		writeIndexCookie(pos);
+		
+		//as the index cookie has a value let's change the values in the arIndexOut array
+		if(pos>3)
+		{
+			//If the value in the array is greater than 3 then an error has occured so do
+			//not ammend the array
+			//alert("Array is Greater - " + pos);
+		}
+		else
+		{
+			//array value can be changed
+			
+			if(pos==0)
+			{
+				arIndexOut[0]=0;
+				arIndexOut[1]=1;
+				arIndexOut[2]=2;
+				arIndexOut[3]=3;			
+			}
+			
+			
+			if(pos==1)
+			{
+				arIndexOut[0]=1;
+				arIndexOut[1]=2;
+				arIndexOut[2]=3;
+				arIndexOut[3]=0;
+			}
+		
+			
+			if(pos==2)
+			{
+				arIndexOut[0]=2;
+				arIndexOut[1]=3;
+				arIndexOut[2]=0;
+				arIndexOut[3]=1;
+			}
+			
+			if(pos==3)
+			{
+				arIndexOut[0]=3;
+				arIndexOut[1]=0;
+				arIndexOut[2]=1;
+				arIndexOut[3]=2;
+			}
+			
+		}
+		
+	}
+	else
+	{
+		writeIndexCookie(0);
+
+	}
+	
+
+function writeIndexCookie(sel)
+{
+	var cooked;
+	
+	cooked = document.cookie;
+	
+	//alert(cooked);
+	
+	document.cookie="index=" + sel;
+	
+}
+
+
+function writeIndexCookieRequest(sel)
+{
+
+	document.cookie="index=" + sel;
+	document.location.reload();
+	
+}
+
+function reFresh(whichmap,myImg,myGraph)
+{
+       if (document.images) 
+       {
+			document.images[whichmap].src=myImg;
+			document.images['dtfeed'].src=myGraph;
+			
+       }
+}
+
+function openNewsPopUp()
+{
+	
+	//window.open('newsfeed.htm','NewsItems',config='width=520,height=700,screenX=200,screenY=400,scrollbars=Yes,resizable=No');	
+	
+	document.location.href="http://data.citibank.co.uk/uk2/main/marketdata.asp";
+	
+}
+
+</script>
+<script type="text/javascript">
+
+var doc = document;
+var arLen;
+var i;
+var iGood;
+
+iGood = 0;
+
+function writeOutNews()
+{
+	var m;
+	var item;
+	
+	//arNewsWorldGlance
+	//arNewsWorldGeneral
+	//arNewsLocal
+	//arNewsSportsGlance
+	//arNewsSports
+	
+	//each news item has 5 elements
+	//we need to check each line for the existense of the
+	//title *Top News* - and if this exists
+	//then do not show this topic but check the next one in the section
+	
+	for(m=0;m<5;++m)
+	{
+		//check the array and get the news item text
+		item=arNewsWorldGlance[m][0];
+		
+		//Now check for the existense of *TOP NEWS*
+		pos=item.indexOf("*");
+			
+		if(pos<0)
+		{
+			writeFormHolder(m,arNewsWorldGlance);
+			m=6;
+		}
+	}
+	
+		
+	for(m=0;m<5;++m)
+	{
+		//check the array and get the news item text
+		item=arNewsWorldGeneral[m][0];
+				
+		//Now check for the existense of *TOP NEWS*
+		pos=item.indexOf("*");
+		if(pos<0)
+		{
+			writeFormHolder(m,arNewsWorldGeneral);
+			m=6;
+		}
+	}
+	
+	
+	for(m=0;m<5;++m)
+	{
+		//check the array and get the news item text
+		item=arNewsLocal[m][0];
+		
+		//Now check for the existense of *TOP NEWS*
+		pos=item.indexOf("*");
+		if(pos<0)
+		{
+			writeFormHolder(m,arNewsLocal);
+			m=6;
+		}
+	}
+	
+	for(m=0;m<5;++m)
+	{
+		//check the array and get the news item text
+		item=arNewsSports[m][0];
+		
+		//Now check for the existense of *TOP NEWS*
+		pos=item.indexOf("*");
+		if(pos<0)
+		{
+			writeFormHolder(m,arNewsSports);
+			m=6;
+		}
+	}
+		
+	
+	for(m=0;m<5;++m)
+	{
+		//check the array and get the news item text
+		item=arNewsSportsGlance[m][0];
+		
+		//Now check for the existense of *TOP NEWS*
+		pos=item.indexOf("*TOP NEWS*");
+		if(pos<0)
+		{
+			writeFormHolder(m,arNewsSportsGlance);
+			m=6;
+		}
+	}
+	
+}
+
+
+function writeFormHolder(arID,sel)
+{
+	
+	//News is written out as a form
+	
+	//Check to see taht we actually have some news there first
+	
+	var newsitem = sel[arID][0];
+		
+	if(newsitem!="")
+	{
+		doc.writeln ('<form name=frm' + arID + ' method=POST action="http://data.citibank.co.uk/uk2/main/uknewsdetail.asp?storyid=' + sel[arID][1] + '" target=_top>');	
+		doc.writeln ('<input type="hidden" name="leftnum" value="2">');
+		doc.writeln ('<input type="hidden" name="storyid" value="' + sel[arID][1] + '">');
+		doc.writeln ('<tr>');
+		doc.writeln ('<td valign=top class="small"><img height=9 src="/uk/portal/consumer/images/oarrow.gif" >&nbsp;&nbsp; ');
+		doc.writeln ('</td><td class="small"><a href="http://data.citibank.co.uk/uk2/main/uknewsdetail.asp?storyid=' + sel[arID][1] + '" class="small_link">');
+		doc.writeln (sel[arID][0] + '</a>' + ' - ' + sel[arID][3] + ' GMT');
+		doc.writeln ('</td></tr><tr>');
+		doc.writeln ('<td colspan="3" class="small"><img height=3 hspace=0 src="/uk/portal/consumer/images/trans.gif" vspace=2 width=1></td>');
+		doc.writeln ('</tr></form>');
+	}
+}
+
+function writeIndexValue(sel)
+{	
+	doc.writeln (arIndex[sel][2]);
+}
+
+function writeIndexMovementValue(sel)
+{
+	
+	doc.writeln (arIndex[sel][3]);
+}
+
+function writeIndexMovementPercent(sel)
+{
+
+	var total;
+	var movement;
+	var percentage;
+	
+	
+	total = arIndex[sel][2];
+	movement = arIndex[sel][3];
+	
+	percentage=((total/movement)/100);
+	
+	
+	//doc.writeln (percentage);
+	doc.writeln (-6);
+	
+}
+
+
+function writeOutIndexTitle(sel)
+{
+	
+	doc.writeln (arIndex[sel][1]);
+}
+
+function writeIndexImage(pos)
+{
+	var imgsrc, posOut;
+	
+	posOut=arIndexOut[pos];
+	
+	//imgrsrc= 'http://data.citibank.co.uk/'
+	//imgsrc = imgsrc + arIndex[sel][4];
+	
+	imgsrc = "<img src='http://data.citibank.co.uk" + arIndex[posOut][4] + "' width=200 height=100 border=0 name='MDchart'>";
+	
+	//imgsrc = "<img src='images/Indices_g.gif' width=200 height=100 border=0>";
+	
+	doc.writeln (imgsrc);
+
+}
+
+
+
+function writeIndexDetail(sel)
+{
+	var indx, pos, posOut, classOut, valOut, valPos;
+	
+	posOut=arIndexOut[sel];
+	
+	indx=arIndex[posOut][0];
+	pos = indx.indexOf("Error");
+	
+	if(pos<0)
+	{
+	
+		indx = arIndex[posOut][0];
+		//indx = arIndex[posOut][1];
+	
+		pos = indx.indexOf(".");
+		
+		if(pos>=0)
+		{
+	
+			indx=indx.substring(pos+1);
+			//alert(indx);
+	
+		}
+		
+		if(indexStart==0)
+		{
+			classOut = 'mainIndex';
+		}
+		else
+		{
+			classOut = 'siblingIndex';
+		}
+		
+		valOut=arIndex[posOut][3];
+		
+		valPos = valOut.indexOf("-");
+		
+		valOut = 'valueMinus';
+		
+		if(valPos>=0)
+		{
+			valOut = 'valueMinus';
+			arValueOut = arIndex[posOut][3];
+		}
+		else
+		{
+			valOut = 'valuePlus';
+			arValueOut = "+ " + arIndex[posOut][3];
+		}
+		
+		//if (posOut == 0)
+		//	showIndex = ".dji";
+		//else if (posOut == 1)
+		//	showIndex = ".ixic";
+		//else if (posOut == 2)
+		//	showIndex = ".ftse";
+		//else if (posOut == 3)
+		//	showIndex = ".gdaxi";			
+		
+		doc.writeln ('<table cellpadding=0 cellspacing=0 width=100% border=0><tr><td width=30%>');
+		//doc.writeln ('<a href="' + arIndex[sel][4] + '">' + arIndex[sel][0] + '</a></td><td width=35% align=right class=indicesValue>' + arIndex[sel][2] + '</td><td width=35% align=right class=indicesValue>' + arIndex[sel][3] + '</td></tr></table>');
+		doc.writeln ('<a href="javascript:getIndex(\'' + arIndex[posOut][0] + '\');" title="Click Here To View Market Details On ' +arIndex[posOut][1] + '"  alt="Click Here To View Market Details On ' +arIndex[posOut][1] + '" class="' + classOut + '">' + indx + '</a>');
+		doc.writeln ('</td><td width=35% align=right class="' + classOut + '">' + arIndex[posOut][2] + '</td><td width=35% align=right class="' + valOut + '">' + arValueOut + ' %</td></tr></table>');
+		
+		//increment the value of the indexStart variable to indicate that the initial line has been written out
+		++indexStart;
+	}
+}
+
+
+function writeStockDetail(sel)
+{
+	var valOut, valPos;
+	
+	valOut=arStock[sel][2];
+		
+	valPos = valOut.indexOf("-");
+		
+	valOut = 'valueMinus';
+		
+	if(valPos>=0)
+	{
+		valOut = 'valueMinus';
+		arValueOut = arStock[sel][2];
+	}
+	else
+	{
+		valOut = 'valuePlus';
+		arValueOut = "+ " + arStock[sel][2];
+	}
+		
+
+	doc.writeln ('<table cellpadding=0 cellspacing=0 width=100% border=0><tr><td width=30%>');
+	doc.writeln ('<a href="http://data.citibank.co.uk/uk2/main/ukquotedetail.asp?ric=' + arStock[sel][0] + '" class="siblingIndex">');
+	doc.writeln (arStock[sel][0] + '</a></td><td width=35% align=right class=siblingIndex>' + arStock[sel][1] + '</td>');
+	doc.writeln ('<td width=35% align=right class="' + valOut + '">' + arValueOut + '</td></tr></table>');
+
+}
+
+	
+	/*
+	arIndex[0][0]='.FTSE'; 
+	arIndex[0][1]='FTSE 100 INDEX '; 
+	arIndex[0][2]='5764.9'; 
+	arIndex[0][3]='-61.6'; 
+	arIndex[0][4]='/cfxtemp/CFT0313_060040395.gif'; 
+	*/
+
+function writeOutSpacer()
+{
+
+	if(document.all)
+	{
+		doc.writeln ('<table cellpadding=0 cellspacing=0 border=0 width=215>');
+		doc.writeln ('<tr><td><img height=3 hspace=0 src="images/trans.gif" vspace=2 width=1>');
+		doc.writeln ('</td></tr></table>');
+	}
+
+
+}
+
+function setOption(Opt)
+{
+	var oForm = document.frmQuote;
+		
+	oForm.SearchType.value = Opt.value;
+	
+}
+
+function getQuote()
+{
+
+	var sym;
+	var oForm = document.frmQuote;
+	
+	sym = document.frmQuote.ticker.value;
+	
+	if(sym!="")
+	{
+	
+		if (oForm.SearchType.value == 'NAME') 
+		{
+			window.open('http://data.citibank.co.uk/uk2/main/search_uk.asp?SearchString=' + sym,'CompanySearch',config='height=500,width=380,scrollbars=yes');
+			//window.open('CompanySearch.htm','CompanySearch',config='height=500,width=380,scrollbars=yes');
+		}
+		else 
+		{		
+			oForm.action = "http://data.citibank.co.uk/uk2/main/ukquotedetail.asp?ric=" + sym;	
+			oForm.submit();
+	
+		}
+	}
+	else
+	{
+		
+		alert('Please Enter A Value To Search For...');
+	
+	}
+	
+}
+
+function showDisclosure()
+{
+
+	window.open('disclose.htm','Disclosure',config='width=520,height=250,screenX=200,screenY=400,scrollbars=Yes,resizable=No');
+
+}
+
+function getIndex(index)
+{
+	location.href = "http://data.citibank.co.uk/uk2/main/ukquotedetail.asp?ric=" + index;
+}
+
+function Main(){
+	var windowhref = "http://cuk.cd.citibank.co.uk/HomeBankingSec/StartSession.asp?LANG=1&LANGNAME=English_(United_Kingdom)&DEVICEMODE=HTMLGPH&SRCT=10&MODE=2"
+	var now = new Date();
+	var windowname = "DA" + now.getTime();
+	window.open(windowhref,windowname,"toolbar=no,directories=no,location=no,status=yes,menubar=no,scrollbars=yes,resizable=yes,copyhistory=no");
+}
+
+</script>
+<style>
+
+.homeb
+{
+	font-weight: bold; 
+	font-size: 14px;
+}
+.boxhead
+{
+	background-color: #000066;
+}
+.boxheadtext
+{
+	color: #FFFFFF;
+	font-weight: bold;
+}
+.boxoutline
+{
+	background-color: #999999;
+}
+.boxtext
+{
+	background-color: #FFFFFF;
+}
+.newsH
+{
+	font-size: 8pt;
+	color: #3399CC;
+; text-decoration: underline}
+.newsT
+{
+	font-size: 7px;
+	color: #3399FF;
+; text-decoration: underline}
+</style>
+<title>Citibank UK</title>
+<meta CONTENT="Citibank UK Personal Banking" NAME="Description">
+<meta CONTENT="Citibank Services, Credit Card Services, Citibank Forums, Citibank Direct Access, Internet Banking, Personal Banking, Private Banking, Trust, Investments, Cash management, Securities, Foreign Exchange, Trading,
+UK Services, International Banking" NAME="Keywords">
+<script>
+if(navigator.appName == "Microsoft Internet Explorer")
+{
+	function reloadPage()
+	{
+		window.location.reload()
+	}
+}
+else
+{
+	function reloadPage()
+	{
+		window.location.reload()
+	}
+}
+
+// these functions are to fix the NS resize bug
+
+function WM_netscapeCssFix() {
+
+  if (document.WM.WM_netscapeCssFix.initWindowWidth != window.innerWidth || document.WM.WM_netscapeCssFix.initWindowHeight != window.innerHeight) {
+    document.location = document.location;
+  }
+}
+function WM_netscapeCssFixCheckIn() {
+  if ((navigator.appName == 'Netscape') && (parseInt(navigator.appVersion) == 4)) {
+    if (typeof document.WM == 'undefined'){
+      document.WM = new Object;
+    }
+    if (typeof document.WM.WM_scaleFont == 'undefined') {
+      document.WM.WM_netscapeCssFix = new Object;
+      document.WM.WM_netscapeCssFix.initWindowWidth = window.innerWidth;
+      document.WM.WM_netscapeCssFix.initWindowHeight = window.innerHeight;
+    }
+    window.onresize = WM_netscapeCssFix;
+  }
+}
+
+</script>
+<style>
+.bheadlg
+{
+    FONT-FAMILY: Verdana, Arial, sans-serif;
+    FONT-SIZE: 28px;
+    COLOR: #000066;
+}
+.gheadsm
+{
+    FONT-FAMILY: Verdana, Arial, sans-serif;
+    FONT-SIZE: 20px;
+    COLOR: #999999;
+    TEXT-DECORATION: none;
+}
+.gheadsm:hover
+{
+    FONT-FAMILY: Verdana, Arial, sans-serif;
+    FONT-SIZE: 20px;
+    COLOR: #999999;
+}
+.Rhead
+{
+    FONT-FAMILY: Verdana, Arial, sans-serif;
+    FONT-SIZE: 17px;
+    COLOR: #3399cc;
+    TEXT-DECORATION: none;
+}
+.Rhead:hover
+{
+    FONT-FAMILY: Verdana, Arial, sans-serif;
+    FONT-SIZE: 17px;
+    COLOR: #3399cc;
+}
+.xxsmall {  font-size: 7pt; font-weight: bold}
+.mainIndex {  font-size: 8pt}
+.valueMinus {  font-size: 8pt; color: #CC0000}
+.valuePlus {  font-size: 8pt}
+a.small {  font-size: 8pt; color: #3399CC; text-decoration: underline}
+a.small:hover { font-size: 8pt; color: #003399; text-decoration: underline }
+</style>
+<script>
+<!--
+
+
+
+
+// Depth in directory structure
+var srcLevel = new Array();
+srcLevel[0] = ""
+srcLevel[1] = "../"
+srcLevel[2] = "../../"
+srcLevel[3] = "../../../"
+
+var menu1 = new Object();
+menu1.count = 5;
+
+menu1.button1 = new Object();
+menu1.button1.name = "home";
+menu1.button1.caption = "Home";
+menu1.button1.link = srcLevel[level] + "index.htm";
+
+menu1.button2 = new Object();
+menu1.button2.name = "acc";
+menu1.button2.caption = "Current Accounts";
+menu1.button2.link = srcLevel[level] + "current/index.htm";
+
+menu1.button3 = new Object();
+menu1.button3.name = "sav";
+menu1.button3.caption = "Savings";
+menu1.button3.link = srcLevel[level] + "savings/index.htm";
+
+menu1.button4 = new Object();
+menu1.button4.name = "inv";
+menu1.button4.caption = "Investments";
+menu1.button4.link = srcLevel[level] + "investments/index.htm";
+
+menu1.button5 = new Object();
+menu1.button5.name = "cred";
+menu1.button5.caption = "Credit Cards";
+menu1.button5.link = srcLevel[level] + "credit_cards/index.htm";
+
+
+// Subnav Declaration
+
+var subnavs = new Object();
+subnavs.count = 5;
+
+	subnavs.menu1 = new Object();
+	subnavs.menu1.name = "subnav_home";
+	subnavs.menu1.count = 3;
+
+		subnavs.menu1.item1 = new Object();
+		subnavs.menu1.item1.caption = "Market News";
+		subnavs.menu1.item1.link = "http://data.citibank.co.uk/uk2/main/marketdata.asp";
+
+		subnavs.menu1.item2 = new Object();
+		subnavs.menu1.item2.caption = "About Internet Banking";
+		subnavs.menu1.item2.link = srcLevel[level] + "direct_access/index.htm";
+
+		subnavs.menu1.item3 = new Object();
+		subnavs.menu1.item3.caption = "Customer Info";
+		subnavs.menu1.item3.link = srcLevel[level] + "customer_info/index.htm";
+		
+				
+	subnavs.menu2 = new Object();
+	subnavs.menu2.name = "subnav_accounts";
+	subnavs.menu2.count = 4;
+
+		subnavs.menu2.item1 = new Object();
+		subnavs.menu2.item1.caption = "Sterling Current Account";
+		subnavs.menu2.item1.link = srcLevel[level] + "current/sterling/index.htm";
+
+		subnavs.menu2.item2 = new Object();
+		subnavs.menu2.item2.caption = "Euro Current Account";
+		subnavs.menu2.item2.link = srcLevel[level] + "current/euro/index.htm";
+
+		subnavs.menu2.item3 = new Object();
+		subnavs.menu2.item3.caption = "US Dollar Current Account";
+		subnavs.menu2.item3.link = srcLevel[level] + "current/usd/index.htm";
+
+		subnavs.menu2.item4 = new Object();
+		subnavs.menu2.item4.caption = "Overdraft Facilities";
+		subnavs.menu2.item4.link = srcLevel[level] + "current/overdraft/index.htm";
+
+	subnavs.menu3 = new Object();
+	subnavs.menu3.name = "subnav_savings";
+	subnavs.menu3.count = 3;
+
+		subnavs.menu3.item1 = new Object();
+		subnavs.menu3.item1.caption = "High Interest Account";
+		subnavs.menu3.item1.link = srcLevel[level] + "savings/high_interest/index.htm";
+
+		subnavs.menu3.item2 = new Object();
+		subnavs.menu3.item2.caption = "60 Day Direct Account";
+		subnavs.menu3.item2.link = srcLevel[level] + "savings/60day_direct/index.htm";
+
+		subnavs.menu3.item3 = new Object();
+		subnavs.menu3.item3.caption = "Currency Savings Accounts";
+		subnavs.menu3.item3.link = srcLevel[level] + "savings/curr_save/index.htm";
+		
+	subnavs.menu4 = new Object();
+	subnavs.menu4.name = "subnav_invest";
+	subnavs.menu4.count = 5;
+
+		subnavs.menu4.item1 = new Object();
+		subnavs.menu4.item1.caption = "Internet Sharedealing";
+		subnavs.menu4.item1.link = srcLevel[level] + "investments/internet_sharedealing/index.htm";
+
+		subnavs.menu4.item2 = new Object();
+		subnavs.menu4.item2.caption = "Telephone Sharedealing";
+		subnavs.menu4.item2.link = srcLevel[level] + "investments/tele_sharedealing/index.htm";
+
+		subnavs.menu4.item3 = new Object();
+		subnavs.menu4.item3.caption = "ISA";
+		subnavs.menu4.item3.link = srcLevel[level] + "investments/isa/index.htm";
+
+		subnavs.menu4.item4 = new Object();
+		subnavs.menu4.item4.caption = "Offshore Banking";
+		subnavs.menu4.item4.link = srcLevel[level] + "investments/offshore_banking/index.htm";
+		
+		subnavs.menu4.item5 = new Object();
+		subnavs.menu4.item5.caption = "Market News";
+		subnavs.menu4.item5.link = "http://data.citibank.co.uk/uk2/main/marketdata.asp";		
+	
+	subnavs.menu5 = new Object();
+	subnavs.menu5.name = "subnav_cards";
+	subnavs.menu5.count = 3;
+
+		subnavs.menu5.item1 = new Object();
+		subnavs.menu5.item1.caption = "Preferred Visa Gold Card - Sterling";
+		subnavs.menu5.item1.link = srcLevel[level] + "credit_cards/visa_gold/sterling.htm";
+		
+		subnavs.menu5.item2 = new Object();
+		subnavs.menu5.item2.caption = "Preferred Visa Gold Card - US Dollar";
+		subnavs.menu5.item2.link = srcLevel[level] + "credit_cards/visa_gold/us.htm";
+		
+		subnavs.menu5.item3 = new Object();
+		subnavs.menu5.item3.caption = "AAdvantage Visa Card";
+		subnavs.menu5.item3.link = srcLevel[level] + "credit_cards/a_advantage/index.htm";
+//-->
+</script>
+<link rel="stylesheet" href="citi_sty.css" type="text/css">
+<script language="JavaScript">
+<!--
+function MM_reloadPage(init) {  //reloads the window if Nav4 resized
+  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
+    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
+  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) document.reload();
+}
+MM_reloadPage(true);
+// -->
+</script>
+</head>
+<body bgcolor="#ffffff" leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" onResize="MM_reloadPage(true);">
+<script>
+if (navigator.appName == "Netscape" && parseInt(navigator.appVersion) == 4) 
+{
+        var docwidth = innerWidth;
+        docM = docwidth + 20;
+}
+else if (navigator.appName == "Microsoft Internet Explorer")
+{ 
+        docM = "100%";
+} 
+if (navigator.appName == "Netscape" && parseInt(navigator.appVersion) > 4) 
+{
+		docM = "100%";
+}
+
+</script>
+<img src="images/nav/wave.gif" height="36" width="100%"> 
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+ <tr>
+    <td width="10"><img src="images/trans.gif" height="1" width="10"></td>
+    <td><a href="index.htm"><img src="images/nav/logo.gif" border="0" height="44" width="139" alt="Citibank"></a></td>
+  <td align="right" width="100%">
+<table border='0' cellspacing='0' cellpadding='0'>
+ <tr>
+          <td nowrap align='right'> <img src='images/bullets/bbullet.gif' width='3' height='9'> 
+            <A class='abodys' href='privacy/index.htm'><FONT color='#000066'>Privacy</FONT></A> 
+            <img src='images/bullets/bbullet.gif' width='3' height='9'> <A class='abodys' href='http://www.citibank.com'><FONT color='#000066'>Citi.com</FONT></A> 
+          </td>
+ </tr>
+ <tr>
+          <td> <img src='images/trans.gif' width='2' height='4'><br>
+  </td>
+ </tr>
+ <tr>
+          <td bgcolor='#CCCCCC'> <img src='images/trans.gif' width='2' height='1'><br>
+          </td>
+ </tr>
+ <tr>
+          <td> <img src='images/trans.gif' width='2' height='4'><br>
+  </td>
+ </tr>
+ <tr>
+          <td align="right"> <img src='images/bullets/bbullet.gif' width='3' height='9'> 
+            <a class='abodys' href='direct_access/security/index.htm'><FONT color='#000066'>Security</FONT></A> 
+            <img src='images/bullets/bbullet.gif' width='3' height='9'> <a class='abodys' href='applynow/index.htm'><FONT color='#000066'>Apply 
+            Now</FONT></A> <img src='images/bullets/bbullet.gif' width='3' height='9'> 
+            <a class='abodys' href='about_us/index.htm'><FONT color='#000066'>About 
+            Us</FONT></A> <img src='images/bullets/bbullet.gif' width='3' height='9'> 
+            <a class='abodys' href='helpdesk/index.htm'><FONT color='#000066'>Help 
+            Desk</FONT></A> </td>	
+ </tr>
+</table>  
+  </td>
+    <td width="10"><img src="images/trans.gif" height="1" width="10"></td>
+ </tr>
+</table>
+
+<!-- #BeginLibraryItem "/Library/navbar.lbi" --><table border="0" cellpadding="0" cellspacing="0" width="100%">
+ <tr>
+  <td rowspan="4" width="10"><img src="images/trans.gif" height="1" width="10"></td>
+    <td rowspan="2" width="125"><img src="images/nav/uk_small.gif" height="34" width="125"></td>  
+<script>
+for(i=1;i<=5;i++)
+{
+
+	if(i == tabnum)
+	{
+		document.write("<td rowspan='2'><a href='" + menu1["button" + i].link + "'><img src='/uk/portal/consumer/images/nav/" + menu1["button" + i].name + "_on.gif' height='34' alt='" + menu1["button" + i].caption + "' border='0'></a></td>");
+	}	
+	else
+	{
+			if(i != (tabnum + 1))
+			{
+				document.write("<td rowspan='2' background='/uk/portal/consumer/images/nav/tback.gif'><img src='/uk/portal/consumer/images/trans.gif' height='1' width='8'>");
+			}
+			else
+			{
+				document.write("<td rowspan='2'>");
+			}
+		document.write("<a href='" + menu1["button" + i].link + "'><img src='/uk/portal/consumer/images/nav/" + menu1["button" + i].name + "_off.gif' height='34' alt='" + menu1["button" + i].caption + "' border='0'></a></td>");
+	}
+}
+</script>
+    <td background="/consumer/images/nav/tback.gif"><img src="images/trans.gif" height="33" width="100%"></td>
+    <td rowspan="2"><img src="images/trans.gif" height="1" width="1"></td>
+ </tr>
+ <tr>
+    <td bgcolor="#cccccc" width="961"><img src="images/trans.gif" height="1" width="1"></td>
+ </tr>
+ <tr>
+  <td colspan="7">
+<table border="0" cellpadding="0" cellspacing="0">
+ <tr>
+  <td width="1" bgcolor="#cccccc"><img src="images/trans.gif" height="23" width="1"></td>
+  <td width="5" bgcolor="#cccccc"><img src="images/trans.gif" height="1" width="5"></td>
+  <script>document.write("<td width='" + docM + "' bgcolor='#cccccc'>");</script>
+  <script>
+  // loop subnav items
+  <!--
+			for(i2 = 1; i2 <= subnavs["menu" + tabnum].count; i2++)
+			{
+				document.write("<img src='" + srcLevel[level] + "images/bbullet.gif' width='3' height='9' hspace='4'><a href='" + subnavs["menu" + tabnum]["item" + i2].link + "' class='subtext' target='_top'>" + subnavs["menu" + tabnum]["item" + i2].caption + "</a>&nbsp;");
+			}
+  //-->
+  </script>
+  </table></td>
+    <td bgcolor="#cccccc"><img src="images/trans.gif" height="1" width="1"></td>
+    <td><img src="images/trans.gif" height="8" width="10"></td>
+ </tr>
+ <tr>
+  <td colspan="7" bgcolor="#cccccc"><img src="images/trans.gif" height="1" width="1"></td>
+ </tr>
+</table><!-- #EndLibraryItem --><br>	
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+ <tr>
+    <td width="100%" valign="bottom"><img src="images/trans.gif" height="1" width="10"><img src="images/home/welcome.gif" width="150" height="32"></td>
+    <td align="right"> <img src="images/loginbr.gif" width="490" height="35" align="right" usemap="#loginmapMap" border="0"> 
+      <map name="loginmapMap"> 
+        <area shape="rect" coords="71,10,190,30" href="#start_session" alt="Internet Banking" title="Internet Banking" onClick="javascript:Main();" target="_top">
+	<area shape="rect" coords="198,10,290,30" href="investments/internet_sharedealing/index_td.htm" alt="Sharedealing" title="Sharedealing" target="_top">
+	<area shape="rect" coords="297,10,392,30" href="investments/isa/manage.htm" alt="ISA Manager" target="_top" title="ISA Manager">
+	    <area shape="rect" coords="395,10,490,30" href="https://login.citibank.co.uk/login.asp" alt="My Accounts" target="_top" title="My Accounts"> 
+</map>
+  </td>
+    <td width="10"><img src="images/trans.gif" height="1" width="10"></td>
+ </tr>
+</table>
+<img src="images/trans.gif" width="1" height="10"><br>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td valign="top"><img src="images/trans.gif" height="8" width="10"></td>
+    <td width="0%" valign="top"> 
+      <table cellspacing=0 cellpadding=0 width=185 border=0>
+        <tbody> 
+        <tr> 
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/glefttop.gif" width=6></td>
+          <td width=203 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" width=1></td>
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/grt_top.gif" width=6></td>
+        </tr>
+        <tr> 
+          <td width=203><img height=5 
+                  src="images/trans.gif" 
+            width=1></td>
+        </tr>
+        </tbody> 
+      </table>
+      <table cellspacing=0 cellpadding=0 width=185 border=0>
+        <tbody> 
+        <tr> 
+          <td width=1 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" width=1></td>
+          <td width=5><img height=1 
+                  src="images/trans.gif" width=3></td>
+          <td width=203> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="5">
+              <tr> 
+                <td> 
+                  <p><a href="home/left_banner1.htm"><b><img src="images/home/sub_my2.gif" width="165" height="32" vspace="5" border="0" alt="My Accounts - Breaking News"></b></a><br>
+                    <span class="small">Leading UK banks added to My Accounts. 
+                    </span></p>
+                  <p align="right"><img src="images/bbullet.gif" width="3" height="9"> 
+                    <a href="home/left_banner1.htm" class="small">Learn More</a></p>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td width=5><img height=1 
+                  src="images/trans.gif" width=3></td>
+          <td width=1 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" 
+            width=1></td>
+        </tr>
+        </tbody> 
+      </table>
+      <table cellspacing=0 cellpadding=0 width=185 border=0>
+        <tbody> 
+        <tr> 
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/gleftbtm.gif" width=6></td>
+          <td width=203><img height=5 
+                  src="images/trans.gif" width=1></td>
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/grt_btm.gif" width=6></td>
+        </tr>
+        <tr> 
+          <td width=203 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" 
+            width=1></td>
+        </tr>
+        </tbody> 
+      </table>
+      <br>
+      <table cellspacing=0 cellpadding=0 width=185 border=0>
+        <tbody> 
+        <tr> 
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/glefttop.gif" width=6></td>
+          <td width=203 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" width=1></td>
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/grt_top.gif" width=6></td>
+        </tr>
+        <tr> 
+          <td width=203><img height=5 
+                  src="images/trans.gif" 
+            width=1></td>
+        </tr>
+        </tbody> 
+      </table>
+      <table cellspacing=0 cellpadding=0 width=185 border=0>
+        <tbody> 
+        <tr> 
+          <td width=1 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" width=1></td>
+          <td width=5><img height=1 
+                  src="images/trans.gif" width=3></td>
+          <td width=203> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="5">
+              <tr>
+                <td> 
+                  <p><a href="home/left_banner2.htm"><img src="images/home/sub_cpp.gif" width="165" height="32" vspace="5" border="0" alt="Capital Protected Products"></a><br>
+                    <span class="small">Find our more about our new Capital Protected 
+                    Products.</span></p>
+                  <p align="right"><img src="images/bbullet.gif" width="3" height="9"> 
+                    <span class="small"><a href="home/left_banner2.htm" class="small">Learn 
+                    More </a></span></p>
+                  </td>
+              </tr>
+            </table>
+            
+          </td>
+          <td width=5><img height=1 
+                  src="images/trans.gif" width=3></td>
+          <td width=1 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" 
+            width=1></td>
+        </tr>
+        </tbody> 
+      </table>
+      <table cellspacing=0 cellpadding=0 width=185 border=0>
+        <tbody> 
+        <tr> 
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/gleftbtm.gif" width=6></td>
+          <td width=203><img height=5 
+                  src="images/trans.gif" width=1></td>
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/grt_btm.gif" width=6></td>
+        </tr>
+        <tr> 
+          <td width=203 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" 
+            width=1></td>
+        </tr>
+        </tbody> 
+      </table>
+      <br>
+      <table cellspacing=0 cellpadding=0 width=185 border=0>
+        <tbody> 
+        <tr> 
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/glefttop.gif" width=6></td>
+          <td width=203 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" width=1></td>
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/grt_top.gif" width=6></td>
+        </tr>
+        <tr> 
+          <td width=203><img height=5 
+                  src="images/trans.gif" 
+            width=1></td>
+        </tr>
+        </tbody> 
+      </table>
+      <table cellspacing=0 cellpadding=0 width=185 border=0>
+        <tbody> 
+        <tr> 
+          <td width=1 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" width=1></td>
+          <td width=5><img height=1 
+                  src="images/trans.gif" width=3></td>
+          <td width=203 class="small"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="5">
+              <tr> 
+                <td> 
+                  <p><a href="home/left_banner3.htm"><img src="images/home/sub_ib.gif" width="165" height="16" vspace="5" border="0" alt="Internet Banking"></a><br>
+                    <span class="small">Many Citibank customers are already enjoying 
+                    the benefits of banking online. You can join them right now.</span></p>
+                  <p align="right"><img src="images/bbullet.gif" width="3" height="9"> 
+                    <a href="home/left_banner3.htm" class="small">Learn More</a></p>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td width=5><img height=1 
+                  src="images/trans.gif" width=3></td>
+          <td width=1 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" 
+            width=1></td>
+        </tr>
+        </tbody> 
+      </table>
+      <table cellspacing=0 cellpadding=0 width=185 border=0>
+        <tbody> 
+        <tr> 
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/gleftbtm.gif" width=6></td>
+          <td width=203><img height=5 
+                  src="images/trans.gif" width=1></td>
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/grt_btm.gif" width=6></td>
+        </tr>
+        <tr> 
+          <td width=203 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" 
+            width=1></td>
+        </tr>
+        </tbody> 
+      </table>
+      <br>
+      <table cellspacing=0 cellpadding=0 width=185 border=0>
+        <tbody> 
+        <tr> 
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/glefttop.gif" width=6></td>
+          <td width=203 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" width=1></td>
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/grt_top.gif" width=6></td>
+        </tr>
+        <tr> 
+          <td width=203><img height=5 
+                  src="images/trans.gif" 
+            width=1></td>
+        </tr>
+        </tbody> 
+      </table>
+      <table cellspacing=0 cellpadding=0 width=185 border=0>
+        <tbody> 
+        <tr> 
+          <td width=1 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" width=1></td>
+          <td width=5><img height=1 
+                  src="images/trans.gif" width=3></td>
+          <td width=203 class="small">
+            <table width="100%" border="0" cellspacing="0" cellpadding="5">
+              <tr>
+                <td> 
+                  <p><a href="home/left_banner4.htm"><img src="images/home/sub_25.gif" width="165" height="16" vspace="5" border="0" alt="&pound;25 For Free"></a><br>
+                    <span class="small">Received &pound;25 for free<br>
+                    when you open a Citibank Premium Current Account Online before 
+                    30th June 2002.</span></p>
+                  <p align="right"><img src="images/bbullet.gif" width="3" height="9"> 
+                    <a href="home/left_banner4.htm" class="small">Apply Today</a></p>
+                  </td>
+              </tr>
+            </table>
+          </td>
+          <td width=5><img height=1 
+                  src="images/trans.gif" width=3></td>
+          <td width=1 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" 
+            width=1></td>
+        </tr>
+        </tbody> 
+      </table>
+      <table cellspacing=0 cellpadding=0 width=185 border=0>
+        <tbody> 
+        <tr> 
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/gleftbtm.gif" width=6></td>
+          <td width=203><img height=5 
+                  src="images/trans.gif" width=1></td>
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/grt_btm.gif" width=6></td>
+        </tr>
+        <tr> 
+          <td width=203 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" 
+            width=1></td>
+        </tr>
+        </tbody> 
+      </table>
+      <br>
+      <table cellspacing=0 cellpadding=0 width=185 border=0>
+        <tbody> 
+        <tr> 
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/glefttop.gif" width=6></td>
+          <td width=203 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" width=1></td>
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/grt_top.gif" width=6></td>
+        </tr>
+        <tr> 
+          <td width=203><img height=5 
+                  src="images/trans.gif" 
+            width=1></td>
+        </tr>
+        </tbody> 
+      </table>
+      <table cellspacing=0 cellpadding=0 width=185 border=0>
+        <tbody> 
+        <tr> 
+          <td width=1 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" width=1></td>
+          <td width=5><img height=1 
+                  src="images/trans.gif" width=3></td>
+          <td width=203 class="small"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="5">
+              <tr> 
+                <td> 
+                  <p><a href="home/left_banner5.htm"><img src="images/home/sub_trans.gif" width="165" height="16" vspace="5" border="0" alt="Transferring to Citibank"></a><br>
+                    <span class="small">Our online account transfer makes it easy 
+                    to move your account to Citibank.</span></p>
+                  <p align="right"><img src="images/bbullet.gif" width="3" height="9"> 
+                    <a href="home/left_banner5.htm" class="small">Learn More</a></p>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td width=5><img height=1 
+                  src="images/trans.gif" width=3></td>
+          <td width=1 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" 
+            width=1></td>
+        </tr>
+        </tbody> 
+      </table>
+      <table cellspacing=0 cellpadding=0 width=185 border=0>
+        <tbody> 
+        <tr> 
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/gleftbtm.gif" width=6></td>
+          <td width=203><img height=5 
+                  src="images/trans.gif" width=1></td>
+          <td width=6 rowspan=2><img height=6 
+                  src="images/home/grt_btm.gif" width=6></td>
+        </tr>
+        <tr> 
+          <td width=203 bgcolor=#999999><img height=1 
+                  src="images/trans.gif" 
+            width=1></td>
+        </tr>
+        </tbody> 
+      </table>
+      
+    </td>
+    <td width="0%" valign="top"><img src="images/trans.gif" width="20" height="1"></td>
+    <td width="100%" valign="top"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="0%"> 
+            <p><img src="images/home/vis_pb_1.jpg" width="8" height="142"></p>
+            </td>
+          <td width="100%"><a href="home/mid_banner1a.htm"><img src="images/home/vis_pb_2.jpg" width="100%" height="142" border="0"></a></td>
+          <td width="0%"> 
+            <div align="right"><img src="images/home/vis_pb_3.jpg" width="167" height="142"></div>
+          </td>
+        </tr>
+      </table>
+      <p align="right"> <img src="images/bbullet.gif" width="3" height="9"> <a href="home/mid_banner1a.htm">Learn 
+        More</a> <img src="images/bbullet.gif" width="3" height="9"> <a href="home/mid_banner1b.htm">Apply 
+        Now</a><br>
+      </p>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td bgcolor="#999999"><img src="images/trans.gif" width="1" height="1"></td>
+        </tr>
+      </table>
+      <br>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr valign="top">
+          <td>
+            <p><a href="home/mid_banner2a.htm"><img src="images/home/cms_head.gif" width="250" height="25" border="0" alt="Citibank Mortgage Service in association with Charcol"></a><br>
+              <b><font color="#003D79">In association with Charcol.</font><br>
+              <br>
+              </b>Lost in the mortgage maze? We'll help you find the right solution.</p>
+            <p><img src="images/bbullet.gif" width="3" height="9"> <a href="home/mid_banner2a.htm">Learn 
+              More</a><b> </b></p>
+          </td>
+          <td><img src="images/trans.gif" width="10" height="1"></td>
+          <td> 
+            <p><img src="images/home/charcol_maze.gif" width="100" height="100"></p>
+            </td>
+        </tr>
+      </table>
+      <br>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td bgcolor="#999999"><img src="images/trans.gif" width="1" height="1"></td>
+        </tr>
+      </table>
+      <br>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr valign="top"> 
+          <td> 
+            <p><img src="images/home/postit.gif" width="147" height="147"></p>
+          </td>
+          <td><img src="images/trans.gif" width="10" height="1"></td>
+          <td> 
+            <p><a href="home/mid_banner3a.htm"><img src="images/home/password_head.gif" width="205" height="25" border="0" alt="To Many Passwords?"></a><br>
+              Our FREE service &quot;My Accounts&quot; allows you to view all 
+              your online accounts - Citibank and non Citibank - in one place, 
+              with just one secure password. And it's available to everybody not 
+              only customers!</p>
+            <p>Register today and never forget your passwords again.</p>
+            <p align="right"> <img src="images/bbullet.gif" width="3" height="9"> 
+              <a href="home/mid_banner3a.htm">Learn More </a> <img src="images/bbullet.gif" width="3" height="9"> 
+              <a href="home/mid_banner3b.htm">Signup </a><img src="images/bbullet.gif" width="3" height="9"> 
+              <a href="home/mid_banner3c.htm">Login</a></p>
+            </td>
+        </tr>
+      </table>
+      <br>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td bgcolor="#999999"><img src="images/trans.gif" width="1" height="1"></td>
+        </tr>
+      </table>
+      <br>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td><a href="home/mid_banner4a.htm"><img src="images/travelmoney/home_head.gif" width="225" height="25" vspace="2" border="0" alt="Citibank Travel Money"></a></td>
+        </tr>
+        <tr valign="top"> 
+          <td background="images/travelmoney/beach-fade.jpg"> 
+            <table width="230" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td> 
+                  <p>Order foreign currency and travellers cheques online or over 
+                    the telephone.</p>
+                  <p><img src="images/bbullet.gif" width="3" height="9"> <a href="home/mid_banner4a.htm">Order 
+                    Here </a></p>
+                  </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <br>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td bgcolor="#999999"><img src="images/trans.gif" width="1" height="1"></td>
+        </tr>
+      </table>
+      
+    </td>
+    <td><img src="images/trans.gif" width="20" height="1"></td>
+    <td valign="top"> 
+      <table cellspacing="0" cellpadding="0" width="210" border="0">
+        <tr bgcolor="#003399"> 
+          <td valign="top" align="left" width="5"><img height="5" src="images/cutout1.gif" width="5"></td>
+          <td class="boxheadtext" noWrap bgcolor="#003399">Quote Search</td>
+          <td width="100%" bgcolor="#003399"><img height="18" src="images/trans.gif" width="5" align="absMiddle"></td>
+          <td valign="top" align="right" width="5"><img height="5" src="images/cutout2.gif" width="5"></td>
+        </tr>
+      </table>
+      <table width="210" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="0" bgcolor="#003399" valign="top"><img src="images/trans.gif" width="1" height="1"></td>
+          <td width="208"> 
+            <table cellpadding="2" cellspacing="0" width="100%" border="0">
+              <tr> 
+                <td bgcolor="#FFFFFF">
+                  <form name="frmQuote" id="frmQuote" method="post" action="http://data.citibank.co.uk/uk/main/ukquotedetail.asp" onSubmit="getQuote();">
+                    <input type="hidden" value="SYMBOL" name="SearchType">
+                    
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                      <tr> 
+                        <td width="50%"> 
+                          <input size="6" id="ticker" name="ticker" class="small">
+                          <a href="javascript:getQuote();"> <img src="images/home/go_but.gif" border="0" alt="Go" width="32" height="14"></a></td>
+                        <td width="50%"> 
+                          <input type="radio" value="SYM" name="optSearch" align="left" onClick="setOption(this);" checked>
+                          <span class="small">Symbol<br>
+                          </span> 
+                          <input type="radio" value="NAME" name="optSearch" align="left" onClick="setOption(this);">
+                          <span class="small">Name</span> </td></tr></table></form></td></tr></table></td>
+          <td width="0" bgcolor="#003399"><img src="images/trans.gif" width="1" height="1"></td>
+        </tr>
+      </table>
+      <table width="210" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="0" valign="bottom"><img src="images/home/e_ll.gif" width="5" height="5"></td>
+          <td width="200" valign="bottom"><img src="images/home/e_dot.gif" width="200" height="1"></td>
+          <td width="0" valign="bottom"><img src="images/home/e_lr.gif" width="5" height="5"></td>
+        </tr>
+      </table>
+      <br>
+      <script>
+
+function changeChart(newChart)
+{
+var path = "img/";
+
+document.images.ftse.src = path + "ftse_off.gif";
+document.images.gdaxi.src = path + "gdaxi_off.gif";
+document.images.dji.src = path + "dji_off.gif";
+document.images.ixic.src = path + "ixic_off.gif";
+document.images[newChart].src = path + newChart + "_on.gif";
+document.images.MDchart.src = "http://data.citibank.co.uk/cfxtemp/." + newChart + "YTD200100.gif";
+
+}
+
+
+</script>
+      <table cellspacing="0" cellpadding="0" width="210" border="0">
+        <tr bgcolor="#000066"> 
+          <td valign="top" align="left" width="5" bgcolor="#003399"><img height="5" src="images/cutout1.gif" width="5"></td>
+          <td class="boxheadtext" noWrap bgcolor="#003399">Market Data</td>
+          <td width="100%" bgcolor="#003399"><img height="18" src="images/trans.gif" width="5" align="absMiddle"></td>
+          <td valign="top" align="right" width="5" bgcolor="#003399"><img height="5" src="images/cutout2.gif" width="5"></td>
+        </tr>
+      </table>
+      <table width="210" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="0" bgcolor="#000066" valign="top"><img src="images/trans.gif" width="1" height="1"></td>
+          <td width="208"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="box1">
+              <tr> 
+                <td class="boxtext"> 
+                  <table border="0" cellpadding="0" cellspacing="0">
+                    <tr> 
+                      <td><a href="javascript:changeChart('ftse');" onMouseOver="status='FTSE'; return true;" onMouseOut="status=' '"><img src="img/ftse_on.gif" height="20" id="ftse" name="ftse" border="0" alt="FTSE" width="52"></a> 
+                      </td>
+                      <td><a href="javascript:changeChart('gdaxi');" onMouseOver="status='GDAXI'; return true;" onMouseOut="status=' '"><img src="img/gdaxi_off.gif" height="20" id="gdaxi" name="gdaxi" border="0" alt="gdaxi" width="52"></a> 
+                      </td>
+                      <td><a href="javascript:changeChart('dji');" onMouseOver="status='DOW JONES'; return true;" onMouseOut="status=' '"><img src="img/dji_off.gif" height="20" id="dji" name="dji" border="0" alt="DJI" width="52"></a> 
+                      </td>
+                      <td><a href="javascript:changeChart('ixic');" onMouseOver="status='IXIC'; return true;" onMouseOut="status=' '"><img src="img/ixic_off.gif" height="20" id="ixic" name="ixic" border="0" alt="IXIC" width="52"></a> 
+                      </td>
+                    </tr>
+                  </table>
+                  <div align="center"> 
+                    <script type="text/javascript">writeIndexImage('0');</script>
+                  </div>
+                  <table border="0" cellpadding="3" cellspacing="0" width="100%">
+                    <tr> 
+                      <td bgcolor="#EEEEEE"> 
+                        <script type="text/javascript">writeIndexDetail('0');</script>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td> 
+                        <script type="text/javascript">writeIndexDetail('1');</script>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td bgcolor="#EEEEEE"> 
+                        <script type="text/javascript">writeIndexDetail('2');</script>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td> 
+                        <script type="text/javascript">writeIndexDetail('3');</script>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td width="0" bgcolor="#000066"><img src="images/trans.gif" width="1" height="1"></td>
+        </tr>
+      </table>
+      <table width="210" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="0" valign="bottom"><img src="images/home/e_ll.gif" width="5" height="5"></td>
+          <td width="200" valign="bottom"><img src="images/home/e_dot.gif" width="200" height="1"></td>
+          <td width="0" valign="bottom"><img src="images/home/e_lr.gif" width="5" height="5"></td>
+        </tr>
+      </table>
+      <br>
+      <table cellspacing="0" cellpadding="0" width="210" border="0">
+        <tr bgcolor="#000066"> 
+          <td valign="top" align="left" width="5" bgcolor="#003399"><img height="5" src="images/cutout1.gif" width="5"></td>
+          <td class="boxheadtext" noWrap bgcolor="#003399" width="163">News Headlines</td>
+          <td width="37" bgcolor="#003399"><img height="18" src="images/trans.gif" width="5" align="absMiddle"></td>
+          <td valign="top" align="right" width="5" bgcolor="#003399"><img height="5" src="images/cutout2.gif" width="5"></td>
+        </tr>
+      </table>
+      <table width="210" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="0" bgcolor="#003399" valign="top"><img src="images/trans.gif" width="1" height="1"></td>
+          <td width="208"> 
+            <table cellpadding="2" cellspacing="0" width="100%" border="0">
+
+                <tr> 
+                  <td bgcolor="#FFFFFF"> 
+                    <table cellspacing="0" cellpadding="2" width="100%" border="0">
+                      <tr> 
+                        <td colspan="2"> 
+                          <table border="0" cellpadding="2" cellspacing="0">
+                            <script>
+for(i=0;i<3;i++)
+{
+document.write("<td width='1%' valign='top'><img src='images/bbullet.gif' width='3' height='9' vspace='2'></td><td><a href='http://data.citibank.co.uk/uk2/main/uknewsdetail.asp?storyid=" + arNews[i][1] + "' class='newsH'>" + arNews[i][0] + "</a> </td></tr>");
+
+}
+
+</script><span class="small">To personalise your news register 
+                        for <a href="https://login.citibank.co.uk/login_128/someaction.asp" class="small">My 
+                        Accounts</a> today.</span>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr> 
+                        <td class="boxtext">&nbsp;</td>
+                        <td class="boxtext" noWrap align="right"> <span class="small"><b>©Reuters 
+                          Ltd.</b>- <a class="small" href="javascript:showDisclosure();">restrictions</a></span> 
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+            </table>
+          </td>
+          <td width="0" bgcolor="#003399"><img src="images/trans.gif" width="1" height="1"></td>
+        </tr>
+      </table>
+      <table width="210" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="0" valign="bottom"><img src="images/home/e_ll.gif" width="5" height="5"></td>
+          <td width="200" valign="bottom"><img src="images/home/e_dot.gif" width="200" height="1"></td>
+          <td width="0" valign="bottom"><img src="images/home/e_lr.gif" width="5" height="5"></td>
+        </tr>
+      </table>
+    </td>
+    <td><img src="images/trans.gif" height="1" width="13"></td>
+  </tr>
+</table>
+<script language="JavaScript" type="text/javascript">
+<!--
+
+var szFooter;
+
+szFooter = "<table width='100%' border='0' cellspacing='0' cellpadding='0' vspace='0' hspace='0'><tr>";
+szFooter += "<td width='100%' colspan='2'><img src='" + srcLevel[level] + "images/trans.gif' width='1' height='10'></td>";
+szFooter += "</tr><tr>";
+szFooter += "<td width='100%' colspan='2' bgcolor='#cccccc' height='1'><img src='" + srcLevel[level] + "images/trans.gif' width='2' height='1'></td>";
+szFooter += "</tr><tr>";
+szFooter += "<td valign='top' align='left'>&nbsp;&nbsp;<a href='http://www.citi.com'><img src='" + srcLevel[level] + "images/footlogo.gif' width='55' height='22' border='0' alt='Citi.com'></a><br>&nbsp;&nbsp;<a href='http://www.citi.com' class='afooter'>Citi.com</font></a></td>";
+szFooter += "<td valign='top' align='right' class='footer'>";
+szFooter += "<img src='" + srcLevel[level] + "images/member.gif' width='115' height='22' alt='Member of Citigroup'><br>";
+szFooter += "<a href='" + srcLevel[level] + "privacy/index.htm' class='afooter'>Citigroup Privacy Promise</a>&nbsp;&nbsp;<br>";
+szFooter += "<a href='" + srcLevel[level] + "privacy/disclaim.htm' class='afooter'>Terms, conditions, caveats and small print</a>&nbsp;&nbsp;<br>";
+szFooter += "Copyright &copy; 2002 Citicorp&nbsp;&nbsp;<br>Important Information on ";
+szFooter += "<a href='" + srcLevel[level] + "privacy/legal2.htm' class='afooter'>Deposit Products</a>&nbsp;&nbsp;<br>";
+szFooter += "This site is intended for UK residents only&nbsp;&nbsp;";
+szFooter += "</td>";
+szFooter += "</tr></table>";
+
+document.write (szFooter);
+
+bLoadFinished = true;
+
+// -->
+</script>
+<script language="JavaScript" type="text/javascript">
+<!--
+// draw premium banking layer.
+	if (navigator.appName != "Netscape") {
+		document.writeln('<div id="Layer1" style="position:absolute; left:225px; top:215px; width:308px; height:142px; z-index:1">')
+	}
+		else
+	{
+		document.writeln('<layer id="Layer1n" left="225" top="215" width="308" height="142" z-index="1">')
+	}
+
+	document.writeln('<p><img src="images/home/vis_head.gif" width="250" height="40"><img src="images/home/vis_head_2.gif" width="250" height="60"></p>')
+
+	if (navigator.appName != "Netscape") {
+		document.writeln('</div>')
+	}
+		else
+	{
+		document.writeln('</layer>')
+	}
+
+// -->
+</script>
+<p></p>
+</body>
+</html>
+

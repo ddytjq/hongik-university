@@ -1,0 +1,220 @@
+ID=E0793
+URL=http://www.delorie.com/djgpp/v2faq/faq18_2.html
+SIZE=10071
+DATE=12/07/02
+TIME=19:24:30
+DATASET=C
+HTML=<html><head><title>DJGPP FAQ -- How to use buffers with DOS/BIOS services</title>
+<base href="http://www.delorie.com/djgpp/v2faq/faq18_2.html">
+</head><body><center><!-- BEGIN RICH-MEDIA BURST! CODE --> 
+     <script language="JavaScript"> 
+     <!-- /* (C) 1997-1999 BURST! Media, LLC. All Rights Reserved.*/ 
+     var TheAdcode = 'ad1954a'; 
+     var bN = navigator.appName; 
+     var bV = parseInt(navigator.appVersion); 
+     var base='http://www.burstnet.com/'; 
+     var Tv='/5295'; 
+     var agt=navigator.userAgent.toLowerCase(); 
+     if (bN=='Netscape'){ 
+          if ((bV>=4)&&(agt.indexOf("mac")==-1))
+     {  document.write('<s'+'cript src="'+ 
+           base+'cgi-bin/ads/'+TheAdcode+'.cgi/RETURN-CODE/JS' 
+           +Tv+'">'); 
+          document.write('</'+'script>');    
+     } 
+          else if (bV>=3) {document.write('<'+'a href="'+base+'ads/'+ 
+             TheAdcode+'-map.cgi'+Tv+'"target=_top>'); 
+             document.write('<img src="' + base + 'cgi-bin/ads/' + 
+             TheAdcode + '.cgi' + Tv + '" ismap width=468 height=60' + 
+             ' border=0 alt="Click Here"></a>');} 
+      } 
+     if (bN=='Microsoft Internet Explorer') 
+      document.write('<ifr'+'ame id=BURST src="'+base+'cgi-bin/ads/'
+     + 
+       TheAdcode + '.cgi' + Tv + '/RETURN-CODE" width=468 height=60' + 
+       'marginwidth=0 marginheight=0 hspace=0 vspace=0 ' + 
+       'frameborder=0 scrolling=no></ifr'+'ame>'); 
+     // --> 
+     </script> 
+     <noscript><a href="http://www.burstnet.com/ads/ad1954a-map.cgi" target=_top> 
+     <img src="http://www.burstnet.com/cgi-bin/ads/ad1954a.cgi" 
+      width=468 height=60 border=0 alt="Click Here"></a> 
+     </noscript> 
+     <!-- END BURST CODE --> 
+<table width=100% border=0 cellspacing=0 cellpadding=3><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">www.delorie.com</a>/<a href="/djgpp/" target="_top">djgpp</a>/<a href="/djgpp/v2faq/" target="_top">v2faq</a>/faq18_2.html</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/search/">search</a> &nbsp;
+</b></font></small></td>
+</tr></table><a href="bulktrap.html"></a></center>
+
+Node:<a name="Pointer%20segment">Pointer segment</a>,
+Next:<a rel=next href="faq18_3.html">Zero SP</a>,
+Previous:<a rel=previous href="faq18_1.html">int86</a>,
+Up:<a rel=up href="faq18.html">Low-level</a>
+<br>
+
+<h2>18.2 How to use buffers with DOS/BIOS services</h2>
+
+<p><em><strong>Q</strong>: I want to call a DOS/BIOS function which requires a pointer to a
+buffer in, e.g. <small>ES:DI</small> (or any other) register pair.  How do I get
+the segment to put into the <small>ES</small> register?</em>
+
+<br><p>
+<p><em><strong>Q</strong>: I have some real-mode code that calls the <code>segread</code>
+function.  How can I make it work with DJGPP?</em>
+
+<br><p>
+<p><strong>A</strong>: If you call <code>__dpmi_int</code>, then you must put into that
+register pair an address of some buffer in <em>conventional</em> memory
+(in the first 1 MByte).  If the size of that buffer doesn't have to be
+larger than the size of transfer buffer used by DJGPP (at least 2KB,
+16KB by default), then the easiest way is to use the transfer buffer. 
+(Library functions don't assume the contents of the transfer buffer to
+be preserved across function calls, so you can use it freely.)  That
+buffer is used for all DOS/BIOS services supported by DJGPP, it resides
+in conventional memory, and is allocated by the startup code.  DJGPP
+makes the address and the size of the transfer buffer available for you
+in the <code>_go32_info_block</code> external variable, which is documented in
+the library reference.  Check the size of the buffer (usually, 16K
+bytes, but it can be made as small as 2KB), and if it suits you, use its
+linear address this way:
+
+<pre>dpmi_regs.x.di =
+ _go32_info_block.linear_address_of_transfer_buffer &amp; 0x0f;
+dpmi_regs.x.es =
+ _go32_info_block.linear_address_of_transfer_buffer &gt;&gt; 4;
+</pre>
+
+<p>For your convenience, the header file <code>go32.h</code> defines a macro
+<code>__tb</code> which is an alias for
+<code>_go32_info_block.linear_address_of_transfer_buffer.</code>
+
+<p>Here's a simple example of calling a real-mode service.  This function
+queries DOS about the country-specific information, by calling function
+38h of the DOS Interrupt 21h, then returns the local currency symbol as
+a C-style null-terminated string in <code>malloc</code>ed storage.  Note how
+the transfer buffer is used to retrieve the info: the address of the
+transfer buffer is passed to DOS, so it stores the data there, and the
+function then retrieves part of that data using <code>dosmemget</code>.
+
+<pre> #include &lt;sys/types.h&gt;
+ #include &lt;sys/movedata.h&gt;
+ #include &lt;dpmi.h&gt;
+ #include &lt;go32.h&gt;
+
+ char * local_currency (void)
+ {
+   __dpmi_regs regs;
+
+   regs.x.ax = 0x3800;        /* AH = 38h, AL = 00h  */
+   regs.x.ds = __tb &gt;&gt; 4;     /* transfer buffer address in DS:DX  */
+   regs.x.dx = __tb &amp; 0x0f;
+   __dpmi_int (0x21, &amp;regs);  /* call DOS  */
+   if (regs.x.flags &amp; 1)      /* is carry flag set?  */
+     /* The call failed; use the default symbol.  */
+     return strdup ("$");
+   else
+     {
+       /* The call succeeded.  The local currency symbol is stored
+          as an ASCIIZ string at offset 2 in the transfer buffer.  */
+       char *p = (char *)malloc (2);
+       if (p != 0)
+         dosmemget (__tb + 2, 2, p);
+       return p;
+     }
+  }
+</pre>
+
+<p>If the size of the transfer buffer isn't enough, you will have to allocate
+your own buffer in conventional memory with a call to the
+<code>__dpmi_allocate_dos_memory</code> library function.  It returns to you the
+segment of the allocated block (the offset is zero).  If you only need a
+small number of such buffers which can be allocated once, then you don't
+have to worry about freeing them: they will be freed by DOS when your
+program calls <code>exit</code>.  The only adverse effect of not freeing DOS
+memory until the program exits is that if you need to run subsidiary
+programs (via <code>spawnXX</code> or <code>system</code> library functions), those
+programs will have less conventional memory.  Usually, this aspect
+should only be considered if a program allocates very large (like 100KB)
+buffers in conventional memory.
+
+<p>DOS memory can also be allocated by calling function 48h of Interrupt
+21h via <code>__dpmi_int</code> and freed by calling function 49h.  The only
+disadvantage of this method is that it doesn't create a protected-mode
+selector for the allocated block, so you must use the <code>_dos_ds</code>
+selector to reference the allocated memory, which is less safe: the
+<code>_dos_ds</code> selector spans the entire first megabyte of memory,
+whereas the selector created by <code>__dpmi_allocate_dos_memory</code> spans
+only the allocated block, and will therefore catch bugs that reference
+memory outside that block.
+
+<p>For bullet-proof code, you should test the size of the transfer buffer at
+runtime and act accordingly.  This is because its size can be changed by
+the <code>STUBEDIT</code> program without your knowledge (however, it can
+never be less than 2KB, the size of the stub, because memory used by the
+stub is reused for the transfer buffer).
+
+<p>The function <code>segread</code> used by some real-mode compilers does not
+exist in DJGPP.  It is used in real-mode code to store the values of the
+<small>CS</small>, <small>DS</small>, <small>SS</small>, and <small>ES</small> registers into a <code>struct
+SREGS</code> variable, when some service that needs one of these registers is
+called from code written for small and tiny memory models.  DJGPP has
+the functions <code>_my_cs</code>, <code>_my_ds</code>, and <code>_my_ss</code> for that
+purpose (<small>ES</small> and <small>DS</small> always hold the same selector in code
+produced by GCC from a C or C<tt>++</tt> source, so you don't need a fourth
+function).  However, these will not be useful if the original real-mode
+code used the segment registers to invoke DOS/BIOS services.  For these
+cases, you will need to rewrite the code so that it copies the data
+to/from the transfer buffer and passes the transfer buffer address via
+<code>__dpmi_int</code>, as described above.
+
+<p>If you use <code>int86x</code> or <code>intdosx</code> to call a DOS or BIOS
+function supported by them, then just put the address of your buffer
+into the register which expects the offset (<code>regs.x.di</code>), forget
+about the segment, and call <code>int86</code> or <code>intdos</code> instead of
+<code>int86x</code> and <code>intdosx</code>.  The DOS/BIOS functions supported by
+<code>int86</code> and <code>intdos</code> are processed specially by the library,
+which will take care of the rest.  Note that calling <code>int86x</code> and
+<code>intdosx</code> will usually crash your program, since they expect that
+you pass them a real-mode <code>segment:offset</code> address to a buffer in
+conventional memory; this is done more easily with <code>__dpmi_int</code>,
+as described above, so I don't recommend using <code>int86x</code> and
+<code>intdosx</code>.
+
+<p><hr>
+
+
+
+<br clear=both></p>
+<a href="bulktrap.html"></a><table width=100% border=0 cellspacing=0 cellpadding=3><tr>
+<td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/users/dj/" target="_top">webmaster</a> &nbsp;
+<a href="/donations.html" target="_top">donations</a> &nbsp;
+<a href="/store/books/" target="_top">bookstore</a> &nbsp;
+</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">delorie software</a> &nbsp;
+<a href="/privacy.html" target="_top">privacy</a> &nbsp;
+</b></font></small></td>
+</tr><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/copyright.html" target="_top">Copyright © 2001</a> &nbsp;
+<a href="/users/eliz/" target="_top">by Eli Zaretskii</a> &nbsp;
+</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+Updated Apr 2001 &nbsp;
+</b></font></small></td>
+</tr></table>
+<center><iframe
+ SRC="http://www.burstnet.com/cgi-bin/ads/ba1954a.cgi/RETURN-CODE/if/5295/"
+ scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"
+ width="468" height="60"><A target="_top"
+ HREF="http://www.burstnet.com/ads/ba1954a-map.cgi/5295"><IMG SRC="http://www.burstnet.com/cgi-bin/ads/ba1954a.cgi/5295"
+ border="0" width="468" height="60" alt="Please support our sponsor."></A></iframe><br><small><i>Please take a moment to fill out
+this <a href="http://survey.burstmedia.com/cgi-win/client.exe?Burst,welcome,ad1954a,2000">visitor survey</a></i></small>
+<br><small><i>You can help support this site by
+visiting the advertisers that sponsor it! (only once each, though)</i></small>
+</center>
+</body></html>
+
+

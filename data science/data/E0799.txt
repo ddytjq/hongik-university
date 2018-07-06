@@ -1,0 +1,88 @@
+ID=E0799
+URL=http://www.hh.se/stud/d98rolb/ansi/strxfrm().html
+SIZE=3044
+DATE=12/07/02
+TIME=19:24:33
+DATASET=C
+HTML=<html>
+<head>
+  <title>strxfrm()</title>
+  <meta name="Generator" content="GuideML V1.6">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+<body>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="strtoul().html"><img src="prev.gif" alt="PREV" border=0></a><a href="system().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+<hr>
+<pre>
+strxfrm-Transform a string
+
+Synopsis
+
+        #include &#060;string.h&#062;
+
+        len = strxfrm(s1, s2, n);
+
+        size_t len;            /* length of transformed string            */
+        char *s1;            /* pointer to transformed string            */
+        const char *s2;     /* string to transform                    */
+        size_t n;            /* max characters in transformed string */
+
+Description
+
+        This function transforms strings such that the <a href="strcmp().html"> strcmp </a> function
+        will give the same result when applied to two transformed strings
+        as the <a href="strcoll().html"> strcoll </a> function would give to the same strings before they
+        were transformed.
+
+        Because of the limitations of the  specifications, this
+        function does not completely handle the German collating rules.
+
+
+Returns
+
+        This function returns the length of the transformed string
+        (excluding the NULL termination character). If a value is greater
+        than the argument n, then the transformation could not fit in the
+        output array, and the contents of the output array are
+        indeterminate.
+
+Example
+
+        /* Transform a string for comparison */
+        #include &#060;stdio.h&#062;
+        #include &#060;stdlib.h&#062;
+        #include &#060;string.h&#062;
+
+        char *transform(char *string)
+        {
+            int len;
+            char *p;
+
+            /* Don't forget the NULL  */
+            len = strxfrm(string, NULL, 0)+1;
+            if ((p = malloc(len)) != NULL)
+            {
+                strxfrm(string, p, len);
+            }
+            return(p);
+        }
+
+        void main(int argc, char *argv[])
+        {
+            int i;
+
+            for (i=1; i&#060;argc; i++)
+            {
+                printf(&quot;%s ==&#062; %sn&quot;, argv[i], transform(argv[i]));
+            }
+        }
+
+See Also
+
+        <a href="setlocale().html"> setlocale </a>, <a href="strcoll().html"> strcoll </a>
+</pre>
+<hr>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="strtoul().html"><img src="prev.gif" alt="PREV" border=0></a><a href="system().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+</body>
+</html>
+

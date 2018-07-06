@@ -1,0 +1,180 @@
+ID=E1000
+URL=http://www.bcbdev.com/faqs/faq63.htm
+SIZE=9342
+DATE=12/07/02
+TIME=19:26:39
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+<H3>
+Q: Minimize all open applications
+</H3>
+<BR>
+<H3>Answer:</H3>
+<P>
+Windows contains a system wide hotkey that allows the user to minimize all programs
+with one keystroke. The hotkey is the windows key plus M. One way to minimize all programs
+from code is to artificially emulate this hotkey. You could accomplish this by broadcasting a
+<TT>WM_HOTKEY</TT> message. However, I decided to seek a different approach for several
+reasons. For starters, the hotkey might vary from language to language, and it may be
+customizable by the user. Another reason to avoid the <TT>WINDOWS + M</TT> keystroke is that
+some machines don't have that wonderful windows key on the keyboard. Does the operating
+system still create a system wide hotkey even if the key isn't present? Who knows. Not to
+mention the fact that the <TT>WM_HOTKEY</TT> approach probably won't work on windows NT 3.5.
+Lastly, who knows how long the <TT>WINDOWS + M</TT> hotkey will be around. If the hotkey
+ever goes away, your code would malfunction.
+</P>
+<P>
+I decided to implement a hard-core technique using plain API calls. The process is broken
+into two steps. The first step is to tell windows to enumerate the windows on the desktop.
+The second step is to write the enumeration callback and design it to minimize each
+program.
+</P>
+<H4>Step 1: Enumerating the desktop windows.</H4>
+<P>
+The code for the enumeration step is shown below. The <TT>EnumWindows</TT> API function
+allows us to enumerate the windows on the desktop. <TT>EnumWindows</TT> takes a function as an
+argument. The operating system will call the function that you pass to <TT>EnumWindows</TT>
+once for each window on desktop. The <TT>EnumWindows</TT> statement does not return until
+the callback has executed for each window.
+</P>
+<pre>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button1Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// determine if minimization animation was originally on</font>
+    ANIMATIONINFO info<b>;</b>
+    info<b>.</b>cbSize <b>=</b> <b>sizeof</b><b>(</b>info<b>)</b><b>;</b>
+    SystemParametersInfo<b>(</b>SPI_GETANIMATION<b>,</b><b>sizeof</b><b>(</b>info<b>)</b><b>,</b><b>&</b>info<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    <b>bool</b> bAnimationWasOn <b>=</b> info<b>.</b>iMinAnimate<b>;</b>
+
+    <font color="navy">// if animation was on, then turn it off to speed things up</font>
+    <b>if</b><b>(</b>bAnimationWasOn<b>)</b>
+    <b>{</b>
+        info<b>.</b>iMinAnimate <b>=</b> <b>false</b><b>;</b>
+        SystemParametersInfo<b>(</b>SPI_SETANIMATION<b>,</b> <b>sizeof</b><b>(</b>info<b>)</b><b>,</b> <b>&</b>info<b>,</b> <font color="blue">0</font><b>)</b><b>;</b>
+    <b>}</b>
+
+    <font color="navy">// disable painting of the desktop until we are finished</font>
+    LockWindowUpdate<b>(</b>GetDesktopWindow<b>(</b><b>)</b><b>)</b><b>;</b>
+
+    <font color="navy">// enumerate the desktop windows</font>
+    EnumWindows<b>(</b><b>(</b>WNDENUMPROC<b>)</b>MinimizeAllWindows<b>,</b> <font color="blue">0</font><b>)</b><b>;</b>
+
+    <font color="navy">// enable desktop painting</font>
+    LockWindowUpdate<b>(</b>NULL<b>)</b><b>;</b>
+
+    <font color="navy">// turn the animation back on if it was originally on</font>
+    <b>if</b><b>(</b>bAnimationWasOn<b>)</b>
+    <b>{</b>
+        info<b>.</b>iMinAnimate <b>=</b> <b>true</b><b>;</b>
+        SystemParametersInfo<b>(</b>SPI_SETANIMATION<b>,</b> <b>sizeof</b><b>(</b>info<b>)</b><b>,</b> <b>&</b>info<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    <b>}</b>
+<b>}</b>
+</pre>
+Many users configure their system to animate the frame of a window when it minimizes. This
+animation can bog down the system when the code minimizes several windows. The code segment
+above deactivates the animation before <TT>EnumWindows</TT> executes. The animization
+setting is restored after all of the windows have been minimized to the taskbar.
+</P>
+<P>
+The desktop will repaint itself after each window minimizes to the taskbar. This can cause
+a lot of flashing. To reduce the amount of flashing, the code uses <TT>LockWindowUpdate</TT>
+to prevent the desktop from repainting. Once all of the programs have been minimized, the
+desktop is allowed to paint itself again.
+</P>
+<H4>Step 2: Minimizing each window</H4>
+<P>
+The callback function is shown below. This function is responsible for minimizing each
+program. You can minimize a program by calling the <TT>ShowWindow</TT> API function and
+passing it the <TT>SW_MINIMIZE</TT> parameter. Notice that the callback will only call
+<TT>ShowWindow</TT> if the window is not owned by another window and if the window is
+currently visible. Checking for ownership ensures that we don't minimize dialog boxes and
+tool windows. These windows don't minimize to the taskbar, they minimize to the desktop.
+Restoring these windows can be a pain. Windows will automatically hide owned windows when
+we minimize their owner, so it's best to leave owned windows alone. We must also be careful
+not to minimize a hidden window. Minimizing a hidden window makes it visible. Since there
+is no way for the user to re-hide the window, minimizing a hidden window can royally screw
+up the system (remove the <TT>IsWindowVisible</TT> check to see what I mean).
+</P>
+<pre>
+BOOL CALLBACK MinimizeAllWindows<b>(</b>HWND hwnd<b>,</b>LPARAM lParam<b>)</b>
+<b>{</b>
+    <font color="navy">// determine if the window is owned by anyone</font>
+    HWND hParent <b>=</b> GetWindow<b>(</b>hwnd<b>,</b> GW_OWNER<b>)</b><b>;</b>
+
+    <font color="navy">// if the window is ownerless, and if it is visible,</font>
+    <font color="navy">// then minimize it to the desktop</font>
+    <b>if</b><b>(</b><b>(</b>hParent <b>==</b> NULL<b>)</b> <b>&&</b> IsWindowVisible<b>(</b>hwnd<b>)</b><b>)</b>
+        ShowWindow<b>(</b>hwnd<b>,</b> SW_MINIMIZE<b>)</b><b>;</b>
+
+    <font color="navy">// return true to continue the enumeration</font>
+    <b>return</b> TRUE<b>;</b>
+<b>}</b>
+</pre>
+<BR>
+<P>
+<B>Note:</B> Since the <TT>EnumWindows</TT> call references the <TT>MinimizeAllWindows</TT> callback
+function, you should insert the body of the callback function above <TT>EnumWindows</TT> statement to avoid a compiler error. Alternatively, you could add a protoype for the callback function at
+the top of the source file or in a header file.
+</P>
+<P>
+<B>Note:</B> Notice that the callback function is not a member of any class. It just hangs
+out in space all by itself. The callback function cannot be a regular method of a class
+because the function is being called by Windows. Remember that all instances of a C++ class
+share the same code. Objects contain unique data, but the functions are shared across all
+objects. To identify which object is being acted on by a member function, C++ passes a
+hidden <TT>this</TT> pointer to the member function. You can see the <TT>this</TT> pointer
+if you view the assembly code of a function call. Unfortunately, Windows has no concept of
+<TT>this</TT> pointers. Windows will execute the callback function like it is a regular
+C style function that uses the <TT>__stdcall</TT> calling convention. It will not pass
+a parameter where the <TT>this</TT> pointer would normally go. You could make the callback
+function a static method of a class, since static methods don't take a <TT>this</TT> pointer.
+But why bother. The function works fine on its own.
+</P>
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

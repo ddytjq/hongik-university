@@ -1,0 +1,737 @@
+ID=A0351
+URL=http://www.sainsburysbank.co.uk/servlet/RebuildingInsurance
+SIZE=46013
+DATE=27/06/02
+TIME=17:10:25
+DATASET=Commercial Banks
+HTML=<html><!-- #BeginTemplate "/Templates/cc_template_4_insurance.dwt" -->
+<head>
+<!-- #BeginEditable "docheader" --> 
+<title>Sainsbury's Bank - Insurance - rebuilding calculator</title>
+<script langauge="JavaScript">
+<!--
+
+function validateForm() {
+  var strErr = "";
+  
+  if ( document.rebuildCalc.region[0].checked
+       || document.rebuildCalc.region[1].checked
+       || document.rebuildCalc.region[2].checked
+       || document.rebuildCalc.region[3].checked
+     ) {
+    // this has a value selected
+  } else {
+    strErr = strErr + "   - you must select a region\n";
+  }
+  
+  if ( document.rebuildCalc.house_type[0].checked
+       || document.rebuildCalc.house_type[1].checked
+       || document.rebuildCalc.house_type[2].checked
+       || document.rebuildCalc.house_type[3].checked
+       || document.rebuildCalc.house_type[4].checked
+     ) {
+    // this has a value selected
+  } else {
+    strErr = strErr + "   - you must select a type of house\n";
+  }
+
+  if ( (document.rebuildCalc.house_type[2].checked || document.rebuildCalc.house_type[3].checked) 
+       && ( document.rebuildCalc.year_range.options[document.rebuildCalc.year_range.selectedIndex].value == "0" )
+     ) {
+    // is a pre 1920s bungalow
+    strErr = strErr + "   - this calculator does not cover pre-1920 bungalows, as few such properties were built\n";
+  } 
+
+  // check ground floor size
+  if ( isNaN( parseFloat(document.rebuildCalc.measurement_ground.value) ) ) {
+    strErr = strErr + "   - you must specify a numeric size for the ground floor\n";
+  } else if ( parseFloat(document.rebuildCalc.measurement_ground.value) <= 0.0 ) {
+    strErr = strErr + "   - you must specify a size for the ground floor\n";
+  }
+
+  if ( !(document.rebuildCalc.house_type[2].checked || document.rebuildCalc.house_type[3].checked) 
+     ) {
+    // not a bungalow, check for first floor size
+    if ( isNaN( parseFloat(document.rebuildCalc.measurement_first.value) ) ) {
+      strErr = strErr + "   - you must specify a numeric size for the first floor\n";
+    } else if ( parseFloat(document.rebuildCalc.measurement_first.value) <= 0.0 ) {
+      strErr = strErr + "   - you must specify a size for the first floor\n";
+    }
+  }
+
+  if ( strErr == "" ) {
+    document.rebuildCalc.submit();
+    return true;
+  } else {
+    alert("The following error(s) occurred:\n" + strErr)
+    return false;
+  }
+  
+}
+
+function calcMeasurement () {
+
+  var numFirst  = 0.00;
+  var numGround = 0.00;
+  var numTotal  = 0.00;
+
+  if ( isNaN( parseFloat(document.rebuildCalc.measurement_ground.value) ) ) {
+    document.rebuildCalc.measurement_ground.value = '0.00';
+    numGround = 0;
+  } else {
+    numGround = parseFloat(document.rebuildCalc.measurement_ground.value);
+  }
+
+  if ( !(document.rebuildCalc.house_type[2].checked || document.rebuildCalc.house_type[3].checked) 
+     ) {
+    // not a bungalow, check for first floor size
+    if ( isNaN( parseFloat(document.rebuildCalc.measurement_first.value) ) ) {
+      document.rebuildCalc.measurement_first.value = '0.00';
+      numFirst = 0;
+    } else {
+      numFirst = parseFloat(document.rebuildCalc.measurement_first.value);
+    }
+  } else {
+    document.rebuildCalc.measurement_first.value = '0.00';
+    numFirst = 0;
+  }
+  
+  numTotal = numGround + numFirst;
+  
+  if ( numTotal > 0 ) {
+    numTotal = numTotal * 100;
+    Math.round( numTotal );
+    numTotal = numTotal + '';
+
+    document.rebuildCalc.measurement_total.value = numTotal.substring(0, (numTotal.length - 2)) + '.' + numTotal.substring((numTotal.length - 2), (numTotal.length));
+  } else {
+    document.rebuildCalc.measurement_total.value = '0.00';
+  }
+
+}
+var lastChecked = 0;
+
+function checkHouse( numHouse ) {
+  if ( ( numHouse >= 0 ) && ( numHouse <= 4 ) ) {
+    adjustBungDate( numHouse );
+    document.rebuildCalc.house_type[numHouse].checked = true;
+    lastChecked = numHouse;
+    calcMeasurement();
+  }
+  return false;
+}
+
+function adjustBungDate( numHouse ) {
+  if ( ((numHouse >= 2) && (numHouse <= 3)) && (document.rebuildCalc.year_range.options[document.rebuildCalc.year_range.options.selectedIndex].value == 0) ) {
+    document.rebuildCalc.year_range.options.selectedIndex = 1;
+  }
+}
+
+// -->
+</script>
+<!-- #EndEditable --> 
+<script language="JavaScript" src="../css/insurance.js"></script>
+</head>
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<!-- #BeginLibraryItem "/Library/top_nav.lbi" --><table width="100%" height="63" border="0" cellspacing="0" cellpadding="0" background="../assets/top_nav/living_orange_bar.gif">
+<tr width="100%">
+<td>
+<table width="770" height="63" border="0" cellspacing="0" cellpadding="0" background="/Library/null">
+  <tr valign="bottom"> 
+          <td width="24"><img src="../assets/spacer.gif" width="24" height="45" alt=" "></td>
+          <td valign="bottom" width="165"><a href="../index.html" target="_top"><img src="../assets/top_nav/logo_top.gif" width="165" height="21" border="0" alt="Sainsbury's Bank"></a></td>
+          <td width="266"><img src="../assets/spacer.gif" height="1" width="266" alt=" "></td>
+          <td width="86"><a href="../legal_regulatory/legal_regulatory.html" onMouseOver="imgOver('legal')" onMouseOut="imgOut('legal')" target="_top"><img src="../assets/top_nav/legal_and_reg_off.gif" width="86" height="10" alt="legal and regulatory" name="legal" border="0"></a></td>
+          <td width="15"><img src="../assets/spacer.gif" width="15" height="1" alt=" "></td>
+          <td width="50"><a href="/sbkcontact.nsf/contact?openform&select" onMouseOver="imgOver('contact')" onMouseOut="imgOut('contact')" target="_top"><img src="../assets/top_nav/contact_us_off.gif" width="50" height="10" border="0" alt="contact us" name="contact"></a></td>
+          <td width="15"><img src="../assets/spacer.gif" width="15" height="1" alt=" "></td>
+          <td width="40"><a href="../site_map/site_map.html" onMouseOver="imgOver('site')" onMouseOut="imgOut('site')" target="_top"><img src="../assets/top_nav/site_map_off.gif" width="40" height="10" border="0" alt="site map" name="site"></a></td>
+          <td width="15"><img src="../assets/spacer.gif" width="15" height="1" alt=" "></td>
+          <td width="20"><a href="../help/help.html" onMouseOver="imgOver('help')" onMouseOut="imgOut('help')" target="_top"><img src="../assets/top_nav/help_off.gif" width="20" height="10" border="0" alt="help" name="help"></a></td>
+          <td width="15"><img src="../assets/spacer.gif" width="15" height="1" alt=" "></td>
+          <td width="39"><a href="../tool_box/tool_box.html" onMouseOver="imgOver('tool_box')" onMouseOut="imgOut('tool_box')" target="_top"><img src="../assets/top_nav/tool_box_off.gif" width="39" height="10" border="0" alt="tool kit" name="tool_box"></a></td>
+          <td width="20"><img src="../assets/spacer.gif" width="20" height="1" alt=" "></td>
+  </tr>
+  <tr valign="top"> 
+    <td width="24">&nbsp;</td>
+          <td valign="top" width="165"><a href="../index.html"><img src="../assets/top_nav/logo_bottom.gif" width="165" height="3" border="0" alt="Sainsbury's Bank"></a></td>
+    <td colspan="11">&nbsp;</td>
+  </tr>
+</table>
+</td>
+  </tr>
+</table>
+<br>
+<img src="../assets/spacer.gif" width="770" height="40" border="0" alt=" " />
+
+<!-- #EndLibraryItem --> 
+      <table width="770" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="25"><img src="../assets/spacer.gif" width="25" height="1" border="0" alt=" " /></td>
+          <td width="167" valign="top"> <!-- #BeginEditable "sideNav" -->
+  
+        <table border="0" cellpadding="0" cellspacing="0" width="167">
+          <tr> 
+            <td colspan="4"><a target="_top" href="../loans/loans.html"><img src="../assets/left_nav/loans_car_finance_off.gif" width="167" height="28" border="0" alt="loans & car finance" /></a></td>
+          </tr>
+          <tr><!-- white spacer 3 --> 
+            <td colspan="4"><img src="../assets/spacer.gif" width="167" height="3" border="0" alt=" " /></td>
+          </tr>
+          <tr> 
+            <td colspan="4"><a target="_top" href="../savings_investments/savings_homepage.html"><img src="../assets/left_nav/savings_investments_off.gif" width="167" height="28" border="0" alt="savings & investments" /></a></td>
+          </tr>
+          <tr><!-- white spacer 3 --> 
+            <td colspan="4"><img src="../assets/spacer.gif" width="167" height="3" border="0" alt=" " /></td>
+          </tr>
+          <tr> 
+            <td colspan="4"><a target="_top" href="../credit_card/creditcard.html"><img src="../assets/left_nav/credit_card_off.gif" width="167" height="28" border="0" alt="credit card" /></a></td>
+          </tr>
+          <tr><!-- white spacer 3 --> 
+            <td colspan="4"><img src="../assets/spacer.gif" width="167" height="3" border="0" alt=" " /></td>
+          </tr>
+          <tr> 
+            <td colspan="4"><a target="_top" href="../insurance/insurance.html"><img src="../assets/left_nav/insurance_on.gif" width="167" height="28" border="0" alt="insurance" /></a></td>
+          </tr>
+          <tr><!-- spacer 3 --> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="109"><img src="../assets/spacer.gif" width="109" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="10"><img src="../assets/spacer.gif" width="10" height="3" border="0" alt=" " /></td>
+          </tr>
+          <tr> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="3" border="0" alt=" " /></td>
+            <td rowspan="3" bgcolor="#FFCC00" width="109" valign="center"><a target="_top" href="../insurance/insurance_home.html" class="nav2levelYellowOn">home insurance</a></td>
+            <td rowspan="3" bgcolor="#FFCC00" width="10"><img src="../assets/spacer.gif" width="10" height="23" border="0" alt=" " /></td>
+          </tr>
+          <tr> 
+            <td colspan="2" height="19" background="../assets/left_nav/nav_yellow_bg.gif" colspan="2" width="48" valign="top"><a target="_top" href="../insurance/insurance_home.html"><img src="../assets/left_nav/yellow_arrow_on.gif" width="48" height="19" border="0" alt=" " /></a></td>
+          </tr>
+          <tr> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="3" border="0" alt=" " /></td>
+          </tr>
+          <tr><!-- spacer 3 --> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="109"><img src="../assets/spacer.gif" width="109" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="10"><img src="../assets/spacer.gif" width="10" height="3" border="0" alt=" " /></td>
+          </tr>
+          <tr> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="109"><a target="_top" href="../insurance/insurance_home_cover.html" class="nav3levelOff">&gt; the cover</a></td>
+            <td bgcolor="#FFCC00" width="10"><img src="../assets/spacer.gif" width="10" height="10" border="0" alt=" " /></td>
+          </tr>
+          <tr><!-- spacer 7 --> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" colspan="2" width="119"><img src="../assets/spacer.gif" width="119" height="7" border="0" alt=" " /></td>
+          </tr>
+          <tr> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="109"><a target="_top" href="../insurance/insurance_home_faq.html" class="nav3levelOff">&gt; any questions?</a></td>
+            <td bgcolor="#FFCC00" width="10"><img src="../assets/spacer.gif" width="10" height="10" border="0" alt=" " /></td>
+          </tr>
+          <tr><!-- spacer 7 --> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" colspan="2" width="119"><img src="../assets/spacer.gif" width="119" height="7" border="0" alt=" " /></td>
+          </tr>
+          <tr> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="109"><a target="_top" href="../insurance/insurance_home_claim.html" class="nav3levelOff">&gt; making a claim</a></td>
+            <td bgcolor="#FFCC00" width="10"><img src="../assets/spacer.gif" width="10" height="10" border="0" alt=" " /></td>
+          </tr>
+          <tr><!-- spacer 7 --> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" colspan="2" width="119"><img src="../assets/spacer.gif" width="119" height="7" border="0" alt=" " /></td>
+          </tr>
+          <tr> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="109"><a target="_top" href="../insurance/insurance_home_glossary.html" class="nav3levelOff">&gt; some definitions</a></td>
+            <td bgcolor="#FFCC00" width="10"><img src="../assets/spacer.gif" width="10" height="10" border="0" alt=" " /></td>
+          </tr>
+          <tr><!-- spacer 7 --> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" colspan="2" width="119"><img src="../assets/spacer.gif" width="119" height="7" border="0" alt=" " /></td>
+          </tr>
+          <tr> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="109"><a target="_top" href="../insurance/insurance_home_terms.html" class="nav3levelOff">&gt; terms & conditions</a></td>
+            <td bgcolor="#FFCC00" width="10"><img src="../assets/spacer.gif" width="10" height="10" border="0" alt=" " /></td>
+          </tr>
+          <tr><!-- spacer 7 --> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" colspan="2" width="119"><img src="../assets/spacer.gif" width="119" height="7" border="0" alt=" " /></td>
+          </tr>
+          <tr> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="109"><a target="_top" href="../insurance/insurance_home_apply.html" class="nav3levelOff">&gt; apply now</a></td>
+            <td bgcolor="#FFCC00" width="10"><img src="../assets/spacer.gif" width="10" height="10" border="0" alt=" " /></td>
+          </tr>
+          <tr><!-- spacer 7 --> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="7" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" colspan="2" width="119"><img src="../assets/spacer.gif" width="119" height="7" border="0" alt=" " /></td>
+          </tr>
+          <tr><!-- white spacer 1 --> 
+            <td colspan="4"><img src="../assets/spacer.gif" width="167" height="1" border="0" alt=" " /></td>
+          </tr>
+          <tr><!-- spacer 3 --> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="109"><img src="../assets/spacer.gif" width="109" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="10"><img src="../assets/spacer.gif" width="10" height="3" border="0" alt=" " /></td>
+          </tr>
+          <tr> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="3" border="0" alt=" " /></td>
+            <td rowspan="3" bgcolor="#FFCC00" width="109" valign="center"><a target="_top" href="../insurance/insurance_travel.html" class="nav2levelOff">travel insurance</a></td>
+            <td rowspan="3" bgcolor="#FFCC00" width="10"><img src="../assets/spacer.gif" width="10" height="23" border="0" alt=" " /></td>
+          </tr>
+          <tr> 
+            <td colspan="2" height="19" background="../assets/left_nav/nav_yellow_bg.gif" colspan="2" width="48" valign="top"><a target="_top" href="../insurance/insurance_travel.html"><img src="../assets/left_nav/yellow_arrow_off.gif" width="48" height="19" border="0" alt=" " /></a></td>
+          </tr>
+          <tr> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="3" border="0" alt=" " /></td>
+          </tr>
+          <tr><!-- spacer 3 --> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="109"><img src="../assets/spacer.gif" width="109" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="10"><img src="../assets/spacer.gif" width="10" height="3" border="0" alt=" " /></td>
+          </tr>
+          <tr> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="3" border="0" alt=" " /></td>
+            <td rowspan="3" bgcolor="#FFCC00" width="109" valign="center"><a target="_top" href="../insurance/insurance_pet.html" class="nav2levelOff">pet insurance</a></td>
+            <td rowspan="3" bgcolor="#FFCC00" width="10"><img src="../assets/spacer.gif" width="10" height="23" border="0" alt=" " /></td>
+          </tr>
+          <tr> 
+            <td colspan="2" height="19" background="../assets/left_nav/nav_yellow_bg.gif" colspan="2" width="48" valign="top"><a target="_top" href="../insurance/insurance_pet.html"><img src="../assets/left_nav/yellow_arrow_off.gif" width="48" height="19" border="0" alt=" " /></a></td>
+          </tr>
+          <tr> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="3" border="0" alt=" " /></td>
+          </tr>
+          <tr><!-- spacer 3 --> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="109"><img src="../assets/spacer.gif" width="109" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="10"><img src="../assets/spacer.gif" width="10" height="3" border="0" alt=" " /></td>
+          </tr>
+          <tr> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="3" border="0" alt=" " /></td>
+            <td rowspan="3" bgcolor="#FFCC00" width="109" valign="center"><a target="_top" href="../insurance/insurance_life.html" class="nav2levelOff">life assurance</a></td>
+            <td rowspan="3" bgcolor="#FFCC00" width="10"><img src="../assets/spacer.gif" width="10" height="23" border="0" alt=" " /></td>
+          </tr>
+          <tr> 
+            <td colspan="2" height="19" background="../assets/left_nav/nav_yellow_bg.gif" colspan="2" width="48" valign="top"><a target="_top" href="../insurance/insurance_life.html"><img src="../assets/left_nav/yellow_arrow_off.gif" width="48" height="19" border="0" alt=" " /></a></td>
+          </tr>
+          <tr> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="3" border="0" alt=" " /></td>
+          </tr>
+          <tr><!-- spacer 3 --> 
+            <td width="32" valign="center"><img src="../assets/spacer.gif" width="32" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="16" valign="center"><img src="../assets/spacer.gif" width="16" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="109"><img src="../assets/spacer.gif" width="109" height="3" border="0" alt=" " /></td>
+            <td bgcolor="#FFCC00" width="10"><img src="../assets/spacer.gif" width="10" height="3" border="0" alt=" " /></td>
+          </tr>
+          <tr><!-- white spacer 3 --> 
+            <td colspan="4"><img src="../assets/spacer.gif" width="167" height="3" border="0" alt=" " /></td>
+          </tr>
+          <tr> 
+            <td colspan="4"><a target="_top" href="../mortgages/mortgages.html"><img src="../assets/left_nav/mortgages_off.gif" width="167" height="28" border="0" alt="mortgages" /></a></td>
+          </tr>
+          <tr><!-- white spacer 3 --> 
+            <td colspan="4"><img src="../assets/spacer.gif" width="167" height="3" border="0" alt=" " /></td>
+          </tr>
+        </table>
+
+<!-- #EndEditable --> </td>
+          <td width="33" valign="top"><!-- spacer 1 --> <img src="../assets/spacer.gif" width="33" height="1" border="0" alt=" " /> 
+            <!-- #BeginEditable "Side%20Selection" --><!-- #EndEditable --></td>
+          <td width="430" valign="top"> 
+            <!-- #BeginEditable "Header%20Images" --><img src="../assets/headers/insurance/rebuilding_calculator.gif" width="430" height="21"><!-- #EndEditable --><br>
+      <!-- #BeginEditable "Local%20Navigation" -->
+
+<!-- #EndEditable --> <!-- #BeginEditable "Main%20Text" --> 
+      <p>You'll need to make sure your house is covered for the whole cost of rebuilding it.</p>
+      <p>This calculator will help you work out the amount of your buildings sum insured. All you have to do is fill in the information about your house below.</p>
+      <form name="rebuildCalc" action="../servlet/RebuildingInsurance" method="post">
+        <table width="430" cellspacing="0" cellpadding="0" border="0">
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td width="200"><img src="../assets/spacer.gif" width="200" height="1"></td>
+            <td width="16"><img src="../assets/spacer.gif" width="25" height="1"></td>
+            <td width="200"><img src="../assets/spacer.gif" width="191" height="1"></td>
+            <td width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <tr> 
+            <td colspan="3" class="bodyBold" valign="top" bgcolor="#FF6633"><img src="../assets/generic/orange_header_arrow.gif" width="13" height="23"></td>
+            <td colspan="4" bgcolor="#FF6633" class="tableHeader">&nbsp;select 
+              region</td>
+          </tr>
+          <tr> 
+            <td rowspan="6" width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td rowspan="6" bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td width="211" height="120" rowspan="5"> 
+              <div align="center"><img src="../assets/insurance/home_rebuilding/map.gif" width="84" height="130"></div>
+            </td>
+            <td width="25">&nbsp;</td>
+            <td width="191">&nbsp;</td>
+            <td rowspan="6" bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td height="20" valign="top" width="25"> 
+              <input type="radio" name="region" value="0"  / >
+            </td>
+            <td width="191">London and Channel Islands<sup>*</sup></td>
+          </tr>
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td align="center" valign="top" width="25"> 
+              <input type="radio" name="region" value="1"  / >
+            </td>
+            <td width="191">South East</td>
+          </tr>
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td align="center" valign="top" width="25"> 
+              <input type="radio" name="region" value="2"  / >
+            </td>
+            <td width="191">South West, North West, Eastern, Scotland</td>
+          </tr>
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td align="center" valign="top" width="25"> 
+              <input type="radio" name="region" value="3"  / >
+            </td>
+            <td width="191">North East, East Midlands, West Midlands, Yorkshire and the Humber, Wales and Northern Ireland<sup>*</sup></td>
+          </tr>
+          <tr> 
+            <td bgcolor="#FF6633" colspan="6" height="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <tr> 
+            <td colspan="7" height="10"><img src="../assets/spacer.gif" width="400" height="10"></td>
+          </tr>
+        </table>
+        <table width="430" cellspacing="0" cellpadding="0" border="0">
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td width="293"><img src="../assets/spacer.gif" width="293" height="1"></td>
+            <td width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td width="116"><img src="../assets/spacer.gif" width="116" height="1"></td>
+            <td width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <tr> 
+            <td colspan="3" height="23" valign="top" bgcolor="#FF6633"><img src="../assets/generic/orange_header_arrow.gif" width="13" height="23"></td>
+            <td height="23" class="tableHeader" bgcolor="#FF6633" colspan="5">&nbsp;type 
+              of house</td>
+          </tr>
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td colspan="5"><img src="../assets/spacer.gif" width="1" height="1"> 
+              <table width="422" border="0" cellspacing="0" cellpadding="0">
+                <tr> 
+                  <td width="80"> 
+                    <div align="center"><a href="#" onClick="checkHouse(0);return false;" onMouseOver="imgOver('house1')" onMouseOut="imgOut('house1')"><img src="../assets/insurance/home_rebuilding/detached_house_off.gif" width="46" height="57" name="house1" border="0"></a></div>
+                  </td>
+                  <td width="97"> 
+                    <div align="center"><a href="#" onClick="checkHouse(1);return false;" onMouseOver="imgOver('house2')" onMouseOut="imgOut('house2')"><img src="../assets/insurance/home_rebuilding/semi_detached_house_off.gif" width="75" height="57" name="house2" border="0"></a></div>
+                  </td>
+                  <td width="71"> 
+                    <div align="center"><a href="#" onClick="checkHouse(2);return false;" onMouseOver="imgOver('house3')" onMouseOut="imgOut('house3')"><img src="../assets/insurance/home_rebuilding/detached_bungalow_off.gif" width="47" height="57" name="house3" border="0"></a></div>
+                  </td>
+                  <td width="101"> 
+                    <div align="center"><a href="#" onClick="checkHouse(3);return false;" onMouseOver="imgOver('house4')" onMouseOut="imgOut('house4')"><img src="../assets/insurance/home_rebuilding/semi_detached_bungalow_off.gif" width="75" name="house4" height="57" border="0"></a></div>
+                  </td>
+                  <td width="73"> 
+                    <div align="center"><a href="#" onClick="checkHouse(4);return false;" onMouseOver="imgOver('house5')" onMouseOut="imgOut('house5')"><img src="../assets/insurance/home_rebuilding/terraced_house_off.gif" width="49" height="57" name="house5" border="0"></a></div>
+                  </td>
+                </tr>
+                <tr> 
+                  <td width="80"> 
+                    <div align="center"> 
+                      <input type="radio" name="house_type" value="0"  onClick="checkHouse(0);" / >
+                    </div>
+                  </td>
+                  <td width="97"> 
+                    <div align="center"> 
+                      <input type="radio" name="house_type" value="1"  onClick="checkHouse(1);" / >
+                    </div>
+                  </td>
+                  <td width="71"> 
+                    <div align="center"> 
+                      <input type="radio" name="house_type" value="2"  onClick="checkHouse(2);" / >
+                    </div>
+                  </td>
+                  <td width="101"> 
+                    <div align="center"> 
+                      <input type="radio" name="house_type" value="3"  onClick="checkHouse(3);" / >
+                    </div>
+                  </td>
+                  <td width="73"> 
+                    <div align="center"> 
+                      <input type="radio" name="house_type" value="4"  onClick="checkHouse(4);" / >
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td bgcolor="#FF6633" colspan="6" height="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6" bgcolor="#FFCCCC"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td valign="center" width="293" bgcolor="#FFCCCC">house year range</td>
+            <td bgcolor="#FFCCCC" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6" bgcolor="#FFCCCC" bordercolor="#FFCCCC"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td height="35" width="116" align="left" bgcolor="#FFCCCC" bordercolor="#FFCCCC"> 
+              <select name="year_range"  onChange="adjustBungDate( lastChecked );">
+                <option value="0" >Pre 1920</option>
+                <option value="1" >1920-1945</option>
+                <option value="2" >1946-1979</option>
+                <option value="3" >1980-date</option>
+              </select>
+            </td>
+            <td bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <!-- new code: total_outgoings --> 
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td bgcolor="#FF6633" colspan="7" height="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <tr> 
+            <td colspan="8" height="10"><img src="../assets/spacer.gif" width="400" height="10"></td>
+          </tr>
+        </table>
+        <table width="430" cellspacing="0" cellpadding="0" border="0">
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td width="293"><img src="../assets/spacer.gif" width="293" height="1"></td>
+            <td width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td width="232" colspan="2"><img src="../assets/spacer.gif" width="116" height="1"></td>
+            <td width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <tr> 
+            <td colspan="3" height="23" valign="top" bgcolor="#FF6633"><img src="../assets/generic/orange_header_arrow.gif" width="13" height="23"></td>
+            <td height="23" class="tableHeader" bgcolor="#FF6633" colspan="6">&nbsp;measurement 
+              of the outside area of your home </td>
+          </tr>
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td valign="center" width="293">ground floor (Xm long x Xm wide)</td>
+            <td bgcolor="#FFFFFF" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6" bgcolor="#FFFFFF" bordercolor="#FFFFFF"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td height="35" width="116" align="left" bgcolor="#FFFFFF" bordercolor="#FFFFFF"> 
+              <div align="right"> 
+                <input type="text" size="2" style="width: 48px;" name= "measurement_ground" value="0.00" onBlur="calcMeasurement();" / >
+              </div>
+            </td>
+            <td height="35" width="116" align="left" bgcolor="#FFFFFF" bordercolor="#FFFFFF"> 
+              <div align="center">sq.m </div>
+            </td>
+            <td bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td valign="center" width="293">first floor (Xm long x Xm wide)</td>
+            <td bgcolor="#FFFFFF" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6" bgcolor="#FFFFFF" bordercolor="#FFFFFF"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td height="35" width="232" align="left" bgcolor="#FFFFFF" bordercolor="#FFFFFF"> 
+              <div align="right"> 
+                <input type="text" size="2" style="width: 48px;" name= "measurement_first" value="0.00" onBlur="calcMeasurement();" / >
+              </div>
+            </td>
+            <td height="35" width="232" align="left" bgcolor="#FFFFFF" bordercolor="#FFFFFF"> 
+              <div align="center">sq.m </div>
+            </td>
+            <td bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td bgcolor="#FF6633" colspan="7" height="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6" bgcolor="#CCCCFF"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td valign="center" width="293" bgcolor="#CCCCFF">total area</td>
+            <td bgcolor="#CCCCFF" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6" bgcolor="#CCCCFF" bordercolor="#FFFFFF"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td height="35" width="232" align="left" bgcolor="#CCCCFF" bordercolor="#FFFFFF"> 
+              <div align="right"> 
+                <input type="text" size="2" style="width: 48px;" name= "measurement_total" value="0.00" onFocus="calcMeasurement();this.blur();" / >
+              </div>
+            </td>
+            <td height="35" width="232" align="left" bgcolor="#CCCCFF" bordercolor="#FFFFFF"> 
+              <div align="center">sq.m </div>
+            </td>
+            <td bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <!-- new code: total_outgoings --> 
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td bgcolor="#FF6633" colspan="8" height="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <tr> 
+            <td colspan="8" height="10"><img src="../assets/spacer.gif" width="400" height="10"></td>
+          </tr>
+        </table>
+        <table width="430" cellspacing="0" cellpadding="0" border="0">
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td width="293"><img src="../assets/spacer.gif" width="293" height="1"></td>
+            <td width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td width="232" colspan="2"><img src="../assets/spacer.gif" width="116" height="1"></td>
+            <td width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <tr> 
+            <td colspan="3" height="23" valign="top" bgcolor="#FF6633"><img src="../assets/generic/orange_header_arrow.gif" width="13" height="23"></td>
+            <td height="23" class="tableHeader" bgcolor="#FF6633" colspan="6">&nbsp;if applicable, add an allowance for:<img src="../assets/spacer.gif" width="1" height="1"> 
+            </td>
+          </tr>
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td valign="center" width="293">a separate garage</td>
+            <td bgcolor="#FFFFFF" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6" bgcolor="#FFFFFF" bordercolor="#FFFFFF"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td height="35" width="28" align="right" bgcolor="#FFFFFF" bordercolor="#FFFFFF"> 
+              &nbsp;&pound;
+            </td>
+            <td height="35" width="204" align="left" bgcolor="#FFFFFF" bordercolor="#FFFFFF"> 
+                <input type="text" size="2" style="width: 48px;" name= "garage" value="0.00" / >
+            </td>
+            <td bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td valign="center" width="293">conservatories, sheds, patios, walls 
+              etc.</td>
+            <td bgcolor="#FFFFFF" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6" bgcolor="#FFFFFF" bordercolor="#FFFFFF"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td height="35" width="28" align="right" bgcolor="#FFFFFF" bordercolor="#FFFFFF"> 
+              &nbsp;&pound;
+            </td>
+            <td height="35" width="204" align="left" bgcolor="#FFFFFF" bordercolor="#FFFFFF"> 
+                <input type="text" size="2" style="width: 48px;" name= "extra_features" value="0.00" / >
+            </td>
+            <td bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td valign="center" width="293">luxury fittings e.g. double glazing, 
+              quality kitchen</td>
+            <td bgcolor="#FFFFFF" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+            <td width="6" bgcolor="#FFFFFF" bordercolor="#FFFFFF"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td height="35" width="28" align="right" bgcolor="#FFFFFF" bordercolor="#FFFFFF"> 
+              &nbsp;&pound;
+            </td>
+            <td height="35" width="204" align="left" bgcolor="#FFFFFF" bordercolor="#FFFFFF"> 
+                <input type="text" size="2" style="width: 48px;" name= "luxury_fitting" value="0.00" / >
+            </td>
+            <td bgcolor="#FF6633" width="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <!-- new code: total_outgoings --> 
+          <tr> 
+            <td width="6"><img src="../assets/spacer.gif" width="6" height="1"></td>
+            <td bgcolor="#FF6633" colspan="8" height="1"><img src="../assets/spacer.gif" width="1" height="1"></td>
+          </tr>
+          <tr> 
+            <td colspan="8" height="10"><img src="../assets/spacer.gif" width="400" height="10"></td>
+          </tr>
+        </table>
+      <div align="right"><a href="#" onMouseOver="imgOver('calculate');" onMouseOut="imgOut('calculate');" onClick="validateForm();return false;"><img src="../assets/generic/calculate_off.gif" name="calculate" border="0" alt="calculate" width="84" height="23" / ></a></div>
+        <br />
+        <p><span class="bodyBold">our rebuilding cost guarantee </span><br / >
+          We'll pay the cost of work carried out in repairing or replacing the 
+          damaged parts of the buildings. However, providing the qualifying conditions 
+          shown below are met we'll pay the full rebuilding cost, subject to the 
+          deduction of any applicable excess, even if it's more than the buildings 
+          sum insured. </p>
+        <span class="bodyNormal">
+        <ul>
+          <li>The home must be a house, not a flat or maisonette </li>
+          <li>The home must either have walls constructed of brick, stone or concrete 
+            and roofs made of tiles, slates, asbestos or concrete or have a modern 
+            timber frame clad in brick and roofed in tile, slate or asbestos </li>
+          <li>The buildings sum insured must be based on a professional insurance 
+            valuation by a surveyor or valuer dated on or after 1st January 1981</li>
+        </ul>
+        </span>
+        <p>The buildings sum insured at the beginning of the guarantee must not 
+          exceed £250,000. It must also be set at an amount not less than the 
+          estimated full rebuilding cost of the home according to the <span class="bodyItalic"> 
+          Guide to house rebuilding costs for insurance valuations </span>prepared 
+          by the Building Cost Information Service of the Royal Institution of 
+          Chartered Surveyors or an acceptable alternative. The buildings sum 
+          insured shall thereafter be adjusted in line with the House Rebuilding 
+          Costs for Insurance Valuations, or similar index. If at any time the 
+          home is extended, modified or improved in a way that will increase the 
+          full rebuilding cost, we must be given full details and the buildings 
+          sum insured adjusted accordingly. </p>
+      </form>
+      <!-- #EndEditable --> 
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
+    </td>
+          <td width="15" valign="top"><img src="../assets/spacer.gif" width="15" height="1"></td>
+          
+    <td width="80" valign="top" align="right"><!-- #BeginEditable "RightTools" -->
+      <p><a href="../insurance/insurance_home_apply.html" onMouseOver="imgOver('an')" onMouseOut="imgOut('an')" target="_top"><img src="../assets/generic/apply_now_off.gif" width="78" height="24" alt="apply now" border="0" name="an"></a></p>
+<p><img src="../assets/generic/tools.gif" width="77" height="18" alt="tools"><br>
+  <a href="../insurance/insurance_home_premium.html" onMouseOver="imgOver('tool79')" onMouseOut="imgOut('tool79')" target="_top"><img src="../assets/generic/premium_indicator_off.gif" width="77" height="68" alt="premium indicator" border="0" name="tool79"></a><br>
+  <a href="../insurance/insurance_home_contents.html" onMouseOver="imgOver('tool80')" onMouseOut="imgOut('tool80')" target="_top"><img src="../assets/generic/contents_calc_off.gif" width="77" height="68" alt="contents calculator" border="0" name="tool80"></a><br>
+  <a href="../servlet/RebuildingInsurance" target="_top"><img src="../assets/generic/rebuilding_calc_on.gif" width="77" height="68" alt="rebuilding calculator" border="0" name="tool81"></a><br>
+  <a href="../insurance/insurance_home_quotation.html" onMouseOver="imgOver('tool82')" onMouseOut="imgOut('tool82')" target="_top"><img src="../assets/generic/request_a_quote_off.gif" width="77" height="68" alt="request a quote" border="0" name="tool82"></a></p>
+            <!-- #EndEditable --></td>
+          <td width="20" valign="top"><img src="../assets/spacer.gif" width="20" height="1"></td>
+        </tr>
+      </table>
+ </body>
+<!-- #EndTemplate --></html>
+

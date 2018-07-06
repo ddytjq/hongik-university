@@ -1,0 +1,201 @@
+ID=E0103
+URL=http://www.hh.se/stud/d98rolb/ansi/fscanf().html
+SIZE=8515
+DATE=12/07/02
+TIME=19:17:30
+DATASET=C
+HTML=<html>
+<head>
+  <title>fscanf()</title>
+  <meta name="Generator" content="GuideML V1.6">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+<body>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="frexp().html"><img src="prev.gif" alt="PREV" border=0></a><a href="fseek().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+<hr>
+<pre>
+fscanf-Formatted input conversions
+
+Synopsis
+
+        #include &#060;stdio.h&#062;
+
+        n = fscanf(fp,fmt,arg1,arg2,...);
+
+        int n;                  /* number of input items matched, or EOF */
+        FILE *fp;          /* file pointer (fscanf only) */
+        const char *fmt;  /* format string */
+        type *argx;           /* pointers to input data areas */
+
+Description
+
+        This function reads formatted input from the specified level 2
+        file, fp.  The input characters are read and checked against the
+        format string, which may contain any of the following:
+
+            white space
+                Any number of spaces, horizontal tabs, or new-line
+                characters cause input to be read up to the next character
+                that is not white space.
+
+            ordinary characters
+                Any character that is not white space and is not the
+                percent sign (%) must match the next input character.  If
+                there is not an exact match, scanning stops, and the
+                function returns.
+
+            conversion specification
+                This is a multicharacter sequence that indicates how the
+                next input characters are to be converted.  The following
+                paragraphs describe this conversion specification.
+
+        The conversion specification follows this format, where brackets
+        ([]) indicate an optional part:
+
+            %[*][n][l|h]t
+
+        The various fields are defined as follows:
+
+            %
+                introduces a conversion specifier.  If you want to match a
+                percent sign in the input, use a double percent (%%) in
+                the format string.
+
+            *
+                means that the conversion should be performed, but the
+                result should not be stored.  You should not specify a
+                pointer for any conversion specification that uses the
+                asterisk (*) to suppress conversion.
+
+            n
+                specifies the maximum input field width and should be a
+                decimal number.  This is used only with the s format.
+
+            l
+                indicates that a long integer conversion should be
+                performed.  If neither l nor h is specified, the default
+                is an integer.
+
+            h
+                indicates that a short conversion should be performed.
+If
+                neither l nor h is specified, the default is an integer.
+
+            t
+                stands for one of the following format characters:
+
+                    c, d, e, f, g, i, n, o, s, u, x, and [].
+
+                These characters specify how the input characters are to
+                be converted.
+
+        The following list describes each of the format characters.
+
+            c
+                specifies character conversion.  The corresponding
+                argument must point to a character.  The next input
+                character is moved to that destination.  No white space is
+                skipped.
+
+            d
+                specifies decimal number conversion.  The corresponding
+                argument must point to an integer or to a long integer if
+                the d is preceded by an l.  The input characters should be
+                decimal digits and may be preceded by a plus or minus
+                sign.
+
+            e,f,g
+                specifies floating-point conversion.  These three types
+                are identical.        The corresponding argument must point to
+a
+                floating-point number or to a double-precision
+                floating-point number if the type letter is preceded by an
+                l.  The input characters must follow this format, where
+                brackets ([])  indicate an optional part:
+
+                    [whitespace][sign]digits[.digits][exponent]
+
+                        &middot; leading white space
+
+                        &middot; a plus (+) or minus (-) sign
+
+                        &middot; a sequence of decimal digits
+
+                        &middot; a decimal point followed by 0 or more decimal digit
+
+                        &middot; an exponent, consisting of the letter e or E
+                          followed by an optional plus or minus sign
+                          followed by one or more decimal digits
+
+            n
+                indicates a character count.  No input characters are
+                read.  The corresponding argument must point to an integer
+                into which is written the number of input characters read
+                so far.
+
+            o
+                indicates an octal number.  The corresponding argument
+                should point to an integer, or to a long integer if the o
+                is preceded by an l.
+
+            s
+                indicates a character string.  The corresponding argument
+                should point to a character array large enough to hold the
+                string and a terminating null byte.  The input string is
+                terminated by white space or the end-of-input.        Also, if
+a
+                maximum field width is specified, the output array size
+                should be at least that width plus 1 because the reading
+                of input characters will stop at the field width even if
+                no white space has been encountered.
+
+            u
+                indicates an unsigned integer.        The corresponding
+argument
+                should point to an unsigned integer or to an unsigned long
+                integer if the u is preceded by an l.
+
+            x
+                indicates a hexadecimal integer.  The corresponding
+                argument should point to an integer or to a long integer
+                if the x is preceded by an l.  The hexadecimal number can
+                begin with the characters 0x or 0X, and case is not
+                significant for the hexadecimal letters.
+
+            []
+                indicates a string comprised of a specific set of
+                characters.  A terminating null character is automatically
+                added.        The corresponding argument should point to an
+                array large enough to hold the sequence plus the
+                terminating null character.
+
+        Except for the c and [] specifiers, white space characters in the
+        format string cause white space characters in the input to be
+        skipped.
+
+        If the conversion is successful and the assignment is not
+        suppressed, the result is placed into the corresponding argument.
+        The argument list must contain a pointer to an appropriate data
+        item for each conversion specification that does not suppress
+        assignment.
+
+
+Returns
+
+        The function returns the number of assignments that were made.
+        For example, a return value of 3 indicates that conversion results
+        were assigned to the arguments arg1, arg2, and arg3.  The number
+        of assignments can be less than the number expected if the input
+        characters do not agree with the format string.  If an
+        end-of-input is reached before any values are assigned, the return
+        value is EOF.
+
+See Also
+
+        <a href="scanf().html"> scanf </a>, <a href="sscanf().html"> sscanf </a>
+</pre>
+<hr>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="frexp().html"><img src="prev.gif" alt="PREV" border=0></a><a href="fseek().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+</body>
+</html>
+

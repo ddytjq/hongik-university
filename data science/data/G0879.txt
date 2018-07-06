@@ -1,0 +1,112 @@
+ID=G0879
+URL=http://arcturus.mit.edu/SC95/sc95_03.html
+SIZE=4315
+DATE=09/07/2002
+TIME=16:21:25
+DATASET=Astronomy
+HTML=<HTML>
+<HEAD>
+<TITLE>Parallel Linear GR: Parallel Code</TITLE>
+</HEAD>
+<BODY>
+
+<H2>The Parallel Code </H2>
+One important feature of the treatment in the previous section is that
+each mode characterized by a given <EM>k</EM> evolves independently.
+This problem is thus perfect for coarse-grained parallelization,
+since each node can work on solving the equations for a 
+particular value of <EM>k</EM> without the need to communicate
+with other nodes.
+<P>
+Another important feature is that
+for a value of <EM>k</EM>, the computation necessary to evolve a
+given mode to the present is usually  much larger than that required for
+the initial and final message passing.  For example, with
+the smallest values of
+<EM>k</EM> required, the CPU time is a few seconds on an
+IBM Power2 chip, while the results are gathered as a single
+message of roughly 150 bytes.
+The time required increases as <EM>k</EM> becomes larger;
+the largest <EM>k</EM>-values, corresponding to
+smaller scales requiring  a larger number of moments <EM>l</EM>,
+can take up to half an hour of CPU time. The message length
+increases roughly in proportion to the CPU time, to a maximum
+of 80 kbyte.
+Thus the overhead from message passing is insignificant compared
+to the time spent in computation.
+<P>
+The main loop of the serial code is in <EM>k</EM>; the obvious 
+method of parallelization is to use a master/worker approach.
+The message passing required is quite straightforward.  At the beginning
+of a run, the master process needs to broadcast a few
+quantities to all the workers,
+such as the time at which to end the evolution and
+the maximum number of angular moments <EM>l</EM> to compute;
+it then waits for a message from any worker process.
+When a worker receives this information it then requests a value
+of <EM>k</EM> from the master,  which replies with the appropriate
+value.  
+When the worker completes the computation, it sends an array 
+containing the values of interest 
+back to the master, which prints out these values and sends
+the  next <EM>k</EM> value to the worker (or, if no further work
+is to be done, a message to stop).
+Thus only a few basic message passing routines are required:
+broadcasting to all other nodes, sending, receiving, and checking
+for an incoming message (either from a particular process or from
+any process), as well as the ability to tag messages.
+<P>
+<A HREF="code.html">More detail</A> on the algorithm is available.
+
+<P>
+In the parallel code, calls 
+to wrapper routines are made; these routines in turn  invoke the actual
+message passing libraries.  The wrapper routines are provided
+in a separate file, tailored to the particular library of choice.
+To date, we have used PVM
+( see <A HREF="sc95bib.html#mplibs">Geist et al. 1994</A>), 
+MPI 
+( see <A HREF="sc95bib.html#mplibs">Gropp et al. 1994</A>), 
+MPL, and PVMe (available from IBM;
+see the <A HREF="sc95bib.html#mplibs"> bibliography </A> 
+for pointers to these
+libraries).  Given the computationally intensive nature of this code,
+the choice of which library to use has no effect on the efficiency
+of the code and is simply a matter of which is most convenient to
+the user.
+<P>
+The parallel code, called PLINGER,
+has been run on the DEC Alpha Cluster and the 
+Cray C90/T3D heterogeneous environment at the
+Pittsburgh Supercomputing Center (<A HREF="sc95bib.html#centers">PSC</A>), 
+the IBM SP2 at the 
+Cornell Theory Center (<A HREF="sc95bib.html#centers"> CTC</A>), and
+the SGI Power Challenge Array at the
+National Center for Supercomputing Applications
+(<A HREF="sc95bib.html#centers">NCSA</A>).
+
+
+
+On the SP2, MPL requires that messages be received in the order in
+which they arrive, but this does not create difficulties.  On some
+machines, PVM allows the master process to cohabit a particular
+node along with a worker process; this is desirable because the
+master process, which does no computation,
+requires little CPU time compared to the workers.
+Thus PVM has a slight edge on these machines.
+
+
+<P>
+------
+<A HREF="sc95_04.html"> Next Section </A>
+------
+<A HREF="sc95_02.html"> Previous Section </A>
+------
+<A HREF="sc95.html"> Back to Top Page </A>
+------
+
+<HR>
+<ADDRESS>Paul Bode -- bode@alcor.mit.edu</ADDRESS>
+</BODY>
+</HTML>
+

@@ -1,0 +1,193 @@
+ID=E0964
+URL=http://www.bcbdev.com/articles/wwwtc2answer.htm
+SIZE=9615
+DATE=12/07/02
+TIME=19:26:15
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: Articles</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2>
+<IMG SRC="../images/articlebuilding.gif" BORDER=0 HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 HSPACE="0" >
+</TD>
+</TR>
+<TR>
+<TD WIDTH="7" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">      <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">         <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">      <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">          <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">       <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+
+<H2>
+What's wrong with this code? Volume #2
+</H2>
+<HR>
+<H4>
+A benchmark gone bad
+</H4>
+<P>
+Before we begin, let's post the code for the <TT>ClassNameIs</TT> routine again.
+</P>
+<pre>
+<font color="navy">// Benchmark for ClassNameIs</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button2Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <b>int</b> nCount <b>=</b> ComponentCount<b>;</b>
+
+    DWORD dwStart <b>=</b> GetTickCount<b>(</b><b>)</b><b>;</b>
+    <b>for</b> <b>(</b><b>int</b> j<b>=</b><font color="blue">0</font><b>;</b> j&lt;<font color="blue">1000000</font><b>;</b> j<b>++</b><b>)</b>
+    <b>{</b>
+        <b>for</b> <b>(</b><b>int</b> i<b>=</b><font color="blue">0</font><b>;</b> i&lt;nCount<b>;</b> i<b>++</b><b>)</b>
+        <b>{</b>
+            <b>if</b><b>(</b>Components<b>[</b>i<b>]</b><b>-></b>ClassNameIs<b>(</b><font color="blue">"TEdit"</font><b>)</b><b>)</b>
+                <b>(</b><b>(</b>TEdit <b>*</b><b>)</b>Components<b>[</b>i<b>]</b><b>)</b><b>-></b>Color <b>=</b> clBtnFace<b>;</b>
+        <b>}</b>
+     <b>}</b>
+    DWORD dwEnd <b>=</b> GetTickCount<b>(</b><b>)</b><b>;</b>
+
+    DWORD dwDiff <b>=</b> dwEnd <b>-</b> dwStart<b>;</b>
+    Label2<b>-></b>Caption <b>=</b> IntToStr<b>(</b>dwDiff<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+The flaw in this benchmark is the way that we call the <TT>ClassNameIs</TT> function. <TT>ClassNameIs</TT> takes an
+<TT>AnsiString</TT> object by value as its only argument. The benchmark code passes <TT>char *</TT>. The compiler inserts
+code to construct a temporary <TT>AnsiString</TT> object from the <TT>char *</TT>. The temporary is constructed by
+using the <TT>char *</TT> conversion constructor of <TT>AnsiString</TT>.
+</P>
+<pre>
+<font color="navy">// inside class declaration for AnsiString</font>
+<b>__fastcall</b> AnsiString<b>(</b><b>const</b> <b>char</b><b>*</b> src<b>)</b><b>;</b>
+</pre>
+<P>
+This constructor works by allocating a buffer large enough to hold the string. It then calls the equivalent of
+<TT>strcpy</TT> to copy the string from the source. If the code for this constructor was written in C++, it might
+look something like this:
+<pre>
+<b>__fastcall</b> AnsiString<b>:</b><b>:</b>AnsiString<b>(</b><b>const</b> <b>char</b><b>*</b> str<b>)</b>
+
+<b>{</b>
+    Data <b>=</b> <b>new</b> <b>char</b><b>[</b>strlen<b>(</b><b>char</b><b>)</b> <b>+</b> <font color="blue">1</font><b>]</b><b>;</b>
+    strcpy<b>(</b>Data<b>,</b>str<b>)</b><b>;</b>
+    refcnt <b>=</b> <font color="blue">1</font><b>;</b>
+<b>}</b>
+</pre>
+<P>
+Every time we pass a <TT>char *</TT> to <TT>ClassNameIs</TT>, this constructor runs. Since we call <TT>ClassNameIs</TT> 16 million times
+in the benchmark, we also call <TT>new</TT>, <TT>strcpy</TT>, and <TT>strlen</TT> 16 million times. The overhead of this
+constructor affects the benchmark. We are not just benchmarking <TT>ClassNameIs</TT>, we are also benchmarking the string
+manipulation and the memory allocation routines.
+</P>
+<P>
+If we eliminate the overhead of the memory allocation and string routines, we can obtain a more accurate benchmark for
+<TT>ClassNameIs</TT>. We accomplish this by creating an <TT>AnsiString</TT> constant and passing the contant to
+<TT>ClassNameIs</TT>. The new code lookes like this.
+</P>
+<pre>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button2Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <b>const</b> AnsiString strEdit<b>(</b><font color="blue">"TEdit"</font><b>)</b><b>;</b>
+    <b>int</b> nCount <b>=</b> ComponentCount<b>;</b>
+
+    DWORD dwStart <b>=</b> GetTickCount<b>(</b><b>)</b><b>;</b>
+    <b>for</b> <b>(</b><b>int</b> j<b>=</b><font color="blue">0</font><b>;</b> j&lt;<font color="blue">1000000</font><b>;</b> j<b>++</b><b>)</b>
+    <b>{</b>
+        <b>for</b> <b>(</b><b>int</b> i<b>=</b><font color="blue">0</font><b>;</b> i&lt;nCount<b>;</b> i<b>++</b><b>)</b>
+        <b>{</b>
+            <b>if</b><b>(</b>Components<b>[</b>i<b>]</b><b>-></b>ClassNameIs<b>(</b>strEdit<b>)</b><b>)</b>
+                <b>(</b><b>(</b>TEdit <b>*</b><b>)</b>Components<b>[</b>i<b>]</b><b>)</b><b>-></b>Color <b>=</b> clBtnFace<b>;</b>
+        <b>}</b>
+    <b>}</b>
+    DWORD dwEnd <b>=</b> GetTickCount<b>(</b><b>)</b><b>;</b>
+
+    DWORD dwDiff <b>=</b> dwEnd <b>-</b> dwStart<b>;</b>
+    Label2<b>-></b>Caption <b>=</b> IntToStr<b>(</b>dwDiff<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+So what does this accomplish? Instead of calling the conversion constructor for <TT>char *</TT>, the improved code calls
+the copy constructor to initialize the temporary <TT>AnsiString</TT> that is passed to <TT>ClassNameIs</TT>. Is the
+copy constructor any better than the conversion constructor for <TT>char *</TT>? As it turns out, yes, it is much better.
+Remember that the <TT>AnsiString</TT> class employs a reference counting scheme. When you create an <TT>AnsiString</TT>
+object using the copy constructor, the VCL simply copies the internal <TT>Data</TT> pointer of the source object, and
+increments its reference count. This is much faster than allocating new memory and copying the string.
+</P>
+<P>
+The <TT>AnsiString</TT> copy constructor works effectively like this:
+</P>
+<pre>
+<b>__fastcall</b> AnsiString<b>:</b><b>:</b>AnsiString<b>(</b><b>const</b> AnsiString <b>&</b>rhs<b>)</b>
+<b>{</b>
+    Data <b>=</b> rhs<b>.</b>Data<b>;</b>
+    refcnt <b>=</b> <b>++</b>rhs<b>.</b>refcnt<b>;</b>
+<b>}</b>
+</pre>
+<P>
+This constructor is much faster than the conversion constructor. When we use this constructor, we get a more accurate
+portrayal of how well <TT>ClassNameIs</TT> runs. After making this change, the result for <TT>ClassNameIs</TT> dropped
+from 67,000 milli-seconds to 29,000 milli-seconds. Using the <TT>AnsiString</TT> constant cut the time by more than half.
+</P>
+<P>
+So now we have to ask the question, which benchmark accurately reflects the perforamance of <TT>ClassNameIs</TT>? If you
+are going to pass <TT>char *</TT> arguments to <TT>ClassNameIs</TT>, then the first benchmark is better because it
+includes the overhead of creating the <TT>AnsiString</TT> temporary using the conversion constructor. This overhead is a
+real factor when you pass <TT>char *</TT> arguments to <TT>ClassNameIs</TT>. Another thing to keep in mind is that creating the <TT>AnsiString</TT>
+constant requires some overhead too, because the constant is created with the <TT>char *</TT> conversion constructor.
+If you only need to call <TT>ClassNameIs</TT> one time, then there is no point messing with a constant. If you do need
+to call <TT>ClassNameIs</TT> dozens of times, and you are going to be passing the same class name each time, then it makes
+sense to create a constant instead of passing a <TT>char *</TT>.
+</P>
+<P>
+In reality, you probably won't need to call <TT>ClassNameIs</TT> very much anyway since <TT>dynamic_cast</TT> and
+<TT>__classid</TT> beat it so convincingly. There really isn't much point using <TT>ClassNameIs</TT> when the other
+two options work so much more efficiently. Nonetheless, the lesson from this benchmark is one worth remembering. Be aware
+of temporary objects and how much processor time is spent creating and destroying them.
+</P>
+<P>
+<B>Note:</B> The <TT>AnsiString</TT> constructor code that is listed in this edition is C++ pseudo-code. The
+<TT>AnsiString</TT> class does not use <TT>new</TT>, <TT>strlen</TT>, and <TT>strcpy</TT>. It uses the pascal
+equivalents. Also, <TT>refcnt</TT> is not a member variable of the class. The reference count is maintained by
+pascal code in <TT>SYSTEM.PAS</TT>.
+</P>
+<P>
+<B>Note:</B> The <TT>ClassNameIs</TT> function takes a <TT>const AnsiString</TT> object by value. The function would
+be more effecient if it took a reference instead of an object by value. I would guess that passing the object by value
+has something to do with the fact that the underlying code is in pascal.
+</P>
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2002 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

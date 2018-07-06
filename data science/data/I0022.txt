@@ -1,0 +1,1012 @@
+ID=I0022
+URL=http://www.premfootball.co.uk/inthespotlight/index.html
+SIZE=26699
+DATE=11/07/2002
+TIME=19:25:56
+DATASET=Soccer
+HTML=<!-- Start index.nhtml - Version 3.6 -->
+<HTML>
+<HEAD>
+<TITLE>In The Spotlight</TITLE>
+</HEAD>
+<!-- Start vheader.nhtml - Version 3.6 -->
+<SCRIPT><!--
+
+var gErrorUrl="";
+
+function launch(url) {
+   self.name = "opener";
+   remote = open(url, "remote", "resizable,scrollbars,status,width=700,height=800");
+ }
+
+function openWindow(windowlink) 
+{
+	newwin=window.open(windowlink, 'newwin', 'height=500, width=750, toolbar=no, location=no,directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=no');
+}
+
+function OpenHelpErrorHandler() 
+{
+    if (gErrorUrl != "")
+    {
+        location.href = gErrorUrl;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+function OpenHelp(url)
+{
+    // special case for folders
+    folderindex = location.href.indexOf("/nss-folder/");
+    if (folderindex >= 0)
+    {
+		qsindex = location.href.indexOf("?");
+		if (qsindex < 0 || folderindex < qsindex)
+		{
+        	objectendindex = location.href.indexOf("/", folderindex + 12);
+        	url = location.href.substring(0, folderindex) + "/" + location.href.substring(folderindex + 12, objectendindex) + "/" + url;
+		} // only if /nss-folder/ was found before the query string
+    }
+    
+    window.onerror = OpenHelpErrorHandler;
+    gErrorUrl = url;
+    var hWnd = window.open(url, "NVOHelp", "menubar=yes,toolbar=yes,width=595,height=400,resizable=yes,scrollbars=yes");
+	if (!hWnd.opener) hWnd.opener = self;
+	if (hWnd.focus != null) hWnd.focus();
+    gErrorUrl = "";
+}
+
+
+function FindElement(elementName)
+{
+	var i = 0;
+    
+    for (i = 0; i < document.nvoForm.elements.length; i++)
+	{
+		if (document.nvoForm.elements[i].name == elementName)
+		{
+			return document.nvoForm.elements[i];
+		}
+	}
+    return null;
+}
+
+function RemoveFocusAll()
+{
+	var vers = navigator.appVersion;
+	if (vers.indexOf("Mac") != -1 && vers.indexOf("IE") != -1)
+	{
+		var i = 0;
+
+    	for (i = document.nvoForm.elements.length - 1; i >= 0 ; i--)
+		{
+			if (document.nvoForm.elements[i].type == "text" || document.nvoForm.elements[i].type == "textarea")
+			{
+				document.nvoForm.elements[i].blur();
+			}
+		}
+	}
+}
+
+
+// this is the action string that is used to save the standard items on a page
+
+function GetStdAction()
+{
+	var hidePage = (document.nvoForm.hidePage && document.nvoForm.hidePage.checked) ? "ON" : "OFF";
+
+	if (hidePage == "ON") // if hidden page, go back home
+	{
+		document.nvoForm.NVORedirect.value = document.nvoForm.hostAddressForHiddenPage.value;
+	}
+	
+    return "Set(.Sitemap.Name." + document.nvoForm.ObjectUID.value + "=" + escape(document.nvoForm.PageName.value) 
+    			+ "&.Sitemap.Title." + document.nvoForm.ObjectUID.value + "=" + escape(document.nvoForm.PageTitle.value) 
+    			+ "&.Sitemap.Hide." + document.nvoForm.ObjectUID.value + "=" + hidePage +");";
+}
+
+var gSaveAndGoURL = "";
+var gChanged = false;
+
+function DoGoto(url)
+{
+	RemoveFocusAll();
+    if (gChanged || "" == "")
+    {
+        gSaveAndGoURL = url;
+        DoSave();
+    }
+    else
+    {
+        location.href = ReplaceString(url, "*", "");
+    }
+}
+
+// save the form data and goto the specified url
+
+function SaveAndGo(url)
+{
+	RemoveFocusAll();
+    if (gChanged)
+    {
+        gSaveAndGoURL = url;
+        DoSave();
+    }
+    else
+    {
+        location.href = url;
+    }
+}
+
+
+function Changed(url)
+{
+	gChanged = true;
+}
+
+
+function IsNetscape()
+{
+	return (navigator.appName.substring(0, 8) == "Netscape");
+}
+
+
+function WarnIfUsingOldBrowser()
+{
+	if (parseInt(navigator.appVersion) < 4)
+	{
+		if (IsNetscape())
+			alert("Editing your web site requires a newer version of Netscape Communicator. Visit Netscape's web site at www.netscape.com to obtain the newest version. Failure to do so may result in unreliable behavior.");
+		else
+			alert("Editing your web site requires a newer version of Internet Explorer. Visit Microsoft's web site at www.microsoft.com to obtain the newest version. Failure to do so may result in unreliable behavior.");
+	}
+} 
+
+function NormalizeObjectName(name)
+{
+	var	newName = "";
+
+	for (i = 0; i < name.length; i++)
+
+	{
+		charCode = name.charCodeAt(i);
+		if (charCode < 0)
+			charCode += 256;
+		
+		// Remove the chars \ / : * ? \" < > | '
+		// and handle only ascii values between 32 and 128 
+		
+		if (charCode == 47			//	/
+			|| charCode == 92		//	\
+			|| charCode == 58		//	:
+			|| charCode == 42		//	*
+			|| charCode == 63		//	?
+			|| charCode == 34		//	"
+			|| charCode == 60		//	<
+			|| charCode == 62		//	>
+			|| charCode == 124		//	|
+			|| charCode == 39)		//	'
+		{
+			// do nothing
+		}
+		else if (charCode > 32 && charCode < 128)
+			newName += name.substr(i, 1);
+	}
+	
+	// if we eliminated all chars, name the object "page"
+	if (newName == "")
+		newName = "page";
+		
+	return newName;
+	
+} // NormalizeObjectName
+
+function DoButton(buttonAction)
+{
+	if ((document.nvoForm.PageName) && (document.nvoForm.PageName.value == ""))
+    {
+    	alert("The Page Name is required and cannot be left blank. Please enter a valid name.");
+    	document.nvoForm.PageName.focus();
+    	document.nvoForm.PageName.select();
+    	location.href = "#pagename";
+    	return;
+    }
+    
+	if (gSaveAndGoURL != "")
+    {
+        document.nvoForm.NVORedirect.value = gSaveAndGoURL;
+    }
+    
+    document.nvoForm.NVOAction.value = buttonAction;
+	document.nvoForm.submit();
+}
+
+
+function DoMoveItem(where, uid)
+{
+    DoButton("MoveRecord(List=Sitemap&uid=" + uid + "&Where=" + where + ")");
+}
+
+
+window.errorLoadingApplet = false;
+
+
+// This script is called when the user clicks on the client link before
+// the browser has had time to launch the applet
+
+function AppletErrorHandler() 
+{
+    alert("Please wait for the page to complete loading and then try again.");
+    return true;
+}
+
+
+// This javascript is used launch a helper app
+
+function StartHelper(host, service, hostAddress, extra)
+{
+
+    if (navigator.appVersion.indexOf("Macintosh") != -1)
+    {
+		if (navigator.mimeTypes)
+		{
+            mimetype = navigator.mimeTypes["application/netopia"];
+            if (mimetype && mimetype.enabledPlugin)
+			{
+	            location.href = "http://" + hostAddress + "/pages/common/" + host + ".nhtml?service=" + service + "&back=" + escape(location.href) + "&extra=" + escape(extra);
+    		}
+			else
+			{
+				alert("You must have the FREE Visitor Software in order to use this feature. Please download and install the Visitor Software.");
+				location.href = "http://" + hostAddress + "/bin/download.nhtml";
+			}
+		} // if we can check for mimeTypes supported
+		else
+		{
+            location.href = "http://" + hostAddress + "/pages/common/" + host + ".nhtml?service=" + service + "&back=" + escape(location.href) + "&extra=" + escape(extra);
+		} // else go to plugin start page 
+    }
+	else
+	{
+	    if (window.errorLoadingApplet)
+	    {
+	        alert("You must have Java enabled in your browser in order to use this feature.");
+	    }
+	    else
+	    {
+	        window.onerror = AppletErrorHandler;
+	        
+	        installed = document.cc.isClassInstalled("com.netopia.ns.version.client.VisitorClient");
+	        if (installed)
+	        {
+	            location.href = "http://" + hostAddress + "/pages/common/" + host + ".netopia?service=" + service + "&extra=" + escape(extra);
+	        }
+	        else
+	        {
+	            alert("You must have the FREE Visitor Software in order to use this feature. Please download and install the Visitor Software.");
+	            location.href = "http://" + hostAddress + "/bin/download.nhtml";
+	        }
+	    }
+    } // else it's Windows
+}
+
+// pulls a parameter out of a comma delimeted string
+// For example, given the string "a,b,c", passing
+// index 0 would return "a", 1 would return "b", etc...
+function GetField(rec, fieldindex)
+{
+    var     i;
+    var     istart = 0;
+    var     iend = 0;
+
+    for (i = 0; i < fieldindex; i++)
+    {
+        istart = rec.indexOf(",", istart) + 1;
+    }
+
+    iend = rec.indexOf(",", istart);
+    if (iend < 0)
+    {
+        iend = rec.length;
+    }
+    
+    var temp = rec.substring(istart, iend);
+    return temp;
+}
+
+
+function StdDelete(singularname, pluralname, profile, list, stdeditpage)
+{
+    var     action = "";
+    var     count = 0;
+	var		m1, m2;
+
+    if (stdeditpage)
+        action = GetStdAction();
+    
+    action = "UseProfile(Name=" + profile + ");Save()";
+
+    for (i = 0; i < document.nvoForm.elements.length; i++)
+    {
+		el = document.nvoForm.elements[i];
+		if (el.name == "cb" && el.checked)
+        {
+            uid = GetField(el.value, 0);
+            action +=";Delete(List=" + list + "&UID=" + uid + ")";
+            count++;
+        }
+    }
+
+    if (count > 1)
+    {
+		m1 = "Are you sure that you want to delete ^^^count^^^ ^^^pluralname^^^?";
+		m2 = ReplaceString(m1, "^^^count^^^", count);
+        if (confirm(ReplaceString(m2, "^^^pluralname^^^", pluralname)))
+        {
+            DoButton(action);
+        }
+    }
+    else
+    {
+	    if (count == 1)
+	    {
+			m1 = "Are you sure that you want to delete ^^^count^^^ ^^^singularname^^^?";
+			m2 = ReplaceString(m1, "^^^count^^^", count);
+	        if (confirm(ReplaceString(m2, "^^^singularname^^^", singularname)))
+	        {
+	            DoButton(action);
+	        }
+	    }
+	    else
+	    {
+			m1 = "Please use the check boxes to select the ^^^pluralname^^^ and then click Delete.";
+	        alert(ReplaceString(m1, "^^^pluralname^^^", pluralname));
+	    }
+	}
+}
+
+
+function StdMove(name, moveurl, helpurl, profile, list, field, doneurl, query, uid, extraretparms)
+{
+    var     startuid = "";
+    var     enduid = "";
+
+	if (!uid)
+		uid = "";
+
+    for (i = 0; i < document.nvoForm.elements.length; i++)
+    {
+		el = document.nvoForm.elements[i];
+		if (el.name == "cb" && el.checked)
+        {
+            if (startuid.length == 0)
+                startuid = GetField(el.value, 0);
+            else
+                enduid = GetField(el.value, 0);
+        }
+    }
+
+    if (startuid.length > 0)
+    {
+        if (enduid.length == 0)
+            enduid = startuid;
+		action = moveurl + "?startuid=" + startuid + "&enduid=" + enduid + "&profile=" + profile + "&list=" + list + "&field=" + field + 
+				  "&name=" + escape(name) + "&doneurl=" + doneurl + "&uid=" + uid + "&helpurl=" + helpurl + query;
+		if (extraretparms)
+			action += "&extraretparms=" + extraretparms;
+        SaveAndGo(action);
+    }
+    else
+    {
+		var   message = "Please use the check boxes to select the ^^^name^^^ and then click Move.";
+		alert(ReplaceString(message, "^^^name^^^", name));
+    }
+}
+
+
+function StdEdit(name, editurl, editlisturl, query)
+{
+    var     uidlist = ",";
+    var     count = 0;
+        
+    for (i = 0; i < document.nvoForm.elements.length; i++)
+    {
+		el = document.nvoForm.elements[i];
+		if (el.name == "cb" && el.checked)
+        {
+            uid = GetField(el.value, 0);
+            uidlist += uid + ",";
+            count++;
+        }
+    }
+
+    if (count > 0)
+    {
+        if (count == 1)
+            SaveAndGo(editurl + "?uid=" + uid + query);
+        else
+        {
+            if (editlisturl == "")
+                alert("Please select just one item to edit.")
+            else
+                SaveAndGo(editlisturl + "?count=" + count + "&uidlist=" + uidlist + query);
+        }
+    }
+    else
+    {
+		var message = "Please use the check boxes to select the ^^^name^^^ and then click Edit.";
+        alert(ReplaceString(message, "^^^name^^^", name));
+    }
+}
+
+
+function ReplaceString(org, match, replace)
+{
+    var     dst = "";
+    var     starti = 0;
+    var     endi = 0;
+
+    while ((endi = org.indexOf(match, starti)) >= 0)
+    {
+        dst += org.substring(starti, endi) + replace;
+        starti = endi + match.length;
+    }
+
+    dst += org.substring(starti, org.length);
+
+    return dst;
+}
+
+
+function IsTrue(value)
+{
+	upperCaseValue = value.toUpperCase();
+	return ((upperCaseValue == "")
+			|| (upperCaseValue != "NO" 
+				&& upperCaseValue != "FALSE"
+				&& upperCaseValue != "OFF"
+				&& upperCaseValue != "0"));
+}
+
+function DoSelectAll()
+{
+	for (var i=0; i < document.nvoForm.elements.length; i++)
+	{
+		el = document.nvoForm.elements[i];
+		if (el.name == "cb")
+			el.checked = (document.nvoForm.allSelected.value == "check");
+	}
+	
+	//toggle values
+	if (document.nvoForm.allSelected.value == "check")
+		document.nvoForm.allSelected.value = "uncheck";
+	else
+		document.nvoForm.allSelected.value = "check";
+}
+
+
+function setStatusBar(msg) {
+	window.status = msg;
+	return true
+}
+
+
+function FindSelectedElement(name, buttonName, action, messageNone, messageTooMany)
+{
+	sel = null;
+
+	numsel = 0;
+	for (i = 0; i < document.nvoForm.elements.length; i++)
+	{
+		el = document.nvoForm.elements[i];
+		if (el.name == name && el.checked)
+		{
+			numsel++;
+			sel = el;
+		}
+	}
+
+	if (numsel == 0)
+	{
+		
+		alert(ReplaceString(messageNone, "^^^buttonName^^^", buttonName));
+	}
+	else if (numsel > 1)
+	{
+		alert(ReplaceString(messageTooMany, "^^^action^^^", action));
+		sel = null;
+	}
+
+	return sel;
+}
+
+function CheckURL(urlElement)
+{
+	if (urlElement.value.length > 0 && urlElement.value.indexOf("://") == -1)
+	{
+		urlElement.value = "http://" + urlElement.value
+	}
+	urlElement.value = ReplaceString(urlElement.value, " ", "%20");
+	Changed();
+}
+
+function popup(url) {
+
+newwin=window.open(url,'newwin','height=500,width=700,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,copyhistory=no');
+
+}
+//--></SCRIPT>
+<!-- Start incfcdefaults.nhtml - Version 3.7.2fc3 -->
+<!-- End incfcdefaults.nhtml - Version 3.7.2fc3 -->
+<body  bgcolor="#F5E3AB" BACKGROUND="http://www.premfootball.co.uk/nss-folder/scrapbook/1back1.JPG" 
+link="#000000"
+vlink="#000000"
+>
+<table border=0 cellpadding=0 width=625 cellspacing=0>
+<tr>
+<td colspan=3 width=625>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="625" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<td width=140 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="140" HEIGHT="15" BORDER="0"><br>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="1" HEIGHT="10" BORDER="0"><br>
+<!-- Side-bar nav calls -->
+<table cellpadding=0 cellspacing=0 border=0 width=130>
+<tr>
+<td colspan=2>
+<br>
+<font face="arial,helvetica,sans-serif" size="2" COLOR="#000000">
+<b>PREM FOOTBALL</b>
+</font>
+</td>
+</tr>
+<tr>
+<td colspan=2 width=140 >
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="140" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../door/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../door/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+premfootball.co.uk
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../developmentgroups/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../developmentgroups/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+Development Groups
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td colspan=2>
+<br>
+<font face="arial,helvetica,sans-serif" size="2" COLOR="#000000">
+<b>FANS INTERACTIVE</b>
+</font>
+</td>
+</tr>
+<tr>
+<td colspan=2 width=140 >
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="140" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../euroboss/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../euroboss/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+Team Of The Year
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td colspan=2>
+<br>
+<font face="arial,helvetica,sans-serif" size="2" COLOR="#000000">
+<b>CLUB FEATURES</b>
+</font>
+</td>
+</tr>
+<tr>
+<td colspan=2 width=140 >
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="140" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../facup20012002/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../facup20012002/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+FA Cup 2001/2002
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../academyupdates/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../academyupdates/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+Academy Updates
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td colspan=2>
+<br>
+<font face="arial,helvetica,sans-serif" size="2" COLOR="#000000">
+<b>COACHING</b>
+</font>
+</td>
+</tr>
+<tr>
+<td colspan=2 width=140 >
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="140" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../alexsphysiopage/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../alexsphysiopage/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+Alex's Physio Page
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../coachingdrills/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../coachingdrills/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+Coaching Drills
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td colspan=2>
+<br>
+<font face="arial,helvetica,sans-serif" size="2" COLOR="#000000">
+<b>GOALKEEPERS</b>
+</font>
+</td>
+</tr>
+<tr>
+<td colspan=2 width=140 >
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="140" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../insafehands/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../insafehands/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+In Safe Hands
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+In The Spotlight
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../trainingdrills/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../trainingdrills/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+Training Drills
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td colspan=2>
+<br>
+<font face="arial,helvetica,sans-serif" size="2" COLOR="#000000">
+<b>REFEREES</b>
+</font>
+</td>
+</tr>
+<tr>
+<td colspan=2 width=140 >
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="140" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../blowyourownwhistle/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../blowyourownwhistle/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+Blow Your Own Whistle
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td colspan=2>
+<br>
+<font face="arial,helvetica,sans-serif" size="2" COLOR="#000000">
+<b>World Cup 2002</b>
+</font>
+</td>
+</tr>
+<tr>
+<td colspan=2 width=140 >
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="140" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../buildup/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../buildup/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+Build Up
+</font>
+</a>
+</td>
+</tr>
+<tr>
+<td width=25 valign=top align=right>
+<a href="../worldcupstadiums/index.html"><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/ball1.gif" WIDTH="25" HEIGHT="20" BORDER="0"></a><br>
+</td>
+<td width=105 valign=top>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="105" HEIGHT="5" BORDER="0"><br>
+<a href="../worldcupstadiums/index.html">
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+World Cup Stadiums
+</font>
+</a>
+</td>
+</tr>
+</table>
+<br>
+<br>
+<!-- end Side-bar nav calls -->
+</td>
+<td width=3 >
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="3" HEIGHT="250" BORDER="0"><br>
+</td>
+<td width="483" valign=top>
+<!-- Three column table for: left gutter, content, right gutter -->
+<table width="483" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<!-- left gutter -->
+<td colspan=3>
+<table border=0 cellpadding=0 width=100% cellspacing="0">
+<tr>
+<td valign=top colspan=2 align=center>
+<font face="arial,helvetica,sans-serif" size="2" COLOR="#000000">
+<IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/header1.JPG">
+
+</font>
+</td>
+</tr>
+<tr>
+<td valign=bottom>
+<table border="0" cellpadding="0" cellspacing="0">
+<tr>
+</tr>
+</table>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="1" HEIGHT="3" BORDER="0"><br>
+<FONT FACE="arial,helvetica,sans-serif" SIZE="4" COLOR="#330000">
+&nbsp;&nbsp;<b>In The Spotlight</b><br>
+</FONT>
+</td>
+<td align=right>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="1" HEIGHT="3" BORDER="0"><br>
+<font face="arial,helvetica,sans-serif" SIZE="1" COLOR="#000000">
+</font>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td colspan=3 bgcolor=#330000>
+<IMG SRC="../pages/images/trans_pix.gif" width="1" HEIGHT="2" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<!-- left gutter -->
+<td width=17>
+<IMG SRC="../pages/images/trans_pix.gif" width="17" HEIGHT="1" BORDER="0"><br>
+</td>
+<td>
+<img src="../pages/images/trans_pix.gif" width="456" HEIGHT="1" BORDER="0"><br>
+<!-- body -->
+<font face="arial,helvetica,sans-serif" color="#000000" size="2">
+<br>
+<!-- Start incbanner.nhtml - Version 3.6 -->
+<!-- End incbanner.nhtml - Version 3.6 -->
+<!-- End vheader.nhtml - Version 3.6 -->
+<!-- Start links_outline.nhtml - Version 3.6 -->
+<!-- End links_outline.nhtml - Version 3.6 -->
+<font color=black>Calling all goalkeepers - we would like YOU to take part in our goalkeeping section.  Take a look at our feature below, and you can then answer the same questions and <a href=mailto:"premfootball@europemail.com"> send </a> them to us at Prem Football.<br><br><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/luccarossi1.JPG"><br><br>--------------------------------------------------------------------------------<br><br><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/joeshipton01.jpg"><br><br>--------------------------------------------------------------------------------<br><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/nickeyre.jpg"><br><br>-Name: Nick Eyre<br>-Date Of Birth: 7th September 1985<br>-Team: Tottenham Hotspur<br><br>-How/why did you become a goalkeeper?<br>NE: When I was younger I was a slightly on the chubby side and wasn't really interested at all in football, but I did go down and play with Great Bradfords U8s where I was told "you'd better go in goal".  I performed well and it just felt really natural.<br><br>-How long have you been playing in goal?<br>NE: It must be about six years now!<br><br>-What differences do you notice between playing for Great Bradfords and for Tottenham?<br>NE: To be honest, not too much because when it really started to become serious and I couldn't play for Bradfords any more, I was playing up a year with 7,8 Centre of Excellence class players anyway.<br><br>-Did it take long to adapt to life with Spurs?<br>NE: Obviously it is a lot of commitment and hard training regimes, but when you've played for a side run by your dad you can never have it easy or slack off, so I've never been lazy.<br>    I think it is very important to work your hardest because you never know who might be watching.  You need a lot of discipline but I am lucky in that I'm an only child in a sense, because you grow up quicker in some cases, and it has paid off for me.<br><br>-Do you think it is important to train separately to the rest of the team?<br>NE: I feel it is very important to train separately from the team because goalkeepers needs are very different from outfield players.  Goalkeepers need short, sharp work but still keeping an impeccable level of technique.  It is important to involve yourself in shooting and finishing drills, but after continuous work on this, your technique starts to fail you.  This may lead to bad habits.<br><br>-What are the best things about being a goalkeeper?<br>NE: The best things are working hard in a way, so that you can enjoy it, rather than too much running work.  I also enjoy seeing how you make an opposing player or team slump when they realise there is no way past you.  But this takes lots of hard work and mental concentration.<br><br>-...and the worst things?<br>NE: Nothing stands out that much, but maybe the silly little niggling finger injuries and things like bruised hips where you feel you can train, but it prevents you due to these silly sore pains.<br><br>-Do you base any aspect of your game on any professional goalkeepers?<br>NE: The only thing I pride myself with is my presence, and if anything I would like to set my standards similar to Peter Schmeichel.  But I know the most important thing is to be yourself, but I like to watch all goalkeepers and pick good and bad points.<br><br>-What are your ambitions as a goalkeeper?<br>NE: First things first, but you must take every game as it comes and never get complacent.  But as a final picture I would love to run out at White Hart Lane in the first team before my 19th birthday, and obviously play for England at every level.<br><br><Br><Br><br>********************************************************************************<br><br><br><br>Name: Toni-Anne Wayne<br><br>Date of Birth: 8th May 1983<br><br>Team: White Notley Ladies / Essex Ladies<br><br>-How/why did you become a goalkeeper?<br>T-A: When I was at Colchester Ladies they put me in there, been there ever since.<br><br>-How long have you been a goalkeeper?<br>T-A: Around five years.<br><br>- What do you think makes a good goalkeeper?<br>T-A: Good reflexes, safe pair of hands, not scared to go in hard, a lot of hard work and determination.<br><br>-Do you do any special goalkeeping training exercises? <br>T-A: Weak diving to the right so I concentrate on that and lots of sit ups.<br><br>-What are the best things about being a goalkeeper?<br>T-A: Sense of pride when you do well diving about.<br><br>-...and what are the worst things?<br>T-A: When playing bad teams getting bored!<br><br>-Do you have a favourite professional goalkeeper?  If so, why?<br>T-A: Alex Manninger (should be Arsenal's No. 1) great reflexes and still loads to learn.<br><br>-What are your ambitions as a goalkeeper?<br>T-A: Play for England in World Cup!<br><br>-In what ways do you think ladies' football might have changed in, say, ten years time?<br>T-A: People have realised women are just as good as men and have given them a chance.  More TV coverage.<br><br><br>--------------------------------------------------------------------------------<br><br><br>Name: Philippe Pitts<br><br>Date of Birth: 5th September 1987<br><br>Team: Great Bradfords<br><br>-How/why did you become a goalkeeper?<br>PP: When I played for Sporting 77 they needed a keeper so I said I would give it a go.  Ever since I have played in goal.<br><br>-How long have you been a goalkeeper?<br>PP: I have been a keeper for 5 seasons.<br><br>- What do you think makes a good goalkeeper?<br>PP: Like all players it's ability but unlike outfielders, goalkeepers have to do that bit extra.  But like everything, practice makes perfect!<br><br>-Do you do any special goalkeeping training exercises? <br>PP: I do a lot of mechanics and feetwork.<br><br>-What are the best things about being a goalkeeper?<br>PP: I would have to say the best thing about being goalie is making a good save and the buzz you get from it.  <br><br>-...and what are the worst things?<br>PP: The worst thing about being a keeper is letting in a goal and taking it out of the net.<br><br>-Do you have a favourite professional goalkeeper?  If so, why?<br>PP: My favourite keeper is Peter Schmeichel because of his style.<br><br>-What are your ambitions as a goalkeeper?<br>PP: My ambition is to play for my country and make that crucial save to keep us in the game to go on to win the World Cup final.<br><br>--------------------------------------------------------------------------------<br><br><br><IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/CurtisMorgan.jpg"><br>Above: Curtis at the 1999 Springfield 7-a-side<br><br>Name: Curtis Morgan<br><br>Date of Birth: 8th October 1990<br><br>Team: Great Bradfords U9<br><br>-How/why did you become a goalkeeper?<br>CM: When I played football with my brothers and friends I always seemed to go in goal.<br><br>-How long have you been a goalkeeper?<br>CM: About two and a half years.<br><br>- What do you think makes a good goalkeeper?<br>CM: Keeping on your toes and always keeping your eye on the ball.<br><br>-Do you do any special goalkeeping training exercises? <br>CM: Yes - I train with my team twice a week and go to a goalkeeping course on a Friday night, which is good because we are all goalkeepers and can talk about exercises we find good for us.<br><br>-What are the best things about being a goalkeeper?<br>CM: When you have made a good save, and helped your team win the match.<br><br>-...and what are the worst things?<br>CM: If you are having an easy match and don't see much action during the game, you're just standing waiting, or if it's a hard match and you let too many goals in.<br><br>-Do you have a favourite professional goalkeeper?  If so, why?<br>CM: David Seaman - because he always seems to enjoy what he is doing and has a lot of skills - he is a very good goalkeeper and I would like to be as good as him.<br><br>-What are your ambitions as a goalkeeper?<br>CM: I would like to be a top class goalkeeper and play for one of the top clubs like Arsenal and one day play for England.<br><br>--------------------------------------------------------------------------------<br><br>Name: Lee<br><br>Date of Birth: 5th January 1989<br><br>Team: Great Bradfords U11s Yellows<br><br>-How/why did you become a goalkeeper?<br>Lee: I decided to play in goal because I wanted to be the hero of the game.<br><br>-How long have you been a goalkeeper?<br>Lee: 3 years<br><br>- What do you think makes a good goalkeeper?<br>Lee: Awareness, agility and being a bit mad.<br><br>-Do you do any special goalkeeping training exercises? <br>Lee: No<br><br><br>-What are the best things about being a goalkeeper?<br>Lee: I don't get worn out.<br><br>-...and what are the worst things?<br>Lee: Picking the ball out of the back of the net.<br><br>-Do you have a favourite professional goalkeeper?  If so, why?<br>Lee: No, I don't.<br><br>-What are your ambitions as a goalkeeper?<br>Lee: To become a professional.<br><br>--------------------------------------------------------------------------------<br><br>We are pleased to introduce Australian goalkeeper Craig Tillotson of Taringa Rovers...<br><br>Name: Craig Tillotson    <br><br>Date of Birth: 8th June 1972<br><br>Team: Taringa Rovers, Amateur Division 6, Queensland, Australia<br><br>-How/why did you become a goalkeeper?<br>CT: Played much of my 'career' up front, but later found my speed and agility a great asset between the posts. Though lately I have been used regularly late in a match to trouble opposition defences.<br><br>-How long have you been a goalkeeper?<br>CT: Since 1993 <br><br>- What do you think makes a good goalkeeper?<br>CT: Concentration, agility, and broad shoulders!!<br><br>-Do you do any special goalkeeping training exercises? <br>CT: Being the typical late 20's amateur, training gets more and more<br>difficult every year, especially in the motivation department. I think the<br>key to continued success at this level and age depends on a strong pre-season<br>fitness program. The better and stronger you feel, the more motivated and confident you become.<br><br>-What are the best things about being a goalkeeper?<br>CT: Being the last line and performing the impossible save...<br><br>-...and what are the worst things?<br>CT: Being the last line and stuffing the simple save...<br><br>-Do you have a favourite professional goalkeeper? If so, why?<br>CT: Toss up between Peter Schmeichel and Peter Shilton. Two terrific keepers<br>in two different eras of football. Both have the ability to make you second<br>guess yourself in front of goal, un-nerving even the greatest forwards of<br>their time.<br><br>-What are your ambitions as a goalkeeper?<br>CT:  To be keeping when I'm 40....and to become a goalkeeping coach without<br>ever playing as a professional.<br><br>--------------------------------------------------------------------------------<br><br><br>Prem Football met Ipswich Academy goalkeeper Sam Brown from Braintree in Essex...<br><br>   <IMG SRC="http://www.premfootball.co.uk/nss-folder/scrapbook/sambrown2.jpg"><br><br>Name: Samuel Brown<br><br>Date of Birth: 24th August 1990<br><br>Team: Ipswich Town Academy U9<br><br>-How/why did you become a goalkeeper?<br>SB: I started playing on pitch and I went in goal a few times and enjoyed it more.<br><br>-How long have you been a goalkeeper?<br>SB: 2 1/2 years<br><br>- What do you think makes a good goalkeeper?<br>SB: On your toes, good reflexes and bravery.<br><br>-Do you do any special goalkeeping training exercises? <br>SB: I do lots of special goalkeeping exercises with Malcolm Webster who coaches Richard Wright the Ipswich Town keeper.<br><br>-What are the best things about being a goalkeeper?<br>SB: Making super saves and saving penalties.<br><br>-...and what are the worst things?<br>SB: Letting goals in and having a bad defence.<br><br>-Do you have a favourite professional goalkeeper?  If so, why?<br>SB: Angelo Peruzzi, because he is one of the best keepers in Europe and always tries.<br><br>-What are your ambitions as a goalkeeper?<br>SB: I would like to be a professional keeper when I grow up and play for Inter Milan or Chelsea.<br><br>******************************************************************************** </font>
+<!-- Start vfooter.nhtml - Version 3.6 -->
+<!-- start: vfooter.nhtml -->
+<br>
+</font>
+</td>
+<!-- right gutter -->
+<td align="right" WIDTH="10">
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="10" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td  bgcolor="#330000">
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="1" HEIGHT="1" BORDER="0"><br>
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0 width=625>
+<tr>
+<td width=147 rowspan=2>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="148" HEIGHT="1" BORDER="0"><br>
+</td>
+<td width=480>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="479" HEIGHT="2" BORDER="0"><br>
+</td>
+</tr>
+<tr>
+<td align=center>
+<br>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="1" HEIGHT="5" BORDER="0"><br>
+<FONT face="arial,helvetica,sans-serif" SIZE="2" COLOR="#000000">
+<!-- footer nav bar -->
+<table border=0 cellpadding=0 width=425 cellspacing=0>
+<tr>
+<td align=center>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+<A HREF="../door/index.html">premfootball.co.uk</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../developmentgroups/index.html">Development Groups</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../euroboss/index.html">Team Of The Year</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../facup20012002/index.html">FA Cup 2001/2002</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../academyupdates/index.html">Academy Updates</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../alexsphysiopage/index.html">Alex's Physio Page</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../coachingdrills/index.html">Coaching Drills</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../insafehands/index.html">In Safe Hands</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="index.html">In The Spotlight</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../trainingdrills/index.html">Training Drills</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../blowyourownwhistle/index.html">Blow Your Own Whistle</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../buildup/index.html">Build Up</A>
+</font>
+<font face="arial,helvetica,sans-serif" size="1" COLOR="#330066">
+&nbsp;|&nbsp;
+<A HREF="../worldcupstadiums/index.html">World Cup Stadiums</A>
+</font>
+</td>
+</tr>
+</table>
+</FONT>
+<br>
+<IMG SRC="../pages/images/trans_pix.gif" WIDTH="1" HEIGHT="5" BORDER="0"><br>
+</td>
+</tr>
+</table>
+<!-- Start incfooter.nhtml - Version 3.6 -->
+<SCRIPT><!--
+function GetSigninURL()
+{
+var partnerURL = "/pages/common/signin.nhtml";
+if (partnerURL.charAt(0) == "/")
+partnerURL = "http://www.premfootball.co.uk/pages/common/signin.nhtml";
+location.href = partnerURL;
+}
+//--></SCRIPT>
+<br>
+<table width=625 cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td align=right valign=bottom width=90%>
+</td>
+<td align=center>
+<font size=2><a name="signin" href="javascript:GetSigninURL()" onMouseOver="return setStatusBar('Sign in to your site.')" onMouseOut="return setStatusBar('')"><img src="../pages/images/signin.gif" alt="Sign In" BORDER="0"><br></a>
+<a href="javascript:GetSigninURL()" onMouseOver="return setStatusBar('Sign in to your site.')" onMouseOut="return setStatusBar('')">Sign In</a></font>
+</td>
+</tr>
+</table>
+<!-- End incfooter.nhtml - Version 3.6 -->
+</td></tr></table>
+</font>
+</body>
+</html>
+<!-- End vfooter.nhtml - Version 3.6 -->
+<!-- End index.nhtml - Version 3.6 -->
+

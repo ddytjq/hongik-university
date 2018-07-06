@@ -1,0 +1,476 @@
+ID=E0329
+URL=http://home.att.net/~robertdunn/CodeSamples/RE30CodeSamples.html
+SIZE=18569
+DATE=12/07/02
+TIME=19:19:57
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+ 
+<HTML>
+ 
+<HEAD>
+<TITLE>Yet Another Code Site - Rich Edit 3.0 Code Samples 
+</TITLE>
+<META NAME="GENERATOR" CONTENT="StarOffice/5.1 (Win32)"> 
+<META NAME="CREATED" CONTENT="19981222;17265927"> 
+<META NAME="CHANGEDBY" CONTENT="Robert Dunn"> 
+<META NAME="CHANGED" CONTENT="19991127;22384909"> 
+<META NAME="Template"
+ CONTENT="C:\Program Files\Microsoft Office\Templates\Web Pages\Web Page Wizard.wiz">
+
+</HEAD>
+
+<BODY>
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="0"
+ CELLSPACING="0"> 
+<TR>
+  <TD WIDTH="100%" VALIGN="TOP" BGCOLOR="#000080">
+	 <H1 ALIGN="CENTER" STYLE="margin-top: 0in"><A
+	 NAME="TopOfPage"></A><FONT COLOR="#ffffff"> Yet Another
+	 Code Site</FONT></H1>
+  </TD>
+</TR>
+</TABLE> 
+<H2 ALIGN="CENTER">Rich Edit 3.0 Code Samples</H2>
+<P>Here are samples of Rich Edit 3.0 code that work for me,
+  comments about features that do not work as I originally
+  expected, errors identified in the MSDN online Rich Edit
+  3.0 documentation, Rich Edit 3.0 constants that you will
+  need if you do not have new header files, SendMessage()
+  parameters, and anything else that I think that you might
+  need to know to program for Rich Edit 3.0 controls.&nbsp;
+  This page is definitely a work in progress and I anticipate
+  rolling the information on this page into a TRichEdit30
+  class.&nbsp; However, if you do not want to wait for me to
+  post a TRichEdit30 class, here is what I have learned so
+  far. 
+</P> 
+<P>Before delving into this code, see the
+  <A HREF="../FAQs/RE30New.html" TARGET="_top">Rich Edit 3.0
+  FAQ</A> to determine if you have the 3.0 version, learn
+  where to get it if you do not have it, and see what
+  features it has that you may need or find useful.&nbsp;
+  Please be warned that I am finding that some of the
+  features that I expected, based on MSDN online documents,
+  are not fully implemented or do not function exactly as
+  advertised.&nbsp; I will include information about these
+  differences where appropriate below. 
+</P> 
+<P>I would appreciate any information that you work out
+  that is not on this page.&nbsp; If possible, please send
+  code samples that are constructed as described below to
+  minimize the chances for me to introduce errors into your
+  code.&nbsp; As always, you will get credit for any code
+  that you send.&nbsp; Of course, if you find any errors
+  here, please set me straight. 
+</P> <HR>
+<H2>Code Index</H2>
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="4"
+ CELLSPACING="0"> 
+<TR>
+  <TD COLSPAN="2" WIDTH="100%" VALIGN="TOP">
+	 <P><B>Getting set up to use the Rich Edit 3.0 code on
+		this page</B> 
+	 </P> 
+  </TD>
+</TR>
+<TR VALIGN="TOP">
+  <TD WIDTH="2%">
+	 <P><IMG SRC="../Images/bludiamd.gif" NAME="Graphic1"
+		ALIGN="BOTTOM" WIDTH="14" HEIGHT="14" BORDER="0"> 
+	 </P> 
+  </TD>
+  <TD WIDTH="98%">
+	 <P><A HREF="#Bmk001" TARGET="_top">Rich Edit 3.0 Code
+		Samples - Base Code</A><BR>
+		A basic Rich Edit 3.0 class for the VCL. Use as the
+		starting point for investigating Rich Edit 3.0.&nbsp; Or
+		use the TRichEdit20 Class code available elsewhere on this
+		site.&nbsp; (05-08-99) 
+	 </P> 
+  </TD>
+</TR>
+<TR VALIGN="TOP">
+  <TD WIDTH="2%">
+	 <P><IMG SRC="../Images/bludiamd.gif" NAME="Graphic2"
+		ALIGN="BOTTOM" WIDTH="14" HEIGHT="14" BORDER="0"> 
+	 </P> 
+  </TD>
+  <TD WIDTH="98%">
+	 <P><A HREF="#Bmk002" TARGET="_top">Rich Edit 3.0 Code
+		Samples - Common Code</A><BR>
+		Code to instantiate the class, whether you use the
+		TRichEdit20 class or the stripped down class from the prior
+		section.&nbsp; (05-08-99) 
+	 </P> 
+  </TD>
+</TR>
+<TR>
+  <TD COLSPAN="2" WIDTH="100%" VALIGN="TOP">
+	 <P
+	  STYLE="margin-left: 0.2in; text-indent: -0.2in"><B>The Rich
+		Edit 3.0 Code</B> 
+	 </P> 
+  </TD>
+</TR>
+<TR VALIGN="TOP">
+  <TD WIDTH="2%">
+	 <P><IMG SRC="../Images/bludiamd.gif" NAME="Graphic3"
+		ALIGN="BOTTOM" WIDTH="14" HEIGHT="14" BORDER="0"> 
+	 </P> 
+  </TD>
+  <TD WIDTH="98%">
+	 <P><A HREF="#Bmk003" TARGET="_top">Zooming in and
+		out</A> (EM_GETZOOM &amp; EM_SETZOOM)&nbsp; (05-08-99) 
+	 </P> 
+  </TD>
+</TR>
+<TR VALIGN="TOP">
+  <TD WIDTH="2%">
+	 <P><IMG SRC="../Images/bludiamd.gif" NAME="Graphic4"
+		ALIGN="BOTTOM" WIDTH="14" HEIGHT="14" BORDER="0"> 
+	 </P> 
+  </TD>
+  <TD WIDTH="98%">
+	 <P><A HREF="#Bmk004" TARGET="_top">Paragraph
+		numbering</A> (beyond paragraph bullets)&nbsp; (05-08-99) 
+	 </P> 
+  </TD>
+</TR>
+<TR VALIGN="TOP">
+  <TD WIDTH="2%">
+	 <P><IMG SRC="../Images/bludiamd.gif" NAME="Graphic5"
+		ALIGN="BOTTOM" WIDTH="14" HEIGHT="14" BORDER="0"> 
+	 </P> 
+  </TD>
+  <TD WIDTH="98%">
+	 <P><A HREF="#Bmk005" TARGET="_top">Saving and restoring
+		the current scroll position</A> (EM_GETSCROLLPOS &amp;
+		EM_SETSCROLLPOS)&nbsp; (05-08-99) 
+	 </P> 
+  </TD>
+</TR>
+</TABLE> 
+<P><BR>
+</P> <HR>
+<H3><A NAME="Bmk001"></A>Rich Edit 3.0 Code Samples - Base
+Code</H3>
+<P>Ok.&nbsp; I have a dilemma.&nbsp; The most efficient way
+  to develop the Rich Edit 3.0 code is to derive a class from
+  the Rich Edit 2.0 class (TRichEdit20) already available on
+  this site.&nbsp; So much of the code is identical and so
+  many of the Rich Edit 3.0 features are simple extensions of
+  the v2.0 functionality.&nbsp; In fact, if you install the
+  Rich Edit 3.0 DLL on your system, it replaces the v2.0 DLL
+  (riched20.dll) and the TRichEdit20 class automatically
+  loads the v3.0 DLL. 
+</P> 
+<P>On the other hand, I want the code on this page to work
+  without requiring you to dig through all of the TRichEdit20
+  class code, useful though it may be.&nbsp; So here is
+  (today's) decision:&nbsp; The code on this page will be
+  based upon the stripped-down TRichEdit20 class code below
+  which does nothing more than ensure that a v2.0 or v3.0 DLL
+  gets loaded.&nbsp; Note that neither the TRichEdit20 class
+  nor the code below actually tests to ensure that the v3.0
+  DLL is installed &#150; if v3.0 is installed, it is
+  loaded.&nbsp; If not, v2.0 gets loaded if it has been
+  installed.&nbsp; (You should get an error if neither is
+  installed, but I have not tested for that.) 
+</P> 
+<P>If you wish to follow my advice to start with the
+  TRichEdit20 class, add the following declaration/definition
+  to your code and skip the rest of this section: 
+</P> <PRE STYLE="margin-left: 0.5in">class TRichEdit30 : public TRichEdit20
+{
+public:
+  TRichEdit30(TComponent* Owner) : TRichEdit20(Owner) {};
+};</PRE>
+
+<P> Otherwise, here is the minimal TRichEdit30 class used
+  by the rest of the code on this page.&nbsp; Note that some
+  of the member functions are empty.&nbsp; That is, the
+  functions are declared/defined, but contain no or almost no
+  code.&nbsp; This reflects my experience &#150; although
+  empty now, I have a gut feeling that we will need to add
+  code to these methods sometime later.&nbsp; Maybe not, but
+  I am trying to keep things flexible.... 
+</P> 
+<P ALIGN="LEFT"><B>[ BCB4 users &#150; if you are not using
+  the TRichEdit20 class as described above,
+  <A HREF="RE30BasicProject.zip" TARGET="_top">click here</A>
+  to download the basic Rich Edit 3.0 project code that
+  follows.&nbsp; You should probably read through the
+  comments below to ensure that you understand each part of
+  the code and, more importantly, what this minimal class
+  does not do for you. ]</B> 
+</P> 
+<P>Here is the minimal TRichEdit30 class used for the
+  remainder of this page: 
+</P> 
+<P>Declarations (inline or in *.hpp file) 
+</P> <PRE STYLE="margin-left: 0.5in">//---------------------------------------------------------------------------
+#include &lt;vcl\SysUtils.hpp&gt;
+
+class TRichEdit30 : public TRichEdit
+{
+private:
+  int FLibHandle;
+
+protected:
+  virtual void __fastcall CreateParams(Controls::TCreateParams &amp;Params);
+  virtual void __fastcall DestroyWnd(void);
+  virtual void __fastcall CreateWnd(void);
+  virtual void __fastcall WndProc(Messages::TMessage &amp;Message);
+
+public:
+  __fastcall TRichEdit30(TComponent* Owner);
+  __fastcall ~TRichEdit30();
+  virtual void __fastcall RecreateWnd(void);      // not virtual in base!!!
+};
+//---------------------------------------------------------------------------</PRE>
+
+<P> Definitions (inline or in a *.cpp file) 
+</P> <PRE STYLE="margin-left: 0.5in">//---------------------------------------------------------------------------
+// may need to add code here later
+//
+__fastcall TRichEdit30::TRichEdit30(TComponent* Owner) : TRichEdit(Owner)
+{
+}
+//---------------------------------------------------------------------------
+// may need to add code here later
+//
+__fastcall TRichEdit30::~TRichEdit30()
+{
+}
+//---------------------------------------------------------------------------
+// may need to add code here later
+//
+void __fastcall TRichEdit30::CreateWnd(void)
+{
+  TRichEdit::CreateWnd();
+}
+//---------------------------------------------------------------------------
+// the following ensures that the riched20.dll (v2.0 or v3.0) is loaded;
+// TRichEdit unloads the DLL that *IT* loads in the WM_NCDESTROY handler (which,
+// disappointingly enough, is private rather than protected; damned if FLibHandle
+// isn't also, or we could simply unload it later) but we do it in DestroyWnd()...
+// (note:  do not call TRichEdit::CreateParams -- it will attempt to
+// load the older version of the rich edit DLL -- not a Good Thing -- too bad
+// if anything important goes on there)
+//
+void __fastcall TRichEdit30::CreateParams(Controls::TCreateParams &amp;Params)
+{
+  const char RichEditModuleName[] = &quot;RICHED20.DLL&quot;;
+  long int OldError;
+
+  OldError = SetErrorMode(SEM_NOOPENFILEERRORBOX);
+  FLibHandle = (int) LoadLibrary(RichEditModuleName);
+  if (FLibHandle &lt; HINSTANCE_ERROR) FLibHandle = 0;
+  SetErrorMode(OldError);
+//  TRichEdit::CreateParams(Params);
+  TCustomMemo::CreateParams(Params);
+//  CreateSubClass(Params, &quot;RICHEDIT&quot;);
+  CreateSubClass(Params, RICHEDIT_CLASS);
+  Params.Style = Params.Style |
+    (HideScrollBars ? 0 : ES_DISABLENOSCROLL) | (HideSelection ? 0 : ES_NOHIDESEL);
+}
+//---------------------------------------------------------------------------
+// free the library on destroy (actually, it will not unload until last
+// TRichEdit20 instance is destroyed)
+//
+void __fastcall TRichEdit30::DestroyWnd(void)
+{
+  TRichEdit::DestroyWnd();
+  if (FLibHandle != 0) FreeLibrary((void*) FLibHandle);
+}
+//---------------------------------------------------------------------------
+// may need to add code here later
+//
+void __fastcall TRichEdit30::WndProc(Messages::TMessage &amp;Message)
+{
+  TRichEdit::WndProc(Message);
+}
+//---------------------------------------------------------------------------
+// may need to add code here later
+//
+void __fastcall TRichEdit30::RecreateWnd(void)  // not virtual in base!!!
+{
+  TRichEdit::RecreateWnd();
+}
+//---------------------------------------------------------------------------</PRE>
+
+<P> This is the end of the minimal TRichEdit30 class. 
+</P> 
+<H3><A NAME="Bmk002"></A>Rich Edit 3.0 Code Samples -
+Common Code</H3>
+<P>The code on this page assumes that you have declared and
+  defined a TRichEdit30 class in one of the two ways
+  described above, i.e., either by deriving a TRichEdit30
+  class from the TRichEdit20 class or by creating the minimal
+  TRichEdit30 class from the above code.&nbsp; Now you must
+  instantiate the class.&nbsp; The rest of this page assumes
+  that you have declared a global variable, RE30: 
+</P> <PRE STYLE="margin-left: 0.5in">TRichEdit30* RE30;</PRE>
+
+<P> And that you have initialized RE30 in your form
+  constructor (like this): 
+</P> <PRE STYLE="margin-left: 0.5in">RE30 = new TRichEdit30(this);
+RE30-&gt;Parent = this;
+RE30-&gt;Align = alClient;</PRE>
+
+<P> The following examples will operate on the RE30 global
+  variable. 
+</P> 
+<P>To get started, create a new project, add a main menu,
+  and then add the necessary code to declare and define the
+  TRichEdit30 class.&nbsp; In the main form, add the
+  declaration for RE30 and then add the RE30 initialization
+  to the form constructor.&nbsp; Now we are ready to get on
+  to the good stuff. 
+</P> <HR>
+<H3><A NAME="Bmk003"></A>Zooming in and out</H3>
+<P>Rich Edit 3.0 adds the ability to enlarge (zoom in) or
+  shrink (zoom out) the text inside the control.&nbsp; For
+  example, you can enlarge all of the text in the control by
+  an arbitrary factor and the enlarged text will wrap inside
+  the window as if the fonts' sizes had been changed.&nbsp;
+  One would assume, based upon the MSDN information, that the
+  printed version of the text would be unchanged from the
+  original font size(s).&nbsp; The text scaling definitely
+  works (see the comments in the code), but I have not
+  confirmed that printing is unaffected. 
+</P> <PRE STYLE="margin-left: 0.5in">// message constants
+#define EM_GETZOOM (WM_USER + 224)
+#define EM_SETZOOM (WM_USER + 225)
+
+// the following DWORDs (not WORDs as documented at MSDN) determine the scaling.  The ratio of 
+// numerator / denominator must be between 1/64th and 64.  note that a ratio of less than 1:1
+// does not actually display text at less than the unscaled size of the text (that is, you
+// cannot scale to less than 100%) in my tests with riched20.dll version 5.30.11.2410.  however,
+// if you set the scaling to, say, 1:2, then EM_GETZOOM does return 1:2, although the control
+// contents are displayed 1:1.  OTOH, maybe I do not understand how to use this properly....
+//
+// to reset the scaling factor to 1:1, set both values to 0.
+//
+// the following values set the scaling factor to 3 times the normal size.
+DWORD numerator = 3;
+DWORD denominator = 1;
+
+// EM_SETZOOM returns true on success or false on failure
+bool result = ::SendMessage(RE30-&gt;Handle, EM_SETZOOM, (WPARAM) numerator, (LPARAM) denominator);</PRE>
+
+<P> To get the current zoom factor: 
+</P> <PRE STYLE="margin-left: 0.5in">// EM_GETZOOM should always return true.  note that numerator and denominator may be zero
+result = ::SendMessage(RE30-&gt;Handle, EM_GETZOOM, (WPARAM) &amp;numerator, (LPARAM) &amp;denominator);</PRE>
+
+<HR>
+<H3><A NAME="Bmk004"></A>Paragraph numbering</H3>
+<P>Paragraph numbering is effected through the PARAFORMAT2
+  structure and the EM_GETPARAFORMAT and EM_SETPARAFORMAT
+  messages. A variety of numbering styles are documented: 
+</P> <DL>
+<DD>1) Number with right parenthesis (wNumberingStyle = 0).
+</DD>
+<DD> 1. Number with a period (wNumberingStyle = 1).</DD>
+<DD> (1) Number with right and left parenthesis
+(wNumberingStyle = 2).</DD>
+<DD> 1 Number only (wNumberingStyle = 3).</DD>
+</DL>
+<P> Supposedly, each of the above can be bitwise-or'd with
+  0x8000 to force the number to be displayed as a Roman
+  numeral.&nbsp; My tests with the the 5.30.11.2410 version
+  of the riched20.dll reveal that all numbering styles
+  display as a number followed by a right parenthesis (the
+  first item in the list above). 
+</P> 
+<P>As mentioned above, the PARAFORMAT2 structure is used to
+  set the numbering style. This is done through the following
+  structure members: 
+</P> <DL>
+<DD>dwMask - Set the following values (bitwise-or them
+together) to identify which of the remaining structure
+members are valid:&nbsp; PFM_NUMBERING, PFM_NUMBERINGSTART,
+PFM_NUMBERINGSTYLE, and PFM_NUMBERINGTAB.</DD>
+<DD> wNumbering - 0 = no numbering/bullets, PFN_BULLET =
+bullet, 2 = Arabic numbers, 3 = lowercase letters, 4 =
+uppercase letters, 5 = lowercase Roman numerals, 6 =
+uppercase Roman numerals, 7 = sequence of characters
+beginning with the Unicode character specified in the
+wNumberingStart member.</DD>
+<DD> wNumberingStart - Starting value for numbering.
+Ignored according to MSDN documentation.</DD>
+<DD> wNumberingStyle - Style for numbering</DD>
+<DD> wNumberingTab - Minimum space, in twips, between the
+border and the paragraph's text.</DD>
+</DL>
+<P> Here is the code to set the currently selected
+  paragraph(s) style to numbered (note that the text must be
+  selected before invoking this code): 
+</P> <PRE STYLE="margin-left: 0.5in">PARAFORMAT2 pf2;
+pf2.cbSize = sizeof(pf2);
+pf2.dwMask = PFM_NUMBERING | PFM_NUMBERINGSTART | PFM_NUMBERINGSTYLE;
+pf2.wNumbering = 3;
+pf2.wNumberingStart = 1;
+pf2.wNumberingStyle = 2;
+::SendMessage(RE30-&gt;Handle, EM_SETPARAFORMAT, 0, (LPARAM) &amp;pf2);</PRE>
+
+<P> Try different combinations and see what you get. 
+</P> <HR>
+<H3><A NAME="Bmk005"></A>Saving and restoring the current
+scroll position</H3>
+<P>Rich Edit includes a frequently requested feature
+  notably absent in prior versions.&nbsp; You can now save
+  and restore the current vertical and horizontal scroll
+  positions accurately and easily. 
+</P> <PRE STYLE="margin-left: 0.5in">// message constants
+#define EM_GETSCROLLPOS (WM_USER + 221)
+#define EM_SETSCROLLPOS (WM_USER + 222)
+
+// create a POINT structure to hold the scroll position
+POINT pt = { 0, 0 };
+
+// fetch the scroll position into pt
+::SendMessage(RE30-&gt;Handle, EM_GETSCROLLPOS, 0, (LPARAM) &amp;pt);
+
+[ do a bunch of stuff... ]
+
+// now restore the scroll postion
+::SendMessage(RE30-&gt;Handle, EM_SETSCROLLPOS, 0, (LPARAM) &amp;pt);</PRE>
+
+<P> This is definitely a candidate for the &quot;new
+  feature most easy to use&quot; award.&nbsp; It is also a
+  candidate for the &quot;why was this feature not in the
+  last two versions?&quot; award. 
+</P> <HR>
+<P>More to come as time, energy, and wife permit...</P>
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="2"
+ CELLSPACING="0"> 
+<TR VALIGN="TOP">
+  <TD WIDTH="*" BGCOLOR="#e6e6e6">
+	 <P><FONT SIZE="-1"><B><A HREF="../Yacs.html" TARGET="_top">Home</A> |
+		<A HREF="#TopOfPage" TARGET="_top">Top Of Page</A> |
+		<A HREF="../Yacs.html#CodeSection" TARGET="_top">Code</A> |
+		<A HREF="../Yacs.html#Papers" TARGET="_top">Papers</A> |
+		<A HREF="../Yacs.html#FAQs" TARGET="_top">FAQs</A> |
+		<A HREF="../Links.html" TARGET="_top">Links</A> |
+		<A HREF="../Yacs.html#SiteSearch" TARGET="_top">Search</A> | 
+		<A HREF="../Yacs.html#ContactMe" TARGET="_top">Feedback</A></B></FONT> 
+	 </P> 
+  </TD>
+  <TD WIDTH="*" BGCOLOR="#e6e6e6">
+	 <P ALIGN="RIGHT"><FONT SIZE="-1">Page updated 
+		<SCRIPT LANGUAGE="javascript" TYPE="text/javascript" SRC="../lstmoddt.js">
+			</SCRIPT> </FONT> 
+	 </P> 
+  </TD>
+</TR>
+</TABLE> 
+<P ALIGN="CENTER"><B><FONT SIZE="-1">Copyright &copy; 1999-2001 Thin Air
+  Enterprises and Robert Dunn.&nbsp; All rights
+  reserved.</FONT></B> 
+</P> 
+</BODY>
+</HTML>
+
+

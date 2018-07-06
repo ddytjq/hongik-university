@@ -1,0 +1,268 @@
+ID=E0598
+URL=http://www.bcbdev.com/faqs/faq50.htm
+SIZE=14566
+DATE=12/07/02
+TIME=19:22:34
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+<H3>
+Q: Create custom <TT>TCollection</TT>/<TT>TCollectionItem</TT> classes
+</H3>
+<BR>
+<H3>Answer</H3>
+<P>
+The VCL uses <TT>TCollection</TT>'s in many of its classes. For example, the <TT>Items</TT>
+property of <TT>TListView</TT> is a <TT>TCollection</TT>. This FAQ describes how you can
+create a custom collection in your code. The FAQ describes how to create a
+<TT>TCollection</TT> that contains an array of <TT>DWORD</TT>'s.
+</P>
+<B>Step 1: Derive a class from <TT>TCollectionItem</TT></B>
+<P>
+Derive a class from <TT>TCollectionItem</TT> that will store the data that you
+want to keep in the collection. The collection will store an array of objects
+for the class that you derive. The class shown here stores an internal <TT>DWORD</TT>, and
+provides a property to manipulate the data. Your derived class should provide a
+constructor that takes a <TT>TCollection</TT> pointer as an argument.
+</P>
+<pre>
+<b>class</b> TDWORDItem <b>:</b> <b>public</b> TCollectionItem
+<b>{</b>
+    <b>private</b><b>:</b>
+        DWORD FValue<b>;</b>
+    <b>public</b> <b>:</b>
+        <b>__fastcall</b> TDWORDItem<b>(</b>TCollection <b>*</b>Collection<b>)</b><b>;</b>
+        <b>__property</b> DWORD Value <b>=</b> <b>{</b>read <b>=</b> FValue<b>,</b> write <b>=</b> FValue<b>}</b><b>;</b>
+<b>}</b><b>;</b>
+</pre>
+<B>Step 2: Derive a class from <TT>TCollection</TT></B>
+<P>
+Your <TT>TCollection</TT> derivative will host a collection of
+<TT>TCollectionItem</TT> derived objects. The <TT>TCollection</TT> subclass
+must provide methods for adding, deleting, and manipulating the collection. The
+base class <TT>TCollection</TT> already contains some functionality for manipulating
+the collection, and in fact, your <TT>TCollection</TT> subclass could get by without adding
+any new functionality. However, I have chosen to add functions and properties that
+make the <TT>DWORD</TT> collection easier to maintain from outside the class.
+</P>
+<P>
+The class shown here contains a array property called <TT>Items</TT> that allows
+read and write access to the collection. Notice that the property
+is an array of <TT>DWORD</TT>'s, and not an array of <TT>TDWORDItem</TT>'s or
+<TT>TCollectionItem</TT>'s. The <TT>TCollection</TT> class already contains an
+<TT>Items</TT> array property that provides direct access to the
+<TT>TCollectionItem</TT> pointers, but in my case, an array of <TT>DWORD</TT>'s is
+more useful than an array of <TT>TDWORDItem</TT>'s. In your code, you may want to
+just stick with the <TT>Items</TT> property that is provided by <TT>TCollection</TT>.
+Likewise <TT>TCollection</TT> also provides an <TT>Add</TT> method that returns a
+newly constructed <TT>TCollectionItem</TT>. You initialize the item after calling
+<TT>Add</TT> (see the FAQ on
+<A TARGET=_top HREF="faq15.htm">Adding items to a ListView from code at runtime</A>
+to see what I mean)</TT>. I decided to provide a new <TT>Add</TT> method that
+takes a <TT>DWORD</TT> as an argument. As you will see in the next step, my
+<TT>Add</TT> function merely calls the base class <TT>Add</TT> function, and
+then initializes the item. You could omit the <TT>Add</TT> method in your class
+if you prefer to initialize the collection item outside of the collection class (just
+like <TT>TListView</TT>).
+</P>
+<pre>
+<b>class</b> TDWORDList <b>:</b> <b>public</b> TCollection
+<b>{</b>
+    <b>private</b><b>:</b>
+        DWORD <b>__fastcall</b> GetItem<b>(</b><b>int</b> Index<b>)</b><b>;</b>
+        <b>void</b> <b>__fastcall</b> SetItem<b>(</b><b>int</b> Index<b>,</b>DWORD AValue<b>)</b><b>;</b>
+    <b>public</b><b>:</b>
+        <b>__fastcall</b> TDWORDList<b>(</b><b>)</b><b>;</b>
+        <b>void</b> <b>__fastcall</b> Add<b>(</b>DWORD AValue<b>)</b><b>;</b>
+        <b>void</b> <b>__fastcall</b> Delete<b>(</b><b>int</b> Index<b>)</b><b>;</b>
+        <b>__property</b> DWORD Items<b>[</b><b>int</b> Index<b>]</b> <b>=</b> <b>{</b>read <b>=</b> GetItem<b>,</b> write <b>=</b> SetItem<b>}</b><b>;</b>
+<b>}</b><b>;</b>
+</pre>
+<B>Step 3: Code the functions for both classes</B>
+<P>
+The block of code below provides the implementation for the <TT>TDWORDItem</TT> and
+<TT>TDWORDList</TT> classes. <TT>TDWORDItem</TT> only has one function, its constructor.
+<TT>TDWORDList</TT> has a constructor, an <TT>Add</TT> function, a <TT>Delete</TT>
+function, and read and write methods for its <TT>Items</TT> array property.
+</P>
+<pre>
+<font color="navy">// The only function for TDWORDItem is it's constructor. Pass the</font>
+<font color="navy">// TCollection pointer to the base class, and then initialize FValue.</font>
+<b>__fastcall</b> TDWORDItem<b>:</b><b>:</b>TDWORDItem<b>(</b>TCollection <b>*</b>Collection<b>)</b>
+  <b>:</b> TCollectionItem<b>(</b>Collection<b>)</b><b>,</b>
+    FValue<b>(</b><font color="blue">0</font><b>)</b>
+<b>{</b>
+<b>}</b>
+
+<font color="navy">// The TDWORDList must pass the name of the item class to the base class</font>
+<font color="navy">// TCollection constructor. This is done using BCB's __classid keyword</font>
+<b>__fastcall</b> TDWORDList<b>:</b><b>:</b>TDWORDList<b>(</b><b>)</b>
+  <b>:</b> TCollection<b>(</b><b>__classid</b><b>(</b>TDWORDItem<b>)</b><b>)</b>
+<b>{</b>
+<b>}</b>
+
+<font color="navy">// Add should create a new TDWORDItem and add it to the collection.</font>
+<font color="navy">// The base class function TCollection::Add can do this for us.</font>
+<font color="navy">// After adding the item, assign its Value property. Observe that my</font>
+<font color="navy">// custom Add function merely moves the statement Item->Value = AValue</font>
+<font color="navy">// inside the collection class.</font>
+<b>void</b> <b>__fastcall</b> TDWORDList<b>:</b><b>:</b>Add<b>(</b>DWORD AValue<b>)</b>
+<b>{</b>
+    TDWORDItem <b>*</b>Item <b>=</b> <b>(</b>TDWORDItem <b>*</b><b>)</b> TCollection<b>:</b><b>:</b>Add<b>(</b><b>)</b><b>;</b>
+    Item<b>-></b>Value <b>=</b> AValue<b>;</b>
+<b>}</b>
+
+<font color="navy">// To implement a Delete function, you must code the function by hand.</font>
+<font color="navy">// TCollection won't help you out with the Delete function. You can code</font>
+<font color="navy">// Delete however you want. I create a copy of the old list, clear out</font>
+<font color="navy">// all items, and then add the old items back in, skipping the index that</font>
+<font color="navy">// should be removed. This could be probably be improved somewhat.</font>
+<b>void</b> <b>__fastcall</b> TDWORDList<b>:</b><b>:</b>Delete<b>(</b><b>int</b> Index<b>)</b>
+<b>{</b>
+    DWORD <b>*</b>OldList <b>=</b> <b>new</b> DWORD<b>[</b>Count<b>]</b><b>;</b>
+    <b>int</b> OldCount <b>=</b> Count<b>;</b>
+
+    <font color="navy">// create a copy of the old values</font>
+    <b>for</b> <b>(</b><b>int</b> j<b>=</b><font color="blue">0</font><b>;</b> j &lt; OldCount<b>;</b> j<b>++</b><b>)</b>
+        OldList<b>[</b>j<b>]</b> <b>=</b> Items<b>[</b>j<b>]</b><b>;</b>
+
+    <font color="navy">// clear the entire list</font>
+    Clear<b>(</b><b>)</b><b>;</b>
+
+    <font color="navy">// add the old values back in, but skip the index</font>
+    <font color="navy">// that is being deleted</font>
+    <b>for</b> <b>(</b><b>int</b> j<b>=</b><font color="blue">0</font><b>;</b> j &lt; OldCount<b>;</b> j<b>++</b><b>)</b>
+    <b>{</b>
+        <b>if</b><b>(</b>j<b>!=</b>Index<b>)</b>
+            Add<b>(</b>OldList<b>[</b>j<b>]</b><b>)</b><b>;</b>
+    <b>}</b>
+    <b>delete</b> <b>[</b><b>]</b>OldList<b>;</b>
+<b>}</b>
+
+<font color="navy">// GetItem is the read method for the Items array property that</font>
+<font color="navy">// returns a DWORD. TCollection::GetItem can return the correct</font>
+<font color="navy">// TDWORDItem * based on the Index argument. Once we have the</font>
+<font color="navy">// pointer, we can return the Value contained by that item.</font>
+DWORD <b>__fastcall</b> TDWORDList<b>:</b><b>:</b>GetItem<b>(</b><b>int</b> Index<b>)</b>
+<b>{</b>
+    TDWORDItem <b>*</b>Item <b>=</b> <b>(</b>TDWORDItem <b>*</b><b>)</b> TCollection<b>:</b><b>:</b>GetItem<b>(</b>Index<b>)</b><b>;</b>
+    <b>return</b> Item<b>-></b>Value<b>;</b>
+<b>}</b>
+
+<font color="navy">// SetItem is the write method for the Items array property. SetItem</font>
+<font color="navy">// calls TCollection::GetItem to return the TDWORDItem for the given</font>
+<font color="navy">// Index. SetItem then assigns the Value property of that item.</font>
+<b>void</b> <b>__fastcall</b> TDWORDList<b>:</b><b>:</b>SetItem<b>(</b><b>int</b> Index<b>,</b>DWORD AValue<b>)</b>
+<b>{</b>
+    TDWORDItem <b>*</b>Item <b>=</b> <b>(</b>TDWORDItem <b>*</b><b>)</b> TCollection<b>:</b><b>:</b>GetItem<b>(</b>Index<b>)</b><b>;</b>
+    Item<b>-></b>Value <b>=</b> AValue<b>;</b>
+<b>}</b>
+</pre>
+<B>Step 5: Use the collection in you code</B>
+<P>
+</P>
+<pre>
+  TDWORDList <b>*</b>list <b>=</b> <b>new</b> TDWORDList<b>;</b>
+  list<b>-></b>Add<b>(</b><font color="blue">502</font><b>)</b><b>;</b>
+  list<b>-></b>Add<b>(</b><font color="blue">29</font><b>)</b><b>;</b>
+  list<b>-></b>Add<b>(</b><font color="blue">100</font><b>)</b><b>;</b>
+  list<b>-></b>Add<b>(</b><font color="blue">0</font><b>)</b><b>;</b>
+  list<b>-></b>Add<b>(</b><font color="blue">30</font><b>)</b><b>;</b>
+  list<b>-></b>Items<b>[</b><font color="blue">3</font><b>]</b> <b>=</b> list<b>-></b>Items<b>[</b><font color="blue">0</font><b>]</b> <b>*</b> <font color="blue">10</font><b>;</b>
+  list<b>-></b>Delete<b>(</b><font color="blue">2</font><b>)</b><b>;</b>
+
+  <font color="navy">// The code below shows what the code above would look like if</font>
+  <font color="navy">// TDWORDList did not contain a customized Add method or Items</font>
+  <font color="navy">// property.</font>
+  TDWORDList <b>*</b>list <b>=</b> <b>new</b> TDWORDList<b>;</b>
+  TDWORDItem <b>*</b>item<b>;</b>
+  item <b>=</b> <b>(</b>TDWORDItem <b>*</b><b>)</b>list<b>-></b>Add<b>(</b><b>)</b><b>;</b>
+  item<b>-></b>Value <b>=</b> <font color="blue">502</font><b>;</b>
+  item <b>=</b> <b>(</b>TDWORDItem <b>*</b><b>)</b>list<b>-></b>Add<b>(</b><b>)</b><b>;</b>
+  item<b>-></b>Value <b>=</b> <font color="blue">29</font><b>;</b>
+  item <b>=</b> <b>(</b>TDWORDItem <b>*</b><b>)</b>list<b>-></b>Add<b>(</b><b>)</b><b>;</b>
+  item<b>-></b>Value <b>=</b> <font color="blue">100</font><b>;</b>
+  item <b>=</b> <b>(</b>TDWORDItem <b>*</b><b>)</b>list<b>-></b>Add<b>(</b><b>)</b><b>;</b>
+  item<b>-></b>Value <b>=</b> <font color="blue">0</font><b>;</b>
+  item <b>=</b> <b>(</b>TDWORDItem <b>*</b><b>)</b>list<b>-></b>Add<b>(</b><b>)</b><b>;</b>
+  item<b>-></b>Value <b>=</b> <font color="blue">30</font><b>;</b>
+  <b>(</b><b>(</b>TDWORDItem <b>*</b><b>)</b>list<b>-></b>Items<b>[</b><font color="blue">3</font><b>]</b><b>)</b><b>-></b>Value <b>=</b>
+     <b>(</b><b>(</b>TDWORDItem <b>*</b><b>)</b>list<b>-></b>Items<b>[</b><font color="blue">0</font><b>]</b><b>)</b><b>-></b>Value<b>*</b><font color="blue">10</font><b>;</b>
+</pre>
+<P>
+<B>Note:</B> The <TT>TCollection</TT> destructor calls the <TT>Clear</TT> function if
+the collection contains any items. Clear automatically deletes the array of
+<TT>TCollectionItem</TT>'s. As long as you properly delete your <TT>TCollection</TT>
+object, you don't need to worry about deleting the collection items.
+</P>
+<P>
+<B>Note:</B> You should consider using the STL <TT>vector</TT> or <TT>list</TT>
+templates instead of using <TT>TCollection</TT>. The code from this FAQ could be
+duplicated using the <TT>vector</TT> template without deriving any new classes.
+STL templates are more portable than the <TT>TCollection</TT> class. You should
+consider using STL templates whenever your collection doesn't need to be
+published in the form of a property. A collection based on <TT>TCollection</TT>
+might be preferrable when you are designing a component that needs a collection
+as a property. The code below shows how the <TT>vector</TT> template could
+have been used in this FAQ.
+</P>
+<pre>
+<font color="green">#include &lt;vector></font>
+<b>using</b> <b>namespace</b> std<b>;</b>
+
+vector &lt; DWORD <b>></b> dVector<b>;</b>
+dVector<b>.</b>push_back<b>(</b><font color="blue">502</font><b>)</b><b>;</b>
+dVector<b>.</b>push_back<b>(</b><font color="blue">29</font><b>)</b><b>;</b>
+dVector<b>.</b>push_back<b>(</b><font color="blue">100</font><b>)</b><b>;</b>
+dVector<b>.</b>push_back<b>(</b><font color="blue">0</font><b>)</b><b>;</b>
+dVector<b>.</b>push_back<b>(</b><font color="blue">30</font><b>)</b><b>;</b>
+dVector<b>[</b><font color="blue">3</font><b>]</b> <b>=</b> dVector<b>[</b><font color="blue">0</font><b>]</b> <b>*</b> <font color="blue">10</font><b>;</b>
+</pre>
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

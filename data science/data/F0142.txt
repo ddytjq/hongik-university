@@ -1,0 +1,141 @@
+ID=F0142
+URL=http://www.vbuniverse.co.uk/webapps.html
+SIZE=8433
+DATE=09/07/2002
+TIME=13:15:31
+DATASET=Visual Basic
+HTML=<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>The flip side of web applications</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 3.0">
+</head>
+
+<body bgcolor="#FFFFFF">
+<div align="center"><center>
+
+<table border="0" height="275" width="648">
+<TBODY>
+</TBODY>
+</table>
+</center></div><a name="top" IDX_CONCEPT="stopindex;Web applications, part 5"
+IDX_TYPE="sbngen">
+
+<p align="center"></a><font face="Arial" color="#FF0000"><big><big><strong>The flip side
+of web applications</strong></big></big></font></p>
+
+<p align="left"><font face="Arial">No matter where you turn, it seems everybody is talking
+about writing &quot;Web-based applications.&quot; In a series of articles, I've been
+trying to examine various aspects of this, hopefully providing you with things to think
+about and areas to examine as you work on your own solutions.</font></p>
+
+<p><font face="Arial">With all of this talk about the Web, it can be difficult to realize
+that the infrastructure opened up by the Internet can also work great for applications and
+solutions that don't need to be hobbled by trying to be &quot;totally compatible&quot;
+with every single Web browser on the market. I receive a lot of e-mail from people who are
+trying to solve various problems with Web-based applications; sometimes their approaches
+sound as though they are trying to shove a square peg into a round hole.</font></p>
+
+<p><font face="Arial">It all boils down to that age-old saying &quot;The right tool for
+the right job.&quot; While a tool belt with a hammer, saw, pliers, and screwdriver (okay,
+and duct tape) might represent the simplest, fully compatible solution, there really are
+times when the best way to get the job done is with a tunneling electron microscope.</font></p>
+
+<p><font face="Arial"><big>Layered Solutions</big></font></p>
+
+<p><font face="Arial">One of the deployment concepts behind Windows Distributed interNet
+Applications Architecture (DNA) is the notion of a design architecture that allows a
+solution to be layered for maximum effectiveness and deployment flexibility. A primary
+focus of Windows DNA is to create a conceptual separation between the
+&quot;Presentation&quot;, &quot;Business Logic&quot;, and &quot;Data Storage&quot;
+functionality of your solution, but it also allows you to take maximum advantage of a
+modular and object-oriented approach to your solution by leveraging COM in a
+language-agnostic model for interacting with a wide variety of system services. Using a
+Windows DNA approach, you can expose your application processing logic via broad-reaching
+Web pages, but you can also leverage this same processing into a time-critical,
+event-driven solution by allowing customized client applications to call directly into
+your server processes without having to use a browser interface as middleman. This means
+that you, the application programmer, have both the freedom and the responsibility to
+determine the solution that works best for you. It also means that as new and different
+deployment needs arise, you can easily leverage your existing code base to address
+scenarios that you hadn't originally considered.</font></p>
+
+<p><font face="Arial">There are perhaps two specific scenarios in which a custom
+application is appropriate. One is for an application that needs to allow rich interaction
+from the user (such as with an image-processing application); the other is to provide the
+functionality of a dynamic Web site, but in a offline state.</font></p>
+
+<p><font face="Arial">Let's examine these two scenarios individually.</font></p>
+
+<p><font face="Arial"><big>User Interaction</big></font></p>
+
+<p><font face="Arial">Consider the case of an image-processing application. Let's say you
+work at a digital graphic design company. A Web site and associated database have been put
+together to warehouse and catalog all of the images being worked on throughout the
+company. Using this, you can quickly and easily search the gallery of images, view
+collections of thumbnails, select individual images, check them out, and then after you've
+finished whatever processing you needed to do to them, check them back in again. </font></p>
+
+<p><font face="Arial">Obviously, the weak link in the chain here is that between checking
+the image out and then checking it back in again, you need to rely on the user to properly
+manage the process of bringing the file into a graphical editor, then making sure they
+check it back in when they are done. Even the check-out/check-in process can be a little
+awkward without relying on ActiveX® controls or Java applets. One way to resolve this
+would be to develop a small application for viewing and checking the images in and out.
+This app could even use the IWebBrowser control so that existing Web pages could be viewed
+within the context of this application to locate the images. When the proper image was
+located, the application would interact with the server to mark the image as &quot;checked
+out,&quot; would copy the file locally, and would automatically launch the appropriate
+editing application. When the checkout application noticed the image file had been closed
+by the user, it could then ask the user if he wished to check the image back in or not.</font></p>
+
+<p><font face="Arial">Such &quot;source control&quot; support could be integrated into an
+existing (or in development) application in various ways -- the point here being that this
+level of interaction really is best performed outside of the scope of an HTML-based Web
+page, but it can still interact with a back-end database, as well as with any special
+purpose &quot;search&quot; logic that might have already been developed for a Web-based
+solution.</font></p>
+
+<p><font face="Arial"><big>Working Offline</big></font></p>
+
+<p><font face="Arial">In the case of an application that might be a normal Web site, aside
+from the fact that it needs to operate in a &quot;disconnected&quot; state ...</font></p>
+
+<p><font face="Arial">Let's say your company has put together a company-wide
+contact-management database in which you can look up, modify, and store information about
+all of the various companies and individuals that you deal with throughout the day. This
+can be done as a pretty straightforward &quot;forms&quot;-based Web site. Aside from what
+might be a rather complex database schema, it is just fairly run-of-the-mill search forms,
+information pages, and form pages to allow new/modified information to be submitted back
+to the database. But what about a situation in which a user takes her laptop with her on
+the plane, and wants to be able to not only view, but to submit, modifications to the
+contact database?</font></p>
+
+<p><font face="Arial">One approach would be to develop a custom application that could
+work in both the connected or disconnected state (although a Web-based approach would
+still work fine in a connected state). In the connected state, the application would
+simply call straight through to the back-end business logic components to provide
+appropriate access to the contact information needed, and would submit any modifications
+in real time. However, when the user wanted to go on the road, she would be allowed to
+populate a temporary &quot;snapshot&quot; with a small subset of the database, and the
+custom application would switch to &quot;offline&quot; processing, in which it would allow
+the user to interact with only the locally stored entries, and perhaps with limited
+functionality. When the user went back online, the application would automatically
+synchronize changes with the master database.</font></p>
+
+<p><font face="Arial"><big>Remember the Client Side</big></font></p>
+
+<p><font face="Arial">The above are only a couple of scenarios in which breaking out of
+the traditional HTTP/HTML metaphor is perhaps the right thing to do, even though you are
+still taking advantage of the same infrastructure that might be used in a Web-based
+environment. As you design your &quot;Web-based&quot; solutions, keep this in mind, and be
+able to recognize when it is appropriate, as well as perhaps necessary, to create a richer
+client-side component to solve the problem you face.</font></p>
+
+<hr>
+
+<p><small><font face="Arial">&lt;!-- </font></small></p>
+</body>
+</html>
+

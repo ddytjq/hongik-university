@@ -1,0 +1,784 @@
+ID=E0178
+URL=http://www.gotw.ca/gotw/069.htm
+SIZE=44555
+DATE=12/07/02
+TIME=19:18:21
+DATASET=C
+HTML=
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+
+
+<title>GotW #69: Enforcing Rules for Derived Classes</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<link rel="stylesheet" type="text/css" href="../gotw.css">
+<meta name="Microsoft Theme" content="gotw 111, default">
+<meta name="Microsoft Border" content="tlb, default">
+</head>
+
+<body background="../_themes/gotw/glabkgnd.jpg" bgcolor="#CCFFFF" text="#000000" link="#008080" vlink="#008080" alink="#0000FF"  ><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><table border="0" cellspacing="0" width="100%">
+  <tr>
+    <td colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="6"><strong>
+    GotW #69</strong></font> <!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+
+
+
+<p align="left" style="margin-top: 0; margin-bottom: 0">
+
+<script language="JavaScript"><!--
+MSFPhover = 
+  (((navigator.appName == "Netscape") && 
+  (parseInt(navigator.appVersion) >= 3 )) || 
+  ((navigator.appName == "Microsoft Internet Explorer") && 
+  (parseInt(navigator.appVersion) >= 4 ))); 
+function MSFPpreload(img) 
+{
+  var a=new Image(); a.src=img; return a; 
+}
+// --></script><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav1n=MSFPpreload("../_derived/home_cmp_gotw110_hbtn.gif"); MSFPnav1h=MSFPpreload("../_derived/home_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1h.src" onmouseout="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1n.src"><img src="../_derived/home_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Home" align="middle" name="MSFPnav1"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav2n=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn.gif"); MSFPnav2h=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../news.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2h.src" onmouseout="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2n.src"><img src="../_derived/news.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="News &amp; Events" align="middle" name="MSFPnav2"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav3n=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav3h=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../resources/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3h.src" onmouseout="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3n.src"><img src="../resources/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Community Resources" align="middle" name="MSFPnav3"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav4n=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn.gif"); MSFPnav4h=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../consulting.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4h.src" onmouseout="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4n.src"><img src="../_derived/consulting.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Consulting Services" align="middle" name="MSFPnav4"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav5n=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn.gif"); MSFPnav5h=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../presentations.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5h.src" onmouseout="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5n.src"><img src="../_derived/presentations.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Presentations" align="middle" name="MSFPnav5"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav6n=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav6h=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../publications/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6h.src" onmouseout="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6n.src"><img src="../publications/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Publications" align="middle" name="MSFPnav6"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav7n=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav7h=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7h.src" onmouseout="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7n.src"><img src="_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Guru of the Week" align="middle" name="MSFPnav7"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav8n=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav8h=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../conv/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8h.src" onmouseout="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8n.src"><img src="../conv/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Conversations" align="middle" name="MSFPnav8"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav9n=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn.gif"); MSFPnav9h=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../search.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9h.src" onmouseout="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9n.src"><img src="../_derived/search.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Search GotW.ca" align="middle" name="MSFPnav9"></a>
+</p>
+
+
+
+
+    <!--mstheme--></font></td>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 0">
+      <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav10n=MSFPpreload("../_derived/back_cmp_gotw110_back.gif"); MSFPnav10h=MSFPpreload("../_derived/back_cmp_gotw110_back_a.gif"); }
+// --></script><a href="068.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10h.src" onmouseout="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10n.src"><img src="../_derived/back_cmp_gotw110_back.gif" width="100" height="20" border="0" alt="Prev" name="MSFPnav10"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav11n=MSFPpreload("../_derived/up_cmp_gotw110_up.gif"); MSFPnav11h=MSFPpreload("../_derived/up_cmp_gotw110_up_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11h.src" onmouseout="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11n.src"><img src="../_derived/up_cmp_gotw110_up.gif" width="100" height="20" border="0" alt="Up" name="MSFPnav11"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav12n=MSFPpreload("../_derived/next_cmp_gotw110_next.gif"); MSFPnav12h=MSFPpreload("../_derived/next_cmp_gotw110_next_a.gif"); }
+// --></script><a href="070.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12h.src" onmouseout="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12n.src"><img src="../_derived/next_cmp_gotw110_next.gif" width="100" height="20" border="0" alt="Next" name="MSFPnav12"></a><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td height="5" background="../images/bar.gif" colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td></tr><!--msnavigation--></table><!--msnavigation--><table dir="ltr" border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td valign="top" width="1%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<!--mstheme--></font><table border="0" cellspacing="0" bgcolor="#000000" cellpadding="0">
+  <tr>
+    <td><!--mstheme--><font face="Arial, Arial, Helvetica">
+    <!--mstheme--></font><table border="0" cellpadding="2" cellspacing="1" width="100%" height="483">
+        <tr>
+          <td align="center" bgcolor="#000000" colspan="2" height="16"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-top: 0; margin-bottom: 0"><a href="../news.htm"><b><font color="#FFFF00">News</font></b></a><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <font size="1" color="#0000FF">J<br>
+          U<br>
+          L<br>
+          Y</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-left: 3; margin-right: 3; margin-top: 0" align="center"><font size="1" color="#0000FF">
+            Print articles newly available online</font><!--mstheme--></font><table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%" id="AutoNumber1" bgcolor="#FFFFCC" bordercolordark="#006666" bordercolorlight="#99CCCC">
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill20.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 1&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000" bgcolor="#FFFFCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mxc++-item-4.htm">
+                <font color="#0000FF">Excerpt from MXC++, &quot;Extensible Templates: 
+                Via Inheritance or Traits?&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mcd_review.htm"><font color="#0000FF">
+                Book Review: Modern C++ Design</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill21.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 2: Namespaceops and 
+                Library Versioning&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+            </table><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;A Pragmatic Look at Exception Specifications&quot;<br>
+            </font><font size="1" color="#000080">The usefulness, or lack 
+            thereof, of exception specifications, and how results can vary 
+            across real-world compilers</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <a target="_blank" href="http://www.cuj.com/experts/2007/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;Getting to the Point&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">The Boost library has five 
+            smart pointers that provide a rich array [sic] of useful behaviors.</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font color="#0000FF" size="1">A<br>
+            U<br>
+          G<br>
+          U<br>
+          S<br>
+          T</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin:0 3; ">
+            <a target="_blank" href="http://www.cuj.com/experts/2008/sutter.htm"><i><b><font size="1" color="#0000FF">The New C++</font></b></i> <font size="1" color="#0000FF">
+            column, &quot;Smart(er) Pointers&quot;</font></a><font size="1" color="#000080"><br>
+            A closer look at one of the proposed new standard C++ library 
+            features -- smart pointers, particularly those in Boost and Loki, 
+            and a sneak peek at the usefulness of the proposed typedef templates</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin:0 3; ">
+          <a target="_blank" href="http://www.cuj.com/experts/2008/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;A Midsummer Night's Madness&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">A brew that mixes pointers, 
+          typedefs, and const</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin-top: 0; margin-bottom: 0">
+          <font size="1" color="#0000FF">S<br>
+          E<br>
+          P<br>
+          T<br>
+          E<br>
+          M<br>
+          B<br>
+          E<br>
+          R</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <font size="1" color="#0000FF">&quot;Standard C++ Meets Managed C++&quot;<br>
+            </font><font size="1" color="#000080">A survey of the main (in)compatibilities 
+            between Standard C++ and Microsoft’s managed extensions for C++, and 
+            how the two could converge</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;Export Restrictions, Part 1&quot;<br>
+            </font><font size="1" color="#000080">The scoop on export -- what 
+            some people think it does, what it actually does, and why it’s the 
+            most widely-ignored feature in the C++ standard</font><!--mstheme--></font></td>
+        </tr>
+      </table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p style="margin-top: 0; margin-bottom: 0">
+<img border="0" src="../images/140.gif" width="140" height="1"></p>
+
+<!--mstheme--></font></td><td valign="top" width="24"></td><!--msnavigation--><td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <h2><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Enforcing Rules for Derived Classes&nbsp;<font size="3"><br>
+      Difficulty: 5 / 10</font><!--mstheme--></font></h2>
+<p><i>Too many times, just being at the top of the (inheritance) world doesn't
+mean that you can save programmers of derived classes from simple mistakes. But
+sometimes you can! This issue is about safe design of base classes, so that
+derived class writers have a more difficult time going wrong.</i></p>
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Problem<!--mstheme--></font></h3>
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">JG Question<!--mstheme--></font></h4>
+<p><b><font size="4">1.</font></b>   When are the following functions implicitly
+declared and implicitly defined for a class, and with what semantics? Be
+specific, and describe the circumstances under which the implicitly defined
+versions cause the program to be illegal (not well-formed).</p>
+<blockquote>
+  <p>a) default constructor</p>
+  <p>b) copy constructor</p>
+  <p>c) copy assignment operator</p>
+  <p>d) destructor</p>
+</blockquote>
+<p><b><font size="4">2.</font></b>   What functions are implicitly declared and
+implicitly defined for the following class X? With what signatures?</p>
+<blockquote>
+<p><font face="Courier New">class X<br>
+{<br>
+&nbsp; auto_ptr&lt;int&gt; i_;<br>
+};</font></p>
+</blockquote>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Guru Question<!--mstheme--></font></h4>
+<p><b><font size="4">3.</font></b>   Say that you have a base class which
+requires that all derived classes not use one or more of the implicitly declared
+and defined functions. For example:</p>
+<blockquote>
+  <p><font face="Courier New">class Count<br>
+  {<br>
+  public:<br>
+  &nbsp; // The Author of Count hereby documents that derived<br>
+  &nbsp; // classes shall inherit virtually, and that all their<br>
+  &nbsp; // constructors shall call Count's special-purpose<br>
+  &nbsp; // constructor only.<br>
+  <br>
+  &nbsp; Count( /* special parameters */ );<br>
+  &nbsp; Count&amp; operator=( const Count&amp; ); // does the usual<br>
+  &nbsp; virtual
+  ~Count();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  // does the usual<br>
+  };</font></p>
+</blockquote>
+<p>Unfortunately, programmers are human too, and they sometimes forget that they
+should write two of the functions explicitly.</p>
+<blockquote>
+  <p><font face="Courier New">class BadDerived : private virtual Count<br>
+  {<br>
+  &nbsp; int i_;<br>
+  <br>
+  &nbsp; // default constructor:<br>
+  &nbsp; //&nbsp;&nbsp; should call special ctor, but does it?<br>
+  &nbsp; // copy constructor:<br>
+  &nbsp; //&nbsp; should call special ctor, but does it?<br>
+  &nbsp; // copy assignment: ok?<br>
+  &nbsp; // destructor: ok?<br>
+  };</font></p>
+</blockquote>
+<p>In the context of this example, is there a way for the author of Count to
+force derived classes to be coded correctly -- that is, to break at compile time
+(preferable) or run time (at minimum) if not coded correctly?</p>
+<p>More generally, Is there any way that the author of a base class can force
+authors of derived classes to explicitly write each of these four basic
+operations? If so, how? If not, why not?</p>
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a name="Solution"></a>Solution<!--mstheme--></font></h3>
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Implicitly Generated Functions (or, What the Compiler Does For/To You)<!--mstheme--></font></h4>
+
+<p>In C++, four class member functions can be implicitly generated by the
+compiler: The default constructor, the copy constructor, the copy assignment
+operator, and the destructor.</p>
+<p>The reason for this is a combination of convenience and backward
+compatibility with C. Recall that C-style structs are just classes consisting of
+only public data members; in particular, they don't have any (explicitly
+defined) member functions, and yet you do have to be able to create, copy, and
+destroy them. To make this happen, the C++ language automatically generates the
+appropriate functions (or some appropriate subset thereof) to do the appropriate
+things, if you don't define appropriate operations yourself.</p>
+<p>This issue of GotW is about what all of those &quot;appropriate&quot; words
+mean.</p>
+<p><font color="#999933"><b><font size="4">1.</font></b>   When are the
+following functions implicitly declared and implicitly defined for a class, and
+with what semantics? Be specific, and describe the circumstances under which the
+implicitly defined versions cause the program to be illegal (not well-formed).</font></p>
+<p>In short, an implicitly declared function is only implicitly defined when you
+actually try to call it. For example, an implicitly declared default constructor
+is only implicitly defined when you try to create an object using no constructor
+parameters.</p>
+<p>Why is it useful to distinguish between when the function is implicitly
+declared and when it's implicitly defined? Because it's possible that the
+function might never be called, and if it's never called then the program is
+still legal even if the function's implicit definition would have been illegal.</p>
+<p>For convenience, throughout this article unless otherwise noted
+&quot;member&quot; means &quot;nonstatic class data member.&quot; I'll also say
+&quot;implicitly generated&quot; as a catchall for &quot;implicitly declared and
+defined.&quot;</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Exception Specifications of Implicitly Declared Functions<!--mstheme--></font></h4>
+
+<p>In all four of the cases where a function can be implicitly declared, the
+compiler will make its exception specification just loose enough to allow all
+exceptions that could be allowed by the functions the implicit definition would
+call. For example, given:</p>
+
+<blockquote>
+
+<p><font face="Courier New">// Example 1(a): Illustrating the exception<br>
+// specifications of implicitly declared functions<br>
+//<br>
+class C // ...<br>
+{<br>
+&nbsp; // ...<br>
+};</font></p>
+
+</blockquote>
+
+<p>Because there are no constructors explicitly declared, the implicitly
+generated default constructor has the semantics of invoking all base and member
+default constructors. Therefore the exception specification of C's implicitly
+generated default constructor must allow any exception that any base or member
+default constructor might emit. If -any- base class or member of C has a default
+constructor with no exception specification, the implicitly declared function
+can throw anything:</p>
+
+<blockquote>
+
+<p><font face="Courier New">// public:<br>
+inline C::C(); // can throw anything</font></p>
+
+</blockquote>
+
+<p>If <i>every</i> base class or member of C has a default constructor with an
+explicit exception specification, the implicitly declared function can throw any
+of the types mentioned in those exception specifications:</p>
+
+<blockquote>
+
+<p><font face="Courier New">// public:<br>
+inline C::C() throw(<br>
+&nbsp; // anything that a C base or member default<br>
+&nbsp; // constructor might throw; i.e., the union of<br>
+&nbsp; // all types mentioned in C base or member<br>
+&nbsp; // default constructor exception specifications<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+);</font></p>
+
+</blockquote>
+
+<p>It turns out that there's a potential trap lurking here. Consider: What if
+one of the implicitly generated functions overrides an inherited virtual
+function? This can't happen for constructors (because constructors are never
+virtual), but it can happen for the copy assignment operator (if you try hard,
+and make a base version that matches the implictly generated derived version's
+signature<b><sup><a href="#1">[1]</a></sup></b>), and it can happen pretty
+easily for the destructor:</p>
+
+<blockquote>
+  <p><font face="Courier New">// Example 1(b): Danger, Will Robinson!<br>
+  //<br>
+  class Derived;<br>
+  <br>
+  class Base<br>
+  {<br>
+  public:<br>
+  &nbsp; // Somewhat contrived, and almost certainly deplorable,<br>
+  &nbsp; // but technically it is possible to use this trick to<br>
+  &nbsp; // declare a Base assignment operator that takes a<br>
+  &nbsp; // Derived argument; be sure to read [3] before even<br>
+  &nbsp; // thinking about trying anything like this:<br>
+  &nbsp; //<br>
+  &nbsp; virtual Base&amp; /* or Derived&amp; */<br>
+  &nbsp; operator=( const Derived&amp; ) throw( B1 );<br>
+  <br>
+  &nbsp; virtual ~Base() throw( B2 );<br>
+  };<br>
+  <br>
+  class Member<br>
+  {<br>
+  public:<br>
+  &nbsp; Member&amp; operator=( const Member&amp; ) throw( M1 );<br>
+  &nbsp; ~Member() throw( M2 );<br>
+  };<br>
+  <br>
+  class Derived : public Base<br>
+  {<br>
+  &nbsp; Member m_;<br>
+  <br>
+  &nbsp; // implicitly declares four functions:<br>
+  &nbsp; //&nbsp;&nbsp;
+  Derived::Derived();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  // ok<br>
+  &nbsp; //&nbsp;&nbsp; Derived::Derived( const Derived&amp; ); // ok<br>
+  &nbsp; //&nbsp;&nbsp; Derived&amp; Derived::operator=( const Derived&amp; )<br>
+  &nbsp; //&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  throw( B1, M1 ); // error, ill-formed<br>
+  &nbsp; //&nbsp;&nbsp; Derived::~Derived()<br>
+  &nbsp; //&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  throw( B2, M2 ); // error, ill-formed<br>
+  };</font></p>
+</blockquote>
+
+<p>What's the problem? The two functions are ill-formed because whenever you
+override any inherited virtual function, your derived function's exception
+specification must be at least as restrictive as the version in the base class.
+That only makes sense, after all: If it weren't that way, it would mean that
+code that calls a function through a pointer to the base class could get an
+exception that the base class version promised not to emit. For instance, if the
+context of Example 1(b) were allowed, consider the code:</p>
+
+<blockquote>
+
+<p><font face="Courier New">Base* p = new Derived;<br>
+<br>
+// Ouch -- this could throw B2 or M2, even though<br>
+// Base::~Base() promised to throw at most B2:<br>
+delete p;</font></p>
+
+  <p><b>Guideline:</b> This is Yet Another Good Reason why every destructor
+  should have either an exception specification of &quot;throw()&quot; or none
+  at all. Besides, destructors should never throw anyway, and should always be
+  written as though they had an exception specification of &quot;throw()&quot;
+  even if that specification isn't written explicitly.<b><a href="#2"><sup>[2]</sup></a></b></p>
+  <p><b>Guideline:</b> This is also Yet Another Good Reason to be careful about
+  virtual assignment operators. See <b><a href="#3"><sup>[3]</sup></a></b> for
+  more about the hazards of virtual assignment and how to avoid them.</p>
+</blockquote>
+<p>Now let's consider the four implicitly generated functions one at a time:</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Implicit Default Constructor<!--mstheme--></font></h4>
+<blockquote>
+  <p><font color="#999933">a) default constructor</font></p>
+</blockquote>
+<p>A default constructor is implicitly declared if you don't declare any
+constructor of your own. An implicitly declared default constructor is public
+and inline.</p>
+<p>An implicitly declared default constructor is only implicitly defined when
+you actually try to call it, has the same effect as if you'd written an empty
+default constructor yourself, and can throw anything that a base or member
+default constructor could throw. It is illegal if that empty default constructor
+would also have been illegal had you written it yourself (for example, it would
+be illegal if some base or member doesn't have a default constructor).</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Implicit Copy Constructor<!--mstheme--></font></h4>
+<blockquote>
+
+<p><font color="#999933">b) copy constructor</font></p>
+
+</blockquote>
+<p>A copy constructor is implicitly declared if you don't declare one yourself.
+An implicitly declared default constructor is public and inline, and will take
+its parameter by reference to const if possible (it's possible if and only if
+every base and member has a copy constructor that takes its parameter by
+reference to const or const volatile too), and by reference to non-const
+otherwise.</p>
+<p>Yes indeed, just like most C++ programmers, the standard itself pretty much
+ignores the volatile keyword a lot of the time. Although the compiler will take
+pains to tack &quot;const&quot; onto the parameter of an implicitly declared
+copy constructor (and copy assignment operator) whenever possible, frankly -- to
+use the immortal words of Clark Gable in Gone with the Wind -- it doesn't give a
+hoot about tacking on &quot;volatile.&quot; Oh well, that's life.</p>
+<p>An implicitly declared copy constructor is only implicitly defined when you
+actually try to call it to copy an object of the given type, performs a
+memberwise copy of its base and member subobjects, and can throw anything that a
+base or member copy constructor could throw. It is illegal if any base or member
+has an inaccessible or ambiguous copy constructor.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Implicit Copy Assignment Operator<!--mstheme--></font></h4>
+<blockquote>
+  <p><font color="#999933">c) copy assignment operator</font></p>
+</blockquote>
+<p>A copy assignment operator is implicitly declared if you don't declare one
+yourself. An implicitly declared default constructor is public and inline,
+returns a reference to non-const that refers to the assigned-to object, and will
+take its parameter by reference to const if possible (it's possible if and only
+if every base and member has a copy assignment operator that takes its parameter
+by reference to const too), and by reference to non-const otherwise. As already
+noted above, volatile can go hang.</p>
+<p>An implicitly declared copy assignment operator is only implicitly defined
+when you actually try to call it to assign an object of the given type, performs
+a memberwise assignment of its base and member subobjects (including possibly
+multiple assignments of virtual base subobjects), and can throw anything that a
+base or member copy constructor could throw. It is illegal if any base or member
+is const, is a reference, or has an inaccessible or ambiguous copy assignment
+operator.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Implicit Destructor<!--mstheme--></font></h4>
+<blockquote>
+  <p><font color="#999933">d) destructor</font></p>
+</blockquote>
+<p>A destructor is implicitly declared if you don't declare any destructor of
+your own. An implicitly declared destructor is public and inline.</p>
+<p>An implicitly declared destructor is only implicitly defined when you
+actually try to call it, has the same effect as if you'd written an empty
+destructor yourself, and can throw anything that a base or member destructor
+could throw. It is illegal if any base or member has an inaccessible destructor,
+or if any base destructor is virtual and not all base and member destructors
+have identical exception specifications (see Exception Specifications of
+Implicitly Declared Functions, above).</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">An auto_ptr Member<!--mstheme--></font></h4>
+<p><font color="#999933"><b><font size="4">2.</font></b>   What functions are
+implicitly declared and implicitly defined for the following class X? With what
+signatures?</font></p>
+<blockquote>
+  <p><font face="Courier New">// Example 2<br>
+  //</font><font face="Courier New" color="#999933">class X<br>
+  {<br>
+  &nbsp; auto_ptr&lt;int&gt; i_;<br>
+  };</font></p>
+</blockquote>
+
+<p>The following functions are implicitly declared as public members. Each is
+implicitly defined, with the indicated effects, when you write code that tries
+to use it.</p>
+
+<blockquote>
+  <p><font face="Courier New">inline X::X() throw()<br>
+  // : i_()<br>
+  {<br>
+  }<br>
+  <br>
+  inline X::X( X&amp; other ) throw()<br>
+  &nbsp; : i_( other.i_ )<br>
+  {<br>
+  }<br>
+  <br>
+  inline X&amp; X::operator=( X&amp;) throw()<br>
+  {<br>
+  &nbsp; i_ = other.i_;<br>
+  &nbsp; return *this;<br>
+  }<br>
+  <br>
+  inline X::~X() throw()<br>
+  {<br>
+  }</font></p>
+</blockquote>
+<p>The copy constructor and copy assignment operators take references to
+non-const because they can -- that's what auto_ptr's versions do. Similarly, all
+of the above functions have &quot;throws-nothing&quot; specifications because
+they can -- no related auto_ptr operation throws, and indeed no auto_ptr
+operation at all can throw.</p>
+<p>Note that the copy constructor and copy assignment operator transfer
+ownership. That may not be what the author of X necessarily wants, and so often
+X should provide its own versions of these functions. (For more details about
+this and related topics, see also <a href="062.htm">GotW #62</a>.<b><a href="#5"><sup>[4]</sup></a></b>)</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Renegade Children and Other Family Problems<!--mstheme--></font></h4>
+<p><font color="#999933"><b><font size="4">3.</font></b>   Say that you have a
+base class which requires that all derived classes not use one or more of the
+implicitly declared and defined functions. For example:</font></p>
+<blockquote>
+  <p><font face="Courier New">// Example 3<br>
+  //</font><font face="Courier New" color="#999933">class Count<br>
+  {<br>
+  public:<br>
+  &nbsp; // The Author of Count hereby documents that derived<br>
+  &nbsp; // classes shall inherit virtually, and that all their<br>
+  &nbsp; // constructors shall call Count's special-purpose<br>
+  &nbsp; // constructor only.<br>
+  <br>
+  &nbsp; Count( /* special parameters */ );<br>
+  &nbsp; Count&amp; operator=( const Count&amp; ); // does the usual<br>
+  &nbsp; virtual
+  ~Count();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  // does the usual</font></p>
+</blockquote>
+<p>Here we have a class that wants its derived child classes to play nice and
+call Count's special constructor, perhaps so that Count can keep track of the
+number of objects of derived types created in the system. That's a good reason
+to require virtual inheritance, in order to avoid double-counting if some
+derived class happens to inherit multiply in such a way that Count is a base
+class more than once.<b><a href="#5"><sup>[5]</sup></a></b></p>
+<p>Interestingly, did you notice that Count may have a design error already? It
+has an implicitly generated copy constructor, which probably isn't what is
+wanted to keep track of a correct count. To disable that, simply declare it
+private without a definition:</p>
+<blockquote>
+  <p><font face="Courier New">private:<br>
+  &nbsp; // undefined, no copy construction<br>
+  &nbsp; Count( const Count&amp; );<br>
+  </font><font face="Courier New" color="#999933">};</font></p>
+</blockquote>
+
+<p>So Count wants its derived child classes to behave. But kids don't always
+play nice, do they? Indeed, we don't have to look far to find an example of
+badly behaved problem child:</p>
+
+<p><font color="#999933">Unfortunately, programmers are human too, and they
+sometimes forget that they should write two of the functions explicitly.</font></p>
+<blockquote>
+  <p><font face="Courier New" color="#999933">class BadDerived : private virtual
+  Count<br>
+  {<br>
+  &nbsp; int i_;<br>
+  <br>
+  &nbsp; // default constructor:<br>
+  &nbsp; //&nbsp;&nbsp; should call special ctor, but does it?</font></p>
+</blockquote>
+<p>In short, no, the default constructor not only doesn't call the special
+constructor, but there's an even more fundamental concern: Is there even a
+BadDerived default constructor at all? The answer, which probably isn't
+reassuring, is: Sort of. There is an implicitly- declared default constructor
+(okay), but if you ever try to call it the program becomes ill-formed (oops).</p>
+<p>Let's see why this is so. First, BadDerived doesn't define any of its own
+constructors, so a default constructor will be implicitly declared. That's cool.
+But, the minute you try to use that constructor (i.e., the minute you try to
+create a BadDerived object, which you might think is kind of an important thing
+to be able to do, and you'd be right), that default constructor gets implicitly
+defined -- or at least it should be, but because that implicit definition is
+supposed to call a base default constructor that doesn't exist, the program is
+ill-formed. Bottom line, any program that tries to create a BadDerived object is
+not a conforming C++ program, and for that reason BadDerived is properly viewed
+as delinquent.</p>
+<p>So is there a default constructor? Sort of. It's declared, but you can't call
+it, which makes it considerably less useful. When kids go renegade like this,
+it's just not a happy family.</p>
+<blockquote>
+  <p><font face="Courier New" color="#999933"><br>
+  &nbsp; // copy constructor:<br>
+  &nbsp; //&nbsp; should call special ctor, but does it?</font></p>
+</blockquote>
+<p>For similar reasons, the implicitly generated copy constructor will be
+declared but, when defined, won't call the special Count constructor. With the
+Count class as originally shown, this copy constructor will simply call Count's
+implicitly generated copy constructor.</p>
+<p>If we decide to suppress Count's implicitly generated copy constructor, as
+indicated earlier, then this BadDerived would have a copy constructor implicitly
+declared, but since it can't be implicitly defined (because Count's wouldn't be
+accessible) any attempt to use it would make the program not valid C++.</p>
+<p>Fortunately, now the news starts getting a little better:</p>
+<blockquote>
+  <p><font face="Courier New" color="#999933"><br>
+  &nbsp; // copy assignment: ok?<br>
+  &nbsp; // destructor: ok?<br>
+  };</font></p>
+</blockquote>
+<p>Yes, the implicitly generated copy assignment operator and destructor will
+both do the right thing, namely invoke (and, in the destructor's case, override)
+the base class versions. So the good news is that at least something worked
+right.</p>
+<p>Still, all is not happy in this class family. Every household must have some
+minimum of order, after all. Can we not find a way to give the parents better
+tools to keep the peace?</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Enforcing Rules For Derived Classes<!--mstheme--></font></h4>
+<p><font color="#999933">In the context of this example, is there a way for the
+author of Count to force derived classes to be coded correctly -- that is, to
+break at compile time (preferable) or run time (at minimum) if not coded
+correctly?</font></p>
+
+<p>The idea is not to suppress the implicit declaration (we can't), but to make
+the implicit definition not well-formed, so that the compiler should emit an
+understandable error about it.</p>
+
+<p><font color="#999933">More generally, Is there any way that the author of a
+base class can force authors of derived classes to explicitly write each of
+these four basic operations? If so, how? If not, why not?</font></p>
+
+<p>Well, as we went through the review of what happens to implicitly declare and
+define the four basic operations, we kept coming across the words
+&quot;inaccessible&quot; and &quot;ambiguous.&quot; It turns out that adding
+ambiguous overloads, even with different access specifies, doesn't help much.
+It's hard to do much better than simply make the base class functions
+selectively inaccessible, by declaring them private (whether they're actually
+defined is optional) -- and this approach works for all of the functions but
+one.</p>
+
+<blockquote>
+  <p><font face="Courier New">// Example 4: Try to force derived classes to not
+  use<br>
+  // their implicitly generated functions, by making<br>
+  // Base functions inaccessible.<br>
+  //<br>
+  class Base<br>
+  {<br>
+  public:<br>
+  &nbsp; virtual ~Base();<br>
+  <br>
+  &nbsp; // ... other special-purpose named functions that<br>
+  &nbsp; // derived classes are supposed to use...<br>
+  <br>
+  private:<br>
+  &nbsp; Base( const Base&amp; ); // undefined<br>
+  &nbsp; Base&amp; operator=( const Base&amp; ); // undefined<br>
+  };</font></p>
+</blockquote>
+<p>This Base has no default constructor (because a user-defined constructor has
+been declared, if not defined), and it has a hidden copy constructor and copy
+assignment operator. There's no way we could hide the destructor (which must
+always be accessible to derived classes after all), so it might as well be
+public.</p>
+<p>The idea is that, even if we do want to support a form of a given operation
+(for example, copy assignment), if we can't do it with the usual function then
+we make the usual function inaccessible and provide a named, or otherwise
+distinguishable, function to do the work the way we want it done.</p>
+<p>Where does this get us? Let's see:</p>
+<blockquote>
+  <p><font face="Courier New">class Derived : private Base<br>
+  {<br>
+  int i_;<br>
+  <br>
+  &nbsp; // default constructor:<br>
+  &nbsp; //&nbsp;&nbsp; declared, but definition ill-formed<br>
+  &nbsp; //&nbsp;&nbsp; (there is no Base default constructor)<br>
+  <br>
+  &nbsp; // copy constructor:<br>
+  &nbsp; //&nbsp;&nbsp; declared, but definition ill-formed<br>
+  &nbsp; //&nbsp;&nbsp; (Base's copy constructor is inaccessible)<br>
+  <br>
+  &nbsp; // copy assignment:<br>
+  &nbsp; //&nbsp;&nbsp; declared, but definition ill-formed<br>
+  &nbsp; //&nbsp;&nbsp; (Base's copy assignment is inaccessible)<br>
+  <br>
+  &nbsp; // destructor: well-formed, will compile<br>
+  };</font></p>
+</blockquote>
+<p>Not bad... we got three compile-time errors out of a possible four, and it
+turns out that's pretty much the best we can do, or indeed need to do.</p>
+<p>This simple solution can't handle the destructor case, but that's okay
+because destructors are less amenable to special-purpose replacement anyway;
+base versions must always be called, no two ways about it, and after all there
+can only be one destructor. The difficult part is usually getting any unusual
+constructors to be correctly called so that the base class is correctly
+initialized; the base class can then normally save the information it needs to
+do the right thing in the destructor.</p>
+<p>There, that wasn't bad. Simple solutions are usually best. In this case there
+were some more complex alternatives; let's consider them briefly to reassure
+ourselves that none of them could do better for the destructor case, or any
+other case for that matter:</p>
+<p>Alternative #1: Make base class functions ambiguous. This isn't any better,
+still doesn't break the implicitly generated destructor, and it's more work.</p>
+<p>Alternative #2: Provide base versions that blow up, for example, by throwing
+a std::logic_error exception. This also doesn't break the implicitly generated
+destructor (without breaking all possible destructors), and it turns a
+compile-time error into a run-time error, which is not as good.</p>
+<blockquote>
+  <p><b>Guideline:</b> Prefer compile-time errors to run-time errors.</p>
+</blockquote>
+<p>Alternative #3: Provide base versions that are pure virtual. This is useless:
+It doesn't apply to constructors (either default or copy); it won't help with
+copy assignment, because the derived versions have different signatures; and it
+won't help with the destructor because the implicitly generated version will
+satisfy the requirement to define a destructor.</p>
+<p>Alternative #4: Use a virtual base class without a default constructor, which
+forces each most-derived class to explicitly call the virtual base's
+constructor. This approach has potential for the two constructors, and has the
+additional advantage of working even for classes that aren't immediately derived
+from Base, so this is really the only alternative that could be used in
+conjunction with the above solution. Derived classes' implicitly generated copy
+assignment operators and destructors will still be valid, though.</p>
+
+<p>&nbsp;</p>
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Notes<!--mstheme--></font></h4>
+<p><a name="1"></a>1. Thanks to <a href="mailto:joerg.barfurth@germany.sun.com">Joerg
+Barfurth</a> for pointing out this rare but possible case.</p>
+<p><a name="2"></a>2. H. Sutter. <b><a href="../publications/xc++.htm">Exceptional
+C++</a></b>, &quot;Item 16 (incl. Destructors That Throw and Why They're
+Evil)&quot; (Addison-Wesley, 2000).</p>
+<p><a name="3"></a>3. S. Meyers. <b>More Effective C++</b>, &quot;Item 33: Make
+Non-Leaf Classes Abstract&quot;(Addison-Wesley, 1996).</p>
+<p><a name="4"></a>4. Available online at <a href="062.htm">http://ww.gotw.ca/gotw/062.htm</a>.</p>
+<p><a name="5"></a>5. This example is adapted from one by Marco Dalla Gasperina
+in his article &quot;Counting Objects and Virtual Inheritance&quot;
+(unpublished). His code didn't include the design errors I talk about next. That
+article was about something else, not about enforcing rules for derived classes,
+but his example made me think, &quot;hmm, how could I find a way to prevent
+authors of derived classes from forgetting to use the special constructor when
+they use that Counter base class?&quot; Thanks again for the inspiration, Marco!</p>
+<!--mstheme--></font><!--msnavigation--></td></tr><!--msnavigation--></table><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><h4 align="right"><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a href="../copyright.htm"><font size="2">Copyright ©
+2002 Herb Sutter</font></a><!--mstheme--></font></h4>
+
+<!--mstheme--></font></td></tr><!--msnavigation--></table></body>
+</html>
+

@@ -1,0 +1,393 @@
+ID=D0155
+URL=http://www.geocities.com/SiliconValley/Horizon/6481/Java2HTML.html
+SIZE=18638
+DATE=16/07/02
+TIME=14:38:10
+DATASET=Java
+HTML=<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Java2HTML</title>
+</head>
+
+<body bgcolor="#C0C0C0" text="#000000" link="#FF0000"
+vlink="#800080" alink="#0000FF">
+
+<p align="center"><a href="index.html#top" name="top"><img
+src="JavaDevPage.gif" alt="Java Developer's Page" align="middle"
+border="0" width="461" height="118"></a></p>
+
+<p>&nbsp;</p>
+
+<h1 align="center"><b>Java2HTML</b></h1>
+
+<p>&nbsp;</p>
+
+<h3><strong>This is a free tool that</strong></h3>
+
+<ul>
+    <li>Converts JAVA source files into HTML files</li>
+    <li>Adds syntax coloring (highly configurable)</li>
+    <li>Replaces tabs with spaces</li>
+    <li>Needs JDK 1.1+</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><b>Syntax: </b><strong>java [java_opt] java2html
+[properties_file] source</strong></h3>
+
+<ul>
+    <li>java is the name of the Java interpreter</li>
+    <li>java_opt are the options of the Java interpreter</li>
+    <li>java2html is the name of this application</li>
+    <li>properties_file is the path of a file which has a
+        structure like this:<ul>
+            <li>tabsize=number</li>
+            <li>bgcolor=RRGGBB - background</li>
+            <li>txcolor=RRGGBB - source code</li>
+            <li>kwcolor=RRGGBB - keywords</li>
+            <li>cmcolor=RRGGBB - comments</li>
+        </ul>
+    </li>
+    <li>source is a file or the directory to the Java source
+        file(s)</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><b>Examples:</b></h3>
+
+<ul>
+    <li>java java2html java2html.java</li>
+    <li>java java2html C:\TEMP</li>
+    <li>java java2html java2html.properties C:\TEST</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h3><a href="Java2HTML.zip"><b>Source Code</b></a></h3>
+
+<pre><font color="#A00000">// java2html.java</font>
+
+<font color="#0000F0">import</font> java.io.*;
+<font color="#0000F0">import</font> java.util.*;
+
+<font color="#0000F0">public</font> <font color="#0000F0">class</font> java2html
+{
+    <font color="#0000F0">static</font> <font color="#0000F0">final</font> String keywords[] = 
+    {
+        &quot;abstract&quot;, &quot;default&quot;,  &quot;if&quot;,           &quot;private&quot;,      &quot;throw&quot;,
+        &quot;boolean&quot;,  &quot;do&quot;,       &quot;implements&quot;,   &quot;protected&quot;,    &quot;throws&quot;,
+        &quot;break&quot;,    &quot;double&quot;,   &quot;import&quot;,       &quot;public&quot;,       &quot;transient&quot;,
+        &quot;byte&quot;,     &quot;else&quot;,     &quot;instanceof&quot;,   &quot;return&quot;,       &quot;try&quot;,
+        &quot;case&quot;,     &quot;extends&quot;,  &quot;int&quot;,          &quot;short&quot;,        &quot;void&quot;,
+        &quot;catch&quot;,    &quot;final&quot;,    &quot;interface&quot;,    &quot;static&quot;,       &quot;volatile&quot;,
+        &quot;char&quot;,     &quot;finally&quot;,  &quot;long&quot;,         &quot;super&quot;,        &quot;while&quot;,
+        &quot;class&quot;,    &quot;float&quot;,    &quot;native&quot;,       &quot;switch&quot;,
+        &quot;const&quot;,    &quot;for&quot;,      &quot;new&quot;,          &quot;synchronized&quot;,
+        &quot;continue&quot;, &quot;goto&quot;,     &quot;package&quot;,      &quot;this&quot;
+    };
+    <font color="#0000F0">static</font> Vector keyw = <font
+color="#0000F0">new</font> Vector(keywords.length);
+    <font color="#0000F0">static</font>
+    {
+        <font color="#0000F0">for</font> (<font color="#0000F0">int</font> i = 0; i &lt; keywords.length; i++)
+            keyw.addElement(keywords[i]);
+    }
+    <font color="#0000F0">static</font> <font color="#0000F0">int</font> tabsize = 4;
+    <font color="#0000F0">static</font> String bgcolor = &quot;C0C0C0&quot;;
+    <font color="#0000F0">static</font> String txcolor = &quot;000000&quot;;
+    <font color="#0000F0">static</font> String kwcolor = &quot;0000F0&quot;;
+    <font color="#0000F0">static</font> String cmcolor = &quot;A00000&quot;;
+
+    <font color="#0000F0">static</font> <font color="#0000F0">void</font> convert(String source) <font
+color="#0000F0">throws</font> IOException
+    {
+        String dest = source + &quot;.html&quot;;
+        System.out.println(dest);
+        FileReader in = <font color="#0000F0">new</font> FileReader(source);
+        FileWriter out = <font color="#0000F0">new</font> FileWriter(dest);
+        out.write(&quot;&lt;html&gt;\r\n&lt;head&gt;\r\n&lt;title&gt;&quot;);
+        out.write(source);
+        out.write(&quot;&lt;/title&gt;\r\n&lt;/head&gt;\r\n&lt;body &quot;);
+        out.write(&quot;bgcolor=\&quot;&quot; + bgcolor +&quot;\&quot; &quot;);
+        out.write(&quot;text=\&quot;&quot; + txcolor +&quot;\&quot;&gt;\r\n&quot;);
+        out.write(&quot;&lt;pre&gt;\r\n&quot;);
+        StringBuffer buf = <font color="#0000F0">new</font> StringBuffer(2048);
+        <font color="#0000F0">int</font> c = 0, kwl = 0, bufl = 0;
+        <font color="#0000F0">char</font> ch = 0, lastch;
+        <font color="#0000F0">int</font> s_normal  = 0;
+        <font color="#0000F0">int</font> s_string  = 1;
+        <font color="#0000F0">int</font> s_char    = 2;
+        <font color="#0000F0">int</font> s_comline = 3;
+        <font color="#0000F0">int</font> s_comment = 4;
+        <font color="#0000F0">int</font> state = s_normal;
+        <font color="#0000F0">while</font> (c != -1)
+        {
+            c = in.read();
+            lastch = ch;
+            ch = c &gt;= 0 ? (<font color="#0000F0">char</font>) c : 0;
+            <font color="#0000F0">if</font> (state == s_normal)
+                <font color="#0000F0">if</font> (kwl == 0 &amp;&amp; Character.isJavaIdentifierStart(ch) 
+                             &amp;&amp; !Character.isJavaIdentifierPart(lastch)
+                    || kwl &gt; 0 &amp;&amp; Character.isJavaIdentifierPart(ch))
+                {
+                    buf.append(ch);
+                    bufl++;
+                    kwl++;
+                    <font color="#0000F0">continue</font>;
+                } <font color="#0000F0">else</font>
+                    <font color="#0000F0">if</font> (kwl &gt; 0)
+                    {
+                        String kw = buf.toString().substring(buf.length() - kwl);
+                        <font color="#0000F0">if</font> (keyw.contains(kw))
+                        {
+                            buf.insert(buf.length() - kwl, 
+                                &quot;&lt;font color=\&quot;&quot; + kwcolor + &quot;\&quot;&gt;&quot;);
+                            buf.append(&quot;&lt;/font&gt;&quot;);
+                        }
+                        kwl = 0;
+                    }
+            <font color="#0000F0">switch</font> (ch)
+            {
+                <font color="#0000F0">case</font> '&amp;':
+                    buf.append(&quot;&amp;amp;&quot;);
+                    bufl++;
+                    <font color="#0000F0">break</font>;
+                <font color="#0000F0">case</font> '\&quot;':
+                    buf.append(&quot;&amp;quot;&quot;);
+                    bufl++;
+                    <font color="#0000F0">if</font> (state == s_normal)
+                        state = s_string;
+                    <font color="#0000F0">else</font>
+                        <font color="#0000F0">if</font> (state == s_string &amp;&amp; lastch != '\\')
+                            state = s_normal;
+                    <font color="#0000F0">break</font>;
+                <font color="#0000F0">case</font> '\'':
+                    buf.append(&quot;\'&quot;);
+                    bufl++;
+                    <font color="#0000F0">if</font> (state == s_normal)
+                        state = s_char;
+                    <font color="#0000F0">else</font>
+                        <font color="#0000F0">if</font> (state == s_char &amp;&amp; lastch != '\\')
+                            state = s_normal;
+                    <font color="#0000F0">break</font>;
+                <font color="#0000F0">case</font> '\\':
+                    buf.append(&quot;\\&quot;);
+                    bufl++;
+                    <font color="#0000F0">if</font> (lastch == '\\' &amp;&amp; (state == s_string || state == s_char))
+                        lastch = 0;
+                    <font color="#0000F0">break</font>;
+                <font color="#0000F0">case</font> '/':
+                    buf.append(&quot;/&quot;);
+                    bufl++;
+                    <font color="#0000F0">if</font> (state == s_comment &amp;&amp; lastch == '*')
+                    {
+                        buf.append(&quot;&lt;/font&gt;&quot;);
+                        state = s_normal;
+                    }
+                    <font color="#0000F0">if</font> (state == s_normal &amp;&amp; lastch == '/')
+                    {
+                        buf.insert(buf.length() - 2, 
+                            &quot;&lt;font color=\&quot;&quot; + cmcolor + &quot;\&quot;&gt;&quot;);
+                        state = s_comline;
+                    }
+                    <font color="#0000F0">break</font>;
+                <font color="#0000F0">case</font> '*':
+                    buf.append(&quot;*&quot;);
+                    bufl++;
+                    <font color="#0000F0">if</font> (state == s_normal &amp;&amp; lastch == '/')
+                    {
+                        buf.insert(buf.length() - 2, 
+                            &quot;&lt;font color=\&quot;&quot; + cmcolor + &quot;\&quot;&gt;&quot;);
+                        state = s_comment;
+                    }
+                    <font color="#0000F0">break</font>;
+                <font color="#0000F0">case</font> '&lt;':
+                    buf.append(&quot;&amp;lt;&quot;);
+                    bufl++;
+                    <font color="#0000F0">break</font>;
+                <font color="#0000F0">case</font> '&gt;':
+                    buf.append(&quot;&amp;gt;&quot;);
+                    bufl++;
+                    <font color="#0000F0">break</font>;
+                <font color="#0000F0">case</font> '\t':
+                    <font color="#0000F0">int</font> n = bufl / tabsize * tabsize + tabsize;
+                    <font color="#0000F0">while</font> (bufl &lt; n)
+                    {
+                        buf.append(' ');
+                        bufl++;
+                    }
+                    <font color="#0000F0">break</font>;
+                <font color="#0000F0">case</font> '\r':
+                <font color="#0000F0">case</font> '\n':
+                    <font color="#0000F0">if</font> (state == s_comline)
+                    {
+                        buf.append(&quot;&lt;/font&gt;&quot;);
+                        state = s_normal;
+                    }
+                    buf.append(ch);
+                    <font color="#0000F0">if</font> (buf.length() &gt;= 1024)
+                    {
+                        out.write(buf.toString());
+                        buf.setLength(0);
+                    }
+                    bufl = 0;
+                    <font color="#0000F0">if</font> (kwl != 0)
+                        kwl = 0; <font color="#A00000">// This should never execute</font>
+                    <font color="#0000F0">if</font> (state != s_normal &amp;&amp; state != s_comment)
+                        state = s_normal; <font color="#A00000">// Sintax Error</font>
+                    <font color="#0000F0">break</font>;
+                <font color="#0000F0">case</font> 0:
+                    <font color="#0000F0">if</font> (c &lt; 0)
+                    {
+                        <font color="#0000F0">if</font> (state == s_comline)
+                        {
+                            buf.append(&quot;&lt;/font&gt;&quot;);
+                            state = s_normal;
+                        }
+                        out.write(buf.toString());
+                        buf.setLength(0);
+                        bufl = 0;
+                        <font color="#0000F0">if</font> (state == s_comment)
+                        {
+                            <font color="#A00000">// Sintax Error</font>
+                            buf.append(&quot;&lt;/font&gt;&quot;);
+                            state = s_normal;
+                        }
+                        <font color="#0000F0">break</font>;
+                    }
+                <font color="#0000F0">default</font>:
+                    bufl++;
+                    buf.append(ch);
+            }
+        }
+        out.write(&quot;&lt;/pre&gt;\r\n&lt;/body&gt;\r\n&lt;/html&gt;&quot;);
+        in.close();
+        out.close();
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">static</font> <font
+color="#0000F0">void</font> main(String args[])
+    {
+        <font color="#0000F0">if</font> (args.length &lt; 1 || args.length &gt; 2)
+        {
+            System.out.println(&quot;java2html converter + syntax coloring + tabs2spaces&quot;);
+            System.out.println(&quot;&quot;);
+            System.out.println(&quot;java  [java_opt]  java2html  [properties_file]  source&quot;);
+            System.out.println(&quot;&quot;);
+            System.out.println(&quot;  - java is the name of the Java interpreter&quot;);
+            System.out.println(&quot;  - java_opt are the options of the Java interpreter&quot;);
+            System.out.println(&quot;  - java2html is the name of this application&quot;);
+            System.out.println(&quot;  - properties_file (optional) is the path &quot;);
+            System.out.println(&quot;    of a file which has a structure like this:&quot;);
+            System.out.println(&quot;        tabsize=number  (default value is 4)&quot;);
+            System.out.println(&quot;        bgcolor=RRGGBB  (default value is C0C0C0) - background&quot;);
+            System.out.println(&quot;        txcolor=RRGGBB  (default value is 000000) - source code&quot;);
+            System.out.println(&quot;        kwcolor=RRGGBB  (default value is 0000F0) - keywords&quot;);
+            System.out.println(&quot;        cmcolor=RRGGBB  (default value is A00000) - comments&quot;);
+            System.out.println(&quot;  - source is a file or the directory to the Java source file(s)&quot;);
+            System.out.println(&quot;&quot;);
+            System.out.println(&quot;Examples:&quot;);
+            System.out.println(&quot;    java  java2html  java2html.java&quot;);
+            System.out.println(&quot;    java  java2html  C:\\TEMP&quot;);
+            System.out.println(&quot;    java  java2html  java2html.properties  C:\\TEMP&quot;);
+            System.exit(1);
+        }
+        String source, propfile;
+        <font color="#0000F0">if</font> (args.length == 2)
+        {
+            propfile = args[0];
+            source = args[1];
+        }
+        <font color="#0000F0">else</font>
+        {
+            propfile = &quot;java2html.properties&quot;;
+            source = args[0];
+        }
+        <font color="#0000F0">try</font>
+        {
+            InputStream in = <font color="#0000F0">new</font> FileInputStream(propfile);
+            Properties prop = <font color="#0000F0">new</font> Properties();
+            prop.load(in);
+            in.close();
+            tabsize = Integer.parseInt(prop.getProperty(&quot;tabsize&quot;, &quot;4&quot;));
+            bgcolor = &quot;#&quot; + prop.getProperty(&quot;bgcolor&quot;, bgcolor);
+            txcolor = &quot;#&quot; + prop.getProperty(&quot;txcolor&quot;, txcolor);
+            kwcolor = &quot;#&quot; + prop.getProperty(&quot;kwcolor&quot;, kwcolor);
+            cmcolor = &quot;#&quot; + prop.getProperty(&quot;cmcolor&quot;, cmcolor);
+        }
+        <font color="#0000F0">catch</font> (FileNotFoundException e)
+        {
+        }
+        <font color="#0000F0">catch</font> (IOException e)
+        {
+            System.out.println(e);
+        }
+        <font color="#0000F0">catch</font> (NumberFormatException e)
+        {
+            System.out.println(e);
+        }
+        File f = <font color="#0000F0">new</font> File(source);
+        <font color="#0000F0">if</font> (f.isFile())
+        {
+            <font color="#0000F0">try</font>
+            {
+                convert(f.getPath());
+            }
+            <font color="#0000F0">catch</font> (IOException e)
+            {
+                System.out.println(e);
+            }
+        }
+        <font color="#0000F0">else</font> <font color="#0000F0">if</font> (f.isDirectory())
+        {
+            <font color="#0000F0">try</font>
+            {
+                String src[] = f.list();
+                <font color="#0000F0">for</font> (<font
+color="#0000F0">int</font> i = 0; i &lt; src.length; i++)
+                    <font color="#0000F0">if</font> (src[i].endsWith(&quot;.java&quot;))
+                        convert(<font color="#0000F0">new</font> File(f, src[i]).getPath());
+            }
+            <font color="#0000F0">catch</font> (IOException e)
+            {
+                System.out.println(e);
+            }
+        } 
+        <font color="#0000F0">else</font>
+        {
+            System.out.println(&quot;The source parameter must be an existent file or directory&quot;);
+            System.out.println(&quot;Run java2html without parameters for help&quot;);
+        }
+    }
+
+}</pre>
+
+<hr>
+
+<p><br>
+The author of this page can be reached at <a
+href="mailto:andcio@hotmail.com">andcio@hotmail.com</a>. <br>
+<a href="index.html#top">Back to Java Developer's Page</a> (Visit
+this page every month) <br>
+URL:
+http://www.geocities.com/SiliconValley/Horizon/6481/Java2HTML.html
+<br>
+Last updated: December 30, 1998</p>
+
+<hr>
+
+<p align="center"><br>
+This page hosted by <a href="/"><img src="/pictures/gc_icon.gif"
+align="middle" border="0" width="88" height="31"></a> Get your
+own <a href="/">Free Homepage</a> </p>
+</body>
+</html>
+<!-- text below generated by server. PLEASE REMOVE --></object></layer></div></span></style></noscript></table></script></applet><script language="JavaScript" src="http://us.i1.yimg.com/us.yimg.com/i/mc/mc.js"></script><script language="JavaScript" src="http://us.geocities.com/js_source/geov2.js"></script><script language="javascript">geovisit();</script><noscript><img src="http://visit.geocities.com/visit.gif?1026499458" border=0 width=1 height=1></noscript>
+<IMG SRC="http://geo.yahoo.com/serv?s=76001067&t=1026499458" ALT=1 WIDTH=1 HEIGHT=1>
+

@@ -1,0 +1,459 @@
+ID=F0103
+URL=http://www.geocities.com/SiliconValley/Campus/9449/sys_tray.htm
+SIZE=26522
+DATE=09/07/2002
+TIME=13:14:48
+DATASET=Visual Basic
+HTML=<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Pablo Alvim">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.01 [en] (Win95; U) [Netscape]">
+   <TITLE>Manipulating the System Tray</TITLE>
+</HEAD>
+<BODY TEXT="#330000" BGCOLOR="#FFFFFF" LINK="#3333FF" VLINK="#3333FF" ALINK="#3333FF">
+<B><FONT SIZE=+2><FONT FACE="Arial,Helvetica"><FONT COLOR="#660000">Using
+the System Tray</FONT></FONT></FONT></B>
+<BR><IMG SRC="Line3.jpg" HEIGHT=2 WIDTH=400>
+<BR>&nbsp;
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#000000"><FONT SIZE=-1>In
+this tutorial, you will learn how to manipulate the System Tray. For those
+who don't know, the sytem tray is where your computer clock is placed.</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#000000"><FONT SIZE=-1>To
+get started, open VB and choose <B>New Project </B>at the <B>File </B>menu.
+In the window that appears, choose <B>Standard EXE</B> and press <B>OK</B>.
+You have a new project.</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#000000"><FONT SIZE=-1>There
+is only one function that can add, remove or modify an icon at the system
+tray: <B>Shell_NotifyIcon. </B>To implement your program with it, create
+a new .bas module and place the code below into it (all code should be
+in one single line):</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Declare
+Function</B> Shell_NotifyIcon <B>Lib</B> "shell32.dll" <B>Alias</B> " Shell_NotifyIconA"
+(<B>ByVal</B> dwMessage <B>As Long</B>, lpData <B>As </B>NOTIFYICONDATA)<B>
+As Long</B></FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#000000"><FONT SIZE=-1>In
+some systems, this declaration may not work, because there are many different
+versions of Shell32. If you get an error message telling you that the function
+wasn't found, try removing the <I>Alias</I> part.</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#000000"><FONT SIZE=-1>Now
+that you have the function declared, let's take a look over its parameters:</FONT></FONT></FONT>
+
+<P>
+<HR ALIGN=LEFT SIZE=1 WIDTH="150">
+<BR><B><FONT FACE="Arial,Helvetica"><FONT COLOR="#000000"><FONT SIZE=-1>dwMessage
+As Long</FONT></FONT></FONT></B>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#000000"><FONT SIZE=-1>This
+is where you specify what you want to do. You can use one of the three
+following constants (add the code in red to your module) :</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Public
+Const</B> NIM_ADD = &amp;H0</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Public
+Const</B> NIM_DELETE = &amp;H2</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Public
+Const</B> NIM_MODIFY = &amp;H1</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#000000"><FONT SIZE=-1><I>NIM_ADD
+</I>adds a new icon to the system tray</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#000000"><FONT SIZE=-1><I>NIM_DELETE
+</I>removes an icon from the tray</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#000000"><FONT SIZE=-1><I>NIM_MODIFY</I>...
+well, I think it's self-descriptive, huh?!?</FONT></FONT></FONT>
+
+<P>
+<HR ALIGN=LEFT SIZE=1 WIDTH="150">
+
+<P><B><FONT FACE="Arial,Helvetica"><FONT COLOR="#000000"><FONT SIZE=-1>lpData
+As NOTIFYICONDATA</FONT></FONT></FONT></B>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#000000"><FONT SIZE=-1>The
+lpData value is a NOTIFYICONDATA structure, that may be declared using
+the Type command at next (cut-and-paste to the module) :</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Type</B>
+NOTIFYICONDATA</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cbSize <B>As Long</B></FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+hwnd <B>As Long</B></FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+uID<B> As Long</B></FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+uFlags <B>As Long</B></FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+uCallbackMessage <B>As Long</B></FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+hIcon <B>As Long</B></FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+szTip <B>As String</B> * 64</FONT></FONT></FONT>
+<BR><B><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>End
+Type</FONT></FONT></FONT></B>
+
+<P><FONT FACE="Arial,Helvetica"><FONT SIZE=-1><FONT COLOR="#000099"><I>cbSize
+</I><B>As Long</B></FONT><FONT COLOR="#000000"> - the size of NOTIFYICONDATA.
+Use </FONT><FONT COLOR="#990000"><B>Len</B>(var)</FONT><FONT COLOR="#000000">
+to find this value (<I>var</I> is the variable you'll use for the structure).</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT SIZE=-1><FONT COLOR="#000099"><I>hwnd</I>
+<B>As Long</B></FONT><FONT COLOR="#000000"> - contains the <I>handle</I>
+Windows will use to respond to messages from the icon after it's placed.
+It is the form's <B><I>hwnd</I></B> property. You will understand it better
+looking at the example at the end of this page.</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT SIZE=-1><FONT COLOR="#000099"><I>uID</I>
+<B>As Long</B></FONT><FONT COLOR="#000000"> - this is the ID used for the
+icon. In VB it's not used, so set this <B>Null</B>.</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT SIZE=-1><FONT COLOR="#000099"><I>uFlags</I><B>
+As Long</B></FONT><FONT COLOR="#000000"> - a set of flags that tells the
+sytem how the icon is going to act. Add the next three constants to your
+module:</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Public
+Const</B> NIF_ICON = &amp;H2</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Public
+Const</B> NIF_MESSAGE = &amp;H1</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Public
+Const</B> NIF_TIP = &amp;H4</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#000000"><FONT SIZE=-1>The
+first one, NIF_ICON, is used to show that there is an icon in the variable
+being passed to the function. NIF_MESSAGE tells the system that there is
+a message handler associated with the icon, and NIF_TIP gives you the ability
+to add a tooltip to it.</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#000000"><FONT SIZE=-1>If
+you want to just add an icon, use only NIF_ICON. If you want an icon and
+a tooltip associated with it, combine NIF_ICON and NIF_TIP using the <B>OR
+</B>operator. And finally if you'd like to have all the three parameters,
+combine them all ( NIF_ICON <B>OR</B> NIF_MESSAGE <B>OR</B> NIF_TIP ).
+Do not worry about this now, the example covers it all.</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT SIZE=-1><FONT COLOR="#000099"><I>uCallBackMessage</I><B>
+As Long</B></FONT><FONT COLOR="#000000"> - the event your icon is respond
+to. More constants to place in the module (these are the</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#000000"><FONT SIZE=-1>last
+ones) : )</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Public
+Const</B> WM_LBUTTONDBLCLK = &amp;H203&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'Left button double click</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Public
+Const</B> WM_LBUTTONDOWN = &amp;H201&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'Left button down</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Public
+Const</B> WM_LBUTTONUP = &amp;H202&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'Left button up</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Public
+Const</B> WM_MBUTTONDBLCLK = &amp;H209&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Middle
+button double click</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Public
+Const</B> WM_MBUTTONDOWN = &amp;H207&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'Middle button down</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Public
+Const</B> WM_MBUTTONUP = &amp;H208&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'Middle button up</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Public
+Const</B> WM_RBUTTONDBLCLK = &amp;H206&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'Right button double click</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Public
+Const</B> WM_RBUTTONDOWN = &amp;H204&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'Right button down</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Public
+Const</B> WM_RBUTTONUP = &amp;H205&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'Right button up</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT SIZE=-1><FONT COLOR="#000099"><I>hIcon
+</I><B>As Long</B></FONT><FONT COLOR="#000000"> - a handle to the icon
+that will be placed in the tray. Can be acheived by using <I>frm.</I><B>Icon</B>
+, where <I>frm</I> is the form that contains the icon.</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT SIZE=-1><FONT COLOR="#000099"><I>szTip</I>
+<B>As String</B> * 64</FONT><FONT COLOR="#000000"> - a variable containing
+the tooltip supposed to be shown when the user stops the mouse over the
+icon. It must have less then 64 characters, and shall be delimited by a
+null char [ </FONT><FONT COLOR="#990000"><B>Chr</B>(0)</FONT><FONT COLOR="#000000">
+]. To do this use </FONT><I><FONT COLOR="#990000">str = str &amp; <B>Chr</B>(0)</FONT></I><FONT COLOR="#000000">,
+where <I>str</I> is the tooltip you defined.</FONT></FONT></FONT>
+
+<P>
+<HR ALIGN=LEFT SIZE=1 WIDTH="150">
+
+<P><FONT FACE="Arial,Helvetica"><FONT SIZE=-1>Well, now to our example.
+You must already have a project with a form and a module full of declares
+and constants.</FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT SIZE=-1>First of all, you must set
+the NOTIFYICONDATA structure to be passed to <B>Shell_NotifyIcon</B>. At
+the module, declare a public variable to be used:</FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Public
+</B>IconData <B>As </B>NOTIFYICONDATA</FONT></FONT></FONT>
+<BR>&nbsp;
+
+<P><FONT FACE="Arial,Helvetica"><FONT SIZE=-1>Ok. Let's now set <I>IconData</I>
+at the <B>Form_Load </B>event:</FONT></FONT>
+<BR>&nbsp;
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Private
+Sub</B> Form_Load()</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>With
+</B>IconData</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>.cbSize
+= <B>Len</B>(IconData)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' The length of the <B>NOTIFYICONDATA</B> type</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>.hIcon
+= <B>Me</B>.Icon&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' A reference to the form's icon</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>.hwnd
+= <B>Me</B>.hwnd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' hWnd of the form</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>.szTip
+= "My Tooltip" &amp; <B>Chr</B>(0)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' Tooltip string delimited with a null character</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>.uCallbackMessage
+= WM_MOUSEMOVE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' The icon we're placing will send messages to the MouseMove event</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>.uFlags
+= NIF_ICON<B> Or</B> NIF_TIP <B>Or</B> NIF_MESSAGE&nbsp;&nbsp;&nbsp; '
+It will have message handling and a tooltip</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>.uID
+= <B>vbNull</B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' uID is not used by VB, so it's set to a Null value</FONT></FONT></FONT>
+
+<P><B><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>End
+With</FONT></FONT></FONT></B>
+
+<P><B><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>End
+Sub</FONT></FONT></FONT></B>
+<BR>&nbsp;
+
+<P><FONT FACE="Arial,Helvetica"><FONT SIZE=-1>You've just declared and
+set the IconData variable, that will be used to add your icon to the tray.
+The code below, inside the Form_Resize event, will add it when you minimize
+the window:</FONT></FONT>
+<BR>&nbsp;
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Private
+Sub</B> Form_Resize()</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>If</B>
+<B>Me</B>.WindowState = 1 Then&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' The user has minimized his window</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>Shell_NotifyIcon
+<B>NIM_ADD</B>, <B>IconData</B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' Add the form's icon to the tray</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Me</B>.Hide&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' Hide the button at the taskbar</FONT></FONT></FONT>
+
+<P><B><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>End
+If</FONT></FONT></FONT></B>
+
+<P><B><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>End
+Sub</FONT></FONT></FONT></B>
+<BR>&nbsp;
+
+<P><FONT FACE="Arial,Helvetica"><FONT SIZE=-1>Save the project and press
+<B>F5</B>. Then, when the program runs, minimize the window. You'll see
+your form's icon at the tray, with the tooltip you specified! Isn't that
+spetacular ?!?!! Well, but it only stays there, you can't recover the window
+yet. This is where message handling is focused. Remember when we set the
+uCallBackMessage member of IconData to WM_MOUSEMOVE ? The icon is sending
+its events to the MouseMove event on your form. So let's code!</FONT></FONT>
+
+<P>
+<HR ALIGN=LEFT SIZE=1 WIDTH="150">
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Private
+Sub</B> Form_MouseMove(Button <B>As Integer</B>, Shift <B>As Integer</B>,
+X <B>As Single</B>, Y <B>As Single</B>)</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Dim</B>
+Msg <B>As Long</B></FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>Msg
+= X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' The message is passed to the <B>X </B>value</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' You must set your form's ScaleMode property to <B>pixels</B> in order
+to get the correct message</FONT></FONT></FONT>
+
+<P><FONT COLOR="#990000"><FONT FACE="Arial,Helvetica"><FONT SIZE=-1><B>If</B>
+Msg = WM_LBUTTONDBLCLK <B>Then</B></FONT></FONT><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT FACE="Arial,Helvetica"><FONT SIZE=-1>
+</FONT></FONT></B><FONT FACE="Arial,Helvetica"><FONT SIZE=-1>' The user
+has double-clicked your icon</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Me</B>.WindowState
+= vbNormal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' Recover the window</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>Shell_NotifyIcon
+<B>NIM_DELETE</B>, IconData&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' Delete the icon from the system tray</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Me</B>.Show&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' Show the window</FONT></FONT></FONT>
+
+<P><B><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>End
+If</FONT></FONT></FONT></B>
+
+<P><B><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>End
+Sub</FONT></FONT></FONT></B>
+<BR>
+<HR ALIGN=LEFT SIZE=1 WIDTH="150">
+
+<P><FONT FACE="Arial,Helvetica"><FONT SIZE=-1>And that's it! Now, when
+you double-click the icon, the window is recovered and shown again!</FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT SIZE=-1>It may be a good idea to
+detect when the user right-clicks the icon, and then popup a menu with
+some options. To implement this, create a top-level menu named <B>mnuPopup</B>,
+and set it's visibility to false. Then create some submenus with the functions
+you want. Here we'll create two, with the captions "Show" and "Exit" and
+with the names <B>mnuShow </B>and <B>mnuExit</B>, respectively:</FONT></FONT>
+
+<P>
+<HR ALIGN=LEFT SIZE=1 WIDTH="150">
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Private
+Sub</B> mnuExit_Click()</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Unload
+Me&nbsp;&nbsp;&nbsp;&nbsp;</B>&nbsp; ' Unload the form</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>End&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' Just to be sure the program has ended</FONT></FONT></FONT>
+
+<P><B><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>End
+Sub</FONT></FONT></FONT></B>
+
+<P>
+<HR ALIGN=LEFT SIZE=1 WIDTH="150">
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Private
+Sub</B> mnuShow_Click()</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Me</B>.WindowState
+= vbNormal</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>Shell_NotifyIcon
+<B>NIM_DELETE</B>, IconData</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Me</B>.Show</FONT></FONT></FONT>
+
+<P><B><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>End
+Sub</FONT></FONT></FONT></B>
+<BR>
+<HR ALIGN=LEFT SIZE=1 WIDTH="150">
+
+<P><FONT FACE="Arial,Helvetica"><FONT SIZE=-1>You have the menu... So change
+the MouseMove event we previously edited:</FONT></FONT>
+
+<P>
+<HR ALIGN=LEFT SIZE=1 WIDTH="150">
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Private
+Sub</B> Form_MouseMove(Button <B>As Integer</B>, Shift <B>As Integer</B>,
+X <B>As Single</B>, Y <B>As Single</B>)</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Dim</B>
+Msg <B>As Long</B></FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>Msg
+= X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' The message is passed to the <B>X </B>value</FONT></FONT></FONT>
+<BR><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' You must set your form's ScaleMode property to <B>pixels</B> in order
+to get the correct message</FONT></FONT></FONT>
+
+<P><FONT COLOR="#990000"><FONT FACE="Arial,Helvetica"><FONT SIZE=-1><B>If</B>
+Msg = WM_LBUTTONDBLCLK <B>Then</B></FONT></FONT><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT FACE="Arial,Helvetica"><FONT SIZE=-1>
+</FONT></FONT></B><FONT FACE="Arial,Helvetica"><FONT SIZE=-1>' The user
+has double-clicked your icon</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Call</B>
+mnuShow_Click&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' Show the
+window</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>ElseIf
+</B>Msg = WM_RBUTTONDOWN <B>Then&nbsp; </B>' Right-click</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>PopupMenu</B>
+mnuPopup&nbsp;&nbsp;&nbsp;&nbsp; ' Popup the menu</FONT></FONT></FONT>
+
+<P><B><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>End
+If</FONT></FONT></FONT></B>
+
+<P><B><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>End
+Sub</FONT></FONT></FONT></B>
+<BR>
+<HR ALIGN=LEFT SIZE=1 WIDTH="150">
+
+<P><FONT FACE="Arial,Helvetica"><FONT SIZE=-1>We've nearly finished! There
+is a very important thing you <B>cannot</B> forget: when you Unload the
+form, the icon must be removed from the tray. So modify your Form_Unload
+event:</FONT></FONT>
+<BR>&nbsp;
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1><B>Private
+Sub</B> Form_Unload(Cancel<B> As Integer</B>)</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>Shell_NotifyIcon
+<B>NIM_DELETE</B>, <B>IconData</B></FONT></FONT></FONT>
+
+<P><B><FONT FACE="Arial,Helvetica"><FONT COLOR="#990000"><FONT SIZE=-1>End
+Sub</FONT></FONT></FONT></B>
+<BR>&nbsp;
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#000000"><FONT SIZE=-1>Woo-hoo!!
+Now save your project again, press <B>F5</B> and enjoy your creation...
+It's pretty neat! Looks like a professional application! If you want, change
+your form's <B>Icon</B> property at design-time to have something different
+than the common form icon used by default.</FONT></FONT></FONT>
+
+<P><FONT FACE="Arial,Helvetica"><FONT COLOR="#000000"><FONT SIZE=-1>The
+use of the System Tray is very good at programs that run mostly behind
+the scenes... But it can be used to impress your friends too!!!&nbsp; Well,
+see'ya at the next tutorial !
+
+<P>
+
+<BR>Download the <A HREF="sys_tray.zip">example project</A>
+</FONT></FONT></FONT>
+<HR ALIGN=CENTER SIZE=1 WIDTH=100%>
+
+<TABLE BORDER=0 CELSPACING=0 CELPADDING=0 WIDTH=100%>
+
+<TR>
+
+<TD>
+
+<!-- BEGIN VISUAL BASIC BANNER NETWORK CODE -->
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=1 BGCOLOR="#0000FF" ALIGN=LEFT><TR><TD><TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0><TR><TD>
+<A HREF="http://banner.vbonline.com/scripts/vbo/ban/BannerClick.asp?SiteId=166&PageId=9&Map=" TARGET="_top">
+<IMG WIDTH=468 HEIGHT=60 BORDER=0 ISMAP ALT="" SRC="http://banner.vbonline.com/scripts/vbo/ban/BannerShow.asp?SiteId=166&PageId=9"></A></TD>
+</TR><TR><TD></TD></TR><TR><TD>
+<A HREF="http://banner.vbonline.com/scripts/vbo/ban/BarClick.asp?Map=" TARGET="_top">
+<IMG WIDTH=468 HEIGHT=16 BORDER=0 ISMAP ALT="" LOWSRC="http://banner.vbonline.com/bar.gif" SRC="http://banner.vbonline.com/scripts/vbo/ban/BarShow.asp"></A></TD>
+</TR></TABLE></TD></TR></TABLE><P>
+<!-- END VISUAL BASIC BANNER NETWORK CODE -->
+
+</TD>
+
+<TD VALIGN=TOP>
+
+<DIV ALIGN=right><FONT FACE="Arial,Helvetica"><FONT SIZE=-1><A HREF="http://www.geocities.com/siliconvalley/campus/9449">Back
+to<B> VB Center</B></A></FONT></FONT></DIV>
+<BR>
+
+</TD>
+
+</TR>
+
+</TABLE>
+
+</BODY>
+</HTML>
+<!-- text below generated by server. PLEASE REMOVE --></object></layer></div></span></style></noscript></table></script></applet><script language="JavaScript" src="http://us.i1.yimg.com/us.yimg.com/i/mc/mc.js"></script><script language="JavaScript" src="http://us.geocities.com/js_source/geov2.js"></script><script language="javascript">geovisit();</script><noscript><img src="http://visit.geocities.com/visit.gif?1026142920" border=0 width=1 height=1></noscript>
+<IMG SRC="http://geo.yahoo.com/serv?s=76001067&t=1026142920" ALT=1 WIDTH=1 HEIGHT=1>
+

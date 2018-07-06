@@ -1,0 +1,344 @@
+ID=E0304
+URL=http://home.att.net/~robertdunn/TaeRichEditBugs.html
+SIZE=20332
+DATE=12/07/02
+TIME=19:19:45
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE>Yet Another Code Site - TaeRichEdit Component Bugs</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice/5.2 (Win32)">
+	<META NAME="AUTHOR" CONTENT="Robert Dunn">
+	<META NAME="CREATED" CONTENT="20000202;20024567">
+	<META NAME="CHANGEDBY" CONTENT="Robert Dunn">
+	<META NAME="CHANGED" CONTENT="20000909;23305402">
+</HEAD>
+<BODY>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0 STYLE="page-break-before: always">
+	<COL WIDTH=256>
+	<TR>
+		<TD WIDTH=100% VALIGN=TOP BGCOLOR="#000080">
+			<H1 ALIGN=CENTER STYLE="margin-top: 0in"><A NAME="TopOfPage"></A><FONT COLOR="#ffffff">Yet
+			Another Code Site</FONT></H1>
+		</TD>
+	</TR>
+</TABLE>
+<H2 ALIGN=CENTER STYLE="page-break-before: always">TaeRichEdit
+Component Bugs<BR>Open Beta Information</H2>
+<H4 STYLE="border: none; padding: 0in">This page lists all of the
+known problems with the TaeRichEdit Component.&nbsp; So far, the bug
+list is surprisingly short given the size of the component code.&nbsp;
+Also listed below are usage notes, bug work-arounds, and new features
+and tools.&nbsp; You should check this page for the most current
+information about the TaeRichEdit Component.</H4>
+<HR>
+<P><B>November 28, 1999 (1.0.0.1)</B></P>
+<P STYLE="font-weight: medium"><B>Bug:</B>&nbsp; After printing once,
+TTaePrintDialog Pages is disabled (grayed out) even though the
+document is more than one page long.<BR><B>Status:</B>&nbsp; Fixed in
+version 1.2 (01-09-00).</P>
+<P STYLE="font-weight: medium"><B>Bug:</B>&nbsp; After printing,
+preview headers and footers are not displayed in the correct
+font.<BR><B>Status:</B>&nbsp; Fixed in version 1.2 (01-09-00).</P>
+<HR>
+<P><B>January 9, 2000 (1.0.0.2)</B></P>
+<P STYLE="font-weight: medium"><B>Bug:</B>&nbsp; Pete Fraser reports
+that the IDE inserts incorrect template for the OnProtectChange
+event.&nbsp; IDE inserts &quot;void __fastcall
+TForm1::TaeRichEdit1ProtectChange(TObject *Sender, int NumObjects,
+int NumChars, bool &amp;SaveClipboard) {}&quot;.&nbsp; The correct
+template is &quot;void __fastcall
+TForm1::TaeRichEdit1ProtectChange(TObject *Sender, int StartPos, int
+EndPos, bool &amp;AllowChange) {}&quot;. <BR><B>Status:</B>&nbsp;
+Problem confirmed.&nbsp; Note that signature is correct -- the
+parameter names are simply misleading.&nbsp; Still researching but,
+so far, this looks like an IDE bug.<BR><B>Work-around:</B>&nbsp;
+Ignore the parameter names or change them to match the declaration.</P>
+<P STYLE="font-weight: medium"><B>Bug:</B>&nbsp; Richard Farley
+reports that the WordWrap property is declared twice when
+VCL_COMPATIBLE is #define'd as true.<BR><B>Status:</B>&nbsp; Still
+under review.&nbsp; Warning: This will probably be &quot;fixed&quot;
+by removing the VCL_COMPATIBLE compile option.</P>
+<P STYLE="font-weight: medium"><B>Bug:</B>&nbsp; Richard Farley
+reports that, after setting the Transparent property to true in the
+IDE, setting it back to false had no effect.&nbsp; He noted that he
+had not tested the run-time effect.<BR><B>Status:</B>&nbsp; Still
+under review.</P>
+<HR>
+<P><B>January 24, 2000 (1.0.0.3)</B></P>
+<P><B>Bug:</B>&nbsp; Hopefully, this last of the major bugs is
+fixed.&nbsp; I failed to include the &quot;PACKAGE&quot; modifier on
+quite a few class declarations.&nbsp; Many thanks to Stefan
+Hoffmeister for solving this one.<BR><B>Status:</B>&nbsp; Fixed.</P>
+<P><B>Note:</B>&nbsp; The distribution has been restructured to move
+the demonstration application to a separate subdirectory.</P>
+<P><B>Note:</B>&nbsp; Be sure to install the component files on the
+same drive that BCB is installed on.</P>
+<P><B>Note:</B><SPAN STYLE="font-weight: medium">&nbsp; A printer
+driver must be installed and set as the default printer.&nbsp; The
+component will throw exceptions if a default printer is not
+installed.</SPAN></P>
+<P><B>Note:</B><SPAN STYLE="font-weight: medium">&nbsp; If you are
+able to build the component but get a mysterious &quot;device
+attached to the system is not functioning&quot; error when installing
+the package, substitute &quot;false&quot; for the
+SHGetPathFromIDList() call used in TaeUtility.cpp.&nbsp; I have some
+vague recollection of a known problem with some versions of Win9x
+that do not properly export this function (Win95 B has been reported
+so far).&nbsp; If this solves the problem, please let me know so that
+I can better solve this.</SPAN></P>
+<P><B>Note:</B><SPAN STYLE="font-weight: medium">&nbsp; The
+TaeAdjLineBrks.cpp module is recompiled/assembled on every project
+make even though it has not been changed.&nbsp; This is normal.</SPAN></P>
+<HR>
+<P><B>January 28, 2000 (1.0.0.4)</B></P>
+<P><B>Note:</B>&nbsp; Added a TaePageSetupDialog component.&nbsp;
+This component allows users to specify page margins using the
+standard Windows Page Setup Dialog.&nbsp; There is not yet any
+documentation for this component.&nbsp; See the demonstration
+application for an example of how to use the component.</P>
+<P><B>Note:</B>&nbsp; Moved the TTaePreviewForm files to a separate
+subdirectory (.\Extras) since it is not, strictly speaking, part of
+the component.</P>
+<HR>
+<P><B>February 2, 2000 (1.0.0.5)</B></P>
+<P><B>New:</B>&nbsp; Added new OnProtectEvent and OnLinkEvent
+handlers. You should look first at the related OnProtectChange and
+OnUrlClick events but, if you need full access to the Windows
+EN_PROTECTED or EN_LINK message information that accompanies these
+messages, these events provide that information.&nbsp; None of the
+documentation reflects this change yet.&nbsp; Anyway, thanks to Pete
+Fraser for asking questions that led to the idea.</P>
+<P><B>Bug:</B>&nbsp; Code using SelText generates a compile-time
+error.<BR><B>Status:</B>&nbsp; Confirmed and fixed.</P>
+<P><B>New:</B>&nbsp; The component now contains a RichEditVersion
+property which identifies the Rich Edit DLL as version 1.x, 2.x, or
+3.x.&nbsp; This is primarily useful in distinguishing between
+versions 2.x and 3.x.</P>
+<P><B>Note:</B>&nbsp; The &quot;Extras&quot; folder now includes a
+&quot;Tools&quot; subfolder.&nbsp; I plan to put useful tools here.&nbsp;
+Currently, there is only one &quot;tool&quot; here -- a sample
+program that searches for Rich Edit DLLs and returns version
+information for DLLs that are found.&nbsp; This tool may be useful
+for customer support.</P>
+<HR>
+<P><B>February 11, 2000 (1.0.0.6)</B></P>
+<P><B>New:</B>&nbsp; Added properties to TTaeRichEdit simplify
+support for OLE drag and drop&nbsp; (OLE support is still rather
+incomplete -- I am still looking for volunteers.)&nbsp; I have not
+tested extensively -- I do know that the component now allows
+dragging text to/from/within the control.&nbsp; See the
+OleAllowTextDrag and OleAcceptDrop properties.</P>
+<P><B>Changed:</B>&nbsp; Revised the RichEditVersion and
+RichEditVersionInfo properties that return information about the
+currently loaded Rich Edit DLL.&nbsp; The RichEditVersion and
+RichEditVersionInfo properties should no longer cause GPF's on
+Windows NT.</P>
+<P><B>New:</B>&nbsp; Added ProtectEvent and LinkEvent events.&nbsp;
+These events provide access to all of the information that Windows
+has available in underlying WinAPI notification messages are sent.&nbsp;
+This would be useful if, for example, you needed to react to mouse
+move messages while the mouse was over link text.&nbsp; This change
+may affect the way that the OnProtectChange and OnUrlClick events
+work, so please see the code if you are using these events.</P>
+<P><B>Bug:</B>&nbsp; There was a rather obscure VCL bug that affected
+some (but not all) versions of the Rich Edit control when more than
+~64KB of text was loaded in the control and using Lines-&gt;Append()
+and Insert().<BR><B>Status:</B> Solved.&nbsp; The changes are in
+TTaeRichEditStrings::GetCount() if you care to look at them.&nbsp;
+Note that the fix is enabled only when compiling for Rich Edit 2.0+.&nbsp;
+The Rich Edit 1.0 behavior is unchanged.</P>
+<P><B>Note:</B>&nbsp; There may be a problem with the way that the
+component determines long file names on some platforms.&nbsp; So far,
+I believe that the problem is limited to Win95B installations.&nbsp;
+The problem has to do with certain versions of Windows not properly
+exporting SHGetPathFromIDList(), SHGetPathFromIDListA(), or
+SHGetPathFromIDListw() from shell.dll.)&nbsp; The fix is to rewrite
+the Get:LongFileName() function in TaeUtility.cpp to build the long
+filename differently or, for now, simply return the &quot;filename&quot;
+parameter unchanged.</P>
+<HR>
+<P><B>February 19, 2000 (1.0.0.7)</B></P>
+<P><B>New:</B>&nbsp; Added classes for Microsoft RTF converter
+support.&nbsp; These were in the early beta versions and removed. Now
+they are back.</P>
+<P><B>New:</B>&nbsp; A partially complete help file is now available
+as a separate download on the <A HREF="TaeRichEditInfo.html" TARGET="_top">TaeRichEdit Component Information</A> page.</P>
+<P><B>New:</B>&nbsp; Added FindWordBreak(), FindWord(), and
+SelectWord() methods. Added application demonstrating using these
+methods for basic syntax highlighting.</P>
+<P><B>Bug:</B>&nbsp; Found problems with garbage left in the DemoApp1
+program makefile. Caused link problems looking for PageSetupDlg and
+components.lib.<BR><B>Status:</B>&nbsp; Fixed.</P>
+<HR>
+<P><B>May 22, 2000 (1.0.0.8)</B></P>
+<P><B>Changed:</B>&nbsp; I used an ugly hack in TaeRichEdit.cpp to
+allow the component to access certain VCL code declared as
+&quot;private.&quot;&nbsp; With Stefan Hostmeister's help, I have
+eliminated most, but not all, of the code that required the hack.</P>
+<P><B>New:</B>&nbsp; Added a #define to work around the Windows API
+SHGetPathFromIDList() shell export bug.&nbsp; See the
+TaeCompileOpts.h file for an explanation of the problem and the
+#define that you can change.&nbsp; So far, I think this bug applies
+to Win95B only.&nbsp; Please let me know if you find out differently.</P>
+<P><B>Bug:</B>&nbsp; Although not reported, I found what I think was
+a rather obvious bug in the new TTaeRichEdit::GetTextRange() method.&nbsp;
+I must have been asleep when I wrote that code.<BR><B>Status:</B>&nbsp;
+Fixed but largely untested.</P>
+<P><B>Bug:</B><SPAN STYLE="font-weight: medium">&nbsp; I also found
+obvious bugs in the TTaeRichEdit::Print() method.&nbsp; Apparently, I
+was asleep when writing that code, too.<BR></SPAN><B>Status:</B><SPAN STYLE="font-weight: medium">&nbsp;
+Fixed but largely untested.</SPAN></P>
+<P><B>New:</B>&nbsp; Added two new methods for OLE support.&nbsp; The
+first is TTaeRichEdit::InsertBitmap() which allows you to
+programmatically insert a bitmap into the control.&nbsp; The second,
+TTaeRichEdit::InsertContainerObject() allows you to programmatically
+insert the contents of a TOleContainer into the control.&nbsp; Be
+warned that I am not an OLE expert and, therefore, both of these will
+require some thorough testing.&nbsp; If you use them, please give me
+some feedback.</P>
+<P><B>Note:</B><SPAN STYLE="font-weight: medium">&nbsp; The following
+problem seems to come up from time to time:&nbsp; If a program that
+uses the TaeRichEdit Component is run on a machine which has no
+printers installed or which has no &quot;default&quot; printer, the
+VCL will throw an exception.&nbsp; Strangely, the exception may
+indicate that it was caused by something that has nothing to do with
+the component nor anything clearly related to a printer problem.<BR><BR>I
+am investigating ways to trap this within the component code.&nbsp;
+However, I suspect that it may be a bit harder than it seems and I
+have no &quot;misconfigured&quot; systems on which to test.&nbsp; For
+now, be aware that this is the first thing that you should ask a user
+reporting problems after installation.&nbsp; You should consider
+adding defensive code within your program or providing a diagnostic
+tool that checks for installed printers.</SPAN></P>
+<P STYLE="font-weight: medium"><B>New:</B>&nbsp; A few programmers
+have been kind enough to share their code.&nbsp; Look in the
+&quot;Extras\User Contributed&quot; folder for the code.&nbsp; Be
+sure to read the ReadMe.rtf file in that folder before trying to use
+any of this code.&nbsp; Thanks to those that shared.</P>
+<P><B>May 25, 2000 (1.0.0.8)</B></P>
+<P><B>New:</B>&nbsp; Ported the component and demonstration projects
+to Borland C++ Builder 5.&nbsp; It is functionally identical to the
+BCB4 version.<SPAN STYLE="font-weight: medium">&nbsp; See the &quot;BCB5
+ReadMe.rtf&quot; document in the distribution file for notes on
+changes, instructions for installation, and tips on upgrading
+existing projects.</SPAN></P>
+<HR>
+<P><B>June 7, 2000 (1.0.0.9)</B></P>
+<P STYLE="font-weight: medium"><B>Bug:</B>&nbsp; Several users have
+struggled with problems using the component with certain HP
+printers.&nbsp; I was finally able to reproduce the problem -- or at
+least, produce a problem.&nbsp; If you have encountered GPF problems
+using the DemoApp1 demonstration program, this version should fix the
+problem. <BR><B>Status:</B>&nbsp; Fixed (I hope).&nbsp; Please let me
+know if you find further problems.</P>
+<P STYLE="font-weight: medium"><B>Changed:</B>&nbsp; Added code to
+the BCB4 version of the component to bring the BCB4 and BCB5 code
+base together.&nbsp; The component source code is now identical for
+both versions.&nbsp; In fact, all of the distribution code is now
+identical except for the project files which are still unique to the
+BCB version.</P>
+<P STYLE="font-weight: medium"><B>Changed:</B>&nbsp; Removed an
+unnecessary #include from the TaeAdjLineBrks.cpp file.&nbsp; It
+should now compile more quickly.</P>
+<HR>
+<P><B>June 14, 2000 (pending)</B></P>
+<P><B>Bugs:</B><SPAN STYLE="font-weight: medium">&nbsp; <SPAN STYLE="font-style: normal">Bojan
+Resnik </SPAN></SPAN>reported several problems with the component.&nbsp;
+The bad news is that the problems have been present for most --
+perhaps all -- releases.&nbsp; The good news is that Bojan took the
+time to report them so there is a really good chance that they will
+be fixed very soon.</P>
+<P>Bojan reported the following problems:</P>
+<UL>
+	<LI><P>The component code is generally not exception-safe.&nbsp;
+	Making the code exception-safe is no small challenge, but one that I
+	originally intended to address.&nbsp; I simply forgot and now, some
+	thousands of lines later, will have to rectify.</P>
+	<LI><P>The code improperly tests STL iterators for &quot;&lt;&quot;.&nbsp;
+	As Bojan pointed out, &quot;!=&quot; is the only valid and portable
+	iterator comparison.&nbsp; This was news to me (thanks for the
+	explanation, Bojan) and I will change the code.&nbsp; On the other
+	hand, there is absolutely nothing portable about a Borland VCL
+	component that implements a Microsoft Rich Edit control.&nbsp; (If
+	you want to change this by contributing to an open-software Rich
+	Edit control project, see the <SPAN STYLE="font-style: normal"><A HREF="TaeRichEditInfo.html" TARGET="_top">TaeRichEdit Component Information</A> page.)</SPAN></P>
+	<LI><P>TTaePageStyleList::Clear() is badly flawed.&nbsp; It stupidly
+	decrements the pointer twice on each iteration and results in a
+	guaranteed memory leak.&nbsp; Clearly, I was asleep when writing
+	this code.</P>
+	<LI><P>The code is not &quot;const-friendly.&quot;&nbsp; That is,
+	there are many methods that do not modify the parameters or class
+	variables.&nbsp; To make things more efficient for the compiler, I
+	plan to revise the code with &quot;const&quot; modifiers where
+	appropriate.</P>
+</UL>
+<P><B>Status:</B>&nbsp; Reported, not fixed.</P>
+<HR>
+<P><B>September 9, 2000 (incremental fixes not yet in full release)</B></P>
+<P><B>Bugs:</B><SPAN STYLE="font-weight: medium">&nbsp; Henry Seltzer
+reported problems using the component with certain printers.&nbsp;
+Notably, users experienced GPFs when clicking OK from the TaeRichEdit
+Component's TTaePrintDialog dialog when using certain HP DeskJet
+printers.</SPAN></P>
+<P><SPAN STYLE="font-weight: medium"><B>Status:</B>&nbsp; I have
+posted a set of fixes for this problem and addressed some of <SPAN STYLE="font-style: normal">Bojan
+Resnik's concerns (above) about STL compatibility.&nbsp; The download
+also includes fixes for problems not previously reported.&nbsp; The
+changes are not yet fully incorporated into the component beta
+distribution code but are available on the <A HREF="TaeRichEditInfo.html" TARGET="_top">TaeRichEdit Component Information</A> page as a set of replacement *.cpp &amp; *.h files.</SPAN></SPAN></P>
+<HR>
+<P><FONT FACE="Times New Roman, serif"><FONT SIZE=4><B>*** The
+TaeRichEdit Component's Features Were Frozen With The 1.0.0.8 Release
+***</B></FONT></FONT></P>
+<P STYLE="font-weight: medium"><B>What does that mean?</B>&nbsp;
+First, I will, of course, continue to fix any bugs that are
+reported.&nbsp; Next, I plan to remove the rather lame attempts at
+compatibility with the Rich Edit 1.0 DLL and, by reference, with the
+VCL TRichEdit component.&nbsp; The RE 1.0/TRichEdit compatibility was
+incomplete anyway and, based on the kinds of questions and comments
+that I receive, I believe that this will not affect many of you.&nbsp;
+However, if you see this as a problem, please say so now.</P>
+<P STYLE="font-weight: medium">Next, I have spent a lot of time
+adding new functionality.&nbsp; This takes much more time than you
+might think.&nbsp; While I plan to add many more features, I really
+need to finish the help files and improve the sample applications.&nbsp;
+And, although I thought that I made clear that the component requires
+an installed and defined <I>default</I> printer, apparently this was
+not as clear as it should have been.&nbsp; So, I need to add
+defensive code to the component....</P>
+<P STYLE="font-weight: medium">Finally, I have ported the component
+to BCB5.&nbsp; This leads me to the following question:&nbsp; Should
+I continue to support BCB4?&nbsp; This is a tough call and I would
+appreciate your comments.&nbsp; Keep in mind that I have limited
+resources, so think of it this way:&nbsp; Would you rather that I
+continue to support BCB4 or would you prefer that I add new features
+and support only BCB5?&nbsp; Now is your chance to influence the
+direction that this project takes.&nbsp; As they say, &quot;speak now
+or forever hold your peace.&quot;</P>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
+	<COL WIDTH=128>
+	<COL WIDTH=128>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50% BGCOLOR="#e6e6e6">
+			<P><A HREF="Yacs.html" NAME="Home"><B><FONT SIZE=2 STYLE="font-size: 9pt">Home</FONT></B></A><B><FONT SIZE=2 STYLE="font-size: 9pt">
+			| </FONT></B><A HREF="#TopOfPage" TARGET="_top"><B><FONT SIZE=2 STYLE="font-size: 9pt">Top
+			Of Page</FONT></B></A><B><FONT SIZE=2 STYLE="font-size: 9pt"> |
+			</FONT></B><A HREF="Yacs.html#CodeSection" NAME="Code Section"><B><FONT SIZE=2 STYLE="font-size: 9pt">Code</FONT></B></A><B><FONT SIZE=2 STYLE="font-size: 9pt">
+			| </FONT></B><A HREF="Yacs.html#Papers"><B><FONT SIZE=2 STYLE="font-size: 9pt">Papers</FONT></B></A><B><FONT SIZE=2 STYLE="font-size: 9pt">
+			| </FONT></B><A HREF="Yacs.html#FAQs" NAME="Frequently Asked Questions"><B><FONT SIZE=2 STYLE="font-size: 9pt">FAQs</FONT></B></A><B><FONT SIZE=2 STYLE="font-size: 9pt">
+			| <A HREF="Links.html" TARGET="_top">Links</A> | <FONT SIZE=2 STYLE="font-size: 9pt"><A HREF="Yacs.html#SiteSearch" TARGET="_top">Search</A>
+			|</FONT> </FONT></B><A HREF="Yacs.html#ContactMe" NAME="Contacting Me"><B><FONT SIZE=2 STYLE="font-size: 9pt">Feedback</FONT></B></A></P>
+		</TD>
+		<TD WIDTH=50% BGCOLOR="#e6e6e6">
+			<P ALIGN=RIGHT><FONT SIZE=2 STYLE="font-size: 9pt">Page updated <SDFIELD TYPE=DOCINFO SUBTYPE=CHANGE FORMAT=DATE SDNUM="1033;1033;MMMM D, YYYY">September 9, 2000</SDFIELD></FONT></P>
+		</TD>
+	</TR>
+</TABLE>
+<P ALIGN=CENTER STYLE="margin-bottom: 0in"><STRONG><B><SPAN STYLE="font-style: normal"><FONT SIZE=2 STYLE="font-size: 9pt">Copyright
+&copy; 1999, 2000 Thin Air Enterprises and Robert Dunn.&nbsp; All
+rights reserved.</FONT></SPAN></B></STRONG></P>
+</BODY>
+</HTML>

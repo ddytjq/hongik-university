@@ -1,0 +1,97 @@
+ID=D0644
+URL=http://www.geocities.com/lkp550/java/lesson10.htm
+SIZE=6307
+DATE=16/07/02
+TIME=14:53:56
+DATASET=Java
+HTML=<html>
+<body background="notepad.gif">
+<table width=90% align=right><tr><td>
+<font face="arial">
+<center><h2><u>Lesson Ten</u></h2></center>
+
+<p>Now that we learned the basics of Java graphics, now we can go on to more advanced graphics methods. First we will draw an arc with the <b>drawArc()</b> method. It requires six arguments: an x and a y-coordinate of the upper-left corner of an imaginary rectangular boundary, the width and height of the boundary, the beginning arc position, and the arc angle. <a href="Circles.htm">This link</a> shows the circle we created. You can achieve the same effect with the <b>drawOval()</b> and <b>fillOval()</b> methods. However, these methods only require four arguments, the same four as with drawing rectangles.
+
+<p>You can also draw rectangles that appear to have a shadow by using the <b>draw3DRect()</b> method. It takes the same coordinates and drawRect(), only it requires a fifth argument which is a Boolean value, true for the shadowing to be on the right and bottom, false for shadowing to be on the left and top. <a href="ShadowRect.htm">This link</a> illustrates how the fill3DRect() method works. This effect works better with lighter colors. Notice that answering "true" or "false" not only changes the shadow, but the whole rectangle.
+
+<p>Say you wanted to create and odd shape that has many lines. You could draw the shape line-for-line, or you could use the <b>drawPolygon()</b> method. This method requires three arguments: an integer array of the x-coordinates, an integer array of the y-coordinates, and the number of pairs of coordinates you want to connect. An example of how you would create a polygon is written below:<br>
+
+<br>
+<tt>
+import java.applet.*;<br>
+import java.awt.*;<br>
+public class Star extends Applet<br>
+{<br>
+  int xPoints[] = {42, 52, 72, 52, 60, 40, 15, 28, 9, 32, 42};<br>
+  int yPoints[] = {38, 62, 68, 80, 105, 85, 102, 75, 58, 60, 38};<br>
+  public void paint(Graphics gr)<br>
+  {<br>
+    gr.setColor(Color.red);<br>
+    gr.drawPolygon(xPoints, yPoints, xPoints.length);<br>
+  }<br>
+}
+</tt>
+
+<p>This program will draw a red star in the upper left-hand corner. To see how this works, <a href="Star.htm">click here</a>. We used the same program, yet added the <b>copyArea()</b> to copy the star and place it in a new spot. Then, we drew another star using the <b>fillPolygon()</b> method. <a href="ThreeStars.htm">Click here</a> to see how this was done.
+
+<p>Another set of graphics methods are used to alter fonts. To know what fonts your computer supports, go into your word processing program, click the drop-down arrow next to your default font, and view all the fonts that your computer has. Write a few of them down on a piece of paper, or keep your word processor open. Now we can learn how your fonts are arranged. In newspapers and magazines, the publishers measure and align the font by its' <b>height</b>. The height is measured by the fonts <b>leading</b> (pronounced "ledding"), which is the amount of whitespace above a line of text, its' <b>ascent</b>, which is the height of a capital letter from its' baseline, and its' <b>descent</b>, which is the amount of space that the characters that hang below (like "p" and "y") the baseline take up. Here's how we created a program to read what our computer renders:<br>
+
+<br>
+<tt>
+import java.applet.*;<br>
+import java.awt.*;<br>
+public class DemoFontMetrics extends Applet<br>
+{<br>
+  String companyName = new String("Event Handlers Incorporated");<br>
+  Font courierItalic = new Font("Courier", Font.ITALIC, 16), timesPlain = new Font("TimesRoman", Font.PLAIN, 16), helvetBold = new Font("Helvetica", Font.BOLD, 16);<br>
+  int ascent, descent, height, leading;<br>
+  int x = 10, y = 15;<br>
+  static final int INCREASE = 15;<br>
+<br>
+  public void paint(Graphics gr)<br>
+  {<br>
+    gr.setFont(courierItalic);<br>
+    gr.drawString(companyName, x, y);<br>
+    displayMetrics(gr);<br>
+    gr.setFont(timesPlain);<br>
+    gr.drawString(companyName, x, y += 40);<br>
+    displayMetrics(gr);<br>
+    gr.setFont(helvetBold);<br>
+    gr.drawString(companyName, x, y += 40);<br>
+    displayMetrics(gr);<br>
+<br>
+  }<br>
+<br>
+  public void displayMetrics(Graphics g)<br>
+  	{<br>
+    leading = g.getFontMetrics().getLeading();<br>
+    ascent = g.getFontMetrics().getAscent();<br>
+    descent = g.getFontMetrics().getDescent();<br>
+    height = g.getFontMetrics().getHeight();<br>
+    g.drawString("Leading is " + leading, x, y += INCREASE);<br>
+    g.drawString("Ascent is " + ascent, x, y += INCREASE);<br>
+    g.drawString("Descent is " + descent, x, y += INCREASE);<br>
+    g.drawString("- - - - - -", x, y += INCREASE);<br>
+    g.drawString("Height is " + height, x, y += INCREASE);<br>
+  }<br>
+}
+</tt>
+
+<p>When we compiled and ran the applet, <a href="DemoFontMetrics.htm">this</a> is what we got. (NOTE: We had some problems running this in IE. Netscape let us view the program, while IE would show the output briefly and the disappear.)
+
+<p><b><u>Question:</u></b> Cool!! I like creating graphics. But it seems that you have to retype everything over and over. Is there a way around that?
+
+<p><b><u>Answer:</u></b> Good. You're learning something. Yes, there is an easier way to write programs. It's called inheritance.
+<br>
+
+<hr>
+<center><a href="lesson9.htm">Lesson Nine</a> | <a href="http://www.geocities.com/lkp550/JAVAHUT.htm">Home</a> | <a href="lesson11.htm">Lesson Eleven</a><br>
+<br>
+If you have any questions or comments about this lesson, feel free to <a href="http://expertprofile.yahoo.com/lkp550?.tpid=383000187">click here</a> and leave me your message.</center>
+</font>
+</td></tr></table>
+</body>
+</html>
+<!-- text below generated by server. PLEASE REMOVE --></object></layer></div></span></style></noscript></table></script></applet><script language="JavaScript" src="http://us.i1.yimg.com/us.yimg.com/i/mc/mc.js"></script><script language="JavaScript" src="http://us.geocities.com/js_source/geov2.js"></script><script language="javascript">geovisit();</script><noscript><img src="http://visit.geocities.com/visit.gif?1026500229" border=0 width=1 height=1></noscript>
+<IMG SRC="http://geo.yahoo.com/serv?s=76001068&t=1026500229" ALT=1 WIDTH=1 HEIGHT=1>
+

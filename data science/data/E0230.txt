@@ -1,0 +1,442 @@
+ID=E0230
+URL=http://www.bcbdev.com/faqs/faq34.htm
+SIZE=23945
+DATE=12/07/02
+TIME=19:18:56
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+<H3>
+Q: Eliminate flicker when painting on a form or a TPaintBox control.
+</H3>
+<BR>
+<H3>Answer:</H3>
+<P>
+A lot of programmers complain about flicker when they draw on a <TT>TPaintBox</TT>
+control, when they draw on the form's <TT>Canvas</TT>, or when they paint on the
+<TT>Canvas</TT> of a control that they have written. One newsgroup post
+contained a subject line that read: "TPaintBox wicked flicker, can it be
+stopped." The answer is yes, and the solution is simple, once you understand
+what is going on.
+<UL>
+<LI><A HREF="#explanation">Explanation of flicker</A>
+<LI><A HREF="#example"    >An example of flicker</A>
+<LI><A HREF="#tcontrol"   >Flicker in TControl and TGraphicControl objects</A>
+<LI><A HREF="#tpaintbox"  >The wrong way to use TPaintBox or TImage</A>
+<LI><A HREF="#remove"     >Removing flicker</A>
+<LI><A HREF="#notes"      >Notes</A>
+</UL>
+</P>
+<H3>
+<A NAME="explanation">Explanation of flicker:</A>
+</H3>
+<P>
+Before you eliminate flicker, it's helpful to know what it is. Windows sends
+your program <TT>WM_PAINT</TT> messages to notify you that some part of
+the screen needs to be repainted. This happens when your program first starts,
+when you restore or maximize the program, and when the program is uncovered from
+beneath another program. You can also ask Windows to send a <TT>WM_PAINT</TT>
+message by calling the <TT>InvalidateRect</TT> API call.
+</P>
+<P>
+Any window that responds to <TT>WM_PAINT</TT> messages must call the <TT>BeginPaint</TT> and
+<TT>EndPaint</TT> API functions. These API functions might sound foreign to you if you've
+been programming with OWL, the VCL, or MFC because these frameworks call the
+functions for you (see <TT>TWinControl::PaintHandler</TT> in <TT>CONTROLS.PAS</TT>).
+Among other things, <TT>BeginPaint</TT> will send your window a <TT>WM_ERASEBKGND</TT> if the
+window is marked for erasing. The window will almost always be marked for erasing if
+Windows sent the <TT>WM_PAINT</TT> message on its own. If the <TT>WM_PAINT</TT> message
+was sent because you called <TT>InvalidateRect</TT>, then the window will be marked for
+erasing if the last argument to <TT>InvalidateRect</TT> was true.
+</P>
+<P>
+The flicker that you see is caused by the default handler for the <TT>WM_ERASEBKGND</TT>
+message. Whenever the <TT>DefWindowProc</TT> receives a <TT>WM_ERASEBKGND</TT> message, it
+erases the contents of the window by filling the window with the background color of
+the form. The default handler is is equivalent to executing this code:
+</P>
+<pre>
+Canvas<b>-></b>Brush<b>-></b>Color <b>=</b> Color<b>;</b>
+Canvas<b>-></b>FillRect<b>(</b>ClientRect<b>)</b><b>;</b>
+</pre>
+<P>
+Realize that this handler executes when your window calls <TT>BeginPaint</TT> after
+receiving a <TT>WM_PAINT</TT> message. Your entire window will be erased before
+<TT>BeginPaint</TT> returns. Your window will remain erased until you paint over
+it. Generally, you paint the window in your <TT>WM_PAINT</TT> handler sometime
+after <TT>BeginPaint</TT> has been called. The flicker that you see is caused by
+<TT>BeginPaint</TT> erasing the background of your window just before your
+<TT>WM_PAINT</TT> handler paints the window. In fact, you can change the color
+of the flicker by changing the <TT>Color</TT> property of the form.
+</P>
+<H3>
+<A NAME="example">An example of flicker:</A>
+</H3>
+<P>
+To demonstrate the flicker phenomena, it's beneficial to slow down the message
+handling process so the flicker becomes more apparent. The following code
+example does just that. Create a new project and and add a button to the main
+form (put it near the bottom). Set the form's <TT>Color</TT> property to <TT>clBlue</TT>.
+Then modify the header and source files as shown below (create the <TT>OnClick</TT>
+and <TT>OnPaint</TT> handler's using the Object Inspector).
+</P>
+<pre>
+<font color="navy">// Header file</font>
+<font color="green">#ifndef MAINFORMH</font>
+<font color="green">#define MAINFORMH</font>
+<font color="navy">//---------------------------</font>
+<font color="green">#include &lt;vcl\Classes.hpp></font>
+<font color="green">#include &lt;vcl\Controls.hpp></font>
+<font color="green">#include &lt;vcl\StdCtrls.hpp></font>
+<font color="green">#include &lt;vcl\Forms.hpp></font>
+<font color="navy">//---------------------------</font>
+
+<b>class</b> TForm1 <b>:</b> <b>public</b> TForm
+<b>{</b>
+<b>__published</b><b>:</b>	<font color="navy">// IDE-managed Components</font>
+   TButton <b>*</b>Button1<b>;</b>
+   <b>void</b> <b>__fastcall</b> Button1Click<b>(</b>TObject <b>*</b>Sender<b>)</b><b>;</b>
+   <b>void</b> <b>__fastcall</b> FormPaint<b>(</b>TObject <b>*</b>Sender<b>)</b><b>;</b>
+<b>private</b><b>:</b>	<font color="navy">// User declarations</font>
+   <b>void</b> <b>__fastcall</b> WMEraseBkgnd<b>(</b>TWMEraseBkgnd <b>&</b>Message<b>)</b><b>;</b>
+   <b>void</b> <b>__fastcall</b> WMPaint<b>(</b>TWMPaint <b>&</b>Message<b>)</b><b>;</b>
+<b>public</b><b>:</b>		<font color="navy">// User declarations</font>
+   <b>__fastcall</b> TForm1<b>(</b>TComponent<b>*</b> Owner<b>)</b><b>;</b>
+BEGIN_MESSAGE_MAP
+   MESSAGE_HANDLER<b>(</b>WM_ERASEBKGND<b>,</b>TWMEraseBkgnd<b>,</b>WMEraseBkgnd<b>)</b>
+   MESSAGE_HANDLER<b>(</b>WM_PAINT<b>,</b> TWMPaint<b>,</b> WMPaint<b>)</b><b>;</b>
+END_MESSAGE_MAP<b>(</b>TForm<b>)</b>
+<b>}</b><b>;</b>
+
+
+<font color="navy">// CPP file</font>
+<font color="navy">//-----------------------</font>
+<font color="green">#include &lt;vcl\vcl.h></font>
+<font color="green">#pragma hdrstop</font>
+<font color="green">#include "MAINFORM.h"</font>
+<font color="navy">//-----------------------</font>
+<font color="green">#pragma resource "*.dfm"</font>
+TForm1 <b>*</b>Form1<b>;</b>
+<font color="navy">//-----------------------</font>
+<b>__fastcall</b> TForm1<b>:</b><b>:</b>TForm1<b>(</b>TComponent<b>*</b> Owner<b>)</b>
+   <b>:</b> TForm<b>(</b>Owner<b>)</b>
+<b>{</b>
+<b>}</b>
+<font color="navy">//-----------------------------------------</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>WMEraseBkgnd<b>(</b>TWMEraseBkgnd <b>&</b>Message<b>)</b>
+<b>{</b>
+    OutputDebugString <b>(</b><font color="blue">"Inside WM_ERASEBKGND handler"</font><b>)</b><b>;</b>
+    TForm<b>:</b><b>:</b>Dispatch<b>(</b><b>&</b>Message<b>)</b><b>;</b>   <font color="navy">// pass message to default handler</font>
+    Sleep<b>(</b><font color="blue">5000</font><b>)</b><b>;</b>                 <font color="navy">// delay so flicker becomes obvious</font>
+    OutputDebugString <b>(</b><font color="blue">"Leaving WM_ERASEBKGND handler"</font><b>)</b><b>;</b>
+<b>}</b>
+<font color="navy">//-----------------------------------------</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>WMPaint<b>(</b>TWMPaint <b>&</b>Message<b>)</b>
+<b>{</b>
+    OutputDebugString <b>(</b><font color="blue">"Just received WM_PAINT message. Before BeginPaint"</font><b>)</b><b>;</b>
+    TForm<b>:</b><b>:</b>Dispatch<b>(</b><b>&</b>Message<b>)</b><b>;</b>
+    OutputDebugString <b>(</b><font color="blue">"Finished handling WM_PAINT message."</font><b>)</b><b>;</b>
+<b>}</b>
+<font color="navy">//-----------------------------------------</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button1Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    OutputDebugString <b>(</b><font color="blue">"About to call invalidate"</font><b>)</b><b>;</b>
+    <b>:</b><b>:</b>InvalidateRect<b>(</b>Handle<b>,</b>NULL<b>,</b>TRUE<b>)</b><b>;</b>
+    OutputDebugString <b>(</b><font color="blue">"Just returned from Invalidate call"</font><b>)</b><b>;</b>
+<b>}</b>
+<font color="navy">//-----------------------------------------</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>FormPaint<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    OutputDebugString <b>(</b><font color="blue">"Just entered form's OnPaint. BeginPaint already called."</font><b>)</b><b>;</b>
+    Canvas<b>-></b>Brush<b>-></b>Color <b>=</b> clBlack<b>;</b>
+    Canvas<b>-></b>FillRect<b>(</b>ClientRect<b>)</b><b>;</b>
+    OutputDebugString <b>(</b><font color="blue">"Leaving OnPaint handler."</font><b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+Run the program. Push the button a few times and observe how the background
+is erased before the <TT>OnPaint</TT> handler executes. Close the program and then
+look at the OutDbg1.TXT file. Locate the point where the first <TT>InvalidateRect</TT>
+call was made. You should see this sequence of events:
+</P>
+<PRE>
+     About to call invalidate
+     Just returned from Invalidate call
+     Just received WM_PAINT message. Before BeginPaint
+     Inside WM_ERASEBKGND handler
+     Leaving WM_ERASEBKGND handler
+     Just entered form's OnPaint. BeginPaint already called.
+     Leaving OnPaint handler.
+     Finished handling WM_PAINT message.
+</PRE>
+<H3>
+<A NAME="tcontrol">Flicker in <TT>TControl</TT> and <TT>TGraphicControl</TT> objects:</A>
+</H3>
+<P>
+The explanation of <TT>WM_ERASEBKGND</TT> only applies to descendents of <TT>TWinControl</TT>
+because only <TT>TWinControl</TT> descendents have window handles. <TT>TGraphicControl</TT>
+and <TT>TControl</TT> don't have window handles, and as such, they have no concept of
+<TT>DefWindowProc</TT>, <TT>BeginPaint</TT>, and <TT>WM_ERASEBKGND</TT>. However,
+descendent's of these two classes can still suffer from flicker (note that <TT>TPaintBox</TT>
+is derived from <TT>TGraphicControl</TT>). The key lies within the <TT>InvalidateControl</TT>
+method of TControl. This function calls <TT>InvalidateRect</TT> for the parent window:
+</P>
+<PRE>
+
+procedure TControl.InvalidateControl(IsVisible, IsOpaque: Boolean);
+begin
+   ...
+   ...
+   InvalidateRect(Parent.Handle, @Rect, not (IsOpaque or
+   (csOpaque in Parent.ControlStyle) or BackgroundClipped));
+
+   ...
+end
+</PRE>
+
+<P>
+<TT>Parent-&gt;Handle</TT> is the <TT>HWND</TT> of the form or panel that the control
+is placed on. <TT>Rect</TT> is equal to the <TT>BoundsRect</TT> of the control.
+The <TT>InvalidateRect</TT> call is telling Windows to invalidate the region of
+the parent window where the control is located. Notice that since <TT>InvalidateRect</TT>
+is being called, the same WM_PAINT ==> BeginPaint ==> WM_ERASEBKGND sequence of
+events looms on the horizon. The last argument to <TT>InvalidateRect</TT> controls
+whether <TT>BeginPaint</TT> will send the <TT>WM_ERASEBKGND</TT> message. <TT>IsOpaque</TT>
+will be true if the control itself has the <TT>csOpaque</TT> control style. <TT>csOpaque</TT>
+means that a control completely paints its client area. By default, controls do not
+contain this style. The logic above tells the Windows not to erase the region if
+either the form or the control completely paint themselves. Since <TT>csOpaque</TT>
+is not set, <TT>InvalidRect</TT> is instructed to erase the background region of
+the control, which causes flicker.
+</P>
+<H3>
+<A NAME="tpaintbox">The wrong way to use <TT>TPaintBox</TT> or <TT>TImage</TT>:
+</H3>
+<P>
+Now you know that flicker is caused by the <TT>WM_ERASEBKGND</TT> message.
+However, it may be difficult to track down why this message is being sent to
+your program. Imagine that you have a program that needs to frequently update
+the display. The following code example shows one way of updating the screen via
+a <TT>PaintBox</TT> control. This code uses a <TT>PaintBox</TT> control to show
+the water level in an imaginary storage tank. The program has a timer that reads
+the water level (in a real system, it would read an I/O port, but in our test
+program it reads the value from a <TT>TrackBar</TT>). If the water level has
+changed, the program updates the water level display in the <TT>PaintBox</TT>.
+</P>
+<P>
+The program contains an <TT>OnPaint</TT> handler for the <TT>PaintBox</TT> control
+that completely paints the contents of the <TT>PaintBox</TT> based on the current
+water level. The timer event calls the VCL <TT>Repaint</TT> method when the
+water level changes.
+</P>
+<pre>
+<font color="navy">//-----------------------------------------------------------------------</font>
+<font color="navy">// To compile this code, place a TrackBar, a Timer, and a PaintBox control</font>
+<font color="navy">// onto a form. The PaintBox control should be 200 pixels high. The TrackBar</font>
+<font color="navy">// should range from -200 to 0 and should be a vertical TrackBar. Set the</font>
+<font color="navy">// Timer interval to 10. Then create an OnTimer event and an OnPaint handler</font>
+<font color="navy">// for the PaintBox control. Add an int member to the form class called</font>
+<font color="navy">// WaterLevel.</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Timer1Timer<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// Note: The TrackBar ranges from -200 at the top to 0 at the bottom. The</font>
+    <font color="navy">//       new water level is the trackbar position multiplied by -1. The -1</font>
+    <font color="navy">//       inverts -200 into a positive 100. This way, the water levels</font>
+    <font color="navy">//       range from 0 to 200.</font>
+    <b>int</b> NewWaterLevel <b>=</b> TrackBar1<b>-></b>Position <b>*</b> <b>-</b><font color="blue">1</font><b>;</b>
+    <b>if</b> <b>(</b>NewWaterLevel <b>!=</b> WaterLevel<b>)</b>              <font color="navy">// has the water level changed</font>
+    <b>{</b>                                             <font color="navy">// if so, store the new value</font>
+        WaterLevel <b>=</b> NewWaterLevel<b>;</b>               <font color="navy">// and Repaint the control</font>
+        PaintBox1<b>-></b>Repaint<b>(</b><b>)</b><b>;</b>
+    <b>}</b>
+<b>}</b>
+<font color="navy">//---------------------------------------------------------------------------</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>PaintBox1Paint<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// Competely repaint the PaintBox to display the correct water level</font>
+    <font color="navy">// Use a memory bitmap to do off screen drawing. Then draw the bitmap</font>
+    <font color="navy">// to the Canvas of the PaintBox.</font>
+    <font color="navy">//</font>
+    Graphics<b>:</b><b>:</b>TBitmap <b>*</b>MemBitmap <b>=</b> <b>new</b> Graphics<b>:</b><b>:</b>TBitmap<b>;</b>
+    MemBitmap<b>-></b>Width  <b>=</b> PaintBox1<b>-></b>Width<b>;</b>
+    MemBitmap<b>-></b>Height <b>=</b> PaintBox1<b>-></b>Height<b>;</b>
+
+    <font color="navy">// Fill in the water tank with white.</font>
+    MemBitmap<b>-></b>Canvas<b>-></b>Brush<b>-></b>Color <b>=</b> clWhite<b>;</b>
+    TRect rect <b>=</b> PaintBox1<b>-></b>ClientRect<b>;</b>
+    MemBitmap<b>-></b>Canvas<b>-></b>FillRect<b>(</b>rect<b>)</b><b>;</b>
+
+    <font color="navy">// Now find the pixel that represents the water level. This code</font>
+    <font color="navy">// assumes that the paintbox is 200 pixels high, and that the max</font>
+    <font color="navy">// water level is 200. Your water level meter should be more robust.</font>
+    <font color="navy">// Fill in the water portion of the tank with blue.</font>
+    rect<b>.</b>Top <b>+</b><b>=</b> <font color="blue">200</font> <b>-</b> <b>(</b>WaterLevel<b>)</b><b>;</b>
+    MemBitmap<b>-></b>Canvas<b>-></b>Brush<b>-></b>Color <b>=</b> clBlue<b>;</b>
+    MemBitmap<b>-></b>Canvas<b>-></b>FillRect<b>(</b>rect<b>)</b><b>;</b>
+
+    <font color="navy">// Copy off screen image to the canvas</font>
+    PaintBox1<b>-></b>Canvas<b>-></b>Draw<b>(</b><font color="blue">0</font><b>,</b><font color="blue">0</font><b>,</b>MemBitmap<b>)</b><b>;</b>
+    <b>delete</b> MemBitmap<b>;</b>
+<b>}</b>
+</pre>
+<H3>
+<A NAME="remove">Removing the flicker:</A>
+</H3>
+<P>
+Many programmers like to place all of their painting code in one location. In
+the previous example, the painting code resides in an <TT>OnPaint</TT> handler.
+Unfortunately, the <TT>PaintBox</TT> flickers whenever the water level changes
+because the <TT>Repaint</TT> call results in a call to the API <TT>InvalidateRect</TT>
+function. You could replace <TT>Repaint</TT> with <TT>Refresh</TT> or with a
+combination of <TT>Invalidate</TT> and <TT>Update</TT>, but the flicker would
+persist. (Note that early versions of the VCL help file claimed that <TT>Repaint</TT>
+and <TT>Refresh</TT> served different purposes. This is not true. <TT>Refresh</TT>
+simply calls <TT>Repaint</TT>, so the two are the same. Borland has updated the
+help files to reflect this).
+</P>
+<P>
+There are several ways to eliminate the flicker in the <TT>PaintBox</TT> control.
+<UL>
+<LI> Add a <TT>WM_ERASEBKND</TT> handler and block the erase action
+<LI> Add <TT>csOpaque</TT> to the <TT>ControlStyle</TT> of the <TT>PaintBox</TT>.
+<LI> Don't call <TT>Repaint</TT>, <TT>Refresh</TT>, or <TT>Invalidate</TT>.
+</UL>
+Since the <TT>PaintBox</TT> is erased via a <TT>WM_ERASEBKGND</TT> message that
+is sent to its parent (in this case, the main form), you can intercept the
+<TT>WM_ERASEBKGND</TT> message. You can prevent flicker by not passing this
+message on for default processing. Unfortunately, trapping <TT>WM_ERASEBKGND</TT>
+might impact the appearance of other controls on the form.
+</P>
+<P>
+To use the csOpaqe method, add this line of code to the form's constructor. Do
+this for all controls that need to be painted frequently.
+</P>
+<pre>
+<b>__fastcall</b> TForm1<b>:</b><b>:</b>TForm1<b>(</b>TComponent<b>*</b> Owner<b>)</b>
+        <b>:</b> TForm<b>(</b>Owner<b>)</b>
+<b>{</b>
+    WaterLevel <b>=</b> <font color="blue">0</font><b>;</b>
+    PaintBox1<b>-></b>ControlStyle <b>=</b> PaintBox1<b>-></b>ControlStyle <b><<</b> csOpaque<b>;</b>
+<b>}</b>
+</pre>
+<P>
+Of the three choices listed, I prefer the last. The <TT>PaintBox</TT> control
+provides a <TT>Canvas</TT> property that allows you to paint on the control
+whenever you feel like it. There is no reason why you have to put all of your
+painting code inside of an <TT>OnPaint</TT> handler. Whenever you need to update
+the screen, just do it, plain and simple. Don't ask <TT>Repaint</TT> to do it
+for you. By avoiding <TT>Repaint</TT> and its evil cohorts, you bypass the
+<TT>WM_PAINT ==> BeginPaint ==> WM_ERASEBKND</TT> chain of events
+that causes the flicker in the first place. Additionally, you significantly
+reduce the amount of code that executes. Here is a modified version of the water
+level program that avoids flicker by moving the painting code into a reusable
+function.
+</P>
+<pre>
+<b>void</b> TForm1<b>:</b><b>:</b>PaintWaterLevel<b>(</b><b>void</b><b>)</b>
+<b>{</b>
+    Graphics<b>:</b><b>:</b>TBitmap <b>*</b>MemBitmap <b>=</b> <b>new</b> Graphics<b>:</b><b>:</b>TBitmap<b>;</b>
+    MemBitmap<b>-></b>Width  <b>=</b> PaintBox1<b>-></b>Width<b>;</b>
+    MemBitmap<b>-></b>Height <b>=</b> PaintBox1<b>-></b>Height<b>;</b>
+
+    MemBitmap<b>-></b>Canvas<b>-></b>Brush<b>-></b>Color <b>=</b> clWhite<b>;</b>
+    TRect rect <b>=</b> PaintBox1<b>-></b>ClientRect<b>;</b>
+    MemBitmap<b>-></b>Canvas<b>-></b>FillRect<b>(</b>rect<b>)</b><b>;</b>
+
+    rect<b>.</b>Top <b>+</b><b>=</b> <font color="blue">200</font> <b>-</b> <b>(</b>WaterLevel<b>)</b><b>;</b>
+    MemBitmap<b>-></b>Canvas<b>-></b>Brush<b>-></b>Color <b>=</b> clBlue<b>;</b>
+    MemBitmap<b>-></b>Canvas<b>-></b>FillRect<b>(</b>rect<b>)</b><b>;</b>
+
+    PaintBox1<b>-></b>Canvas<b>-></b>Draw<b>(</b><font color="blue">0</font><b>,</b><font color="blue">0</font><b>,</b>MemBitmap<b>)</b><b>;</b>
+    <b>delete</b> MemBitmap<b>;</b>
+<b>}</b>
+<font color="navy">//---------------------------------------------------------------------------</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Timer1Timer<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <b>int</b> NewWaterLevel <b>=</b> TrackBar1<b>-></b>Position <b>*</b> <b>-</b><font color="blue">1</font><b>;</b>
+    <b>if</b> <b>(</b>NewWaterLevel <b>!=</b> WaterLevel<b>)</b>              <font color="navy">// has the water level changed</font>
+    <b>{</b>                                             <font color="navy">// if so, store the new value</font>
+        WaterLevel <b>=</b> NewWaterLevel<b>;</b>               <font color="navy">// and Repaint the control</font>
+        PaintWaterLevel<b>(</b><b>)</b><b>;</b>
+    <b>}</b>
+<b>}</b>
+<font color="navy">//---------------------------------------------------------------------------</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>PaintBox1Paint<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    PaintWaterLevel<b>(</b><b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+For this strategy to work, the <TT>PaintWaterLevel</TT> function must paint the
+entire client area of the <TT>PaintBox</TT> control. This is accomplished by
+creating an offscreen bitmap that matches the size of the <TT>PaintBox</TT>.
+The function first paints the background of the offscreen bitmap, and then
+paints the water level. Notice that you still need an <TT>OnPaint</TT> handler
+that will repaint the water level when the main window is uncovered from beneath
+another window on the desktop.
+</P>
+<P>
+<A NAME="notes"></A>
+<B>Note:</B> If you are designing a component that is derived from
+<TT>TGraphicControl</TT> or <TT>TCustomControl</TT>, you can put your painting
+code inside the virtual <TT>Paint</TT> method of the class. The VCL calls
+<TT>Paint</TT> to allow the control to redraw itself. However, you can call
+<TT>Paint</TT> from your own code to update the control's appearance on the
+screen.
+</P>
+<P>
+<B>Note:</B> The implementation of the <TT>PaintWaterLevel</TT> function eliminates
+flicker caused by updates from code. It does not remove flicker that is caused
+when the program is uncovered from beneath another window, because this action
+still causes the <TT>WM_PAINT ==> BeginPaint ==> WM_ERASEBKGND</TT> sequence of events.
+Normally, this flicker isn't noticed by users, but if it is a problem in your
+program, consider using the <TT>csOpaque</TT> strategy.
+</P>
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

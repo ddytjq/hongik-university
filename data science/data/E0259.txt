@@ -1,0 +1,245 @@
+ID=E0259
+URL=http://www.linuxdoc.org/HOWTO/C++Programming-HOWTO-9.html
+SIZE=9126
+DATE=12/07/02
+TIME=19:19:14
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
+ <TITLE>C++ Programming HOW-TO: Memory Allocation in C++ </TITLE>
+ <LINK HREF="C++Programming-HOWTO-10.html" REL=next>
+ <LINK HREF="C++Programming-HOWTO-8.html" REL=previous>
+ <LINK HREF="C++Programming-HOWTO.html#toc9" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="C++Programming-HOWTO-10.html">Next</A>
+<A HREF="C++Programming-HOWTO-8.html">Previous</A>
+<A HREF="C++Programming-HOWTO.html#toc9">Contents</A>
+<HR>
+<H2><A NAME="memory-allocation"></A> <A NAME="s9">9. Memory Allocation in C++ </A></H2>
+
+<P>In C, you use malloc(), free() and variants of malloc() to allocate and free
+memory, but these functions have their pitfalls. Therefore C++ introduced
+operators for handling memory, these operators are called <B>new</B> and
+<B>delete</B>. These operators allocates and frees memory from the heap (or
+sometimes called the free store) at runtime.
+<P>In C++, you should always use <B>new</B> and <B>delete</B> unless
+you're really forced to use malloc() and free(). But be aware that you
+cannot mix the two. You cannot malloc() memory, and then delete it
+afterwards, likewise you can't "new" memory, and then free it with free().
+<P>
+<P>
+<H2><A NAME="zap"></A> <A NAME="ss9.1">9.1 C++ Zap (Delete) function </A>
+</H2>
+
+<P>The <B>delete</B> and <B>new</B> operators in C++ are much better than
+the malloc and free functions of C.  Consider using new and zap (delete
+function) instead of malloc and free as much as possible.
+<P>To make 
+<B>delete</B> 
+operators even more cleaner, make a Zap() inline function. Define 
+a zap() function like this: 
+<HR>
+<PRE>
+// Put an assert to check if x is NULL, this is to catch
+// program "logic" errors early. Even though delete works 
+// fine with NULL by using assert you are actually catching 
+// "bad code" very early
+
+// Defining Zap using templates
+// Use zap instead of delete as this will be very clean
+template &lt;class T>
+inline void zap(T &amp; x)
+{
+        {assert(x != NULL);}
+        delete x;
+        x = NULL;
+}
+
+// In C++ the reason there are 2 forms of the delete operator is - because
+// there is no way for C++ to tell the difference between a pointer to
+// an object and a pointer to an array of objects. The delete operator
+// relies on the programmer using "[]" to tell the two apart.
+// Hence, we need to define zaparr function below.
+// To delete array of pointers
+template &lt;class T>
+inline void zaparr(T &amp; x)
+{
+         {assert(x != NULL);}
+     delete [] x;
+     x = NULL;
+}
+</PRE>
+<HR>
+<P>The zap() function will delete the pointer and set it NULL.
+This will ensure that even if multiple zap()'s are called on the
+same deleted pointer then the
+program will not crash. Please see the function zap_example() in 
+<A HREF="http://www.milkywaygalaxy.freeservers.com">example_String.cpp</A>
+click on 'Source code of C++'.
+<P>
+<HR>
+<PRE>
+        // See zap_example() in example_String.cpp
+        zap(pFirstname);
+        //zap(pFirstname); // no core dumps.  Because pFirstname is NULL now
+        //zap(pFirstname); // no core dumps.  Because pFirstname is NULL now
+
+        zap(pLastname);
+        zap(pJobDescription);
+
+        int *iiarray = new int[10];
+        zaparr(iiarray);
+</PRE>
+<HR>
+<P>There is nothing magical about this, it just saves 
+repetetive code, saves typing time and makes programs more readable. The
+C++ programmers often forget to reset the deleted pointer
+to NULL, and this causes annoying
+problems causing core dumps and crashes. The zap() takes care of 
+this automatically.
+Do not stick a typecast in the zap() function -- if something errors out on the 
+above zap() function it likely has another error somewhere.
+<P>Also 
+<A HREF="#my_malloc">my_malloc()</A>
+, my_realloc() and my_free() should be used 
+instead of malloc(), realloc() and free(), as they
+are much cleaner and have additional checks. 
+For an example, see the file "String.h" which is using 
+the 
+<A HREF="#my_malloc">my_malloc()</A>
+and my_free() functions.
+<P><B>WARNING :</B> Do not use free() to free memory allocated with 'new'
+or 'delete' to free memory allocated with malloc. If you do, then
+results will be unpredictable.
+<P>See the zap examples in
+<A HREF="http://www.milkywaygalaxy.freeservers.com">example_String.cpp</A>
+click on 'Source code of C++'.
+<P>
+<P>
+<P>
+<H2><A NAME="my_malloc"></A> <A NAME="ss9.2">9.2 Usage of my_malloc and my_free </A>
+</H2>
+
+<P>Try to avoid using malloc and realloc as much as possible and use <B>new</B>
+and <B>
+<A HREF="#zap">zap</A>(delete)</B>. But sometimes you may need to 
+use the C style memory allocations in C++. Use the functions 
+<B>my_malloc()</B> ,
+<B>my_realloc()</B> and
+<B>my_free()</B>. 
+These functions do proper allocations and initialisations and try to prevent 
+memory problems. Also these functions (in DEBUG mode) can keep track 
+of memory allocated and print total memory usage before and after the program
+is run. This tells you if there are any memory leaks.
+<P>The my_malloc and my_realloc is defined as below. It allocates little more memory
+(SAFE_MEM = 5) and initializes the space and if it cannot allocate it exits the
+program. The 'call_check(), remove_ptr()' functions are active only 
+when DEBUG_MEM is defined in 
+makefile and are assigned to 
+((void)0) i.e. NULL
+for non-debug production release. They enable the total-memory used tracing.
+<P>
+<HR>
+<PRE>
+void *local_my_malloc(size_t size, char fname[], int lineno) 
+{
+        size_t  tmpii = size + SAFE_MEM;
+        void *aa = NULL;
+        aa = (void *) malloc(tmpii);
+        if (aa == NULL)
+                raise_error_exit(MALLOC, VOID_TYPE, fname, lineno);
+        memset(aa, 0, tmpii);
+        call_check(aa, tmpii, fname, lineno);
+        return aa;
+}
+
+char *local_my_realloc(char *aa, size_t size, char fname[], int lineno)
+{
+        remove_ptr(aa, fname, lineno);
+        unsigned long tmpjj = 0;
+        if (aa) // aa !=  NULL
+                tmpjj = strlen(aa);
+        unsigned long tmpqq = size + SAFE_MEM;
+        size_t  tmpii = sizeof (char) * (tmpqq);
+        aa = (char *) realloc(aa, tmpii);
+        if (aa == NULL)
+                raise_error_exit(REALLOC, CHAR_TYPE, fname, lineno);
+
+        // do not memset memset(aa, 0, tmpii);
+        aa[tmpqq-1] = 0;
+        unsigned long kk = tmpjj;
+        if (tmpjj > tmpqq)
+                kk = tmpqq;
+        for ( ; kk &lt; tmpqq; kk++)
+                aa[kk] = 0;
+        call_check(aa, tmpii, fname, lineno);
+        return aa;
+}
+</PRE>
+<HR>
+
+See 
+<A HREF="C++Programming-HOWTO-23.html#Appendix A">my_malloc.cpp</A>.
+and the header file
+<A HREF="C++Programming-HOWTO-23.html#Appendix A">my_malloc.h</A>.
+for full implementation of the my_malloc program.
+<P>An example on usage of my_malloc and my_free as below:
+<HR>
+<PRE>
+        char    *aa;
+        int     *bb;
+        float   *cc;
+        aa = (char *) my_malloc(sizeof(char)* 214);
+        bb = (int *) my_malloc(sizeof(int) * 10);
+        cc = (float *) my_malloc(sizeof(int) * 20);
+
+        aa = my_realloc(aa, sizeof(char) * 34);
+        bb = my_realloc(bb, sizeof(int) * 14);
+        cc = my_realloc(cc, sizeof(float) * 10);
+</PRE>
+<HR>
+
+Note that in my_realloc you do not need to cast the datatype as the
+variable itself is passed and correct my_realloc is called which
+returns the proper datatype pointer. The my_realloc has overloaded
+functions for char*, int* and float*.
+<P>
+<P>
+<P>
+<H2><A NAME="garbage"></A> <A NAME="ss9.3">9.3 Garbage Collector for C++ </A>
+</H2>
+
+<P>In C/C++ Garbage Collection is not a standard feature and hence allocating 
+and freeing storage explicitly is difficult, complicated and is error-prone.
+The <B>Garbage Collection (GC)</B> is not part of the C++ standard because there 
+are just so many ways how one could implement it; there are many 
+GC techniques, and deciding to use a particular one would not
+be good for certain programs. Computer scientists had designed many GC 
+algorithms, each one of them catering to a particular problem domain.
+There is no one single generic GC which will tackle all the problem domains.
+As a consequence, GC is not part of C++ standard, they just left it out.
+Still, you always have the choice of many freely available C++ libraries that do 
+the job for you.
+<P>Visit these sites:
+<UL>
+<LI> 
+<A HREF="http://www.xanalys.com/software_tools/mm/glossary/g.html#garbage.collection">Garbage Collection</A></LI>
+<LI> 
+<A HREF="http://www.xanalys.com/software_tools/mm">Memory management</A></LI>
+<LI> Java-like library - Hans-J. Boehm's garbage
+collector at 
+<A HREF="http://www.hpl.hp.com/personal/Hans_Boehm/gc/index.html">Hans-Boehm</A>
+works quite well under Linux, Solaris and Windows.</LI>
+</UL>
+<P>
+<P>
+<HR>
+<A HREF="C++Programming-HOWTO-10.html">Next</A>
+<A HREF="C++Programming-HOWTO-8.html">Previous</A>
+<A HREF="C++Programming-HOWTO.html#toc9">Contents</A>
+</BODY>
+</HTML>
+

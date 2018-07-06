@@ -1,0 +1,113 @@
+ID=F0381
+URL=http://www.chez.com/scribe/en/directx/d3d_ddraw.htm
+SIZE=7174
+DATE=09/07/2002
+TIME=13:19:49
+DATASET=Visual Basic
+HTML=<HTML>
+<HEAD>
+<LINK rel="stylesheet" type="text/css" href="../..//global.css">
+</HEAD>
+<BODY>
+<TABLE class="menu" width="100%"><TR><TD class="header">
+<A href="../index.htm">Home</A> - <A href="../about/index.htm">About</A> - <A href="../assembly/index.htm">Assembly</A> - <A href="../directx/index.htm">DirectX</A> - <A href="../opengl/index.htm">OpenGL</A> - <A href="../dotnet/index.htm">.NET</A> - <A href="../psdk/index.htm">Platform SDK</A> - <A href="../downloads/index.htm">Downloads</A> - <A href="../links/index.htm">Links</A></TD>
+<TD class="header" style="text-align:right">March 5, 2000</TD></TR></TABLE><TABLE align="right"><TR><TD><!-- BEGIN WEBSIDESTORY CODE -->
+<!-- COPYRIGHT 1997-2001 WEBSIDESTORY, INC. ALL RIGHTS RESERVED. U.S.PATENT PENDING. Privacy notice at: http://websidestory.com/privacy -->
+<!-- webbot bot="HTMLMarkup" startspan -->
+<script language="javascript">
+var _pn="en - Using Direct3D for 2D applications"; //page name
+var _acct="WQ5909151KCE94EN7";   //account number
+var _pndef="title";var _hcv=65;var _mn="wf200";
+var _lp=location.protocol.indexOf('https')==0?"https://":"http://";
+var _gn="hg1.hitbox.com";function _ps(_h){if(_h.indexOf("en - Using Direct3D for 2D applications")==0) {
+if (_pndef=="title"){return document.title?document.title:_pndef;}else{
+var _g=location.pathname;_h=_g.substring(_g.lastIndexOf("/")+1,_g.length);
+if(_h==""){return _pndef};}};return _h;}var _sv=10;var _bn=navigator.appName;
+if(_bn.substring(0,9)=="Microsoft"){_bn="MSIE";};var _bv=Math.round(parseFloat(navigator.appVersion)*100);
+if((_bn=="MSIE")&&(parseInt(_bv)==2))_bv=301;var _rf=escape(document.referrer);_pn=_ps(_pn);
+var _hbfa="<a href='http://rd1.hitbox.com/rd?acct="+_acct+"' target=_top><img src='";
+var _hbfc="' border=0 width=125 height=125></a><div><font face='MS Sans Serif,Arial,Helvetica '"+
+"size=1><a href='http://counter.hitbox.com/a/hitboxfree.cgi' target='_blank'>privacy</a></font></div>";
+var _hbfb="";</script><script language="javascript1.1" id="_hbc">_sv=11;</script><script
+language="javascript1.1" src="http://stats.hitbox.com/js/hbf.js"></script><script language="javascript">
+if(_hbfb.length!=0){document.write(_hbfa+_hbfb+_hbfc);}else{if((_rf=="undefined")||(_rf=="")){
+_rf="bookmark";};document.write(_hbfa+_lp+_gn+"/HG?hc="+_mn+"&hb="+_acct+"&n="+escape(_pn)+
+"&cd=1&hv=6"+"&bn="+escape(_bn)+"&bv="+_bv+"&ss=na&sc=na&dt=&sv="+_sv+"&ja=na&ln=na&pl=&rf="+_rf+_hbfc);}
+</script><noscript><a href="http://rd1.hitbox.com/rd?acct=WQ5909151KCE94EN7" target=_top><img
+src = "http://hg1.hitbox.com/HG?hc=wf200&cd=1&hv=6&ce=u&hb=WQ5909151KCE94EN7&n=en - Using Direct3D for 2D applications"
+border="0" width=125 height=125></a><div><font face="MS Sans Serif,Arial,Helvetica" size=1><a
+href="http://counter.hitbox.com/a/hitboxfree.cgi" target="_blank">privacy</a></font></div>
+</noscript><!--//-->
+
+<!-- webbot bot="HTMLMarkup" endspan -->
+<!-- END WEBSIDESTORY CODE  -->
+</TD></TR></TABLE>
+<TABLE align="center"><TR><TD align="right" class="header" width="45%"><A href="ddraw_pixelformat.htm">Pixel Format</A>&nbsp;&lt;&lt;</TD>
+<TD align="center" class="header" width="10%"><A href="index.htm">Up</A></TD><TD align="left" class="header" width="45%">&gt;&gt;&nbsp;<A href="d3d_cs_tlvertex.htm">TLVertex</A></TD></TR></TABLE>
+<H1>Using Direct3D for 2D applications</H1>
+<H2>Abstract</H2>
+<P>When the time comes to do complex things with DirectDraw, you finally realize that DirectDraw lacks some capabilities. For example, alpha blending is not implemented, rotating a surface is not supported in software and probably no card supports this capability in hardware. Instead of performing this task in software using a C or an ASM DLL, you could use Direct3D to implement these capabilities in hardware, enabling also to use the whole range of Direct3D capabilities...</P>
+<DIV align="center">
+<IMG alt="Texture Translucency" src="../../images/texturealpha.gif" width="262" height="281"><BR>
+<A href="../../downloads/texturealpha.zip">texturealpha.zip</A> (174 Kb) or <A href="../../downloads/texturealpha0.zip">texturealpha0.zip</A> (21 kb, without the background lake.bmp file provided with the DirectX SDK)
+</DIV>
+<H2>Why Direct3D ?</H2>
+<P>Though it may seem a bit odd at first sight, you could then just use Direct3D to implement these capabilities. In fact and until few months ago, with T&amp;L availability in hardware, those so-called "3D" cards were nothing else than 2D triangles rendering machines. Transformation was performed (and is still) on most cards performed in software and the resulting triangles were then rendered using the hardware. Also the current direction for hardware seems to blur the distinction between 2D and 3D...</P>
+<H2>Initializing DirectDraw</H2>
+<P>As usual, the first step is to initialize a DirectDraw application, the only change being the use of the <CODE>DDSCAPS_3DDEVICE</CODE> for the back buffer surface to indicate we'll use this surface a destination for a 3D scene. Then we load the background surface as a DirectDraw surface (textures in Direct3D7 are just DirectDraw surfaces) and we initialize a very simple geometry.</P>
+<H2>Authoring an alpha surface</H2>
+<P>For our alpha blended surface we'll need for each pixel not only a color, but also a value, known as "alpha" that indicates how translucent a particular pixel is. This surface is loaded from a DDS file create with the DirectX Texture Tool (dxf\bin\dxutil\dxtex.exe on the DirectX SDK CD-ROM). To create a DDS file usable by this application we'll :
+<UL>
+<LI>load the dxf\samples\d3dim\media\dx5_logo.bmp file. This file is loaded using the ARGB32 format.
+<LI>load the dxf\samples\d3dim\media\shine0.bmp file as an alpha channel. This image will be resized to fit the logo image.
+<LI>the result is a DirectX logo with more translucency as we are farther from the image center.
+<LI>if we keep this image in the ARGB32 format, we would have to convert this image to whatever texture format we would find. But instead we could just convert this image to the DXT5 format. Unlike any other case, DirectDraw performs conversion when blitting to or from a DXTn format. We'll use then this format to be able to convert our DDS file to whatever texture format we'll find.
+</UL>
+<H2>Loading a DDS file</H2>
+<P>To load our DDS file (check the companion dxtool.txt for a description of the format) :
+<UL>
+<LI>we check first for the "magic number" that marks the file as a DDS file
+<LI>we then load the DDSURFACEDESC2 structure that is stored in the file. Note that as the DDSURFACEDESC2 structure provided by the Visual Basic wrapper is not binary compatible with the C DDSURFACEDESC2 structure we have to read each member separately instead of reading the whole structure using a single statement.
+<LI>we then read the following bytes that are just a dump of the DXTn coded surface.
+<LI>now we can create a DirectDraw surface that points to the array were we loaded the surface
+<LI>texture formats are enumerated and we choose something like a ARGB4444 format
+<LI>by using BltFast to copy the loaded surface to the texture surface, the DXTn surface is uncompressed to the texture surface
+</UL>
+Check the C "compress" routine for a much more versatile routine than the one shown in this demo. In particular you could have some extra actions and tests to perform. In particular, you could for example keep the surface in the DXTn format, if supported by your hardware.</P>
+<H2>Rendering the effect</H2>
+<P>Finally we have just to render our scene. The primitive that is already transformed and lit and that fit our window.
+This primitive is first rendered with the background image. Then the alpha blend state is enabled . Colors for the source and destination surfaces are mixed using the source alpha value and one minus the source alpha value for the destination surface achieving the alpha blending effect using the Color = Alpha Source * Color Source + (1 - Alpha Source) * Destination Color formula. Once this is done the scene is blitted to the screen as for a usual DirectDraw application.</P>
+<P>Note that we disabled the AlphaBlend "state" before rendering the background. Though performance would'nt suffer for such a simple example, you could have a big performance hit when using this uneccessarily. A key issue for performance is certainly not performing uneeded work.</P>
+<H2>Conclusion</H2>
+We saw that using Direct3D allows to perform alpha blending in hardware with quite a satisfactory result. Also we have now available for our 2D like surfaces, all other Direct3D capabilities at our disposal.
+<HR>
+<DIV class="copyright"><A href="../mail.htm">Patrice Scribe</A></DIV>
+</BODY>
+</HTML>
+<!-- -->
+</noscript>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+<!--
+var rnd = Math.floor(Math.random() * 9) + 1 ; 
+if (rnd <= 4) { 
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/default','pub','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=470,height=120');
+} else if(rnd == 5) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre4','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+} else if(rnd == 6) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre2','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+} else if(rnd >= 7) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+}
+// -->
+</SCRIPT>
+
+<script language="javascript">
+WEBO_ZONE=122;
+WEBO_PAGE=1;
+weboplus_ok=0;
+</script>
+<script language="javascript"
+src="http://js.libertysurf.fr/chez/weborama/weboscopeplus.js"></SCRIPT>
+<SCRIPT>if(weboplus_ok==1){weboplus_zp(WEBO_ZONE,WEBO_PAGE);}
+</script>
+

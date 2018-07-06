@@ -1,0 +1,275 @@
+ID=E0358
+URL=http://www.troubleshooters.com/codecorn/fibb.htm
+SIZE=10234
+DATE=12/07/02
+TIME=19:20:10
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>Testing With a Fibonacci Object</TITLE>
+   <META NAME="description" CONTENT="Debugging and Troubleshooting Source Code including MS Access, C++, Delphi, FoxPro, MFC, SQL, Visual Basic">
+   <META NAME="keywords" CONTENT="debugging, troubleshooting, Source Code, Access, C++, Delphi, FoxPro, MFC, Microsoft Foundation Classes, SQL, Visual Basic">
+   <META NAME="GENERATOR" CONTENT="Mozilla/3.01Gold (Win95; U) [Netscape]">
+   <META NAME="FORMATTER" CONTENT="Microsoft FrontPage 1.1">
+   <META NAME="Description" CONTENT="You can code a Fibonacci object and use it to test your application">
+   <META NAME="KeyWords" CONTENT="Fibonacci, application, application development, programming, testing, application testing">
+   <META NAME="Author" CONTENT="Steve Litt">
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFF0" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000" BACKGROUND="tcbk.gif">
+
+<H2 ALIGN=CENTER><A NAME="top"></A><A HREF="../troubleshooters.htm">Troubleshooters.Com</A>
+Presents</H2>
+
+<H1 ALIGN=CENTER>Testing With a Fibonacci Object</H1>
+
+<CENTER><P><A HREF="../cpyright.htm">Copyright (C) 1997</A> by Steve Litt</P></CENTER>
+
+<H5 ALIGN=CENTER>[ <A HREF="index.htm">Code Corner</A> | <A HREF="../troubleshooters.htm">Troubleshooters.Com</A>
+| <A HREF="mailto:slitt@troubleshooters.com">Email Steve Litt</A> | <A HREF="../cpyright.htm">Copyright
+Notice</A> ]</H5>
+
+<P>Have you needed a way to test with varied integers over a wide range?
+Maybe a bottleneck analysis, or maybe a resource allocation problem. I
+use the Fibonacci numbers for this type of testing. The Fibonacci numbers
+are a series whereby each number is the sum of the last two, as shown below:</P>
+
+<PRE>        1           2           3           5           8
+       13          21          34          55          89   
+      144         233         377         610         987   
+     1597        2584        4181        6765   
+    10946       17711       28657       46368       75025   
+   121393      196418      317811      514229      832040   
+  1346269     2178309     3524578     5702887     9227465   
+ 14930352    24157817    39088169    63245986   </PRE>
+
+<P>Note that the series approximates a geometric progression, yielding
+approximately five values per decade. This is perfect for many kinds of
+testing:</P>
+
+<H1>C++ Source Code, Fibonaci.h</H1>
+
+<TABLE BORDER=1 BGCOLOR="#E0F8FF" >
+<TR>
+<TD>
+<PRE>/************************************************
+Fibonaci.h, By Steve Litt. I hereby place this in the public domain,
+so you can use it any way you want.
+Class FIBONACCI completely defines a Fibonacci number generator.
+************************************************/</PRE>
+
+<PRE>#ifndef _FIBONACCI_
+#define _FIBONACCI_
+class FIBONACCI
+   {
+     private:
+   unsigned long L1;
+   unsigned long L2;    // always the value returned
+
+     public:
+   FIBONACCI() : L1(1), L2(1){};
+   unsigned long value(){return(L2);};
+
+   unsigned long next()
+      {
+      unsigned long LTemp = L1 + L2;
+      L1 = L2;
+      L2 = LTemp;
+      return(value());
+      };
+
+   unsigned long previous()
+      {
+      if (L2 &lt; L1) return(value());  //never go negative
+      unsigned long LTemp = L2 - L1;
+      L2 = L1;
+      L1 = LTemp;
+      return(value());
+      };
+
+   unsigned long gteq(unsigned long LA)  //Lowest greater than or eq to LA
+      {
+      while(L2 &gt; LA) previous();
+      while(L2 &lt; LA) next();
+      return(value());
+      };
+
+   unsigned long lteq(unsigned long LA)  //Highest less than or eq to LA
+      {
+      while(L2 &lt; LA) next();
+      while(L2 &gt; LA) previous();
+      return(value());
+      }
+   };
+
+#endif  //ifndef _FIBONACCI_</PRE>
+</TD>
+</TR>
+</TABLE>
+
+<H1>Examples of Use</H1>
+
+<H2>Bottleneck Analysis:</H2>
+
+<P>Find &quot;point of diminishing returns, where increasing the resource
+by approx 20% increases the performance by less than 1%. Assume resource
+quantity must be at least 200, and stop when it hits 10000 if there hasn't
+been a diminishing return. These numbers would be typical for a file buffering,
+where diminishing returns occur around 1000 to 2000.</P>
+
+<P>Note I do this with a generic function called DiminishingReturns, whose
+first argument is a pointer to a void-returning function taking a single
+int, the resource amount, as an argument. You can engineer that function
+so that it tests what you want.</P>
+
+<TABLE BORDER=1 BGCOLOR="#E0F8FF" >
+<TR>
+<TD>
+<PRE>#include &quot;fibonaci.h&quot;</PRE>
+
+<PRE>/**************************************************************
+Function DiminishingReturns, By Steve Litt. I hereby place this 
+in the public domain, so you can use it any way you want.
+
+The first argument is a pointer to a function returning void,
+which takes a single long integer argument. That argument is 
+the resource quantity on which to do the diminishing return
+analysis. This function's run time is measured.
+DesiredImprovement is a decimal number like 0.05, not a percentage
+  like 5%.
+Iterations is the number of times to run the function pointed to
+  by the first argument. Increasing this number makes the test
+  more accurate by decreasing the &quot;jitter&quot; and whole second
+  roundoff, but makes the test take longer.
+StartFrom is the smallest resource allocation you wish to test,
+  and should be obviously before the point of diminishing returns.
+StopAt is the figure above which the test should stop. This prevents
+  an infinite loop. This number should be above the suspected
+  point of diminishing returns.
+
+I'd recommend you start with a small value of iterations,
+a large StartFrom-StopAt range, and a small DesiredImprovement
+(like 0.01) to give a general idea. Then get a more accurate 
+picture using a smaller StartFrom-StopAt range, a larger Iterations
+to minimize second roundoff and jitter, and possibly a larger
+value of DesiredImprovement (0.05 at the most).
+
+**************************************************************/</PRE>
+
+<PRE>long DiminishingReturns(
+      void (*fcn)(const long),         //pointer to function to test
+      const float DesiredImprovement,  //minimum improvement expected
+      const int Iterations,            //times to perform each exercise
+      const long StartFrom,            //resource level definitely too low
+      const long StopAt                //level too high, prevent infinite loop
+                       )
+ {
+ time_t PreviousElapsed = 100000000L;   //mark as first time
+ FIBONACCI fib;
+ fib.lteq(StartFrom);
+ long ResourceAmount;
+ while((ResourceAmount = fib.next()) &lt; StopAt)
+   {
+   time_t Start;
+   time(&amp;Start);
+   for(int i=0; i &lt; Iterations; i++)
+     fcn(ResourceAmount);
+
+   time_t Finish;
+   time(&amp;Finish);
+   time_t Elapsed = Finish-Start;
+   float Improvement = ((float)(PreviousElapsed - Elapsed)/(float)PreviousElapsed);
+   cout &lt;&lt; ResourceAmount &lt;&lt; &quot; runs in &quot; &lt;&lt; Elapsed &lt;&lt; &quot; seconds, a &quot;;
+   cout &lt;&lt; (int)(Improvement * 100) &lt;&lt; &quot;% improvement.\n&quot;;
+
+   if ((Improvement &lt; DesiredImprovement) &amp;&amp;(PreviousElapsed != 100000000L))
+     {
+     cout &lt;&lt; &quot;Diminshed Returns\n&quot;;
+     break;
+     }
+   PreviousElapsed = Elapsed;
+   }
+   return(ResourceAmount);   //first number failing to deliver expected improvement
+ }
+
+</PRE>
+
+<PRE>/**************************************************************
+Function test(int) should be engineered to give an accurate
+representation of the time taken to run the process once
+with a given resource allocation (ResourceAmount).
+**************************************************************/
+void test(const long ResourceAmount)
+   {
+   //*** Allocate resources proportional to ResourceAmount ***
+   //*** Run the process with allocated resources ***
+   //*** Free all allocated resources and return. ***
+   }
+
+
+void main(void)
+   {
+   cout &lt;&lt; &quot;\n&quot;;</PRE>
+
+<PRE>   /* 
+   Run test() 5 times for each Fibonacci number 89 and above (89 is 
+   the highest Fibonacci less than 100), until either the incrimental
+   improvement is less than 0.01 (1%), or the Fibonacci number
+   exceeds 1500.
+   */
+   long Dim=DiminishingReturns(test, 0.01, 5, 100, 1500);
+&nbsp;  cout &lt;&lt; Dim &lt;&lt; &quot; is past diminishing returns.\n&quot;;
+   }</PRE>
+</TD>
+</TR>
+</TABLE>
+
+<H2><BR>
+&quot;Will it Blow Up?&quot;:</H2>
+
+<P>Will a function work for a wide range of arbitrary numbers? Use the
+FIBONACCI object to test it:</P>
+
+<TABLE BORDER=1 BGCOLOR="#E0F8FF" >
+<TR>
+<TD>
+<PRE>#include &quot;fibonaci.h&quot;</PRE>
+
+<PRE>/************************************************
+Code snippet, by Steve Litt. I hereby place this in the public domain,
+so you can use it any way you want.
+This snippet shows how to use the FIBONACCI object to test something
+over a wide range of values. All that's needed is a function (called
+TestMyFunction() in this example, which takes the value to be exercised
+as a long argument, and returns 0 on success and a positive number
+on error.
+************************************************/
+long ErrorCount=0;
+FIBONACCI fib;
+fib.lteq(88);
+long Arg;
+while((Arg = fib.next()) &lt; 1000000) //test from 89 to a million
+  {
+  ErrorCount += TestMyFunction(Arg);
+  cout &lt;&lt; &quot;Argument: &quot; &lt;&lt; Arg &lt;&lt; &quot;, Error Count: &quot; &lt;&lt; ErrorCount &lt;&lt; '\n';
+  }
+cout &lt;&lt; &quot;\n Total Errors: &quot; &lt;&lt; ErrorCount &lt;&lt; &quot;.\n&quot;;</PRE>
+</TD>
+</TR>
+</TABLE>
+
+<P>
+<HR></P>
+
+<P>See also: [ <A HREF="index.htm">Code Corner</A> | <A HREF="../troubleshooters.htm">Troubleshooters.Com</A>
+| <A HREF="mailto:slitt@troubleshooters.com">Email Steve Litt</A> | <A HREF="../cpyright.htm">Copyright
+Notice</A> ]</P>
+
+<P><A HREF="../cpyright.htm#top"><IMG SRC="../images/biglcpyr.gif" BORDER=0 HEIGHT=30 WIDTH=30></A>
+<A HREF="../cpyright.htm#top">Copyright (C)1997 by Steve Litt.</A> -- <A HREF="../cpyright.htm#top">Legal</A></P>
+
+<P>&nbsp;</P>
+
+</BODY>
+</HTML>
+

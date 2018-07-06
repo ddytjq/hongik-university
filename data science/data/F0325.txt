@@ -1,0 +1,145 @@
+ID=F0325
+URL=http://www.chez.com/scribe/en/directx/dsound.htm
+SIZE=7437
+DATE=09/07/2002
+TIME=13:18:45
+DATASET=Visual Basic
+HTML=<HTML>
+<HEAD>
+<LINK rel="stylesheet" type="text/css" href="../..//global.css">
+</HEAD>
+<BODY class="legacy">
+<TABLE class="menu" width="100%"><TR><TD class="header">
+<A href="../dotnet/index.htm">.NET</A> - <A href="../index.htm">Home</A> - <A href="../about/index.htm">About</A> - <A href="../assembly/index.htm">Assembly</A> - <A href="../directx/index.htm">DirectX</A> - <A href="../opengl/index.htm">OpenGL</A> - <A href="../psdk/index.htm">Platform SDK</A> - <A href="../downloads/index.htm">Downloads</A> - <A href="../links/index.htm">Links</A></TD>
+<TD class="header" style="text-align:right">March 16, 2001</TD></TR></TABLE><TABLE align="right"><TR><TD><!-- BEGIN WEBSIDESTORY CODE -->
+<!-- COPYRIGHT 1997-2001 WEBSIDESTORY, INC. ALL RIGHTS RESERVED. U.S.PATENT PENDING. Privacy notice at: http://websidestory.com/privacy -->
+<!-- webbot bot="HTMLMarkup" startspan -->
+<script language="javascript">
+var _pn="en - DirectSound"; //page name
+var _acct="WQ5909151KCE94EN7";   //account number
+var _pndef="title";var _hcv=65;var _mn="wf200";
+var _lp=location.protocol.indexOf('https')==0?"https://":"http://";
+var _gn="hg1.hitbox.com";function _ps(_h){if(_h.indexOf("en - DirectSound")==0) {
+if (_pndef=="title"){return document.title?document.title:_pndef;}else{
+var _g=location.pathname;_h=_g.substring(_g.lastIndexOf("/")+1,_g.length);
+if(_h==""){return _pndef};}};return _h;}var _sv=10;var _bn=navigator.appName;
+if(_bn.substring(0,9)=="Microsoft"){_bn="MSIE";};var _bv=Math.round(parseFloat(navigator.appVersion)*100);
+if((_bn=="MSIE")&&(parseInt(_bv)==2))_bv=301;var _rf=escape(document.referrer);_pn=_ps(_pn);
+var _hbfa="<a href='http://rd1.hitbox.com/rd?acct="+_acct+"' target=_top><img src='";
+var _hbfc="' border=0 width=125 height=125></a><div><font face='MS Sans Serif,Arial,Helvetica '"+
+"size=1><a href='http://counter.hitbox.com/a/hitboxfree.cgi' target='_blank'>privacy</a></font></div>";
+var _hbfb="";</script><script language="javascript1.1" id="_hbc">_sv=11;</script><script
+language="javascript1.1" src="http://stats.hitbox.com/js/hbf.js"></script><script language="javascript">
+if(_hbfb.length!=0){document.write(_hbfa+_hbfb+_hbfc);}else{if((_rf=="undefined")||(_rf=="")){
+_rf="bookmark";};document.write(_hbfa+_lp+_gn+"/HG?hc="+_mn+"&hb="+_acct+"&n="+escape(_pn)+
+"&cd=1&hv=6"+"&bn="+escape(_bn)+"&bv="+_bv+"&ss=na&sc=na&dt=&sv="+_sv+"&ja=na&ln=na&pl=&rf="+_rf+_hbfc);}
+</script><noscript><a href="http://rd1.hitbox.com/rd?acct=WQ5909151KCE94EN7" target=_top><img
+src = "http://hg1.hitbox.com/HG?hc=wf200&cd=1&hv=6&ce=u&hb=WQ5909151KCE94EN7&n=en - DirectSound"
+border="0" width=125 height=125></a><div><font face="MS Sans Serif,Arial,Helvetica" size=1><a
+href="http://counter.hitbox.com/a/hitboxfree.cgi" target="_blank">privacy</a></font></div>
+</noscript><!--//-->
+
+<!-- webbot bot="HTMLMarkup" endspan -->
+<!-- END WEBSIDESTORY CODE  -->
+</TD></TR></TABLE>
+<TABLE align="center"><TR><TD align="right" class="header" width="45%"><A href="ddraw.htm">DirectDraw</A>&nbsp;&lt;&lt;</TD>
+<TD align="center" class="header" width="10%"><A href="index.htm">Up</A></TD><TD align="left" class="header" width="45%">&gt;&gt;&nbsp;<A href="dplay.htm">DirectPlay</A></TD></TR></TABLE>
+<H1>DirectSound</H1>
+<ul>
+<li>Creating a DirectSound buffer from a wave file
+<LI><A HREF="#dsound02">DirectSoundCapture demo</A>
+</ul>
+<hr>
+<H2>Creating a DirectSoundBuffer from a WAVE file</H2>
+<p>In fact, for this first contact with DirectSound, the difficulty is not to create and play a buffer but rather to load the wave file into this buffer. Instead of parsing ourself the wave file, we're going to use MMIO (MultiMedia Input Output) functions to do so.</p>
+Wave files are stored in a general purpose format files called RIFF that allows to retrieve easily "chunks". Chunks are just parts of this file that are tagged and contains data devoted to a specific purpose. This way you can easily find, read or ignore chunks in the RIFF file.</p>
+First we're just opening our file :
+<TABLE class="code" width="100%"><TR><TD><PRE>
+Dim hFile As Long
+Dim Parent As MMCKINFO <SPAN class="comment">' Parent chunk wave</SPAN>
+Dim Detail As MMCKINFO <SPAN class="comment">' Detail chunks</SPAN>
+hFile = mmioOpen(FileName, ByVal 0&, MMIO_READ)</PRE></TD></TR></TABLE>
+To point on a specific chunk, we just have to specifiy the "name" of the searched chunk and to call mmioDescend to "descend" into this chunk (chunks are structured).
+<TABLE class="code" width="100%"><TR><TD><PRE>Parent.fccType = mmioStringToFourCC("WAVE", 0)
+Debug.Print mmioDescend(hFile, Parent, ByVal 0&, MMIO_FINDRIFF)</PRE></TD></TR></TABLE>
+We are searching here for our main WAVE chunk. We can now search in this chunk, the chunks that are describing the format and that contains the wave data.
+<TABLE class="code" width="100%"><TR><TD><PRE>Detail.ckid = mmioStringToFourCC("fmt ",0)
+Debug.Print mmioDescend(hFile, Detail, Parent, MMIO_FINDCHUNK)</PRE></TD></TR></TABLE>
+This time we searched for the "fmt " chunk that contains a WAVEFORMATEX structure that describes our wave file. We're saving now this information as this is needed to initialize our DirectSound buffer.
+<TABLE class="code" width="100%"><TR><TD><PRE>
+    Debug.Print mmioRead hFile, WaveFormat, Detail.CkSize
+</PRE></TD></TR></TABLE>
+As we're done with this chunk we're going back to the parent chunk to find out the data chunk that contains wave data for the sound.
+<TABLE class="code" width="100%"><TR><TD><PRE>
+    Debug.Print mmioAscend hFile, Detail, 0
+    Detail.ckid = mmioStringToFourCC("data",0)
+    mmioDescend hWave, Detail, Parent, MMIO_FINDCHUNK
+</PRE></TD></TR></TABLE>
+We are now pointing on the chunk that contains data. Before reading these data we are going to create our DirectSound buffer to receive those data.
+<TABLE class="code" width="100%"><TR><TD><PRE>
+    With BufferDesc
+        .dwSize = Len(BufferDesc)
+        . dwFlags = DSBCAPS_CTRLDEFAULT
+        <SPAN class="comment">' The size of the buffer is just dtaken from the "data" chunk</SPAN>
+        .dwBufferBytes = Detail.ckSize
+        <SPAN class="comment">' Point to the "fmt " chunk we read previously</SPAN>
+        .lpwfxFormat = VarPtr(WaveFormat)
+    End Width
+    auDirectSound.CreateSoundBuffer BufferDesc, SoundBuffer, Nothing
+</PRE></TD></TR></TABLE>
+Now that the DirectSoundBuffer is created, the only thing left is to read the data for the chnuk into this buffer.
+<TABLE class="code" width="100%"><TR><TD><PRE>
+    SoundBuffer.Lock 0, BufferDesc.dwBufferBytes, Ptr1, Size1, Ptr2, Size2
+    mmioRead hFile, ByVal Ptr1, Size1
+    SoundBuffer.Unlock Ptr1, Size1, Ptr2, Size2
+    mmioClose hFile
+</PRE></TD></TR></TABLE>
+We locked the whole buffer. Ptr2 and Size2 shouldn't be needed here (as a DirectSound buffer is a "circular" buffer, this is needed when you want to lock the buffer at a position and on a length that would cross the end of the buffer)
+<p>For more informations :
+<ul>
+<li><a href="http://premium.microsoft.com/msdn/library/sdkdoc/multimed/mmio_4ien.htm" target="_top">Using Multimedia File I/O</a> [MSDN]
+</ul>
+<hr>
+<H2><a name="ACM">Audio Compression Manager (ACM)</a></H2>
+DirectX 5 (and 6 ??) doesn't support compressed wave files. You can use the ACM to decompress a compressed file in your DirectSoundBuffer... Check <a href="http://premium.microsoft.com/msdn/library/sdkdoc/multimed/audcomp_471u.htm" target="_top">Converting Data from One Format to Another</a>.
+<hr>
+<H2><a name="Streams">Streams</a></H2>
+I've got nothing to show you at this time. A streaming buffer would allow to play a long sound by using a much smaller buffer. A way to proceed would be to check periodically the playing position and to keep track of the status of each half. The goal is to update the half that is not played while playing the other part...<br>
+Check <a href="http://premium.microsoft.com/msdn/library/techart/html/streams3.htm" target="_top">Streaming Wave Files With DirectSound</a> on the <a href="http://premium.microsoft.com/msdn/library">MSDN</a> site (needs to register, free).
+<hr>
+<H2><A NAME="DSound02">DirectSoundCapture demo</A></H2>
+Download <A HREF="../../dsound02.zip">dsound02.zip</A> (3kb).
+<P>The source code is quite simple and shouldn't cause any problem. You'll have to enable full duplex to use this demo as this is necessary to be able to create both a DirectSound and a DirectSoundCapture object at the same time. Also on my card, I have to release and create again the capture buffer as if I reuse the same capture buffer, then the capture runs forever ! Is this specific to the card I used for the test (SB16 with recent drivers) ? Didn't had time to check this behaviour with another one...</P>
+<hr>
+Check also the <a href="dxsam_us.htm#3D sound">3D sound</a> contribution...
+<HR>
+<DIV class="copyright"><A href="../mail.htm">Patrice Scribe</A></DIV>
+</BODY>
+</HTML>
+<!-- -->
+</noscript>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+<!--
+var rnd = Math.floor(Math.random() * 9) + 1 ; 
+if (rnd <= 4) { 
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/default','pub','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=470,height=120');
+} else if(rnd == 5) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre4','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+} else if(rnd == 6) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre2','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+} else if(rnd >= 7) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+}
+// -->
+</SCRIPT>
+
+<script language="javascript">
+WEBO_ZONE=122;
+WEBO_PAGE=1;
+weboplus_ok=0;
+</script>
+<script language="javascript"
+src="http://js.libertysurf.fr/chez/weborama/weboscopeplus.js"></SCRIPT>
+<SCRIPT>if(weboplus_ok==1){weboplus_zp(WEBO_ZONE,WEBO_PAGE);}
+</script>
+

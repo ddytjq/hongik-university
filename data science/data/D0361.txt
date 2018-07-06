@@ -1,0 +1,153 @@
+ID=D0361
+URL=http://www.geocities.com/lkp550/java/lesson6.htm
+SIZE=8310
+DATE=16/07/02
+TIME=14:44:02
+DATASET=Java
+HTML=<html>
+<body background="notepad.gif">
+<table width=90% align=right><tr><td>
+<font face="arial">
+<center><h2><u>Lesson Six</u></h2></center>
+
+<p>Next, we will learn how to declare and initialize arrays, use subscripts with arrays, declare an array of objects, search an array for an exact match, pass an array to a method, and use the length field. An <b>array</b> is several data items that have the same type and name. You declare an array by placing brackets <b>[ ]</b> after the type. A <b>subscript</b> is the integer in the brackets that indicates an array's elements. You initialize an array by placing the data for the array in curly braces <b>{ }</b> after declaring the array. This next program shows how to utilize an array:<br>
+
+<br>
+<tt>
+public class DemoArray<br>
+{<br>
+  public static void main(String[] args)<br>
+  {<br>
+    double[] salary = {5.25, 6.55, 10.25, 16.85};<br>
+    System.out.println("Salaries one by one are:");<br>
+    for(int x = 0; x < 4; ++x)<br>
+      System.out.println(salary[x]);<br>
+  }<br>
+}<br>
+</tt>
+
+<p>Here, <i>salary</i> is the actual array we want to declare, but in Java, it is preferred to put the brackets after <i>double</i>. After we declared the array, we initialized it with the data <i>{5.25, 6.55, 10.25, 16.85}</i> followed by the opening statement to print the arrays. The <i>for()</i> loop searches for the data and prints it out for as many times as there is data. The subscript <b>[x]</b> read the for loop for the elements to print.
+
+<p>When searching for an exact match, you need to combine all the information you have learned until now. Create a program like the one below:<br>
+
+<br>
+<tt>
+public class Event2<br>
+{<br>
+  private char eventType;<br>
+  private double eventMinRate;<br>
+  public Event2(char event, double rate)<br>
+  {<br>
+    eventType = event;<br>
+    eventMinRate = rate;<br>
+  }<br>
+  public char getEventType()<br>
+  {<br>
+    return eventType;<br>
+  }<br>
+  public double getEventMinRate()<br>
+  {<br>
+    return eventMinRate;<br>
+  }<br>
+}<br>
+</tt>
+
+<p>Remember how we made programs similar to the one above in <a href="lesson3.htm">Lesson 3</a>? You need to create a similar program before creating the search array program. Once this is done you can create a program to run with it like the one below:<br>
+
+<br>
+<tt>
+public class EventArray<br>
+{<br>
+  static final double CORP_RATE = 75.99;<br>
+  static final double PRI_RATE = 47.99;<br>
+  static final double NON_PROF_RATE = 40.99;<br>
+  public static void main(String[] args) throws Exception<br>
+  {<br>
+    Event2[] someEvents = new Event2[5];<br>
+    int x;<br>
+    char event = 'Z';<br>
+    double rate = 0;<br>
+    boolean codeIsValid;<br>
+    char[] eventCode = {'C', 'P', 'N'};<br>
+    double[] eventRate = {CORP_RATE, PRI_RATE, NON_PROF_RATE};<br>
+    for(x = 0; x < 5; ++x)<br>
+    {<br>
+      System.out.println("Enter event type");<br>
+      System.out.println("C for corporate");<br>
+      System.out.println("P for private");<br>
+      System.out.println("N for non-profit");<br>
+      event = (char)System.in.read();<br>
+      System.in.read(); System.in.read();<br>
+        /* Absorbs the ENTER key */<br>
+      codeIsValid = false;<br>
+      for(int i = 0; i < 3; ++i)<br>
+      {<br>
+        if(event == eventCode[i])<br>
+        {<br>
+          rate = eventRate[i];<br>
+          codeIsValid = true;<br>
+          i = 3;<br>
+        }<br>
+      }<br>
+      if(codeIsValid)<br>
+        someEvents[x] = new Event2(event, rate);<br>
+      else<br>
+        --x;<br>
+    }<br>
+    for(x = 0; x < 5; ++x)<br>
+      System.out.println("Event " + (x + 1) + "  " + someEvents[x].getEventType() + "  " + someEvents[x].getEventMinRate());<br>
+  }<br>
+}<br>
+</tt>
+
+<p>The doubles declared in the beginning, <b>CORP_RATE = 75.99</b>, <b>PRI_RATE = 47.99</b>, and <b>NON_PROF_RATE = 40.99</b> are considered <b>global</b> because they are used throughout the program. <b>Event2[ ] someEvents = new Event2[5]</b> calls <b>Event2</b> for the information for five different events. The statement <b>boolean codeIsValid;</b> checks for errors in input. <b>char[ ] eventCode</b> and <b>double[ ] eventRate</b> hold the data for the arrays. The <i>for()</i> loop <b>for(int i = 0; i < 3; ++i)</b> tests each input value to see if they are valid. The <b>if(codeIsValid)</b> statement sends the data of the array unless it is incorrect, in which it subtracts 1 from the array so it can accept a correct input. Finally, the <b>System.out.println("Event " + (x + 1) + "  " + someEvents[x].getEventType() + "  " + someEvents[x].getEventMinRate());</b> prints all five pieces of information.
+
+<p>You can even use arrays to input numbers. In programs like C, the use of <i>scanf()</i> accepts both character and integer alike. Java's <i>System.out.println()</i> only accepts character input in the Unicode (or numeric) form. Integers are already numeric, so Java reads them in Unicode and prints them out that way. In order to use integers, you need to convert (or parse) them back to integers. The program below is one example:<br>
+
+<br>
+<tt>
+public class NumInput<br>
+{<br>
+  public static void main(String[] args) throws Exception<br>
+  {<br>
+    String inputString = new String();<br>
+    char newChar;<br>
+    int inputNumber;<br>
+    System.out.println("Enter the number of guests at your event");<br>
+    newChar = (char)System.in.read();<br>
+    while(newChar >= '0' && newChar <= '9')<br>
+    {<br>
+      inputString = inputString + newChar;<br>
+      newChar = (char)System.in.read();<br>
+    }<br>
+    System.in.read();<br>
+    inputNumber = Integer.parseInt(inputString);<br>
+    if(inputNumber > 100)<br>
+      System.out.println("A surcharge will apply!");<br>
+  }<br>
+}<br>
+</tt>
+
+<p>Notice the line <b>String inputString = new String();</b>. This is the String constructor. This comes from the String class <i>java.lang.String</i>, which is automatically imported into every one of your programs that you create. Another way of writing this is <b>String inputString = "";</b>. You can also create an array of Strings, such as <b>String[] carMakers = {"Ford", "Dodge", "Chevrolet"};</b>.
+
+<p>If you are comparing Strings, there are three methods you can use to make your comparisons, <b>equals()</b> which tests to see if two Strings are equal (i.e. aName.equals(anotherName)), <b>equalsIgnoreCase()</b> which tests to see if the two Strings have the same letters without checking the upper or lower case (i.e. aName.equalsIgnoreCase("roGER")), and <b>compareTo()</b> which tests to see what order the Strings should occur ("Robert" comes before "Roger" because "b" comes before "g", the "Ro" in each name are the same). In the "EventArray" program above, the line <i>("Event " + (x + 1) + "  " + someEvents[x].getEventType() + "  " + someEvents[x].getEventMinRate());</i> adds several Strings together. This is called <b>concatenation</b>.
+
+<p><b><u>Question:</u></b> Wow!! I like arrays. They seem to make programming so much easier to store multiple data items or allow for repetition. Is there a way to make two arrays work together?
+
+<p><b><u>Answer:</u></b> Yes, there is. Next, we'll learn about sorting, two-dimensional arrays and the StringBuffer class.
+<br>
+
+<hr>
+<center><a href="lesson5.htm">Lesson Five</a> | <a href="http://www.geocities.com/lkp550/JAVAHUT.htm">Home</a> | <a href="lesson7.htm">Lesson Seven</a><br>
+<br>
+If you have any questions or comments about this lesson, feel free to <a href="http://expertprofile.yahoo.com/lkp550?.tpid=383000187">click here</a> and leave me your message.</center>
+
+
+
+</font>
+</td></tr></table>
+</body>
+</html>
+<!-- text below generated by server. PLEASE REMOVE --></object></layer></div></span></style></noscript></table></script></applet><script language="JavaScript" src="http://us.i1.yimg.com/us.yimg.com/i/mc/mc.js"></script><script language="JavaScript" src="http://us.geocities.com/js_source/geov2.js"></script><script language="javascript">geovisit();</script><noscript><img src="http://visit.geocities.com/visit.gif?1026499731" border=0 width=1 height=1></noscript>
+<IMG SRC="http://geo.yahoo.com/serv?s=76001068&t=1026499731" ALT=1 WIDTH=1 HEIGHT=1>
+

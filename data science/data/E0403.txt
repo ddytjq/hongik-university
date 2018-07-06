@@ -1,0 +1,561 @@
+ID=E0403
+URL=http://www.gotw.ca/gotw/025.htm
+SIZE=35016
+DATE=12/07/02
+TIME=19:20:41
+DATASET=C
+HTML=
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+
+
+<title>GotW #25: SPECIAL EDITION: auto_ptr</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<link rel="stylesheet" type="text/css" href="../gotw.css">
+<meta name="Microsoft Theme" content="gotw 111, default">
+<meta name="Microsoft Border" content="tlb, default">
+</head>
+
+<body background="../_themes/gotw/glabkgnd.jpg" bgcolor="#CCFFFF" text="#000000" link="#008080" vlink="#008080" alink="#0000FF"  ><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><table border="0" cellspacing="0" width="100%">
+  <tr>
+    <td colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="6"><strong>
+    GotW #25</strong></font> <!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+
+
+
+<p align="left" style="margin-top: 0; margin-bottom: 0">
+
+<script language="JavaScript"><!--
+MSFPhover = 
+  (((navigator.appName == "Netscape") && 
+  (parseInt(navigator.appVersion) >= 3 )) || 
+  ((navigator.appName == "Microsoft Internet Explorer") && 
+  (parseInt(navigator.appVersion) >= 4 ))); 
+function MSFPpreload(img) 
+{
+  var a=new Image(); a.src=img; return a; 
+}
+// --></script><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav1n=MSFPpreload("../_derived/home_cmp_gotw110_hbtn.gif"); MSFPnav1h=MSFPpreload("../_derived/home_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1h.src" onmouseout="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1n.src"><img src="../_derived/home_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Home" align="middle" name="MSFPnav1"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav2n=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn.gif"); MSFPnav2h=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../news.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2h.src" onmouseout="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2n.src"><img src="../_derived/news.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="News &amp; Events" align="middle" name="MSFPnav2"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav3n=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav3h=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../resources/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3h.src" onmouseout="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3n.src"><img src="../resources/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Community Resources" align="middle" name="MSFPnav3"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav4n=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn.gif"); MSFPnav4h=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../consulting.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4h.src" onmouseout="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4n.src"><img src="../_derived/consulting.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Consulting Services" align="middle" name="MSFPnav4"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav5n=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn.gif"); MSFPnav5h=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../presentations.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5h.src" onmouseout="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5n.src"><img src="../_derived/presentations.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Presentations" align="middle" name="MSFPnav5"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav6n=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav6h=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../publications/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6h.src" onmouseout="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6n.src"><img src="../publications/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Publications" align="middle" name="MSFPnav6"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav7n=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav7h=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7h.src" onmouseout="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7n.src"><img src="_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Guru of the Week" align="middle" name="MSFPnav7"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav8n=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav8h=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../conv/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8h.src" onmouseout="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8n.src"><img src="../conv/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Conversations" align="middle" name="MSFPnav8"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav9n=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn.gif"); MSFPnav9h=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../search.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9h.src" onmouseout="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9n.src"><img src="../_derived/search.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Search GotW.ca" align="middle" name="MSFPnav9"></a>
+</p>
+
+
+
+
+    <!--mstheme--></font></td>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 0">
+      <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav10n=MSFPpreload("../_derived/back_cmp_gotw110_back.gif"); MSFPnav10h=MSFPpreload("../_derived/back_cmp_gotw110_back_a.gif"); }
+// --></script><a href="024.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10h.src" onmouseout="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10n.src"><img src="../_derived/back_cmp_gotw110_back.gif" width="100" height="20" border="0" alt="Prev" name="MSFPnav10"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav11n=MSFPpreload("../_derived/up_cmp_gotw110_up.gif"); MSFPnav11h=MSFPpreload("../_derived/up_cmp_gotw110_up_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11h.src" onmouseout="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11n.src"><img src="../_derived/up_cmp_gotw110_up.gif" width="100" height="20" border="0" alt="Up" name="MSFPnav11"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav12n=MSFPpreload("../_derived/next_cmp_gotw110_next.gif"); MSFPnav12h=MSFPpreload("../_derived/next_cmp_gotw110_next_a.gif"); }
+// --></script><a href="026.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12h.src" onmouseout="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12n.src"><img src="../_derived/next_cmp_gotw110_next.gif" width="100" height="20" border="0" alt="Next" name="MSFPnav12"></a><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td height="5" background="../images/bar.gif" colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td></tr><!--msnavigation--></table><!--msnavigation--><table dir="ltr" border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td valign="top" width="1%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<!--mstheme--></font><table border="0" cellspacing="0" bgcolor="#000000" cellpadding="0">
+  <tr>
+    <td><!--mstheme--><font face="Arial, Arial, Helvetica">
+    <!--mstheme--></font><table border="0" cellpadding="2" cellspacing="1" width="100%" height="483">
+        <tr>
+          <td align="center" bgcolor="#000000" colspan="2" height="16"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-top: 0; margin-bottom: 0"><a href="../news.htm"><b><font color="#FFFF00">News</font></b></a><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <font size="1" color="#0000FF">J<br>
+          U<br>
+          L<br>
+          Y</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-left: 3; margin-right: 3; margin-top: 0" align="center"><font size="1" color="#0000FF">
+            Print articles newly available online</font><!--mstheme--></font><table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%" id="AutoNumber1" bgcolor="#FFFFCC" bordercolordark="#006666" bordercolorlight="#99CCCC">
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill20.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 1&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000" bgcolor="#FFFFCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mxc++-item-4.htm">
+                <font color="#0000FF">Excerpt from MXC++, &quot;Extensible Templates: 
+                Via Inheritance or Traits?&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mcd_review.htm"><font color="#0000FF">
+                Book Review: Modern C++ Design</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill21.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 2: Namespaceops and 
+                Library Versioning&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+            </table><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;A Pragmatic Look at Exception Specifications&quot;<br>
+            </font><font size="1" color="#000080">The usefulness, or lack 
+            thereof, of exception specifications, and how results can vary 
+            across real-world compilers</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <a target="_blank" href="http://www.cuj.com/experts/2007/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;Getting to the Point&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">The Boost library has five 
+            smart pointers that provide a rich array [sic] of useful behaviors.</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font color="#0000FF" size="1">A<br>
+            U<br>
+          G<br>
+          U<br>
+          S<br>
+          T</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin:0 3; ">
+            <a target="_blank" href="http://www.cuj.com/experts/2008/sutter.htm"><i><b><font size="1" color="#0000FF">The New C++</font></b></i> <font size="1" color="#0000FF">
+            column, &quot;Smart(er) Pointers&quot;</font></a><font size="1" color="#000080"><br>
+            A closer look at one of the proposed new standard C++ library 
+            features -- smart pointers, particularly those in Boost and Loki, 
+            and a sneak peek at the usefulness of the proposed typedef templates</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin:0 3; ">
+          <a target="_blank" href="http://www.cuj.com/experts/2008/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;A Midsummer Night's Madness&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">A brew that mixes pointers, 
+          typedefs, and const</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin-top: 0; margin-bottom: 0">
+          <font size="1" color="#0000FF">S<br>
+          E<br>
+          P<br>
+          T<br>
+          E<br>
+          M<br>
+          B<br>
+          E<br>
+          R</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <font size="1" color="#0000FF">&quot;Standard C++ Meets Managed C++&quot;<br>
+            </font><font size="1" color="#000080">A survey of the main (in)compatibilities 
+            between Standard C++ and Microsoft’s managed extensions for C++, and 
+            how the two could converge</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;Export Restrictions, Part 1&quot;<br>
+            </font><font size="1" color="#000080">The scoop on export -- what 
+            some people think it does, what it actually does, and why it’s the 
+            most widely-ignored feature in the C++ standard</font><!--mstheme--></font></td>
+        </tr>
+      </table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p style="margin-top: 0; margin-bottom: 0">
+<img border="0" src="../images/140.gif" width="140" height="1"></p>
+
+<!--mstheme--></font></td><td valign="top" width="24"></td><!--msnavigation--><td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><table border="1" cellpadding="6" cellspacing="0" width="100%" bgcolor="#FFCC99" bordercolordark="#006666" bordercolorlight="#99CCCC">
+  <tr>
+    <td width="100%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p align="center">This is the original GotW problem and solution
+      substantially as posted
+      to Usenet. See the book <i><a href="../publications/xc++.htm"><b>Exceptional
+      C++</b></a></i> (Addison-Wesley, 2000) for the most current solutions to
+      GotW issues #1-30. The solutions in the book have been revised and
+      expanded since their initial appearance in GotW. The book versions also
+      incorporate corrections, new material, and conformance to the final
+      ANSI/ISO C++ standard.</p>
+    <!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+<h2><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">SPECIAL EDITION: auto_ptr<font size="3"><br>
+      Difficulty: 8 / 10</font><!--mstheme--></font></h2>
+<p><i>This GotW covers basics about how you can use the standard auto_ptr safely
+and effectively. (This GotW Special Edition was written in honor of the voting
+out of the Final Draft International Standard for Programming Language C++,
+which included a last-minute auto_ptr change.)</i></p>
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Problem<!--mstheme--></font></h3>
+
+<p>Comment on the following code: What's good, what's safe, what's legal, and
+what's not?</p>
+<!--mstheme--></font><pre>    auto_ptr&lt;T&gt; source() { return new T(1); }
+    void sink( auto_ptr&lt;T&gt; pt ) { }
+
+    void f() {
+        auto_ptr&lt;T&gt; a( source() );
+        sink( source() );
+        sink( auto_ptr&lt;T&gt;( new T(1) ) );
+
+        vector&lt; auto_ptr&lt;T&gt; &gt; v;
+        v.push_back( new T(3) );
+        v.push_back( new T(4) );
+        v.push_back( new T(1) );
+        v.push_back( a );
+        v.push_back( new T(2) );
+        sort( v.begin(), v.end() );
+
+        cout &lt;&lt; a-&gt;Value();
+    }
+
+    class C {
+    public:    /*...*/
+    protected: /*...*/
+    private:
+        auto_ptr&lt;CImpl&gt; pimpl_;
+    };</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a name="Solution"></a>Solution<!--mstheme--></font></h3>
+
+<p><font color="#999933">Comment on the following code: What's good, what's
+safe, what's legal, and what's not?</font></p>
+<!--mstheme--></font><table border="1" cellpadding="6" cellspacing="0" width="100%" bordercolordark="#006666" bordercolorlight="#99CCCC">
+  <tr>
+    <td width="100%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 6">STANDARDS UPDATE: This week <i><b>[the
+      week this GotW was posted]</b></i>, at the WG21/J16 meeting in Morristown
+      NJ USA, the Final Draft International Standard (FDIS) for Programming
+      Language C++ was voted out for balloting by national bodies. We expect to
+      know by the next meeting (Nice, March 1998) whether it has passed and will
+      become an official ISO Standard.<!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>This GotW was posted knowing that auto_ptr was going to be refined at the New
+Jersey meeting in order to satisfy national body comments. This Special Edition
+of GotW covers the final auto_ptr, how and why been made safer and easier to
+use, and how to use it best.</p>
+<p>In summary:</p>
+<p>1. All legitimate uses of auto_ptr work as before, except that you can't use
+(i.e., dereference) a non-owning auto_ptr.</p>
+<p>2. The dangerous abuses of auto_ptr have been made illegal.</p>
+<p>SOME WELL-DESERVED ACKNOWLEDGMENTS: Many thanks from all of us to Bill
+Gibbons, Greg Colvin, Steve Rumsby, and others who worked hard on the final
+refinement of auto_ptr. Greg in particular has laboured over auto_ptr and
+related classes for many years to satisfy various committee concerns and
+requirements, and deserves public recognition for that work.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Background<!--mstheme--></font></h4>
+<p>The original motivation for auto_ptr was to make code like the following
+safer:</p>
+<!--mstheme--></font><pre>    void f() {
+        T* pt( new T );
+        /*...more code...*/
+        delete pt;
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>If f() never executes the delete statement (either because of an early return
+or by an exception thrown in the function body), the allocated object is not
+deleted and we have a classic memory leak.</p>
+<p>A simple way to make this safe is to wrap the pointer in a
+&quot;smarter&quot; pointer-like object which owns the pointer and which, when
+destroyed, deletes the pointer automatically:</p>
+<!--mstheme--></font><pre>    void f() {
+        auto_ptr&lt;T&gt; pt( new T );
+        /*...more code...*/
+    } // cool: pt's dtor is called as it goes out of
+      // scope, and the allocated object is deleted</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>Now the code will not leak the T object, no matter whether the function exits
+normally or by means of an exception, because pt's destructor will always be
+called during stack unwinding. Similarly, auto_ptr can be used to safely wrap
+pointer data members <i><b>[note: there are important safety details not
+mentioned in this GotW; see later GotW issues including <a href="062.htm">GotW
+#62</a>, and the book <a href="../publications/xc++.htm">Exceptional C++</a>]</b></i>:</p>
+
+<!--mstheme--></font><pre>    // file c.h
+    class C {
+    public:
+        C();
+        /*...*/
+    private:
+        auto_ptr&lt;CImpl&gt; pimpl_;
+    };
+
+    // file c.cpp
+    C::C() : pimpl_( new CImpl ) { }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Now the destructor need not delete the pimpl_ pointer, since the auto_ptr
+will handle it automatically. We'll revisit this example again at the end.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Sources and Sinks<!--mstheme--></font></h4>
+<p>This is cool stuff all by itself, but it gets better. Based on Greg Colvin's
+work and experience at Taligent, people noticed that if you defined copying for
+auto_ptrs then it would be very useful to pass them to and from functions, as
+function parameters and return values.</p>
+<p>This is in fact the way auto_ptr worked in the second committee draft (Dec
+1996), with the semantics that the act of copying an auto_ptr transfers
+ownership from the source to the target. After the copy, only the target
+auto_ptr &quot;owned&quot; the pointer and would delete it in due time, while
+the source also still contained the same pointer but did not &quot;own&quot; it
+and therefore would not delete it (else we'd have a double delete). You could
+still use the pointer through either an owning or a non-owning auto_ptr object.</p>
+<p>For example:</p>
+<!--mstheme--></font><pre>    void f() {
+        auto_ptr&lt;T&gt; pt1( new T );
+        auto_ptr&lt;T&gt; pt2;
+
+        pt2 = pt1;  // now pt2 owns the pointer, and
+                    // pt1 does not
+
+        pt1-&gt;DoSomething(); // ok (before last week)
+        pt2-&gt;DoSomething(); // ok
+
+    } // as we go out of scope, pt2's dtor deletes the
+      // pointer, but pt1's does nothing</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>This gets us to the first part of the GotW code:<b><sup><a href="#1">[1]</a></sup></b></p>
+
+<!--mstheme--></font><pre><font color="#999933">    auto_ptr&lt;T&gt; source() { return new T(1); }
+    void sink( auto_ptr&lt;T&gt; pt ) { }</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<!--mstheme--></font><pre>  SUMMARY
+  |         Before NJ   After NJ
+  | Legal?     Yes         Yes
+  | Safe?      Yes         Yes</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>This demonstrates exactly what the people at Taligent had in mind:</p>
+<p>1. source() allocates a new object and returns it to the caller in a
+completely safe way, by letting the caller assume ownership of the pointer. Even
+if the caller ignores the return value (of course, you would never write code
+that ignores return values, right?), the allocated object will always be safely
+deleted.</p>
+<p>See also <a href="021.htm">GotW #21</a>, which demonstrates why this is an
+important idiom, since returning a result by wrapping it in an auto_ptr is
+sometimes the only way to make a function strongly exception-safe.</p>
+<p>2. sink() takes an auto_ptr by value and therefore assumes ownership of it.
+When sink() is done, the deletion is done (as long as sink() itself hasn't
+handed off ownership to someone else). Since the sink() function as written
+above doesn't do anything with the body, calling &quot;sink( a );&quot; is a
+fancy way of writing &quot;a.release();&quot;.</p>
+<p>The next piece of code shows source() and sink() in action:</p>
+<!--mstheme--></font><pre><font color="#999933">    void f() {
+        auto_ptr&lt;T&gt; a( source() );</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<!--mstheme--></font><pre>  SUMMARY
+  |         Before NJ   After NJ
+  | Legal?     Yes         Yes
+  | Safe?      Yes         Yes</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>Here f() takes ownership of the pointer received from source(), and (ignoring
+some problems later in f()) it will delete it automatically when the automatic
+variable a goes out of scope. This is fine, and it's exactly how passing back an
+auto_ptr by value is meant to work.</p>
+
+<!--mstheme--></font><pre><font color="#999933">        sink( source() );</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<!--mstheme--></font><pre>  SUMMARY
+  |         Before NJ   After NJ
+  | Legal?     Yes         Yes
+  | Safe?      Yes         Yes</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>Given the trivial (i.e., empty) definitions of source() and sink() here, this
+is just a fancy way of writing &quot;delete new T(1);&quot;. So is it really
+useful? Well, if you imagine source() as a nontrivial factory function and
+sink() as a nontrivial consumer, then yes, it makes a lot of sense and crops up
+regularly in real-world programming.</p>
+
+<!--mstheme--></font><pre><font color="#999933">        sink( auto_ptr&lt;T&gt;( new T(1) ) );</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<!--mstheme--></font><pre>  SUMMARY
+  |         Before NJ   After NJ
+  | Legal?     Yes         Yes
+  | Safe?      Yes         Yes</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Again, a fancy way of writing &quot;delete new T(1);&quot;, and a useful
+idiom when sink() is a nontrivial consumer function that takes ownership of the
+pointed-to object.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Things Not To Do, and Why Not To Do Them<!--mstheme--></font></h4>
+<p>&quot;So,&quot; you say, &quot;that's cool, and obviously supporting auto_ptr
+copying is a Good Thing.&quot; Well, yes, it is, but it turns out that it can
+also get you into hot water where you least expect it, and that's why the
+national body comments objected to leaving auto_ptr in the CD2 form. Here's the
+fundamental issue, and I'll highlight it to make sure it stands out:</p>
+<p align="center"><b>For auto_ptr, copies are NOT equivalent.</b></p>
+<p>It turns out that this has important effects when you try to use auto_ptr
+with generic code that does make copies and isn't necessarily aware that copies
+aren't equivalent (after all, usually copies are!). Consider:</p>
+<!--mstheme--></font><pre><font color="#999933">        vector&lt; auto_ptr&lt;T&gt; &gt; v;</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<!--mstheme--></font><pre>  SUMMARY
+  |         Before NJ   After NJ
+  | Legal?     Yes          No
+  | Safe?       No          No</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>This is the first indication of trouble, and one of the things the national
+body comments wanted fixed. In short, even though a compiler wouldn't burp a
+single warning here, auto_ptrs are NOT safe to put in containers. This is
+because we have no way of warning the container that copying auto_ptrs has
+unusual semantics (transferring ownership, changing the right-hand side's
+state). True, today most implementations I know about will let you get away with
+this, and code nearly identical to this even appears as a &quot;good
+example&quot; in the documentation of certain popular compilers. Nevertheless,
+it was actually unsafe (and is now illegal).</p>
+<p>The problem is that auto_ptr does not quite meet the requirements of a type
+you can put into containers, for copies of auto_ptrs are not equivalent. For one
+thing, there's nothing that says a vector can't just decide to up and make an
+&quot;extra&quot; internal copy of some object it contains. Sure, normally you
+can expect vector not to do this (simply because making extra copies happens to
+be unnecessary and inefficient, and for competitive reasons a vendor is unlikely
+to ship a library that's needlessly inefficient), but it's not guaranteed and so
+you can't rely on it.</p>
+<p>But hold on, because it's about to get worse:</p>
+<!--mstheme--></font><pre><font color="#999933">        v.push_back( new T(3) );
+        v.push_back( new T(4) );
+        v.push_back( new T(1) );
+        v.push_back( a );</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>(Aside: Note that copying a into the vector means that the 'a' object no
+longer owns the pointer it's carrying. More on that in a moment.)</p>
+
+<!--mstheme--></font><pre><font color="#999933">        v.push_back( new T(2) );
+        sort( v.begin(), v.end() );</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<!--mstheme--></font><pre>  SUMMARY
+  |         Before NJ   After NJ
+  | Legal?     Yes          No
+  | Safe?       No          No</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Here's the real devil, and another reason why the national body comment was
+more that just a suggestion (the body in question actually voted No on CD2
+largely because of this problem). When you call generic functions that will copy
+elements, like sort() does, the functions have to be able to assume that copies
+are going to be equivalent. For example, at least one popular sort internally
+takes a copy of a &quot;pivot&quot; element, and if you try to make it work on
+auto_ptrs it will merrily take a copy of the pivot auto_ptr object (thereby
+taking ownership and putting it in a temporary auto_ptr on the side), do the
+rest of their work on the sequence (including taking further copies of the
+now-non-owning auto_ptr that was picked as a pivot value), and when the sort is
+over the pivot is destroyed and you have a problem: at least one auto_ptr in the
+sequence (the one that was a copy of the pivot value) no longer owns the pointer
+it holds, and in fact the pointer it holds has already been deleted!</p>
+<p>The problem with the auto_ptr in CD2 is that it gave you no protection -- no
+warning, nothing -- against innocently writing code like this. The national body
+comment required that auto_ptr be refined to either get rid of the unusual copy
+semantics or else make such dangerous code uncompilable, so that the compiler
+itself could stop you from doing the dangerous things, like making a vector of
+auto_ptrs or trying to sort it.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">The Scoop on Non-Owning auto_ptrs<!--mstheme--></font></h4>
+<!--mstheme--></font><pre>        // (after having copied a to another auto_ptr)
+<font color="#999933">        cout &lt;&lt; a-&gt;Value();
+    }</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<!--mstheme--></font><pre>  SUMMARY
+  |         Before NJ   After NJ
+  | Legal?     Yes          No
+  | Safe?     (Yes)         No</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>(We'll assume that a was copied, but that its pointer wasn't deleted by the
+vector or the sort.) Under CD2 this was fine, since even though a no longer owns
+the pointer, it would still contain a copy of it; a just wouldn't call delete on
+its pointer when a itself goes out of scope, that's all, because it would know
+that it doesn't own the pointer.</p>
+<p>Now, however, copying an auto_ptr not only transfers ownership but resets the
+source auto_ptr to null. This is done specifically to avoid letting anyone do
+anything through a non-owning auto_ptr. Under the final rules, then, using a
+non-owning auto_ptr like this is not legal and will result in undefined
+behaviour (typically a core dump on most systems).</p>
+<p>In short:</p>
+<!--mstheme--></font><pre>    void f() {
+        auto_ptr&lt;T&gt; pt1( new T );
+        auto_ptr&lt;T&gt; pt2( pt1 );
+        pt1-&gt;Value(); // using a non-owning auto_ptr...
+                      //  this used to be legal, but is
+                      //  now an error
+        pt2-&gt;Value(); // ok
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>This brings us to the last common usage of auto_ptr:</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Wrapping Pointer Members<!--mstheme--></font></h4>
+<!--mstheme--></font><pre><font color="#999933">    class C {
+    public:    /*...*/
+    protected: /*...*/
+    private:
+        auto_ptr&lt;CImpl&gt; pimpl_;
+    };</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p><i><b>[Note: there are important safety details not mentioned in this GotW;
+see later GotW issues including <a href="062.htm">GotW #62</a>, and the book <a href="../publications/xc++.htm">Exceptional
+C++</a>.]</b></i></p>
+
+<!--mstheme--></font><pre>  SUMMARY
+  |         Before NJ   After NJ
+  | Legal?     Yes         Yes
+  | Safe?      Yes         Yes</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>auto_ptrs always were and still are useful for encapsulating pointing member
+variables. This works very much like our motivating example in the
+&quot;Background&quot; section at the beginning, except that instead of saving
+us the trouble of doing cleanup at the end of a function, it now saves us the
+trouble of doing cleanup in C's destructor.</p>
+<p>There is still a caveat, of course... just like if you were using a bald
+pointer data member instead of an auto_ptr member, you MUST supply your own copy
+constructor and copy assignment operator for the class (even if you disable them
+by making them private and undefined), because the default ones will do the
+wrong thing.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">News Flash: The &quot;const auto_ptr&quot; Idiom<!--mstheme--></font></h4>
+<p>Now that we've waded through the deeper stuff, here's a technique you'll find
+interesting. Among its other benefits, the refinement to auto_ptr also makes
+copying const auto_ptrs illegal. That is:</p>
+<!--mstheme--></font><pre>    const auto_ptr&lt;T&gt; pt1( new T );
+        // making pt1 const guarantees that pt1 can
+        // never be copied to another auto_ptr, and
+        // so is guaranteed to never lose ownership
+
+    auto_ptr&lt;T&gt; pt2( pt1 ); // illegal
+    auto_ptr&lt;T&gt; pt3;
+    pt3 = pt1;              // illegal</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>This &quot;const auto_ptr&quot; idiom is one of those things that's likely to
+become a commonly used technique, and now you can say that you knew about it
+since the beginning.</p>
+<p>I hope you enjoyed this Special Edition of GotW, posted in honour of the
+voting out of ISO Final Draft International Standard C++ <i>[in November 1997]</i>.</p>
+
+<p>&nbsp;</p>
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Notes<!--mstheme--></font></h4>
+<p><a name="1"></a>1. In the original question, I forgot that there is no
+conversion from T* to auto_ptr&lt;T&gt; because the constructor is
+&quot;explicit&quot;. The quoted code below is fixed. (That's what I get for
+dashing this off near midnight on Friday before rushing to New Jersey!)</p>
+<!--mstheme--></font><!--msnavigation--></td></tr><!--msnavigation--></table><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><h4 align="right"><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a href="../copyright.htm"><font size="2">Copyright ©
+2002 Herb Sutter</font></a><!--mstheme--></font></h4>
+
+<!--mstheme--></font></td></tr><!--msnavigation--></table></body>
+</html>
+

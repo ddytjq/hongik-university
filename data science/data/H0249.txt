@@ -1,0 +1,149 @@
+ID=H0249
+URL=http://www.klab.caltech.edu/%7Estemmler/sec2.html
+SIZE=12907
+DATE=11/07/2002
+TIME=17:03:02
+DATASET=Biology
+HTML=<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="description" CONTENT="Variational Derivatives">
+   <META NAME="keywords" CONTENT="sec2">
+   <META NAME="resource-type" CONTENT="document">
+   <META NAME="distribution" CONTENT="global">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.04 [en] (X11; I; Linux 2.0.30 i586) [Netscape]">
+   <TITLE>Variational Derivatives</TITLE>
+<!--Converted with LaTeX2HTML 97.1 (release) (July 13th, 1997)
+ by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippman, Marek Rouchal, Martin Wilck and others -->
+<LINK REL="STYLESHEET" HREF="sec2.css">
+<LINK REL="next" HREF="s2node1.html">
+<LINK REL="next" HREF="s2node1.html">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+<!--Navigation Panel--><A NAME="tex2html13" HREF="s2node1.html"></A><A HREF="http://www.klab.caltech.edu/~stemmler/s2node1.html" NAME="tex2html13"><IMG SRC="next_motif.gif" ALT="next" BORDER=0 HEIGHT=24 WIDTH=37 ALIGN=BOTTOM></A>&nbsp;<A NAME="tex2html9" HREF="index.html"></A><A HREF="http://www.klab.caltech.edu/~stemmler/index.html" NAME="tex2html9"><IMG SRC="up_motif.gif" ALT="up" BORDER=0 HEIGHT=24 WIDTH=26 ALIGN=BOTTOM></A>&nbsp;<A NAME="tex2html3" HREF="sec1.html"></A><A HREF="http://www.klab.caltech.edu/~stemmler/sec1.html" NAME="tex2html3"><IMG SRC="previous_motif.gif" ALT="previous" BORDER=0 HEIGHT=24 WIDTH=63 ALIGN=BOTTOM></A>&nbsp;<A NAME="tex2html11" HREF="http://www.klab.caltech.edu/~stemmler/node1.html"></A><A HREF="http://www.klab.caltech.edu/~stemmler/node1.html" NAME="tex2html11"><IMG SRC="contents_motif.gif" ALT="contents" BORDER=0 HEIGHT=24 WIDTH=65 ALIGN=BOTTOM></A>
+<BR><B>Next:</B>&nbsp;<A NAME="tex2html14" HREF="s2node1.html"></A><A HREF="http://www.klab.caltech.edu/~stemmler/s2node1.html" NAME="tex2html14">Parameter
+Adaptation</A> <B>Up:</B>&nbsp;<A NAME="tex2html10" HREF="http://www.klab.caltech.edu/~stemmler/index.html"></A><A HREF="http://www.klab.caltech.edu/~stemmler/index.html" NAME="tex2html10">Information
+Maximization in Single Neurons</A> <B>Previous:</B>&nbsp;<A NAME="tex2html4" HREF="http://www.klab.caltech.edu/~stemmler/sec1.html"></A><A HREF="http://www.klab.caltech.edu/~stemmler/sec1.html" NAME="tex2html4">Model
+Description</A>
+
+<P><!--End of Navigation Panel-->
+<H2>
+<A NAME="SECTION00040000000000000000"></A>Variational Derivatives and the
+Learning Rule</H2>
+In response to every (randomly chosen) synaptic conductance presented to
+the model Hodgkin-Huxley neuron, the dendritic voltage waveform&nbsp;<IMG SRC="s2img1.gif" ALT="$V_{\text{dend}}(t)$" BORDER=0 HEIGHT=28 WIDTH=57 ALIGN=CENTER>
+settles into a simple periodic limit cycle as dictated by the somatic spiking
+conductances. We assume that the time-course of adaptation to the state
+of perfectly periodic firing is fast compared to the duration of each stimulus.
+In the asymptotic limit of long duration stimuli, we can interchangeably
+compute the average over the stimulus duration or compute the average over
+the (periodic) interspike interval--such averaged quantities will be equal
+in magnitude.
+
+<P>To maximize the information in the firing rate, the peak conductances
+of the calcium and potassium conductances in the dendritic compartment
+change in response to each stimulus by
+<TABLE WIDTH="100%" >
+<TR VALIGN=CENTER>
+<TD></TD>
+
+<TD ALIGN=CENTER NOWRAP><A NAME="sec2:equation3label"></A>&nbsp;<IMG SRC="s2img2.gif" ALT="\begin{displaymath}\Delta g_i = \eta(t) \Bigl\langle  \frac{\delta}{\delta V(t... ...\langle V \rangle) \, m_i h_i (E_i - V) \Bigr\rangle.\tag{3}\end{displaymath}" HEIGHT=41 WIDTH=409></TD>
+
+<TD ALIGN=CENTER>(3)</TD>
+</TR>
+</TABLE>
+To simplify the notation, we will write&nbsp;<IMG SRC="s2img3.gif" ALT="$V(t)$" BORDER=0 HEIGHT=28 WIDTH=33 ALIGN=CENTER>
+for&nbsp;<IMG SRC="s2img1.gif" ALT="$V_{\text{dend}}(t)$" BORDER=0 HEIGHT=28 WIDTH=57 ALIGN=CENTER>
+throughout, unless there is the possibility of confusion. Here&nbsp;<IMG SRC="s2img4.gif" ALT="$\langle m_i h_i \, (E_i - V) \rangle$" BORDER=0 HEIGHT=28 WIDTH=113 ALIGN=CENTER>
+is proportional to the average current through the&nbsp;<IMG SRC="s2img5.gif" ALT="$i$" BORDER=0 HEIGHT=13 WIDTH=8 ALIGN=BOTTOM>-th
+conductance during one cycle of periodic firing. The learning rate&nbsp;<IMG SRC="s2img6.gif" ALT="$\eta(t)$" BORDER=0 HEIGHT=28 WIDTH=29 ALIGN=CENTER>
+in eq. <A HREF="http://www.klab.caltech.edu/~stemmler/sec2.html#sec2:equation3label">3</A>
+sets the slow time scale of parameter adaptation.
+
+<P>This note details how the variational derivatives in eq. <A HREF="http://www.klab.caltech.edu/~stemmler/sec2.html#sec2:equation3label">3</A>
+and the related parameter adaptation rules are computed numerically. By
+assuming that the time constants for the modulatory potassium and calcium
+conductances in the dendritic compartment are voltage-independent, the
+computational burden is eased significantly. With this simplification,
+the first-order differential equations for the gating variables&nbsp;<IMG SRC="s2img7.gif" ALT="$m_i$" BORDER=0 HEIGHT=24 WIDTH=22 ALIGN=CENTER>
+and&nbsp;<IMG SRC="s2img8.gif" ALT="$h_i$" BORDER=0 HEIGHT=26 WIDTH=17 ALIGN=CENTER>
+read:
+<BR>&nbsp;
+
+<P><IMG SRC="s2img9.gif" ALT="\begin{align*}\tau_i \frac{d m_i}{dt} = & m_{\infty,i}(V) - m_i, \ \tau_i \fra... ...h_{\infty,i}(V) = & \frac{1}{1 + \exp[ -(V- V_{h_i})/s_{h_i} ] },\ \end{align*}" BORDER=0 HEIGHT=194 WIDTH=555 ALIGN=BOTTOM>
+<BR>where&nbsp;<IMG SRC="s2img10.gif" ALT="$s_{m_i}$" BORDER=0 HEIGHT=24 WIDTH=27 ALIGN=CENTER>
+is the slope at the inflection point of the activation function, measured
+in&nbsp;<IMG SRC="s2img11.gif" ALT="$\text{mV}$" BORDER=0 HEIGHT=13 WIDTH=28 ALIGN=BOTTOM>,and&nbsp;<IMG SRC="s2img12.gif" ALT="$V_i$" BORDER=0 HEIGHT=25 WIDTH=17 ALIGN=CENTER>
+is the position of this midpoint in&nbsp;<IMG SRC="s2img11.gif" ALT="$\text{mV}$" BORDER=0 HEIGHT=13 WIDTH=28 ALIGN=BOTTOM>.Whereas
+the slope&nbsp;<IMG SRC="s2img10.gif" ALT="$s_{m_i}$" BORDER=0 HEIGHT=24 WIDTH=27 ALIGN=CENTER>
+is positive, the corresponding inactivation function slope&nbsp;<IMG SRC="s2img13.gif" ALT="$s_{h_i}$" BORDER=0 HEIGHT=24 WIDTH=23 ALIGN=CENTER>
+is negative. The Boltzmann function is inherently suitable for numerical
+computations, since the derivatives of&nbsp;<IMG SRC="s2img14.gif" ALT="$m_{\infty,i}(V)$" BORDER=0 HEIGHT=28 WIDTH=63 ALIGN=CENTER>
+can be developed algebraically as a power series in&nbsp;<IMG SRC="s2img14.gif" ALT="$m_{\infty,i}(V)$" BORDER=0 HEIGHT=28 WIDTH=63 ALIGN=CENTER>.For
+instance, the first derivative is
+<CENTER><IMG SRC="s2img15.gif" ALT="\begin{displaymath}\frac{d}{dV} m_{\infty,i}(V) =  \frac{1}{s_i} \,  m_{\infty,i}(V) \Bigl( 1 - m_{\infty,i}(V)  \Bigr).\end{displaymath}" HEIGHT=47 WIDTH=339></CENTER>
+
+
+<P>By defining the exponential function&nbsp;<IMG SRC="s2img16.gif" ALT="$e_i(t) = \exp ( - t/ \tau_i)/\tau_i$" BORDER=0 HEIGHT=28 WIDTH=150 ALIGN=CENTER>,
+we first rewrite the differential equation for&nbsp;<IMG SRC="s2img17.gif" ALT="$m_{i}(t)$" BORDER=0 HEIGHT=28 WIDTH=40 ALIGN=CENTER>
+as an integral equation
+<BR><IMG SRC="s2img18.gif" ALT="\begin{align*}m_{i}(t) & = \int_{-\infty}^t m_{\infty,i}[V(t')] e_i(t-t') \, d... ...e shorthand notation}m_{i}(t) & = m_{\infty,i}[V(t)] * e(t), \notag\end{align*}" BORDER=0 HEIGHT=88 WIDTH=405 ALIGN=BOTTOM>
+<BR>where&nbsp;<IMG SRC="s2img19.gif" ALT="$*$" BORDER=0 HEIGHT=12 WIDTH=10 ALIGN=BOTTOM>
+is the convolution operator.
+
+<P>The average activation&nbsp;<IMG SRC="s2img20.gif" ALT="$\langle m_i \rangle$" BORDER=0 HEIGHT=28 WIDTH=34 ALIGN=CENTER>
+is a <I>functional</I>, i.e., a mapping from the space possible voltage
+functions of time onto a subset of the real numbers that describes the
+average activation. The functional derivative of the average activation
+is defined as
+<CENTER><IMG SRC="s2img21.gif" ALT="\begin{displaymath}\begin{split}\frac{\delta}{\delta V(t)} & \langle m_i \rang... ...[V(s)] * e_i(s) \, ds }{ \varepsilon } \Biggr\},\end{split}\end{displaymath}" HEIGHT=91 WIDTH=581></CENTER>
+where&nbsp;<IMG SRC="s2img22.gif" ALT="$T$" BORDER=0 HEIGHT=13 WIDTH=14 ALIGN=BOTTOM>
+is the steady-state period of the firing cycle. Computing the average functional
+derivative of&nbsp;<IMG SRC="s2img20.gif" ALT="$\langle m_i \rangle$" BORDER=0 HEIGHT=28 WIDTH=34 ALIGN=CENTER>
+is particularly simple when the associated time constant is voltage-independent,
+since&nbsp;<IMG SRC="s2img23.gif" ALT="$\langle m_i (t) \rangle = \langle m_{\infty,i}[V(t)] \rangle$" BORDER=0 HEIGHT=28 WIDTH=161 ALIGN=CENTER>:
+<CENTER><IMG SRC="s2img24.gif" ALT="\begin{displaymath}\int_0^{\tau_{\text{duration}}}\frac{\delta}{ \delta V(t)} ... ...=  \left\langle \frac{d}{dV} m_{\infty,i}[V(t)] \right\rangle.\end{displaymath}" HEIGHT=43 WIDTH=350></CENTER>
+
+
+<P>Computing the variational derivative of products such as&nbsp;<IMG SRC="s2img25.gif" ALT="$\langle m_i [V(t)] h_i [V(t)]\rangle$" BORDER=0 HEIGHT=28 WIDTH=128 ALIGN=CENTER>
+requires the introduction of additional variables&nbsp;<IMG SRC="s2img26.gif" ALT="$m^{(n)}(t)$" BORDER=0 HEIGHT=32 WIDTH=53 ALIGN=CENTER>
+and&nbsp;<IMG SRC="s2img27.gif" ALT="$h^{(n)}(t)$" BORDER=0 HEIGHT=32 WIDTH=48 ALIGN=CENTER>
+which obey the differential equation:&nbsp;<A NAME="app:auxiliary_variable"></A>
+<TABLE WIDTH="100%" >
+<TR VALIGN=CENTER>
+<TD></TD>
+
+<TD ALIGN=CENTER NOWRAP><A NAME="app:auxiliary_variable"></A>&nbsp;<IMG SRC="s2img28.gif" ALT="\begin{displaymath}\tau_i \frac{d m^{(n)}_i}{dt} = m^n_{\infty,i}(V) - m^{(n)}_i,\end{displaymath}" HEIGHT=43 WIDTH=195></TD>
+
+<TD ALIGN=CENTER>(i)</TD>
+</TR>
+</TABLE>
+such that&nbsp;<IMG SRC="s2img29.gif" ALT="$m_i^{(n)}$" BORDER=0 HEIGHT=37 WIDTH=35 ALIGN=CENTER>
+depends on the&nbsp;<IMG SRC="s2img30.gif" ALT="$n$" BORDER=0 HEIGHT=13 WIDTH=12 ALIGN=BOTTOM>-th
+power of the steady state activation function, and&nbsp;<IMG SRC="s2img31.gif" ALT="$h_i^{(n)}$" BORDER=0 HEIGHT=37 WIDTH=30 ALIGN=CENTER>is
+defined analogously. The partial derivatives with respect to the peak conductance,
+conductance slope, and midpoint voltage require the computation of&nbsp;<IMG SRC="s2img32.gif" ALT="$m^{(n)}_i$" BORDER=0 HEIGHT=37 WIDTH=35 ALIGN=CENTER>
+and&nbsp;<IMG SRC="s2img33.gif" ALT="$h^{(n)}_i$" BORDER=0 HEIGHT=37 WIDTH=30 ALIGN=CENTER>
+for the integers&nbsp;<IMG SRC="s2img34.gif" ALT="$n=2$" BORDER=0 HEIGHT=13 WIDTH=41 ALIGN=BOTTOM>
+and&nbsp;<IMG SRC="s2img35.gif" ALT="$n=3$" BORDER=0 HEIGHT=13 WIDTH=41 ALIGN=BOTTOM>.
+
+<P>&nbsp;In terms of these new variables, the functional derivative of&nbsp;<IMG SRC="s2img36.gif" ALT="$\langle m_i (t) h_i (t) (E_i - V(t))\rangle$" BORDER=0 HEIGHT=28 WIDTH=165 ALIGN=CENTER>
+in eq. <A HREF="http://www.klab.caltech.edu/~stemmler/sec2.html#sec2:equation3label">3</A>
+can be written as:
+<CENTER><IMG SRC="s2img37.gif" ALT="\begin{displaymath}\begin{split}\biggl\langle \frac{ \delta }{\delta V(t)} \... ...mes \Bigl[E_i - V(t) \Bigr] -m_i h_i\biggr\rangle \end{split}\end{displaymath}" HEIGHT=83 WIDTH=534></CENTER>
+
+<HR><!--Navigation Panel--><A NAME="tex2html13" HREF="http://www.klab.caltech.edu/~stemmler/s2node1.html"></A><A HREF="http://www.klab.caltech.edu/~stemmler/s2node1.html" NAME="tex2html13"><IMG SRC="next_motif.gif" ALT="next" BORDER=0 HEIGHT=24 WIDTH=37 ALIGN=BOTTOM></A>&nbsp;<A NAME="tex2html9" HREF="http://www.klab.caltech.edu/~stemmler/index.html"></A><A HREF="http://www.klab.caltech.edu/~stemmler/index.html" NAME="tex2html9"><IMG SRC="up_motif.gif" ALT="up" BORDER=0 HEIGHT=24 WIDTH=26 ALIGN=BOTTOM></A>&nbsp;<A NAME="tex2html3" HREF="http://www.klab.caltech.edu/~stemmler/sec1.html"></A><A HREF="http://www.klab.caltech.edu/~stemmler/sec1.html" NAME="tex2html3"><IMG SRC="previous_motif.gif" ALT="previous" BORDER=0 HEIGHT=24 WIDTH=63 ALIGN=BOTTOM></A>&nbsp;<A NAME="tex2html11" HREF="http://www.klab.caltech.edu/~stemmler/node1.html"></A><A HREF="http://www.klab.caltech.edu/~stemmler/node1.html" NAME="tex2html11"><IMG SRC="contents_motif.gif" ALT="contents" BORDER=0 HEIGHT=24 WIDTH=65 ALIGN=BOTTOM></A>
+<BR><B>Next:</B>&nbsp;<A NAME="tex2html14" HREF="http://www.klab.caltech.edu/~stemmler/s2node1.html"></A><A HREF="http://www.klab.caltech.edu/~stemmler/s2node1.html" NAME="tex2html14">Parameter
+Adaptation</A> <B>Up:</B>&nbsp;<A NAME="tex2html10" HREF="http://www.klab.caltech.edu/~stemmler/index.html"></A><A HREF="http://www.klab.caltech.edu/~stemmler/index.html" NAME="tex2html10">Information
+Maximization in Single Neurons</A> <B>Previous:</B>&nbsp;<A NAME="tex2html4" HREF="http://www.klab.caltech.edu/~stemmler/sec1.html"></A><A HREF="http://www.klab.caltech.edu/~stemmler/sec1.html" NAME="tex2html4">Model
+Description&nbsp;<!--End of Navigation Panel--></A>
+<ADDRESS>
+<I>Martin Stemmler</I></ADDRESS>
+
+<BR><I>1/14/1998</I>
+</BODY>
+</HTML>
+

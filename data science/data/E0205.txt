@@ -1,0 +1,541 @@
+ID=E0205
+URL=http://www.bcbdev.com/articles/vcdll2.htm
+SIZE=26852
+DATE=12/07/02
+TIME=19:18:39
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: Articles</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2>
+<IMG SRC="../images/articlebuilding.gif" BORDER=0 HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 HSPACE="0" >
+</TD>
+</TR>
+<TR>
+<TD WIDTH="7" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">      <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">         <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">      <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">          <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">       <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+
+<H2>
+Using Visual C++ DLLs in a C++Builder Project<BR>Part 2: C++ classes.
+</H2>
+
+<P>
+<B>Note: </B> This article describes how to import C++ class from a Visual C++ DLL into an BCB project.
+Before we get started, I feel compelled to provide a small warning. This article is not really ready
+for mass distribution. I apologize if the 'article' seems choppy, difficult to read, or contains mistakes. I haven't have much
+time to polish it up. The only reason I decided to go ahead and publish this is because lots of developers ask how to do this.
+I figure that a poorly written article is better than nothing at all. I hope that this incoherent collection of ideas will prove
+helpful to you.
+</P>
+<P>
+In a previous article on how to <A HREF="vcdll.htm">use VC++ DLLs from MSVC</A>, I describe how to create a Borland compatible
+import library for an MSVC DLL. The main difficulty in using the VC++ DLL is that MSVC and Borland use different formats for
+function names. For example, Borland expects <TT>__cdecl</TT> functions to have a leading underscore in front of them, whereas MSVC does
+not. Fortunately, you can surmount these naming problems using some of Borland's command line utilites, namely <TT>TDUMP</TT>,
+<TT>IMPLIB</TT>, <TT>IMPDEF</TT> and <TT>COFF2OMF</TT>. The idea is that you use the command line tools to create a Borland compatible
+import library with Borland compatible function names in it. Once you have a Borland compatible import library, you're set. You can
+simply link with the import library to use the MSVC DLL.
+</P>
+<P>
+Unfortunately, this strategy doesn't completely get you out of the woods. At the end of the <A HREF="vcdll.htm">DLL article</A>, I drop a
+small bombshell. You can only call functions in the MSVC DLL if they are plain C functions. You can't import classes or class member
+functions. Doh!
+</P>
+<P>
+So what do you do if you need to import C++ class from an MSVC DLL? Uh...well, in that case, you are boxed into a corner, and your
+choices are limited (and usually when your backed into a corner, your options are not that pleasant). This articles describes three
+ways to get yourself out of that corner.
+</P>
+<P>
+<B>Bad news</B>: Before you waste too much time reading this diatribe, I feel, once again, compelled to issue a warning. All three of
+my techniques require that you have Microsoft Visual C++. You don't need to have the source code for the DLL that you need to call, but
+you do need to have the tool that can call it. Each of the three techniques are more or less wrapping techniques where we use MSVC to
+wrap the DLL in something we can use from BCB.
+</P>
+
+<P>
+<UL>
+<LI><A HREF="#summary"    >Summary of the three techniques</A>
+<LI><A HREF="#technique1" >Technique 1: Flattening the C++ class into a C library</A>
+<LI><A HREF="#technique2" >Technique 2: Create a COM wrapper</A>
+<LI><A HREF="#technique3" >Technique 3: Use an abstract base class with virtual functions (pseudo-COM)</A>
+<LI><A HREF="#conclusion" >Conclusion</A>
+<LI><A HREF="#downloads"  >Downloads</A>
+</UL>
+</P>
+<BR>
+<H3>
+<A NAME="summary">Summary of the three techniques</A>
+</H3>
+<P>
+Ok, let the ugliness begin. Here are the three techniques.
+</P>
+<OL>
+<LI>Create a DLL with MSVC that flattens the C++ classes into plain C functions. The plain C functions will be imported from BCB.
+<LI>Create a COM object with MSVC that wraps the C++ classes via containment. BCB will be a COM client of the VC++ COM object.
+<LI>Wrap the C++ classes using an abstract class with nothing but virtual functions in it. This is essentially COM without the ugly parts.
+</OL>
+<P>
+Each technique is described in more detail below. In each example, we will assume that the MSVC DLL exports a class that looks
+like this:
+</P>
+<pre>
+<b>class</b> CFoo
+<b>{</b>
+<b>public</b><b>:</b>
+    CFoo<b>(</b><b>int</b> x<b>)</b><b>;</b>
+    <b>~</b>CFoo<b>(</b><b>)</b><b>;</b>
+
+    <b>int</b> DoSomething<b>(</b><b>int</b> y<b>)</b><b>;</b>
+<b>}</b><b>;</b>
+</pre>
+
+<H3>
+<A NAME="technique1">Technique 1: Flattening the C++ class into a C library</A>
+</H3>
+<P>
+From the previous article on VC++ DLLs, we know that it is possible for a Borland project to call plain C functions that are
+exported from an MSVC DLL. Using this information, we can create a DLL project in MSVC that exports plain C functions for use in
+BCB. This MSVC wrapper DLL will be a client of the C++ DLL. The wrapper DLL will export plain C functions for creating <TT>CFoo</TT>
+objects, for calling <TT>CFoo</TT> member functions, and for deleting the <TT>CFoo</TT> object.
+</P>
+<P>
+The <TT>CFoo</TT> class contains three functions that we care about: the constructor, the destructor, and the all important
+<TT>DoSomething</TT> function. We need to flatten each of these into an equivalent C function.
+</P>
+
+<pre>
+<font color="navy">// original class</font>
+<b>class</b> CFoo
+<b>{</b>
+<b>public</b><b>:</b>
+    CFoo<b>(</b><b>int</b> x<b>)</b><b>;</b>
+    <b>~</b>CFoo<b>(</b><b>)</b><b>;</b>
+
+    <b>int</b> DoSomething<b>(</b><b>int</b> y<b>)</b><b>;</b>
+<b>}</b><b>;</b>
+
+<font color="navy">// flattened C code</font>
+<b>void</b><b>*</b> <b>__stdcall</b> new_CFoo<b>(</b><b>int</b> x<b>)</b>
+<b>{</b>
+    <b>return</b> <b>new</b> CFoo<b>(</b>x<b>)</b><b>;</b>
+<b>}</b>
+
+<b>int</b> <b>__stdcall</b> CFoo_DoSomething<b>(</b><b>void</b><b>*</b> handle<b>,</b> <b>int</b> y<b>)</b>
+<b>{</b>
+    CFoo <b>*</b>foo <b>=</b> <b>reinterpret_cast</b>&lt;CFoo <b>*</b><b>></b><b>(</b>handle<b>)</b><b>;</b>
+    <b>return</b> foo<b>-></b>DoSomething<b>(</b>y<b>)</b><b>;</b>
+<b>}</b>
+
+<b>void</b> <b>__stdcall</b> delete_CFoo<b>(</b><b>void</b> <b>*</b>handle<b>)</b>
+<b>{</b>
+    CFoo <b>*</b>foo <b>=</b> <b>reinterpret_cast</b>&lt;CFoo <b>*</b><b>></b><b>(</b>handle<b>)</b><b>;</b>
+    <b>delete</b> foo<b>;</b>
+<b>}</b>
+</pre>
+<P>
+There are lots of important things to notice here. First, note that each C++ member function has been mapped to a plain C
+function. Second, observe that we explicitly use the <TT>__stdcall</TT> calling convention for the C functions. From the previous DLL
+article, we know that simply calling plain C functions in an MSVC DLL can be a real chore. If we put our past sufferings to use,
+we can make this endeavor a little bit easier. The easiest way to for Borland to call a Microsoft DLL is if that DLL exports plain,
+undecorated, C functions that use the <TT>__stdcall</TT> calling convention. Borland and Microsoft don't agree on <TT>__cdecl</TT>
+functions. Normally, they don't agree on <TT>__stdcall</TT> functions either because MSVC decorates <TT>__stdcall</TT> functions,
+but we can suppress that behavior by adding a <TT>DEF</TT> file to the MSVC project. See the examples from the download section for
+an example of the <TT>DEF</TT> file. 
+</P>
+<P>
+Another thing to note about the code is that the <TT>new_CFoo</TT> function returns a pointer to the <TT>CFoo</TT> object. The BCB caller
+must store this pointer in some location. This may seem contradictory to the gist of this article. After all, I thought that BCB couldn't
+use the C++ objects from an MSVC DLL? If that's true, then why are we returning a pointer to a <TT>CFoo</TT> object?
+</P>
+<P>
+The answer is that BCB cannot call the member functions of an class exported by an MSVC DLL. However, that doesn't mean that it can store
+the address of such an object. That's what <TT>new_CFoo</TT> returns, a pointer to a <TT>CFoo</TT> object. The BCB client can store that
+pointer, but there isn't much that it can do with it. It can't dereference it (and should not attempt to do so). To make this concept
+easier to understand, <TT>new_CFoo</TT> returns a void pointer (it can't really return anything else anyway). On the BCB side, there is
+not much you can safely do with this <TT>void</TT> pointer, other than storing it and passing it back into the DLL.
+</P>
+<P>
+Ok, two more quick notes before we move on. First, notice that <TT>CFoo_DoSomething</TT> takes a void pointer argument as its first
+parameter. This void pointer is the same void pointer that is returned by <TT>new_CFoo</TT>. The void pointer is cast back into a
+<TT>CFoo</TT> object using <TT>reinterpret_cast</TT> (you know you're dealing ugly code when you see a <TT>reinterpret_cast</TT>).
+The <TT>DoSomething</TT> member function is called after the cast. Lastly, note that the <TT>void</TT> pointer is also an argument
+to the <TT>delete_CFoo</TT> function. It is crucial that the wrapper DLL delete the object. You should not call delete on the
+<TT>void</TT> pointer from BCB. That will certainly not do what you want it to.
+</P>
+<P>
+The listing below shows a DLL header file for the C functions. This header file can be shared between MSVC and BCB.
+</P>
+
+<pre>
+<font color="navy">// DLL header file</font>
+<font color="green">#ifndef DLL_H</font>
+<font color="green">#define DLL_H</font>
+
+<font color="green">#ifdef BUILD_DLL</font>
+<font color="green">#define DLLAPI __declspec(dllexport)</font>
+<font color="green">#else</font>
+<font color="green">#define DLLAPI __declspec(dllimport)</font>
+<font color="green">#else</font>
+
+<font color="green">#ifdef __cplusplus</font>
+<b>extern</b> <font color="blue">"C"</font> <b>{</b>
+<font color="green">#endif</font>
+
+DLLAPI <b>void</b><b>*</b> <b>__stdcall</b> new_CFoo<b>(</b><b>int</b> x<b>)</b><b>;</b>
+DLLAPI <b>int</b>   <b>__stdcall</b> CFoo_DoSomething<b>(</b><b>void</b><b>*</b> handle<b>,</b> <b>int</b> y<b>)</b><b>;</b>
+DLLAPI <b>void</b>  <b>__stdcall</b> delete_CFoo<b>(</b><b>void</b> <b>*</b>handle<b>)</b><b>;</b>
+
+<font color="green">#ifdef __cplusplus</font>
+<b>}</b>
+<font color="green">#endif</font>
+
+<font color="green">#endif</font>
+</pre>
+
+<P>
+This is a typical DLL header file. One interesting thing to notice is that you
+don't see the <TT>CFoo</TT> class anywhere in the header file. The header file contaisn only plain C functions
+that will wrap <TT>CFoo</TT>.
+</P>
+<P>
+The next listing shows how to call the DLL from BCB
+</P>
+<pre>
+<font color="green">#include "dll.h"</font>
+
+<b>void</b> bar<b>(</b><b>)</b>
+<b>{</b>
+    <b>int</b> x <b>=</b> <font color="blue">10</font><b>;</b>
+    <b>int</b> y <b>=</b> <font color="blue">20</font><b>;</b>
+    <b>int</b> z<b>;</b>
+
+    <b>void</b> <b>*</b> foo <b>=</b> new_CFoo<b>(</b>x<b>)</b><b>;</b>
+    z <b>=</b> CFoo_DoSomething<b>(</b>foo<b>,</b> y<b>)</b><b>;</b>
+    delete_CFoo<b>(</b>foo<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+That's it. Pretty it isn't, but it does work. In fact, despite the grotesqueness of this technique, it is amazingly handy in other
+situations that don't even involve DLLs. For instance, Delphi programmers employ this same technique because Delphi cannot call C++
+member funtions. Delphi programmers must flatten the C++ class into C code, and then link with the C OBJ files. The
+open source SWIG (<A HREF="http://www.swig.org">swig.org</A>) tool is designed to generate wrapper functions like this, which allows you
+to call C++ objects from scripting languages such as Python.
+</P>
+
+<H3>
+<A NAME="technique2">Technique 2: Create a COM wrapper</A>
+</H3>
+
+<P>
+Unfortunately, I don't have an example for this technique yet (hey, I said the article wasn't ready for prime time). But the idea works
+like this. You create a COM object in MSVC. There is probably a wizard that you can run. Create an inprocess server (ie a DLL, not an
+EXE). Also, make sure you create a COM object, and not an automation object. Automation just makes everything more difficult. Unless you
+also need to use the C++ class from VB or an ASP page, use plain COM and not automation.
+</P>
+<P>
+Inside the COM project, create a new COM object. MSVC will probably want you to create an COM interface. Since we are wrapping a class
+called <TT>CFoo</TT>, a good interface name would be <TT>IFoo</TT>. MSVC will also want you to name the implementation class for the
+COM obect. <TT>CFooImpl</TT> is a good candidate.
+</P>
+<P>
+The COM object should wrap the C++ DLL class using aggregation. In other words, the COM object contains a <TT>CFoo</TT> member variable.
+Don't try to inherit your COM class from <TT>CFoo</TT>. For each member function of the C++ DLL class (<TT>CFoo</TT>), create a similar
+function in your COM object. If possible, use the same name, pass the same arguments, and return the same type of value. You will need to
+tweak some things. For example, strings are usually passed as <TT>BSTR</TT>'s in COM. Also, return values are typically passed as out
+parameters, because the COM method should return an error code. When you are done, each member function of the C++ class should have a
+corresponding function in the COM wrapper.
+</P>
+<P>
+After you build the COM wrapper, register it with regsrv32.exe. Once you do that, you should be able to instantiate the COM object
+and call its wrapper member functions from your BCB code.
+</P>
+<P>
+Once again, I apologize for not having a working demo of this technique ready to go.
+</P>
+
+
+<H3>
+<A NAME="technique3">Technique 3: Use an abstract base class with virtual functions (pseudo-COM)</A>
+</H3>
+Technique 3 is a pseudo-COM approach. COM is a binary object specification. A COM object can be called from both
+BCB and MSVC, regardless of the compiler that the COM object was compiled with. So how does this binary magic work?
+The answer is the foundation for this technique.
+</p>
+<P>
+COM function calls are dispatched via a function lookup table. Miraculously, this function lookup table works exactly the same way that
+virtual function tables work in C++. In fact, they are one in the same. COM is a glorified form of virtual functions and vtables.
+</P>
+<P>
+COM works because BCB and MSVC employ <I>exactly</I> the same virtual dispatching system. COM relies on the fact that most Win32 C++
+compilers all generate and use vtables the same way. Because the two compilers use the same virtual dispatching system, we can
+create a wrapper class with virtual functions in MSVC that can be called from BCB. This is exactly what COM does.
+</P>
+<P>
+Here is the DLL header file for the pseudo-COM wrapper class. It consists of an abstract base class, <TT>IFoo</TT>, that serves as the
+pseudo-COM interface. It also consists of two C functions for creating and deleting <TT>IFoo</TT> objects. This header file is shared between
+MSVC and BCB.
+</P>
+<pre>
+<font color="green">#ifndef DLL_H</font>
+<font color="green">#define DLL_H</font>
+
+<font color="green">#ifdef BUILD_DLL</font>
+<font color="green">#define DLLAPI __declspec(dllexport)</font>
+<font color="green">#else</font>
+<font color="green">#define DLLAPI __declspec(dllimport)</font>
+<font color="green">#endif</font>
+
+<font color="navy">// psuedo COM interface</font>
+<b>class</b> IFoo
+<b>{</b>
+<b>public</b><b>:</b>
+    <b>virtual</b> <b>int</b> <b>__stdcall</b> DoSomething<b>(</b><b>int</b> x<b>)</b> <b>=</b> <font color="blue">0</font><b>;</b>
+    <b>virtual</b> <b>__stdcall</b> <b>~</b>IFoo<b>(</b><b>)</b> <b>=</b> <font color="blue">0</font><b>;</b>
+<b>}</b><b>;</b>
+
+<font color="green">#ifdef __cplusplus</font>
+<b>extern</b> <font color="blue">"C"</font> <b>{</b>
+<font color="green">#endif</font>
+
+DLLAPI IFoo<b>*</b>  <b>__stdcall</b> new_IFoo<b>(</b><b>int</b> x<b>)</b><b>;</b>
+DLLAPI <b>void</b>   <b>__stdcall</b> delete_IFoo<b>(</b>IFoo <b>*</b>f<b>)</b><b>;</b>
+
+<font color="green">#ifdef __cplusplus</font>
+<b>}</b>
+<font color="green">#endif</font>
+
+<font color="green">#endif</font>
+</pre>
+<P>
+Notice that the two C functions resemble the functions from Technique 1, except that now they work with <TT>IFoo</TT> pointers
+instead of unsafe void pointers. This technique provides a little more type safety than the first.
+</P>
+<P>
+Here is the source code for the MSVC wrapper. It contains a class call <TT>CFooImpl</TT> that inherits from <TT>IFoo</TT>.
+<TT>CFooImpl</TT> is an implementation of the <TT>IFoo</TT> interface.
+</P>
+<pre>
+<font color="green">#define BUILD_DLL</font>
+
+<font color="green">#include "dll.h"</font>
+
+IFoo<b>:</b><b>:</b><b>~</b>IFoo<b>(</b><b>)</b>
+<b>{</b>
+	<font color="navy">// must implement base class destructor</font>
+	<font color="navy">// even if its abstract</font>
+<b>}</b>
+
+<font color="navy">// Note: we declare the class here because no one outside needs to be concerned</font>
+<font color="navy">//       with it.</font>
+<b>class</b> CFooImpl <b>:</b> <b>public</b> IFoo
+<b>{</b>
+<b>private</b><b>:</b>
+    CFoo  m_Foo<b>;</b> <font color="navy">// the real C++ class from the existing MSVC C++ DLL</font>
+<b>public</b><b>:</b>
+    CFooImpl<b>(</b><b>int</b> x<b>)</b><b>;</b>
+    <b>virtual</b> <b>~</b>CFooImpl<b>(</b><b>)</b><b>;</b>
+    <b>virtual</b> <b>int</b> <b>__stdcall</b> DoSomething<b>(</b><b>int</b> x<b>)</b><b>;</b>
+<b>}</b><b>;</b>
+
+CFooImpl<b>:</b><b>:</b>CFooImpl<b>(</b><b>int</b> x<b>)</b>
+    <b>:</b> m_Foo<b>(</b>x<b>)</b>
+<b>{</b>
+<b>}</b>
+
+<b>int</b> <b>__stdcall</b> CFooImpl<b>:</b><b>:</b>DoSomething<b>(</b><b>int</b> x<b>)</b>
+<b>{</b>
+    <b>return</b> m_Foo<b>.</b>DoSomething<b>(</b>x<b>)</b><b>;</b>
+<b>}</b>
+
+CFooImpl<b>:</b><b>:</b><b>~</b>CFooImpl<b>(</b><b>)</b>
+<b>{</b>
+<b>}</b>
+
+IFoo <b>*</b> <b>__stdcall</b> new_IFoo<b>(</b><b>int</b> x<b>)</b>
+<b>{</b>
+    <b>return</b> <b>new</b> CFooImpl<b>(</b>x<b>)</b><b>;</b>
+<b>}</b>
+
+<b>void</b> <b>__stdcall</b> delete_IFoo<b>(</b>IFoo <b>*</b>f<b>)</b>
+<b>{</b>
+    <b>delete</b> f<b>;</b>
+<b>}</b>
+</pre>
+<p>
+There is lots of good stuff going on here. First of all, notice that now we have a class in the header file being shared between BCB
+and MSVC. That <I>seems</I> like it ought to be a good thing. More important than that, notice that the BCB project will only interact
+with the <TT>IFoo</TT> class. The actual implementation of <TT>IFoo</TT> is provided by a derived class call <TT>CFooImpl</TT>,
+which is internal to the MSVC wrapper project.
+</P>
+<P>
+The BCB client code will work with <TT>IFoo</TT> objects polymorphically. To obtain a wrapper instance, the BCB code will call the
+<TT>new_IFoo</TT> function. <TT>new_IFoo</TT> works like a factory function, serving up new <TT>IFoo</TT> instances. <TT>new_Foo</TT>
+returns a pointer to an <TT>IFoo</TT> instance. However, that pointer is polymorphic. The static type of the pointer is <TT>IFoo</TT>,
+but its actual dynamic type will be a pointer to a <TT>CFooImpl</TT> (a fact that is unbeknownst to the BCB code).
+</P>
+<P>
+Here is the code for the BCB client.
+</P>
+
+<pre>
+<font color="green">#include "dll.h"</font>
+
+<b>void</b> bar<b>(</b><b>)</b>
+<b>{</b>
+    <b>int</b> x <b>=</b> <font color="blue">10</font><b>;</b>
+    <b>int</b> y <b>=</b> <font color="blue">20</font><b>;</b>
+    <b>int</b> z<b>;</b>
+
+
+    IFoo <b>*</b>foo <b>=</b> new_IFoo<b>(</b>x<b>)</b><b>;</b>
+    z <b>=</b> foo<b>-></b>DoSomething<b>(</b>y<b>)</b><b>;</b>
+    delete_IFoo<b>(</b>foo<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+Now some parting comments on technique 3. First, it is crucial that you delete the <TT>IFoo</TT> pointer from the MSVC DLL.
+This is done by passing the <TT>IFoo</TT> pointer to the <TT>delete_IFoo</TT> function. Don't attempt to delete the object from BCB.
+</P>
+<pre>
+<b>void</b> bar<b>(</b><b>)</b>
+<b>{</b>
+    IFoo <b>*</b>foo <b>=</b> new_IFoo<b>(</b>x<b>)</b><b>;</b>
+    <b>delete</b> foo<b>;</b>               <font color="navy">// BOOM!!!</font>
+<b>}</b>
+</pre>
+<P>
+This code will surely die an agonizing death. The problem is that <TT>IFoo</TT> was created from within the <TT>new_IFoo</TT>
+function in the MSVC wrapper DLL. As such, the memory for the <TT>IFoo</TT> object is allocated by the MSVC memory manager. When you
+delete an object, it is important that you delete it with the same memory manager that was used to create it. If you call delete on the
+pointer from the BCB side, then you will be deleting it with Borland memory manager. Now, I could be wrong, but I would bet my house and
+a reproductive organ or two that the Microsoft memory manager and the Borland memory manager don't conspire to work together. When you
+delete the pointer with the Borland memory manager, it is doubtful that it will attempt to contact the Microsoft memory manager to let it
+know that it should free some memory.
+</p>
+<P>
+Another item of note is that the BCB code works entirely in terms of the <TT>IFoo</TT> abstract interface. You don't see any occurrence
+of the class <TT>CFooImpl</TT> on the BCB side. <TT>CFooImpl</TT> is internal to the MSVC wrapper project. When you call
+<TT>DoSomething</TT> from the BCB side, the call is dispatched to <TT>CFooImpl</TT> via the virtual table.
+</P>
+<P>
+If you are having troubling understanding this concept, don't worry. I am probably not describing it very well. To help understand what
+is going on, you might want to step through the code on the BCB side using the CPU viewer. This will allow you to step through each
+assembly instruction and see how the vtable lookup works.
+</P>
+
+<P>
+<TABLE WIDTH="100%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Note:</b>
+<hr size = 1>
+<P>
+If you employ this pseudo-com technique, make sure that you do not attempt to overload virtual functions. In other words, don't
+create an interface that looks like this:
+<pre>
+<b>class</b> IFoo
+<b>{</b>
+<b>public</b><b>:</b>
+    <b>virtual</b> <b>int</b> <b>__stdcall</b> DoSomething<b>(</b><b>int</b> x<b>)</b> <b>=</b> <font color="blue">0</font><b>;</b>
+    <b>virtual</b> <b>int</b> <b>__stdcall</b> DoSomething<b>(</b><b>float</b> x<b>)</b> <b>=</b> <font color="blue">0</font><b>;</b>
+    <b>virtual</b> <b>int</b> <b>__stdcall</b> DoSomething<b>(</b><b>const</b> <b>char</b> <b>*</b>x<b>)</b> <b>=</b> <font color="blue">0</font><b>;</b>
+<b>}</b><b>;</b>
+</pre>
+The reason you don't want to overload the virtual interface functions is that MSVC and BCB may not (and probably won't) order the
+functions the same way in the vtable. When I tested overloading, calling <TT>DoSomething(int)</TT> on the BCB side seemed to
+get dispacted to <TT>DoSoemthing(float)</TT> on the MSVC side. Borland and Microsoft appear to agree on vtable formats as long
+as you don't overload. This may explain why you don't seem COM objects with overloaded functions.
+</P>
+<P>
+If you need to wrap a C++ class with overloaded functions, then you should create a distinct function name for each one.
+<pre>
+<b>class</b> IFoo
+<b>{</b>
+<b>public</b><b>:</b>
+    <b>virtual</b> <b>int</b> <b>__stdcall</b> DoSomething_int  <b>(</b><b>int</b> x<b>)</b> <b>=</b> <font color="blue">0</font><b>;</b>
+    <b>virtual</b> <b>int</b> <b>__stdcall</b> DoSomething_float<b>(</b><b>float</b> x<b>)</b> <b>=</b> <font color="blue">0</font><b>;</b>
+    <b>virtual</b> <b>int</b> <b>__stdcall</b> DoSomething_str  <b>(</b><b>const</b> <b>char</b> <b>*</b>x<b>)</b> <b>=</b> <font color="blue">0</font><b>;</b>
+<b>}</b><b>;</b>
+</pre>
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+
+<BR>
+<H3>
+<A NAME="conclusion">Conclusion:</A>
+</H3>
+<P>
+Ok, so where are we at? Well, at the start of the article, we talked about why BCB can't call C++ member functions in a DLL if that
+DLL was compiled with MSVC. The reason is that the two compilers don't agree on how those member functions should be named. We then
+discussed three (rather unpleasant) work arounds. Each workaround consisted of an MSVC wrapper DLL for the C++ DLL. The wrapper DLL
+exposed the C++ class using some format that BCB would understand. The first technique was to flatten each member function of the C++
+class into a plain C function. The second technique mapped each member function to a member of a COM object. The last technique relied on
+the fact that virtual functions are dispatched via a lookup table instead of by name. In this strategy, each C++ member function is mapped
+to a virtual member function of an abstract class.
+</P>
+<P>
+The downloads section contains the example code for this article. The first download contains the original MSVC C++ DLL that we were
+trying to work with. This same DLL is used by each of the three techniques. The example for Technique 2 is not ready yet.
+</P>
+
+<BR>
+<H3>
+<A NAME="downloads">Downloads</A>
+</H3>
+
+<BR>
+<TABLE  BORDER=1 CELLPADDING=10 CELLSPACING=0 WIDTH="100%">
+<TR> <TD colspan = 2><B>Downloads for this article</B> </TD> </TR>
+<TR> <TD><TT><A HREF="http://www.bcbdev.com/ftp/source/cppdll.zip">cppdll.zip </A></TT></TD><TD>VC++ 5 DLL project with exported C++ CFoo class</TD> </TR>
+<TR> <TD><TT><A HREF="http://www.bcbdev.com/ftp/source/vcdll2tech1.zip">vcdll2tech1.zip </A></TT></TD><TD>Code for technique #1, flattening a class into C functions</TD> </TR>
+<TR> <TD><TT><A HREF="http://www.bcbdev.com/ftp/source/vcdll2tech3.zip">vcdll2tech3.zip </A></TT></TD><TD>Code for technique #3, virtual function/abstract base class wrapper</TD> </TR>
+</TABLE>
+
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2002 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

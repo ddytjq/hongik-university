@@ -1,0 +1,174 @@
+ID=G0148
+URL=http://arcturus.mit.edu/cosmics/doc-html/node5.html
+SIZE=12539
+DATE=09/07/2002
+TIME=16:16:28
+DATASET=Astronomy
+HTML=<!DOCTYPE HTML PUBLIC "-//W3O//DTD W3 HTML 2.0//EN">
+<!Converted with LaTeX2HTML 95 (Thu Jan 19 1995) by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds >
+<HEAD>
+<TITLE> Linger Input</TITLE>
+</HEAD>
+<BODY>
+<meta name="description" value=" Linger Input">
+<meta name="keywords" value="cosmics">
+<meta name="resource-type" value="document">
+<meta name="distribution" value="global">
+<P>
+ <BR> <HR><A NAME=tex2html69 HREF="node6.html"><IMG ALIGN=BOTTOM ALT="next" SRC="file:/usr/local/lib/latex2html/icons/next_motif.gif"></A>   <A NAME=tex2html67 HREF="node4.html"><IMG ALIGN=BOTTOM ALT="up" SRC="file:/usr/local/lib/latex2html/icons/up_motif.gif"></A>   <A NAME=tex2html61 HREF="node4.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="file:/usr/local/lib/latex2html/icons/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html70 HREF="node6.html"> Linger Output</A>
+<B>Up:</B> <A NAME=tex2html68 HREF="node4.html"> Linger Usage</A>
+<B> Previous:</B> <A NAME=tex2html62 HREF="node4.html"> Linger Usage</A>
+<BR> <HR> <P>
+<H3><A NAME=SECTION00021100000000000000> Linger Input</A></H3>
+<P>
+<tt>Linger_con</tt> expects the following input:<BR>
+<tt>Omega_b, Omega_c, Omega_v, Omega_nu</tt><BR>
+<tt>H0, Tcmb, Y_He, N_nu(massive)</tt><BR>
+<tt>Bflag</tt> [1 if full Boltzmann for CMB, 0 if lmax=100 for
+    matter transfer functions]<BR>
+<tt>kmax, nk, zend</tt> [if Bflag=1] <b>or</b>
+               <tt>kmin, kmax, nk, zend</tt> [if Bflag=0]<BR>
+Note that the fourth line of input requires 3 or 4 numbers depending on
+whether <tt>Bflag</tt> is set to 1 or 0.
+<P>
+<tt>Linger_syn</tt> expects the same input, except that one more parameter
+is required at the end (the fifth line of input):<BR>
+<tt>ICflag</tt> [=1,2,3,4 for isentropic or 3 kinds of isocurvature
+fluctuations]<BR>
+<P>
+These input parameters are mostly self-explanatory.  The <tt>Omega</tt>'s are
+the current (redshift zero) cosmic density parameter in baryons, cold
+dark matter, vacuum energy (cosmological constant), and massive neutrinos,
+respectively.  Currently, <tt>linger</tt> is restricted to a flat background
+spacetime, or <IMG  ALIGN=MIDDLE ALT="" SRC="img15.gif">.  (Photons and
+massless neutrinos also contribute to the energy density today, but their
+effect is accounted for by a tiny shift in the Hubble constant from the
+value input by the user: <IMG  ALIGN=MIDDLE ALT="" SRC="img16.gif">, where <IMG  ALIGN=MIDDLE ALT="" SRC="img17.gif"> is the present energy density of radiation (known
+accurately through <IMG  ALIGN=MIDDLE ALT="" SRC="img18.gif">) and <IMG  ALIGN=MIDDLE ALT="" SRC="img19.gif"> is the present energy density
+of nonrelativistic matter.  The shift in <IMG  ALIGN=MIDDLE ALT="" SRC="img20.gif"> is of no consequence except
+for those users who wish to include relativistic particles in their
+accounting of <IMG  ALIGN=BOTTOM ALT="" SRC="img21.gif"> and who are concerned with differences in <IMG  ALIGN=BOTTOM ALT="" SRC="img22.gif">
+and <IMG  ALIGN=MIDDLE ALT="" SRC="img23.gif"> at the level of .01%.  <tt>Linger</tt> uses the correct equations
+internally given its redefinition of <IMG  ALIGN=MIDDLE ALT="" SRC="img24.gif">.)
+<P>
+The next set of parameters are the Hubble constant <IMG  ALIGN=MIDDLE ALT="" SRC="img25.gif"> in km s<IMG  ALIGN=BOTTOM ALT="" SRC="img26.gif">
+Mpc<IMG  ALIGN=BOTTOM ALT="" SRC="img27.gif">, the microwave background temperature <IMG  ALIGN=MIDDLE ALT="" SRC="img28.gif"> in Kelvin,
+the helium mass fraction of baryons <IMG  ALIGN=MIDDLE ALT="" SRC="img29.gif">, and the number of
+flavors of massive neutrinos <IMG  ALIGN=MIDDLE ALT="" SRC="img30.gif">.  Standard parameters are suggested
+by <tt>linger</tt>.  Note that <tt>linger</tt> fixes the total number of neutrino
+flavors to be 3, so the number of massless flavors is <IMG  ALIGN=MIDDLE ALT="" SRC="img31.gif">.  If
+<IMG  ALIGN=MIDDLE ALT="" SRC="img32.gif">, <tt>linger</tt> assumes that all massive flavors have identical
+mass.  Those who prefer a different pattern of neutrino masses should find
+the modifications to <tt>linger</tt> to be straightforward.
+<P>
+<tt>Bflag</tt> is an important parameter directing <tt>linger</tt> to run either
+in an expensive mode with full resolution of the  angular power spectra
+of photons and massless neutrinos, and with linearly spaced sampling in
+spatial wavenumber <b>k</b> (<tt>Bflag = 1</tt>), or in a cheap mode with lower
+angular resolution and logarithmically spaced sampling in <b>k</b> (<tt>Bflag
+= 0</tt>).  The first mode is used for fully accurate CMB anisotropy calculations
+(for <tt>deltat</tt>); the second one is for matter transfer functions (for
+<tt>grafic</tt>).  The minimum and maximum spatial wavenumbers are <IMG  ALIGN=MIDDLE ALT="" SRC="img33.gif">
+and <IMG  ALIGN=MIDDLE ALT="" SRC="img34.gif">, both measured in Mpc<IMG  ALIGN=BOTTOM ALT="" SRC="img35.gif">.  (<tt>Linger</tt> uses Mpc for
+its units of length and time, not <IMG  ALIGN=BOTTOM ALT="" SRC="img36.gif"> Mpc.)  In the full Boltzmann case
+(<tt>Bflag = 1</tt>), <IMG  ALIGN=MIDDLE ALT="" SRC="img37.gif">, where <b>nk</b> is the number
+of wavenumbers to compute.  In the reduced Boltzmann case (<tt>Bflag=0</tt>),
+the <b>nk</b> wavenumbers are sampled logarithmically, starting at <IMG  ALIGN=MIDDLE ALT="" SRC="img38.gif">
+and ending at <IMG  ALIGN=MIDDLE ALT="" SRC="img39.gif">.  The reason for these choices is that the
+radiation transfer functions oscillate uniformly in <b>k</b>; sampling these
+oscillations is needed for accurate integration of the angular power
+spectrum without smoothing.  (However, Hu et al describe a smoothing
+algorithm that works reasonably well with much coarser sampling [<A HREF="node15.html#hu">19</A>];
+perhaps a similar scheme might be incorporated into <tt>deltat</tt> for
+use with reduced-Boltzmann <tt>linger</tt> runs.)  The matter transfer functions,
+on the other hand, vary smoothly with <b>k</b>, and do not depend appreciably
+on the high-order radiation multipole moments.  Finally, <IMG  ALIGN=MIDDLE ALT="" SRC="img40.gif"> is
+the ending redshift of the computations.  <tt>Linger</tt> outputs matter and
+radiation transfer function data at this final redshift, with the specified
+sampling in <b>k</b>.
+<P>
+The user with a typical workstation should not use <tt>Bflag = 1</tt> except
+if <IMG  ALIGN=MIDDLE ALT="" SRC="img41.gif"> and/or <IMG  ALIGN=MIDDLE ALT="" SRC="img42.gif">.  The computing time for
+each <b>k</b>-mode increases approximately linearly with <b>k</b> because of the
+need for the differential equation solver to sample the oscillations of
+the photon and massless neutrino perturbations, whose frequency is
+proportional to <b>k</b>.  Thus, most of the time is spent computing the
+values near <IMG  ALIGN=MIDDLE ALT="" SRC="img43.gif">.  For flat models with <IMG  ALIGN=MIDDLE ALT="" SRC="img44.gif">, the CMB
+anisotropy computed using <IMG  ALIGN=MIDDLE ALT="" SRC="img45.gif"> should agree rather well with
+that computed with <IMG  ALIGN=MIDDLE ALT="" SRC="img46.gif">, aside from a compression of the
+angular wavenumber <b>l</b> because of the reduced distance to the cosmic
+photosphere.  Experts can find other ways to further speed up the
+CMB calculation [<A HREF="node15.html#hu">19</A>], albeit with a loss of accuracy.
+<P>
+The final parameter needed by <tt>linger_syn</tt>, <tt>ICflag</tt>, is used
+to set the type of initial conditions.  For <tt>ICflag = 1</tt>, isentropic
+initial conditions are selected, normalized so that the primeval
+gauge-invariant potential <IMG  ALIGN=MIDDLE ALT="" SRC="img47.gif"> for all <b>k</b>.  Isentropic initial
+conditions correspond to primeval density fluctuations or, equivalently,
+spacetime curvature fluctuations.  (<IMG  ALIGN=MIDDLE ALT="" SRC="img48.gif">is one of the two scalar metric
+variables of conformal Newtonian gauge; a gauge transformation is applied
+to determine the metric variables in synchronous gauge [<A HREF="node15.html#mab1">3</A>].)
+Exactly the same initial conditions are used by <tt>linger_con</tt>
+(which is, however, restricted to isentropic initial conditions).  The
+reason for the minus sign in <IMG  ALIGN=MIDDLE ALT="" SRC="img49.gif"> is so that the density perturbations
+in the nonrelativistic components will be positive from the Poisson
+equation (<A HREF="node3.html#poisson">1</A>); the amplitude is set arbitrarily to 1 so that
+<tt>linger</tt> calculates transfer functions normalized by the primeval
+potential.  (This is the only physically sensible choice for isentropic
+perturbations.)
+<P>
+For <tt>ICflag &gt; 1</tt>, isocurvature initial conditions are selected.  In
+this case, the spacetime is initially unperturbed, but the ratios of
+various matter and radiation components varies spatially.  <tt>ICflag
+= 2</tt> is the CDM entropy mode, for which the cold dark matter is assumed
+to have spatial variations while the other components have much smaller
+variations of the opposite sign because the initial conditions are set
+when the universe is radiation-dominated [<A HREF="node15.html#be87">10</A>].  <tt>ICflag = 3</tt>
+is similar, except that here it is the baryons that vary initially,
+compensated for by the other components.  Finally, <tt>ICflag = 4</tt>
+assumes that there is an additional component of static seed masses
+such as primordial black holes; to a reasonable approximation this
+also describes models with cosmics strings or textures.  In this case,
+the other matter and radiation components are essentially unperturbed
+initially, but the seeds provide a source term in the Einstein equations.
+In all three isocurvature cases, the initial conditions are set so that
+the density fluctuation in the spatially varying component is <IMG  ALIGN=MIDDLE ALT="" SRC="img50.gif">
+for all <b>k</b>.
+<P>
+Typical values of <tt>kmax, nk, zend</tt> for <tt>Bflag = 1</tt> (full Boltzmann)
+runs are 0.5, 5000, 0.  These parameters yield integration errors less
+than 0.15% in the photon anisotropy spectrum <IMG  ALIGN=MIDDLE ALT="" SRC="img51.gif"> up to <IMG  ALIGN=MIDDLE ALT="" SRC="img52.gif">.
+Such a run requires about 80 Cray C90 hours.  If accurate results are desired
+for smaller <IMG  ALIGN=MIDDLE ALT="" SRC="img53.gif">, <tt>kmax</tt> and <tt>nk</tt> may be reduced
+proportionally (keeping the ratio fixed).  Running <tt>linger</tt> for
+<IMG  ALIGN=MIDDLE ALT="" SRC="img54.gif"> requires only about 10 C90 hours.
+<P>
+For matter transfer function runs (<tt>Bflag = 0</tt>), <tt>linger</tt> should
+be run with input parameters set to <tt>kmin=1.e-5, kmax=10, nk=61</tt> (or
+121, for high accuracy), <tt>zend=0</tt> or the desired starting redshift
+for a nonlinear simulation (<tt>grafic</tt> will automatically compute the
+appropriate starting redshift and adjust the fluctuations back in time
+if <tt>linger</tt> is run with <tt>zend = 0</tt>, so this is a safe choice).
+The range of <b>k</b> is set to ensure adequate sampling for computing the
+CMB quadrupole moment (requiring small <IMG  ALIGN=MIDDLE ALT="" SRC="img55.gif">) and of the matter
+transfer function at short wavelengths (requiring large <IMG  ALIGN=MIDDLE ALT="" SRC="img56.gif">).
+<tt>Grafic</tt> will extrapolate the transfer function beyond <IMG  ALIGN=MIDDLE ALT="" SRC="img57.gif">
+if necessary.  It prints out a warning message when it does so; this
+may generally be ignored if <IMG  ALIGN=MIDDLE ALT="" SRC="img58.gif"> Mpc<IMG  ALIGN=BOTTOM ALT="" SRC="img59.gif"> (so that the
+transfer function is well-approximated by a power law).  With 61 points
+for <b>k</b> ranging from <IMG  ALIGN=BOTTOM ALT="" SRC="img60.gif"> to 10 Mpc<IMG  ALIGN=BOTTOM ALT="" SRC="img61.gif">, <tt>linger_con</tt> requires
+about 20 Mflops-hours and <tt>linger_syn</tt> about 15.
+<P>
+<BR> <HR><A NAME=tex2html69 HREF="node6.html"><IMG ALIGN=BOTTOM ALT="next" SRC="file:/usr/local/lib/latex2html/icons/next_motif.gif"></A>   <A NAME=tex2html67 HREF="node4.html"><IMG ALIGN=BOTTOM ALT="up" SRC="file:/usr/local/lib/latex2html/icons/up_motif.gif"></A>   <A NAME=tex2html61 HREF="node4.html"><IMG ALIGN=BOTTOM ALT="previous" SRC="file:/usr/local/lib/latex2html/icons/previous_motif.gif"></A>         <BR>
+<B> Next:</B> <A NAME=tex2html70 HREF="node6.html"> Linger Output</A>
+<B>Up:</B> <A NAME=tex2html68 HREF="node4.html"> Linger Usage</A>
+<B> Previous:</B> <A NAME=tex2html62 HREF="node4.html"> Linger Usage</A>
+<BR> <HR> <P>
+<BR> <HR>
+<P><ADDRESS>
+<I>Edmund Bertschinger <BR>
+Mon Jun 12 01:14:50 EDT 1995</I>
+</ADDRESS>
+</BODY>
+

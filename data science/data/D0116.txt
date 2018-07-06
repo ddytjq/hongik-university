@@ -1,0 +1,150 @@
+ID=D0116
+URL=http://www.jsptut.com/Sql.jsp
+SIZE=7328
+DATE=16/07/02
+TIME=14:37:23
+DATASET=Java
+HTML=<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.75 [en] (Win98; U) [Netscape]">
+   <meta name="Description" content="JSP Tutorial">
+   <meta name="Keywords" content="JSP Tutorial">
+   <title>JSP Tutorial</title>
+</head>
+<body>
+&nbsp;
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0 COLS=1 WIDTH="100%" >
+<tr>
+<td>
+<center><b><font size=+3>JSP Tutorial</font></b>
+<br>
+
+		<A HREF=http://www.ezjcom.com/><IMG SRC=/ezjcom.gif></A>
+		</center>
+</td>
+</tr>
+
+<tr>
+<td>
+<h2>
+Database access in JSPs</h2>
+Database access is very common in JSPs.&nbsp;&nbsp; Most database access
+these days is done using SQL.&nbsp; Therefore, if you do not know SQL,
+the first step is to learn SQL.&nbsp; Teaching SQL is outside the scope
+of this tutorial, but there are many excellent references available on
+the web.&nbsp; (See the <a href="Further.jsp">further reading</a> page
+if you need some pointers.)
+<p>Once you know how to write SQL queries, all you then need is to be able
+to execute SQL query strings from Java programs or JSP pages, and to be
+able to examine and manipulate any returned values.
+<p>In Java, SQL access is provided via JDBC (the <tt>java.sql.*</tt> package.)&nbsp;
+One approach to database access in JSP is simply to use JDBC, by putting
+JDBC calls in Java scriptlets.
+<p>Because of tag libraries, in JSP it is typically a little easier to
+use SQL.&nbsp; Therefore it is not necessary to do the full JDBC setup.&nbsp;
+In this page, we will see how to use the Blazix tag library for SQL access.&nbsp;
+(The sample file is only for Windows computers, users of other systems
+would need to create test databases on their systems with advice from someone
+familiar with doing this on their system.)
+<p>The first step is to download the provided <a href="jspsqlsample.mdb">sample
+database file jspsqlsample.mdb</a>, and configure an ODBC connection to
+it named "<tt>jspsql</tt>".&nbsp; If you do not know how to configure ODBC
+connections, visit the <a href="OdbcSetup.jsp">setting up ODBC connections</a>
+page.
+<p>Once you have your ODBC connection configured, add the following lines
+to your web configuration (<tt>web.ini</tt>) file:
+<p><tt>dataSource.name: myDataSource</tt>
+<br><tt>dataSource.myDataSource.odbc:&nbsp; jspsql</tt>
+<p>This tells the server to use the ODBC connection named "jspsql".
+<p>The sample database file contains a table <i>SingleItem</i> which contains
+a single row of data.&nbsp; (If you have <i>Microsoft Access</i> available
+on your machine, you should be able to open and look at the database file.)
+<p>The following query will retrieve a single item from this table.
+<p>SELECT Goal FROM SingleItem
+<p>Write and try out the following JSP.
+<p><tt>&lt;%@ taglib prefix="blx" uri="/blx.tld" %></tt>
+<br><tt>&lt;HTML></tt>
+<br><tt>&lt;BODY></tt>
+<br><tt>&lt;P></tt>
+<br><tt>&lt;blx:sqlConnection jndiName="myDataSource">&nbsp;</tt>
+<br><tt>&lt;P>The goal is &lt;blx:sqlGet query="SELECT Goal FROM SingleItem"/>&nbsp;</tt>
+<br><tt>&lt;/blx:sqlConnection>&nbsp;</tt>
+<br><tt>&lt;/BODY></tt>
+<br><tt>&lt;/HTML></tt>
+<p>Here, the <tt>blx:sqlConnection</tt> tag is specifying the "<tt>myDataSource</tt>"
+datasource, so the tag library will know that we want to access our <tt>jspsqlsample.mdb</tt>
+file.&nbsp; The <tt>blx:sqlGet</tt> is retrieving the result of our query.
+<p>Often queries will return multiple rows, and will contain multiple items
+in each row.&nbsp; For such queries, the tag <tt>blx:sqlQuery</tt> can
+be utilized.&nbsp; Try the following JSP.
+<p><tt>&lt;%@ taglib prefix="blx" uri="/blx.tld" %></tt>
+<br><tt>&lt;HTML></tt>
+<br><tt>&lt;BODY></tt>
+<br><tt>&lt;P></tt>
+<br><tt>&lt;blx:sqlConnection jndiName="myDataSource">&nbsp;</tt>
+<p><tt>&lt;blx:sqlQuery id="sampleQuery">&nbsp;</tt>
+<br><tt>SELECT DayNumber,TaskLearned FROM Jsptut&nbsp;</tt>
+<br><tt>&lt;/blx:sqlQuery>&nbsp;</tt>
+<p><tt>&lt;TABLE>&nbsp;</tt>
+<br><tt>&lt;TR>&lt;TD>Day Number&lt;/TD>&lt;TD>Task Learned&lt;/TD>&lt;/TR>&nbsp;</tt>
+<br><tt>&lt;blx:sqlExecuteQuery resultSet="rs" queryRef="sampleQuery">&nbsp;</tt>
+<br><tt>&lt;TR>&nbsp;</tt>
+<br><tt>&lt;TD>&lt;%= rs.getInt("DayNumber") %>&lt;/TD>&nbsp;</tt>
+<br><tt>&lt;TD>&lt;%= rs.getString("TaskLearned") %>&lt;/TD>&nbsp;</tt>
+<br><tt>&lt;/TR>&nbsp;</tt>
+<br><tt>&lt;/blx:sqlExecuteQuery>&nbsp;</tt>
+<br><tt>&lt;/TABLE>&nbsp;</tt>
+<br><tt>&lt;/blx:sqlConnection>&nbsp;</tt>
+<br><tt>&lt;/BODY></tt>
+<br><tt>&lt;/HTML></tt>
+<p>The<tt> blx:sqlQuery</tt> tag is being used here to write out the query
+itself.&nbsp; Then the <tt>blx:sqlExecuteQuery</tt> is being used to retrieve
+the rows of the query.&nbsp; Everything between &lt;<tt>blx:sqlExecuteQuery>
+</tt>and<tt>
+&lt;/blx:sqlExecuteQuery></tt> will be repeatedly executed, once for each
+row of the query.&nbsp; Therefore there will be many rows in the table,
+once for each row in the database.&nbsp; Within the body of the <tt>blx:sqlExecuteQuery</tt>,
+we have access to the Java variable "rs", which is of type <tt>java.sql.resulSet</tt>.&nbsp;
+We can retrieve the items from the row using either the column number or
+the name.&nbsp; We could also have used the following to retrieve the items:
+<p><tt>&lt;TD>&lt;%= rs.getInt(1) %>&lt;/TD></tt>
+<br><tt>&lt;TD>&lt;%= rs.getString(2) %>&lt;/TD></tt>
+<p>To execute queries that do not return any values (such as INSERT, DELETE
+and UPDATE statements,) use the <tt>blx:executeUpdate</tt> tag.
+<p><i>Exercise:</i>&nbsp; 1)&nbsp; Write a page to execute and display
+the result of the following query thar returns a single item:<tt></tt>
+<p><tt>SELECT DayNumber FROM Jsptut WHERE TaskLearned='Scriptlets'</tt>
+<p>2) The Jsptut table has a third column named Url.&nbsp; Modify the table
+sample above to display this column as well.&nbsp; Make the URLs come out
+as hyperlinks.
+<br>3) Write a set of JSP pages that lets a user update the day number
+for any given task, and then displays the updated table. (Hint: You will
+need a WHERE clause to compare the task name, like in exercise 1 above.&nbsp;
+You will also need the form processing skills you learned in earlier lessons.)
+<br>4)&nbsp; Modify your JSP pages so users can add rows to the Jsptut
+table.
+<br>5)&nbsp; Add a facility to delete rows also.
+<br>&nbsp;
+<br>&nbsp;
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%" >
+<tr>
+<td><a href="Email.jsp">Next Tutorial: Sending Email</a></td>
+
+<td>
+<div align=right><font size=-1><a href="Index.html#contents">Contents</a></font></div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+</table>
+
+</body>
+</html>
+

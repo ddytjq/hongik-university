@@ -1,0 +1,246 @@
+ID=E0797
+URL=http://www.bcbdev.com/faqs/faq6.htm
+SIZE=11804
+DATE=12/07/02
+TIME=19:24:32
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+<H3>
+Q: Start a program hidden<BR>
+</H3>
+<BR>
+<H3>
+Answer:
+</H3>
+<P>
+To start a program hidden, you must edit the <TT>WinMain</TT> function and hide the program's main form and the
+program's taskbar icon.
+</P>
+<B>Step 1:</B> Choose View|Project Source from the C++Builder menu so you
+can edit the <TT>WinMain</TT> function. Hide the program's taskbar icon by
+calling <TT>ShowWindow</TT> for the application's window handle. Set <TT>ShowMainForm</TT> to
+<TT>false</TT> to keep the main form from appearing on the screen.
+</P>
+<pre>
+WINAPI WinMain<b>(</b>HINSTANCE<b>,</b> HINSTANCE<b>,</b> LPSTR<b>,</b> <b>int</b><b>)</b>
+<b>{</b>
+    <b>try</b>
+    <b>{</b>
+        Application<b>-></b>Initialize<b>(</b><b>)</b><b>;</b>
+        Application<b>-></b>CreateForm<b>(</b><b>__classid</b><b>(</b>TForm1<b>)</b><b>,</b> <b>&</b>Form1<b>)</b><b>;</b>
+        Application<b>-></b>ShowMainForm <b>=</b> <b>false</b><b>;</b>
+        ShowWindow<b>(</b>Application<b>-></b>Handle<b>,</b> SW_HIDE<b>)</b><b>;</b>
+        Application<b>-></b>Run<b>(</b><b>)</b><b>;</b>
+    <b>}</b>
+    <b>catch</b> <b>(</b>Exception <b>&</b>exception<b>)</b>
+    <b>{</b>
+        Application<b>-></b>ShowException<b>(</b><b>&</b>exception<b>)</b><b>;</b>
+    <b>}</b>
+    <b>return</b> <font color="blue">0</font><b>;</b>
+<b>}</b>
+</pre>
+
+<P>
+<B>Step 2:</B> Execute these two code statements when you want to show the 
+application. Note that <TT>Application-&gt;MainForm-&gt;Visible=true</TT> can be 
+shortened to just <TT>Visible=true</TT> if the code is located in a method 
+of the main form's class.
+</P>
+<pre>
+ShowWindow<b>(</b>Application<b>-></b>Handle<b>,</b> SW_SHOW<b>)</b><b>;</b>
+Application<b>-></b>MainForm<b>-></b>Visible <b>=</b> <b>true</b><b>;</b>
+</pre>
+
+<BR>
+<p>
+<B>Final Note</B> (C++Builder 1.0 only): In C++Builder 1.0, the constructor for the global
+<TT>TApplication</TT> object called the <TT>CreateHandle</TT> method. <TT>CreateHandle</TT> executed API
+functions to create a window handle for the application. Creating the window handle resulted in a taskbar icon
+appearing on the screen. This icon would appear before <TT>WinMain</TT> ran. This icon would appear to flash if
+<TT>WinMain</TT> was trying to create a program that started in a hidden state. The rest of this FAQ explains how to
+eliminate the taskbar icon flash that occurred in C++Builder 1.0 programs. C++Builder 3.0 contained a fix for the
+shortcoming in <TT>TApplication</TT>. If you use C++Builder 3.0, ignore what follows.</P>
+
+<P>
+Because of the way the VCL works, the application's icon will flash briefly on the
+taskbar before the <TT>ShowWindow</TT> call executes inside of <TT>WinMain</TT>.
+</P>
+<P>
+The VCL creates the global application object before <TT>WinMain</TT> is called. The
+<TT>TApplication</TT> constructor executes a function called <TT>CreateHandle</TT> that creates
+a window handle and places an icon on the taskbar. The only way to keep the
+icon from flashing is to provide a different version of
+<TT>CreateHandle</TT>. This isn't too hard if you have the professional
+or client/server versions of C++Builder. You can simply copy
+<TT>\SOURCE\VCL\FORMS.PAS</TT> to your project directory, add this file to your
+project, and fix the flaws in <TT>CreateHandle</TT>. <TT>CreateHandle</TT> contains two statements
+that force an icon to appear on the taskbar.
+The first is the <TT>CreateWindow</TT> call, which looks like this:
+</P>
+<PRE>
+    FHandle := CreateWindow(WindowClass.lpszClassName, PChar(FTitle),
+      WS_POPUP or WS_CAPTION or WS_VISIBLE or WS_CLIPSIBLINGS or
+      WS_SYSMENU or WS_MINIMIZEBOX,
+      GetSystemMetrics(SM_CXSCREEN) div 2,
+      GetSystemMetrics(SM_CYSCREEN) div 2,
+      0, 0, 0, 0, HInstance, nil);
+</PRE>
+<P>
+The second call is the call to <TT>ShowWinNoAnimate</TT>. <TT>ShowWinNoAnimate</TT> is a
+VCL function whose arguments reflect a <TT>ShowWindow</TT> API call.
+</P>
+<PRE>
+    ShowWinNoAnimate(FHandle, SW_RESTORE);
+</PRE>
+<P>
+In the <TT>CreateWindow</TT> call, the <TT>WS_VISIBLE</TT> style causes the taskbar icon
+to appear. You can fix this by simply deleting the <TT>WS_VISIBLE</TT> style.
+The <TT>ShowWinNoAnimate</TT> call ends up passing <TT>SW_RESTORE</TT> to the API <TT>ShowWindow</TT>
+function. <TT>SW_RESTORE</TT> shows and restores a window, and showing the form
+places the icon on the taskbar. You can prevent this by changing
+<TT>SW_RESTORE</TT> to <TT>SW_HIDE</TT>, or by commenting out the call altogether. The
+new version of <TT>CreateHandle</TT> should look like this:
+</P>
+<PRE>
+    procedure TApplication.CreateHandle;
+    var
+      TempClass: TWndClass;
+      SysMenu: HMenu;
+    begin
+      if not FHandleCreated then
+      begin
+        FObjectInstance := MakeObjectInstance(WndProc);
+        if not GetClassInfo(HInstance, WindowClass.lpszClassName, TempClass)
+        then
+        begin
+          WindowClass.hInstance := HInstance;
+          if Windows.RegisterClass(WindowClass) = 0 then
+            raise EOutOfResources.CreateRes(SWindowClass);
+        end;
+        FHandle := CreateWindow(WindowClass.lpszClassName, PChar(FTitle),
+          WS_POPUP or WS_CAPTION or WS_CLIPSIBLINGS or
+          WS_SYSMENU or WS_MINIMIZEBOX,
+          GetSystemMetrics(SM_CXSCREEN) div 2,
+          GetSystemMetrics(SM_CYSCREEN) div 2,
+          0, 0, 0, 0, HInstance, nil);
+        FTitle := '';
+        FHandleCreated := True;
+        ShowWinNoAnimate(FHandle, SW_HIDE);
+        SetWindowLong(FHandle, GWL_WNDPROC, Longint(FObjectInstance));
+        if NewStyleControls then
+          SendMessage(FHandle, WM_SETICON, 1, GetIconHandle);
+        SysMenu := GetSystemMenu(FHandle, False);
+        DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
+        DeleteMenu(SysMenu, SC_SIZE, MF_BYCOMMAND);
+        if NewStyleControls then DeleteMenu(SysMenu, SC_MOVE, MF_BYCOMMAND);
+      end;
+    end;
+</PRE>
+<P>
+<B>Important:</B> Make sure you modify the version of <TT>FORMS.PAS</TT> that you
+copied to your project directory and added to your project. Do not
+modify the file in <TT>\SOURCE\VCL</TT>.
+</P>
+<P>
+So what if you have the standard version of C++Builder and don't have access
+to the VCL source? You can code your own version of <TT>TApplication::CreateHandle</TT>
+in your project source file using C++. The linker will utilize your updated
+version of the function instead of the function in the VCL library files. The
+C++ function should look like this (insert this just before the <TT>WinMain</TT>
+function).
+<pre>
+<b>void</b> <b>__fastcall</b> TApplication<b>:</b><b>:</b>CreateHandle<b>(</b><b>void</b><b>)</b>
+<b>{</b>
+    WNDCLASS WindowClass <b>;</b>
+    WindowClass<b>.</b>style<b>=</b><font color="blue">0</font><b>;</b>
+    WindowClass<b>.</b>lpfnWndProc<b>=</b>DefWindowProc<b>;</b>
+    WindowClass<b>.</b>cbClsExtra<b>=</b><font color="blue">0</font><b>;</b>
+    WindowClass<b>.</b>cbWndExtra<b>=</b><font color="blue">0</font><b>;</b>
+    WindowClass<b>.</b>hInstance <b>=</b><font color="blue">0</font><b>;</b>
+    WindowClass<b>.</b>hIcon<b>=</b> <font color="blue">0</font><b>;</b>
+    WindowClass<b>.</b>hCursor<b>=</b> <font color="blue">0</font><b>;</b>
+    WindowClass<b>.</b>hbrBackground<b>=</b> <font color="blue">0</font><b>;</b>
+    WindowClass<b>.</b>lpszMenuName <b>=</b> NULL<b>;</b>
+    WindowClass<b>.</b>lpszClassName<b>=</b> <font color="blue">"TApplication"</font><b>;</b>
+
+    TWndClass TempClass<b>;</b>
+    HMENU     SysMenu<b>;</b>
+
+    <b>if</b><b>(</b><b>!</b>FHandleCreated<b>)</b>
+    <b>{</b>
+        FObjectInstance <b>=</b> MakeObjectInstance<b>(</b>WndProc<b>)</b><b>;</b>
+        <b>if</b> <b>(</b><b>!</b>GetClassInfo<b>(</b>HInstance<b>,</b> WindowClass<b>.</b>lpszClassName<b>,</b> <b>&</b>TempClass<b>)</b><b>)</b>
+        <b>{</b>
+            WindowClass<b>.</b>hInstance <b>=</b> HInstance<b>;</b>
+            <b>if</b> <b>(</b>RegisterClass<b>(</b><b>&</b>WindowClass<b>)</b> <b>==</b> <font color="blue">0</font><b>)</b>
+                <b>throw</b> EOutOfResources<b>(</b><font color="blue">"Error registering window class"</font><b>)</b><b>;</b>
+        <b>}</b>
+        FHandle <b>=</b> CreateWindow<b>(</b>WindowClass<b>.</b>lpszClassName<b>,</b> FTitle<b>.</b>c_str<b>(</b><b>)</b><b>,</b>
+                               WS_POPUP <b>|</b> WS_CAPTION <b>|</b> WS_CLIPSIBLINGS <b>|</b>
+                               WS_SYSMENU <b>|</b> WS_MINIMIZEBOX<b>,</b>
+                               GetSystemMetrics<b>(</b>SM_CXSCREEN<b>)</b> <b>/</b> <font color="blue">2</font><b>,</b>
+                               GetSystemMetrics<b>(</b>SM_CYSCREEN<b>)</b> <b>/</b> <font color="blue">2</font><b>,</b>
+                               <font color="blue">0</font><b>,</b> <font color="blue">0</font><b>,</b> <font color="blue">0</font><b>,</b> <font color="blue">0</font><b>,</b> HInstance<b>,</b> NULL<b>)</b><b>;</b>
+        FTitle <b>=</b> <font color="blue">""</font><b>;</b>
+        FHandleCreated <b>=</b> True<b>;</b>
+        <font color="navy">// ShowWinNoAnimate(FHandle, SW_HIDE);</font>
+        SetWindowLong<b>(</b>FHandle<b>,</b> GWL_WNDPROC<b>,</b> Longint<b>(</b>FObjectInstance<b>)</b><b>)</b><b>;</b>
+        <b>if</b> <b>(</b>NewStyleControls<b>)</b>
+            SendMessage<b>(</b>FHandle<b>,</b> WM_SETICON<b>,</b> <font color="blue">1</font><b>,</b> <b>(</b>LPARAM<b>)</b>GetIconHandle<b>(</b><b>)</b><b>)</b><b>;</b>
+        SysMenu <b>=</b> GetSystemMenu<b>(</b>FHandle<b>,</b> False<b>)</b><b>;</b>
+        DeleteMenu<b>(</b>SysMenu<b>,</b> SC_MAXIMIZE<b>,</b> MF_BYCOMMAND<b>)</b><b>;</b>
+        DeleteMenu<b>(</b>SysMenu<b>,</b> SC_SIZE<b>,</b> MF_BYCOMMAND<b>)</b><b>;</b>
+        <b>if</b> <b>(</b>NewStyleControls<b>)</b>
+            DeleteMenu<b>(</b>SysMenu<b>,</b> SC_MOVE<b>,</b> MF_BYCOMMAND<b>)</b><b>;</b>
+    <b>}</b>
+<b>}</b>
+
+</pre>
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

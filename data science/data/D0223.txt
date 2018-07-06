@@ -1,0 +1,533 @@
+ID=D0223
+URL=http://www.javaworld.com/javaworld/jw-12-2000/jw-1208-waldo.html
+SIZE=61364
+DATE=16/07/02
+TIME=14:40:33
+DATASET=Java
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title> Sun lets Jini Starter Kit 1.1 out of the bottle</title>
+<!-- ssilog 7814 -->
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<meta name="keywords" content=" Jini">
+<meta name="description" content="
+
+JavaWorld author Frank Sommers caught up with Jim Waldo, Jini architect and Sun Microsystems Distinguished Engineer, via telephone. In this interview, Waldo discusses the Jini 1.1 release and Jini's role in enterprise systems, offers advice on introducing business-specific APIs into Jini, and gives insight into scaling Jini down to the smallest devices and up to worldwide networks. (5,000 words)
+
+">
+<meta name="date" content="2000-12-08">
+<META NAME="DC.Date" CONTENT="2000-12-08">
+<basefont face="verdana, arial, helvetica" size="3" />
+<style type="text/css">
+            code {font-size: 90%; font-family: monospace;}
+            pre {font-size: 90%; font-family: monospace;}
+            td {font-size: 90%;}
+</style>
+<script language="javascript">
+<!--// IDG.net Scripts
+            function mail2Friend () {
+                window.parent.location = "/MailToFriend?url=" + escape(document.location);
+            }
+
+            function openBrWindow() {
+                win=window.open("http://www.javaworld.com/channel_content/jw-story-feedback.shtml",'Feedback','width=600,height=330,toolbar=no,location=no,directories=no,menubar=no,scrollbars=yes,resizable=yes');
+            }
+            //-->
+        </script>
+    </head>
+<body bgcolor="#ffffff" text="#000000" link="#990033" vlink="#990033" alink="#990033" topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" marginheight="0" marginwidth="0">
+<table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td colspan="2" width="186" bgcolor="#006699"><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0 ></a></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- START TOP 468x60 BANNER -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=912701?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=912701?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=912701?" border="0" height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer1" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- END TOP 468x60 BANNER --></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="26" valign="top" align="left" bgcolor="#ffffff"><img height=8 src="http://www.javaworld.com/images/c_whtbottom.gif" width=8 border=0 ></td>
+                <td width="100%"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.global/idgpixel7.18.00;sz=1x1;ord=912701?" border=0 height="1" width="1"><IMG SRC="http://ad.doubleclick.net/ad/idg.pixel.usa.jw/usajw.081501;sz=1x1;ord=912701?" border=0 height="1" width="1"></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160" align="middle" valign="center" nowrap><nobr><font face="Verdana, Arial, Sans-serif" color="#ffffff" size="2">December 2000</font></nobr><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="8" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltlft.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="100%" align="middle" valign="center">    <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">HOME</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/features/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FEATURED TUTORIALS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/columns/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">COLUMNS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/news-reviews/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">NEWS & REVIEWS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://forums.idg.net/webx?13@@.ee6b802"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FORUM</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/resources/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">JW RESOURCES</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/info/jw-about-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">ABOUT JW</font></a></td>
+        </tr>
+    </table></td>
+                <td bgcolor="#006699" width="8" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_bltrt.gif" width=8 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr valign="top">
+                <td bgcolor="#006699" width="160" align="middle" valign="top">
+                    <table width="160" border="0" cellspacing="0" cellpadding="0" bgcolor="#006699" summary="">
+                        <tr>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                            <td align="center">
+                                <form action="http://www.javaworld.com/isearch" method="GET" name="search">
+                                    <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /><br />
+                                    <input type="text" name="qt" size="12" maxlength="2047" /><br />
+                                    <input type="image" value="search" src="http://www.javaworld.com/images/button_blue.gif" border="0" width="97" height="18" alt="GO" /><br />
+                                    <input type="hidden" name="site" value="javaworld"><br />
+                                   <!-- <a href="http://www.google.com/"><img src="http://www.javaworld.com/images/google-power-fp.gif" width="108" height="45" border="0" alt="Google.com"></a>-->
+                                    <input type="hidden" name="ms" value="1">
+                                    <input type="hidden" name="tid" value="1">
+                                    <input type="hidden" name="st" value="1">
+                                    <input type="hidden" name="rf" value="0">
+                                   
+                                </form>
+                            </td>
+                            <td width="8"><img alt="" height="1" src="http://www.javaworld.com/images/spacer.gif" width="8" /></td>
+                        </tr>
+                        <tr>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td><img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <a href="http://www.javaworld.com/archives/index-year.html"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>ARCHIVE</strong></font></a><br>
+                                <img height=1 alt="" src="http://www.javaworld.com/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <strong><a href="http://www.javaworld.com/channel_content/jw-topical-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff">TOPICAL INDEX</font></a></strong></font><br><table cellspacing="0" cellpadding="0" border="0" summary="">
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/channel_content/jw-core-index.shtml"><font color="#ffffff">Core Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-enterprise-index.shtml"><font color="#ffffff">Enterprise Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-micro-index.shtml"><font color="#ffffff">Micro Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-applied-index.shtml"><font color="#ffffff">Applied Java</font></a></strong></font></td>
+                        </tr>
+                        <tr>
+                            <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /></td>
+                            <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/channel_content/jw-community-index.shtml"><font color="#ffffff">Java Community</font></a></strong></font><br /></td>
+                        </tr>
+                    </table><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-qna-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA Q&A INDEX</strong></font></a><br /><img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="2" /><br /> <a href="http://www.javaworld.com/columns/jw-tips-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#ffffff"><strong>JAVA TIPS INDEX</strong></font></a><br /> <img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br /><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2" color="#CCCCCC"><strong>JavaWorld Services</strong></font><br /><img alt="" height="4" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /><table cellspacing="0" cellpadding="0" border="0" summary=""><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /><img alt="" height="7" src="http://www.javaworld.com/images/spacer.gif" width="1" border="0" /></td><td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a href="http://www.javaworld.com/subscribe"><font color="#ffffff">Free JavaWorld newsletters</font></a></strong></font></td></tr><tr><td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://javaworld.pricegrabber.com"><font color="#ffffff">ProductFinder </font></a></strong></font></td></tr><tr> <td><img alt="" height="7" src="http://www.javaworld.com/images/arrow_closed.gif" width="8" border="0" /><br /></td> <td><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"><strong><a  href="http://www.javaworld.com/white-paper/index.shtml"><font color="#ffffff">White Paper Library</font></a></strong></font></td></tr>
+</table>
+<img alt="" height="1" src="http://www.javaworld.com/images/rule_ltblue.gif" width="144" vspace="8" /><br />
+</td>
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                        </tr>
+                        <tr valign="bottom">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_gryblbottom.gif" width=8 ></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr>
+                       <td width="8" bgcolor="#cccccc"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                           <td align="middle" bgcolor="#cccccc"><!-- SKYSCRAPER AD START HERE -->
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=912701?" width="120" height="600" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=skyscraper;sz=120x600;tile=3;ord=912701?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;skyscraper=med;sz=120x600;tile=3;ord=912701?" border=0 height="600" width="120"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer3" visibility="hidden" width=120 height=600></ILAYER>
+<!-- SKYSCRAPER AD ENDS HERE -->
+</td>
+                       <td width="8" bgcolor="#cccccc"><img height=8 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr valign="top">
+                            <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.javaworld.com/images/c_grybltop.gif" width=8 ></td>
+                        </tr>
+                    </table>
+                    <img height=8 src="http://www.javaworld.com/images/spacer.gif" width=160 border=0 ></td>
+                    <td width="8"><img height=1 alt="" src="http://www.javaworld.com/images/spacer.gif" width=8 ></td>
+                <td width="100%">
+                    <!-- ## MAIN CONTENT STARTS HERE ### -->
+                    <font face="verdana, arial, helvetica" size="3">
+                        <strong></strong>
+                        <p>
+                            <h1 align="CENTER"> Sun lets Jini Starter Kit 1.1 out of the bottle</h1>
+                            <h3 align="CENTER"> <em>JavaWorld</em> author Frank Sommers talks with Jini architect Jim</h3>
+                        </p>
+                        <!--<BLOCKQUOTE><STRONG>Summary</STRONG><BR>-->
+                        <BLOCKQUOTE>
+<STRONG>Summary</STRONG><BR>
+
+
+<em>JavaWorld</em> author Frank Sommers caught up with Jim Waldo, Jini architect and Sun Microsystems Distinguished Engineer, via telephone. In this interview, Waldo discusses the Jini 1.1 release and Jini's role in enterprise systems, offers advice on introducing business-specific APIs into Jini, and gives insight into scaling Jini down to the smallest devices and up to worldwide networks. <em>(5,000 words)</em>
+
+</BLOCKQUOTE>
+                        <!--</BLOCKQUOTE>-->
+                        <a href="http://www.javaworld.com/feedback" target="Feedback"><STRONG>By   Frank Sommers</STRONG></a>
+                        <p><img src="http://www.javaworld.com/images/rule_ltblue.gif" width="100%" height="2"><br />
+                           <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                           <a href="/javaworld/jw-12-2000/jw-1208-waldo_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><br /></p>
+                         <font size=-1>  <!-- REPLACE PAGECOUNT --></font>
+                        <p><!-- START BIG AD (336x280) -->
+<table align="right" border="0" cellpadding="0" cellspacing="0"><tr valign="bottom" align="center"><td><font face="verdana, arial, geneva, sans-serif" color="#999999" size="-2">Advertisement</font></td></tr><tr><td><table border=1 bordercolor="#cccccc" cellspacing="5" cellpadding="0"><tr><td>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=912701" width="336" height="280" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=912701"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=rectangle;sz=336x280;tile=5;ord=912701" border=0 height="280" width="336"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer5" visibility="hidden" width=336 height=280></ILAYER>
+</td></tr></table></td></tr></table>
+<!-- END BIG AD (336x280) --></p>
+                        <p><P>
+<img align="left" width="24" height="29" src="/javaworld/abcs/T.gif" alt="T">his year is shaping up as a success for Jini technology. Jini licensees now exceed 50,000, and the technology is deploying everywhere from automobiles to enterprise software systems. The upcoming Fifth Jini Community Meeting, scheduled for December 11-12 in Amsterdam, Netherlands, has received a remarkable response. The meeting reached its capacity well in advance, and excess registrations spilled over onto a waiting list. For developers, the year's most important event may have been the October release of the 1.1 version of the Jini Starter Kit (JSK).
+<P>
+Jim Waldo and his team at Sun have been instrumental in this success story. Waldo has been investigating the use of Java technology for distributed computing and persistence for the past 6 years. Waldo is also an adjunct faculty member at Harvard University in the department of engineering and applied sciences, where he teaches distributed computing. <P>
+Prior to joining the Java group, Waldo was a principal investigator for Sun Microsystems Laboratories; he did research in the areas of object-oriented programming and systems, distributed computing, and user environments. Before joining Sun, Waldo spent 8 years at Apollo Computer and Hewlett-Packard working in the areas of distributed object systems, user interfaces, class libraries, text, and internationalization. He holds a doctorate in philosophy from the University of Massachusetts Amherst. 
+<P>
+<strong>JavaWorld:</strong> What's new in the Jini Starter Kit 1.1?
+<P>
+<strong>Jim Waldo:</strong> First, it's important to realize that the 1.1 release is an addition to Jini, as opposed to a change in Jini. All of the interfaces and services that were available in the first release are still available and unchanged. Anything that used to run as a Jini service will still run as a Jini service.
+<P>
+For the 1.1 release, we put together some utility classes to make writing a Jini service or a Jini client easier. Some of these were actually included in the first Jini release. We tried to apply to them the same careful design effort that we put in the earlier interfaces that define Jini as whole, mainly to make these utilities easier to use and more robust. Mostly, people can use these utility classes -- yet they don't have to -- to write their services. We make a distinction between utilities, which are classes, and services that are real Jini services living out on the network. This time around, we put in a lease-renewal service, a lookup discovery service, and an event mailbox. <P>
+<strong>JavaWorld:</strong> What other utilities and services are you planning to introduce in a future version of the JSK?
+<P>
+<strong>Jim Waldo:</strong> One of these items might be a service used to send events. A number of people have been looking at a utility class that will grant leases, to make the whole leasing model somewhat simpler. Another addition will be a set of utilities or tools that will make it easier to configure a Jini network. Also, we will be adding services and utilities that will help you get your classpath right, and your code-base right.
+<P>
+<strong>JavaWorld:</strong> Will there be any security-related services?
+<P>
+<strong>Jim Waldo:</strong> Security is a rather large and hairy subject. Right now, Bob Scheifler is working on a security JSR (Java Specification Request) for basic RMI. The RMI security will form the semantic model for security in Jini, in the same way that RMI forms the semantic model for communication in Jini. You don't have to use RMI, but whatever you use has to preserve the meanings that RMI gives you.
+<P>
+<strong>JavaWorld:</strong> So this security mechanism will be an abstraction that one could implement in different methodologies or in different protocols as well?
+<P>
+<strong>Jim Waldo:</strong> In some ways, it is almost like a service provider interface. It details what security means inside an RMI and Jini framework. You can have many preferences and requirements associated with clients and services -- to indicate that you must authenticate either one, for instance, or that you desire privacy but don't require it, that you want encryption on the wire, and so forth. Depending on how the community review goes, it could actually show up in the next Java release, the Merlin release.
+<P>
+On top of that security model, we're also talking about adding services that can be used inside a Jini network to allow a fairly simple implementation of that security model within a Jini federation. These services will be built on top of the API and on top of the semantic model; they will provide the ability to obtain certificates for authentication, for instance. 
+<P>
+<strong>JavaWorld:</strong> This will be a security service?
+<P>
+<strong>Jim Waldo:</strong> Exactly. That is something that we're looking at probably for the release after the next release of Jini, which we're talking about naming Alewife. We would name the release after Alewife, Davis. We're naming them after subway stops, for those of you familiar with Boston. The Davis release is the one that would include Jini security.
+<P>
+<strong>JavaWorld:</strong> Besides the new utilities and services, what else is new with Jini 1.1? <P>
+<strong>Jim Waldo:</strong> We also changed the commercial licensing terms. Jini is now free.
+<P>
+<strong>JavaWorld:</strong> Many programmers associate device programming with Jini. Has Jini been used in applications that do not involve devices at all, such as enterprise software?
+<P>
+<strong>Jim Waldo:</strong> Absolutely. Everything in Jini is set up to mask how a service is implemented. There is no real distinction in Jini between hardware and software, only alternate ways of implementing an interface. We've seen a lot of this happening, where a large enterprise software service wraps itself in a little Java code, which enables this service to register itself as a Jini service and be found by other services. A company called BizTone, out of Malaysia, was the first to do this. It built an entire ERP (enterprise resource planning) package out of components that talk to each other via Jini.
+<P>
+<strong>JavaWorld:</strong> Those might not even be Java-based components. <P>
+<strong>Jim Waldo:</strong> Some of them may not be Java-based. All BizTone does is present a Java object that can be used by somebody else to talk to their services.
+<P>
+One of the very interesting things about distributing Jini the way we have, which is essentially to make it freely available on the Web, is that we don't really know who our customers are.  We find out about the customers who are having trouble because they call us up and tell us.  We find out about our customers who aren't having trouble when they're about to ship their product and need a commercial license. That is, when they remember they need to obtain a commercial license before they ship, which many people forget, and we actually don't mind. <P>
+<strong>JavaWorld:</strong> Let's return for a moment to Jini 1.1. What is the relationship between the Jini core, the Jini extended specifications, and the JSK that you're including all of these services in? <P>
+<strong>Jim Waldo:</strong> The Jini core is what really defines Jini. It is the base set of interfaces, and not much else. That's where the Jini programming model is defined, and where what it means to be a Jini system is defined. The Jini core defines things such as the interface to a lookup service, the basic discovery protocol, the interfaces for leasing, events, and the two-phase commit for transactions. The extended APIs are our service APIs. They don't define what it is to be Jini, but rather what you can expect from a service that's in a Jini federation.
+<P>
+Outside of the core, we also have implementation. There is Reggie, which is our implementation of the lookup service. And then there's also JavaSpaces. The interface to JavaSpaces is a definition of a service interface. JavaSpaces at one time was outside of the central part of Jini. Now JavaSpaces is part of the basic release. It was just too confusing to separate the extended services, which was JavaSpaces, from everything else in Jini. So, now it's one download, and one package.
+<P>
+<strong>JavaWorld:</strong> So, basically, this extended API is the extension point where other APIs could be introduced for specific services?
+<P>
+<strong>Jim Waldo:</strong> Absolutely. <P>
+<strong>JavaWorld:</strong> And that's open to the community process? <P>
+<strong>Jim Waldo:</strong> Yes. Now, the community process can also introduce services into the core, but these services will be introduced very slowly. We're going to be very conservative about that, at least if I have anything to say about it. <P>
+<strong>JavaWorld:</strong> Are you aware of Jini core implementations or extended APIs by companies other than Sun? <P>
+<strong>Jim Waldo:</strong> ProSyst, in Germany, has been shipping their own implementation of a lookup service for about a year. The ProSyst lookup service does not use RMI to talk between the lookup service and the entity that communicates with the lookup service. They decided they would try a different protocol. They hand out an object that implements the lookup service interface, but it uses a different wire protocol than RMI.
+<P>
+Just recently, PersonalGenie introduced a lookup service that they claim has some security features in it. They implemented their own security scheme inside their own lookup service, and it follows all the rules of a Jini lookup service. We don't require that the implementation be the same. We just require that it implement the same interface. That's all we care about, the interoperation. <P>
+<strong>JavaWorld:</strong> In addition to the APIs that define basic Jini behavior and services, do you foresee industry-specific APIs that will expose certain business functionality? <P>
+<strong>Jim Waldo:</strong> At JavaOne, Ford showed a system for the car, where a Palm Pilot had a directory service that interacted with the GPS device and the navigation system in the car, both of which interacted with a voice recognition system. When you place your Palm Pilot in the car's cradle, it registers itself as a directory service with the lookup service that runs inside the car. While you're driving, you could say, "I want to get to Carl's house." The voice recognition system would recognize that as a request for a route. It would recognize Carl as a name. It would then go to the directory service on your Palm Pilot to obtain an address that matches Carl. Finally, it would feed that to the location service, which is your navigation system, find a route, and display it.
+<P>
+<strong>JavaWorld:</strong> It would be a useful service if, when you enter your car, your cell phone could locate the car's stereo system as the speaker and mic for the phone.
+<P>
+<strong>Jim Waldo:</strong> That is exactly the kind of interaction we've been talking about. If you said, "I want to call Carl," the system in your car would look up his number in your directory service and hand that to the telephone, which could then dial him up. You could hear Carl and talk to him via the stereo system's speakers and microphone, while keeping your hands on the wheel.
+<P>
+<strong>JavaWorld:</strong> Besides the automobile industry, are you aware of other efforts for industry-specific Java APIs? 
+<P>
+<strong>Jim Waldo:</strong> A group in Europe is using Jini to stitch together a system for tourism. That group found that many of the service providers in Europe's tourism industry use customized software that doesn't interact with everybody else's software. They've defined a set of Jini interfaces for the tourism industry that can then be implemented to talk to these various legacy systems and present a unified front to everybody else. <P>
+<strong>JavaWorld:</strong> Could other companies implement that API as a layer on top of their existing legacy systems? <P>
+<strong>Jim Waldo:</strong> Yes. And then they can tie together all of the tourism systems that have subscribed inside of Europe. You could find out what hotels are available in the area, what services they offer, make your reservation. You could make your reservation for the next night, at the next place you're going to. All of this will be tied into the network. <P>
+<strong>JavaWorld:</strong> Suppose the cell phone in your car is part of a network of Jini services. How would this device discover what business-specific APIs are available in the Jini federation? How would it know that it can reserve hotel rooms, find gas stations and service stations, access weather and ski reports, etc.? How would it learn about the existence of an API it never used before?
+<P>
+<strong>Jim Waldo:</strong> Clearly, you need a client that knows how to talk to the API. We don't have any magic there. <P>
+<strong>JavaWorld:</strong> Is there some semantic, some kind of a translation that would say, "Give me a tourism-specific API"?
+<P>
+<strong>Jim Waldo:</strong> Not that we have now. Although you could look for services that had a particular label, like "Tourism API." If they supported the ServiceUI, you could then download a client program that could talk to it.
+<P>
+<strong>JavaWorld:</strong> On the Web, search engines allow users to learn about Webpages they did not know of before -- for instance, by keywords. You can type in "Hotel rooms, Berlin" and you get a list of Websites that, very likely, have information about hotel rooms in Berlin.  Do you foresee a Jini search engine that provides some easy human readable way of locating services based on functionality? <P>
+<strong>Jim Waldo:</strong> That would be an interesting service for people to provide inside the Jini world. Remember that Jini was really designed not so much for people to talk to services as for programs to talk to services. Programs are remarkably bad at understanding human language. That is why we use the Java type system to discover things: because we suspect that it will be programs that are looking for services. 
+<P>
+If a program doesn't know the API, it's hard to change the program on the fly to use that API. It can be done, and there are all sorts of experiments in AI [artificial intelligence] that allow you to do this. Any of those would work just as well in the Jini system as they do anywhere else because Java does have the ability to do reflection. <P>
+But, in most cases, a client program will look for a service that implements an interface that the client program already knows about. Now, the client may not know the implementation, but that's okay. All the Jini clients know is the interface, and they will download the object that implements the interface.
+<P>
+<strong>JavaWorld:</strong> How can companies or individuals recommend or specify business-specific APIs? For example, say an insurance company would like to allow customers to report insurance claims through devices such as cell phones or computers. They would benefit from a common API so that all insurance companies could cooperate or use this particular software service. So, if two people get into an accident, their respective insurance companies can exchange claim information via this common API. How could one go about defining such an "Insurance API"? <P>
+<strong>Jim Waldo:</strong> One way is for a company or an individual to come up with the API, publish it to the Jini community, and see if people started to use it. It's always good to have an implementation as well. You could just publish the API without the implementation, but nobody may use it.
+<P>
+<strong>JavaWorld:</strong> So an organization or an individual would create an "Insurance API" project on the Jini.org Website, publish its API recommendation, possibly upload an implementation... 
+<P>
+<strong>Jim Waldo:</strong> And off they go. Another alternative is to start a project beforehand and collect community input. The printer group has followed this route for the Jini printing API. Basically all of the major printer manufacturers are working through what the API for printing should be in the Jini network.
+<P>
+We try to provide people with the mechanisms they need to actually pull together these projects and move them forward. Sometimes we may even supply some cycles from some of our people to help them, to shepherd along the work. We may not know printing, for example, but we know Jini pretty well.
+<P>
+<strong>JavaWorld:</strong> You provide input that mainly simplifies the API or tailors it to the Jini environment?<P>
+<strong>Jim Waldo:</strong> That's certainly what I try to do. There is a certain aesthetic to Jini. We take the network-failure problems very seriously, so we worry about what happens when your call fails in unexpected ways. With this experience alone, we can help people in designing their interfaces.
+<P>
+<strong>JavaWorld:</strong> And that's where the Jini.org discussion groups, or projects, come in? <P>
+<strong>Jim Waldo:</strong> Absolutely. For example, the ServiceUI project was started inside the community by Bill Venners. People put together an interface, and after preparing a draft, Bill actually spent a day with the Jini group. We looked it over, made a suggestion here, filed off an edge there, and asked some questions.  As a result of that interaction, Bill made some minor changes in the ServiceUI. That's the way we see magnifying the talents inside the Jini group. That's why we've migrated to this open source approach. <P>
+<strong>JavaWorld:</strong> What would an industry-specific API look like? For our hypothetical "Insurance API" expert group, what sort of functionality should they be thinking about? <P>
+<strong>Jim Waldo:</strong> In addition to service interfaces specific to their industry, we would certainly encourage not to duplicate the functionality currently in Jini. If an expert group had a notion of something like leasing, they should use the leasing interface. If they had a notion that was similar to two-phase commit, they should use the two-phase commit interfaces. That way they can interoperate with other services. The Jini programming model is built around how services interoperate with other services. 
+<P>
+What basic conventions are required? First, the Jini programming model says that leasing is basic because you need a time-based convention to deal with failure. Second, if you're going to have agreement between multiple entities, you must previously have an agreement about how you came to that agreement.  That's why Jini includes the two-phase commit interfaces.  Third, if you're going to react to events happening someplace else, you have to know what an event is and how you send it. That's why Jini includes the event interfaces.  Fourth, you also must agree on how you advertise yourself, and how you find things. For an implementation to be a Jini service it must be able to find lookup services, register itself with those lookup services and renew its leases with those lookup services, just as any other Jini service would.  And, finally, you must be able to hand out an object that can represent you in another address space. That's the Java programming type object that is placed in the lookup service and is reconstituted when you obtain a service from the lookup service. <P>
+<strong>JavaWorld:</strong> You mentioned a moment ago that clients need to know about the Jini interfaces in advance. If an industry expert group creates and publishes an API and its implementation, do they need to follow a standards procedure similar to the Java Community Process? How would they make their API known?
+<P>
+<strong>Jim Waldo:</strong> The Jini community process differs slightly from the Java Community Process. We don't have anything nearly so formal as the JSR. To guarantee acceptance by the community, there are a number of tracks you can follow. One is to just publish your interface. Although you can't publish it as part of the net.jini or the net.jini.core namespace, people may start using your project, which will make it useful to other parts of the Jini community. If it becomes useful, then no extra step is needed. Some people feel that their project should have a more official status. In that case, put the project out for community review and ask the community to vote.
+<P>
+Right now, the community has essentially two houses. In one house stands the Jini community who can vote; in the other, the companies that hold a commercial Jini license. If both groups vote affirmatively, then the interface and the type definitions can be included in the net.jini name space.
+<P>
+The Technical Oversight Committee provides our checks and balances; it's basically an appeals body. Currently, nine members make up the Technical Oversight Committee.<P>
+<strong>JavaWorld:</strong> How do people get on this board? <P>
+<strong>Jim Waldo:</strong> They are nominated by the community, and then the board is voted in at a community meeting. <P>
+<strong>JavaWorld:</strong> So the members are representing individuals, not corporations?
+<P>
+<strong>Jim Waldo:</strong> Yes. The Technical Oversight Committee can decide if a vote was essentially not one that the Jini community should have followed. It's sort of an analog of the Supreme Court. <P>
+<strong>JavaWorld:</strong> So, they have a final say as to what's going to be included in the net.jini name space? <P>
+<strong>Jim Waldo:</strong> Yes. At this point, they do. <P>
+<strong>JavaWorld:</strong> But if something becomes really popular then it might not even be necessary to go through that process. <P>
+<strong>Jim Waldo:</strong>  I am a huge believer in de facto standards, as opposed to de jure standards. I think they work much better.
+<P>
+<strong>JavaWorld:</strong> To switch topics, could you talk about scaling Jini down to small devices, specifically the Surrogate Project? <P>
+<strong>Jim Waldo:</strong> The Surrogate Project began when we started thinking seriously about devices that had limited resources, particularly in regards to  memory. Many people think that the Surrogate Project focuses on how to deal with devices that can't run Java at all. But it's more than that. Even if a small device could be running Java, the idea behind Jini is that you move an object into the client that enables the client to use the service.  If you have a memory-limited device that runs Java, and you start receiving objects, at some point you're going to exhaust the available memory. Your system will break in a way that will be hard for you to understand, because it will seem random. 
+<P>
+<strong>JavaWorld:</strong> Because it will no longer be able to load classes or data into memory. <P>
+<strong>Jim Waldo:</strong> Exactly. We realized that the code-motion in this case was going the wrong way, to the limited device. The Surrogate Project defines an environment where these limited devices can move Java code to a host where no limits prevent the code from running on the device's behalf. <P>
+<strong>JavaWorld:</strong> That would be the surrogate host. <P>
+<strong>Jim Waldo:</strong> The surrogate host will be discovered by anything that wants to find a spot that can run an object on its behalf. Rather than trying to download classes to my Palm Pilot or some other small, memory-limited device, I'm going to find a surrogate host and move code from my Palm Pilot to that host.  The code will run on the host; it will talk Jini to the rest of the network, and it can talk to me directly because it knows my details.
+<P>
+<strong>JavaWorld:</strong> How would a device discover its surrogate host? <P>
+<strong>Jim Waldo:</strong> The surrogate architecture includes a discovery protocol for finding surrogate hosts. It features the same idea that Jini uses, where inside Jini, the discovery protocol is saying, "Find me a lookup service." In this case, a discovery protocol will allow a device looking for a surrogate host to match with a surrogate host. 
+<P>
+<strong>JavaWorld:</strong> So this device would have to have a piece of software that knows that protocol? <P>
+<strong>Jim Waldo:</strong> Right. And by the way, this protocol may differ over different networks. Bluetooth, for example, may not be running TCP/IP. <P>
+<strong>JavaWorld:</strong> So the surrogate discovery protocol is specific to the underlying network transport? <P>
+<strong>Jim Waldo:</strong> Right, the discovery protocol has to match your actual physical networking. So we can foresee, for example, a surrogate discovery protocol running over FireWire. With FireWire, when you plug in a device, it basically sends the moral equivalent of a bus interrupt down the FireWire network. In that case, the surrogate host can discover that a new device has turned on and contact it directly, instead of having the device send out a query such as, "Are you a surrogate host?" 
+<P>
+<strong>JavaWorld:</strong> So the surrogate architecture could be used by items other than devices, for example, applications that, for some reason or another, would not want to run the service themselves. Do you envision the surrogate architecture to be used to interoperate with non-Java based software -- Microsoft Windows-based COM objects, for example? 
+<P>
+<strong>Jim Waldo:</strong> Absolutely. That is another way to talk to non-Java things, or even to those items not written in a programming language. You could have something that plugged in that talked straight socket packet. But you can now do that in standard Jini. If you were to put something into the network that didn't understand Java, but would be able to obtain an interface to a lookup service and register a proxy with it, then that object does not need to know Java at all to communicate with its proxy.
+<P>
+<strong>JavaWorld:</strong> It could create its own private protocol...
+<P>
+<strong>Jim Waldo:</strong> Exactly. Many people don't understand this concept. Our implementation of Jini uses RMI. When we implement our Jini services, we use RMI to talk between the object and the proxy that represents this object in a Jini federation. But you don't have to do that. You could, in fact, just open up a socket and talk to a socket. <P>
+<strong>JavaWorld:</strong> Would the communication protocol between the proxy and the object have to use some sort of a TCP/IP connection currently? <P>
+<strong>Jim Waldo:</strong> Currently, yes, because our current implementation of Jini runs over TCP/IP networks. If you know your network is not a TCP/IP network, you don't have to use TCP/IP. What you know as the service can export the object that you hand out to people to talk to you. How you talk to that exported object is a private matter between you and the object. <P>
+<strong>JavaWorld:</strong> What is the status of the Surrogate Project?<P>
+<strong>Jim Waldo:</strong> Right now the spec is being reviewed. I think the implementation is about a week behind the spec. Once the spec has been decided, an implementation of it will be available shortly. I believe there are [other companies and individuals] that will provide implementations as well. <P>
+<strong>JavaWorld:</strong> Beyond the Surrogate Project, what challenges do you see in scaling Jini down in small devices? <P>
+<strong>Jim Waldo:</strong> We're also thinking about how we could scale down to places where a surrogate host cannot run. As well, there are some interesting questions that may require additions to the Java environment itself. How can I ask a virtual machine how much memory it has available? How do I ask an object how much space it needs?
+<P>
+<strong>JavaWorld:</strong> Somehow, the VM would have to relay this information... <P>
+<strong>Jim Waldo:</strong> Exactly, and the other thing that would be needed in a case like this is better garbage collection for classes, not just objects, inside Java. That's a hard problem, by the way. <P>
+I've talked about this to the small-VM guys a fair amount; they get headaches and say they'll work on it. We'll see. It is an exciting area because we don't know the answers. Jini started up in a research group back in Sun Labs. We still have the feeling that if we really knew all the answers to what we were talking about, then we shouldn't be doing it in the first place.
+<P>
+<strong>JavaWorld:</strong> To venture out in the other direction, what are the challenges scaling Jini up to large, perhaps worldwide, networks? What's the largest Jini deployment so far, in terms of number of services and number of users? 
+<P>
+<strong>Jim Waldo:</strong> I don't know what the largest one is, but I do know a group that completed a benchmark with a large system. The performance of the lookup service scaled absolutely linearly. This group had something like up to 10,000 agents. The time to register 500 agents didn't change, no matter how many agents were already there. The time to look up an agent was absolutely flat.
+<P>
+As for large-scale networks, right now the lookup service is built around the idea of a workgroup: you register everything in a lookup service, and you find things in that lookup service. That's fine for a workgroup. But it doesn't scale up to larger and larger groups. In larger and larger groups, you want to filter somehow.
+<P>
+If I had a lookup service for all of Sun, I wouldn't want all the printers to be included. I would only want to know about the local printers. But there might be Sun-wide services that I'd want to use, like the HR database information, which provides someone's phone number when given their name. Those are things that I'd like to find anywhere within the corporation. However, I don't want this information available outside the corporation. 
+<P>
+One of the things we're thinking about now is how you identify services that should be registered in a hierarchy of lookup services, rather than just your local lookup service. What kind of gradations do you want? How do these gradations work? Are the gradations based on locality of service? Are they based on who uses the service? 
+<P>
+One of the ideas I'm playing around with is the notion of a <code>Person</code> object that could register in various places. The idea is to find what printer, for example, or what lookup service is associated with me or some other person. You would register this <code>Person</code> object in many different lookup services. If I were doing this for Sun, a top-level lookup service might contain <code>Person</code> objects for everybody in Sun. And so I would go to that lookup service to find the <code>Person</code> object for somebody else in Sun, say Ken Arnold.  And based on that object, I could ask it what current lookup service is associated with this person. And from that, I could find the printer, or the scanner, or other services that were local to him, not me. <P>
+<strong>JavaWorld:</strong> In that case, the lookup service would belong to a person. A person might have several lookup services that he or she prefers to use.
+<P>
+<strong>Jim Waldo:</strong> Yes.  Or, it might be a lookup service that associates with the location of a person. When Ken is visiting California, I find the lookup service that he uses in California. 
+<P>
+<strong>JavaWorld:</strong> Would all the services he uses register in the California lookup service? <P>
+<strong>Jim Waldo:</strong> Yes. <P>
+<strong>JavaWorld:</strong> And that would take place automatically; the user would not have to be aware of that. So, if someone moves about, he would carry those services with him?
+<P>
+<strong>Jim Waldo:</strong> That's what I'm playing with right now. There is this notion of your home lookup service, and your current lookup service. 
+<P>
+You know, we're having a great time.  I hope other people in the Jini community are having as much fun as we are. And the people who are using it are the ones who are making it so much fun. 
+<IMG HEIGHT="12" WIDTH="22" SRC="http://www.idg.net/microsites/javaworld/javaworld/icons/jw-dingbat.gif"><P><br /></p>
+                        <font size=-1><!-- REPLACE PAGEURLS --> </font>
+                        <p>
+                            <img src="http://www.javaworld.com/images/jw-print-icon.gif" width="16" height="15" border="0" alt="Printer-friendly version" vspace="4" align="absmiddle" />
+                            <a href="/javaworld/jw-12-2000/jw-1208-waldo_p.html">Printer-friendly version</a> | <img src="http://www.javaworld.com/images/jw-email-icon.gif" width="20" height="15" border="0" alt="Send this article to a friend"> <a href="javascript:mail2Friend()">Mail this to a friend</a></p>
+                        <p><STRONG>About the author</STRONG><BR> 
+<a href="http://www.javaworld.com/javaworld/feedback/jw-feedback-form.html" target="_blank">Frank Sommers</a> is the founder and CEO of <a href="http://www.autospaces.com">Autospaces</a>, a startup focused on bringing Jini technology to the automotive software market. He has been programming in Java since 1995, after attending the first public demonstration of the language on the Sun Microsystems campus in November of that year. His interests include parallel and distributed computing, the discovery and representation of knowledge in databases, and the philosophical foundations of computing. When not thinking about computers, he composes and plays piano, studies the symphonies of Gustav Mahler, and explores the writings of Aristotle and Ayn Rand. 
+<br /></p>
+                        <p><ul><A NAME="resources"></a><STRONG>Resources</STRONG>
+<BR>
+
+<LI>Access Jini community projects, find out how to create your own, and download JSK 1.1 at Sun's Jini page: <BR><A HREF="http://www.jini.org">http://www.jini.org
+</A><BR>
+
+
+<LI>Information about the Fifth Jini Community Meeting: <BR><A HREF="http://www.jini.org/community_fifth.html">http://www.jini.org/community_fifth.html
+</A><BR>
+
+
+<LI>The Jini Surrogate Project page and specifications: <BR><A HREF="http://developer.jini.org/exchange/projects/surrogate">http://developer.jini.org/exchange/projects/surrogate
+</A><BR>
+
+
+<LI>Early draft of the RMI Security specifications: <BR><A HREF="http://java.sun.com/products/jdk/rmi/rmisec-doc/intro.html">http://java.sun.com/products/jdk/rmi/rmisec-doc/intro.html
+</A><BR>
+
+
+<LI>JavaOne 2000 conference sessions on Jini: <BR><A HREF="http://jsp.java.sun.com/javaone/javaone2000/tracks.jsp?ts=975565718118#5">http://jsp.java.sun.com/javaone/javaone2000/tracks.jsp?ts=975565718118#5
+</A><BR>
+
+
+<LI>"Java Technology Hits the Road," Steven Meloan (<em>java.sun.com,</em> Aug. 29, 2000): <BR><A HREF="http://java.sun.com/features/2000/08/ford.html">http://java.sun.com/features/2000/08/ford.html
+</A><BR>
+
+
+<LI>BizTone's ERP system: <BR><A HREF="http://www.biztone.com">http://www.biztone.com
+</A><BR>
+
+
+<LI>PersonalGenie: <BR><A HREF="http://www.personalgenie.com">http://www.personalgenie.com
+</A><BR>
+
+
+<LI>ProSyst's mBedded Server: <BR><A HREF="http://www.prosyst.com">http://www.prosyst.com
+</A><BR>
+
+
+<LI>Bill Venners's Jini page at Artima: <BR><A HREF="http://www.artima.com">http://www.artima.com
+</A><BR>
+
+
+<LI>Hear Jim Waldo and Frank Sommers talk about the Surrogate Project: <BR><A HREF="http://mithras.itworld.com/media/hearit/1100/001116sommers_jini.ram">http://mithras.itworld.com/media/hearit/1100/001116sommers_jini.ram
+</A><BR>
+
+
+<LI>Sign up for the <em>JavaWorld This Week</em> free weekly email newsletter and keep up with what's new at <em>JavaWorld</em>: <BR><A HREF="http://www.idg.net/jw-subscribe">http://www.idg.net/jw-subscribe
+</A><BR>
+
+
+<LI>Check out <em>JavaWorld</em>'s <strong>Jiniology</strong> column for more stories on Jini technology: <BR><A HREF="http://www.javaworld.com/javaworld/topicalindex/jw-ti-jiniology.html">http://www.javaworld.com/javaworld/topicalindex/jw-ti-jiniology.html
+</A><BR>
+
+
+</ul><br /></p>
+                        <!-- REPLACE SIDEBAR -->
+                    </font>
+                    <!-- ## MAIN CONTENT ENDS HERE ### -->
+                </td>
+                <td width="8"><img height=1 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="168" nowrap><nobr><img src="http://www.javaworld.com/images/spacer.gif" width=160 height=8 border=0 ><img src="http://www.javaworld.com/images/c_bllftbottom.gif" width=8 height=8 border=0 ></nobr></td>
+                <td width="100%"><img src="http://www.javaworld.com/images/spacer.gif" width=1 height=1 border=0 ></td>
+                <td width="8"><img src="http://www.javaworld.com/images/spacer.gif" width=8 height=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="186" bgcolor="#006699" align="middle"><nobr><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="2"></font></nobr><a href="http://www.javaworld.com"><img height=81 src="http://www.javaworld.com/images/top_jwlogo.gif" width=186 border=0></a></td>
+                <td bgcolor="#cccccc" width="8" valign="bottom"><img height=8 src="http://www.javaworld.com/images/c_blgrylftbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- BOTTOM 468x60 AD STARTS HERE -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=912701?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=912701?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=912701?" border=0 height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer4" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- BOTTOM 468x60 AD ENDS HERE -->
+</td>
+                <td width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table bgcolor="#006699" align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="100%" align="middle" valign="center">    <font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">
+        <p>
+            <br />
+            <a href="http://www.javaworld.com"><font color="#ffffff">HOME</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/features/index.shtml"><font color="#ffffff">FEATURED TUTORIALS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/columns/index.shtml"><font color="#ffffff">COLUMNS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/news-reviews/index.shtml"><font color="#ffffff">NEWS & REVIEWS</font></a>&nbsp;|&nbsp;
+            <a href="http://forums.idg.net/webx?13@@.ee6b802"><font color="#ffffff">FORUM</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/resources/index.shtml"><font color="#ffffff">JW RESOURCES</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/info/jw-about-index.shtml"><font color="#ffffff">ABOUT JW</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/feedback"><font color="#ffffff">FEEDBACK</font></a>
+        </p>
+        <p>
+
+            <a href="http://www.javaworld.com/javaworld/common/jw-copyright.html"><font color="#ffffff">Copyright © 2002</font></a> JavaWorld.com, an IDG Communications company
+        </p>
+    </font>
+</td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+            <tr>
+                <td width="100%" align="right" valign="top"><img height=8 src="http://www.javaworld.com/images/c_blrtbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.javaworld.com/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <!--TOP_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=912701?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer1.pageX,layer1.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--125x125-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=med;sz=125x125;tile=2;ord=912701?" width=125 height=125 visibility="hidden" onLoad="moveToAbsolute(layer2.pageX,layer2.pageY);clip.height=125;clip.width=125;visibility='show';">
+</LAYER>
+
+<!--SKYSCRAPER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=912701?" width=120 height=600 visibility="hidden" onLoad="moveToAbsolute(layer3.pageX,layer3.pageY);clip.height=600;clip.width=120;visibility='show';">
+</LAYER>
+
+<!--BOTTOM_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=912701?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer4.pageX,layer4.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--Big AD-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=912701" width=336 height=280 visibility="hidden" onLoad="moveToAbsolute(layer5.pageX,layer5.pageY);clip.height=280;clip.width=336;visibility='show';">
+</LAYER>
+    </body>
+<!-- stories1 -->
+<!-- DOCID 658546 -->
+</html>
+

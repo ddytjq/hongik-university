@@ -1,0 +1,436 @@
+ID=E0183
+URL=http://www.troubleshooters.com/codecorn/memleak.htm
+SIZE=20315
+DATE=12/07/02
+TIME=19:18:23
+DATASET=C
+HTML=<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="description" content="Debugging and Troubleshooting Source Code including MS Access, C++, Delphi, FoxPro, MFC, SQL, Visual Basic">
+   <meta name="keywords" content="debugging, troubleshooting, Source Code, Access, C++, Delphi, FoxPro, MFC, Microsoft Foundation Classes, SQL, Visual Basic">
+   <meta name="GENERATOR" content="Mozilla/4.77 [en] (X11; U; Linux 2.4.3-20mdksmp i686) [Netscape]">
+   <meta name="FORMATTER" content="Microsoft FrontPage 1.1">
+   <meta name="Description" content="Principles, procedures and tips to prevent memory leak in your C++ applications.">
+   <meta name="KeyWords" content="C++, C plus plus, memory leak, alloc, malloc, new, delete, classes, objects">
+   <title>Just Say No to Memory Leaks</title>
+</head>
+<body text="#000000" bgcolor="#FFFFF0" link="#0000EE" vlink="#551A8B" alink="#FF0000" background="tcbk.gif">
+
+<center>
+<h2>
+<a NAME="top"></a><a href="../troubleshooters.htm">Troubleshooters.Com</a>
+Presents</h2></center>
+
+<center>
+<h1>
+"Just Say No" to Memory Leaks</h1></center>
+
+<center><a href="../cpyright.htm">Copyright (C) 1997</a> by Steve Litt</center>
+
+<center>
+<h5>
+[ <a href="crashprf.htm">Back to Crashproof C++</a> |
+<a href="index.htm">Code
+Corner</a> | <a href="../troubleshooters.htm">Troubleshooters.Com</a> |
+<a href="mailto:slitt@troubleshooters.com">Email
+Steve Litt</a> | <a href="../cpyright.htm">Copyright Notice</a> ]</h5></center>
+
+<center><table BORDER CELLSPACING=0 CELLPADDING=5 WIDTH="90%" BGCOLOR="#F0FFF7" NOSAVE >
+<tr NOSAVE>
+<td NOSAVE>
+<center><b><font size=-1>Steve Litt is the author of <a href="../bookstore/ttech.htm">Troubleshooting
+Techniques of the Successful Technologist</a> and</font></b>
+<br><b><font size=-1><a href="../bookstore/rl.htm">Rapid Learning: Secret
+Weapon of the Successful Technologist</a>.</font></b></center>
+</td>
+</tr>
+</table></center>
+
+<br>&nbsp;
+<p>To me, letting code with memory leaks out the door is the mark of an
+amateur. Some disagree with me. For those who agree with me, I offer "how
+to eliminate memory leak". To serve those who disagree with me, I offer
+"The Top Ten Excuses for Memory Leak". Enjoy!
+<br>&nbsp;
+<table BORDER CELLSPACING=0 CELLPADDING=3 BGCOLOR="#A8D8D8" >
+<tr>
+<th ALIGN=CENTER VALIGN=CENTER><a href="#How2EliminateLeak">How to Eliminate
+Memory Leak</a></th>
+
+<th ALIGN=CENTER VALIGN=CENTER><a href="#Topten">Top Ten Excuses for Memory
+Leak</a></th>
+</tr>
+
+<tr ALIGN=LEFT VALIGN=TOP>
+<td>
+<ul>
+<li>
+<a href="#modular">Make everything modular and independent.</a></li>
+
+<li>
+<a href="#How2delete">How to easily delete everything you create</a></li>
+
+<li>
+<a href="#Testyourclasses">Test your classes.</a></li>
+
+<li>
+<a href="#Watch4oststream">Watch out for oststream::str()</a></li>
+
+<li>
+<a href="#Test3rdparty">Test third party tools</a></li>
+</ul>
+</td>
+
+<td>
+<h5>
+10. <a href="#nobigthing">A little memory leak is no big thing.<br>
+</a>9. <a href="#findout">Nobody will ever find out.<br>
+</a>8. <a href="#Complex">Complex programs always have memory leak.<br>
+</a>7. <a href="#entangled">My Application Framework is too entangled.<br>
+</a>6. <a href="#operatingsystem">The memory leak is in the operating system.<br>
+</a>5. <a href="#thirdparty">The memory leak is in my third party tools.<br>
+</a>4. <a href="#developmentcycles">Product development cycles are too
+fast.<br>
+</a>3. <a href="#goodprogrammers">It's hard to get good programmers today.<br>
+</a>2. <a href="#priceupay">Leaks and bugs are the price you pay for GUI.<br>
+</a>1. <a href="#Everythingelse">Everything else leaks, why shouldn't mine?</a></h5>
+</td>
+</tr>
+</table>
+
+<h1>
+<br>
+<a NAME="Topten"></a>Top Ten Excuses for Memory Leak</h1>
+Excuses are like garbage cans. Everybody has one, and they all stink. Here
+are the top ten used to justify "a little memory leak".
+<h2>
+<br>
+<a NAME="nobigthing"></a>10. A little memory leak is no big thing.</h2>
+<i>Especially in a routine that's called only once, or a couple times.
+Right?</i>
+<p>No, wrong. Leaky programs tend to display wierd intermittents ten times
+harder to troubleshoot than a reproducible error. It will drive the users
+nuts.
+<h2>
+<br>
+<a NAME="findout"></a>9. Nobody will ever find out.</h2>
+<i>Since leaky programs usually produce intermittents that can appear to
+crash in other people's programs, I can dodge the bullet by blaming it
+on other programs.</i>
+<p>Of course, a good Troubleshooter can trace the memory leak down to the
+line of code. And if they find it in your code, everyone will hate you.
+Not to mention that your transgression might be published on the web...
+<h2>
+<br>
+<a NAME="Complex"></a>8. Complex programs always have memory leak.</h2>
+<i>Come on! Live in the real world. With today's customers demand for more
+features, real-world apps are too complex to elimate every memory leak.</i>
+<p>Don't write apps exceeding your abilities as a programmer. Instead,
+craft your app from a collection of <b>encapsulated</b> and <b>independent</b>
+classes, each of which can be tested and de-leaked independently.
+<h2>
+<br>
+<a NAME="entangled"></a>7. My Application Framework is too entangled.</h2>
+<i>My application framework gives me over 100,000 lines of code already
+programmed. Everybody's using it. Unfortunately, it's not modular enough
+to independently test classes.</i>
+<p>Users won't forgive your bugs because of your choice of application
+framework any more than you'd forgive your housepainters sloppy work because
+he chose a bad sprayer. Gone are the days when your only choices were MFC,
+OWL, and DOITYOURSELF. Borland's C++ Builder is based on Ultra-Modular
+VCL. Powersoft's C++ product also shows promise.
+<p>If you're afraid to switch application frameworks because you want the
+one made in Redmond, beware. They won't blame the guys in Redmond for your
+bugs, they'll blame you. And a competitor with solid code will eat your
+lunch.
+<h2>
+<br>
+<a NAME="operatingsystem"></a>6. The memory leak is in the operating system.</h2>
+<i>My customers demand apps that work with the most popular operating system,
+and the leaks occur in that operating system.</i>
+<p>Leaks in the OS? Maybe that's true and maybe it isn't. The only way
+to find out is a complete analysis of your program and classes. And that's
+only possible with a modularly crafted app. If you do prove a leak is in
+the OS, it's your job as a programmer to work around it.
+<h2>
+<br>
+<a NAME="thirdparty"></a>5. The memory leak is in my third party tools.</h2>
+<i>I can't write everything from scratch. I can't re-invent the wheel.
+This is the real world. And some of those third party tools have memory
+leaks. What can I do?</i>
+<p>You can demand better of your third party vendors. Demand that their
+offerings come in distinct, modular, and independent classes. Then test
+each class for memory leak. Don't have the time? Then pay the price in
+the marketplace.
+<h2>
+<br>
+<br>
+<a NAME="developmentcycles"></a>4. Product development cycles are too fast.</h2>
+<i>Be real. This is 1997. The marketplace demands a four month time-to-market.
+There's no time to test thoroughly or build in quality.</i>
+<p>OK, fine. Kick the product out the door in four months, with memory
+leaks (and the resulting other problems). Now start your next 4 month production
+cycle. With huge volumes of trouble calls yanking your programmers away
+from their work. And trade magazines demanding explanations for the bugs.
+And decreased revenue from the tarnished reputation.
+<h2>
+<br>
+<a NAME="goodprogrammers"></a>3. It's hard to get good programmers today.</h2>
+<i>As soon as I get a good programmer, someone else offers him more money.
+The minute I train a programmer, he goes somewhere else. The team at the
+start of a project bears no resemblance to the team at the end of the project.
+So there are bugs.</i>
+<p>If you have problems paying for good talent now, imagine how tough it
+will be when your revenue stream dries up from buggy product. Give your
+good programmers large raises commensurate with their willingness to accept
+training in modular and independent class construction and use. Those large
+raises are nothing next to what you'll have to pay a new guy.
+<h2>
+<br>
+<a NAME="priceupay"></a>2. Leaks and bugs are the price you pay for GUI.</h2>
+<i>Take your head out of the clouds. Today's user demands GUI, and GUI
+always has memory leaks. Get real!</i>
+<p><a href="#Everythingelse">See Excuse #1</a>.
+<h2>
+<br>
+<a NAME="Everythingelse"></a>1. Everything else leaks, why shouldn't mine?</h2>
+<i>Almost all software today has memory leaks, and people still buy it.
+Why should I spend money on something that won't influence the buying decision?</i>
+<p>Read the trades. Today's corporate managers are sick and tired of the
+high cost of ownership, and are investigating possible solutions. One of
+those proposed solutions, the Java enabled Network PC, would put a lot
+of people, including our favorite operating system, out of business. Many
+lament the fact that in many industries, all this automation has brought
+almost no increase in productivity. Our economy can't continue to support
+buggy software. Changes are coming. And when they do, memory leaks will
+not be forgiven.
+<h1>
+<br>
+<a NAME="How2EliminateLeak"></a>How to Eliminate Memory Leak</h1>
+
+<h2>
+<br>
+<a NAME="modular"></a>Make everything modular and independent.</h2>
+It's been known since the 70's. The less modular your program, the more
+problems. In the 70's, subroutines with global variables provided adequate
+modularity. With the more sophisticated apps of the 80's, local variables
+were required. Now in the 90's, variables and subroutines are packaged
+together in classes, and with a few exceptions each class should NOT be
+required to know about the other classes. Without this level of modularity,
+you'll find it hard to write a sophisticated app, and almost impossible
+to completely debug it. This is the source of most of the "it'llhavetodoware"
+of today. Before taking the next steps to eliminate memory leaks, try your
+best to craft your app from encapsulated and independent classes.
+<h2>
+<br>
+<a NAME="How2delete"></a>How to easily delete everything you create</h2>
+
+<h3>
+<br>
+<a NAME="Zap"></a>Make a Zap() command</h3>
+I define a zap() command like this:
+<pre>#define zap(x) if(x){delete(x); x=0;}</pre>
+Then, assuming all pointers start their lives as null pointers, I can safely
+delete what's been newed, and not delete things that haven't been newed,
+with a series of zap() commands like this:
+<pre>zap(pchFirstname);
+zap(pchLastname);
+zap(pchJobDescription);</pre>
+There is nothing magical about this, it just saves repetative code and
+makes it more readable. Do not stick a typecast in the zap() command --
+if something errors out on the above zap() command it likely has another
+error somewhere.
+<p>One more note. Stroustrup says in his C++ book that #define macros are
+obsolete in C++. For the most part I agree with him, but this macro really
+is just a substitute for lines of code, so I think it's the best way to
+do it. If you know a better way, please <a href="mailto:slitt@troubleshooters.com">write
+me</a>.
+<h3>
+<br>
+Class member variable pointers</h3>
+Generally speaking, most heap-allocated objects start their lives as pointers
+in the private part of classes. Chances are they're allocated with a new
+command in that classes constructor. Make a class method called deallocate()
+to use the delete command on every heap-allocated class variable.
+<p>I like to make sure the object was really allocated, so I make sure
+the pointers start their lives as null. Then I make deallocate() a series
+of <a href="#Zap">zap()</a> commands. My deallocate() method then contains
+code like:
+<pre>zap(pchFirstname);
+zap(pchLastname);
+zap(pmyobject);</pre>
+Of course, my destructor will call deallocate(), as well as any ABEND method.
+<h4>
+<br>
+Deleting member variable pointers in a loop</h4>
+Sometimes the pointer isn't new'ed in the constructor, but in a method
+that can be called over and over. A good example is a string-constructing
+method which allocates memory sufficient to hold the finished string. For
+instance:
+<pre>void MYCLASS::makeFilename(const char *szName, const char *szDir)
+&nbsp;{
+&nbsp;pchMemberDir = new char[strlen(szName]+strlen(szDir)+2]; //strlens plus backslash plus null
+&nbsp;//*** DO THE STRCPY() AND STRCAT() COMMANDS HERE ***
+&nbsp;}</pre>
+The if the method above is called 1000 times in a loop, you'll end up with
+one valid char pointer and 999 disembodied memory chuncks. The trick is
+to put the following line of code just before the <tt>new</tt> command:
+<pre>zap(pchMemberDir)&nbsp;&nbsp; //if exists from past call, delete it</pre>
+
+<h2>
+<br>
+<a NAME="Testyourclasses"></a>Test your classes.</h2>
+Here's the code. The explanation follows the code:
+<pre>void testMyclassOnce()
+&nbsp;&nbsp; {
+&nbsp;&nbsp; MYCLASS myobject;
+&nbsp;&nbsp; //*** EXERCISE ALL METHODS BELOW ***
+&nbsp;&nbsp; //*** COMMENT IN THE NEXT AS LEAKS ARE ELIMINATED FROM PREVIOUS ***
+&nbsp;&nbsp; //myobject.method1();
+&nbsp;&nbsp; //myobject.method2();
+&nbsp;&nbsp; //myobject.method3();
+&nbsp;&nbsp; }</pre>
+
+<pre>const int testMyclass(const int nReps)
+&nbsp;{
+&nbsp;int nLeaks = 0;
+&nbsp;long lMemLast = 0;
+&nbsp;long lMemOrg=0;
+&nbsp;long lMem;
+&nbsp;for(int nT = 0; nT &lt; nReps; nT++)
+&nbsp; {
+&nbsp; testMyclassOnce();
+&nbsp; lMem = coreleft();&nbsp;&nbsp; //or whatever reports memory in your compiler
+&nbsp; if(lMemOrg == 0)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp; lMemLast = lMem;
+&nbsp;&nbsp;&nbsp;&nbsp; lMemOrg = lMem;
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; if(lMem != lMemLast)
+&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp; nLeaks++;
+&nbsp;&nbsp;&nbsp;&nbsp; cout &lt;&lt; "LEAK FOUND&nbsp;&nbsp; ";
+&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp; cout &lt;&lt; "Memory left=" &lt;&lt; lMem &lt;&lt; ", last time=" &lt;&lt; lMemLast &lt;&lt; "&nbsp;&nbsp;&nbsp; \r";
+&nbsp;&nbsp; }
+&nbsp;cout &lt;&lt; "\nFinal memory=" &lt;&lt; lMem &lt;&lt; ", initial memory=" &lt;&lt; lMemOrg &lt;&lt; '\n';
+&nbsp;return(nLeaks);
+&nbsp;}
+
+</pre>
+We start with a function where the object to be leak-tested is instantiated
+and goes out of scope, and nothing else. We call it from a loop. Start
+by exercising it five times, then 50, then 500, then 5000. As you eliminate
+memory leaks from the constructor and destructor, increase the repetition
+number. Then, when the constructor and destructor are sound, comment in
+the methods one or a few at a time, and test them starting with 5 reps.
+When testMyclassOnce() includes complete exercise of all the member functions,
+and can be called 5000 times without a memory leak or a crash, you can
+be pretty sure of the class.
+<p>Applications where all classes are tested this way are pretty likely
+to run cleanly.
+<h2>
+<br>
+<a NAME="wholeprogram"></a>Test the whole program</h2>
+You've tested all the component classes, built the program, and it appears
+perfect. Now give it the bullet test. Rename main(), then make a new main()
+as follows:
+<pre>void main(int argc, char *argv[])
+&nbsp;{
+&nbsp;for(int nT = 0; nT &lt; 5000; nT++)
+&nbsp;&nbsp; mymain(argc, argv)
+&nbsp;}</pre>
+Note that this won't work for MFC apps, where it's demanded that there
+only be one application object. Nevertheless, you can often use this principle
+for entire subroutines, methods, etc.
+<h2>
+<br>
+<a NAME="Watch4oststream"></a>Watch out for oststream::str()</h2>
+Class ostrstream can be a great string manipulation tool, but it can also
+give you a memory leak. Once you use its str() member function, the allocated
+string won't be destroyed when the ostrstream object goes out of scope
+or is destroyed. Check this out:
+<pre>void displayFilename(const char *szName, const char *szDir)
+&nbsp;{
+&nbsp;ostrstream ost;
+&nbsp;ost &lt;&lt; szDir &lt;&lt; '\\' &lt;&lt; szName;
+&nbsp;ost.put(0);
+&nbsp;cout &lt;&lt; ost.str() &lt;&lt; '\n';
+&nbsp;//ost.rdbuf()->freeze(0); <b>//WITHOUT THIS, YOU HAVE A MEMORY LEAK
+</b>&nbsp;}</pre>
+
+<pre>void main()
+&nbsp;{
+&nbsp;cout &lt;&lt; "Coreleft=" &lt;&lt; coreleft() &lt;&lt; '\n';
+&nbsp;displayFilename("win.ini", "c:\\windows");
+&nbsp;cout &lt;&lt; "Coreleft=" &lt;&lt; coreleft() &lt;&lt; '\n';
+&nbsp;}</pre>
+You'll note that the memory has decreased, because ost.str() allocated
+the string, and that string wasn't destroyed when ost went out of scope.
+The solution is to call ost.rdbuf()->freeze(0), which "unfreezes" the string
+and allows it to be destroyed along with the ostrstring object.
+<p>How about when the string is returned by the function. Obviously the
+function can't destroy it. In such a case, you have to destroy it yourself:
+<pre>const char *makeFilename(const char *szName, const char *szDir)
+&nbsp;{
+&nbsp;ostrstream ost;
+&nbsp;ost &lt;&lt; szDir &lt;&lt; '\\' &lt;&lt; szName;
+&nbsp;ost.put(0);
+&nbsp;return(ost.str());
+&nbsp;}</pre>
+
+<pre>void main()
+&nbsp;{
+&nbsp;cout &lt;&lt; "Coreleft=" &lt;&lt; coreleft() &lt;&lt; '\n';
+&nbsp;const char *pchFile=makeFilename("win.ini", "c:\\windows");
+&nbsp;cout &lt;&lt; "Filename is" &lt;&lt; pchFile &lt;&lt; '\n';
+&nbsp;//zap(pchFile);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>//WITHOUT THIS, YOU HAVE A MEMORY LEAK
+</b>&nbsp;cout &lt;&lt; "Coreleft=" &lt;&lt; coreleft() &lt;&lt; '\n';
+&nbsp;}</pre>
+In the makeFilename() example above, it might be tempting (and more modular)
+to let makeFilename itself destroy the string using ost.rdbuf()->freeze(0).
+Unfortunately, this would expose the returned string to use by another
+memory allocation, which would overwrite the string and produce self-modifying
+code. Note also your calling function can't forget to get the pointer,
+then deallocate it with a call to the next:
+<pre>&nbsp;cout &lt;&lt; "Coreleft=" &lt;&lt; coreleft() &lt;&lt; '\n';
+&nbsp;cout &lt;&lt; "Filename is" " &lt;&lt; makeFilename("win.ini", "c:\\windows") &lt;&lt; '\n';
+&nbsp;// NOTE THAT NOW THE STRING IS LOST FOREVER!
+&nbsp;pchFname = makeFilename("win.ini", "c:\\windows"); <b>//SECOND STRING!!
+</b>&nbsp;zap(pchFile);&nbsp;&nbsp;&nbsp;&nbsp; <b>//SECOND STRING DESTROYED, BUT FIRST ONE STILL ALLOCATED
+</b>&nbsp;cout &lt;&lt; "Coreleft=" &lt;&lt; coreleft() &lt;&lt; '\n';</pre>
+
+<h2>
+<br>
+<a NAME="Test3rdparty"></a>Test third party tools</h2>
+Its a poor workman who blames his tools. Imagine your carpenter saying
+"I'd have liked to make your doorframe square, but my hammer was defective".
+Your customers will be about as understanding if you app crashes because
+of a bug in a third party tool you used. Fortunately, you can check third
+party tools before using them. If they have memory leaks, send them back
+for a full refund. If the company won't give a refund, you lost a little
+money but now you know.
+<p>First of all, a third party tool should do one thing and do it well.
+That means it should have one, or at the most a handful, of classes. If
+it has tons of classes, and especially if there are entanglements between
+the classes (each must know about the other), those tools are a recipe
+for disaster. So lets assume your vendor ships you one or a few INDEPENDENT
+classes. Simply memory-leak test each class <a href="#Testyourclasses">the
+way you'd test one of your own</a>. Only much more rigorously. You can't
+fix it later if there's a memory leak.
+<p>
+<hr>
+<h5>
+[ <a href="crashprf.htm">Back to Crashproof C++</a> | <a href="index.htm">Code
+Corner</a> | <a href="../troubleshooters.htm">Troubleshooters.Com</a> |
+<a href="mailto:slitt@troubleshooters.com">Email
+Steve Litt</a> | <a href="../cpyright.htm">Copyright Notice</a> ]</h5>
+<a href="cpyright.htm#top"><img SRC="../images/biglcpyr.gif" NOSAVE BORDER=0 height=30 width=30></a><a href="../cpyright.htm#top">Copyright
+(C)1997 by Steve Litt.</a> -- <a href="../cpyright.htm#top">Legal</a>
+<br>&nbsp;
+<br>&nbsp;
+</body>
+</html>
+

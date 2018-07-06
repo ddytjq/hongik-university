@@ -1,0 +1,294 @@
+ID=F0132
+URL=http://www.geocities.com/SiliconValley/Campus/9449/BitBlt.htm
+SIZE=20745
+DATE=09/07/2002
+TIME=13:15:15
+DATASET=Visual Basic
+HTML=<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Pablo Alvim">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.01 [en] (Win95; U) [Netscape]">
+   <TITLE>The BitBlt Function</TITLE>
+</HEAD>
+<BODY TEXT="#000099" BGCOLOR="#FFFFFF" LINK="#CC0000" VLINK="#CC0000" ALINK="#CC0000" BACKGROUND="Grad2.gif">
+&nbsp;
+<TABLE BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%" >
+<TR>
+<TD><IMG SRC="1pix.gif" HEIGHT=10 WIDTH=141></TD>
+
+<TD><IMG SRC="1pix.gif" HEIGHT=10 WIDTH=35></TD>
+
+<TD><IMG SRC="BitBltTitle.jpg" HEIGHT=35 WIDTH=300></TD>
+</TR>
+
+<TR>
+<TD VALIGN=TOP><A NAME="0"></A><B><FONT FACE="Trebuchet MS">Index</FONT></B>&nbsp;
+
+<P><A HREF="#1"><FONT FACE="Trebuchet MS"><FONT SIZE=-1><B>1.</B> Getting
+Started</FONT></FONT>&nbsp;</A>&nbsp;
+
+<P><A HREF="#2"><FONT FACE="Trebuchet MS"><FONT SIZE=-1><B>2. </B>Calling
+the</FONT></FONT>&nbsp;</A>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1><A HREF="#2">Function</A></FONT></FONT><FONT FACE="Trebuchet MS"><FONT SIZE=-1><A HREF="#2"></A></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1><A HREF="#3"><B>3. </B>Some
+Explanations</A></FONT></FONT><FONT FACE="Trebuchet MS"><FONT SIZE=-1><A HREF="#2"></A></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1><A HREF="#4"><B>4.</B> Example</A></FONT></FONT></TD>
+
+<TD></TD>
+
+<TD VALIGN=TOP><FONT FACE="Trebuchet MS"><FONT SIZE=-1></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>There are many tutorials over
+the internet about the BitBlt API call. This is one of the most</FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>important functions used by
+graphics/game programmers, so I decided VB Center should have one about
+it too.</FONT></FONT>&nbsp;
+
+<P><A NAME="1"></A><B><FONT FACE="Trebuchet MS"><FONT COLOR="#CC0000"><FONT SIZE=-1>1.
+Getting Started...</FONT></FONT></FONT></B>&nbsp;&nbsp;
+<BR><IMG SRC="Line3.jpg" HEIGHT=2 WIDTH=400>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>The BitBlt function resides
+in GDI32 (graphics device interface), a dll that is usually located at
+your system path. It is used to print rectangular blocks of pixels from
+a source image (that can be either in a picture box or stored at a memory
+DC) to a destination (the same thing).</FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Well, if you didn't understand
+too much, just think of BitBlt as a function similar to <B>PaintPicture</B>
+- but with much more effects and velocity.</FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-2><A HREF="#0">Back to Top</A></FONT></FONT>
+
+<P><A NAME="2"></A><B><FONT FACE="Trebuchet MS"><FONT COLOR="#CC0000"><FONT SIZE=-1>2.
+Calling the Function</FONT></FONT></FONT></B>&nbsp;
+<BR><IMG SRC="Line3.jpg" HEIGHT=2 WIDTH=400>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>To call this function from VB,
+add the following code to the declarations section of a module:</FONT></FONT>&nbsp;
+
+<P><IMG SRC="Line2.jpg" HEIGHT=2 WIDTH=200>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Declare Function <FONT COLOR="#000000">BitBlt</FONT>
+Lib<FONT COLOR="#000000"> "gdi32" </FONT>Alias <FONT COLOR="#000000">"BitBlt"
+(</FONT>ByVal <FONT COLOR="#000000">hDestDC</FONT> As Long<FONT COLOR="#000000">,</FONT>
+ByVal <FONT COLOR="#000000">x </FONT>As Long<FONT COLOR="#000000">, </FONT>ByVal
+<FONT COLOR="#000000">y</FONT> As Long<FONT COLOR="#000000">, </FONT>ByVal
+<FONT COLOR="#000000">nWidth</FONT> As Long<FONT COLOR="#000000">, </FONT>ByVal
+<FONT COLOR="#000000">nHeight</FONT> As Long<FONT COLOR="#000000">,</FONT>
+ByVal<FONT COLOR="#000000"> hSrcDC</FONT> As Long<FONT COLOR="#000000">,
+</FONT>ByVal <FONT COLOR="#000000">xSrc</FONT> As Long<FONT COLOR="#000000">,</FONT>
+ByVal<FONT COLOR="#000000"> ySrc</FONT> As Long<FONT COLOR="#000000">,
+</FONT>ByVal <FONT COLOR="#000000">dwRop</FONT> As Long<FONT COLOR="#000000">)
+</FONT>As Long</FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>' ================================</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>'PARAMETERS
+AND THEIR DESCRIPTION</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>' ================================</FONT></FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>' ByVal
+hDestDC As Long ..... hDC of object to receive the .bmp</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>' ByVal
+x As Long ........... x coordinate (upper-left) destination rectangle</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>' ByVal
+y As Long ........... y coordinate (upper-left) destination rectangle</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>' ByVal
+nWidth As Long ...... width of the destination rect. and source .bmp</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>' ByVal
+nHeight As Long ..... height of the destination rect. and source .bmp</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>' ByVal
+hSrcDC As Long ...... hDC of source object that contains the .bmp</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>' ByVal
+xSrc As Long ........ x coordinate (upper-left) source .bmp</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>' ByVal
+ySrc As Long ........ y coordinate (upper-left) source .bmp</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>' ByVal
+dwRop As Long ....... specifies the raster operation to be performed</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>&nbsp;</FONT></FONT>&nbsp;
+<BR><IMG SRC="Line2.jpg" HEIGHT=2 WIDTH=200>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Here it is! Now that you have
+declared the function, add some constants to the raster operations you'll
+use:</FONT></FONT>&nbsp;
+
+<P><IMG SRC="Line2.jpg" HEIGHT=2 WIDTH=200>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Public Const <FONT COLOR="#000000">SRCCOPY
+= &amp;HCC0020</FONT>&nbsp;&nbsp;&nbsp;&nbsp;<FONT COLOR="#009900"> 'Copies
+the source bitmap to destination bitmap.</FONT></FONT></FONT><FONT COLOR="#009900">&nbsp;</FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Public Const <FONT COLOR="#000000">SRCAND
+= &amp;H8800C6</FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT COLOR="#009900">
+'Combines pixels of the destination with source bitmap</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'using the Boolean AND operator.</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Public Const <FONT COLOR="#000000">SRCINVERT
+= &amp;H660046</FONT>&nbsp; <FONT COLOR="#009900">'Combines pixels of the
+destionation with the bitmap</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'using the Boolean XOR operator.</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Public Const <FONT COLOR="#000000">SRCPAINT
+= &amp;HEE0086</FONT>&nbsp;&nbsp;&nbsp; <FONT COLOR="#009900">'Combines
+pixels of the destination with source bitmap</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'using the Boolean OR operator.</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Public Const <FONT COLOR="#000000">SRCERASE
+= &amp;H4400328&nbsp;</FONT> <FONT COLOR="#009900">'Inverts the destination
+bitmap and then combines the</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'results with the source bitmap using the Boolean AND</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'operator</FONT></FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1><FONT COLOR="#000099">Public
+Const </FONT><FONT COLOR="#000000">DSINVERT = &amp;H550009&nbsp;</FONT><FONT COLOR="#009900">&nbsp;&nbsp;
+'Inverts the destination bitmap.&nbsp;</FONT></FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1><FONT COLOR="#000099">Public
+Const</FONT><FONT COLOR="#000000"> NOTSRCCOPY = &amp;H330008&nbsp;</FONT><FONT COLOR="#009900">
+'Copies the inverted source bitmap to the dest.</FONT></FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1><FONT COLOR="#000099">Public
+Const</FONT><FONT COLOR="#009900"> </FONT><FONT COLOR="#000000">NOTSRCERASE
+= &amp;H1100A6</FONT><FONT COLOR="#009900"> 'Inverts the result of combining
+the destination and</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'source bitmap using the Boolean OR operator.</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>&nbsp;</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1><FONT COLOR="#000099">Public
+Const</FONT><FONT COLOR="#009900"> </FONT><FONT COLOR="#000000">MERGECOPY
+= &amp;HC000CA&nbsp;&nbsp;</FONT><FONT COLOR="#009900"> 'Combines the pattern
+and the source bitmap using&nbsp;</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'the Boolean AND operation.</FONT></FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1><FONT COLOR="#000099">Public
+Const </FONT><FONT COLOR="#000000">MERGEPAINT = &amp;HBB0226</FONT><FONT COLOR="#009900">&nbsp;
+'Combines the inverted source bitmap with the</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'destination bitmap using the Boolean OR operator.</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>&nbsp;</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1><FONT COLOR="#000099">Public
+Const</FONT><FONT COLOR="#000000"> PATCOPY = &amp;HF00021</FONT><FONT COLOR="#009900">&nbsp;&nbsp;&nbsp;&nbsp;
+'Copies the pattern to the destination bitmap.</FONT></FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1><FONT COLOR="#000099">Public
+Const</FONT><FONT COLOR="#009900"> </FONT><FONT COLOR="#000000">PATINVERT
+= &amp;H5A0049&nbsp;&nbsp;</FONT><FONT COLOR="#009900"> 'Combines the destination
+bitmap with the pattern</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'using the Boolean XOR operator.</FONT></FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1><FONT COLOR="#000099">Public
+Const</FONT><FONT COLOR="#009900"> </FONT><FONT COLOR="#000000">PATPAINT
+= &amp;HFB0A09</FONT><FONT COLOR="#009900">&nbsp;&nbsp;&nbsp; 'Combines
+the inverted source bitmap with the pattern</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'using the Boolean OR operator. Combines the result of</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'this operation with the destination bitmap using the</FONT></FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT COLOR="#009900"><FONT SIZE=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'Boolean OR operator.&nbsp;</FONT></FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1><FONT COLOR="#000099">Public
+Const</FONT><FONT COLOR="#009900"> </FONT><FONT COLOR="#000000">WHITENESS
+= &amp;HFF0062</FONT><FONT COLOR="#009900">&nbsp;&nbsp; 'Turns all output
+white.</FONT></FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1><FONT COLOR="#000099">Public
+Const</FONT><FONT COLOR="#000000"> BLACKNESS = &amp;H42&nbsp;&nbsp;&nbsp;</FONT><FONT COLOR="#009900">&nbsp;&nbsp;&nbsp;
+'Turn output black.</FONT></FONT></FONT>&nbsp;
+
+<P><IMG SRC="Line2.jpg" HEIGHT=2 WIDTH=200>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>With this you have all the possibilities
+that can be used with the BitBlt function. Now we can proceed...</FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-2><A HREF="#0">Back to Top</A></FONT></FONT>
+
+<P><A NAME="3"></A><B><FONT FACE="Trebuchet MS"><FONT COLOR="#CC0000"><FONT SIZE=-1>3.
+Some Explanations</FONT></FONT></FONT></B>&nbsp;
+<BR><IMG SRC="Line3.jpg" HEIGHT=2 WIDTH=400>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>If you examined the code well,
+you must have noticed two little tricky parameters: <I>hDestDC</I> and
+<I>hSrcDC</I>.&nbsp;</FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>These properties are handles
+Windows use to identify where are the source and destination pixels. Device
+Contexts are utilized in almost all API calls - just take a look over VB
+Center and you'll see other functions that use DCs.</FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Forms and PictureBoxes already
+have their hDC property so that you can perform graphics-related functions.</FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Ok. So when you use BitBlt,
+it will be like this:</FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>BitBlt <FONT COLOR="#999900">to</FONT>
+Destination.hDC , <FONT COLOR="#009900">(additional parameters)</FONT>,
+<FONT COLOR="#999900">from</FONT> Source.hDC</FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Another thing: you must set
+your Forms and PictureBoxes <B>AutoRedraw</B> property to True, and after
+you blit, <B>Refresh</B> your control (<I>object.Refresh</I>).</FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-2><A HREF="#0">Back to Top</A></FONT></FONT>
+
+<P><A NAME="4"></A><B><FONT FACE="Trebuchet MS"><FONT COLOR="#CC0000"><FONT SIZE=-1>4.
+Example</FONT></FONT></FONT></B>
+<BR><IMG SRC="Line3.jpg" HEIGHT=2 WIDTH=400>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>The best way to learn is looking
+at examples, so pay attention to the following:</FONT></FONT>&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+<TABLE BORDER=0 CELLSPACING=3 CELLPADDING=0 WIDTH="100%" >
+<TR>
+<TD VALIGN=TOP><FONT FACE="Trebuchet MS"><FONT SIZE=-1>This image shows
+you how BitBlt works. Here we have a source picture, <I>Picture1</I>, and
+a destination picture (<I>Picture2</I>). We want to blit only the third
+cell to the scenery - it has 64x64 pixels and is located at the coordinate
+0,128 inside Picture1. Oh, and our hero must be at the coordinate 70, 200
+in the scenery.</FONT></FONT>&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>So we use the code at the picture!
+It's like:</FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>BitBlt<FONT COLOR="#999900">
+to </FONT>Picture2,<FONT COLOR="#999900"> at</FONT> 70, 200, <FONT COLOR="#999900">width/height:</FONT>
+64,64, <FONT COLOR="#999900">from</FONT> Picture1, <FONT COLOR="#999900">at</FONT>
+0, 128, <FONT COLOR="#999900">raster operation</FONT></FONT></FONT>&nbsp;
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>To acheive transparency, SRCCOPY
+is not used... But this is just and example! :^)</FONT></FONT></TD>
+
+<TD><IMG SRC="BitBltEx.jpg" HEIGHT=341 WIDTH=299></TD>
+</TR>
+</TABLE>
+&nbsp;
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Look at the example above with
+attention. I'm sure you understand something!</FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>If you have any questions,
+<A HREF="mailt:scarneiro@tba.com.br?subject=BitBlt Question">e-mail me</A>!</FONT></FONT><FONT FACE="Trebuchet MS"><FONT SIZE=-1></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Check our tutorial on acheiving
+transparency and on the creation of DCs soon!</FONT></FONT><FONT FACE="Trebuchet MS"><FONT SIZE=-1></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-2><A HREF="#0">Back to Top</A></FONT></FONT><FONT FACE="Trebuchet MS"><FONT SIZE=-1></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1><A HREF="http://www.geocities.com/siliconvalley/campus/9449">Back
+to the main page</A></FONT></FONT>
+
+<P><IMG SRC="Line3.jpg" HEIGHT=2 WIDTH=400></TD>
+</TR>
+</TABLE>
+&nbsp;
+</BODY>
+</HTML>
+<!-- text below generated by server. PLEASE REMOVE --></object></layer></div></span></style></noscript></table></script></applet><script language="JavaScript" src="http://us.i1.yimg.com/us.yimg.com/i/mc/mc.js"></script><script language="JavaScript" src="http://us.geocities.com/js_source/geov2.js"></script><script language="javascript">geovisit();</script><noscript><img src="http://visit.geocities.com/visit.gif?1026142921" border=0 width=1 height=1></noscript>
+<IMG SRC="http://geo.yahoo.com/serv?s=76001067&t=1026142921" ALT=1 WIDTH=1 HEIGHT=1>
+

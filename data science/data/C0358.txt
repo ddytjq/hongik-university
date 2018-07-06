@@ -1,0 +1,377 @@
+ID=C0358
+URL=http://www.1st-on-line.com/small_business/small_business_form.asp
+SIZE=6246
+DATE=10/07/2002
+TIME=13:21:52
+DATASET=Insurance Agencies
+HTML=
+<html>
+<head>
+<title>FIRSTONLINE INSURANCE</title>
+<script language="javascript">
+<!-- 
+
+
+function trimString (str) 
+{//trims away leading & trailing spaces
+  while (str.charAt(0) == ' ')
+    str = str.substring(1);
+  while (str.charAt(str.length - 1) == ' ')
+    str = str.substring(0, str.length - 1);
+  return str;
+}
+
+function checkData(checkfield,fieldname,type)
+{
+//function checks 'checkfield' for 'type' of data
+//displays error with relation to 'fieldname'
+//types are: alpha,digit,ralpha,rdigit
+//if r is placed in front of type field is required
+var checkOK='';
+var typeString='';
+var checkStr = trimString(new String(checkfield));//trim the string
+var allValid = true;
+var requiredValid = true;
+var decPoints = 0;
+var allNum = "";
+
+	//if r is first letter of type check the strip it off
+	var typeCheck = (type.substring(0,1)=='r') ? type.substring(1,type.length) : type;
+	
+	//what type of check are we doing
+	if (typeCheck == "alpha")
+	{
+		var checkOK="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ'.,*/+-_;:@'\"0123456789";
+		var typeString="alphanumeric";
+	}
+	else if (typeCheck =="digit")
+	{
+		var checkOK = "0123456789-.,";
+		var typeString="numeric";		
+	}
+	else if (typeCheck =="email" && RegExp) //object detect RegeExp
+	{
+		//var emailReg = "^[\\w-_\.]*[\\w-_\.]\@[\\w]\.+[\\w]+[\\w]$";
+    	//var regex = new RegExp(emailReg);     	
+		var regex = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+		if (!regex.test(checkStr) && checkStr.length != 0)
+		{
+			alert(fieldname+" is not a vaild email address.");
+			requiredValid = false;
+		}
+	}
+	//end of what type of check are we doing
+		
+	if (type.substring(0,1)=="r"  && checkStr.length==0)
+	{
+		alert(fieldname + " is a required field");
+		requiredValid = false
+	}
+    
+  	if (checkStr == ".")
+ 	{
+  	allValid = false
+	}
+
+	if (checkOK != '')
+	{	
+  		for (i = 0;  i < checkStr.length;  i++)
+  		{
+    		ch = checkStr.charAt(i);
+    		for (j = 0;  j < checkOK.length;  j++)
+      			if (ch == checkOK.charAt(j))
+        			break;
+    		if (j == checkOK.length)
+    		{
+      			allValid = false;
+      			break;
+    		}
+    		if (ch == ".")
+    		{
+      			allNum += ".";
+      			decPoints++;
+    		}
+    		else if (ch != ",")
+      			allNum += ch;
+  		}
+	}	  
+
+  	if (!allValid)
+  	{
+    	alert("Please enter only "+typeString+" characters in the "+fieldname);
+    	return (false);
+  	}
+
+  	if (decPoints > 1)
+  	{
+    	alert("Please enter a valid number in "+fieldname);
+    	return (false);
+  	}
+	
+  	return true && requiredValid;
+ }
+ 
+ function radioValidator(theRadio,radioName,limit)
+ {
+ 	//chech the radio or check box group
+ 	//the radio group is represented by an array
+ 	//of radio button
+	if (!limit)
+		var limit = 1;
+ 	var valid = true;
+	var checkedNumber = 0;
+ 	var radioChecked=false; //used to check if any of the radio buttons checked
+ 	//loop through radio buttons
+ 	for (var index=0;index<theRadio.length;index++)
+ 	{	
+ 		if (theRadio[index].checked)
+		{
+			radioChecked=true;
+			checkedNumber++;
+		}
+ 	}
+ 	if (!radioChecked) // have they filled it out
+ 	{
+		alert("Please answer " + radioName);
+		valid = false;
+ 	}
+	if (checkedNumber > limit) // have they checked too many
+	{
+		alert("Please select only " + limit + " value(s) for " + radioName);
+		valid = false;
+	}
+
+	return valid;
+ }
+ 
+ function formValidator(theForm,elementsArray,nameArray,typeArray)
+ {
+ 	var ok = true;
+ 	for (var index=0;index<elementsArray.length;index++)
+	{
+		if (typeArray[index].substring(0,5) == "radio")
+		{
+			var limit = typeArray[index].substring(5,7);
+			if (!limit)
+				limit=1;
+			evalString = "radioValidator(theForm."+elementsArray[index]+",'"+nameArray[index]+"',"+limit+")";
+		}
+		else
+			evalString = "checkData(theForm."+elementsArray[index]+".value,"+"'"+nameArray[index]+"','"+typeArray[index]+"')";
+			
+		if ( eval(evalString) )
+			ok=ok && true		
+		else
+			ok=ok && false		
+	}
+	return ok;		
+ }
+
+function checkForm(theForm)
+{
+	var fieldArray = new Array("password","fullName","email");
+	var nameArray = new Array("Password","Name","Email");
+	var typeArray = new Array("ralpha","alpha","remail");
+	return formValidator(theForm,fieldArray,nameArray,typeArray);
+}
+//-->
+</script>
+</head>
+<BODY   BGCOLOR="#ffcc00"  TEXT="#333366" LINK="#333366" VLINK="#333366" ALINK="#336666" marginwidth=0 marginheight=0>
+<!---outer table-----><table cellpadding=0 cellspacing=0 border=0 width="100%" height="100%">
+<tr valign=top><td height=1><img src=../pics/line.gif width=610 height=1 border=0></td></tr>
+<tr valign=top><td align=left>
+
+<!---home table----->
+<table cellpadding=0 cellspacing=0 border=0>
+
+
+
+<tr><td>
+
+
+
+<table border=0 cellpadding=5 width=500><!---FORM FIELDS TABLE--->
+
+<tr valign=top>
+<td align=right width=200></td>
+<td>
+<font size=3 face=arial,helvetica><b>
+ONLINE SMALL BUSINESS INSURANCE QUOTATION REQUEST</b>
+</font></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right width=200>
+<form name="retailForm" action="small_business_process_form.asp" method="POST">
+<input type=hidden name="recipient" value="markmitchell@waveney-insurance.co.uk,macrae@cqm.co.uk">
+<font face=arial,helvetica></font></td><td></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Password</b></font><br>
+<font size=1 face=arial,helvetica>You will use this to access your on-line proposal after we notify you that it is ready.<br>(One word, use letters; a-z and numbers; 0-9 only.)</font></td><td><input type="text" name="password" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Full Trading Name</b></font></td><td><input type="text" name="fullName" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=left colspan=2><font size=2 face=arial,helvetica><b>
+Full names of all partners and directors, where applicable.</b></font></td>
+</tr>
+
+<tr valign=top>
+<td colspan=2 align=right><TEXTAREA NAME="directornames" ROWS=8 COLS=66></TEXTAREA></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Email Address(s)</b></font></td><td><input type="text" name="email" size=50></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Correspondence Address</b></font></td><td><TEXTAREA NAME="corraddress" ROWS=6 COLS=40></TEXTAREA></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Postcode</b></font></td><td><input type="text" name="corrpostcode" size=50></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Business Address</b></font></td><td><input type="text" name="businessadd" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Postcode</b></font></td><td><input type="text" name="postcode" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+If more than one address is to be insured, please tick this box</b></font></td><td><input type="checkbox" name="morethanoneaddress" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Contact Name for survey</b></font></td><td><input type="text" name="contactname" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Contact Telephone No.</b></font></td><td><input type="text" name="contacttelephone" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Contact Fax No.</b></font></td><td><input type="text" name="contactfax" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=left colspan=2><font size=2 face=arial,helvetica><b>
+Trade, Business or Profession<br>
+(cover will only apply to the activities listed).</b></font></td>
+</tr>
+
+<tr valign=top>
+<td colspan=2 align=right><TEXTAREA NAME="tradeBusinessProfession" ROWS=8 COLS=66></TEXTAREA></td>
+</tr>
+
+<tr valign=top>
+<td align=left colspan=2><font size=2 face=arial,helvetica><b>
+Please give details below of any:<p>
+- Loss or damage, or<p>
+- Claim made against you in the last 5 years<br>
+(please give dates, amounts and circumstances in all cases.)</b></font></td>
+</tr>
+
+<tr valign=top>
+<td colspan=2 align=right><TEXTAREA NAME="lossdamageclaims" ROWS=8 COLS=66></TEXTAREA></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Most recent insurers</b></font></td><td><input type="text" name="recentins" size=50></td>
+</tr>
+
+<tr valign=top>
+<td align=right><font face=arial,helvetica size="2"><b>
+Policy Number</b></font></td><td><input type="text" name="policynumber" size=50></td>
+</tr>
+
+
+<tr valign=top>
+<td align=left colspan=2><font size=2 face=arial,helvetica><b>
+Previous Businessses</b><br>
+If you or any business associate has ever traded in another name please give details below.</font></td>
+</tr>
+
+<tr valign=top>
+<td colspan=2 align=right><TEXTAREA NAME="previousbusinesses" ROWS=8 COLS=66></TEXTAREA></td>
+</tr>
+
+
+<tr valign=top>
+<td align=right></td>
+<td><font face=arial,helvetica size="2">
+<b>How did you hear about 1st-on-line.com?</b><br>
+<select NAME="howDidYouFindUs">
+	<option value="">Please select...</option>
+	<option value="advert">Advertisement?</option>
+	<option value="link">Link from other web site?</option>
+	<option value="letter">Letter?</option>
+	<option value="recommendation">Recommendation?</option>
+	<option value="searchEngine">Search Engine. If so which one?</option>
+</select><p>
+
+<b>Which Search Engine?</b>&nbsp;<input type=text name="whichSearchEngine">
+
+</font></td>
+</tr>
+
+
+
+<tr valign=top>
+<td align=right>
+<input type="checkbox" name="mailing" value="NO"></td>
+<td><font face=arial,helvetica size="1">
+We send a monthly e-mail update of news and special offers to our customers.<br>
+Please tick if you do not wish to receive this email.
+</font></td>
+</tr>
+
+
+<tr valign=top>
+<td></td>
+<td> 
+<input type="button" value="Send this form" onclick="if (checkForm(document.retailForm)) submit()">
+<INPUT NAME="Clear" TYPE=Reset VALUE="Clear">
+<input type="button" value="Check this form" onclick="checkForm(document.retailForm)">
+<br></form></td> </tr>
+</table><!---END FORM FIELDS TABLE--->
+
+
+
+</td></tr>
+
+</table>
+<!---end home table----->
+
+
+</td></tr></table><!---end outer table----->
+</BODY>
+</html>
+>
+</html>
+

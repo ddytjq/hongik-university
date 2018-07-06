@@ -1,0 +1,166 @@
+ID=F0203
+URL=http://zeto.hypermart.net/create.cgi?codelist/reschnge.html
+SIZE=3083
+DATE=09/07/2002
+TIME=13:16:38
+DATASET=Visual Basic
+HTML=<html><head>
+<title>Zeto - CryptDLL</title>
+<link rel="stylesheet" href="main.css">
+</head>
+<body>
+<table border=0 width=100% cellpadding=0 cellspacing=0>
+<tr>
+<td width=140 valign=top align=left class=navbar>
+ <img src="/images/zetosml.gif" alt="Zeto VB">
+ <p><a href="/index.html">Home</a>
+ <p><a href="/create.cgi?resources.html">Resources</a>
+ <p><a href="/create.cgi?applications.html">Applications</a>
+ <p><a href="/create.cgi?sourcecode.html">Source Code</a>
+ <p><a href="/create.cgi?vbtut.html">VB Tutorial</a>
+ <p><a href="/create.cgi?links.html">Links</a>
+ <hr size=1 width=60 align=left>
+ <a href="mailto:zeto@forfree.at?subject=Zeto: General">Mail Zeto</a>
+</td>
+<td valign=top>
+ <table border=0 width=100%>
+  <tr>
+   <td width=100% class=title>Source Code Listing - ResChange</td>
+  </tr>
+ </table>
+
+<p><b>Code to change screen resolution from VB without having to restart windows.</b>
+<p><a href="../files/reschnge.zip">Download</a> this code (1k)
+<p><div class=listing>
+<p>Private Declare Function EnumDisplaySettings Lib "user32" Alias "EnumDisplaySettingsA" (ByVal lpszDeviceName As Long, ByVal iModeNum As Long, lpDevMode As Any) As Boolean
+<p>Private Declare Function ChangeDisplaySettings Lib "user32" Alias "ChangeDisplaySettingsA" (lpDevMode As Any, ByVal dwflags As Long) As Long
+<p>
+<p>Const CCDEVICENAME = 32
+<p>Const CCFORMNAME = 32
+<p>Const DM_PELSWIDTH = &H80000
+<p>Const DM_PELSHEIGHT = &H100000
+<p>
+<p>Private Type DEVMODE
+<p>dmDeviceName As String * CCDEVICENAME
+<p>dmSpecVersion As Integer
+<p>dmDriverVersion As Integer
+<p>dmSize As Integer
+<p>dmDriverExtra As Integer
+<p>dmFields As Long
+<p>dmOrientation As Integer
+<p>dmPaperSize As Integer
+<p>dmPaperLength As Integer
+<p>dmPaperWidth As Integer
+<p>dmScale As Integer
+<p>dmCopies As Integer
+<p>dmDefaultSource As Integer
+<p>dmPrintQuality As Integer
+<p>dmColor As Integer
+<p>dmDuplex As Integer
+<p>dmYResolution As Integer
+<p>dmTTOption As Integer
+<p>dmCollate As Integer
+<p>dmFormName As String * CCFORMNAME
+<p>dmUnusedPadding As Integer
+<p>dmBitsPerPel As Integer
+<p>dmPelsWidth As Long
+<p>dmPelsHeight As Long
+<p>dmDisplayFlags As Long
+<p>dmDisplayFrequency As Long
+<p>End Type
+<p>Dim DevM As DEVMODE
+<p>
+<p>Public Sub ChangeRes(iWidth As Single, iHeight As Single)
+<p>Dim lRetBool As Boolean
+<p>Dim i&
+<p>Dim lRetVal
+<p>i = 0
+<p>Do
+<p>lRetBool = EnumDisplaySettings(0&, i&, DevM)
+<p>i = i + 1
+<p>Loop Until (lRetBool = False)
+<p>DevM.dmFields = DM_PELSWIDTH Or DM_PELSHEIGHT
+<p>DevM.dmPelsWidth = iWidth
+<p>DevM.dmPelsHeight = iHeight
+<p>lRetVal = ChangeDisplaySettings(DevM, 0)
+<p>End Sub
+</div>
+<hr><p>Exmaple of call:
+<p><div class=listing>
+<p>ChangeRes 800, 600 <font face="Verdana, Arial">'changes resolution to 800x600</font>
+<p>ChangeRes 640,480 <font face="Verdana, Arial">'changes resolution to 640x480</font>
+</div><center><p class=copyright>© Zeto 1999. All Rights Reserved.</center>
+</td></tr></table>
+</body></html>
+<!-- ads begin -->
+</noscript>
+<!-- -->
+</noscript>
+<SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript">
+<!--
+// set expiration to 3 minutes
+var expiration = new Date(); expiration.setTime(expiration.getTime() + 180000);
+
+function getCookie(name){
+  var cname = name + "=";
+  var dc = document.cookie;
+  if (dc.length != 0) {
+    begin = dc.indexOf(cname);
+    if (begin != -1) {
+      begin += cname.length;
+      end = dc.indexOf(";", begin);
+      if (end == -1) end = dc.length;
+        return unescape(dc.substring(begin, end));
+    }
+  }
+  return null;
+}
+
+function setCookie(name, value, expires) {
+  document.cookie = name + "=" + escape(value) + 
+  ((expires == null) ? "" : "; expires=" + expires.toGMTString()) +
+  "; path=/";
+}
+var xtpop;
+
+function popWin() {
+setCookie('Visits', 1, expiration);
+xtpop = window.open("http://clickit.go2net.com/adclick?cid=197518&area=hm.dir.infotech&site=hm&shape=exitpopup&keyword=exitpopup","xtpop","width=700,height=560,toolbar,scrollbars,menubar,resizable,top=100,left=100");
+xtpop.blur();
+setTimeout("xtpop.blur();",20);
+setTimeout("xtpop.blur();",100);
+self.focus();
+}
+
+var visitsCookie = getCookie('Visits');
+if (visitsCookie == null) popWin();
+
+// -->
+
+</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+
+<!--
+browser = (((navigator.appName == "Netscape") && (parseInt(navigator.appVersion) >= 2 )) || ((navigator.appName == "Microsoft Internet Explorer") && (parseInt(navigator.appVersion) >= 2 )));
+browser4 = (((navigator.appName == "Netscape") && (parseInt(navigator.appVersion) >= 4 )) || ((navigator.appName == "Microsoft Internet Explorer") && (parseInt(navigator.appVersion) >= 4 )));
+if (browser4) {
+    if (!self.url) {
+       self.url = '';
+    }
+    if (parent.name != 'test') {
+       test = window.open("http://adincl.gopher.com/adpopup?site=HM&border=1&area=DIR.INFOTECH&sizerepopup=1", "test", "resizable=yes,width=528,height=200,scrollbars");
+    }
+} else if (browser) {
+    if (!self.url) {
+       self.url = '';
+    }
+    if (parent.name != 'test') {
+       test = window.open("http://adincl.gopher.com/adpopup?site=HM&shape=banner&border=1&area=DIR.INFOTECH", "test", "resizable=yes,width=528,height=200,scrollbars");
+    }
+}
+
+//-->
+
+</SCRIPT>
+<!-- ads end -->
+

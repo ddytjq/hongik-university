@@ -1,0 +1,85 @@
+ID=E0382
+URL=http://www.hh.se/stud/d98rolb/ansi/setvbuf().html
+SIZE=3803
+DATE=12/07/02
+TIME=19:20:25
+DATASET=C
+HTML=<html>
+<head>
+  <title>setvbuf()</title>
+  <meta name="Generator" content="GuideML V1.6">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+<body>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="setlocale().html"><img src="prev.gif" alt="PREV" border=0></a><a href="signal().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+<hr>
+<pre>
+setvbuf-Set the buffer mode for a level 2 file
+
+Synopsis
+
+        #include &#060;stdio.h&#062;
+
+        error = setvbuf(fp,buff,type,size);
+
+        int error;              /*  0 if successful */
+        FILE *fp;              /*  file pointer */
+        const char *buff;     /*  buffer pointer */
+        int type;              /*  type of buffering */
+        size_t size;              /*  buffer size in bytes */
+
+Description
+
+        This function sets the buffering mode for a level 2 file.  You
+        should call this function after calling the <a href="fopen().html"> fopen </a> function and
+        before calling any other level 2 I/O functions. If you do not call
+        this function in the correct sequence, the file may become
+        corrupted.  Do not allocate a buffer on the stack within a
+        function, attach it to a file, and then return from this function.
+        This sequence will corrupt the stack and cause a system failure.
+
+        The level 2 I/O system automatically allocates a buffer when you perform the first read or write
+        operation.  Then the data being read or written are staged through
+        this buffer to improve I/O efficiency. If you would rather use
+        your own buffer instead of having one allocated for you, call the
+        setvbuf function with a non-NULL buffer pointer.
+
+        The setvbuf function can set line-buffered mode, attach a buffer
+        of nonstandard size, or turn off buffering. The type argument must
+        be one of the following symbols defined in the file stdio.h:
+
+            Type    Meaning
+            ----    -------
+            _IOFBF  fully buffered
+            _IOLBF  line buffered
+            _IONBF  nonbuffered
+
+        For the _IOFBF and _IOLBF symbols, the specified buffer is
+        attached to the file unless the buff argument is NULL, in which
+        case a buffer is automatically allocated on the first read or
+        write.        For the _IONBF symbol, the buff and size arguments are
+        ignored.
+
+        The line-buffered mode is useful for interactive applications.
+        When in this mode, the buffer is flushed whenever a new line is
+        sent, the buffer is full, or input is requested.  However, you
+        must use the <a href="fputc().html"> fputc </a> function instead of the <a href="putc().html"> putc </a>
+        and <a href="putchar().html"> putchar </a> macros for line buffering to work correctly.  The
+        macros do not check if line-buffered mode is active, so they
+        behave as if the file were fully buffered.
+
+
+Returns
+
+        The setvbuf function returns a nonzero error code if type or size
+        is invalid.
+
+See Also
+
+        <a href="fopen().html"> fopen </a>, <a href="setbuf().html"> setbuf </a>
+</pre>
+<hr>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="setlocale().html"><img src="prev.gif" alt="PREV" border=0></a><a href="signal().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+</body>
+</html>
+

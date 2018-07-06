@@ -1,0 +1,504 @@
+ID=E0613
+URL=http://www.research.att.com/~bs/3rd_printing9.html
+SIZE=11973
+DATE=12/07/02
+TIME=19:22:44
+DATASET=C
+HTML=<html>
+<head>
+<title>Stroustrup: Errata for 7th and 8th printings of The C++ Programming Language</title>
+</head>
+<body bgcolor="FFFBFB">
+<center>
+<h1>Errata for 7th and 8th printings of The C++ Programming Language</h1>
+</center>
+Errata for
+<a href="homepage.html">
+Bjarne Stroustrup</a>:
+<a href="3rd.html">
+The C++ Programming Language (3rd edition)</a>,
+Addison-Wesley, 1997. ISBN0-201-88954-4.
+Errata for the 7th and 8th printings yielding the 9th.
+<hr>
+<h2>Errors and Clarifications</h2>
+<p>
+Preface:
+<p>
+Chapter 1:
+<p>
+Chapter 2:
+<p>
+pg 41	add sizes to the stack definitions:
+<pre>
+Stack< char> sc(200);		// stack of 200 characters
+Stack< complex> scplx(30);	// stack of 30 complex numbers
+Stack< list< int> > sli(45);	// stack of 45 lists of integers
+</pre>
+Chapter 3:
+<p>
+pg 54	a slightly improved version of print_entry():
+<pre>
+void print_entry(const string& s)
+{
+	typedef list< Entry>::const_iterator LI;
+
+	for (LI i = phone_book.begin(); i != phone_book.end(); ++i) {
+		Entry& e = *i;	// reference used as shorthand
+		if (s == e.name) {
+			cout << e.name << ' ' << e.number << '\n';
+			return;
+		}
+	}
+}
+</pre>
+<p>
+Chapter 4:
+<p>
+Chapter 5:
+<p>
+Chapter 6:
+<p>
+pg 130:	the 3rd paragraph of 6.2.7 can be clarified like this:
+"The static_cast
+operator converts between related types such as one pointer type to another in the same class hierarchy,
+an enumeration to an integral type, or a floating-point type to an integral type.
+The reinterpret_cast
+handles conversions between unrelated types such as an integer to a pointer
+or a pointer to an unrelated pointer type."
+<p>
+Chapter 7:
+<p>
+pg 146	s/but not as a non-const argument/but not as a non-const& argument/
+<p>
+Chapter 8:
+<p>
+pg 190	s/Token_value Lexer::get_token()/Lexer::Token_value Lexer::get_token()/
+<p>
+pg 192	s/input->get(ch);// immediately before "return;"
+<p>
+Chapter 9:
+<p>
+Chapter 10:
+<p>
+Chapter 11:
+<p>
+pg 266	replace the last paragraph with:
+<p>
+Consider a binary operator @. If x is of type X and y is of type Y,
+x@y is resolved like this:
+<ul>
+<li>
+If X is a class, look for operator@ as a member of X
+	or as a member of a base of X; and
+<li>
+look for declarations of operator@ in the context surrounding x@y; and
+<li>
+if X is defined in namespace N, look for declarations of operator@ in N ; and
+<li>
+if Y is defined in namespace M, look for declarations of operator@ in M.
+</ul>
+Declarations for several operatoras
+may be found and overload resolution rules (7.4)
+are used to find the best match, if any.
+<p>
+pg 280	replace the last example by:
+<pre>
+// no f() in this scope
+
+class X {
+	friend void f();		// useless
+	friend void h(const X&);	// can be found through its argument
+};
+
+void g(const X& x)
+{
+	f();	// no f() in scope
+	h(x);	// X's friend h()
+}	
+</pre>
+<p>
+pg 296	s/operator char()/operator char() const/
+<p>
+Chapter 12:
+<p>
+pg 307 As the last paragraph of 12.2.3 add:
+	"Note that if you don't define a copy assignment operator,
+	the compiler will generate one (11.7).
+	This implies that assignment operators are not inherited."
+<p>
+pg 311	s/print_list(set/print_list(const list/ twice
+<p>
+pg 311	s/for(set/for(list/
+<p>
+pg 312	set/list/ in main()
+<p>
+Chapter 13:
+<p>
+pg 330	s/p = new/rep = new/ twice
+<p>
+pg 335	s/ T lookup(/T& lookup(/
+<p>
+pg 335	s/ int f(/Record& f(/
+<p>
+pg 338	s/get_nth(v/get_nth< int>(v/ thrice
+<p>
+pg 346:	a more complete and correct version of the Basic_ops example:
+<pre>
+template < class C> class Basic_ops {	// basic operators on containers
+public:
+	bool operator==(const C&) const;	// compare all elements
+	bool operator!=(const C&) const;
+	// ...
+	const C& derived() { return static_cast< const C&>(*this); } // give access to container operations
+
+};
+
+template< class T> class Math_container : public Basic_ops< Math_container< T> > {
+public:
+	size_t size() const;
+	T& operator[](size_t);
+	const T& operator[](size_t) const;
+	// ...
+};
+
+template < class C> bool Basic_ops< C>::operator==(const C& a) const
+{
+	if (derived().size() != a.size()) return false;
+	for (int i = 0; i< derived().size(); ++i)
+		if (derived()[i] != a[i]) return false;
+	return true;
+}
+</pre>
+<p>
+pg 349	s/g(set< Circle>& s)/g(set< Circle*>& s)/
+<p>
+Chapter 14:
+<p>
+pg 368	s/vector< auto_ptr< Shape*> >& v;/vector< auto_ptr< Shape> >& v;/
+<p>
+pg 372	s/Vector::Vector(int sz)/Vector(int sz)/
+<p>
+pg 379	s/: Yerr {/: public Yerr {/
+<p>
+Chapter 15:
+<p>
+pg 399	s/12.3/12.4.3/
+<p>
+pg 400	s/and BB_popup_slider./and BB_popup_ival_slider./
+<p>
+pg 401	s/set_color(Color/void set_color(Color/ twice
+<p>
+pg 414 correct the throw-specifications:
+<pre>
+   const type_info& typeid(type_name) throw();
+   const type_info& typeid(expression) throw(bad_typeid);
+</pre>
+<p>
+PG 426	/ten consecutive keywords/ten different consecutive keywords/
+<p>
+Chapter 16:
+<p>
+Chapter 17:
+<p>
+pg 455	Replace the first paragraph by:
+	"The most tempting alternative, &c[7] ,
+	actually works with the obvious implementation of vector,
+	where c[7] refers to an element and its address is a valid iterator.
+	However, c might be a container where the iterator isn't a
+	simple pointer to an element. For example, map 's subscripting operator
+	(17.4.1.3) returns a mapped_type& rather than a reference to an
+	 element (a value_type&).
+<p>
+	Not all containers support + for their iterators. For example, a
+	list does not support even c.begin()+7.
+	If you really want to add 7 to a list::iterator,
+	you'll have to use ++ repeatedly."
+<p>
+pg 463	s/Most containers/Vectors and deques/
+<p>
+pg 467:	before "return toupper" add "if (q == y.end()) return false;"
+<p>
+pg 477	s/(see sec14.4.7)/(see sec14.4.1)/
+<p>
+pg 479	s/(see sec14.4.7)/(see sec14.4.1)/
+<p>
+pg 485	s/bool operator()(const T& x, const T& y) const/bool operator()(const value_type& x, const value_type& y) const/
+<p>
+pg 488	s/phone_book.erase/m.erase/
+<p>
+Chapter 18:
+<p>
+pg 516	Here is a less confusing variant of the 3rd paragraph:
+<p>
+Instead of finding the first element not less
+than its corresponding element in the other sequence, we might like to
+find the first element less
+than its corresponding element.
+We can do this by looking for the first pair that fails the complementary
+predicate greater_equal:
+<pre>
+	p1 = mismatch(vi.begin(),vi.end(),li.begin(),greater_equal< int>());
+</pre>
+Alternatively, we could present the sequences in the opposite order and use
+less_equal:
+<pre>
+	Pair< LI,VI> p2 = mismatch(li.begin(),li.end(),vi.begin(),less_equal< int>());
+</pre>
+<p>
+pg 520	s/lsp)/c)/
+<p>
+pg 527	s/equal_to< In::value_type,In2::value_type>()/equal_to< In::value_type>()/
+<p>
+pg 539	last example:
+<pre>
+class Compare_copies_sold {
+public:
+	int operator()(const Book& b1, const Book& b2) const
+		{ return b1.copies_sold()>b2.copies_sold(); }	// sort in decreasing order
+};
+</pre>
+pg 540 	first example:
+<pre>
+void f(const vector< Book>& sales)	// find the top ten books
+{
+	vector< Book> bestsellers(10);
+	partial_sort_copy(sales.begin(),sales.end(),
+			bestsellers.begin(),bestsellers.end(),Compare_copies_sold());
+	copy(bestsellers.begin(),bestsellers.end(),ostream_iterator< Book>(cout,"\n"));
+}
+</pre>
+<p>
+pg 544	s/cmp(b,a)/cmp(a,b)/
+<p>
+Chapter 19:
+<p>
+pg 557: replace f():
+<pre>
+void f(vector< int>& v, list< char>& lst)
+{
+	v.rbegin()[3] = 7;		// ok: random-access iterator
+	lst.rbegin()[3] = '4';		// error: bidirectional iterator doesn't support []
+	*(++++++lst.rbegin()) = '4'; 	// ok!
+}
+</pre>
+<p>
+pg 560	s/basic_istreambuf/basic_streambuf/ twice
+<p>
+pg 563,564	make valid(), operator*(), operator->(), operator+(),
+	operator[](), index(), and unchecked() const member functions.
+<p>
+pg 572	the correct declarations of v and m are:
+<pre>
+vector< int,Pool_alloc< int> > v;
+map< string,number,Pool_alloc< pair< const string,number> > > m;
+</pre> 
+<p>
+pg 575	fix the type of the returned values of raw_storage_iterator like this:
+<pre>
+raw_storage_iterator& operator*() { return *this; }
+
+raw_storage_iterator& operator=(const T& val)
+{
+	T* pp = &*p;
+	new(pp) T(val);
+	return *this;
+}
+
+raw_storage_iterator& operator++()
+{
+       ++p;
+       return *this;
+}
+
+raw_storage_iterator operator++(int)
+{
+	raw_storage_iterator tmp = *this;
+	p++;
+	return tmp;
+}
+</pre>
+Chapter 20:
+<p>
+pg 583	Add to the last paragraph:
+The ``character type'' Ch must behave like a character.
+In particular, it may not have a user-specified copy constructor, destructor,
+or copy assignment.
+<p>
+Chapter 21:
+<p>
+pg 641	replace the compose2() example with:
+	An initial value for a string stream
+	is treated analogously to the way a file stream
+	treats its file:
+<pre>
+string compose2(int n, const string& cs)	// equivalent to compose()
+{
+	ostringstream ost("error(",ios_base::ate); // start writing at end
+	ost << n << ") " << std_message[n] << " (user comment: " << cs << ')';
+	return ost.str();
+}
+<p>
+(recent standards clarification)
+<p>
+pg 647	add after the rdbuf() example:
+	"Note that on some systems, it can be hard to determine if input is available.
+	Thus, in_avail() might be (poorly) implemented to return 0
+	in cases where an input operation would succeed."
+<p>
+Chapter 22:
+<p>
+pg 667:	a better grow2():
+<pre>
+void grow2(valarray< int>& v, size_t n)
+{
+	if (n<=v.size()) return;
+
+	valarray< int> tmp = v;
+	slice s(0,v.size(),1);	// subarray of v.size() elements (see 22.4.5)
+
+	v.resize(n);			// resizing doesn't preserve element values
+	v[s] = tmp;			// copy elements back into the first part of v
+}
+</pre>
+<p>
+pg 672	s/Matrix& Matrix(const Matrix&);/Matrix(const Matrix&);/
+<p>
+pg 686	Randint assumes that ints are at least 32 bits. To get a version that
+works even if an int is 16 bits, replace all 'int's by 'long's.
+<p>
+Chapter 23:
+<p>
+Chapter 24:
+<p>
+Appendix A:
+<p>
+Appendix B:
+<p>
+pg 824	add Key parameter to map:
+<pre>
+template< class Key, class T, class LT = less< T> > class map {
+	// ...
+};
+
+map< string,int> m;			// Oops: default template arguments not implemented
+map< string,int,less< string> > m2;	// workaround: be explicit
+</pre>
+<p>
+Appendix C:
+<p>
+<hr>
+<h2>Typos</h2>
+<p>
+Preface:
+<p>
+Chapter 1:
+<p>
+Chapter 2:
+<p>
+Chapter 3:
+<p>
+Chapter 4:
+<p>
+Chapter 5:
+<p>
+Chapter 6:
+<p>
+Chapter 7:
+<p>
+Chapter 8:
+<p>
+pg 194	s/namespaces names/namespace names/
+<p>
+Chapter 9:
+<p>
+pg 203	s/, while a/ and/
+<p>
+Chapter 10:
+<p>
+Chapter 11:
+<p>
+pg 271	s/initialize x by (2,0)/initialize y by (2,0)/
+<p>
+pg 296	s/int c/char c/ twice
+<p>
+Chapter 12:
+<p>
+pg 303	s/(name, age, etc.)/(first_name, department, etc.)/
+<p>
+pg 312	s/Employee::print_list()/print_list()/
+<p>
+pg 316	s/flashing_ival_slider/Flashing_ival_slider/
+<p>
+pg 316	s/popup_ival_slider/Popup_ival_slider/
+<p>
+pg 319	s/inherited by Ival_box/inherited from Ival_box/
+<p>
+Chapter 13:
+<p>
+pg 332	s/an member/a member/
+<p>
+pg 334	s/Vol. l3/Vol. 3/
+<p>
+pg 345	s/list/List/ (twice)
+<p>
+pg 346	s/3.7.1/3.7.2/
+<p>
+Chapter 14:
+<p>
+Chapter 15:
+<p>
+pg 405	s/3.7.1/3.7.2/
+<p>
+pg 405	s/list/List/ twice
+<p>
+pg 407	s/publically/publicly/
+<p>
+pg 410	s/My_box/My_slider/ (twice in diagram)
+<p>
+Chapter 16:
+<p>
+pg 436	s/vector/Vector/
+<p>
+pg 436	s/list/List/
+<p>
+pg 446	s/3.7.1/3.7.2/
+<p>
+Chapter 17:
+<p>
+pg 469	s/3.7.1/3.7.2/
+<p>
+pg 484	s/described by a pair input iterator In./described by a pair of input iterators./
+<p>
+pg 488	s/the key k./val's key (val.first)./
+<p>
+Chapter 18:
+<p>
+Chapter 19:
+<p>
+Chapter 20:
+<p>
+Chapter 21:
+<p>
+Chapter 22:
+<p>
+Chapter 23:
+<p>
+Chapter 24:
+<p>
+Chapter 25:
+<p>
+Appendix A:
+<p>
+pg 806	s/valiable/variable/
+<p>
+Appendix B:
+<p>
+Appendix C:
+<p>
+pg 853	s/char*/const char*/ thrice to avoid deprecated conversion
+<p>
+pg 856	s/or T is char?/or T is const char?/
+</body>
+</html>
+
+

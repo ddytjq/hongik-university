@@ -1,0 +1,83 @@
+ID=E0839
+URL=http://www.hh.se/stud/d98rolb/ansi/memmove().html
+SIZE=3013
+DATE=12/07/02
+TIME=19:24:56
+DATASET=C
+HTML=<html>
+<head>
+  <title>memmove()</title>
+  <meta name="Generator" content="GuideML V1.6">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+<body>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="memcpy().html"><img src="prev.gif" alt="PREV" border=0></a><a href="memset().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+<hr>
+<pre>
+memmove-Copy bytes in memory
+
+Synopsis
+
+        #include &#060;string.h&#062;
+
+        p = memmove(dest, from, nbytes);
+
+        void *p;                /* same as dest                      */
+        void *dest;                /* destination for moved bytes
+*/
+        const void *from;        /* source of bytes for move             */
+        size_t nbytes;                /* number of bytes to be transferred */
+
+Description
+
+        This function copies the specified number of bytes from one memory
+        location to another.  It checks the relative addresses supplied to
+        determine the direction of transfer that will avoid overlap.
+
+
+Returns
+
+        The memmove function returns a pointer to the destination block.
+
+Example
+
+        /*
+         * Make room to insert a word in a character string.
+         *
+         * This program produces the following output:
+         *    This is a test
+         *    This is not a test
+         */
+        #include &#060;stdio.h&#062;
+        #include &#060;string.h&#062;
+
+        void main(void)
+        {
+            char string[100];
+
+            strcpy(string,&quot;This is a test&quot;);
+            printf(&quot;%sn&quot;,string);
+
+            /* Shift the words &quot;a test&quot; to make room */
+            /* WARNING: Make sure you have plenty of space in */
+            /* the area you are working with.  memmove() and  */
+            /* others do NOT stop at the terminating NULL of  */
+            /* a string, so will blithely write over any      */
+            /* memory you tell them to.  This can lead to     */
+            /* different types of problems, from simple       */
+            /* &quot;strange occurrences&quot; to spectacular crashes!  */
+
+            memmove(string+11,string+7,strlen(string+7)+1);
+            memcpy(string+7,&quot; not &quot;,5);
+            printf(&quot;%sn&quot;,string);
+        }
+
+See Also
+
+        <a href="memcpy().html"> memcpy </a>, <a href="strcpy().html"> strcpy </a>
+</pre>
+<hr>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="memcpy().html"><img src="prev.gif" alt="PREV" border=0></a><a href="memset().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+</body>
+</html>
+

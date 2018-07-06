@@ -1,0 +1,752 @@
+ID=F0588
+URL=http://www.vbip.com/winsock/winsock_http_03_01.asp
+SIZE=34211
+DATE=09/07/2002
+TIME=13:22:55
+DATASET=Visual Basic
+HTML=
+<html>
+
+<head>
+<title>Visual Basic Internet Programming - MS Winsock Control - How to retrieve a file from the Web through a proxy server.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+<meta name="description" content="In this tutorial you will learn how to use Winsock Control in order to download a file from the Web via a proxy server.">
+<meta name="keywords" content="winsock control http proxy server connection example code request url tutorial">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta name="ROBOTS" content="INDEX,FOLLOW">
+
+	<link rel="stylesheet" type="text/css" href="../../vbip_nn.css">
+
+</head>
+
+<body bgcolor="#FFFFFF">
+<form name="GlobalForm" ID="GlobalForm">
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100%">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="120"><img border="0" src="../_borders/vbip_logo3.gif" width="132" height="50"></td>
+          <td valign="middle">
+				<p align="center">
+              <!-- start BITS ad HTML -- top of page -- 468x60 banner www.bitsonthewire.com         --> 
+               <iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=0" width=468 height=60 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no> 
+                 <a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=1">
+                   <img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=1&siteid=1126&ad_type=0">
+                 </a></iframe> 
+              <!-- stop BITS ad HTML -- top of page -- 468x60 banner                                --> 
+				&nbsp;
+              <a href="http://www.amazon.com/exec/obidos/redirect-home/vbipvisualbasici">
+              <img border="0" src="../images/gnused120x60.gif" width="120" height="60"></a></p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+      <hr noshade color="#FF9933">
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+    <p class="barsidecaption">
+    	<a href="../default.asp">Home</a> -
+      	<a href="../whatsnew.asp"> What's New</a> - <a href="../tools.asp"> Tools&amp;Technologies</a> -
+      	<a href="../resources.asp"> Resources</a> - <a href="../resources/books/default.asp">Books</a>
+        - <a href="../forum/">Forum</a>
+    </p>
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+      <hr noshade color="#FF9933">
+    </td>
+  </tr>
+</table>
+
+<table width="100%" cellspacing="1" cellpadding="2" bordercolor="#800000" border="1">
+  <tr>
+    <td width="100%" bgcolor="#FF9933">
+      <font color="#FFFFCC">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="21%">
+          <SCRIPT LANGUAGE=javascript>
+          <!--
+          if(navigator.appName.indexOf('Microsoft')>=0)
+          {
+          document.write('<a HREF="javascript:void(0);" class="tbcaption" onClick="window.external.AddFavorite(location.href, document.title);">Add to Favorites</a>');
+          }
+          // -->
+          </SCRIPT>
+          </td>
+          <td width="79%">
+            <p align="right" class="tbcaption"><a href="../default.asp" class="tbcaption">Home</a> -
+            <a href="../tools.asp" class="tbcaption">Tools&amp;Technologies</a> -
+            <a href="index.asp" class="tbcaption"> MS Winsock Control</a> - How
+            to retrieve a file from the Web through a proxy server.</td>
+        </tr>
+      </table>
+      </font>
+    </td>
+  </tr>
+</table>
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+
+<!--table-->
+    <td width="125" valign="top"  style="border-left: 1px solid #800000; border-right: 1px solid #800000; " bgcolor="#FF9933">
+
+    <table border="0" width="100%">
+     <tr>
+        <td width="100%" bgcolor="#FFCC00" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " height="20">
+          <p align="center" class="barsidecaption">[Advertisement]</td>
+      </tr>
+      <tr>
+        <td width="100%" style="border: 1px solid #800000; " height="120">
+<!-- start BITS ad HTML -- first 125x125 banner www.bitsonthewire.com                 --> 
+<iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=-6" width=125 height=125 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no>
+<a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=3"><img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=3&siteid=1126&ad_type=-6"></a></iframe> 
+<!-- stop BITS ad HTML -- 125x125 banner                                             --> 	
+        </td>
+      </tr>
+         
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Search vbip.com]</td>
+      </tr>
+      <tr>
+      
+        <td valign="top" width="100%" height="21">
+        
+			<input type="text" size="7" name="search_site">&nbsp;
+			<input type="button"  value="Go" onclick='location.href="http://www.vbip.com/search2/search.asp?Realm=vbip.com&Match=1&Terms="+document.GlobalForm.search_site.value;'>	
+		
+        </td>
+      </tr>
+         
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Search other VB sites]</td>
+      </tr>
+      <tr>
+        <td valign="top" width="100%" height="21">
+        
+			<input type="text" size="7" name="search_web">&nbsp;
+			<input type="button"  value="Go" onclick='location.href="http://www.vbip.com/search2/search.asp?Realm=Other+VB+Websites&Match=1&Terms="+document.GlobalForm.search_web.value;'>	
+		      
+      </tr>
+     
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Featured Book]</td>
+      </tr>
+      <tr>
+        <td valign="top" width="100%" height="21">
+<center><center>
+<a href="http://www.vbip.com/appdev.asp">
+<img src="http://www.vbip.com/images/appdev120x240.jpg">
+</a>
+</center></center>
+        </td>
+      </tr>
+     
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Newsletter]</td>
+      </tr>
+      <tr>
+        <td width="100%" height="56">
+          <form method="POST" action="../sub.asp" onSubmit="">
+            <table border="0" width="100%" cellspacing="0">
+              <tr>
+                <td width="84%">
+                <input type="text" name="T1" size="8" style="font-family: Tahoma; color: #800000; font-size: 8pt; background-color: #FFCC99; border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " value="your e-mail"></td>
+                <td width="16%"><input type="submit" value="Sub" name="B1" style="font-family: Tahoma; font-size: 8pt; color: #800000"></td>
+              </tr>
+              <tr>
+                <td width="100%" colspan="2"><input type="radio" value="V1" checked name="R1"><span class="barsidecaption">HTML</span>
+                  <input type="radio" name="R1" value="V2"><span class="barsidecaption">Text</span></td>
+              </tr>
+            </table>
+          </form>
+        </td>
+      </tr>
+
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+      <p align="center" class="barsidecaption">
+      [Partners]
+      </tr>
+	
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.vbcity.com" target="_blank"><img border="0" src="..//images/vbcity2_100x30.gif" width="100" height="30"></a>
+  </tr>
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.vbweb.co.uk/" target="_blank"><img border="0" src="..//images/vbweb_button.gif" width="100" height="30"></a>
+  </tr>  
+      <tr>
+        <td width="100%" height="12" align="center">
+      <a href="http://www.vbwire.com" target="_blank"><img border="0" src="..//images/VBWire-btn.gif" width="100" height="30"></a>
+      </tr>
+
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.developersdex.com/vb" target="_blank"><img border="0" src="..//images/vbdex.gif" width="100" height="30"></a>
+  </tr>  
+  <tr>
+        <td width="100%" height="3">
+        <center>
+        <!-- BEGIN ACKY CODE -->
+		<a href="http://www.acky.net" target="_blank"><img
+		src="http://www.acky.net/banners/ackbut3.gif" width="88" height="31"
+		border="0" alt="Acky.net is your one stop shop for all of your web
+		developing needs"></a>
+		<!-- END ACKY CODE -->
+		</center>
+  </tr>
+    </table>
+
+    </td>
+    <td valign="top" bgcolor="#FFFFFF">
+      <blockquote>
+<p class="ChapterTitle">
+<br>
+<font color="#008080">How to retrieve a file from the Web through a proxy
+server.</font>
+<p>
+<a href="files/wsc_http_reader_03.zip">Download Simple HTTP Reader sample
+project (wsc_http_reader_03.zip, 5KB)</a>
+<p>In the two previous tutorials we have learned how to communicate with a web
+server via direct connection. In that scenario the client application
+establishes connection to the web server by the specified server address (or IP
+address) and IP-port 80. But there are a lot of cases where a client has an
+access to the web only via a proxy server. These two different types of the
+connection demand different ways of implementation.</p>
+<p>If the client application may communicate with the web only via the proxy
+server, it must to know an address of the proxy server and the port number to
+connect to. Thus it must allow user to input such information that usually can
+be obtained from the local network administrator.</p>
+<p>Let's look at how this feature is implemented in the Internet Explorer.
+Invoke the &quot;Internet Options&quot; dialog window, select the
+&quot;Connections&quot; tab and click the &quot;LAN Settings…&quot; button to
+show the following dialog window:</p>
+<p align="center"><font size="3" face="Times New Roman"><span style="font-size:12.0pt;font-family:&quot;Times New Roman&quot;;mso-fareast-font-family:
+&quot;Times New Roman&quot;;mso-ansi-language:EN-US;mso-fareast-language:EN-US;
+mso-bidi-language:AR-SA"><!--[if gte vml 1]><v:shapetype id="_x0000_t75"
+ coordsize="21600,21600" o:spt="75" o:preferrelative="t" path="m@4@5l@4@11@9@11@9@5xe"
+ filled="f" stroked="f">
+ <v:stroke joinstyle="miter"/>
+ <v:formulas>
+  <v:f eqn="if lineDrawn pixelLineWidth 0"/>
+  <v:f eqn="sum @0 1 0"/>
+  <v:f eqn="sum 0 0 @1"/>
+  <v:f eqn="prod @2 1 2"/>
+  <v:f eqn="prod @3 21600 pixelWidth"/>
+  <v:f eqn="prod @3 21600 pixelHeight"/>
+  <v:f eqn="sum @0 0 1"/>
+  <v:f eqn="prod @6 1 2"/>
+  <v:f eqn="prod @7 21600 pixelWidth"/>
+  <v:f eqn="sum @8 21600 0"/>
+  <v:f eqn="prod @7 21600 pixelHeight"/>
+  <v:f eqn="sum @10 21600 0"/>
+ </v:formulas>
+ <v:path o:extrusionok="f" gradientshapeok="t" o:connecttype="rect"/>
+ <o:lock v:ext="edit" aspectratio="t"/>
+</v:shapetype><v:shape id="_x0000_i1025" type="#_x0000_t75" style='width:4in;
+ height:246.75pt'>
+ <v:imagedata src="file:///C:/WINDOWS/TEMP/msoclip1/01/clip_image001.png"
+  o:title=""/>
+</v:shape><![endif]-->
+</span></font><img border="0" src="images/http_03_01.gif"></p>
+<p>As you see, to force the IE to work via a proxy server, the user must turn on
+the &quot;Use a proxy server&quot; checkbox and specify address and port of the
+proxy server.</p>
+<p>Now let's add the similar functionality to our Simple HTTP Reader sample
+application. Place six new controls on the form as shown below:</p>
+<p align="center"><font size="3" face="Times New Roman"><span style="font-size:12.0pt;font-family:&quot;Times New Roman&quot;;mso-fareast-font-family:
+&quot;Times New Roman&quot;;mso-ansi-language:EN-US;mso-fareast-language:EN-US;
+mso-bidi-language:AR-SA"><!--[if gte vml 1]><v:shapetype id="_x0000_t75"
+ coordsize="21600,21600" o:spt="75" o:preferrelative="t" path="m@4@5l@4@11@9@11@9@5xe"
+ filled="f" stroked="f">
+ <v:stroke joinstyle="miter"/>
+ <v:formulas>
+  <v:f eqn="if lineDrawn pixelLineWidth 0"/>
+  <v:f eqn="sum @0 1 0"/>
+  <v:f eqn="sum 0 0 @1"/>
+  <v:f eqn="prod @2 1 2"/>
+  <v:f eqn="prod @3 21600 pixelWidth"/>
+  <v:f eqn="prod @3 21600 pixelHeight"/>
+  <v:f eqn="sum @0 0 1"/>
+  <v:f eqn="prod @6 1 2"/>
+  <v:f eqn="prod @7 21600 pixelWidth"/>
+  <v:f eqn="sum @8 21600 0"/>
+  <v:f eqn="prod @7 21600 pixelHeight"/>
+  <v:f eqn="sum @10 21600 0"/>
+ </v:formulas>
+ <v:path o:extrusionok="f" gradientshapeok="t" o:connecttype="rect"/>
+ <o:lock v:ext="edit" aspectratio="t"/>
+</v:shapetype><v:shape id="_x0000_i1025" type="#_x0000_t75" style='width:449.25pt;
+ height:351pt'>
+ <v:imagedata src="file:///C:/WINDOWS/TEMP/msoclip1/01/clip_image001.png"
+  o:title=""/>
+</v:shape><![endif]-->
+</span></font><img border="0" src="images/http_03_02.gif"></p>
+<div align="center">
+  <center>
+  <table border="0" width="90%" cellpadding="2">
+    <tr>
+      <td width="33%" align="center" bgcolor="#800000"><b><font color="#FFFFCC">Control</font></b></td>
+      <td width="33%" align="center" bgcolor="#800000"><b><font color="#FFFFCC">Name</font></b></td>
+      <td width="34%" align="center" bgcolor="#800000"><b><font color="#FFFFCC">Text/Caption
+        property</font></b></td>
+    </tr>
+    <tr>
+      <td width="33%" bgcolor="#FFFFCC">Frame</td>
+      <td width="33%" bgcolor="#FFFFCC">Frame1</td>
+      <td width="34%" bgcolor="#FFFFCC">&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="33%" bgcolor="#FFCC99">CheckBox</td>
+      <td width="33%" bgcolor="#FFCC99">chkUseProxy</td>
+      <td width="34%" bgcolor="#FFCC99">Use Proxy</td>
+    </tr>
+    <tr>
+      <td width="33%" bgcolor="#FFFFCC">Label</td>
+      <td width="33%" bgcolor="#FFFFCC">Label2</td>
+      <td width="34%" bgcolor="#FFFFCC">Proxy Server:</td>
+    </tr>
+    <tr>
+      <td width="33%" bgcolor="#FFCC99">Label</td>
+      <td width="33%" bgcolor="#FFCC99">Label3</td>
+      <td width="34%" bgcolor="#FFCC99">Port:</td>
+    </tr>
+    <tr>
+      <td width="33%" bgcolor="#FFFFCC">TextBox</td>
+      <td width="33%" bgcolor="#FFFFCC">txtProxyServer</td>
+      <td width="34%" bgcolor="#FFFFCC">txtProxyServer</td>
+    </tr>
+    <tr>
+      <td width="33%" bgcolor="#FFCC99">TextBox</td>
+      <td width="33%" bgcolor="#FFCC99">txtProxyPort</td>
+      <td width="34%" bgcolor="#FFCC99">txtProxyPort</td>
+    </tr>
+  </table>
+  </center>
+</div>
+<p>Open the code editor for the form and add the following event procedure:</p>
+<p class="code"><font color="#000080">Private Sub</font> chkUseProxy_Click()<br>
+&nbsp;&nbsp; <font color="#008000">'</font><br>
+&nbsp;&nbsp; <font color="#000080">Dim</font> blnEnabled <font color="#000080">As
+Boolean</font><br>
+&nbsp;&nbsp; <font color="#008000">'</font><br>
+&nbsp;&nbsp; blnEnabled = Check1.Value<br>
+&nbsp;&nbsp; <font color="#008000">'</font><br>
+&nbsp;&nbsp; Label2.Enabled = blnEnabled<br>
+&nbsp;&nbsp; Label3.Enabled = blnEnabled<br>
+&nbsp;&nbsp; txtProxyServer.Enabled = blnEnabled<br>
+&nbsp;&nbsp; txtProxyPort.Enabled = blnEnabled<br>
+&nbsp;&nbsp; <font color="#008000">'</font><br>
+<font color="#000080">End Sub</font></p>
+<p>In the Form_Load event procedure type these two lines of code, to clear
+textboxes in the run time:</p>
+<p class="code">txtProxyPort = &quot;&quot;<br>
+txtProxyServer = &quot;&quot;</p>
+<p>The last thing, which we need to make - modify the cmdReadURL_Click event
+procedure. But before to write some code, let's consider the way of the
+communication with a proxy server. The principle is very simple. Our application
+must verify the state of the chkUseProxy checkbox and if the checkbox turned on,
+read the values of the txtProxyServer and the txtProxyPort textboxes to use them
+to establish a connection with the proxy server. For example:</p>
+<p class="code"><font color="#000080">If</font> chkUseProxy.Value <font color="#000080">Then</font><br>
+&nbsp;&nbsp; wscHttp.Connect txtProxyServer, txtProxyPort<br>
+<font color="#000080">End If</font></p>
+<p>One more thing we need to perform is to change the form of the HTTP request.
+In the case of a direct connection with a web server we sent a relative path to
+the resource (file) to retrieve, but if we use a proxy server we must specify a
+full URL to the resource, for example:</p>
+<blockquote>
+  <p><i><font color="#808080">The HTTP request for connection via a proxy
+  server:</font></i></p>
+  <p class="code">GET http://www.microsoft.com/default.asp HTTP/1.1<br>
+  Host: www.microsoft.com<br>
+  Connection: close</p>
+  <p><i><font color="#808080">The HTTP request for a direct connection:</font></i></p>
+  <p class="code">GET /default.asp HTTP/1.1<br>
+  Host: www.microsoft.com<br>
+  Connection: close</p>
+</blockquote>
+<p>That's it. No more changes. So, for retrieving a file from the Web via a
+proxy server we need to:</p>
+<ol type="a">
+  <li>Establish the connection to the proxy server</li>
+  <li>Send a FULL URL of the resource to retrieve</li>
+</ol>
+<p>According to the features described above the cmdReadURL_Click event
+procedure looks like one shown below:</p>
+<p class="code"><font color="#000080">Private Sub</font> cmdReadURL_Click()<br>
+<font color="#008000">'<br>
+</font><font color="#000080">Dim</font> strURL <font color="#000080">As String</font>
+<font color="#008000">'temporary buffer</font><br>
+<font color="#000080">Dim</font> intPort <font color="#000080">As Integer</font><br>
+<font color="#008000">'<br>
+</font><font color="#000080">On Error GoTo </font>ERROR_HANDLER<font color="#000080"><br>
+</font><font color="#008000">'<br>
+'check the textbox<br>
+</font><font color="#000080">If</font> Len(txtURL) = 0 <font color="#000080">Then</font><br>
+&nbsp;&nbsp; MsgBox &quot;Please, enter the URL to retrieve.&quot;,
+vbInformation<br>
+&nbsp;&nbsp; <font color="#000080">Exit Sub<br>
+End If<br>
+</font><font color="#008000">'<br>
+</font><font color="#000080">If</font> chkUseProxy.Value <font color="#000080">Then</font><br>
+<font color="#008000">&nbsp;&nbsp; '<br>
+&nbsp;&nbsp; 'Using Proxy<br>
+&nbsp;&nbsp; '<br>
+</font>&nbsp;&nbsp; <font color="#000080">If</font> Len(txtProxyPort) &gt; 0 <font color="#000080">And</font>
+Len(txtProxyServer) &gt; 0 <font color="#000080">Then</font><br>
+<font color="#008000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '<br>
+</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_strRemoteHost = txtProxyServer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; intPort = <font color="#000080">CInt</font>(txtProxyPort)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_strFilePath = txtURL<br>
+<font color="#008000">&nbsp;&nbsp;&nbsp;&nbsp; '<br>
+</font>&nbsp;&nbsp;&nbsp;&nbsp; <font color="#000080">If Not</font>
+Left(m_strFilePath, 7) = &quot;http://&quot; <font color="#000080">Then</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_strFilePath = &quot;http://&quot;
+&amp; m_strFilePath<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <font color="#000080">End If</font><br>
+<font color="#008000">&nbsp;&nbsp;&nbsp;&nbsp; '<br>
+</font>&nbsp;&nbsp; <font color="#000080">End If</font><br>
+<font color="#008000">&nbsp;&nbsp; '<br>
+</font><font color="#000080">Else</font><br>
+<font color="#008000">&nbsp;&nbsp; '<br>
+&nbsp;&nbsp; 'set default port number = 80<br>
+&nbsp;&nbsp; '<br>
+</font>&nbsp;&nbsp; intPort = 80<br>
+<font color="#008000">&nbsp;&nbsp; '<br>
+&nbsp;&nbsp; 'if the user has entered &quot;http://&quot;, remove this substring<br>
+&nbsp;&nbsp; '<br>
+</font>&nbsp;&nbsp; <font color="#000080">If</font> Left(txtURL, 7) =
+&quot;http://&quot; <font color="#000080">Then</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; strURL = Mid(txtURL, 8)<br>
+&nbsp;&nbsp; <font color="#000080">Else</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; strURL = txtURL<br>
+&nbsp;&nbsp; <font color="#000080">End If</font><br>
+<font color="#008000">&nbsp;&nbsp; '<br>
+&nbsp;&nbsp; 'get remote host name<br>
+&nbsp;&nbsp; '<br>
+</font>&nbsp;&nbsp; m_strRemoteHost = Left$(strURL, InStr(1, strURL,
+&quot;/&quot;) - 1)<br>
+<font color="#008000">&nbsp;&nbsp; '<br>
+&nbsp;&nbsp; 'get relative path to the file to retrieve<br>
+&nbsp;&nbsp; '<br>
+</font>&nbsp;&nbsp; m_strFilePath = Mid$(strURL, InStr(1, strURL,
+&quot;/&quot;))<br>
+<font color="#008000">&nbsp;&nbsp; '<br>
+</font><font color="#000080">End If<br>
+</font><font color="#008000">'<br>
+'clear the RichTextBox<br>
+'<br>
+</font>rtbDocument.Text = &quot;&quot;<br>
+<font color="#008000">'<br>
+'clear the buffer<br>
+'<br>
+</font>m_strHttpResponse = &quot;&quot;<br>
+<font color="#008000">'<br>
+'turn off the m_bResponseReceived flag<br>
+'<br>
+</font>m_bResponseReceived = <font color="#000080">False</font><br>
+<font color="#008000">'<br>
+'reset values of the module level variables<br>
+'<br>
+</font>m_bHeaderReceived = <font color="#000080">False</font><br>
+m_lContentLength = 0<br>
+m_lDownloadedBytes = 0<br>
+StatusBar1.Panels(3).Text = &quot;&quot;<br>
+ProgressBar1.Value = 0.01<br>
+<font color="#008000">'<br>
+'establish the connection<br>
+'</font><br>
+<font color="#000080">With</font> wscHttp<br>
+&nbsp;&nbsp; .Close<br>
+&nbsp;&nbsp; .LocalPort = 0<br>
+&nbsp;&nbsp; StatusBar1.Panels(2).Text = &quot;Connecting to the web
+server&quot;<br>
+&nbsp;&nbsp; .Connect m_strRemoteHost, intPort<br>
+<font color="#000080">End With<br>
+</font><font color="#008000">'<br>
+</font>EXIT_LABEL:<br>
+<font color="#000080">&nbsp;&nbsp; Exit Sub<br>
+</font><br>
+ERROR_HANDLER:<br>
+<font color="#008000">&nbsp;&nbsp; '<br>
+</font>&nbsp;&nbsp; <font color="#000080">If</font> Err.Number = 5 <font color="#000080">Then</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; strURL = strURL &amp; &quot;/&quot;<br>
+<font color="#000080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Resume 0<br>
+</font>&nbsp;&nbsp; <font color="#000080">Else</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MsgBox &quot;Error was occurred.&quot; &amp;
+vbCrLf &amp; _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;Error #: &quot; &amp; Err.Number &amp; vbCrLf &amp; _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&quot;Description: &quot; &amp; Err.Description, vbExclamation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#000080">GoTo</font> EXIT_LABEL<br>
+<font color="#000080">&nbsp;&nbsp; End If<br>
+</font><font color="#008000">&nbsp;&nbsp; '<br>
+</font><font color="#000080">End Sub</font></p>
+<p>&nbsp;</p>
+<p>        
+    <hr noshade color="#FF9933">
+    <table width="90%" align="center" border="0">
+      <tr>
+        <td width="25%">
+          <img border="0" src="../../images/comments.gif">
+        </td>
+        <td width="75%">
+          Please, post here only feedback for the article/tutorial/sample you
+          have read above.<br>
+          If you have any question and like to get an answer, post your messages in the <a href="http://www.vbip.com/forum/">Forum</a>.
+        <td>
+      </tr>
+    </table>
+    
+    
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?109">Not functioning Properly</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Mohan Babu Kotha Wednesday, July 19, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?116">Bs</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Why Friday, July 21, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?121">....</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Warren Wednesday, July 26, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?122">addon</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Warren Wednesday, July 26, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?129">does anyone knows how to add authentication?</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Gil Volfovitch Sunday, July 30, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?132">Possible solution for authentication</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Grant French Thursday, August 03, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?136">1 question</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Mike Thursday, August 10, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?138">The authentication still not working :-(</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Gil Volfovitch Monday, August 14, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?140">This Program only Download .txt/.html files</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">martin Wednesday, August 16, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?149">Authentication tip</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Frank de Groot Thursday, August 24, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?160">Storing files in cache???</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">david Sunday, September 03, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?167">How to make this a dll that can be used in asp</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">omjothi Saturday, September 16, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?173">Need to include Username and Password for Proxy </a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Stefan Hotan Thursday, October 05, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?187">Firewall?</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Neel Wednesday, October 25, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?252">Can WinSock control worked with HTTPS ?</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">wilsonhau Tuesday, January 16, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?259">Using POST and Some Gabbage in the HTML Source</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Daryl Lee Tuesday, January 23, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?263">How to use this workshop with WebBrowswe?</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">A. Winter Tuesday, January 23, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?285">online communication system</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">siobi  Thursday, February 15, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?324">How to connect FTP via Proxy ???</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Harjeet Singh Tuesday, April 10, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?357">4 devices control</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">papaki Wednesday, May 23, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?358">4 devices control</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">papaki Wednesday, May 23, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?369">SSL</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Jean Friday, June 01, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?410">SSL problems</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Aidan Sunday, July 08, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?664">Proxy Authetication Solution. </a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Suvigya Thursday, December 27, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?728">reading the server response</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Paul Tuesday, February 05, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?735">POP3 server via Proxy</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">N Allan Tuesday, February 19, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?913">SMTP via proxy??</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Pieter Mees Sunday, June 09, 2002</font></i>	
+			</p>
+			
+        <p>
+        <form name="newcomm" method="POST" action="../../add_comments.asp">
+          <p><input align="right" border="0" src="../../images/addyours2.gif" name="I1" type="image"></p>
+          <input type="hidden" name="page" value="/winsock/winsock_http_03_01.asp">
+          <input type="hidden" name="title">
+	  <input type="hidden" name="actionID" value="add">
+        </form>
+        <SCRIPT LANGUAGE="JavaScript">
+        	{document.newcomm.title.value = document.title}
+        </SCRIPT>
+	<br>
+        <p>
+        <hr noshade color="#FF9933">
+</p>
+</blockquote>
+<p><center>
+<!-- start BITS ad HTML -- bottom of page 468x60 banner www.bitsonthewire.com         --> 
+  <iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=2" width=468 height=60 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no> 
+    <a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=2">
+      <p>
+      <img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=2&siteid=1126&ad_type=2">
+    </a>
+  </iframe> 
+<!-- stop BITS ad HTML -- bottom of page 468x60 banner                                --> 
+</center></p>
+    </td>
+</table>
+<table border="1" width="100%" cellspacing="1" cellpadding="2" bordercolor="#800000">
+  <tr>
+    <td width="100%" bgcolor="#FF9933">
+      <font color="#FFFFCC">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="20%"></td>
+          <td width="80%">
+            <p align="right" class="tbcaption"><a href="../default.asp" class="tbcaption">Home</a> -
+            <a href="../tools.asp" class="tbcaption">Tools&amp;Technologies</a> -
+            <a href="index.asp" class="tbcaption"> MS Winsock Control</a>
+            - How to retrieve a file from the Web through a proxy server.
+          </td>
+        </tr>
+      </table>
+      </font>
+    </td>
+  </tr>
+</table>
+&nbsp;<table border="0" width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="121" valign="top">
+<!-- START OF WEBTRENDS LIVE TAG -->
+<!-- Copyright 2001 NetIQ Corporation -->
+<!--  For privacy concerns, check our Privacy Policy at http://www.webtrendslive.com/privacy_policy.htm -->
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+// Modification of this code is not allowed and will permanently disable your account!
+// SiteName:  Visual Basic Internet Programming
+function wtl_Tag4_27048()
+{
+	function D8( d)
+	{
+		var fwd=1, seed= new Date('01/01/2000'), key= "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+		var s= key.charAt( d.getFullYear()-2000)+key.charAt( d.getMonth()+1)+key.charAt( d.getDate());
+		s+= key.charAt( d.getHours())+key.charAt( d.getMinutes())+key.charAt( d.getSeconds());
+		while( seed.getDay()!=fwd) seed= new Date(seed.getTime() + 86400000);
+		var w= Math.floor( (d.getTime()-(seed.getTime()+86400000)) / 604800000 );
+		s+= key.charAt( (w-(w%16))/16 );
+		s+= key.charAt( w%16);
+		return s;
+	}
+
+	var t = new Date();
+	var W="tagver=4&si=27048&fw=1&bn=13";
+	W+="&tz="+escape(t.getTimezoneOffset());
+	W+="&ch="+escape(t.getHours());
+	W+="&cl="+escape(D8(t));
+	W+="&ti="+escape(document.title);
+	W+="&url="+escape(window.document.URL);
+	W+="&rf="+escape(window.document.referrer);
+	W+="&js=Yes";
+	W+="&ul="+(navigator.appName=="Netscape"?navigator.language:navigator.userLanguage);
+	if(typeof(screen)=="object")
+	{
+	W+="&sr="+screen.width+"x"+screen.height;
+	W+="&cd="+screen.colorDepth;
+	W+="&jo="+(navigator.javaEnabled()?"Yes":"No");
+	}
+	
+	
+	document.write('<A TARGET="_blank" HREF="http://www.webtrendslive.com/redirect.asp?siteID=27048">');
+	document.write('<IMG ID="WTL_TAG" BORDER="0" WIDTH="100" HEIGHT="30" ALT="This Site Tracked by WebTrendsLive." SRC="http://p.wtlive.com/S003-00-9-14-186109-27048/button4.asp?'+W+'">');
+	document.write('</A>');
+	
+}	
+
+wtl_Tag4_27048();
+//-->
+</SCRIPT>
+
+
+<NOSCRIPT>
+<A TARGET="_blank" HREF="http://www.webtrendslive.com/redirect.asp?siteID=27048">
+<IMG BORDER="0" WIDTH="100" HEIGHT="30" ALT="This Site Tracked by WebTrendsLive." SRC="http://p.wtlive.com/S003-00-9-14-186109-27048/button4.asp?tagver=4&si=27048&fw=1&bn=13&js=No&"></A></NOSCRIPT>
+
+
+<!-- END OF WEBTRENDS LIVE TAG -->
+
+     
+      </td>
+    <td>
+<p align="center" class="barsidecaption"><a href="../default.asp">Home</a> | <a href="../whatsnew.asp">What's
+New</a> | <a href="../tools.asp"> Tools
+&amp; Technologies</a> | <a href="../resources.asp">Resources</a> | <a href="../resources/books/default.asp">Books</a>
+ | <a href="../forum/">Forum</a></p>
+<p align="center" class="barsidecaption">Report about any problems and errors to <a href="mailto:webmaster@vbip.com">webmaster@vbip.com</a><br>
+Copyright © 1998 - 2002 by <a href="mailto:oleg@vbip.com"> Oleg Gdalevich</a></p>
+    </td>
+    <td valign="top" width="140">
+<p align="center">
+<a target="_blank" href="http://www.amazon.com/exec/obidos/ASIN/B00005AFI2/vbipvisualbasici">
+<img border="0" src="../images/frontpage_button.gif" align="right" width="100" height="38"></a>
+    </td>
+  </tr>
+</table>
+</body>
+
+</html>
+

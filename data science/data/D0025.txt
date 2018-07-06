@@ -1,0 +1,851 @@
+ID=D0025
+URL=http://www.absolutejava.com/serialization/
+SIZE=160500
+DATE=16/07/02
+TIME=14:35:05
+DATASET=Java
+HTML=<html>
+<head>
+<title>Absolute Java - "Marshallization"</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../styles.css" type="text/css">
+</head>
+
+<body>
+<p class="subtitle" style="margin-top:0px">Read Me First</p>
+<div class="postSubtitle">The process of transforming an object into a byte stream 
+  representation is generally known as <i>marshalling</i>. Transforming a byte 
+  stream representation of an object to an object manifestation is known as <i>unmarshalling</i>. 
+  Most Java literature loosely uses the terms <i>serialization</i> and <i>deserialization</i> 
+  to refer to <i>marshalling</i> and <i>unmarshalling</i>, respectively.</div>
+<p>In discussing Java's <i>marshalling</i> and <i>unmarshalling</i> mechanisms we have to be very careful about terminology.   As you probably know, Java defines two interfaces, <code>java.io.Serializable</code> and <code>java.io.Externalizable</code>, to indicate that objects of a particular class can be marshalled and unmarshalled. Unfortunately, many Java articles and books refer to classes that implement either interface as being generically, <i>Serializable</i>. The same literature also uses the term <i>Serialization</i> to generically refer to Java's collective marshalling capabilities.</p>
+<p class="superscript">Throughout this series of articles I will strive to be 
+  very specific in my terminology. When I use the term <i>marshallization</i>, 
+  I am referring to Java's general capability of transforming an object to a byte 
+  stream representation from which an object can be reconstituted at a later time. 
+  If I say a class is <i>marshallizable</i> (sorry for the ugly term), I mean 
+  that objects of that class use some specific form of <i>marshallization</i> 
+  to save their state to a byte stream from which they can later be reconstituted. 
+  Generally speaking, Java has three types of <i>marshallization</i>: 
+<ol>
+  <li>Default Serialization</li>
+  <li>Custom Serialization</li>
+  <li>Externalization</li>
+</ol>
+<p>See the article, <a href="#TwoTypesOfSerialization"><i>Marshallization - Default 
+  Serialization, Custom Serialization, and Externalization</i></a> for a general 
+  overview of these types. In addition to the terms <i>marshallization</i> and 
+  <i>marshallizable</i>, I'll use the above three forms of <i>marshallization</i> 
+  in referring to a clas as being <i>default serializable</i>, <i>custom serializable</i>, 
+  or <i>externalizable</i>.</p>
+<p>Marshallization seems to be one of the worst documented features in the JDK and in Java books. If you've looked at  the source code for <code>ObjectInputStream</code> you might understand why. While most programmers are aware of the <code>java.io.Serializable</code> and <code>java.io.Externalizable</code> interfaces and the <code>readObject()</code> and <code>writeObject()</code> methods, there are many other features, capabilities and complexities related to marshallization that are scarcely documented, leaving most developers unaware of the full potential of Java's marshallization or its underlying workings.</p>
+<p>This series of articles barely scratches the surface of marshallization. As I learn more about marshallization I will post my findings here. As always, if you notice anything that seems incorrect or if you have  additional marshallization knowledge that would be a helpful contribution to these pages, please contact me at <a href="mailto:absolutejava@absolutejava.com?subject=Marshallization%20Comments">absolutejava@absolutejava.com</a>.</p>
+<p class="subtitle">Relevant Marshallization Class Diagrams</p>
+<div class="postSubtitle"><table width="100%" border="0" cellspacing="0" cellpadding="10"><tr><td><div align="left"><img src="images/objectInputStream-class.gif" width="473" height="196"></div></td></tr></table>
+<p>&nbsp;</p><table width="100%" border="0" cellspacing="0" cellpadding="10"><tr><td><div align="left"><img src="images/objectOutputStream-class.gif" width="482" height="196"></div></td></tr></table>
+<p>&nbsp;</p><table width="100%" border="0" cellspacing="0" cellpadding="10"><tr><td><div align="left"><img src="images/externalizable-class.gif" width="151" height="110"></div></td></tr></table></div>
+<p><a name="TwoTypesOfSerialization"></a></p>
+<p class="subtitle">Marshallization - Default Serialization, Custom Serialization, 
+  and Externalization</p>
+<div class="postSubtitle">There are three general forms of marshallization that 
+a class may use: </div> 
+<blockquote> 
+  <ol>
+    <li><i>Default Serialization</i> is the simplest of the 
+      three forms. It relies entirely on the <code>java.io.ObjectOutputStream</code> 
+      and <code>java.io.ObjectInputStream</code> classes to perform marshalling 
+      and unmarshalling, respectively. <i>Default serialization</i> will preserve 
+      the state of all fields in the object graph except for fields marked <code>transient</code> 
+      or <code>static</code> or fields contained in superclasses that are not 
+      marshallizable (i.e., superclasses that implement neither <code>java.io.Serializable</code> 
+      nor <code>java.io.Externalizable</code>). Visibility modifiers (e.g., private, 
+      protected, etc.) on fields do not affect <i>default serialization</i>.<br>
+      <br>
+      Classes that use <i>default serialization</i> implement the<code> java.io.Serializable</code> 
+      interface, <i><b>not</b></i> <code>java.io.Externalizable</code>. Furthermore, 
+      these classes <i><b>do not</b></i> provide implementations of the <code>readObject()</code>, 
+      <code>writeObject()</code>, <code>readResolve()</code>, or <code>writeReplace()</code> 
+      methods; <i><b>or</b></i>, if they do provide implementations of one or 
+      more of these methods, the implementations <i><b>do not</b></i> affect the 
+      marshalled or unmarshalled results from what they would be if the methods 
+      were not implemented. See the <a href="#BasicSerializationRequirements"><i>Default 
+      Serialization Basics</i></a> article below<code>.</code><br>
+      <br>
+    </li>
+    <li><i>Custom Serialization</i> allows the programmer 
+      to take more responsibility for the marshallization and unmarshallization 
+      of objects. Like <i>default serialization</i>, classes that are <i>custom 
+      serializable</i> also implement the <code>java.io.Serializable</code> interface, 
+      <i><b>not</b></i> <code>java.io.Externalizable</code>. Unlike <i>default 
+      serialization</i>, classes that are <i>custom serializable</i> implement 
+      one or more of the methods <code>readObject()</code>, <code>writeObject()</code>, 
+      <code>readResolve()</code>, or <code>writeReplace()</code> in such a way 
+      that the implementation(s) affect the marshalled or unmarshalled results 
+      from what they would be if the methods were not implemented. See the <a href="#CustomSerialization"><i>Custom 
+      Serialization Basics</i></a> article below.<br>
+      <br>
+    </li>
+    <li><i>Externalization</i>, like <i>custom serialization</i>, 
+      allows the programmer to take more responsibility for the marshallization 
+      and unmarshallization of objects. Classes that are <i>externalizable</i> 
+      implement the <code>java.io.Externalizable</code> interface. If a class 
+      implements both <code>java.io.Serializable</code> <i><b>and</b></i> <code>java.io.Externalizable</code>, 
+      the class is treated as <i>externalizable</i>. <code>See t</code>he <a href="#externalizationBasics"><i>Externalization 
+      Basics</i></a> article<code> below.</code> </li>
+  </ol>
+</blockquote>
+<a name="BasicSerializationRequirements"></a> 
+<p class="subtitle">Default Serialization Basics</p>
+<div class="postSubtitle"> Any class whose objects are to be marshalled and unmarshalled using default serialization must meet the following three requirements.</div>
+<blockquote><ol>
+  <li>The class  must implement the <font face="Lucida Console, Courier New, monospace">java.io.Serializable</font>
+    marker interface (<i><b>not</b></i> <code>java.io.Externalizable</code>) although one or more superclasses may not implement this
+    interface.<br>
+    <br>
+  </li>
+  <li> Every class in Java has a &quot;type hierarchy&quot; rooted at <code>java.lang.Object</code>.
+    Beginning with <code>java.lang.Object</code> and working down the type hierarchy,
+    the <i><b>last</b></i> class encountered that <i><b>does not</b></i> implement
+    <code>java.io.Serializable</code> <i><b>must</b></i> have a no-arg constructor
+    which can be called from its serializable subclass in order for deserialization
+    to work. What do we mean by, &quot;<i>can be called from its serializable
+    subclass</i>&quot;? It simply means that the visibility modifier of this no-arg
+    constructor must be such that the constructor can be called from the class' serializable
+    subclass. Note that this does not necessarily mean that the constructor must
+    have <code>public</code> or <code>protected</code> visibility. It can have the more restrictive &quot;package-private&quot;
+    visibility if the serializable subclass is in the same package as the non-serializable
+    superclass.<br>
+	 <br>
+	 The UML diagram below and the accompanying code illustrate this concept.<br>
+		<br>
+	</li>
+  <li>Every member field of the class being marshalled must meet one of the following criteria:<br>
+	   
+	 <ol type="a">
+			
+		<li>It is  a primitive type.
+</li>
+		<li>It is a reference whose value is <code>null</code>.</li>
+		<li>It is a reference declared as <code>static</code> or <code>transient</code>.</li>
+		<li>It is a reference to an object which is marshallizable.</li>
+		<li>It is a reference to an array for which each element is marshallizable.</li>
+	 </ol>
+  </li>
+</ol></blockquote>
+
+<p><a name="non-serializable-superclasses"></a> <img src="images/non-serializable-superclasses.gif" width="258" height="207" align="left" vspace="5" hspace="10">In the UML diagram to the left, we see that class <code>B</code> is the last class encountered
+            that does <i><b>not</b></i> implement <code> java.io.Serializable</code>.
+            Class <code>B</code>, therefore, must have a no-arg constructor with a visibility such that it could be called from class <code>C</code>. Note that every serializable class will have at
+            least one nonserializable superclass&#151;<code>java.lang.Object</code>.
+            <code>java.lang.Object</code>'s no-arg constructor is public, so it will always be accessible from a subclass.
+      
+<p class="unp">Default serialization will marshall only those objects which are marshallizable (i.e., default serializable, custom serializable, or externalizable). If a non-marshallizable
+            superclass has state that must be preserved (and it often will), you will need to use <i>custom serialization</i> or <i>externalization</i> since default serialization ignores non-marshallizable superclasses.<br>
+                  <br>
+                  Using this diagram as an example, if we have an object
+            of class <code>D</code>, only the state of classes <code>C</code>
+            and <code>D</code> will be preserved by default serialization since
+            these are the only classes which implement <code>java.io.Serializable</code>.
+            <i><b>No superclasses of class </b></i><b><code>C</code></b><i><b>
+            will be marshalled by the default serialization mechanism</b></i>. When the object is later deserialized,
+            any fields defined in classes <code>B</code>, <code>A</code>, or <code>java.lang.Object</code>
+            will have their default values. Actually, <code>java.lang.Object</code> does not have any fields anyway.</p>
+
+<p>Let's look at an example where default serialization will not properly preserve
+    the state of a non-marshallizable superclass. The code below closely reflects
+    the class hierarchy shown in the UML diagram <a href="#non-serializable-superclasses">above</a> except that
+    classes <code>A</code> and <code>D</code> have been removed for the sake of brevity:<br>
+    <br>
+         <!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+         <!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+      <table cellspacing='0' class='codeTable'>
+         <tr>
+            <td class='lineNumber'><pre>1</td>
+				<td><pre>&nbsp;<span class='codeKeyword'>import</span> java.io.*;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>2</td>
+				<td><pre>&nbsp;&nbsp;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>3</td>
+				<td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeSeparator'>{</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>4</td>
+				<td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeKeyword'>throws</span> Exception <span class='codeSeparator'>{</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>5</td><td><pre>&nbsp;      ByteArrayOutputStream baos <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ByteArrayOutputStream<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr>
+         <tr>
+            <td class='lineNumber'><pre>6</td><td><pre>&nbsp;      ObjectOutputStream oos <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ObjectOutputStream<span class='codeSeparator'>(</span>baos<span class='codeSeparator'>)</span>;</td></tr>
+         <tr>
+            <td class='lineNumber'><pre>7</td>
+				<td><pre>&nbsp;&nbsp;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>8</td>
+				<td><pre>&nbsp;      <span class='codeComment'>// Create a new C and modify both the CLabel and BLabel.</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>9</td>
+				<td><pre>&nbsp;      C cObj <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> C<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>10</td>
+				<td><pre>&nbsp;      cObj.setCLabel<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"NEW C LABEL"</span><span class='codeSeparator'>)</span>;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>11</td>
+				<td><pre>&nbsp;      cObj.setBLabel<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"NEW B LABEL"</span><span class='codeSeparator'>)</span>;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>12</td>
+				<td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"cObj.toString(): "</span> <span class='codeOperatorLiteral'>+</span> cObj<span class='codeSeparator'>)</span>;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>13</td>
+				<td><pre>&nbsp;&nbsp;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>14</td>
+				<td><pre>&nbsp;      <span class='codeComment'>// Serialize the C object...but the superclass (B)</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>15</td>
+				<td><pre>&nbsp;      <span class='codeComment'>// will not have its state serialized.</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>16</td>
+				<td><pre>&nbsp;      oos.writeObject<span class='codeSeparator'>(</span>cObj<span class='codeSeparator'>)</span>;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>17</td>
+				<td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"--------------------"</span><span class='codeSeparator'>)</span>;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>18</td>
+				<td><pre>&nbsp;&nbsp;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>19</td>
+				<td><pre>&nbsp;      <span class='codeComment'>// Deserialze the cObj.</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>20</td><td><pre>&nbsp;      ByteArrayInputStream bais <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ByteArrayInputStream<span class='codeSeparator'>(</span>baos.toByteArray<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr>
+         <tr>
+            <td class='lineNumber'><pre>21</td>
+				<td><pre>&nbsp;      ObjectInputStream ois <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ObjectInputStream<span class='codeSeparator'>(</span>bais<span class='codeSeparator'>)</span>;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>22</td>
+				<td><pre>&nbsp;      cObj <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>C<span class='codeSeparator'>)</span>ois.readObject<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>23</td>
+				<td><pre>&nbsp;&nbsp;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>24</td>
+				<td><pre>&nbsp;      <span class='codeComment'>// Print the deserialized C object. You'll see that the superclass</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>25</td>
+				<td><pre>&nbsp;      <span class='codeComment'>// B object did not have its state preserved.</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>26</td>
+				<td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"cObj.toString(): "</span> <span class='codeOperatorLiteral'>+</span> cObj<span class='codeSeparator'>)</span>;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>27</td>
+				<td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>28</td>
+				<td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>29</td>
+				<td><pre>&nbsp;&nbsp;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>30</td>
+				<td><pre>&nbsp;&nbsp;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>31</td>
+				<td><pre>&nbsp;<span class='codeKeyword'>class</span> B <span class='codeSeparator'>{</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>32</td>
+				<td><pre>&nbsp;   <span class='codeKeyword'>private</span> String BLabel <span class='codeOperatorLiteral'>=</span> <span class='codeStringLiteral'>"Default B Label"</span>;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>33</td>
+				<td><pre>&nbsp;&nbsp;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>34</td>
+				<td><pre>&nbsp;   <span class='codeKeyword'>void</span> setBLabel<span class='codeSeparator'>(</span>String s<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>35</td>
+				<td><pre>&nbsp;      BLabel <span class='codeOperatorLiteral'>=</span> s;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>36</td>
+				<td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// setBLabel()</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>37</td>
+				<td><pre>&nbsp;&nbsp;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>38</td>
+				<td><pre>&nbsp;   <span class='codeKeyword'>public</span> String toString<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>39</td>
+				<td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeStringLiteral'>"BLabel = "</span> <span class='codeOperatorLiteral'>+</span> BLabel;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>40</td>
+				<td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// toString()</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>41</td>
+				<td><pre>&nbsp;&nbsp;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>42</td>
+				<td><pre>&nbsp;   B<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>43</td>
+				<td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"B's no-arg constructor called..."</span><span class='codeSeparator'>)</span>;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>44</td>
+				<td><pre>&nbsp;   <span class='codeSeparator'>}</span>  <span class='codeComment'>// B()</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>45</td>
+				<td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// B</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>46</td>
+				<td><pre>&nbsp;&nbsp;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>47</td>
+				<td><pre>&nbsp;&nbsp;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>48</td>
+				<td><pre>&nbsp;<span class='codeKeyword'>class</span> C <span class='codeKeyword'>extends</span> B <span class='codeKeyword'>implements</span> Serializable <span class='codeSeparator'>{</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>49</td>
+				<td><pre>&nbsp;   <span class='codeKeyword'>private</span> String CLabel <span class='codeOperatorLiteral'>=</span> <span class='codeStringLiteral'>"Default C Label"</span>;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>50</td>
+				<td><pre>&nbsp;&nbsp;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>51</td>
+				<td><pre>&nbsp;   <span class='codeKeyword'>void</span> setCLabel<span class='codeSeparator'>(</span>String s<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>52</td>
+				<td><pre>&nbsp;      CLabel <span class='codeOperatorLiteral'>=</span> s;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>53</td>
+				<td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// setCLabel()</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>54</td>
+				<td><pre>&nbsp;&nbsp;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>55</td>
+				<td><pre>&nbsp;   <span class='codeKeyword'>public</span> String toString<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>56</td>
+				<td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeStringLiteral'>"CLabel = "</span> <span class='codeOperatorLiteral'>+</span> CLabel <span class='codeOperatorLiteral'>+</span> <span class='codeStringLiteral'>"...here's B's toString(): "</span> <span class='codeOperatorLiteral'>+</span> <span class='codeKeyword'>super</span>.toString<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>57</td>
+				<td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// toString()</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>58</td>
+				<td><pre>&nbsp;&nbsp;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>59</td>
+				<td><pre>&nbsp;   C<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>60</td>
+				<td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"C's no-arg constructor called..."</span><span class='codeSeparator'>)</span>;</td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>61</td>
+				<td><pre>&nbsp;   <span class='codeSeparator'>}</span>  <span class='codeComment'>// C()</span></td>
+			</tr>
+         <tr>
+            <td class='lineNumber'><pre>62</td>
+				<td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// C</span></td>
+			</tr>
+      </table>
+		<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+
+<p>Running this code will produce the following output:
+		</p>
+<blockquote>
+         <pre>
+B's no-arg constructor called...
+C's no-arg constructor called...
+cObj.toString(): CLabel = NEW C LABEL...here's B's toString(): BLabel = NEW B LABEL
+--------------------
+B's no-arg constructor called...
+cObj.toString(): CLabel = NEW C LABEL...here's B's toString(): BLabel = Default B Label
+		</pre></blockquote>
+
+<p>This code creates an object of class <code>C</code>, which is serializable. Note that <code>C</code> extends <code>B</code>, which is not serializable. The output which appears before the dashed line should not be surprising. The <code>main()</code> method  simply modifies  the <code>CLabel</code> and <code>BLabel</code> fields in the object.</p>
+<p>The output below the dashed line is more interesting: It first shows that C's constructor <i><b>was not</b></i> called but B's constructor was.  Since deserialization is considered an alternative form of object  construction, classes which implement <code>java.io.Serializable</code> will never have their constructors called when an object is being deserialized. This is why <code>C</code>'s constructor was not called. The deserialization process itself <i><b>is</b></i> considered object construction.</p>
+<p>A serializable class may have one or more superclasses which do not implement <code>java.io.Serializable</code>. When an object is deserialized, constructors for these non-serializable superclasses <i><b>will</b></i> be called. This actually makes perfect sense: The default serialization mechanism will not preserve the state of superclasses that are not serializable (such as class <code>B</code> in the example code). Consequently, when deserializing an object, there must be some mechanism for initializing the non-serializable superclass objects. This is why <code>B</code>'s constructor was called and it is why B had to provide a no-arg constructor accessible from <code>C</code>.</p>
+<p>The second thing to notice from the output below the dashed line is that <code>B</code>'s state was not preserved by serialization. Even though code in the <code>main()</code> method  modified the <code>BLabel</code> field, that modification was not preserved when <code>cObj</code> was serialized. Again, this is because <code>B</code> is not serializable. <i><b>Superclasses that are <u>not</u> marshallizable will <u>not</u> have their internal state saved by the default serialization mechanism</b></i>.
+</p>
+<a name="CustomSerialization"></a> 
+<p class="subtitle">Custom Serialization Basics</p>
+<div class="postSubtitle">Any class whose objects are to be marshalled and unmarshalled using custom serialization must meet the following four requirements:</div>
+<blockquote>
+  <ol style="margin-top:0px;margin-bottom:0px">
+	 <li>The class  must implement the <font face="Lucida Console, Courier New, monospace">java.io.Serializable</font>
+    marker interface (<i><b>not</b></i> <code>java.io.Externalizable</code>) although one or more superclasses may not implement this
+    interface.<br>
+    <br>
+  </li>
+	 <li> Every class in Java has a &quot;type hierarchy&quot; rooted at <code>java.lang.Object</code>.
+    Beginning with <code>java.lang.Object</code> and working down the type hierarchy,
+    the <i><b>last</b></i> class encountered that <i><b>does not</b></i> implement
+    <code>java.io.Serializable</code> <i><b>must</b></i> have a no-arg constructor
+    which can be called from its serializable subclass in order for deserialization
+    to work. What do we mean by, &quot;<i>can be called from its serializable
+    subclass</i>&quot;? It simply means that the visibility modifier of this no-arg
+    constructor must be such that the constructor can be called from the class' serializable
+    subclass. Note that this does not necessarily mean that the constructor must
+    have <code>public</code> or <code>protected</code> visibility. It can have the more restrictive &quot;package-private&quot;
+    visibility if the serializable subclass is in the same package as the non-serializable
+    superclass.<br>
+	 <br>
+	 </li>
+	 <li>The<i></i> class must implement one or more of the methods <code>readObject()</code>, <code>writeObject()</code>, <code>readResolve()</code>, or <code>writeReplace()</code> in such a way that the implementation(s) affect the marshalled or unmarshalled results from what they would be if the methods were not implemented. If the class does not meet this requirement but meets the previous two requirements, then the class is effectively using <a href="#BasicSerializationRequirements"><i>default serialization</i></a>.<br>
+		<br>
+	 </li>
+	 <li>If the class calls <code>defaultReadObject()</code> within the <code>readObject()</code> method <u><i><b>or</b></i></u>, if the class calls <code>defaultWriteObject()</code> within the <code>writeObject()</code> method, then every member field of the class being marshalled must meet one of the following criteria:<br>
+	   
+	   <ol type="a">
+			
+		  <li>It is  a primitive type.
+</li>
+		  <li>It is a reference whose value is null.</li>
+		  <li>It is a reference declared as <code>static</code> or <code>transient</code>.</li>
+		  <li>It is a reference to an object which is marshallizable.</li>
+		  <li>It is a reference to an array for which each element is marshallizable.</li>
+		</ol>
+	 </li>
+  </ol>
+</blockquote>
+<p>You may notice that the requirements for custom serializable classes are very similar to the requirements for classes that are <i><a href="#BasicSerializationRequirements">default serializable</a></i>.</p>
+<p>Custom serialization allows the programmer to garner a greater degree of control over the
+  marshallization process than default serialization.  Generally, custom serialization is used either <i><b>in addition to</b></i> or <i><b>as a replacement for</b></i> default serialization:</p>
+<ol>
+  <ol>
+	 <li><b><i>Custom Serialization <u>in Addition to</u> Default Serialization</i></b>: In this scenario, the <code>readObject()</code> and <code>writeObject()</code> methods delegate to default serialization by invoking <code>defaultReadObject()</code> and <code>defaultWriteObject()</code>, respectively. readObject() and writeObject() then proceed to read and write any &quot;additional information&quot; as required to marshall the object's state. This &quot;additional information&quot; might include information from a non-marshallizable superclass or <code>static</code> or <code>transient</code> fields within the current class.<br>
+		<br>
+		Note that it is common to mark a field as <code>transient</code> simply to prevent default serialization from processing the field.  Also note that it may sometimes be difficult or impossible to marshall state from non-marshallizable superclasses:  If the non-marshallizable superclass
+  has, for example, <code>private</code> data for which there are no accessor
+  or setter methods, the subclass will not be able to preserve and restore its
+  state except by using reflection, which will
+  require the proper security settings.<br>
+		<br>
+	</li>
+	 <li><b><i>Custom Serialization <u>as a Replacement for</u> Default Serialization</i></b>:  In this scenario, the <code>readObject()</code> and <code>writeObject()</code> methods <i><b>do not</b></i> delegate to default serialization by invoking <code>defaultReadObject()</code> and <code>defaultWriteObject()</code>, respectively. In this case, the implementations of <code>readObject()</code> and <code>writeObject()</code> determine explicitly which fields are to be marshalled..</li>
+  </ol>
+</ol>
+<p><i><b>When using custom serialization, you have to remember that the </b></i><b><code>readObject()</code></b><i><b> method will not be able to modify fields declared as </b></i><b><code>final</code></b>. Remember that <code>final</code> fields must be initialized
+  in a constructor or initializer. You may wish to review the article on <a href="../java-tidbits/index.html#Blank-Final-Variable-Initialization">Blank
+  Final Variable Initialization</a> in the <i><a href="../java-tidbits/">Java Tidbits</a></i> article. Default serialization, on the other hand,
+  <i><b>will</b></i> correctly handle the mashallization and unmarshallization of <code>final</code>
+  fields.</p>
+<p>If you're faced with a situation where it's important to use custom serialization yet the class to be marshalled  contains one or more  <code>final</code> fields you have no choice but to delegate marshallization to default serialization  in order for the <code>final</code> fields to be marshalled and unmarshalled correctly. In other words, you'll have to use custom serialization <i>in addition to</i> default serialization, as described above. Of course, delegating to default serialization will cause <i>all</i> fields not marked as <code>transient</code> or <code>static</code> to be marshalled&#151;not just the <code>final</code> fields. You may decide to mark one or more of the non-<code>final</code> fields as <code>transient</code> to prevent default serialization from processing these fields.
+  <!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+  <!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+</p>
+<p>
+<p><a name="externalizationBasics"></a></p>
+<p class="subtitle">Externalization Basics</p>
+<div class="postSubtitle">Any class whose objects are to be marshalled and unmarshalled using externalization must meet the following two requirements.</div>
+<blockquote>
+  <ol>
+  	 <li>The class  must implement the <font face="Lucida Console, Courier New, monospace">java.io.Externalizable</font>
+     interface (<i><b>not</b></i> <code>java.io.Serializable</code>) although one or more superclasses may not implement this
+    interface.<br>
+    <br>
+	 </li>
+	 <li>The class must provide a <code>public</code>, no-arg constructor.</li>
+  </ol></blockquote>
+  
+<!-- #BeginLibraryItem "/Library/separatorBar.lbi" --><p></p><!-- #EndLibraryItem -->
+<p class="subtitle">Marshallization Summary/Checklist</p>
+<div class="postSubtitle">When making a class marshallizable, there are some issues you should remember and
+some questions you should ask yourself:
+</div>
+<ol>
+  <ol>
+    <li><i>Default serialization</i> will ignore fields marked <code>static</code> or
+      <code>transient</code>. If you need a <code>static</code> field to be marshalled/unmarshalled,
+      you will have to use either custom serialization or externalization.<br>
+      <br>
+    </li>
+    <li>When an object is unmarshalled using default or custom serialization, constructors will <i><b>never</b></i>
+      be called for those classes in the object's type hierarchy that implement
+      <code>java.io.Serializable</code> (whether implemented directly or through
+      inheritance). On the other hand, any classes in the object's type hierarchy
+      that do <i><b>not</b></i> implement <code>java.io.Serializable</code> <em><b><i>will</i></b></em>
+      have a constructor called during unmarshallization. Beginning with the class
+      of the object being unmarshalled working up
+      the type hierarchy toward <code>java.lang.Object</code>, the first class encountered that does <i><b>not</b></i> implement <code>java.io.Serializable</code>
+      will have it's no-arg constructor called during unmarshallization. This class
+      <i><b>must</b></i> have a no-arg constructor whose visibility is such that
+      it can be called from the serializable subclass or deserialization will
+      not be successful.<br>
+      <br>
+      Note that every object has at least one non-serializable class in its type
+      hierarchy: <code>java.lang.Object</code>.<br>
+      <br>
+    </li>
+    <li>For some fields marshallization does not make sense. For other fields, <i>default
+      serialization</i> will not make sense and you will want to make the class either <i>externalizable</i> or <i>custom serializable</i>. One question you should ask yourself when considering whether
+      or not a field should be marshalled is, &quot;<i>Will this field's value
+      make sense if it is unmarshalled in another JVM or on another platform?</i>&quot;<br>
+      <br>
+      Another question you should ask is, &quot;<i>Is the amount of space required
+      to marshall this field using default serialization prohibitive?</i>&quot;
+      Sometimes you will encounter a trade-off between the amount of space required
+      to marshall an object and the computational time and complexity required
+      to re-build an object if its state has to be re-computed during unmarshallization.<br>
+      <br>
+      Typical examples of the sort of fields that should <i><b>not</b></i> be
+      marshalled are:
+      <ul>
+        <li>Objects related to I/O such as <code>Reader</code>s, <code>Writer</code>s,
+          <code>FileDescriptor</code>s and <code>Socket</code>s.</li>
+        <li>Objects that maintain the absolute position of GUI components. Typically
+          these positions are dependent upon the default font used on the current
+          operating system.</li>
+        <li>Objects whose values can be &quot;easily&quot; re-computed.</li>
+        <li>Values returned by or dependent upon the default <code>java.lang.Obect.hashCode()</code>
+          method. The <code>hashCode()</code> implementation provided by <code>java.lang.Object</code>
+          is a native method that returns an integer whose value is dependent
+          upon the underlying JVM process.<br>
+        </li>
+      </ul>
+    </li>
+  </ol>
+</ol>
+<p class="subtitle">Turning Off Serialization and Externalization</p>
+<div class="postSubtitle">You may someday find that you need to extend a class which is marshallable but
+you don't want your subsclass to be marshallable. There's an easy
+way to stop your subclass from being marshallable if it extends a marshallable
+class: simply throw a <code>java.io.NotSerializableException</code> from the <code>readObject()</code>
+and <code>writeObject()</code> methods (if the class is serializable) or the <code>readExternal()</code> and <code>writeExternal()</code> methods (if the class is externalizable). Here's the simple code:<p></p>
+  </div>
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>private</span> <span class='codeKeyword'>void</span> readObject<span class='codeSeparator'>(</span>ObjectInputStream ois<span class='codeSeparator'>)</span>  <span class='codeKeyword'>throws</span> IOException <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;   <span class='codeKeyword'>throw</span> <span class='codeOperatorLiteral'>new</span> NotSerializableException<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"serialization is not supported."</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// readObject()</span></td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;<span class='codeKeyword'>private</span> <span class='codeKeyword'>void</span> writeObject<span class='codeSeparator'>(</span>ObjectOutputStream ois<span class='codeSeparator'>)</span>  <span class='codeKeyword'>throws</span> IOException <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;   <span class='codeKeyword'>throw</span> <span class='codeOperatorLiteral'>new</span> NotSerializableException<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"serialization is not supported."</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// writeObject()</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+<p class="subtitle">Validating Deserialized Object</p>
+<div class="postSubtitle">Someone at Sun apparently thought it would be useful to build a <i>validation mechanism</i> (so-called) into the marshallization API. This mechanism provides a way for the programmer to specify a method to be called after all objects in an <code>ObjectInputStream</code> have been unmarshalled to ensure the resulting object is &quot;valid&quot; and/or &quot;fully initialized&quot;.<br>
+  </div>
+<p>The idea is that a &quot;callback object&quot; (which implements the  <code><a href="http://java.sun.com/j2se/1.4/docs/api/java/io/ObjectInputValidation.html" target="_blank">java.io.ObjectInputValidation</a></code><a href="http://java.sun.com/j2se/1.4/docs/api/java/io/ObjectInputValidation.html"> interface</a>) is registered with the <code>ObjectInputStream</code>&#151;but this registration can only take place if the <code>ObjectInputStream</code> is actively reading from the stream. Once all objects in the <code>ObjectInputStream</code> have been unmarshalled, the registered callback object is invoked to validate the entire graph of objects. If the callback object finds a problem in the unmarshalled objects it can throw a <code>java.io.InvalidObjectException</code>. The callback registration and invocation is easy to set up. You can read about it in the javadocs for the <a href="http://java.sun.com/j2se/1.4/docs/api/java/io/ObjectInputStream.html#registerValidation(java.io.ObjectInputValidation,%20int)" target="_blank"><code>registerValidation()</code> method</a> in <code>ObjectInputStream</code> and the <a href="http://java.sun.com/j2se/1.4/docs/api/java/io/ObjectInputValidation.html" target="_blank"><code>ObjectInputValidation</code> interface</a>.</p>
+<p>The validation mechanism seems to have been invented to handle these two situations:</p>
+<ol>
+  <ol>
+	 <li>Some objects cannot be fully initialized until  the graph of which they are a part has been completely unmarshalled. The validation mechanism allows such objects to register an <code>ObjectInputValidation</code> object to be invoked after the object graph of which they are a part has been completely unmarshalled, allowing the object to complete its initialization.<br>
+		<br>
+	 </li>
+	 <li>Some objects cannot validate their internal state until  the graph of which they are a part has been completely unmarshalled. The validation mechanism allows such objects to register an <code>ObjectInputValidation</code> object to be invoked after the object graph of which they are a part has been completely unmarshalled, allowing the object to validate its state. If there is a problem with the internal state of the object, an exception (<code>java.io.InvalidObjectException</code>) should be thrown.</li>
+  </ol>
+</ol>
+<p>On the surface, the motivation for creating this sort of validation mechanism sounds reasonable. In practice, however, I cannot think of a single realistic case where the validation mechanism adds anything useful over what the marshallization API already provides. Objects which need to validate their internal state can always do so at the end of the <code>readObject()</code> method. If you can present an example, even if it's contrived, of where the validation mechanism is <i>required</i> to perform validation or complete object initialization, please let me know: <a href="mailto:absolutejava@absolutejava.com?subject=Validation Mechanism Comments">absolutejava@absolutejava.com</a>.</p>
+<p>Even though the validation mechanism seems less than useful, let's take a look at how it might be used. In the code below, the <code>Inner</code> object can perform some sort of validation within its <code>validateObject()</code> method. Take note of the output of this program: the <code>validateObject()</code> method is called only <i>after</i> the entire graph is unmarshalled.</p>
+
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.io.*;</td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeKeyword'>throws</span> Exception <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;      ByteArrayOutputStream baos <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ByteArrayOutputStream<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;      ObjectOutputStream oos <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ObjectOutputStream<span class='codeSeparator'>(</span>baos<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;      oos.writeObject<span class='codeSeparator'>(</span><span class='codeOperatorLiteral'>new</span> Outer<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;      oos.close<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;      ByteArrayInputStream bais <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ByteArrayInputStream<span class='codeSeparator'>(</span>baos.toByteArray<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;      ObjectInputStream ois <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ObjectInputStream<span class='codeSeparator'>(</span>bais<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;      Outer outer <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Outer<span class='codeSeparator'>)</span>ois.readObject<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;      ois.close<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr><tr><td class='lineNumber'><pre>17</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>18</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>19</td><td><pre>&nbsp;<span class='codeKeyword'>class</span> Outer <span class='codeKeyword'>implements</span> Serializable <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>20</td><td><pre>&nbsp;   Inner inner <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> Inner<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>21</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>22</td><td><pre>&nbsp;   <span class='codeKeyword'>private</span> <span class='codeKeyword'>void</span> readObject<span class='codeSeparator'>(</span>ObjectInputStream ois<span class='codeSeparator'>)</span> <span class='codeKeyword'>throws</span> Exception <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>23</td><td><pre>&nbsp;      ois.defaultReadObject<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>24</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Outer.readObject() is finished."</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>25</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// readObject()</span></td></tr><tr><td class='lineNumber'><pre>26</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Outer</span></td></tr><tr><td class='lineNumber'><pre>27</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>28</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>29</td><td><pre>&nbsp;<span class='codeKeyword'>class</span> Inner <span class='codeKeyword'>implements</span> Serializable, ObjectInputValidation <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>30</td><td><pre>&nbsp;   <span class='codeKeyword'>int</span> someInt <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>-</span><span class='codeIntegerLiteral'>1</span>;</td></tr><tr><td class='lineNumber'><pre>31</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>32</td><td><pre>&nbsp;   <span class='codeKeyword'>private</span> <span class='codeKeyword'>void</span> readObject<span class='codeSeparator'>(</span>ObjectInputStream ois<span class='codeSeparator'>)</span> <span class='codeKeyword'>throws</span> Exception <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>33</td><td><pre>&nbsp;      ois.registerValidation<span class='codeSeparator'>(</span><span class='codeKeyword'>this</span>, <span class='codeIntegerLiteral'>0</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>34</td><td><pre>&nbsp;      ois.defaultReadObject<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>35</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Inner.readObject() is finished, validator has been registered."</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>36</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// readObject()</span></td></tr><tr><td class='lineNumber'><pre>37</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>38</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>void</span> validateObject<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeKeyword'>throws</span> InvalidObjectException <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>39</td><td><pre>&nbsp;      <span class='codeComment'>// This is where we could do some sort of additional</span></td></tr><tr><td class='lineNumber'><pre>40</td><td><pre>&nbsp;      <span class='codeComment'>// initialization or validation.</span></td></tr><tr><td class='lineNumber'><pre>41</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"All objects have now been deserialized."</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>42</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// validateObject()</span></td></tr><tr><td class='lineNumber'><pre>43</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Inner</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+
+
+<p>The output from running this code is:</p>
+<blockquote>
+<pre>
+Inner.readObject() is finished, validator has been registered.
+Outer.readObject() is finished.
+All objects have now been deserialized.
+</pre>
+</blockquote>
+
+
+<p>Notice that the <code>validateObject()</code> method is not invoked until <i>after</i> the <code>Outer</code> object has been unmarshalled.</p>
+<p>
+<a name="Objects-are-Stream-Immutable-by-Default"></a> 
+<p class="subtitle">Objects are &quot;Stream Immutable&quot;, by Default</p>
+<div class="postSubtitle">This article only applies to classes that are <i>default serializable</i> or <i>custom serialable</i>. It may or may not apply to classes that are <i>externalizable</i>. At this point in time it needs to be reviewed for applicability to <i>externalizable</i> classes.</div>
+<p>Once an an object has been serialized to a stream, any changes in the object's state will <i><b>not</b></i>, by default, be propagated to the stream if the object is re-serialized to the same stream. In other words, if an object is serialized to a stream and then the object's state changes, re-serializing the object to the stream a second time will not cause the new state to be saved&#151;the object will simply appear to be serialized twice, with the state it had the first time it was serialized.</p>
+<p>Before reading further, it's important to distinguish between the forms a serialized object can take within a serialized byte stream. <code>ObjectOutputStream</code> keeps track of each object it is asked to serialize. The first time it is asked to serialize an object it writes the bytes that make up the object's internal state, including any data provided by custom serialization, to the underlying byte stream. You can think of this form of serialization as a &quot;byte-level&quot; serialization since the actual bytes that make up the object's state are what are written to the underlying stream. In performing this &quot;byte-level&quot; serialization, <code>ObjectOutputStream</code> places a reference to the object in a &quot;reference cache&quot;. This &quot;reference cache&quot; is simply a set of references to objects for which <code>ObjectOutputStream</code> has performed a &quot;byte-level&quot; serialization. We'll talk more about the &quot;reference-cache&quot; later.</p>
+<p>When <code>ObjectOutputStream</code> is later asked to serialize the same object again, instead of performing the &quot;byte-level&quot; form of serilaization described above, it will simply write a &quot;back-reference&quot; to the underlying stream. Conceptually, this &quot;back-reference&quot; is simply a reference to the &quot;byte-level&quot; data that was written to the stream the first time the object was serialized. How does ObjectOutputStream know if has previously performed a &quot;byte-level&quot; serialization for an object? It simply checks if a reference to the object is in its &quot;reference cache&quot;.</p>
+<p>As you can imagine, it's time to look at some code. Ignore for the moment the commented code that begins on line 26.<br>
+</p>
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.io.*;</td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.util.*;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeKeyword'>implements</span> Serializable <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;   <span class='codeComment'>// Some simple state information.</span></td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;   ArrayList list <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ArrayList<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;   <span class='codeKeyword'>int</span>       someInt;</td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;   <span class='codeKeyword'>char</span>      someChar;</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeKeyword'>throws</span> Exception <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;      Tester t <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> Tester<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;      t.list.add<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Dog"</span><span class='codeSeparator'>)</span>; t.list.add<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Rabbit"</span><span class='codeSeparator'>)</span>; t.list.add<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Dragon"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;      t.someInt <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>10</span>;</td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;      t.someChar <span class='codeOperatorLiteral'>=</span> <span class='codeCharacterLiteral'>'A'</span>;</td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;      <span class='codeComment'>// Serialize the object.</span></td></tr><tr><td class='lineNumber'><pre>17</td><td><pre>&nbsp;      ByteArrayOutputStream baos <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ByteArrayOutputStream<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>18</td><td><pre>&nbsp;      ObjectOutputStream oos <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ObjectOutputStream<span class='codeSeparator'>(</span>baos<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>19</td><td><pre>&nbsp;      oos.writeObject<span class='codeSeparator'>(</span>t<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>20</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>21</td><td><pre>&nbsp;      <span class='codeComment'>// Now let's change the state of t and write it out again.</span></td></tr><tr><td class='lineNumber'><pre>22</td><td><pre>&nbsp;      t.list.add<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Rat"</span><span class='codeSeparator'>)</span>; t.list.add<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Horse"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>23</td><td><pre>&nbsp;      t.someInt <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>999</span>;</td></tr><tr><td class='lineNumber'><pre>24</td><td><pre>&nbsp;      t.someChar <span class='codeOperatorLiteral'>=</span> <span class='codeCharacterLiteral'>'Z'</span>;</td></tr><tr><td class='lineNumber'><pre>25</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>26</td><td><pre>&nbsp;      <span class='codeComment'>// Uncomment the next line to tell ObjectOutputStream to</span></td></tr><tr><td class='lineNumber'><pre>27</td><td><pre>&nbsp;      <span class='codeComment'>// "disregard" all the references to objects it has already</span></td></tr><tr><td class='lineNumber'><pre>28</td><td><pre>&nbsp;      <span class='codeComment'>// serialized. This will cause ObjectOutputStream to start</span></td></tr><tr><td class='lineNumber'><pre>29</td><td><pre>&nbsp;      <span class='codeComment'>// tracking references anew.</span></td></tr><tr><td class='lineNumber'><pre>30</td><td><pre>&nbsp;      <span class='codeComment'>// oos.reset();</span></td></tr><tr><td class='lineNumber'><pre>31</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>32</td><td><pre>&nbsp;      oos.writeObject<span class='codeSeparator'>(</span>t<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>33</td><td><pre>&nbsp;      oos.close<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>34</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>35</td><td><pre>&nbsp;      <span class='codeComment'>// Now we read in the two Tester objects.</span></td></tr><tr><td class='lineNumber'><pre>36</td><td><pre>&nbsp;      ByteArrayInputStream bais <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ByteArrayInputStream<span class='codeSeparator'>(</span>baos.toByteArray<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>37</td><td><pre>&nbsp;      ObjectInputStream ois <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ObjectInputStream<span class='codeSeparator'>(</span>bais<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>38</td><td><pre>&nbsp;      Tester t1 <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Tester<span class='codeSeparator'>)</span>ois.readObject<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>39</td><td><pre>&nbsp;      Tester t2 <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Tester<span class='codeSeparator'>)</span>ois.readObject<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>40</td><td><pre>&nbsp;      ois.close<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>41</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>42</td><td><pre>&nbsp;      <span class='codeComment'>// Print the two Tester objects.</span></td></tr><tr><td class='lineNumber'><pre>43</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t1.equals(t2)? "</span> <span class='codeOperatorLiteral'>+</span> t1.equals<span class='codeSeparator'>(</span>t2<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>44</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t1 == t2?      "</span> <span class='codeOperatorLiteral'>+</span> <span class='codeSeparator'>(</span>t1 <span class='codeOperatorLiteral'>==</span> t2<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>45</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>46</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>47</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>48</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>boolean</span> equals<span class='codeSeparator'>(</span>Object other<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>49</td><td><pre>&nbsp;      <span class='codeKeyword'>if</span><span class='codeSeparator'>(</span>other <span class='codeOperatorLiteral'>instanceof</span> Tester<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>50</td><td><pre>&nbsp;         Tester otherTester <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Tester<span class='codeSeparator'>)</span>other;</td></tr><tr><td class='lineNumber'><pre>51</td><td><pre>&nbsp;         <span class='codeKeyword'>if</span><span class='codeSeparator'>(</span>otherTester.someInt <span class='codeOperatorLiteral'>==</span> someInt <span class='codeOperatorLiteral'>&amp;&amp;</span></td></tr><tr><td class='lineNumber'><pre>52</td><td><pre>&nbsp;            otherTester.someChar <span class='codeOperatorLiteral'>==</span> someChar <span class='codeOperatorLiteral'>&amp;&amp;</span></td></tr><tr><td class='lineNumber'><pre>53</td><td><pre>&nbsp;            list <span class='codeOperatorLiteral'>!=</span> <span class='codeKeyword'>null</span> <span class='codeOperatorLiteral'>&amp;&amp;</span></td></tr><tr><td class='lineNumber'><pre>54</td><td><pre>&nbsp;            list.equals<span class='codeSeparator'>(</span>otherTester.list<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span></td></tr><tr><td class='lineNumber'><pre>55</td><td><pre>&nbsp;            <span class='codeKeyword'>return</span> <span class='codeKeyword'>true</span>;</td></tr><tr><td class='lineNumber'><pre>56</td><td><pre>&nbsp;      <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>57</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>58</td><td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeKeyword'>false</span>;</td></tr><tr><td class='lineNumber'><pre>59</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// equals()</span></td></tr><tr><td class='lineNumber'><pre>60</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+
+
+
+<p><br>
+When you run this code you will see the following output:</p>
+<blockquote>
+  <pre>t1.equals(t2)? true
+t1 == t2?      true
+</pre>
+</blockquote>
+<p>Even though the state of object <code>t</code> is modified  (line 22) before being serialized a second time,  the <code>ObjectOutputStream</code> simply substitutes a back-reference to <code>t</code> as it appeared the <i><b>first</b></i> time it was serialized. When the stream is deserialized we end up with the two identical <code>Tester</code> objects. Actually, we end up with a <i>single</i> <code>Tester</code> object, as the <code>==</code> result indicates.</p>
+<p>If you were to uncomment the statement on line 30 and re-run the program you would see the following output:</p>
+<blockquote>
+<pre>
+t1.equals(t2)? false
+t1 == t2?      false
+</pre></blockquote>
+<p>By calling <code>ObjectOutputStream.reset()</code> we have effectively told <code>ObjectOutputStream</code> to empty its &quot;reference cache&quot;. The <code>reset()</code> method effectively tells <code>ObjectOutputStream</code> to behave as if it has not performed any &quot;byte-level&quot; serializations. Now, when the t object is serialized a second time the <code>ObjectOutputStream</code> will <i><b>not</b></i> find it in the reference cache (since the <code>reset()</code> method cleared it) and will perform a &quot;byte-level&quot; serialization to the underlying stream rather than a &quot;back-reference&quot; serialization. When we deserialize the two <code>Tester</code> objects, of course, we now see  two   objects with different states, rather than two objects with the same state as we had seen before.</p>
+<p>Whereras the  <code>reset()</code> method does a wholesale reset of the reference cache, the <code>writeUnshared()</code> and <code>readUnshared()</code> methods allow you to fine-tune your control over whether or not ObjectOutputStream should consult its reference cache. See the article, <a href="#Partners-in-crime-writeUnshared-and-readUnshared"><i>Partners in Crime: writeUnshared() and readUnshared()</i></a>, for more information.</p>
+<a name="Partners-in-crime-writeUnshared-and-readUnshared"></a>
+<p class="subtitle">Partners in Crime: <code>writeUnshared()</code> and <code>readUnshared()</code></p>
+<div class="postSubtitle"><code>ObjectOutputStream</code> keeps track of the objects it writes to the underlying stream so that if it needs to write the same object more than once, it will simply write a &quot;back reference&quot; that refers to the original object. <code>ObjectOutputStream</code> will ignore changes to an object's state when deciding whether it should write a &quot;back reference&quot; to the underlying stream or write the object itself. I would strongly recommend that you read the &quot;<a href="#Objects-are-Stream-Immutable-by-Default">Objects are 'Stream Immutable', by Default</a>&quot; article before reading this article.</div>
+<p>For the sake of this discussion you can visualize <code>ObjectOutputStream</code> as maintaining an array of the objects it has already serialzed&#151;more specifically, this array contains the <i>serialized bytes</i> of the objects. As it serializes each object <code>ObjectOutputStream</code> checks if the object is in the array. If it's not, it inserts the byte-stream representation of the object; if it is, it serializes  the index of the array element to the underlying stream rather than the actual object's bytes.  Again, this notion of an &quot;internal array&quot; is only a conceptual metaphor to aid your understanding.</p>
+<p>The article, &quot;<a href="#Objects-are-Stream-Immutable-by-Default">Objects are 'Stream Immutable', by Default</a>&quot;, describes how you can completely clear <code>ObjectOutputStream</code>'s internal &quot;object array&quot;, forcing it to write the actual bytes for  objects that have been  previously been  serialized.</p>
+<p>If you need to serialize an object to the same <code>ObjectOutputStream</code> more than once <i><b>and</b></i> the object's state has changed since it was previously serialized <i><b>and</b></i> you want those changes reflected in the serialization stream, you could either call <code>ObjectOutputStream</code>'s <code>reset()</code> method as described in the &quot;<a href="#Objects-are-Stream-Immutable-by-Default">Objects are 'Stream Immutable', by Default</a>&quot; article or you could (in fact you may have to) use <code>ObjectOutputStream</code>'s <code>writeUnshared()</code> method along with <code>ObjectInputStream</code>'s <code>readUnshared()</code> method.</p>
+<p><code>Conceptually, ObjectOutputStream</code>'s <code>writeUnshared()</code> method tells the <code>ObjectOutputStream</code> two things:</p>
+<ol>
+  <ol>
+	 <li>Do  <i><b>not</b></i> try to locate the object being written in the object array.</li>
+	 <li>Do <i><b>not</b></i> put the object being written into the object array.</li>
+  </ol>
+</ol>
+<p>Effectively, <code>writeUnshared()</code> tells <code>ObjectOutputStream</code>, &quot;Write this object's serialized bytes to the underlying stream, even if you saw this object before, and then forget that this <code>writeUnshared()</code> call was ever made&#151;in other words, don't put this object in your array.&quot;</p>
+<p>The code below writes the same object to the ObjectOutputStream three times. The first and third times the <code>writeObject()</code> method is used while <code>writeUnshared()</code> is used the second time. The program's output and an explanation follows the code listing.</p>
+
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.io.*;</td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.util.*;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeKeyword'>implements</span> Serializable <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;   <span class='codeComment'>// Some simple state information.</span></td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;   ArrayList list <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ArrayList<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;   <span class='codeKeyword'>int</span>       someInt;</td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;   <span class='codeKeyword'>char</span>      someChar;</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeKeyword'>throws</span> Exception <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;      Tester t <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> Tester<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;      t.list.add<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Dog"</span><span class='codeSeparator'>)</span>; t.list.add<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Rabbit"</span><span class='codeSeparator'>)</span>; t.list.add<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Dragon"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;      t.someInt <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>10</span>;</td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;      t.someChar <span class='codeOperatorLiteral'>=</span> <span class='codeCharacterLiteral'>'A'</span>;</td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;      <span class='codeComment'>// Serialize the object.</span></td></tr><tr><td class='lineNumber'><pre>17</td><td><pre>&nbsp;      ByteArrayOutputStream baos <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ByteArrayOutputStream<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>18</td><td><pre>&nbsp;      ObjectOutputStream oos <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ObjectOutputStream<span class='codeSeparator'>(</span>baos<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>19</td><td><pre>&nbsp;      oos.writeObject<span class='codeSeparator'>(</span>t<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>20</td><td><pre>&nbsp;      oos.writeUnshared<span class='codeSeparator'>(</span>t<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>21</td><td><pre>&nbsp;      oos.writeObject<span class='codeSeparator'>(</span>t<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>22</td><td><pre>&nbsp;      oos.close<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>23</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>24</td><td><pre>&nbsp;      <span class='codeComment'>// Now we read in the three Tester objects.</span></td></tr><tr><td class='lineNumber'><pre>25</td><td><pre>&nbsp;      ByteArrayInputStream bais <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ByteArrayInputStream<span class='codeSeparator'>(</span>baos.toByteArray<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>26</td><td><pre>&nbsp;      ObjectInputStream ois <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ObjectInputStream<span class='codeSeparator'>(</span>bais<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>27</td><td><pre>&nbsp;      Tester t1 <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Tester<span class='codeSeparator'>)</span>ois.readObject<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>28</td><td><pre>&nbsp;      Tester t2 <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Tester<span class='codeSeparator'>)</span>ois.readObject<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>29</td><td><pre>&nbsp;      Tester t3 <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Tester<span class='codeSeparator'>)</span>ois.readObject<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>30</td><td><pre>&nbsp;      ois.close<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>31</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>32</td><td><pre>&nbsp;      <span class='codeComment'>// Let's see what's what...</span></td></tr><tr><td class='lineNumber'><pre>33</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t1.equals(t2)? "</span> <span class='codeOperatorLiteral'>+</span> t1.equals<span class='codeSeparator'>(</span>t2<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>34</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t1.equals(t3)? "</span> <span class='codeOperatorLiteral'>+</span> t1.equals<span class='codeSeparator'>(</span>t3<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>35</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t2.equals(t3)? "</span> <span class='codeOperatorLiteral'>+</span> t2.equals<span class='codeSeparator'>(</span>t3<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>36</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>37</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t1 == t2?      "</span> <span class='codeOperatorLiteral'>+</span> <span class='codeSeparator'>(</span>t1 <span class='codeOperatorLiteral'>==</span> t2<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>38</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t1 == t3?      "</span> <span class='codeOperatorLiteral'>+</span> <span class='codeSeparator'>(</span>t1 <span class='codeOperatorLiteral'>==</span> t3<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>39</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t2 == t3?      "</span> <span class='codeOperatorLiteral'>+</span> <span class='codeSeparator'>(</span>t2 <span class='codeOperatorLiteral'>==</span> t3<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>40</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>41</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>42</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> String toString<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>43</td><td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeStringLiteral'>"list: "</span> <span class='codeOperatorLiteral'>+</span> list <span class='codeOperatorLiteral'>+</span></td></tr><tr><td class='lineNumber'><pre>44</td><td><pre>&nbsp;             <span class='codeStringLiteral'>"\nsomeInt: "</span> <span class='codeOperatorLiteral'>+</span> someInt <span class='codeOperatorLiteral'>+</span></td></tr><tr><td class='lineNumber'><pre>45</td><td><pre>&nbsp;             <span class='codeStringLiteral'>"\nsomeChar: "</span> <span class='codeOperatorLiteral'>+</span> someChar;</td></tr><tr><td class='lineNumber'><pre>46</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// toString()</span></td></tr><tr><td class='lineNumber'><pre>47</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>48</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>boolean</span> equals<span class='codeSeparator'>(</span>Object other<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>49</td><td><pre>&nbsp;      <span class='codeKeyword'>if</span><span class='codeSeparator'>(</span>other <span class='codeOperatorLiteral'>instanceof</span> Tester<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>50</td><td><pre>&nbsp;         Tester otherTester <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Tester<span class='codeSeparator'>)</span>other;</td></tr><tr><td class='lineNumber'><pre>51</td><td><pre>&nbsp;         <span class='codeKeyword'>if</span><span class='codeSeparator'>(</span>otherTester.someInt <span class='codeOperatorLiteral'>==</span> someInt <span class='codeOperatorLiteral'>&amp;&amp;</span></td></tr><tr><td class='lineNumber'><pre>52</td><td><pre>&nbsp;            otherTester.someChar <span class='codeOperatorLiteral'>==</span> someChar <span class='codeOperatorLiteral'>&amp;&amp;</span></td></tr><tr><td class='lineNumber'><pre>53</td><td><pre>&nbsp;            list <span class='codeOperatorLiteral'>!=</span> <span class='codeKeyword'>null</span> <span class='codeOperatorLiteral'>&amp;&amp;</span></td></tr><tr><td class='lineNumber'><pre>54</td><td><pre>&nbsp;            list.equals<span class='codeSeparator'>(</span>otherTester.list<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span></td></tr><tr><td class='lineNumber'><pre>55</td><td><pre>&nbsp;            <span class='codeKeyword'>return</span> <span class='codeKeyword'>true</span>;</td></tr><tr><td class='lineNumber'><pre>56</td><td><pre>&nbsp;      <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>57</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>58</td><td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeKeyword'>false</span>;</td></tr><tr><td class='lineNumber'><pre>59</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// equals()</span></td></tr><tr><td class='lineNumber'><pre>60</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+
+<p>Here's the output from this program:</p>
+<blockquote><pre>
+t1.equals(t2)? true
+t1.equals(t3)? true
+t2.equals(t3)? true<br>
+
+t1 == t2?      false
+t1 == t3?      true
+t2 == t3?      false
+</pre></blockquote>
+<p>The results of the <code>equals()</code> method should not surprise you. Please tell me they don't. The results of <code>==</code> indicate that <code>ObjectOutputStream</code> handled the <code>writeUnshared()</code> call differently: It did not check if the object was alread in its object array. </p>
+<p>Next, let's swap lines 19 and 20  so that the first object is written with <code>writeUnshared()</code> and the second is written with <code>writeObject()</code>. Running the modified program now produces this output:</p>
+<blockquote><pre>
+t1.equals(t2)? true
+t1.equals(t3)? true
+t2.equals(t3)? true<br>
+
+t1 == t2?      false
+t1 == t3?      false
+t2 == t3?      true</pre></blockquote>
+
+<p>Again, the results of <code>==</code> indicate that <code>ObjectOutputStream</code> handled the <code>writeUnshared()</code> call differently: It did not put the object in its internal array. It simply wrote the object's bytes to the underlying stream. When the object was written a second time (with <code>writeObject()</code>), however, the object <i><b>was</b></i> placed in the array. Then, when the object was written a third time <code>ObjectOutputStream</code> did not actually write the object's bytes to the underlying stream. Instead it simply wrote a &quot;back reference&quot; to the object it placed in that array during the second write.</p>
+<p>Notice that the code above always used the <code>readObject()</code> method to read from the <code>ObjectInputStream</code>. It was not necesssary to use <code>ObjectInputStream</code>'s <code>readUnshared()</code> method. Judging from its name, you might think the <code>readUnshared()</code> method is somehow the <code>ObjectInputStream</code>'s &quot;counterpart&quot; to <code>writeUnshared()</code>&#151;that perhaps you should use <code>readUnshared()</code> to read objects that were written by <code>writeUnshared()</code>. You might also imagine that <code>readUnshared()</code> will always provide a unique object from the underlying <code>ObjectInputStream</code>, regardless of whether the <code>ObjectOutputStream</code> actually wrote the object's bytes or simply a back-reference to an earlier serialized object in the stream. Actually, that's not at all how <code>readUnshared()</code> works at all.</p>
+<p>Recall that <code>ObjectOutputStream</code> will  write an object's bytes to the underlying stream the first time the object is serialized and will write a back-reference to the object when it is subsequently serialized. The <code>readUnshared()</code> method can only be used to read an object that is being deserialized <i>for the first time</i>; it cannot read a back-reference to an object. If you attempt to read a back-reference with <code>readUnshared()</code>, you will get the following exception:</p>
+<blockquote>
+  <pre>java.io.InvalidObjectException: cannot read back reference to unshared object</pre></blockquote>
+<p>A side-effect of a successful call to <code>readUnshared()</code> is that any remaining back-references to the deserialized object which may remain in the <code>ObjectInputStream</code> will be <i><b>unreadable</b></i> by both <code>readObject()</code> and  r<code>eadUnshared()</code>. Conceptually, the successful <code>readUnshared()</code> call invalidated these back-references. Attempting to read a back reference to an object that was previously read with <code>readUnshared()</code> will result in a <code>java.io.InvalidObjectException</code> being thrown, as shown above.</p>
+<p>Yep, it's that time again...</p>
+
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.io.*;</td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeKeyword'>implements</span> Serializable <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeKeyword'>throws</span> Exception <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;      Tester t1 <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> Tester<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;      <span class='codeComment'>// Serialize the object.</span></td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;      ByteArrayOutputStream baos <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ByteArrayOutputStream<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;      ObjectOutputStream oos <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ObjectOutputStream<span class='codeSeparator'>(</span>baos<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;      oos.writeObject<span class='codeSeparator'>(</span>t1<span class='codeSeparator'>)</span>;   <span class='codeComment'>// first time -- bytes get serialized</span></td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;      oos.writeObject<span class='codeSeparator'>(</span>t1<span class='codeSeparator'>)</span>;   <span class='codeComment'>// subsequent time -- back-reference</span></td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;      oos.writeUnshared<span class='codeSeparator'>(</span>t1<span class='codeSeparator'>)</span>; <span class='codeComment'>// unshared -- bytes get serialized</span></td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;      <span class='codeComment'>// Now let's serialize a new Tester</span></td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;      Tester t2 <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> Tester<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>16</td>
+		<td><pre>&nbsp;      oos.writeObject<span class='codeSeparator'>(</span>t2<span class='codeSeparator'>)</span>; <span class='codeComment'>// first time -- bytes get serialized</span></td>
+	</tr><tr><td class='lineNumber'><pre>17</td><td><pre>&nbsp;      oos.writeObject<span class='codeSeparator'>(</span>t2<span class='codeSeparator'>)</span>;   <span class='codeComment'>// subsequent time -- back-reference</span></td></tr><tr><td class='lineNumber'><pre>18</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>19</td><td><pre>&nbsp;      oos.close<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>20</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>21</td><td><pre>&nbsp;      ByteArrayInputStream bais <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ByteArrayInputStream<span class='codeSeparator'>(</span>baos.toByteArray<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>22</td><td><pre>&nbsp;      ObjectInputStream ois <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ObjectInputStream<span class='codeSeparator'>(</span>bais<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>23</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>24</td><td><pre>&nbsp;      <span class='codeComment'>// Now we read in the three t1 objects.</span></td></tr><tr><td class='lineNumber'><pre>25</td><td><pre>&nbsp;      t1 <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Tester<span class='codeSeparator'>)</span>ois.readObject<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>26</td><td><pre>&nbsp;      <span class='codeKeyword'>try</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>27</td><td><pre>&nbsp;         t1 <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Tester<span class='codeSeparator'>)</span>ois.readUnshared<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>28</td><td><pre>&nbsp;      <span class='codeSeparator'>}</span> <span class='codeKeyword'>catch</span><span class='codeSeparator'>(</span>Exception e<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>29</td><td><pre>&nbsp;         System.err.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"readUnshared() is trying to read a back-reference..."</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>30</td><td><pre>&nbsp;         System.err.println<span class='codeSeparator'>(</span>e<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>31</td><td><pre>&nbsp;      <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>32</td><td><pre>&nbsp;      t1 <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Tester<span class='codeSeparator'>)</span>ois.readUnshared<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>; <span class='codeComment'>// readObject() is fine too</span></td></tr><tr><td class='lineNumber'><pre>33</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>34</td><td><pre>&nbsp;      <span class='codeComment'>// Now we read in the two t2 objects.</span></td></tr><tr><td class='lineNumber'><pre>35</td><td><pre>&nbsp;      t2 <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Tester<span class='codeSeparator'>)</span>ois.readUnshared<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>; <span class='codeComment'>// causes the next read to fail</span></td></tr><tr><td class='lineNumber'><pre>36</td><td><pre>&nbsp;      <span class='codeKeyword'>try</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>37</td><td><pre>&nbsp;         t2 <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Tester<span class='codeSeparator'>)</span>ois.readObject<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>38</td><td><pre>&nbsp;      <span class='codeSeparator'>}</span> <span class='codeKeyword'>catch</span><span class='codeSeparator'>(</span>Exception e<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>39</td><td><pre>&nbsp;         System.err.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"readObject() is trying to read an invalid back-reference..."</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>40</td><td><pre>&nbsp;         System.err.println<span class='codeSeparator'>(</span>e<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>41</td><td><pre>&nbsp;      <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>42</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>43</td><td><pre>&nbsp;      ois.close<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>44</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>45</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+
+
+<p>When you run this baby you get this output:</p>
+<blockquote>
+  <pre>
+readUnshared() is trying to read a back-reference...
+java.io.InvalidObjectException: cannot read back reference as unshared
+readObject() is trying to read an invalid back-reference...
+java.io.InvalidObjectException: cannot read back reference to unshared object</pre></blockquote>
+
+<p>The first two lines of output result from trying to call <code>readUnshared()</code> on a back reference. The last two lines of output result from trying to read an object that was previously deserialized with <code>readUnshared()</code>. Remember that this causes all remaining back references to be invalid.</p>
+
+
+
+
+<p>There's one more <i><b>important</b></i> detail to be aware of when using <code>writeUnshared()</code> and <code>readUnshared()</code>. In my humble opinion, this one detail <i><b>severely limits</b></i> the usefulness of the two methods. The behaviors of <code>readUnshared()</code> and <code>writeUnshared()</code> that were described earlier apply <i><b>only to the base-level objects and not to any transitively referenced sub-objects in the object graphs</b></i>. This is a <i><b>very</b></i> important point. Not understanding this point can ruin the whole ambiance of the serialization experience, turning you into a bitter, warped and frustrated man.</p>
+<p>Recall that writeUnshared() <i><b>always</b></i> results in a byte-level serialization of the object to the underlying stream, even if the object has been serialized previously. What if the object you are writing contains references to <i><b>other objects</b></i> that have previously been serialized? Will the <code>ObjectOutputStream</code> also perform a byte-level serialization for those objects as well,  even if they have been serialized earlier? Or will it serialize  back-references for those objects? The answer is, it will write back-references.</p>
+<p>Let me prove it.</p>
+
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.io.*;</td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.util.*;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeKeyword'>implements</span> Serializable <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;   <span class='codeComment'>// Some simple state information.</span></td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;   ArrayList list <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ArrayList<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;   <span class='codeKeyword'>int</span> someInt;</td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;   <span class='codeKeyword'>char</span> someChar;</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeKeyword'>throws</span> Exception <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;      Tester t <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> Tester<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;      t.list.add<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Dog"</span><span class='codeSeparator'>)</span>; t.list.add<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Rabbit"</span><span class='codeSeparator'>)</span>; t.list.add<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Dragon"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;      t.someInt <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>10</span>;</td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;      t.someChar <span class='codeOperatorLiteral'>=</span> <span class='codeCharacterLiteral'>'A'</span>;</td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;      <span class='codeComment'>// Serialize the object.</span></td></tr><tr><td class='lineNumber'><pre>17</td><td><pre>&nbsp;      ByteArrayOutputStream baos <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ByteArrayOutputStream<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>18</td><td><pre>&nbsp;      ObjectOutputStream oos <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ObjectOutputStream<span class='codeSeparator'>(</span>baos<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>19</td><td><pre>&nbsp;      oos.writeObject<span class='codeSeparator'>(</span>t<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>20</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>21</td><td><pre>&nbsp;      <span class='codeComment'>// Now let's change the state of t and write it out again,</span></td></tr><tr><td class='lineNumber'><pre>22</td><td><pre>&nbsp;      <span class='codeComment'>// this time we will write it as unshared.</span></td></tr><tr><td class='lineNumber'><pre>23</td><td><pre>&nbsp;      t.list.add<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Rat"</span><span class='codeSeparator'>)</span>; t.list.add<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Horse"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>24</td><td><pre>&nbsp;      t.someInt <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>999</span>;</td></tr><tr><td class='lineNumber'><pre>25</td><td><pre>&nbsp;      t.someChar <span class='codeOperatorLiteral'>=</span> <span class='codeCharacterLiteral'>'Z'</span>;</td></tr><tr><td class='lineNumber'><pre>26</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>27</td><td><pre>&nbsp;      oos.writeUnshared<span class='codeSeparator'>(</span>t<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>28</td><td><pre>&nbsp;      oos.close<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>29</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>30</td><td><pre>&nbsp;      <span class='codeComment'>// Now we read in the two Tester objects.</span></td></tr><tr><td class='lineNumber'><pre>31</td><td><pre>&nbsp;      ByteArrayInputStream bais <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ByteArrayInputStream<span class='codeSeparator'>(</span>baos.toByteArray<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>32</td><td><pre>&nbsp;      ObjectInputStream ois <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ObjectInputStream<span class='codeSeparator'>(</span>bais<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>33</td><td><pre>&nbsp;      Tester t1 <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Tester<span class='codeSeparator'>)</span>ois.readObject<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>34</td><td><pre>&nbsp;      Tester t2 <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Tester<span class='codeSeparator'>)</span>ois.readObject<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>35</td><td><pre>&nbsp;      ois.close<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>36</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>37</td><td><pre>&nbsp;      <span class='codeComment'>// Compare the two Tester objects.</span></td></tr><tr><td class='lineNumber'><pre>38</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t1.equals(t2)? "</span> <span class='codeOperatorLiteral'>+</span> t1.equals<span class='codeSeparator'>(</span>t2<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>39</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t1 == t2? "</span> <span class='codeOperatorLiteral'>+</span> <span class='codeSeparator'>(</span>t1 <span class='codeOperatorLiteral'>==</span> t2<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>40</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t1.list.equals(t2.list)? "</span> <span class='codeOperatorLiteral'>+</span> t1.list.equals<span class='codeSeparator'>(</span>t2.list<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>41</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t1: "</span> <span class='codeOperatorLiteral'>+</span> t1<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>42</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t2: "</span> <span class='codeOperatorLiteral'>+</span> t2<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>43</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>44</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>45</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>46</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> String toString<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>47</td><td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeStringLiteral'>"list: "</span> <span class='codeOperatorLiteral'>+</span> list <span class='codeOperatorLiteral'>+</span></td></tr><tr><td class='lineNumber'><pre>48</td><td><pre>&nbsp;             <span class='codeStringLiteral'>"\nsomeInt: "</span> <span class='codeOperatorLiteral'>+</span> someInt <span class='codeOperatorLiteral'>+</span></td></tr><tr><td class='lineNumber'><pre>49</td><td><pre>&nbsp;             <span class='codeStringLiteral'>"\nsomeChar: "</span> <span class='codeOperatorLiteral'>+</span> someChar;</td></tr><tr><td class='lineNumber'><pre>50</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// toString()</span></td></tr><tr><td class='lineNumber'><pre>51</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>52</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>53</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>boolean</span> equals<span class='codeSeparator'>(</span>Object other<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>54</td><td><pre>&nbsp;      <span class='codeKeyword'>if</span><span class='codeSeparator'>(</span>other <span class='codeOperatorLiteral'>instanceof</span> Tester<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>55</td><td><pre>&nbsp;         Tester otherTester <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Tester<span class='codeSeparator'>)</span>other;</td></tr><tr><td class='lineNumber'><pre>56</td><td><pre>&nbsp;         <span class='codeKeyword'>if</span><span class='codeSeparator'>(</span>otherTester.someInt <span class='codeOperatorLiteral'>==</span> someInt <span class='codeOperatorLiteral'>&amp;&amp;</span></td></tr><tr><td class='lineNumber'><pre>57</td><td><pre>&nbsp;            otherTester.someChar <span class='codeOperatorLiteral'>==</span> someChar <span class='codeOperatorLiteral'>&amp;&amp;</span></td></tr><tr><td class='lineNumber'><pre>58</td><td><pre>&nbsp;            list <span class='codeOperatorLiteral'>!=</span> <span class='codeKeyword'>null</span> <span class='codeOperatorLiteral'>&amp;&amp;</span></td></tr><tr><td class='lineNumber'><pre>59</td><td><pre>&nbsp;            list.equals<span class='codeSeparator'>(</span>otherTester.list<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span></td></tr><tr><td class='lineNumber'><pre>60</td><td><pre>&nbsp;            <span class='codeKeyword'>return</span> <span class='codeKeyword'>true</span>;</td></tr><tr><td class='lineNumber'><pre>61</td><td><pre>&nbsp;      <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>62</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>63</td><td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeKeyword'>false</span>;</td></tr><tr><td class='lineNumber'><pre>64</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// equals()</span></td></tr><tr><td class='lineNumber'><pre>65</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+<p>When you run this code, you should see the following output:</p>
+<blockquote><pre>
+t1.equals(t2)? false
+t1 == t2? false
+t1.list.equals(t2.list)? true
+t1: list: [Dog, Rabbit, Dragon]
+someInt: 10
+someChar: A
+t2: list: [Dog, Rabbit, Dragon]
+someInt: 999
+someChar: Z</pre></blockquote>
+<p>Examine the code and it's output carefully. Notice that before the object was written a second time (using <code>writeUnshared()</code>) the state of the object was changed: the <code>someInt</code> variable was assigned 999, <code>someChar</code> was assigned '<code>Z</code>' and two new entries (&quot;<code>Rat</code>&quot; and &quot;<code>Horse</code>&quot;) were added to the <code>ArrayList</code> variable, <code>list</code>. Yet, when <code>t1</code> and <code>t2</code> were printed we find the <code>list</code> did <i>not</i> reflect the added entries. The changes to <code>someInt</code> and someChar, however, <i>were</i> correctly reflected.</p>
+<p>What we're seeing here is that the <code>writeUnshared()</code> method only serialized the bytes for the &quot;base-level&quot; object&#151;the <code>Tester</code> object&#151;but not any objects referred to by the <code>Tester</code> object&#151;such as the <code>list</code> object. When <code>ObjectOutputStream</code> encountered the <code>list</code> object during the <code>writeUnshared()</code> call, it simply used a back reference to refer to the previously serialized <code>list</code> object. Again, the behavior of <code>writeUnshared()</code> I described earlier only applies to the base-level object being written.</p>
+<p>The described behavior of <code>readUnshared()</code> also applies only to the &quot;base-level&quot; object being read. In the code below you'll notice that both <code>t1</code> and <code>t2</code>, although different base-level objects, both refer to the same <code>ArrayList</code> in their list field.</p>
+
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.io.*;</td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.util.*;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Tester <span class='codeKeyword'>implements</span> Serializable <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;   <span class='codeComment'>// Some simple state information.</span></td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;   ArrayList list <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ArrayList<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;   <span class='codeKeyword'>int</span> someInt;</td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;   <span class='codeKeyword'>char</span> someChar;</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeKeyword'>throws</span> Exception <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;      Tester t1 <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> Tester<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;      t1.list.add<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Dog"</span><span class='codeSeparator'>)</span>; t1.list.add<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Rabbit"</span><span class='codeSeparator'>)</span>; t1.list.add<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Dragon"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;      t1.someInt <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>10</span>;</td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;      t1.someChar <span class='codeOperatorLiteral'>=</span> <span class='codeCharacterLiteral'>'A'</span>;</td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;      <span class='codeComment'>// Serialize the object.</span></td></tr><tr><td class='lineNumber'><pre>17</td><td><pre>&nbsp;      ByteArrayOutputStream baos <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ByteArrayOutputStream<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>18</td><td><pre>&nbsp;      ObjectOutputStream oos <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ObjectOutputStream<span class='codeSeparator'>(</span>baos<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>19</td><td><pre>&nbsp;      oos.writeObject<span class='codeSeparator'>(</span>t1<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>20</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>21</td><td><pre>&nbsp;      Tester t2 <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> Tester<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>22</td><td><pre>&nbsp;      t2.someInt <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>999</span>;</td></tr><tr><td class='lineNumber'><pre>23</td><td><pre>&nbsp;      t2.someChar <span class='codeOperatorLiteral'>=</span> <span class='codeCharacterLiteral'>'Z'</span>;</td></tr><tr><td class='lineNumber'><pre>24</td><td><pre>&nbsp;      t2.list <span class='codeOperatorLiteral'>=</span> t1.list; <span class='codeComment'>// **** re-use t1's ArrayList ****</span></td></tr><tr><td class='lineNumber'><pre>25</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>26</td><td><pre>&nbsp;      <span class='codeComment'>// This causes t2's byte stream to be written since t2 is</span></td></tr><tr><td class='lineNumber'><pre>27</td><td><pre>&nbsp;      <span class='codeComment'>// a different object from t1. t2's ArrayList, however is the</span></td></tr><tr><td class='lineNumber'><pre>28</td><td><pre>&nbsp;      <span class='codeComment'>// same as t1's, resulting in a back-reference to t1's</span></td></tr><tr><td class='lineNumber'><pre>29</td><td><pre>&nbsp;      <span class='codeComment'>// ArrayList.</span></td></tr><tr><td class='lineNumber'><pre>30</td><td><pre>&nbsp;      oos.writeObject<span class='codeSeparator'>(</span>t2<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>31</td><td><pre>&nbsp;      oos.close<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>32</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>33</td><td><pre>&nbsp;      <span class='codeComment'>// Now we read in the two Tester objects.</span></td></tr><tr><td class='lineNumber'><pre>34</td><td><pre>&nbsp;      ByteArrayInputStream bais <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ByteArrayInputStream<span class='codeSeparator'>(</span>baos.toByteArray<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>35</td><td><pre>&nbsp;      ObjectInputStream ois <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ObjectInputStream<span class='codeSeparator'>(</span>bais<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>36</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>37</td><td><pre>&nbsp;      <span class='codeComment'>// Remember that readUnshared() invalidates all back-references...</span></td></tr><tr><td class='lineNumber'><pre>38</td><td><pre>&nbsp;      <span class='codeComment'>// but only back-references to the base-level object (t1), not objects</span></td></tr><tr><td class='lineNumber'><pre>39</td><td><pre>&nbsp;      <span class='codeComment'>// within it (t1.list).</span></td></tr><tr><td class='lineNumber'><pre>40</td><td><pre>&nbsp;      t1 <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Tester<span class='codeSeparator'>)</span>ois.readUnshared<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>41</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>42</td><td><pre>&nbsp;      <span class='codeComment'>// We just read t1.list above but since t1.list is not</span></td></tr><tr><td class='lineNumber'><pre>43</td><td><pre>&nbsp;      <span class='codeComment'>// the base-level object, readUnshared() does not invalidate</span></td></tr><tr><td class='lineNumber'><pre>44</td><td><pre>&nbsp;      <span class='codeComment'>// any back-references to it that are remaining in the stream.</span></td></tr><tr><td class='lineNumber'><pre>45</td><td><pre>&nbsp;      t2 <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Tester<span class='codeSeparator'>)</span>ois.readObject<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>; <span class='codeComment'>// no exception!! (could also have used readUnshared())</span></td></tr><tr><td class='lineNumber'><pre>46</td><td><pre>&nbsp;      ois.close<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>47</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>48</td><td><pre>&nbsp;      <span class='codeComment'>// Compare the two Tester objects.</span></td></tr><tr><td class='lineNumber'><pre>49</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t1.equals(t2)? "</span> <span class='codeOperatorLiteral'>+</span> t1.equals<span class='codeSeparator'>(</span>t2<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>50</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t1 == t2? "</span> <span class='codeOperatorLiteral'>+</span> <span class='codeSeparator'>(</span>t1 <span class='codeOperatorLiteral'>==</span> t2<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>51</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t1.list == t2.list? "</span> <span class='codeOperatorLiteral'>+</span> <span class='codeSeparator'>(</span>t1.list <span class='codeOperatorLiteral'>==</span> t2.list<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>52</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t1.list.equals(t2.list)? "</span> <span class='codeOperatorLiteral'>+</span> t1.list.equals<span class='codeSeparator'>(</span>t2.list<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>53</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t1: "</span> <span class='codeOperatorLiteral'>+</span> t1<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>54</td><td><pre>&nbsp;      System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"t2: "</span> <span class='codeOperatorLiteral'>+</span> t2<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>55</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>56</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>57</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>58</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> String toString<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>59</td><td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeStringLiteral'>"list: "</span> <span class='codeOperatorLiteral'>+</span> list <span class='codeOperatorLiteral'>+</span></td></tr><tr><td class='lineNumber'><pre>60</td><td><pre>&nbsp;             <span class='codeStringLiteral'>"\nsomeInt: "</span> <span class='codeOperatorLiteral'>+</span> someInt <span class='codeOperatorLiteral'>+</span></td></tr><tr><td class='lineNumber'><pre>61</td><td><pre>&nbsp;             <span class='codeStringLiteral'>"\nsomeChar: "</span> <span class='codeOperatorLiteral'>+</span> someChar;</td></tr><tr><td class='lineNumber'><pre>62</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// toString()</span></td></tr><tr><td class='lineNumber'><pre>63</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>64</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>65</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>boolean</span> equals<span class='codeSeparator'>(</span>Object other<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>66</td><td><pre>&nbsp;      <span class='codeKeyword'>if</span><span class='codeSeparator'>(</span>other <span class='codeOperatorLiteral'>instanceof</span> Tester<span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>67</td><td><pre>&nbsp;         Tester otherTester <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Tester<span class='codeSeparator'>)</span>other;</td></tr><tr><td class='lineNumber'><pre>68</td><td><pre>&nbsp;         <span class='codeKeyword'>if</span><span class='codeSeparator'>(</span>otherTester.someInt <span class='codeOperatorLiteral'>==</span> someInt <span class='codeOperatorLiteral'>&amp;&amp;</span></td></tr><tr><td class='lineNumber'><pre>69</td><td><pre>&nbsp;            otherTester.someChar <span class='codeOperatorLiteral'>==</span> someChar <span class='codeOperatorLiteral'>&amp;&amp;</span></td></tr><tr><td class='lineNumber'><pre>70</td><td><pre>&nbsp;            list <span class='codeOperatorLiteral'>!=</span> <span class='codeKeyword'>null</span> <span class='codeOperatorLiteral'>&amp;&amp;</span></td></tr><tr><td class='lineNumber'><pre>71</td><td><pre>&nbsp;            list.equals<span class='codeSeparator'>(</span>otherTester.list<span class='codeSeparator'>)</span><span class='codeSeparator'>)</span></td></tr><tr><td class='lineNumber'><pre>72</td><td><pre>&nbsp;            <span class='codeKeyword'>return</span> <span class='codeKeyword'>true</span>;</td></tr><tr><td class='lineNumber'><pre>73</td><td><pre>&nbsp;      <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>74</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>75</td><td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeKeyword'>false</span>;</td></tr><tr><td class='lineNumber'><pre>76</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// equals()</span></td></tr><tr><td class='lineNumber'><pre>77</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Tester</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+<p>Here's the output from running this program:</p>
+
+<blockquote><pre>
+t1.equals(t2)? false
+t1 == t2? false
+t1.list == t2.list? true
+t1.list.equals(t2.list)? true
+t1: list: [Dog, Rabbit, Dragon]
+someInt: 10
+someChar: A
+t2: list: [Dog, Rabbit, Dragon]
+someInt: 999
+someChar: Z</pre></blockquote>
+
+<p>Remember that readUnshared() causes all subsequent back-references in the stream to become invalid&#151;<i><b>but this only applies to back-references to the base-level object being read, not to objects referred to by the base-level object</b></i>. This explains why we were able to read  <code>t2</code>'s list field even though <code>t1</code> had been read using <code>readUnshared()</code>.</p>
+<p><a name="DefaultClassVersioningwiththeSUID"></a></p>
+<!-- #BeginLibraryItem "/Library/separatorBar.lbi" --><p></p><!-- #EndLibraryItem -->
+
+<p class="subtitle">Class Versioning</p>
+<div class="postSubtitle">This article deals with classes that are <i>default</i> and <i>custom serializable</i> but not <i>externalizable</i>. In the future this article will be modified to account for <i>externalizable</i> classes. Since this article deals only with <i>default</i> and <i>custom</i><i> serialization</i> (for now), I'll use the term <i>serializable</i> and <i>deserializable</i> rather than <i>marshallizable</i> and <i>unmarshallizable</i>.</div>
+<p>As systems evolve (or more commonly, degenerate), classes change. It may well be the case that an object's class has changed between the time the object was initially serialized and when it's eventually deserialized. This can easily happen if a serialized object is sitting in a file, for example, that was created many moons ago. What will happen when you attempt to deserialize the object in the file after the object's class has been modified? Or, as another example, what if a client serializes an object over a network and the receiving agent has a different version of the object's class than the client?</p>
+<p><i>Class Versioning</i> deals with the types of changes a class may undergoe and how those changes are handled by Java's serialization plumbing and, more importantly, by the classes themselves during the serialization and deserialization processes.</p>
+<p>When an object is serialized, Java's serialization plumbing <i><b>does not</b></i> serialize the object's class byte codes. By default, when an object is serialized, the <code>ObjectOutputStream</code> computes a 64 bit hash value based on various attributes of the object's class. This hash value is then stored along with the bytes representing the serialized object. (This 64 bit hash value is called the <i>serial version unique identifier</i> or SUID, for short.) Later, possibly much later, when the object is deserialized, the serialization mechanism reads in the stored SUID and compares it against a <i><b>second</b></i> SUID which is computed from the object's class in exactly the same way the first hash was computed. If the two SUIDs are equal, the deserialization proceeds and the object is reconstituited. If they are different, a <code>java.io.InvalidClassException</code> is thrown to indicate the object's class has changed since the object was serialized.</p>
+<p>In computing the SUID, Java's serialization mechanism takes into account several properties of a class described in the table below. Incidentally, if you want to determine the SUID for a class you can use Sun's <code>serialver</code> tool which is included with the JDK. If you ever need to determine a class' SUID from within your code you can simply make a call like this:</p>
+<blockquote>
+<pre><span class="codeComment">// The ObjectStreamClass class is in the java.io package.</span>
+Class c <span class='codeOperatorLiteral'>=</span> Class.forName<span class='codeSeparator'>(</span><span class='codeStringLiteral'>&quot;SomeClass&quot;</span><span class='codeSeparator'>)</span>; <span class="codeComment">// The class must implement java.io.Serializable.</span>
+System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>&quot;The SUID is &quot;</span> <span class='codeOperatorLiteral'>+</span> ObjectStreamClass.lookup<span class='codeSeparator'>(</span>c<span class='codeSeparator'>)</span>.getSerialVersionUID;<span class='codeSeparator'>())</span></pre>
+  </blockquote>
+<p>In fact, Java's serialization/deserialization mechanisms uses <code>the getSerialVersionUID()</code> method shown above to obtain the SUID for classes. Sun's <code>serialver</code> tool uses this method as well and there's no reason you can't use it if you ever have the need. Actually, to be completely accurate, the <code>getSerialVersionUID()</code> method does not <i><b>generate</b></i> the default SUID. That task is handled by a <code>private static</code> method in <code>ObjectStreamClass</code> named, <code>computeDefaultSUID()</code>. <code>getSerialVersionUID()</code> simply calls <code>computeDefaultSUID()</code> if  a SUID needs to be generated for a class.</p>
+<p>If you've done any reading on serialization you may have read about a special constant field you can define in your class to control the SUID used for your class. This field must be declared as <code>static final long</code> and have the special name of <code>serialVersionUID</code>. The <code>serialVersionUID</code> field allows you, the developer, to specify a value for the SUID rather than relying on the value calculated by the <code>computeDefaultSUID()</code> method. I'll discuss this constant later. For the time being, however, we are going to pretend it doesn't exist and concentrate instead on the types of changes you can make to a class and how those changes affect the SUID that is <i><b>automatically generated</b></i> by c<code>omputeDefaultSUID()</code>. </p>
+<p>In calculating  the default SUID, seven attributes of a class are taken into account. <i><b>If one or more of these attributes change, the automatically generated SUID will change</b></i>. Remember that when an object is deserialized the SUID <i><b>stored with the object</b></i> is compared against the SUID from the object's class <i><b>as the class exists at the time of deserialization</b></i>. If they do not match the deserialization process fails with a <code>java.io.InvalidClassException</code>. Here are the seven attributes that affect the automatically generated SUID:</p>
+<table width="85%" border="3" align="center"><tr bgcolor="#000000" align="center"><td colspan="2" height="39" align="center"><b><div align="center"><font color="#FFFFFF" size="+1">Class Attributes that Affect the<br>Automatically Generated SUID</font></div></b></td></tr><tr bgcolor="#66FFCC"><td bgcolor="#66FFCC" valign="middle" width="3%" align="right"><div align="right"><b><font size="+1">1.</font></b></div></td><td bgcolor="#66FFCC">The name of the class.</td></tr><tr bgcolor="#CCFFFF"><td bgcolor="#CCFFFF" valign="middle" width="3%" align="right"><div align="right"><b><font size="+1">2.</font></b></div></td><td bgcolor="#CCFFFF">Modifiers (e.g., <code>final</code>, <code>public</code>, etc.) on the class. The order in which the modifiers are specified is not taken into account.</td></tr><tr bgcolor="#66FFCC"><td bgcolor="#66FFCC" valign="middle" width="3%" align="right"><div align="right"><b><font size="+1">3.</font></b></div></td><td bgcolor="#66FFCC"><p>The interfaces implemented <i>directly</i> by the class. Any interfaces implemented via interitance will not affect the resulting SUID in any way. The order in which the interface names are specified is not taken into account.</p><p>Note that <i>superclasses</i> are <u><i><b>not</b></i></u> taken into account at all. In other words, whether or not the class extends another class will not affect the resulting SUID in any way.</p></td></tr><tr bgcolor="#CCFFFF"><td bgcolor="#CCFFFF" valign="middle" width="3%" align="right"><div align="right"><b><font size="+1">4.</font></b></div></td><td bgcolor="#CCFFFF">For each field declared in the class:<ol style="margin-top:0px;margin-bottom:0px"><li>The name of the field.</li><li>The modifiers on the field (e.g., <code>final</code>, <code>private</code>, <code>transient</code>, <code>static</code>, etc.). The order in which the modifiers are specified is not taken into account.</li><li>The type of the field.</li></ol><p>This item does not apply to <code>private static</code> or <code>private transient</code> fields. Such fields can be added and removed from the class without affecting the default SUID that is generated. Note, however, that assigning a value to <i><b>any</b></i> <code>static</code> variable, even a <code>private static</code>, constitutes a &quot;class initializer&quot; as described in item 5.</p></td></tr><tr bgcolor="#66FFCC"><td bgcolor="#66FFCC" valign="middle" width="3%" align="right"><div align="right"><b><font size="+1">5.</font></b></div></td><td bgcolor="#66FFCC"><p>Whether or not the class contains at least one class initializer. The term &quot;class initializer&quot; refers to the assignment of a value to a static variable as well as the presence of <code>static</code> initializers (i.e, <code>static {...}</code> blocks). This item is only concerned with whether or not <i><b>at least one</b></i> class initializer exists. It is not concerned with how many class initializers exist or with what code is executed within a <code>static</code> initializer or in what order the class initializers may appear. For example, if a class contains this class initializer:</p><blockquote><p><code><span class='codeOperatorLiteral'>static float</span> x <span class='codeOperatorLiteral'>=</span> <span class='codeFloatingPointLiteral'>82727.02929F</span>;</code></p></blockquote><p>then the class meets the criteria for this item. Whether or not the class contains additional class initializers is irrelevant in terms of the generated default SUID.</p></td></tr><tr bgcolor="#CCFFFF"><td bgcolor="#CCFFFF" valign="middle" width="3%" align="right"><div align="right"><b><font size="+1">6.</font></b></div></td><td bgcolor="#CCFFFF">For each non-<code>private</code> constructor:<ol style="margin-top:0px;margin-bottom:0px"><li>The visibility modifiers on the constructor (i.e., <code>protected</code>, <code>public</code>, or package). The order in which the modifiers are specified is not taken into account.</li><li>The formal parameter types used by the constructor. The order of the parameters will, of course, affect the resulting SUID although the names of the paramters will not.</li></ol><p>Note that a <code>throws</code> clause, if present on the constructor, has no affect on the generated default SUID.</p></td></tr><tr bgcolor="#66FFCC"><td bgcolor="#66FFCC" valign="middle" width="3%" align="right"><div align="right"><b><font size="+1">7.</font></b></div></td><td bgcolor="#66FFCC">For each non-<code>private</code> method:<ol style="margin-top:0px;margin-bottom:0px"><li>The name of the method.</li><li>The modifiers on the method (e.g., <code>public</code>, <code>static</code>, <code>final</code>, etc). The order in which the modifiers are specified is not taken into account.</li><li>The formal parameter types used by the method. The order of the parameters will, of course, affect the resulting SUID although the names of the paramters will not.</li><li>The method's return type.</li></ol><p>Note that a <code>throws</code> clause, if present on the method, has no affect on the generated default SUID.</p></td></tr></table>
+<p>As you can see from the above list, even relatively minor changes in a class' definition will cause the generated SUID to change, causing the deserialization process to fail for any objects serialized prior to the class change. Earlier, I mentioned the special constant field, <code>serialVersionUID</code>, which  a class can define to override the automatically generated SUID. If the <code>serialVersionUID</code> field is present in a class, Java's deserialization mechanism will use <i><b>its value</b></i> for the class' SUID rather than dynamically generating one.</p>
+<p class="superscript">When you specify a <code>serialVersionUID</code> variable in your class you are effectively telling Java's serialization mechanisms, &quot;<i>I  know the class definition may have changed since an object was initially serialized but my code is prepared to handle the change&#151;go ahead with the deserialization.</i>&quot; So how will the serialization mechanism handle deserializing objects whose classes share the same <code>serialVersionUID</code> value yet whose class definitions differ? The quick answer to this question is that the serialization mechanism will always do something <i>reasonable</i> when deserializing between versions of a class, but even this <i>reasonability</i> has its limits.</p>
+<p>Let's look more closely at the situation. First, we have two classes: The original class  and a modified version of the original class. Throughout the rest of this article I'll use the <code>Person</code> class shown below as the <i>original</i> class. I'll refer to this class as <code>Person_0</code>, as you can see by the comment in the first line of the class. As we modify the <code>Person</code> class I'll refer to new versions as <code>Person_1</code>, <code>Person_2</code>, etc., where each new version is a modification of <code>Person_0</code>. So, <code>Person_2</code>, for example, is a modified version of <code>Person_0</code>, as is <code>Person_1</code>. The first line of each version of <code>Person</code> will contain a comment indicating what version of <code>Person</code> the class represents. Keep in mind that we are always dealing with a class named <code>Person</code>. The <code>Person_<i>n</i></code> notation is simply a way of referring to different (modified) <i>versions</i> of the original <code>Person</code> class, which is referred to as <code>Person_0</code>.</p>
+<p>We will also generate serialized  objects for each new <code>Person_<i>n</i></code>.  As a convention, we'll assume the file named, <code>Person_<i>n</i>.ser,</code> is a serialized object of the <code>Person_<i>n</i></code> version of the <code>Person_0</code> class. Once we generate a serialized output file we will try to deserialize it with <code>Person_0</code>. Similarly, we will try to deserialize the <code>Person_0.ser</code> object with <code>Person_<i>n</i></code> class, n &gt; 0.</p>
+<p>Let's look at some concrete code. This is the <code>Person_0</code> class:</p>
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<a name="Person_0"></a>
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeComment'>// Person_0</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.io.*;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;<span class='codeKeyword'>class</span> Person <span class='codeKeyword'>implements</span> Serializable <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;   String name <span class='codeOperatorLiteral'>=</span> <span class='codeStringLiteral'>"Smith"</span>;</td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;   String city <span class='codeOperatorLiteral'>=</span> <span class='codeStringLiteral'>"Chicago"</span>;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> String toString<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeStringLiteral'>"name: "</span> <span class='codeOperatorLiteral'>+</span> name <span class='codeOperatorLiteral'>+</span> <span class='codeCharacterLiteral'>'\n'</span> <span class='codeOperatorLiteral'>+</span></td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;             <span class='codeStringLiteral'>"city: "</span> <span class='codeOperatorLiteral'>+</span> city;</td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Person</span></td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;&nbsp;</td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+
+<p>The <code>Runner</code> class, below, will serialize/deserialize instances of <code>Person</code> to/from a specified file. The first command line paramter (<code>-s</code> or <code>-d</code>) tells <code>Runner</code> whether it should serialze or deserialize to/from the file specified by the second parameter. Of course, we will be modifing the <code>Person</code> class as we go along so you will need to keep track of which serialized object files correspond to which versions of <code>Person</code>.</p>
+
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.io.*;</td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;<span class='codeKeyword'>public</span> <span class='codeKeyword'>class</span> Runner <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> <span class='codeKeyword'>static</span> <span class='codeKeyword'>void</span> main<span class='codeSeparator'>(</span>String<span class='codeSeparator'>[</span><span class='codeSeparator'>]</span> args<span class='codeSeparator'>)</span> <span class='codeKeyword'>throws</span> Exception <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;      <span class='codeKeyword'>if</span><span class='codeSeparator'>(</span>args.length <span class='codeOperatorLiteral'>!=</span> <span class='codeIntegerLiteral'>2</span><span class='codeSeparator'>)</span></td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;         System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Usage: java Runner -s|-d filename"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;      <span class='codeKeyword'>else</span> <span class='codeKeyword'>if</span><span class='codeSeparator'>(</span>args<span class='codeSeparator'>[</span><span class='codeIntegerLiteral'>0</span><span class='codeSeparator'>]</span>.equals<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"-s"</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span> <span class='codeComment'>// serialize</span></td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;         FileOutputStream fos <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> FileOutputStream<span class='codeSeparator'>(</span>args<span class='codeSeparator'>[</span><span class='codeIntegerLiteral'>1</span><span class='codeSeparator'>]</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;         ObjectOutputStream oos <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ObjectOutputStream<span class='codeSeparator'>(</span>fos<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;         Person p <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> Person<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;         oos.writeObject<span class='codeSeparator'>(</span>p<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;         System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Person written is:\n"</span> <span class='codeOperatorLiteral'>+</span> p<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;      <span class='codeSeparator'>}</span> <span class='codeKeyword'>else</span> <span class='codeKeyword'>if</span><span class='codeSeparator'>(</span>args<span class='codeSeparator'>[</span><span class='codeIntegerLiteral'>0</span><span class='codeSeparator'>]</span>.equals<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"-d"</span><span class='codeSeparator'>)</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span> <span class='codeComment'>// deserialize</span></td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;         FileInputStream fis <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> FileInputStream<span class='codeSeparator'>(</span>args<span class='codeSeparator'>[</span><span class='codeIntegerLiteral'>1</span><span class='codeSeparator'>]</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>15</td><td><pre>&nbsp;         ObjectInputStream ois <span class='codeOperatorLiteral'>=</span> <span class='codeOperatorLiteral'>new</span> ObjectInputStream<span class='codeSeparator'>(</span>fis<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>16</td><td><pre>&nbsp;         Person p <span class='codeOperatorLiteral'>=</span> <span class='codeSeparator'>(</span>Person<span class='codeSeparator'>)</span>ois.readObject<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>17</td><td><pre>&nbsp;         System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Person read is:\n"</span> <span class='codeOperatorLiteral'>+</span> p<span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>18</td><td><pre>&nbsp;      <span class='codeSeparator'>}</span> <span class='codeKeyword'>else</span></td></tr><tr><td class='lineNumber'><pre>19</td><td><pre>&nbsp;         System.out.println<span class='codeSeparator'>(</span><span class='codeStringLiteral'>"Usage: java Runner -s|-d filename"</span><span class='codeSeparator'>)</span>;</td></tr><tr><td class='lineNumber'><pre>20</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span> <span class='codeComment'>// main()</span></td></tr><tr><td class='lineNumber'><pre>21</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Runner</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+<p>To create a serialized <code>Person</code> object, compile both classes and run the <code>Runner</code> class with the command line options shown below. This will produce a serialized object file, <code>Person_0.ser</code>:</p>
+<blockquote>
+  <pre>java Runner -s Person_0.ser</pre></blockquote>
+<p>The first modification to the <code>Person</code> class will be to add the <code>serialVersionUID</code> field. The value of this field must be exactly the same as the original version of <code>Person</code> or deserialization will result in a <code>java.io.InvalidClassException</code>. Running the JDK <code>serialver</code> tool on <code>Person.class</code> yields this value:</p>
+<blockquote>
+  <pre><span class='codeKeyword'>static</span> <span class='codeKeyword'>final</span> <span class='codeKeyword'>long</span> serialVersionUID <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>7292947232614672316L</span>;</pre></blockquote>
+<p>The first modified version of <code>Person.java</code>, <code>Person_1</code>, will have a new field called <code>ZIP</code> and it will remove the <code>city</code> field from the <a href="#Person_0">original <code>Person</code></a>:</p>
+<!-- --------------- BEGIN GENERATERD SOURCE CODE CSS TABLE --------------- -->
+<!-- ------------------ Generated by www.absolutejava.com ------------------ -->
+<table cellspacing='0' class='codeTable'><tr><td class='lineNumber'><pre>1</td><td><pre>&nbsp;<span class='codeComment'>// Person_1</span></td></tr><tr><td class='lineNumber'><pre>2</td><td><pre>&nbsp;<span class='codeKeyword'>import</span> java.io.*;</td></tr><tr><td class='lineNumber'><pre>3</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>4</td><td><pre>&nbsp;<span class='codeKeyword'>class</span> Person <span class='codeKeyword'>implements</span> Serializable <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>5</td><td><pre>&nbsp;   <span class='codeKeyword'>static</span> <span class='codeKeyword'>final</span> <span class='codeKeyword'>long</span> serialVersionUID <span class='codeOperatorLiteral'>=</span> <span class='codeIntegerLiteral'>7292947232614672316L</span>;</td></tr><tr><td class='lineNumber'><pre>6</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>7</td><td><pre>&nbsp;   String name <span class='codeOperatorLiteral'>=</span> <span class='codeStringLiteral'>"Smith"</span>;</td></tr><tr><td class='lineNumber'><pre>8</td><td><pre>&nbsp;   String ZIP  <span class='codeOperatorLiteral'>=</span> <span class='codeStringLiteral'>"12345"</span>;</td></tr><tr><td class='lineNumber'><pre>9</td><td><pre>&nbsp;&nbsp;</td></tr><tr><td class='lineNumber'><pre>10</td><td><pre>&nbsp;   <span class='codeKeyword'>public</span> String toString<span class='codeSeparator'>(</span><span class='codeSeparator'>)</span> <span class='codeSeparator'>{</span></td></tr><tr><td class='lineNumber'><pre>11</td><td><pre>&nbsp;      <span class='codeKeyword'>return</span> <span class='codeStringLiteral'>"name: "</span> <span class='codeOperatorLiteral'>+</span> name <span class='codeOperatorLiteral'>+</span> <span class='codeCharacterLiteral'>'\n'</span> <span class='codeOperatorLiteral'>+</span></td></tr><tr><td class='lineNumber'><pre>12</td><td><pre>&nbsp;             <span class='codeStringLiteral'>"ZIP: "</span> <span class='codeOperatorLiteral'>+</span> ZIP;</td></tr><tr><td class='lineNumber'><pre>13</td><td><pre>&nbsp;   <span class='codeSeparator'>}</span></td></tr><tr><td class='lineNumber'><pre>14</td><td><pre>&nbsp;<span class='codeSeparator'>}</span> <span class='codeComment'>// Person</span></td></tr></table>
+<!-- --------------- END GENERATERD SOURCE CODE HTML TABLE --------------- -->
+
+<p>Before compiling this code make sure you make a copy of the <code>Person.class</code> file that was generated from compiling <code>Person_0</code> (we'll need it later). Once you compile the above code we can use it to deserialize <code>Person_0.ser</code>:</p>
+<blockquote>
+<pre>C:\&gt;java Runner -d Person_0.ser
+Person read is:
+name: Smith
+ZIP: null</pre></blockquote>
+<p>As you can see, the <code>ZIP</code> field was assigned a default value of <code>null</code>. Since <code>Person_0</code> did not define a <code>ZIP</code> field the serialization mechanism leaves it with the default value appropriate for its type. Intuitively, it may seem that the <code>ZIP</code> field should have been assigned a value of &quot;12345&quot; since that is what its initializer assigned to it. But this is wrong, remember:</p>
+<p class="highlightBlock">Classes which implement the <code>Serializable</code> interface (but not <code>Externalizable</code>) will <i><b><u>not</u></b></i> have a constructor called when objects of the class are deserialized. In addition, any initializers present in the class will <i><b><u>not</u></b></i> be executed when the object is deserialized. This means that instance initializer blocks will not be executed nor will instance variables be initialized.</p>
+<p>Recall that <code>Person_0</code> had a variable named <code>city</code> which was removed in <code>Person_1</code>. When <code>Person_0.ser</code> was deserialized into <code>Person_1</code>, what became of this field? It was ignored since <code>Person_1</code> did not declare the same field.</p>
+<p>Now let's serialize Person_1 and then deserialize it as a Person_0 object. Note that I kept the Person_0 class file in a file named person_0.class which I copied over Person.class. Here are the Windows command used to serialize a Person_1 object and then deserialize it as a Person_0 object:</p>
+<blockquote>
+  <pre>
+
+C:\>java Runner -s Person_1.ser
+Person written is:
+name: Smith
+ZIP: 12345
+
+C:\>copy /y Person_0.class Person.class
+        1 file(s) copied.
+
+C:\>java Runner -d Person_1.ser
+Person read is:
+name: Smith
+city: null
+</pre>
+</blockquote>
+<p>Since the <code>city</code> field did not get serialized as part of the <code>Person_1</code> object it is assigned a <code>null</code> default value when <code>Person_1</code> is deserialized as a <code>Person_0</code> object.
+</p>
+<p>This was a simple example of changing a class and seeing how the change affects serialized and deserialized objects. I will expand this article in the future to discuss other types of changes in classes and how those changes affect serialization and deserialization.</p>
+<p>
+<p></p>
+
+
+<!--
+<p class="subtitle">Subclass Versus Superclass</p>
+<div class="postSubtitle">What happens if class B extends A and A performs custom serialization and then B provides implementations of readObject and writeObject? If B does *not* call defaultReadObject and defaultWriteObject will A's custom serialization be invoked?</div>
+<p>What about the same situation except that A performs default serialization?</p>
+-->
+
+<div align="center" style="font-size:9pt; font-family:verdana,arial,helvetica; color: black">
+    Copyright &copy; 1999-2002, Tony LaPaso<br>
+    All Rights Reserved.
+</div>
+</body>
+</html>
+

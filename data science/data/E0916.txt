@@ -1,0 +1,256 @@
+ID=E0916
+URL=http://www.accu.org/c++sig/public/ol38/ol38_MultiParadigm.htm
+SIZE=12361
+DATE=12/07/02
+TIME=19:25:46
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//SoftQuad Software//DTD HoTMetaL PRO 5.0::19981217::extensions to HTML 4.0//EN" "hmpro5.dtd">
+ 
+<HTML>
+ 
+<HEAD>
+<META NAME="author" CONTENT="Association of C & C++ Users"> 
+<META NAME="description" CONTENT="ACCU - Overload 38"> 
+<META NAME="keywords" CONTENT="C++, programming"> 
+<TITLE>ACCU: Overload 38</TITLE>
+</HEAD>
+
+<BODY>
+<!-- HEADER -->
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" ALIGN="center" WIDTH="100%">
+<TR>
+<TD VALIGN="top" ALIGN="left" WIDTH="212">
+<A HREF="http://www.accu.org/c++sig/public/Overload.html"
+ ONMOUSEOVER="window.status='Overload Online Home Page'; return true;">
+<IMG SRC="/icons/ol/Banner.gif" ALT="Overload Online Home Page" WIDTH="212"
+ HEIGHT="27" BORDER="0"></A> </TD>
+<TD VALIGN="top" ALIGN="right">
+<FONT FACE="arial black, arial, helvetica" SIZE="+1"> Advanced Software
+Development</FONT> </TD>
+</TR>
+</TABLE>
+<!-- END HEADER -->
+<H2 ALIGN="CENTER"><FONT FACE="verdana, arial, helvetica">Intuitive
+Multi-Paradigm Design:</FONT></H2>
+<H3 ALIGN="CENTER">Do I use a member function or a non-member function?</H3>
+<H3 ALIGN="CENTER">Ian Bruntlett</H3>
+<P>This question was posed in an article [1] by Scott Meyers. How you answer it
+depends on your perspective.</P>
+<P>The best approach adopts a problem based perspective:</P>
+<P>&#183; What are you trying to achieve?</P>
+<P>However, as a thought experiment, I&#146;ll take an implementation
+perspective. At first, I thought we were mixing two paradigms:</P>
+<UL>
+<LI> Object Orientation (O.O.) </LI>
+<LI> Procedural (algorithms) </LI>
+</UL>
+<P>Different designers will produce different designs for the same problem. A
+key factor is the paradigm mix they prefer.</P>
+<P>Rephrasing the question makes it easier to answer:</P>
+<BLOCKQUOTE>&#147;What are the design implications of member functions and
+non-member functions?&#148;</BLOCKQUOTE>
+<P>The answer, ultimately depends more on your personal design style mix than
+the original problem. Here are two extreme examples:</P>
+<P>If you&#146;re heavily into O.O. then you&#146;ll be using member functions
+everywhere. Even your algorithms will be wrapped up in classes and are likely
+to be passed around as objects. The original question becomes &#147;<I>which
+class do I make this a member function of?</I>&#148;</P>
+<P>If you&#146;re heavily into procedural programming, there&#146;ll be plenty
+of highly-cohesive, weakly coupled functions manipulating a small set of built
+in types. The original question never gets asked.</P>
+<P>Actually, you&#146;re somewhere between those two artificial extremes.
+Everyone <I>knows</I> the C++ language supports multiple paradigms &#150;
+procedural, modular, object-based, object-oriented and more<I>. </I> And
+language shapes thought. So, at some intuitive level, we&#146;re all doing
+multi-paradigm design and implementation. There comes a point where it is worth
+looking at what we&#146;re doing more formally. Which is a perfect excuse to
+introduce some formal terminology&#133;</P>
+<H2>Multi-Paradigm Design.</H2>
+<P>A <B>paradigm</B> is just a matter of perspective &#150; a way of grouping
+similar things together and noting their differences. Some points of views are
+similar and overlap (object-based, object-oriented). As far as intuition is
+concerned, the differences don&#146;t matter. </P>
+<P>When weaving paradigms together, I find it a helpful crutch to have
+artificially rigid definitions of the paradigms I&#146;m using. The paradigms
+have to overlap in some way so they can be stitched together. Personally I
+think the different paradigms of C++ can be bundled together as families of
+paradigms (algorithms, user defined types, declarative).</P>
+<P>When designing something, we make a careful study of the situation/business
+(domain analysis). Sometimes the business is so broad that its best split up
+into smaller areas. I prefer to split the business focus into
+<B>sub-domains</B> (e.g. forecasting, risk-analysis) and the technology into
+<B>sub-systems</B> (e.g. databases, GUIs).</P>
+<P>When we split something up, we group things together into bunches
+(<B>families</B>) based on what they have in common (<B>commonality
+analysis</B>) and how the family members differ (<B>variability analysis</B>). 
+</P>
+<P><I>Table 2 </I>describes an informal, intuitive approach to Multi-Paradigm
+design. At the end of this intuition-driven approach, there may be some
+functions that could be put in classes or could be stand-alone functions. This
+uncertainty shows that we&#146;ll discover something later.</P>
+<P>Once the topic/domain has been split into sub-domains and sub-systems, the
+choice of paradigm may be obvious to intuition.</P>
+<P>While paradigm choice is important in selecting the tools we will use, it
+only brings us nearer to the answer of our question. Some email discussion with
+Kevlin Henney pointed out that &#147;<I>questions &#133; where responsibility
+for behaviour is allocated </I>.. <I>the forces at play on this include
+extensibility, primitiveness, dependencies, and so on&#133;you might want to
+look at &#133;the Interface Principle&#148;.</I> </P>
+<P><B><I>&#147;Does the function&#146;s behaviour belong inside the
+class?&#148;</I></B></P>
+<H2>Applying design principles.</H2>
+<P>How about considering the Open Closed Principle (OCP)? That is, what we
+implement should be open for extension and closed to change. </P>
+<P>Applying the OCP to the function, should the function extendable (applicable
+to other types)? If so then we should consider making it a template function. 
+</P>
+<P>According to the Interface Principle (IP) [4], regardless of whether the
+function is implemented as a member function or a freestanding function, the
+function is part of the class&#146; interface. I&#146;ll refer to the member
+functions as the class method interface. </P>
+<P>So, taking the OCP and IP together, if we add a member function to the class
+we change it, if we write a freestanding function that mentions the class, we
+extend the class &#150; <I>without changing the class definition or using
+virtual functions!</I> According to the OCP, we should provide things that are
+open to extension and closed to change.</P>
+<P>For the class to be closed to change, we need to provide member functions
+that provide meaningful services so that non-member functions don&#146;t have
+to access private data.</P>
+<P>We need to look at the function and the class regarding the principles of
+weak coupling and high cohesion (and consider granularity for good measure). A
+coupling issue arises if the function relies on private data. We then need to
+make a decision based on cohesion to either (1) make the function a member
+function or (2) write the function as a non-member function and write some
+additional member functions so that the private data is no longer an obstacle. 
+</P>
+<P>Polymorphism requirements don&#146;t affect our decision. If polymorphism is
+needed, the function should either be a virtual member function or a
+freestanding function that accepts a base class pointer/reference as a
+parameter.</P>
+<P>Remember, though, whatever choice you make, it should take the application
+into account.</P>
+<H3>References.</H3>
+<P>[1] &#147;How Non-Member Functions Improve Encapsulation&#148; (Scott
+Meyers, via www.aristeia.com)</P>
+<P>[2] The C++ Programming Language 3rd edition. (Bjarne Stroustrup).</P>
+<P>[3] Multi-Paradigm Design for C++ (James O. Coplien)</P>
+<P>[4] Exceptional C++ (Herb Sutter)</P>
+<H3>Further Reading.</H3>
+<P>[2] Chapter 2: Overview of paradigms.</P>
+<P>[2] Part IV: Design Using C++</P>
+<P>[3] Especially chapters on Solution domain analysis, Commonality,
+Variability.</P>
+<P>&#147;Combining O.O. Design and Generic Programming&#148; ( Klaus Kreft
+&amp; Angelika Langer, C++ Report March 1997,
+home.camelot.de/langer/Articles/OOPvsGP/Introduction.htm)</P>
+<P>&#147;C++ Primer 3e&#148; (Lippman &amp; Lajoie) chapters on Function
+templates, Overloaded functions.</P>
+<H3>Acknowledgements.</H3>
+<P>Thanks to Kevlin Henney &amp; Phil Bass for your comments.</P>
+<H3>Ian Bruntlett</H3>
+<H3>Ian.Bruntlett@aesl.co.uk</H3>
+<P><B><I>Table 1. Design implications of member functions and non-member
+functions</I></B></P>
+<TABLE>
+<TBODY>
+<TR>
+<TD ALIGN="Left" VALIGN="Top"> <P>Member function implies</P>
+</TD>
+<TD ALIGN="Left" VALIGN="Top"> <P>Non-member function implies</P>
+</TD>
+</TR>
+<TR>
+<TD ALIGN="Left" VALIGN="Top"> <OL>
+<LI> Function is part of the class method interface. </LI>
+<LI> Function is an essential part of the class and must not be separated from
+it (i.e. needs access to private/protected data). </LI>
+<LI> (if virtual) &#150; the function is a part of the class&#146; runtime
+polymorphism. </LI>
+<LI> Responsibility for the function&#146;s behaviour lies with the class. 
+</LI>
+<LI> Dependencies &#150; the function prototype may require additional headers
+to be included by the class&#146; user. </LI>
+</OL>
+</TD>
+<TD ALIGN="Left" VALIGN="Top"> <P>6. Function is part of the class interface. 
+</P>
+<P>7. Function is an algorithm.</P>
+<P>8. Function prototype declares which classes/types it can be applied to.</P>
+<P>9. Algorithm requirements implied by the function body.</P>
+<P>10. (if template) &#150; function is sufficiently generic that it can be
+applied to a set of types/classes which implement a set of facilities for the
+template function (note &#150; these facilities are implied by the function
+implementation).</P>
+<P>11. Can avoid additional dependencies - function prototype can be stored in
+a different header to the class definition.</P>
+</TD>
+</TR>
+</TBODY>
+</TABLE>
+<TABLE>
+<TBODY>
+<TR>
+<TD ALIGN="Left" VALIGN="Top"> <P>Ambiguity implies the function is one of:</P>
+<UL>
+<LI> A future member function of </LI>
+<LI> A class that doesn&#146;t exist yet. </LI>
+<LI> A class we don&#146;t know enough about to decide. </LI>
+<LI> A future algorithm that may get applied to different types one day using 
+</LI>
+<LI> Runtime polymorphism (inheritance class hierarchy) </LI>
+<LI> Compile time polymorphism (template function). </LI>
+<LI> Examples of mixing both: </LI>
+<LI> A template that takes base class pointers as parameters. </LI>
+<LI> A class hierarchy in which the member functions are implemented using
+different, smaller function templates. </LI>
+</UL>
+</TD>
+</TR>
+</TBODY>
+</TABLE>
+<H2>Table 2. A development approach.</H2>
+<TABLE>
+<TBODY>
+<TR>
+<TD ALIGN="Left" VALIGN="Top"> <UL>
+<LI> Think about the problem. </LI>
+<LI> Break the original problem (application domain) into sub-domains &amp;
+sub-systems. </LI>
+<LI> Identify significant processes (algorithms) on smaller post-it notes. 
+</LI>
+<LI> Identify classes - families grouped by common structure and behaviour,
+family members distinguished by variability in behaviour and/or additional
+structure and behaviour. </LI>
+<LI> Entities (classes, objects), their responsibilities, behaviour and
+collaborations. </LI>
+<LI> Relationships, Collaborations and Interfaces between objects. </LI>
+<LI> Operations performed by objects (methods &#150; member functions). </LI>
+<LI> Identify algorithms &#150; families grouped together by common name &amp;
+purpose (overloading and/or template functions), family members distinguished
+by variability in implementation, function signature (overloading), types
+(template functions). </LI>
+<LI> Flow of information / objects. </LI>
+<LI> Operations performed on objects (algorithms &#150; non member functions). 
+</LI>
+<LI> Identify groups of objects (using database normalisation techniques). 
+</LI>
+<LI> Assign processes to CRC cards (as member functions), keep others to one
+side (non-member functions). </LI>
+<LI> Assign algorithms to post it notes. </LI>
+<LI> Play with the CRC cards and other post it notes. </LI>
+<LI> Implement your entities as classes, aiming for a &#147;thin method
+interface&#148;. </LI>
+<LI> Implement your algorithms as functions that manipulate objects via their
+member functions. </LI>
+</UL>
+</TD>
+</TR>
+</TBODY>
+</TABLE>
+<HR>
+<P> <FONT SIZE="-2"><A HREF="/copyright.htm">Copyright</A> &copy; The
+Association of C &amp; C++ Users 2000. All rights reserved.</FONT> </P>
+</BODY>
+</HTML>
+
+

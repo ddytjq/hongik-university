@@ -1,0 +1,317 @@
+ID=F0196
+URL=http://www.mvps.org/btmtz/listview/
+SIZE=20695
+DATE=09/07/2002
+TIME=13:16:34
+DATASET=Visual Basic
+HTML=<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<link rel="StyleSheet" href="../styles.css" type="text/css">
+<title>VB ListView</title>
+</head>
+
+<body bgcolor="#FFFFE1" text="#000000" link="#008000" vlink="#008000" alink="#008000">
+<div align="center"><center>
+
+<table border="0" cellspacing="4" width="620">
+  <tr>
+    <td valign="top" rowspan="3" width="190" height="138"><img src="../images/vbpslogo2.gif" alt="vbpslogo2.gif (19593 bytes)" WIDTH="190" HEIGHT="124"></td>
+    <td valign="bottom" width="100%" height="50" colspan="2"><strong><br>
+    <font size="5" face="Arial">Brad's VB-32 Programs &amp; Samples</font></strong></td>
+  </tr>
+  <tr>
+    <td width="100%" height="38" colspan="2"><hr color="#FF9933">
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" width="600" height="38"><font size="2" face="Arial">Last update: 11/14/99
+    (VBDirectoryLV, LVItemTips)</font></td>
+    <td valign="top" width="20" height="38"><font size="2" face="Arial"><p align="right"><a href="../index.html">Home</a></font></td>
+  </tr>
+</table>
+</center></div><div align="center"><center>
+
+<table border="0" cellspacing="2" width="620">
+  <tr>
+    <td valign="top" width="100%"><font face="Arial" size="3"><strong>Extending the
+    functionality of the VB ListView controls</strong></font><p><font size="2" face="Arial"><strong>Overview...</strong><br>
+    <br>
+    The &quot;ListView&quot; control in both Comctl32.ocx and Mscomctl.ocx is simply a wrapper
+    that superclasses (encapsulates) the real &quot;listview&quot; common control in
+    Comctl32.dll. This allows the real listview common control messages and definitions to be
+    used to override almost every aspect of the VB ListView control.<br>
+    <br>
+    The listview common control messages and definitions can be found in a C header file named
+    Commctrl.h. This file used to have a friendly URL on the MS site, but doesn't anymore for
+    some reason. It appears that the only alternatives for obtaining this file are to either
+    grab a copy of Visual Studio, or download either of the fairly huge INetSDK or PlatformSDK
+    at <a href="http://msdn.microsoft.com/developer/sdk/">http://msdn.microsoft.com/developer/sdk/</a><br>
+    <br>
+    But, instead of going to all of the trouble to find the darned download that contains
+    Commctrl.h (wherever it is), and then having to convert the C definitions to VB, well, you
+    can get the whole shebang right here. The follow zip contains *every* listview definition
+    and macro converted to VB, through Comctl32.dll v4.71 (IE4,&nbsp; excluding the listview's
+    CustomDraw definitions). Most listview examples that will eventually appear below will use
+    only the necessary subset of these definitions, keeping each example as clear and simple
+    as possible.<br>
+    <br>
+    <a href="lvdefs_471.zip">Download lvdefs_471.zip (9kb)</a><br>
+    </font><font face="Arial" size="1">Last update: 08/30/99</font></p>
+    <p><font size="2" face="Arial"><strong>LVItemDrag: How to dynamically drag selected
+    ListItems in the VB ListView.<br>
+    <br>
+    </strong>Even though one or more ListItems can be selected in the ListView whose
+    MultiSelect property is set to True (whose LVS_SINGLESEL window style is not set), unlike
+    familiar Explorer functionality, only the focused ListItem moves when dragging the
+    selection. This demo solves this shortcoming, but not without a little work.<br>
+    <br>
+    When the left or right mouse button is depressed and moved over ListItem, typically four
+    pixels in any direction, the real listview sends its parent window a LVN_BEGINDRAG or
+    LVN_BEGINRDRAG notification message, respectively. For left button dragging, when the VB
+    ListView receives a LVN_BEGINDRAG, it begins repositioning the ListItem under the cursor.
+    The ListView does not respond to LVN_BEGINRDRAG, and provides no right button item
+    dragging facility. Once either notification has been processed and dragging has begun, the
+    ListView stops raising its MouseMove event, until the respective button is released. So,
+    in order to provide multiple ListItem repositioning with the left mouse button, right
+    button ListItem repositioning, and continue the receive the MouseMove event, the
+    ListView's parent window (typically a Form) must be subclassed, where both notifications
+    can be detected, and eaten (not passed to the CallWindowProc API function).<br>
+    <br>
+    Also, when in large or small icon view, the view area inside the ListView's client window
+    in which its icons reside can grow to be much larger than the size of the ListView's
+    client window. If an ListItem is dragged to the edge of the ListView client window, the
+    view becomes enlarged and is shifted in the opposite direction. Because item positions
+    (ListItem Left and Top properties) are coordinates relative to the view's 0-0 coordinates,
+    and not the upper-left corner of the ListView client window, this amount of view shifting
+    must be considered when positioning ListItems using the ListView client cursor position.
+    The demo makes heavy use of the LVM_GETORIGIN message, which returns the pixel coordinates
+    of the ListView client window's upper-left corner relative to the shifted view's 0-0
+    coordinates.<br>
+    <br>
+    Not only does the demo show how to move all selected ListItems with the mouse during a
+    dragging operation, but also solves the annoying behavior where the ListView will scroll
+    wildly when the selected ListItem is dragged near the ListView client window edge.<br>
+    <br>
+    <a href="lvitemdrag.zip">Download lvitemdrag.zip (9kb)</a><br>
+    </font><font face="Arial" size="1">Last update: 08/30/99</font></p>
+    <p><font size="2" face="Arial"><strong>LVDragImage: How to create a drag image of selected
+    ListView ListItems</strong>.<br>
+    <br>
+    As does the previous demo, this demo also shows how to move selected ListItems in the
+    ListView, but takes a completely different, and quite a bit more complex approach, by
+    showing how to create Explorer like drag images for selected ListView ListItems.<br>
+    <br>
+    If a single item is dragged in Explorer's listview, a faded image of that item is created
+    and &quot;attached&quot; to the cursor. If multiple items are selected and dragged, on
+    &lt; Win2K OSs (Win95, Win98, NT4), the drag image is just an outline of the selected
+    items' icons and labels. On Win2K, the drag image is comprised of the selected items'
+    actual icons and labels, that are not only faded (just like a single item's drag image),
+    but are highlighted as well. This demo shows how to create all three drag image styles:
+    outlined, faded, and faded and highlighted; how to move the drag image with the cursor,
+    and finally how to reposition all selected items to where they are dropped inside the
+    ListView.<br>
+    <br>
+    To create a faded (and not highlighted) drag image of a single item, the listview's
+    LVM_CREATEDRAGIMAGE message is normally used. But since the listview has no means to
+    create a drag image for multiple items, as well as no message for creating an outlined, or
+    faded and highlighted drag image, the demo shows how to actually construct and draw all
+    three drag image styles in a memory DC for one or more items. Though not the most
+    efficient of methods, the demo uses the services of the imagelist drag APIs to move the
+    constructed image around the screen with the cursor.<br>
+    <br>
+    Even if the amount of code and overhead required to provide drag image functionality may
+    not be practical, it is still interesting to see how it can be done.<br>
+    <br>
+    <a href="lvdragimage.zip">Download lvdragimage.zip (27kb)</a><br>
+    </font><font face="Arial" size="1">Last update: 08/30/99</font></p>
+    <p><font size="2" face="Arial"><strong>SystemImagelist: How to associate the system
+    imagelist with the VB ListView.</strong><br>
+    <br>
+    To display icons in the VB ListView, typically a VB ImageList would be added to the
+    project, filled with icons, and associated with the ListView's Icons and/or SmallIcons
+    properties. But what if you wanted the ListView to use the icons from the system imagelist
+    just as Explorer does? The solution seems obvious enough, send the ListView a
+    LVM_SETIMAGELIST message, specifying the system imagelist's handle for either or both
+    small or large icons. Well, that works, but there are a few more details to consider...<br>
+    <br>
+    First, the VB ListView only knows how to talk to and use images from a VB ImageList. As a
+    result, after assigning the system imagelist to the ListView with the LVM_SETIMAGELIST
+    message, when it comes time for the ListView to display or update ListItem icons, the
+    ListView will then send itself another LVM_SETIMAGELIST message, specifying the handle of
+    the VB ImageList associated with its current view (either the Icons or SmallIcons
+    ImageLists). If no VB ImageList is associated with the current view,&nbsp; the ListView
+    will then specify 0 for the message's lParam value. Either way, your system imagelist
+    assignment is removed and the ListView doesn't use its icons. The solution? Assign the
+    system imagelist to the ListView with the LVM_SETIMAGELIST message, subclass the ListView,
+    and eat (don't call CallWindowProc) all subsequent LVM_SETIMAGELIST messages that the
+    ListView sends itself.<br>
+    <br>
+    Next, since the ListView is now using the system imagelist, it no longer needs a VB
+    ImageList. In fact, as far as the VB ListView's internal code is concerned, it's not using
+    an ImageList. But how do we assign the image indices to each icon? Each ListView icon's
+    image index must now be explicitly set with the listview's LVM_SETITEM message. The real
+    listview code that the VB ListView encapsulates will then automatically display the icon
+    for each ListItem for the icon's specified index within the system imagelist. <br>
+    <br>
+    But this method presents one problem little. Since there is no VB ImageList holding icon
+    images for the ListView to talk to, each ListItem's Icon and SmallIcon properties are
+    uninitialized, and cannot be used. In order to retrieve an ListItem's Icon and SmallIcon
+    in a Picture object, a four part process must now be used. First the real listview icon
+    index of the specified item must be obtained (real listview item indices correspond to
+    zero-based *physical item positions* in the listview, as opposed to ListItem.Index that
+    corresponds to the one-based position in the ListItems collection). Second, the specified
+    item's assigned icon index in the system imagelist is obtained with the&nbsp;LVM_GETITEM
+    listview message. Third, the item's icon handle is obtained from its system imagelist
+    index with the ImageList_GetIcon API. And finally, the icon handle is converted into a
+    Picture object with the OleCreatePictureIndirect API.<br>
+    <br>
+    Though much more code intensive and complicated than using the VB ImageList, assigning a
+    real imagelist to the ListView is not only many more times faster than the VB ImageList,
+    but is also incredibly less resource intensive as well (the real imagelist use only one
+    GDI handle for a single bitmap that includes all icon images within it, where anywhere
+    from two to four GDI handles are used **for each ListImage in the VB ImageList**). Not
+    much of consideration there...<br>
+    <br>
+    The following code example demonstrates all which was discussed above by showing not only
+    how to fill the ListView with all icons found in the system imagelist, but also how to
+    fill the ListView with all icons of registered file types, including their corresponding
+    file type descriptions.<br>
+    <br>
+    <a href="systemimagelist.zip">Download systemimagelist.zip (11kb)</a><br>
+    </font><font face="Arial" size="1">Last update: 08/30/99</font></p>
+    <p><font size="2" face="Arial"><strong>LVCustomDraw: How to use custom draw in the
+    ListView</strong><br>
+    <br>
+    Listview custom draw allows any font, text color, and background color to be specified for
+    any or all ListItems. No long explanation about what custom draw is, and how it works,
+    just a demo that shows the interesting effects it can produce (uses subclassing).<br>
+    <br>
+    <a href="lvcustomdraw.zip">Download lvcustomdraw.zip (9kb)</a><br>
+    </font><font face="Arial" size="1">Last update: 08/30/99</font></p>
+    <p><font size="2" face="Arial"><strong>LVItemTree: How to create a hierarchical ListView</strong>
+    (with buttons like a treeview)<br>
+    <br>
+    This example shows how to set ListView item state images and indent values simulating a
+    hierarchical tree with expandable and collapsible items, identical to that of the Outlook
+    news reader's message list pane.<br>
+    <br>
+    The working code is fairly simple: a &quot;+&quot; state icon is added to a collapsed
+    parent ListItem with the LVM_SETITEM message; when the parent ListItem is expanded, the
+    state icon is replaced with the &quot;-&quot; icon; as each child ListItem is Added under
+    the expanded parent, its indent is increased by setting the LVITEM's iIndent member, and
+    is also given a &quot;+&quot; state icon. When an expanded parent ListItem is collapsed,
+    the &quot;-&quot; state icon is replaced with the &quot;+&quot; icon, and all ListItems
+    with an indent value greater than the parent ListItem are removed.<br>
+    <br>
+    11-14-99 update (v1.20)<br>
+    - Now toggles the expanded state of parent items on a left mouse button double click<br>
+    - Now scrolls selected items and child items of expanded parent items fully into view<br>
+    - Modified keyboard support for expanding/collapsing parent items providing keyboard
+    navigational functionality identical to that of the TreeView.<br>
+    - Now provides functionality for the full range of TreeView Node relational properties:
+    Parent, Child, FirstSibling, LastSibling, PrevSibling, NextSibling; and then some:
+    Parents, Siblings, Children<br>
+    <br>
+    10-24-99 update (v1.10)<br>
+    - Added keyboard support for expanding/collapsing parent items<br>
+    - Added dynamic column header resizing<br>
+    <br>
+    09-17-99 initial release (v1.00)<br>
+    <br>
+    <a href="lvitemtree.zip">Download lvitemtree2.zip (8kb)</a><br>
+    </font><font face="Arial" size="1">Last update: 11/14/99</font></p>
+    <p><font size="2" face="Arial"><strong>LVHeaderSortIcons: How to display custom sort icons
+    in ListView column headers</strong><br>
+    <br>
+    Another fairly simple, yet useful example showing how to display the &quot;\/&quot; and
+    &quot;/\&quot; icons in ListView column headers indicating the actively sorted column and
+    its sort direction.<br>
+    <br>
+    The demo contains a class that can be added to any project that uses a ListView in report
+    view. The class creates its own real imagelist with the ImageList_Create API, and the two
+    sort direction icons are added with the ImageList_AddIcon macro. When a ListView
+    ColumnHeader is clicked, the client calls the class' SetHeaderIcons method, specifying the
+    active ColumnHeader's Index, and its sort direction.The code in the method then removes
+    any icon from the previously sorted ColumnHeader, and sets the new icon with the
+    HDM_SETITEM header message. Note that this code only works on IE3 and greater
+    installations.<br>
+    <br>
+    Much of this demo's inspiration was drawn from Randy Birch's &quot;How to Add Images to a
+    ListView Header&quot; code at <a href="http://www.mvps.org/vbnet/code/comctl/lvheaderimage.htm">http://www.mvps.org/vbnet/code/comctl/lvheaderimage.htm</a>,
+    which does things a bit differently...<br>
+    <br>
+    <a href="lvheadersorticons.zip">Download lvheadersorticons.zip (5kb)</a><br>
+    </font><font face="Arial" size="1">Last update: 10/03/99</font></p>
+    <p><font size="2" face="Arial"><strong>VBDirectoryLV: How to create a hierarchical
+    ListView that thinks its a TreeView (and displays directories)</strong><br>
+    <br>
+    This demo picks up where the LVItemTree demo above left off, and incorporates all of the
+    functionality in the <a href="../treeview">Directory TreeView demo</a>. Though the result
+    is code not having a whole lot of practical every day value, it is rather interesting
+    study of ListView functionality none the less: a ListView that does folders just like VB
+    DirListBox. <br>
+    <br>
+    For all intents and purposes, the ListView in this demo looks and behaves exactly like the
+    TreeView, and it is difficult to distinguish the differences, except for three key
+    elements: no tree lines; folder icons become selected along with their item labels; and
+    there are no item tips for obscured item labels. But other than that, the ListView is a
+    TreeView.<br>
+    <br>
+    <a href="vbdirectorylv.zip">Download vbdirectorylv.zip (19kb)</a><br>
+    </font><font face="Arial" size="1">Last update: 11/14/99</font></p>
+    <p><font size="2" face="Arial"><strong>LVItemTips: ListView item tips galore</strong><br>
+    <br>
+    As always, the demos available here tend to be a little more involved and bigger than
+    most, but this one pushes the ragged edge of what may be viewed as practical and usable.
+    It none the less does provide some rather necessary functionality: item tips anywhere any
+    everywhere in the VB ListView, including report view subitems.<br>
+    <br>
+    Attempting to describe what the demo does and why it does it could take thousands of
+    words, it's just not a simple task. But the demo's concept is essentially this: a class
+    module is used to create, position and control the visibility of a real tooltip common
+    control, allowing it to appear over any ListItem or SubItem whose label text is not
+    entirely visible (either obscured by the ListView's client window or truncated with an
+    ellipsis), in all ListView views. Though the code is as always heavily commented, even if
+    it can't be fully understood, it least what it does can be appreciated...<br>
+    <br>
+    The class has been tested on and was found to work successfully with both the Comctl32.ocx
+    and Mscomctl.ocx ListViews, the real common control listview, and on all current flavors
+    of Windows that are running Comctl32.dll v4.70 (IE3) and greater.<br>
+    <br>
+    <a href="lvitemtips.zip">Download lvitemtips.zip (15kb)</a><br>
+    </font><font face="Arial" size="1">Last update: 11/14/99</font></p>
+    <p><font size="2" face="Arial"><strong>Miscellaneous ListView demos that never got much
+    attention</strong><br>
+    <br>
+    Below is a list of VB ListView demos that were developed in response to newsgroup
+    inquiries. Though they weren't deemed worthy of having their own separate sections here on
+    this page, they still may provide some usefulness to those interested...<br>
+    <br>
+    <a href="setshellview1.zip">setshellview1.zip (3kb)</a> Shows how to change the view of
+    any SHELLDLL_DefView listview, including the desktop and common dialog listviews. (last
+    update 08/12/99)<br>
+    <br>
+    <a href="lvselectionex.zip">lvselectionex.zip (3kb)</a> Shows how to provide individual
+    item click selection in the VB ListView so that other selected items do not become
+    de-selected, identical to a multiselect ListBox. (last update 09/26/99)<br>
+    <br>
+    <a href="lvsubitemedit.zip">lvsubitemedit.zip (5kb)</a> Shows how to provide in-place
+    editing of VB ListView report view subitems. Though not 100% clean in functionality, this
+    demo does provide the essential core concept of positioning a VB TextBox directly over
+    subitems. (last update 10/04/99)<br>
+    <br>
+    <a href="lv16x16dragicon.zip">lv16x16dragicon.zip (10kb)</a> Though nowhere near the
+    robustness of the LV Drag Image demo above, this demo does provide some rather useful
+    code: it shows two distinct methods of creating a 32x32 drag image from a 16x16 drag image
+    in code (ala CreateDragImage) that can be assigned directly to the ListView's DragIcon
+    property. (last update 11/01/99)<br>
+    </font></td>
+  </tr>
+</table>
+</center></div>
+</body>
+</html>
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+

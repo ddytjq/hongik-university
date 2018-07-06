@@ -1,0 +1,318 @@
+ID=F0138
+URL=http://www.mvps.org/btmtz/treeview/index.htm
+SIZE=21054
+DATE=09/07/2002
+TIME=13:15:27
+DATASET=Visual Basic
+HTML=<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<link rel="StyleSheet" href="../styles.css" type="text/css">
+<title>VB TreeView</title>
+</head>
+
+<body bgcolor="#FFFFE1" text="#000000" link="#008000" vlink="#008000" alink="#008000">
+<div align="center"><center>
+
+<table border="0" cellspacing="4" width="620">
+  <tr>
+    <td valign="top" rowspan="3" width="190" height="138"><img src="../images/vbpslogo2.gif" alt="vbpslogo2.gif (19593 bytes)" WIDTH="190" HEIGHT="124"></td>
+    <td valign="bottom" width="100%" height="50" colspan="2"><strong><br>
+    <font size="5" face="Arial">Brad's VB-32 Programs &amp; Samples</font></strong></td>
+  </tr>
+  <tr>
+    <td width="100%" height="38" colspan="2"><hr color="#FF9933">
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" width="600" height="38"><font size="2" face="Arial">Last update: 11/30/99
+    (TVOverlayIcons)</font></td>
+    <td valign="top" width="20" height="38"><font size="2" face="Arial"><p align="right"><a href="../index.html">Home</a></font></td>
+  </tr>
+</table>
+</center></div><div align="center"><center>
+
+<table border="0" cellspacing="2" width="620">
+  <tr>
+    <td valign="top" width="100%"><strong><font size="3" face="Arial">Extending the
+    functionality of the VB TreeView controls</font><br>
+    <font size="2" face="Arial"><br>
+    Overview...</strong><br>
+    <br>
+    The &quot;TreeView&quot; control in both Comctl32.ocx and Mscomctl.ocx is simply a wrapper
+    that superclasses (encapsulates) the real &quot;treeview&quot; common control in
+    Comctl32.dll. This allows the real treeview common control messages and definitions to be
+    used to override almost every aspect of the VB TreeView control.<br>
+    <br>
+    The treeview common control messages and definitions can be found in a C header file named
+    Commctrl.h. This file used to have a friendly URL on the MS site, but doesn't anymore for
+    some reason. It appears that the only alternatives for obtaining this file are to either
+    grab a copy of Visual Studio, or download either of the fairly huge INetSDK or PlatformSDK
+    at <a href="http://msdn.microsoft.com/developer/sdk/">http://msdn.microsoft.com/developer/sdk/</a><br>
+    <br>
+    But, instead of going to all of the trouble to find the darned download that contains
+    Commctrl.h (wherever it is), and then having to convert the C definitions to VB, well, you
+    can get the whole shebang right here. The follow zip contains *every* treeview definition
+    and macro converted to VB, through Comctl32.dll v4.72 (IE4,&nbsp; the treeview's
+    CustomDraw definitions are not included). Each treeview example below uses just the
+    necessary subset of these definitions, keeping each example as clear and understandable as
+    possible.<br>
+    <br>
+    <a href="tvdefs_472.zip">Download tvdefs_472.zip (8kb)</a><br>
+    </font><font face="Arial" size="1">Last update: 08/20/98</font><p><font size="2" face="Arial"><strong>Example of how to both obtain an item handle (hItem) from any given
+    Node, and a Node object reference from a given item handle.<br>
+    <br>
+    </strong>Unlike the listview control that uses sequential indices to uniquely identify
+    each item it contains, the treeview uses a different scheme to identify treeview items,
+    refereed to the item &quot;handle&quot; or &quot;<strong>hItem</strong>&quot;. The trick
+    with doing anything really interesting API-wise with the TreeView&quot; control in
+    Comctl32.ocx is obtaining an item handle for a respective node, since &quot;hItem&quot; is
+    obviously not a Node property.<br>
+    <br>
+    So that's simply what this demo is all about, how to get a Node's hItem, and visa versa.
+    It's easier said than done though. The only accurate method of matching the hItem to a
+    particular Node, is by retrieving the handle of the item whose relative position in the
+    treeview equals that of the desired Node. The same approach is taken when retrieving a
+    Node reference from the corresponding hItem. It all takes a bit of doing. Do note though,
+    the code in this demo is the foundation for all subsequent demos, whose elements and
+    concept should be understood before proceeding.<br>
+    <br>
+    <a href="tvnode-hitem.zip">Download tvnode-hitem.zip (6kb)</a><br>
+    </font><font face="Arial" size="1">Last update: 08/03/98</font></p>
+    <p><font size="2" face="Arial"><strong>TVCheckBoxesEx: Example of how to add and use
+    custom checkboxes in VB's TreeView control<br>
+    <br>
+    </strong>The easy way to do checkboxes in the TreeView is by simply applying the
+    TVS_CHECKBOXES treeview window style, or to just use the VB6 TreeView that does its own
+    checkboxes (though not very well, see the MS kb). But we don't do things like that around
+    here, at all. This demo is about treeview (the real one) item state images.<br>
+    <br>
+    This demo does it all. It includes 12 custom checkbox icons, compiled into a resource
+    file, that are loaded into both a VB ImageList control, and a real imagelist common
+    control window created in code, either of which can be assigned to the TreeView as its
+    state imagelist. From there we show how to set any checkbox icon to any Node, how to
+    toggle the checkbox's state (we have to do that), and how to retrieve which icon any given
+    Node is currently using. A couple of other treeview item state image related topic are
+    covered as well.<br>
+    <br>
+    Note, this is a major update to the previous checkbox demo found here.<br>
+    <br>
+    <a href="tvcheckboxesex.zip">Download tvcheckboxesex.zip (17kb)</a><br>
+    </font><font face="Arial" size="1">Last update: 04/2/99</font></p>
+    <p><font size="2" face="Arial"><strong>TVEventCancel: Demonstrates how to prevent a Node
+    selection change, expand, and collapse in the Comctl32.ocx TreeView control.&nbsp; </strong><br>
+    <br>
+    The TreeView's specific events AfterLabelEdit, BeforeLabelEdit, Collapse, Expand and
+    NodeClick are a raised as a result of the treeview's window procedure responding to
+    certain treeview specific notification messages: TVN_ENDLABELEDIT, TVN_BEGINLABELEDIT,
+    TVN_ITEMEXPANDED (for both Collapse and Expand), and TVN_SELCHANGED respectively. The only
+    one of these the *can* be canceled is AfterLabelEdit, which in turn tells the treeview to
+    return C TRUE (or 1) in response to the TVN_BEGINLABELEDIT notification message.<br>
+    <br>
+    Now, to cancel either a NodeClick, Expand or Collapse, a value of 1 must be returned in
+    response to the TVN_SELCHANGING and TVN_ITEMEXPANDING notifications respectively (both
+    happen right before TVN_SELCHANGED and TVN_ITEMEXPANDED respectively). The hitch is that
+    the only way to tell the treeview this is by subclassing it's parent window, where the
+    notification messages are sent, and return 1 yourself. So this example gets a bit more
+    involved because it does the subclassing itself.<br>
+    <br>
+    To help assist in the understanding of treeview notification messages, and what specific
+    treeview events cause them to occur, a code module is included that not only returns the
+    corresponding constant string of any specified treeview notification message value
+    (TVN_*), but also the corresponding constant string of any window message (WM_*) and any
+    general common control notification message (NM_*).<br>
+    <br>
+    Note that because of the inherent instabilities incurred as a result of subclassing, care
+    must be taken not only when stepping through code, but most of all, to allow the
+    subclassing to be removed on it is applied (i. e. never using VB's End command to end the
+    project's execution).&nbsp;Consider either going to the <a href="http://msdn.microsoft.com/vbasic/downloads/controls.asp">VB Owner's area</a> on the
+    MS site, picking up the &quot;Debug Object for AddressOf Subclassing&quot;, or grabbing
+    the subclassing control at <a href="http://www.softcircuits.com/">http://www.softcircuits.com/</a>,
+    and plugging either into the demo's code. Doing so will allow things to go much smoother.<br>
+    <br>
+    <a href="tveventcancel.zip">Download tveventcancel.zip (11kb)</a><br>
+    </font><font face="Arial" size="1">Last update: 08/20/98</font></p>
+    <p><font size="2" face="Arial"><strong>TVItemData: Treeview item data (or how undocumented
+    can you get?)<br>
+    <br>
+    </strong>After the many hours spent with both the real common control treeview and VB's
+    TreeView control, something finally occurred to me: How do both controls store internal
+    data for their respective items (Nodes)? And, is this item data accessible? Well, as it
+    just so turns out, it is...<br>
+    <br>
+    For instance it was discovered that a treeview item handle (HTREEITEM) is nothing more
+    that a pointer to a treeview internal data structure that describes the item:</font></p>
+    <pre>
+<font face="Courier New" size="2">Public Type TREEITEM   <font color="#008000">' ti</font>
+  hitemParent As Long       <font color="#008000">' handle of the item's parent, can be 0 (root's</font>
+                            <font color="#008000">' parent is a dummy item, whose only valid member</font>
+                            <font color="#008000">' is the hitemChild, the root itself)</font>
+  hitemNextSibling As Long  <font color="#008000">' handle of the item's next sibling, can be 0</font>
+  hitemChild As Long        <font color="#008000">' handle of the item's first child, can be 0</font>
+  lpszText As Long          <font color="#008000">' pointer to the item's text, allocated in DWORD</font>
+                            <font color="#008000">' chunks, can be LPSTR_TEXTCALLBACK, is Unicode</font>
+                            </font><font color="#008000" face="Courier New" size="2">' on NT4 Comctl32.dll v4.xx, and all v5.xx</font><font face="Courier New" size="2">
+  wState As Integer         <font color="#008000">' item's state flags, 1st byte is state, low</font>
+                            <font color="#008000">' nibble of 2nd byte is overlay image index,</font>
+                            <font color="#008000">' high nibble of 2nd byte is state image index</font>
+  wImage As Integer         <font color="#008000">' normal icon index, can be I_IMAGECALLBACK</font>
+  wSelectedImage As Integer <font color="#008000">' selected icon index, can be I_IMAGECALLBACK</font>
+  cxItem As Integer     </font><font color="#008000" face="Courier New" size="2">    ' item's label width (TVM_GETITEMRECT/TRUE)</font><font face="Courier New" size="2">
+  wIndex As Integer         <font color="#008000">' visible item's 0-based physical tree position,</font>
+                            <font color="#008000">' is -1 if in collapsed parent, can change</font>
+  bLevel As Byte            <font color="#008000">' item's 0-based hierarchical level in the tree</font>
+  bChildren As Byte         <font color="#008000">' TVITEM.cChildren (can't be I_CHILDRENCALLBACK?)</font>
+  lParam As Long            <font color="#008000">' TVITEM.lParam, can point to allocated data</font>
+#If (WIN32_IE &gt;= &amp;H400) Then
+  dwID As Long              <font color="#008000">' always &amp;HABCD0001 ?</font>
+#End If
+End Type   </font><font color="#008000" face="Courier New" size="2">' / 36 bytes (WIN32_IE &lt; &amp;H400 </font><font color="#008000"><font size="2"><font face="Courier New">= </font></font><font face="Courier New" size="2">32 bytes)</font></font>
+</pre>
+    <p><font size="2" face="Arial">that is obtained simply with:&nbsp; MoveMemory ti, ByVal
+    hItem, Len(ti)<br>
+    <br>
+    The demo also shows how to obtain a Node reference from the TVITEM struct's lParam member
+    (the same lParam as above), as well as a few other interesting tricks. <em>Take note that
+    most of the information presented in this demo is completely undocumented, and as a result
+    is obviously not recommended for use in production applications (see below).</em><br>
+    <br>
+    09-27-99 update (v1.20)<br>
+    - The new cchTextMax member again wasn't correct, and is actually the item label width,
+    cxItem.<br>
+    - Finally tested Win2K rc1 and Comctl32.dll v5.xx (IE5), where it appears that the
+    lpszText member is always Unicode. This was confirmed in IE5 installs on Win95 and WinNT4
+    SP5 as well.<br>
+    - Even more minor demo code updates were performed.<br>
+    <br>
+    09-23-99 update (v1.10)<br>
+    - Microsoft, in its complete freedom to break the undocumented, has done just that.
+    Beginning with Win2K b3 (Comctl32.dll v5.xx), the TREEITEM structure above has been
+    changed, not by much, but just enough to break the apps of folks who decided to use it.
+    The <strong>lParam</strong> member has been moved up, from below the bChildren member, to
+    below the lpszText member. The <strong>dwID</strong> (was dwIDBit) member's value has also
+    been changed. A new TREEITEM5 structure was introduced in the demo for Comctl32.dll v5.xx
+    installs.<br>
+    - The description of the cchTextMax member (was wID) was updated.<br>
+    - Various other minor demo code updates were also performed.<br>
+    <br>
+    0711-99 initial release (v1.00)<br>
+    <br>
+    <a href="tvitemdata.zip">Download tvitemdata.zip (10</a>kb)</font><br>
+    <font face="Arial" size="1">Last update: 09/27/99</font></p>
+    <p><font size="2" face="Arial"><strong>VBDirectoryTV: Make the TreeView into a DirListBox<br>
+    <br>
+    </strong>Here's one a lot of folks have been asking about: How do I assign the system
+    imagelist to the VB TreeView? Well, it's not so hard actually...<br>
+    <br>
+    It's simply a matter of telling the TreeView that it should get its icon images not from a
+    VB ImageList, but from the actual system imagelist with the TVM_SETIMAGELIST treeview
+    window message, and explicitly setting the Node Image and SelectedImage properties with
+    TVM_SETITEM. There are a couple of hitches though: if the VB TreeView doesn't see a VB
+    ImageList associated with it, it will remove the system imagelist assignment; and the Node
+    Image and SelectedImage properties are uninitialized. This example demonstrates how to
+    circumvent the first problem by subclassing the treeview (the second is left as an
+    exercise for the developer) with code that gives the TreeView quite useful DirListBox type
+    functionality.<br>
+    <br>
+    <a href="vbdirectorytv.zip">Download vbdirectorytv.zip (24kb)</a><br>
+    </font><font face="Arial" size="1">Last update: 07/11/99</font></p>
+    <p><font size="2" face="Arial"><strong>TVFastLoad: How to load the VB TreeView quickly<br>
+    <br>
+    </strong>First, load Nodes on demand: only load child Nodes under any given parent Node
+    when the parent Node is expanding. No need to load all data under parent Nodes if the user
+    doesn't end up expanding them.<br>
+    <br>
+    Load child Nodes under any given parent Node *while* the parent Node is collapsed: each
+    time a Node is added under an expanded parent Node, the TreeView must update the tree to
+    show the new child Node. No updating happens when the parent is collapsed.<br>
+    <br>
+    Make sure the parent Node's Sorted property is set to False: If Sorted = True, the
+    TreeView must sort every Node as it is added under the parent Node. Make Sorted = True
+    after all child Nodes are added.<br>
+    <br>
+    Eat extraneous TreeView drawing messages (TVN_GETDISPINFO): the TreeView's internal code
+    mistakenly calls WM_SETREDRAW/0 before Nodes are added. Once Nodes are done being added,
+    or TreeView code is allowed to process (by the DoEvents call), and the TreeView calls
+    WM_SETREDRAW/1 to turn drawing back on, every Node in the TreeView is redrawn, whether
+    visible or not. This unnecessary redrawing can cause quite a perceptible lag after many
+    Nodes are added.<br>
+    <br>
+    The demo below utilizes all of the above techniques (and uses subclassing).<br>
+    <br>
+    <a href="tvfastload.zip">Download tvfastload.zip (9kb)</a><br>
+    </font><font face="Arial" size="1">Last update: 09/17/99 (posted 05/19/99)</font></p>
+    <p><font size="2" face="Arial"><strong>TVCustomButtons: How to use state images in place
+    of TreeView buttons</strong> (&quot;+&quot;, &quot;-&quot;)<strong><br>
+    <br>
+    </strong>This demo employs user-specified state images to expand and collapse parent
+    Nodes, instead of using the TreeView's familiar &quot;+&quot;, &quot;-&quot; buttons.
+    Common use of treeview state images are checkboxes.<br>
+    <br>
+    The demo sets the TreeView's Style property to tvwTreelinesPictureText, specifying no
+    &quot;PlusMinus&quot; images (buttons) for Nodes. The demo's working code simply sets each
+    parent Node's TVITEM.state member value (TVIF_STATE) to the specified index in a VB
+    ImageList of the new custom buttons to be used. Each Node's state image button is toggled
+    as the Node is collapsed and expanded, and visa versa.<br>
+    <br>
+    <a href="tvcustombuttons.zip">Download tvcustombuttons.zip (6kb)</a></font><br>
+    <font face="Arial" size="1">Last update: 09/24/99</font></p>
+    <p><font size="2" face="Arial"><strong>TVDragDrop: How to create a real drag image when
+    dragging TreeView Nodes<br>
+    <br>
+    </strong>If it's not already obvious, the TreeView Node's CreateDragImage method that
+    creates a drag image of the selected Node and is used by various Knowledge Base articles,
+    specifically <a href="http://support.microsoft.com/support/kb/articles/Q177/7/43">Q177743</a>,
+    is just this side of being completely inept. Why on earth CreateDragImage creates a 32x32
+    size image is well beyond me... Anyway, this demo shows how things are supposed to be
+    done...<br>
+    <br>
+    The drag image is created in the demo with the real deal, the treeview's
+    TVM_CREATEDRAGIMAGE message, and looks just like the drag image Explorer displays when
+    dragging its treeview items. Imagelist APIs are used to display and move the drag image
+    around the specified owner window, hiding it when necessary. Also like Explorer, the demo
+    not only does auto scrolling when dragging and the cursor is near the edge of the
+    TreeView's client window, but automatically expands collapsed parent Nodes when the when
+    the cursor is held over them for a user-specified period of time as well. But all this
+    functionality is not without its intricacies, and quantity of code (almost 40K worth), but
+    it's well worth the effort...<br>
+    <br>
+    <a href="tvdragdrop.zip">Download tvdragdrop.zip (13kb)</a><br>
+    </font><font face="Arial" size="1">Last update: 10/14/99</font></p>
+    <p><font size="2" face="Arial"><strong>TVButtonState: How to control the appearance of
+    TreeView buttons</strong> (&quot;+&quot;, &quot;-&quot;)<strong><br>
+    <br>
+    </strong>This demo shows both how to add and remove buttons to and from TreeView Nodes,
+    and how to set and return the state of any Node's button, whether a Node has child Nodes
+    or not.<br>
+    <br>
+    All that the demo's working code essentially does is simply read and set the specified
+    Node's TVITEM.cChildren (TVIF_CHILDREN) value, while performing various operations on the
+    Node. The key is that if the Node's cChildren value is 0, no button will be shown,
+    otherwise a button will be shown if cChildren is non-zero (and not the TreeView default
+    I_CHILDRENCALLBACK value).<br>
+    <br>
+    <a href="tvbuttonstate.zip">Download tvbuttonstate.zip (8kb)</a><br>
+    </font><font face="Arial" size="1">Last update: 10/16/99</font></p>
+    <p><font size="2" face="Arial"><strong>TVOverlayIcons: How to add overlay icons to Nodes<br>
+    <br>
+    </strong>This demo shows both how to add and remove overlay icons to and from TreeView
+    Nodes, and how determine which overlay icon a Node is using, if any.<br>
+    <br>
+    The demo uses a single VB ImageList associated with the TreeView to hold both Node icons
+    and overlay icons. The ImageList_SetOverlayImage API is used to tell the ImageList which
+    icons are designated as overlay icons. The TVM_SETITEM treeview message is then used to
+    specify the index of the overlay icon a Node is to display. A Node's overlay icon index is
+    retrieved with the TVM_GETITEM message.<br>
+    <br>
+    <a href="tvoverlayicons.zip">Download tvoverlayicons.zip (6kb)</a><br>
+    </font><font face="Arial" size="1">Last update: 11/30/99</font> </p>
+    <p><font size="2" face="Arial">Over time a few demos have been added to this web folder,
+    but as of yet have no descriptions written up about them. Click <a href="listing.htm">here</a>
+    for the file listing.</font></td>
+  </tr>
+</table>
+</center></div>
+</body>
+</html>
+

@@ -1,0 +1,166 @@
+ID=F0219
+URL=http://www.geocities.com/SiliconValley/Campus/9449/associating.htm
+SIZE=11086
+DATE=09/07/2002
+TIME=13:16:48
+DATASET=Visual Basic
+HTML=<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Pablo Alvim">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.01 [en] (Win95; U) [Netscape]">
+   <META NAME="Description" CONTENT="Shows how to associate a file extension with your application in VB">
+   <META NAME="KeyWords" CONTENT="VB, Visual Basic, associating, association, associate, file, files, extension, extensions">
+   <TITLE>Associating File Extensions with your Application</TITLE>
+</HEAD>
+<BODY TEXT="#330000" BGCOLOR="#FFFFFF" LINK="#3333FF" VLINK="#3333FF" ALINK="#3333FF">
+<FONT COLOR="#660000"><B><FONT FACE="Trebuchet MS"><FONT SIZE=+1>Tutorial:
+Associating a File Extension with your Application</FONT></FONT></B></FONT>
+<BR>
+<HR ALIGN=LEFT SIZE=1 WIDTH="80%">
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Well ok. Let's suppose that
+you've created an application that saves lists of names in data files with
+an .lst extension. But when you try to open an .lst file, Windows shows
+the "Open With" dialog box. Don't you hate it? It would be much nicer if
+when you double-clicked the file, it was open directly with your application.
+Of course, the program must support command line arguments to know you
+want to open the file. But that's content for another tutorial.</FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>In this example we'll create
+a function to associate a file type with its program. Insert the code below
+in a VB module:</FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>&nbsp;</FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>Declare
+Function RegCreateKey Lib "advapi32.dll" Alias "RegCreateKeyA" _</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>(ByVal
+hKey As Long, ByVal lpSubKey As String, phkResult As Long) As Long</FONT></FONT></FONT><FONT COLOR="#000099"></FONT>
+
+<P><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>Declare
+Function RegSetValue Lib "advapi32.dll" Alias "RegSetValueA" _</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>(ByVal
+hKey As Long, ByVal lpSubKey As String, ByVal dwType As Long, _</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>ByVal
+lpData As String, ByVal cbData As Long) As Long</FONT></FONT></FONT><FONT COLOR="#000099"></FONT>
+
+<P><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>' Return
+codes from Registration functions.</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>Private
+Const ERROR_SUCCESS = 0&amp;</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>Private
+Const ERROR_BADDB = 1&amp;</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>Private
+Const ERROR_BADKEY = 2&amp;</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>Private
+Const ERROR_CANTOPEN = 3&amp;</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>Private
+Const ERROR_CANTREAD = 4&amp;</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>Private
+Const ERROR_CANTWRITE = 5&amp;</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>Private
+Const ERROR_OUTOFMEMORY = 6&amp;</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>Private
+Const ERROR_INVALID_PARAMETER = 7&amp;</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>Private
+Const ERROR_ACCESS_DENIED = 8&amp;</FONT></FONT></FONT><FONT COLOR="#000099"></FONT>
+
+<P><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>Private
+Const HKEY_CLASSES_ROOT = &amp;H80000000</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>Private
+Const MAX_PATH = 260&amp;</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>Private
+Const REG_SZ = 1</FONT></FONT></FONT><FONT COLOR="#000099"></FONT>
+
+<P><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>Public
+Sub AssociateFile ( flExtension As String, appName As String, appPath As
+String, appDesc As String)</FONT></FONT></FONT><FONT COLOR="#000099"></FONT>
+
+<P><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>' This
+sub creates and sets the necessary keys in the registry</FONT></FONT></FONT><FONT COLOR="#000099"></FONT>
+
+<P><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>' Arguments:</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>'
+flExtension = the file extension to be associated.</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>'
+appName = your application's name</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>'
+appPath = the path for the app's executable</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>'
+appDesc = a simple description of your program</FONT></FONT></FONT><FONT COLOR="#000099"></FONT>
+
+<P><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Dim sKeyName As String&nbsp;&nbsp; 'Holds Key Name in registry.</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Dim sKeyValue As String&nbsp; 'Holds Key Value in registry.</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Dim ret&amp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'Holds error status if any from API calls.</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Dim lphKey&amp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Holds created
+key handle from RegCreateKey.</FONT></FONT></FONT><FONT COLOR="#000099"></FONT>
+
+<P><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'This creates a Root entry for the app's name.</FONT></FONT></FONT><FONT COLOR="#000099"></FONT>
+
+<P><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sKeyName = appName</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sKeyValue = appDesc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' The application's description</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ret&amp; = RegCreateKey (HKEY_CLASSES_ROOT, sKeyName, lphKey&amp;)</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ret&amp; = RegSetValue (lphKey&amp;, "", REG_SZ, sKeyValue, 0&amp;)</FONT></FONT></FONT><FONT COLOR="#000099"></FONT>
+
+<P><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'This creates a Root entry with the name of flExtension associated with
+appName</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sKeyName = flExtension</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sKeyValue = appName</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ret&amp; = RegCreateKey (HKEY_CLASSES_ROOT, sKeyName, lphKey&amp;)</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ret&amp; = RegSetValue (lphKey&amp;, "", REG_SZ, sKeyValue, 0&amp;)</FONT></FONT></FONT><FONT COLOR="#000099"></FONT>
+
+<P><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'This sets the command line for the application</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sKeyName = appName</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sKeyValue = appPath &amp; " %1"</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ret&amp; = RegCreateKey&amp;(HKEY_CLASSES_ROOT, sKeyName, lphKey&amp;)</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ret&amp; = RegSetValue&amp;(lphKey&amp;, "shell\open\command", REG_SZ,
+_</FONT></FONT></FONT>
+<BR><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sKeyValue, MAX_PATH)</FONT></FONT></FONT><FONT COLOR="#000099"></FONT>
+
+<P><FONT COLOR="#000099"><FONT FACE="Arial,Helvetica"><FONT SIZE=-2>End
+Sub</FONT></FONT></FONT>
+
+<P><FONT FACE="Trebuchet MS"><FONT SIZE=-1>And that's it! Use the AssociateFile
+function to associate any sort of file extension with your application.</FONT></FONT>
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>For example, to associate files
+with an extension ".lst" with a program called ListViewer, simply use the
+code below:</FONT></FONT>
+
+<P><FONT COLOR="#000099"><FONT FACE="Trebuchet MS"><FONT SIZE=-1>Call AssociateFile
+( ".lst", "ListViewer", "c:\ListViewer\LViewer.exe", "List Viewer Application"
+)</FONT></FONT></FONT>
+
+<P>
+<HR ALIGN=LEFT SIZE=1 WIDTH="80%">
+<BR><FONT FACE="Trebuchet MS"><FONT SIZE=-1>This information was taken
+in part from Microsoft's Knowledge Base.</FONT></FONT>
+<CENTER></CENTER>
+<P>
+<CENTER><FONT FACE="Trebuchet MS"><FONT SIZE=-2><A HREF="www.geocities.com/SiliconValley/Campus/9449/index.htm" TARGET="_top">Back
+to VB Center</A></FONT><FONT SIZE=-1></FONT></FONT></CENTER>
+
+</BODY>
+</HTML>
+<!-- text below generated by server. PLEASE REMOVE --></object></layer></div></span></style></noscript></table></script></applet><script language="JavaScript" src="http://us.i1.yimg.com/us.yimg.com/i/mc/mc.js"></script><script language="JavaScript" src="http://us.geocities.com/js_source/geov2.js"></script><script language="javascript">geovisit();</script><noscript><img src="http://visit.geocities.com/visit.gif?1026142919" border=0 width=1 height=1></noscript>
+<IMG SRC="http://geo.yahoo.com/serv?s=76001067&t=1026142919" ALT=1 WIDTH=1 HEIGHT=1>
+

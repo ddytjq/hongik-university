@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "###################################################start####################################################\n# data reset, library \n\nrm(list=ls())\nlibrary(\"data.table\")\n\n############################################################################################################\n# 경로지정, 경로에 파일 불러오기, 개수 999999999개로 늘리고 불러오기\n\noptions(max.print=999999999)\ndirectory<-c(\"C:/Users/yosub/Documents/StatewithR/Project/data\")\nread_file<-list.files(directory)\nread_file\nstr(read_file)\nread_file_leng<-length(read_file)\nread_file_leng\n\n############################################################################################################\n# 11000개 text 앞 6개 불러오기 및 frame ( read_file_leng = txt 개수 길이 )\n\nfor(i in 1:read_file_leng){\n  dataset<-read.table(\n    paste(directory, \"/\", read_file[i], sep=\"\"), sep=\"=\", header=FALSE, nrows=6, fill=T)\n  dataset<-dataset[,c(1:2)]\n  dataset_mid = as.data.frame(t(dataset))\n  names(dataset_mid)<-c(\"ID\", \"URL\", \"SIZE\", \"DATA\", \"TIME\", \"DATASET\")\n  rownames(dataset_mid)<-NULL\n  dataset_mid<-dataset_mid[c(2),]\n  if(i==1)\n    dataset_result<-dataset_mid\n  else\n    dataset_result<-rbind(dataset_mid, dataset_result)\n  \n  rm(dataset_mid)\n  rm(dataset)\n}\n\n# 11000개 data.csv에 저장 \nwrite.csv(dataset_result, \"C:/Users/yosub/Documents/StatewithR/Project/result/data.csv\")\n\n############################################################################################################\n# url읽어오고 데이터 추출하기 ( 공백 데이터 삭제 및 추출 )\n\nlibrary(\"rvest\")\n\n# init -> a, p, script, span 태그 불러오기\ni=1 \nhtml = read_html(paste0(directory, \"/\", read_file[i], sep=\"\"), encoding=\"UTF-8\")\ncast <- html_nodes(html, \"a\") %>%  html_text()\ncast2 <- html_nodes(html,\"p\") %>% html_text()\ncast3 <- html_nodes(html,\"script\") %>% html_text()\ncast4 <- html_nodes(html,\"span\") %>% html_text()\n\n# create table\ntable <- data.frame(matrix(nrow=1, ncol=4))\n#4개의 열과 1개의 행을 하나만들고 이름설정\nnames(table) = c('a','p','script','span')\ncast = data.frame(length(cast),length(cast2),length(cast3),length(cast4))\n\n# 분류 ( 한 파일내에 태그개수가 20개 이상이면은 true, 아니면 false )\nfor(j in 1:4){\n  if(cast[,j]>=20){\n    table[j][1] =1\n  }else\n    table[j][1] =0\n}\n\n# read to html tag\nfor(i in 2:read_file_leng){\n  cast <- html_nodes(html, \"a\") %>%  html_text()\n  cast2 <- html_nodes(html,\"p\") %>% html_text()\n  cast3 <- html_nodes(html,\"script\") %>% html_text()\n  cast4 <- html_nodes(html,\"span\") %>% html_text()\n  \n  # create table\n  temp <- data.frame(matrix(nrow=1, ncol=4))\n  # 4개의 열과 1개의 행을 하나만들고 이름설정, \n  names(temp) = c('a','p','script','span')\n  cast = data.frame(length(cast),length(cast2),length(cast3),length(cast4))\n  \n  # 분류 ( 한 파일내에 태그개수가 15개 이상이면은 true, 아니면 false )\n  for(j in 1:4){\n    if(cast[,j]>=15){\n      temp[j][1] =1\n    }else\n      temp[j][1] =0\n  }\n  \n  # rbind\n  table = rbind(table,temp)\n}\n\ntrain = (table$a == 1) #table a에 모든 것을 트레이닝한다.\ntest = (!train) #그 외의 것을 테스트로 설정\n\n#linear regression\nlm.fit=lm(a~p+span+script, data=table, subset=train)\nlm.fit\n\n#logistic regression\nglm.fit=glm(as.factor(a)~p+span+script, data=table ,family=binomial) \nsummary(glm.fit)\n\n####################################END######################################################",
+    "created" : 1510982966724.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2692995262",
+    "id" : "7202FBAC",
+    "lastKnownWriteTime" : 1513772204,
+    "last_content_update" : 1513772204773,
+    "path" : "C:/Users/yosub/Desktop/Project/source/project.R",
+    "project_path" : "source/project.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

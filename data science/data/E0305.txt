@@ -1,0 +1,419 @@
+ID=E0305
+URL=http://www.bcbdev.com/articles/list.htm
+SIZE=21416
+DATE=12/07/02
+TIME=19:19:46
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: Articles</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2>
+<IMG SRC="../images/articlebuilding.gif" BORDER=0 HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 HSPACE="0" >
+</TD>
+</TR>
+<TR>
+<TD WIDTH="7" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">      <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">         <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">      <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">          <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">       <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+<H2>
+Type-safe <TT>TList</TT> Objects.
+</H2>
+
+<P>
+The VCL contains a class called <TT>TList</TT> that provides an easy way to maintain a list of pointers. Unfortunately,
+<TT>TList</TT> has a handful of serious shortcomings. The most serious shortcoming is the lack of type safety.
+</P>
+
+<P>
+This article demonstrates a type-safe derivative of <TT>TList</TT>. The derived class addresses some of the
+defincicies of <TT>TList</TT> by providing type safety and automatic deletion of the objects contained in the list.
+</P>
+<UL>
+<LI><A HREF="#explanation">The problem with TList</A>
+<LI><A HREF="#list"       >An improved list class</A>
+<LI><A HREF="#code"       >Code examples</A>
+<LI><A HREF="#notes"      >Notes</A>
+</UL>
+</P>
+<BR>
+<H3>
+<A NAME="explanation">The problem with <TT>TList</TT></A>
+</H3>
+<P>
+<TT>TList</TT> is a handy class for storing a list of pointers to objects, but the class has some problems. The main
+problem with <TT>TList</TT> is that the class is not type-safe. <TT>TList</TT> maintains the list as a set of void
+pointers. Take a look at the prototype for the <TT>Add</TT> method of <TT>TList</TT> in <TT>CLASSES.HPP</TT>. It looks
+something like this:
+</P>
+<pre>
+<b>int</b> <b>__fastcall</b> Add<b>(</b><b>void</b> <b>*</b> Item<b>)</b><b>;</b>
+</pre>
+<P>
+The compiler can implicitly convert any pointer to a void pointer. As a result, the <TT>Add</TT> function will accept
+any pointer that you pass it. This presents a problem when you want to maintain a list of objects that are the same
+type. The following code example illustrates the problem. Imagine that you want to maintain a list of <TT>TButton</TT>
+pointers. <TT>TList</TT> can handle the job, but it doesn't perform any type checking to ensure that only button
+objects are added to the list.
+</P>
+<pre>
+TList <b>*</b>ButtonList <b>=</b> <b>new</b> TList<b>;</b>        <font color="navy">// create a list of buttons</font>
+
+ButtonList<b>-></b>Add<b>(</b>Button1<b>)</b><b>;</b>             <font color="navy">// add some buttons to the list</font>
+ButtonList<b>-></b>Add<b>(</b>Button2<b>)</b><b>;</b>             <font color="navy">//</font>
+ButtonList<b>-></b>Add<b>(</b> <b>new</b> TButton<b>(</b><b>this</b><b>)</b><b>)</b><b>;</b>  <font color="navy">// OK so far</font>
+
+ButtonList<b>-></b>Add<b>(</b>Application<b>)</b><b>;</b>         <font color="navy">// Application is not a button</font>
+ButtonList<b>-></b>Add<b>(</b>Form1<b>)</b><b>;</b>               <font color="navy">// neither is Form1</font>
+ButtonList<b>-></b>Add<b>(</b><b>(</b><b>void</b> <b>*</b><b>)</b><font color="blue">534</font><b>)</b><b>;</b>
+ButtonList<b>-></b>Add<b>(</b>Screen<b>)</b><b>;</b>
+</pre>
+<P>
+The code example above compiles and runs without a hitch. <TT>TList</TT> does nothing to enforce what types of objects
+are added to the list. Any pointer type will be accepted.
+</P>
+<P>
+The type safety issue becomes more serious when you start dereferencing the objects in the list. Because the list
+contains void pointers, you must cast the elements from the list to their proper types. The code example below
+shows how that is typically done:
+</P>
+<pre>
+TList <b>*</b>ButtonList <b>=</b> <b>new</b> TList<b>;</b>
+ButtonList<b>-></b>Add<b>(</b>Button1<b>)</b><b>;</b>
+ButtonList<b>-></b>Add<b>(</b>Button2<b>)</b><b>;</b>
+ButtonList<b>-></b>Add<b>(</b>Application<b>)</b><b>;</b>
+
+TButton <b>*</b>button <b>=</b> <b>reinterpret_cast</b>&lt;TButton <b>*</b><b>></b><b>(</b>ButtonList<b>-></b>Items<b>[</b><font color="blue">1</font><b>]</b><b>)</b><b>;</b>
+button<b>-></b><b>></b>Caption <b>=</b> <font color="blue">"I hope it's really a button"</font><b>;</b>
+
+<b>delete</b> ButtonList<b>;</b>
+</pre>
+<P>
+The <TT>Items</TT> array property of <TT>TList</TT> returns a void pointer. If you are trying to maintain a list of
+<TT>TButton</TT> pointers, then a value from the <TT>Items</TT> array will need to be cast to a <TT>TButton</TT>
+pointer. This presents a problem. You must assume that the returned item is a button. There is no way to ask the object
+if it really is a button. You may be inclined to use the type safe <TT>dynamic_cast</TT> operator to perform the cast.
+Unfortunately, that won't work. Void pointers don't maintain any type information, which means that you can't use
+<TT>dynamic_cast</TT> to cast a void pointer. The compiler won't allow you to.
+</P>
+<P>
+Since <TT>dynamic_cast</TT> can't be used, the only way to convert the void pointer is to use <TT>reinterpret_cast</TT>.
+Unfortunately, <TT>reinterpret_cast</TT> is no different than the old C style of casting. <TT>reinterpret_cast</TT> never
+fails, which allows you cast a pointer to any other type of pointer. As a result, you have no way of knowing if the
+item from the list is really the type of object you expect it to be. In the previous code segment, we took the second
+button in the list and changed its <TT>Caption</TT> property. What if we tried to do that with the third item in the
+list, which isn't really a <TT>TButton</TT> object? The code would still work, but instead of changing the caption of
+a button, the caption of the program's taskbar icon would change.
+</P>
+<P>
+Another problem with <TT>TList</TT> is that it doesn't automatically delete the pointers that are contained in the list.
+This is a feature that would sometimes come in handy. In order to properly clean up the list, it is necessary to loop
+through the list and delete each object. Here is some code that attempts to deallocate the pointers:
+</P>
+<pre>
+TList <b>*</b>ButtonList <b>=</b> <b>new</b> TList<b>;</b>          <font color="navy">// create a list of buttons</font>
+
+ButtonList<b>-></b>Add<b>(</b><b>new</b> TButton<b>(</b>Handle<b>)</b><b>)</b><b>;</b>   <font color="navy">// add some buttons to the list</font>
+ButtonList<b>-></b>Add<b>(</b><b>new</b> TButton<b>(</b>Handle<b>)</b><b>)</b><b>;</b>
+ButtonList<b>-></b>Add<b>(</b><b>new</b> TButton<b>(</b>Handle<b>)</b><b>)</b><b>;</b>
+ButtonList<b>-></b>Add<b>(</b><b>new</b> TButton<b>(</b>Handle<b>)</b><b>)</b><b>;</b>
+
+<b>...</b>
+<b>...</b>
+
+<b>int</b> nCount <b>=</b> ButtonList<b>-></b>Count<b>;</b>
+<b>for</b> <b>(</b><b>int</b> j<b>=</b><font color="blue">0</font><b>;</b> j&lt;nCount<b>;</b> j<b>++</b><b>)</b>
+    <b>delete</b> ButtonList<b>-></b>Items<b>[</b>j<b>]</b><b>;</b>
+
+<b>delete</b> ButtonList<b>;</b>
+
+</pre>
+<P>
+On the surface, this code seems just fine. But dig a little deeper and you will find a sinistair flaw. Focus on the
+line that deletes an item from the list. Since <TT>Items[j]</TT> returns a void pointer, the delete statement
+deletes a void pointer. Deleting a void pointer is vastly different than deleting a <TT>TButton</TT> pointer.
+Deleting a void pointer does not execute the objects destructor. As a result, any deallocation that the class does in
+its destructor will not occur, which causes a memory leak.
+</P>
+<P>
+In order to properly delete objects from the list, you must cast them so the compiler knows that it should call the
+destructor of the class. Since all destructors in the VCL are virtual, you can survive by casting the items to a common
+base. For example, if the list contains buttons and combo boxes, you can delete the items by casting them to a
+<TT>TComponent</TT>, <TT>TControl</TT>, or <TT>TWinControl</TT>. Here is a code example:
+</P>
+<pre>
+TList <b>*</b>ControlList <b>=</b> <b>new</b> TList<b>;</b>
+
+ControlList<b>-></b>Add<b>(</b><b>new</b> TButton<b>(</b>Handle<b>)</b><b>)</b><b>;</b>
+ControlList<b>-></b>Add<b>(</b><b>new</b> TEdit<b>(</b>Handle<b>)</b><b>)</b><b>;</b>
+ControlList<b>-></b>Add<b>(</b><b>new</b> TComboBox<b>(</b>Handle<b>)</b><b>)</b><b>;</b>
+
+<b>int</b> nCount <b>=</b> ControlList<b>-></b>Count<b>;</b>
+<b>for</b> <b>(</b><b>int</b> j<b>=</b><font color="blue">0</font><b>;</b> j&lt;nCount<b>;</b> j<b>++</b><b>)</b>
+    <b>delete</b> <b>reinterpret_cast</b>&lt;TWinControl <b>*</b><b>></b><b>(</b>ControlList<b>-></b>Items<b>[</b>j<b>]</b><b>)</b><b>;</b>
+
+<b>delete</b> ControlList<b>;</b>
+</pre>
+<P>
+This code will properly delete any object in the list that is derived from <TT>TWinControl</TT>, but what happens if
+someone sneaks a <TT>TDataSet</TT> pointer into the list? <TT>TDataSet</TT> is not derived from <TT>TWinControl</TT>.
+The code will delete the dataset by calling the destructor of <TT>TWinControl</TT>. This will certainly cause run time
+havoc.
+</P>
+<P>
+Lastly, <TT>TList</TT> could make life easy if it provided an option for automatically deleting the pointers in the
+list when we delete the list itself. But, since <TT>TList</TT> internally maintains a list of void pointers, we now know that
+it couldn't delete the objects properly anyway.
+</P>
+<BR>
+<H3>
+<A NAME="list">An improved list class</A>
+</H3>
+<P>
+The problems outlined in the previous section demonstrate the need for an improved <TT>TList</TT>. If <TT>TList</TT>
+knew what types of objects it was dealing with, most of its problems would disappear. The code listing below provides a
+new class that solves many of the problems introduced by <TT>TList</TT>. The class is a template class derived from
+<TT>TList</TT>. The code works by providing a type safe layer around the existing methods of <TT>TList</TT>. These
+type safe wrappers allow the compiler to enforce type safety at compile time. The class also provides an option for
+automatically deleting the pointers in the list when the list itself is deleted.
+</P>
+<pre>
+<font color="navy">//--------------------------------------------------------------</font>
+<font color="green">#ifndef TTYPEDLIST_H</font>
+<font color="green">#define TTYPEDLIST_H</font>
+
+<font color="green">#include &lt;classes.hpp></font>
+
+<b>template</b> &lt;<b>class</b> T<b>></b>
+<b>class</b> TTypedList <b>:</b> <b>public</b> TList
+<b>{</b>
+<b>private</b><b>:</b>
+    <b>bool</b> bAutoDelete<b>;</b>
+<b>protected</b><b>:</b>
+    T<b>*</b> <b>__fastcall</b> Get<b>(</b><b>int</b> Index<b>)</b>
+    <b>{</b>
+        <b>return</b> <b>(</b>T<b>*</b><b>)</b> TList<b>:</b><b>:</b>Get<b>(</b>Index<b>)</b><b>;</b>
+    <b>}</b>
+
+    <b>void</b> <b>__fastcall</b> Put<b>(</b><b>int</b> Index<b>,</b> T<b>*</b> Item<b>)</b>
+    <b>{</b>
+        TList<b>:</b><b>:</b>Put<b>(</b>Index<b>,</b>Item<b>)</b><b>;</b>
+    <b>}</b>
+
+<b>public</b><b>:</b>
+    <b>__fastcall</b> TTypedList<b>(</b><b>bool</b> bFreeObjects <b>=</b> <b>false</b><b>)</b>
+      <b>:</b>TList<b>(</b><b>)</b><b>,</b>
+       bAutoDelete<b>(</b>bFreeObjects<b>)</b>
+    <b>{</b>
+    <b>}</b>
+
+    <font color="navy">// Note: No destructor needed. TList::Destroy calls Clear,</font>
+    <font color="navy">//       and Clear is virtual, so our Clear runs.</font>
+
+    <b>int</b> <b>__fastcall</b> Add<b>(</b>T<b>*</b> Item<b>)</b>
+    <b>{</b>
+        <b>return</b> TList<b>:</b><b>:</b>Add<b>(</b>Item<b>)</b><b>;</b>
+    <b>}</b>
+
+    <b>void</b> <b>__fastcall</b> Delete<b>(</b><b>int</b> Index<b>)</b>
+    <b>{</b>
+        <b>if</b><b>(</b>bAutoDelete<b>)</b>
+            <b>delete</b> Get<b>(</b>Index<b>)</b><b>;</b>
+        TList<b>:</b><b>:</b>Delete<b>(</b>Index<b>)</b><b>;</b>
+    <b>}</b>
+
+    <b>void</b> <b>__fastcall</b> Clear<b>(</b><b>void</b><b>)</b>
+    <b>{</b>
+        <b>if</b><b>(</b>bAutoDelete<b>)</b>
+        <b>{</b>
+            <b>for</b> <b>(</b><b>int</b> j<b>=</b><font color="blue">0</font><b>;</b> j&lt;Count<b>;</b> j<b>++</b><b>)</b>
+                <b>delete</b> Items<b>[</b>j<b>]</b><b>;</b>
+        <b>}</b>
+        TList<b>:</b><b>:</b>Clear<b>(</b><b>)</b><b>;</b>
+    <b>}</b>
+
+    T<b>*</b> <b>__fastcall</b> First<b>(</b><b>void</b><b>)</b>
+    <b>{</b>
+        <b>return</b> <b>(</b>T<b>*</b><b>)</b>TList<b>:</b><b>:</b>First<b>(</b><b>)</b><b>;</b>
+    <b>}</b>
+
+    <b>int</b> <b>__fastcall</b> IndexOf<b>(</b>T<b>*</b> Item<b>)</b>
+    <b>{</b>
+        <b>return</b> TList<b>:</b><b>:</b>IndexOf<b>(</b>Item<b>)</b><b>;</b>
+    <b>}</b>
+
+    <b>void</b> <b>__fastcall</b> Insert<b>(</b><b>int</b> Index<b>,</b> T<b>*</b> Item<b>)</b>
+    <b>{</b>
+        TList<b>:</b><b>:</b>Insert<b>(</b>Index<b>,</b>Item<b>)</b><b>;</b>
+    <b>}</b>
+
+    T<b>*</b> <b>__fastcall</b> Last<b>(</b><b>void</b><b>)</b>
+    <b>{</b>
+        <b>return</b> <b>(</b>T<b>*</b><b>)</b> TList<b>:</b><b>:</b>Last<b>(</b><b>)</b><b>;</b>
+    <b>}</b>
+
+    <b>int</b> <b>__fastcall</b> Remove<b>(</b>T<b>*</b> Item<b>)</b>
+    <b>{</b>
+        <b>int</b> nIndex <b>=</b> TList<b>:</b><b>:</b>Remove<b>(</b>Item<b>)</b><b>;</b>
+        <font color="navy">// Should I delete a pointer that is being passed to me.</font>
+        <font color="navy">// If bAutoDelete is true, then assume that we are always</font>
+        <font color="navy">// responsible for deleting a pointer that is added to the</font>
+        <font color="navy">// list. If the item was found, then delete the pointer.</font>
+        <b>if</b><b>(</b>bAutoDelete <b>&&</b> <b>(</b>nIndex <b>!=</b> <b>-</b><font color="blue">1</font><b>)</b><b>)</b>
+            <b>delete</b> Item<b>;</b>
+        <b>return</b> nIndex<b>;</b>
+    <b>}</b>
+
+    <b>__property</b> T<b>*</b> Items<b>[</b><b>int</b> Index<b>]</b> <b>=</b> <b>{</b>read<b>=</b>Get<b>,</b> write<b>=</b>Put<b>}</b><b>;</b>
+<b>}</b><b>;</b>
+
+<font color="green">#endif</font>
+</pre>
+
+<BR>
+<H3>
+<A NAME="code">Code examples</A>
+</H3>
+<pre>
+<font color="navy">//----------------------------------------------------------------------------</font>
+<font color="navy">// Code Example 1: A list of TButton's</font>
+
+<font color="green">#incude "typedlist.h"</font>
+
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>CreateButtons<b>(</b><b>)</b>
+<b>{</b>
+    <font color="navy">// Create a list of buttons. Do not auto delete, form will delete</font>
+    TTypedList &lt;TButton<b>></b> <b>*</b>ButtonList <b>=</b> <b>new</b> TTypedList &lt;TButton<b>></b><b>(</b><b>false</b><b>)</b><b>;</b>
+
+    ButtonList<b>-></b>Add<b>(</b><b>new</b> TButton<b>(</b><b>this</b><b>)</b><b>)</b><b>;</b>
+    ButtonList<b>-></b>Add<b>(</b><b>new</b> TButton<b>(</b><b>this</b><b>)</b><b>)</b><b>;</b>
+    ButtonList<b>-></b>Add<b>(</b><b>new</b> TButton<b>(</b><b>this</b><b>)</b><b>)</b><b>;</b>
+
+    <font color="navy">// ButtonList->Add(Application);  &lt;&lt;-- does not compile</font>
+
+    <b>for</b> <b>(</b><b>int</b> j<b>=</b><font color="blue">0</font><b>;</b> j&lt;ButtonList<b>-></b>Count<b>;</b> j<b>++</b><b>)</b>
+    <b>{</b>
+        ButtonList<b>-></b>Items<b>[</b>j<b>]</b><b>-></b>Caption <b>=</b> <font color="blue">"Button"</font> <b>+</b> IntToStr<b>(</b>j<b>)</b><b>;</b>
+        ButtonList<b>-></b>Items<b>[</b>j<b>]</b><b>-></b>Left    <b>=</b> <font color="blue">250</font><b>;</b>
+        ButtonList<b>-></b>Items<b>[</b>j<b>]</b><b>-></b>Top     <b>=</b> <font color="blue">50</font> <b>+</b> j<b>*</b><font color="blue">25</font><b>;</b>
+        ButtonList<b>-></b>Items<b>[</b>j<b>]</b><b>-></b>Parent  <b>=</b> <b>this</b><b>;</b>
+    <b>}</b>
+
+    <b>delete</b> ButtonList<b>;</b>
+<b>}</b>
+
+<font color="navy">//----------------------------------------------------------------------------</font>
+<font color="navy">// Code Example 2: Cleaning up template syntax</font>
+
+<font color="green">#incude "typedlist.h"</font>
+
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>CreateButtons<b>(</b><b>)</b>
+<b>{</b>
+    <b>typedef</b> TTypedList &lt;TButton<b>></b> TButtonList<b>;</b>
+
+    TButtonList <b>*</b>ButtonList <b>=</b> <b>new</b> TButtonList<b>(</b><b>true</b><b>)</b><b>;</b>
+    ButtonList<b>-></b>Add<b>(</b><b>new</b> TButton<b>(</b><b>this</b><b>)</b><b>)</b><b>;</b>
+    <b>...</b>
+    <b>delete</b> ButtonList<b>;</b>
+<b>}</b>
+
+<font color="navy">//----------------------------------------------------------------------------</font>
+<font color="navy">// Code Example 3: A list of tables and queries</font>
+
+<font color="green">#incude "typedlist.h"</font>
+
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>OpenDataSets<b>(</b><b>)</b>
+<b>{</b>
+    <b>typedef</b> TTypedList &lt;TDataSet<b>></b> TDataSetList<b>;</b>
+
+    TDataSetList <b>*</b>list <b>=</b> <b>new</b> TDataSetList<b>(</b><b>false</b><b>)</b><b>;</b>
+    list<b>-></b>Add<b>(</b>Table1<b>)</b><b>;</b>
+    list<b>-></b>Add<b>(</b>Table2<b>)</b><b>;</b>
+    list<b>-></b>Add<b>(</b>Table3<b>)</b><b>;</b>
+    list<b>-></b>Add<b>(</b>Query1<b>)</b><b>;</b>
+
+    <b>for</b> <b>(</b><b>int</b> j<b>=</b><font color="blue">0</font><b>;</b> j&lt;list<b>-></b>Count<b>;</b> j<b>++</b><b>)</b>
+        list<b>-></b>Items<b>[</b>j<b>]</b><b>-></b>Active <b>=</b> <b>true</b><b>;</b>
+
+    <b>delete</b> list<b>;</b>
+<b>}</b>
+</pre>
+<BR>
+<H3>
+<A NAME="notes">Notes:</A>
+</H3>
+<P>
+<B>No need to cast:</B> Notice that the code examples above do not contain any casting. Casting is unecessary because
+<TT>TTypedList</TT> provides a type safe <TT>Items</TT> property. The read method for the <TT>Items</TT> array property
+is the <TT>Get</TT> function. Notice that <TT>Get</TT> returns a pointer to a template T object instead of returning a
+void pointer. When you create a list of <TT>TButton</TT> pointers, <TT>Get</TT> returns a <TT>TButton</TT> pointer.
+When you create a list of <TT>TDataSet</TT> pointers, <TT>Get</TT> returns a <TT>TDataSet</TT> pointer. The
+<TT>Get</TT> function returns the type of object that you need, which makes casting unecessary.
+</P>
+<P>
+<B>Compile time safety:</B> <TT>TTypedList</TT> contains an <TT>Add</TT> function that replaces the <TT>Add</TT>
+function of the base class. The <TT>Add</TT> function takes the template type as its argument, instead of taking a
+void pointer. When you create a list of <TT>TButton</TT> pointers, the compiler only allows you to pass
+<TT>TButton</TT> pointers to the <TT>Add</TT> function. If you attempt to pass anything else, the compiler will
+generate an error.
+</P>
+<P>
+<B>Little Overhead:</B> Because the member functions of <TT>TTypedList</TT> are defined inline, the class incurs no
+additional overhead. The compiler enforces type safety when you call a method of <TT>TTypedList</TT>. Once the compiler
+is satisfied that you have passed the correct type of object, it inserts code that calls the methods of <TT>TList</TT>
+directly (you can prove this by viewing the assembly code that is generated for a call to the <TT>Add</TT>
+method of <TT>TTypedList</TT>). <TT>TTypedList</TT> provides compile time safety without sacrificing runtime
+performance.
+</P>
+<P>
+<B>Consider using STL templates instead:</B> <TT>TTypedList</TT> is awesome. Awesome, that is, in comparison to what it
+replaces; the relatively wimpy and unsafe <TT>TList</TT>. That said, I encourage you not to overuse the class. Consider
+using STL containers whenever possible. STL containers are more portable and more flexible than <TT>TTypedList</TT>,
+plus they provide type safety that is just as good, if not superior to, that of <TT>TTypedList</TT>. A good STL replacement
+for <TT>TList</TT> is the <TT>vector</TT> template.
+</P>
+<P>
+<B>Altering the way <TT>TTypedList</TT> deletes items:</B> Notice that the <TT>Remove</TT> and <TT>Put</TT> methods
+will delete an item if the auto delete flag is set. You may not want the class to behave this way. Perhaps you only
+want the list to delete an object when the list itself is deleted. I have taken the approach that if auto delete is on,
+then the list assumes ownership of the pointer, and the list will be responsible for deleting that pointer. You may want
+to alter this behavior, especially in the <TT>Put</TT> method.
+</P>
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2002 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

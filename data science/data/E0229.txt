@@ -1,0 +1,417 @@
+ID=E0229
+URL=http://home.att.net/~robertdunn/Papers/REPnP3.html
+SIZE=23583
+DATE=12/07/02
+TIME=19:18:56
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+ 
+<HTML>
+ 
+<HEAD>
+<META HTTP-EQUIV="CONTENT-TYPE"
+ CONTENT="text/html; charset=iso-8859-1"> 
+<TITLE>Yet Another Code Site - Printing and Previewing Rich
+Edit Contr</TITLE>
+<META NAME="GENERATOR" CONTENT="StarOffice/5.2 (Win32)"> 
+<META NAME="CREATED" CONTENT="19981221;21461785"> 
+<META NAME="CHANGEDBY" CONTENT="Robert Dunn"> 
+<META NAME="CHANGED" CONTENT="20010514;19175657"> 
+<META NAME="Template"
+ CONTENT="C:\Program Files\Microsoft Office\Templates\Web Pages\Web Page Wizard.wiz">
+
+</HEAD>
+
+<BODY>
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="0"
+ CELLSPACING="0"> 
+<TR>
+  <TD WIDTH="100%" VALIGN="TOP" BGCOLOR="#000080">
+	 <H1 ALIGN="CENTER" STYLE="margin-top: 0in"><FONT
+	 COLOR="#ffffff"> <A NAME="TopOfPage"></A> Yet Another Code
+	 Site</FONT></H1>
+  </TD>
+</TR>
+</TABLE> 
+<H2 ALIGN="CENTER">Printing and Previewing Rich Edit
+Controls </H2>
+<H3 ALIGN="CENTER">Part 3: Previewing Rich Edit Controls 
+</H3>
+<P>Part 2 of this paper demonstrated how to print the
+  contents to a Rich Edit control to an arbitrary area on a
+  page.&nbsp; This part of the paper describes how to
+  implement a Rich Edit print preview feature in your
+  project.&nbsp; If you have not already studied Part 2, I
+  suggest that you do so now.&nbsp; Much of the code in this
+  part of the paper assumes that you understand all of the
+  concepts in Part 2. 
+</P> 
+<H4>Overview </H4>
+<P>One must assume that the original Rich Edit design goal
+  was to render identically on all devices.&nbsp; Sadly, Rich
+  Edit controls fall short of this ideal &#150; if you need a
+  flawless print preview feature, you have several choices: 
+</P> <UL>
+<LI>Rewrite the code I present here to render to a metafile
+and then draw the metafile on the window.&nbsp; At one
+point, I tried this and did not like the results. Perhaps
+you will fare better. </LI>
+<LI>Develop your own RTF parsing and rendering code.&nbsp;
+No small task, to be sure. </LI>
+<LI>Buy someone else's tool.&nbsp; But, where's the fun in
+that? </LI>
+</UL>
+<P>On the other hand, if you can live with a few
+  imperfections, Rich Edit controls can come pretty close and
+  the code is not too difficult. 
+</P> 
+<P>Before you make a decision, let me describe the behavior
+  that I have encountered.&nbsp; First, things seem pretty
+  close to perfection if you are not scaling the page to less
+  than 100% of the actual printed size (as represented on the
+  screen).&nbsp; What happens when scaling to less than 100%
+  is something like this: 
+</P> <UL>
+<LI>The control rarely, if ever, draws text that is wider
+than the rendering rectangle.&nbsp; However, the text may
+be scaled to a &quot;next lower size&quot; that leaves a
+right margin that is too wide.&nbsp; This appears to happen
+in increments that correspond to integral rounding errors,
+possibly related to font scaling.&nbsp; To see this
+behavior, use the sample code and bring up a preview
+window.&nbsp; Then resize the preview window slowly. </LI>
+<LI>The control may scale the lines vertically beyond the
+size of the rendering rectangle.&nbsp; In other words, the
+text is too tall.&nbsp; It will start at the top margin
+correctly but extend beyond the proper bottom margin. </LI>
+<LI>On yet the other hand, word wrap and page breaks occur
+at the correct points. </LI>
+</UL>
+<P>I can live with this &#150; I just scale to 100% when I
+  need to see things accurately and advise the user that the
+  right and bottom margins may be clipped otherwise.&nbsp;
+  The bugs do not really interfere with getting a general
+  idea of the page layout, which is what I really
+  wanted.&nbsp; For what it is worth, the technique used in
+  this paper is the same method used by WordPad&#146;s print
+  preview feature and has the same flaws. 
+</P> 
+<P>To demonstrate all of this, we will code up a little
+  extension to the Part 2 example to: 
+</P> <UL>
+<LI>Create a preview window (a TForm) in which we will
+display the preview. </LI>
+<LI>Build a table of page offsets that correspond to the
+true printed pages. </LI>
+<LI>Display the first page of output scaled to fit within
+the preview window. </LI>
+<LI>Draw an outline rectangle that corresponds to the
+rendering rectangle to demonstrate the Rich Edit control
+bugs more clearly. </LI>
+</UL>
+<H4>The Code </H4>
+<P>First, add a form to the Part 2 project and add the main
+  form header include file to the new form.&nbsp; Include the
+  vcl\printers.hpp and STL vector headers and declare the
+  TPageOffsets structure to the new form's *.cpp file.&nbsp;
+  The code should look something like this: 
+</P> <PRE STYLE="margin-left: 0.5in">#include &lt;vcl.h&gt;
+#pragma hdrstop
+#include &quot;TestRichEditPnPPreviewForm.h&quot;
+#include &quot;TestRichEditPnPForm.h&quot;
+//---------------------------------------------------------------------------
+#include &lt;vcl\printers.hpp&gt;
+#include &lt;vector&gt; // for stl
+typedef struct tagTPageOffset {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;long int Start;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;long int End;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RECT rendRect;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} TPageOffsets;
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource &quot;*.dfm&quot;
+TPreviewForm *PreviewForm;</PRE>
+
+<P> Add the following to public portion of the class
+  declaration (in the preview form header file): 
+</P> <PRE STYLE="margin-left: 0.5in">__fastcall ~TPreviewForm(void);
+void DrawRichEdit(void);
+TPanel* PreviewPanel;</PRE>
+
+<P> Note that this adds a destructor method, a DrawRichEdit
+  member function, and a TPanel variable. 
+</P> 
+<P>We will draw the scaled Rich Edit control's output on a
+  TPanel.&nbsp; To facilitate this, define a TPreviewPanel
+  class in the *.cpp file as follows: 
+</P> <PRE STYLE="margin-left: 0.5in">class TPreviewPanel : public TPanel
+{
+public:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;__fastcall virtual TPreviewPanel(Classes::TComponent* AOwner) : TPanel(AOwner) { };
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;__fastcall virtual ~TPreviewPanel(void) { };
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;__fastcall virtual void Paint(void) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TPanel::Paint();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PreviewForm-&gt;DrawRichEdit();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;__property Canvas;
+};</PRE>
+
+<P> The two reasons for deriving the class are (1) to call
+  the PreviewForm::DrawRichEdit() method when the panel is
+  painted and (2) to make the panel's Canvas property public.
+  
+</P> 
+<P>Modify the TPreviewForm constructor to create an
+  instance of TPreviewPanel and add the destructor to delete
+  the TPreviewPanel instance. 
+</P> <PRE STYLE="margin-left: 0.5in">__fastcall TPreviewForm::TPreviewForm(TComponent* Owner) : TForm(Owner)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PreviewPanel = new TPreviewPanel(this);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PreviewPanel-&gt;Parent = this;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PreviewPanel-&gt;Color = clWhite;
+} 
+__fastcall TPreviewForm::~TPreviewForm(void)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (PreviewPanel) delete PreviewPanel;
+}</PRE>
+
+<P> We want the TPreviewPanel to approximate the scaled
+  dimensions of the printed page.&nbsp; Whenever the parent
+  form is resized, we need to rescale and center the panel on
+  the form.&nbsp; To do this, add an OnResize event to the
+  form and add the following code: 
+</P> <PRE STYLE="margin-left: 0.5in">void __fastcall TPreviewForm::FormResize(TObject *Sender)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// get the printer dimensions.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int wPage = ::GetDeviceCaps(Printer()-&gt;Handle, PHYSICALWIDTH);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int hPage = ::GetDeviceCaps(Printer()-&gt;Handle, PHYSICALHEIGHT);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// get the client window dimensions.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int wClient = ClientWidth;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int hClient = ClientHeight;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// initially adjust width to match height
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wClient = ::MulDiv(ClientHeight, wPage, hPage);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// if that doesn't fit, then do it the other way
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (wClient &gt; ClientWidth) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wClient = ClientWidth;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hClient = ::MulDiv(ClientWidth, hPage, wPage);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// center the page in the window
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PreviewPanel-&gt;Top = (ClientHeight - hClient) &gt;&gt; 1; // divide by two
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else // center the page in the window 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PreviewPanel-&gt;Left = (ClientWidth - wClient) &gt;&gt; 1; // divide by two
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// now set size of panel
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PreviewPanel-&gt;Width = wClient;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PreviewPanel-&gt;Height = hClient;
+}</PRE>
+
+<P> The DrawRichEdit() method renders the contents of the
+  control on the preview panel.&nbsp; Much of the code is
+  very close to the code used to print the control in Part
+  2.&nbsp; The first part of the method is identical to the
+  printing code: 
+</P> <PRE STYLE="margin-left: 0.5in">void TPreviewForm::DrawRichEdit(void)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int wPage = ::GetDeviceCaps(Printer()-&gt;Handle, PHYSICALWIDTH);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int hPage = ::GetDeviceCaps(Printer()-&gt;Handle, PHYSICALHEIGHT);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int xPPI = ::GetDeviceCaps(Printer()-&gt;Handle, LOGPIXELSX);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int yPPI = ::GetDeviceCaps(Printer()-&gt;Handle, LOGPIXELSY);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int wTwips = ::MulDiv(wPage, 1440, xPPI);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int hTwips = ::MulDiv(hPage, 1440, yPPI);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RECT pageRect;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pageRect.left = pageRect.top = 0;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pageRect.right = wTwips;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pageRect.bottom = hTwips;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RECT rendRect;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rendRect.left = rendRect.top = 0;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rendRect.right = pageRect.right - 1440 * 4;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rendRect.bottom = pageRect.bottom - 1440 * 4;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;std::vector&lt;TPageOffsets&gt; FPageOffsets;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TPageOffsets po;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;po.Start = 0;</PRE>
+
+<P> We will be using several device contexts (DCs), so
+  let's go ahead and create variables for them. 
+</P> <PRE STYLE="margin-left: 0.5in">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HDC hdcDesktop = ::GetWindowDC(::GetDesktopWindow());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HDC hdcCanvas = dynamic_cast&lt;TPreviewPanel*&gt;(PreviewPanel)-&gt;Canvas-&gt;Handle;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HDC hdcPrinter = Printer()-&gt;Handle;</PRE>
+
+<P> Next, define and initialize a FORMATRANGE structure. 
+</P> <PRE STYLE="margin-left: 0.5in">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TFormatRange fr;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.hdc = hdcDesktop;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.hdcTarget = hdcPrinter;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.chrg.cpMin = po.Start;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.chrg.cpMax = -1;</PRE>
+
+<P> We will need the size of the text in the control. 
+</P> <PRE STYLE="margin-left: 0.5in">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int lastOffset = ::SendMessage(Form1-&gt;RichEdit1-&gt;Handle, WM_GETTEXTLENGTH, 0, 0);</PRE>
+
+<P> Clear the control's formatting buffer before rendering.
+  
+</P> <PRE STYLE="margin-left: 0.5in">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::SendMessage(Form1-&gt;RichEdit1-&gt;Handle, EM_FORMATRANGE, (WPARAM) 0, (LPARAM) 0);</PRE>
+
+<P> Here is the tricky part.&nbsp; We need to scale the
+  rendering DC to match the size of the printed page in
+  printer device units. 
+</P> <PRE STYLE="margin-left: 0.5in">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::SaveDC(hdcCanvas);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::SetMapMode(hdcCanvas, MM_TEXT); // set to device units
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::SetMapMode(hdcCanvas, MM_ANISOTROPIC); // inherits prior mapping mode
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::SetMapMode(hdcPrinter, MM_TEXT); // set to device units
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::SetWindowExtEx(hdcCanvas, pageRect.right, pageRect.bottom, NULL);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int xDesktopPPI = ::GetDeviceCaps(hdcDesktop, LOGPIXELSX);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int yDesktopPPI = ::GetDeviceCaps(hdcDesktop, LOGPIXELSY);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::ScaleWindowExtEx(hdcCanvas, xDesktopPPI, 1440, yDesktopPPI, 1440, NULL);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::SetViewportExtEx(hdcCanvas, PreviewPanel-&gt;ClientWidth, PreviewPanel-&gt;ClientHeight, NULL);</PRE>
+
+<P> Apparently, the Rich Edit control reduces the width of
+  the rendering area by the amount of the left offset to the
+  printable portion of the page when printing.&nbsp; This is
+  a little odd to me because none of the Windows API GDI
+  functions care whether you are printing within the
+  printable portion of the page.&nbsp; Further, this occurs
+  even though the rendering rectangle is already within the
+  printable portion of the page.&nbsp; Anyway, this does not
+  seem to happen when the rendering DC is the screen so we
+  need to manually adjust the rectangle ourselves. 
+</P> <PRE STYLE="margin-left: 0.5in">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int xPrinterOffset = ::MulDiv(::GetDeviceCaps(hdcPrinter, PHYSICALOFFSETX), 1440, xPPI);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int yPrinterOffset = ::MulDiv(::GetDeviceCaps(hdcPrinter, PHYSICALOFFSETY), 1440, yPPI);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rendRect.left += xPrinterOffset &gt;&gt; 1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rendRect.right -= xPrinterOffset - (xPrinterOffset &gt;&gt; 1);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rendRect.top += yPrinterOffset &gt;&gt; 1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rendRect.bottom -= yPrinterOffset - (yPrinterOffset &gt;&gt; 1);</PRE>
+
+<P> Remember that we are hardcoding two-inch margins. 
+</P> <PRE STYLE="margin-left: 0.5in">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int xOffset = ::MulDiv(PreviewPanel-&gt;ClientWidth &lt;&lt; 1, 1440, pageRect.right);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int yOffset = ::MulDiv(PreviewPanel-&gt;ClientHeight &lt;&lt; 1, 1440, pageRect.bottom);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::SetViewportOrgEx(hdcCanvas, xOffset, yOffset, NULL);</PRE>
+
+<P> Now we build the table of offsets.&nbsp; Note that we
+  save the rendering rectangle returned by the format
+  call.&nbsp; When the rendering and target devices are the
+  same (or the target device is set to zero), the returned
+  rectangle is not really needed.&nbsp; In that case, you can
+  simply ask the control to print to the original rendering
+  rectangle.&nbsp; However, when the devices are different,
+  the returned rendering rectangle is sometimes larger than
+  the requested rectangle.&nbsp; This must be a bug in the
+  Rich Edit control.&nbsp; We deal with it by saving the
+  returned value to use when we actually render the control
+  to the screen. 
+</P> <PRE STYLE="margin-left: 0.5in">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;do { 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.rc = rendRect;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.rcPage = pageRect;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;po.Start = fr.chrg.cpMin;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.chrg.cpMin = ::SendMessage(Form1-&gt;RichEdit1-&gt;Handle, EM_FORMATRANGE, (WPARAM) 0, (LPARAM) &amp;fr);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;po.End = fr.chrg.cpMin - 1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;po.rendRect = fr.rc;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FPageOffsets.push_back(po);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} while (fr.chrg.cpMin != -1 &amp;&amp; fr.chrg.cpMin &lt; lastOffset);</PRE>
+
+<P> If we were writing a fully working preview function, we
+  could use FPageOffsets.size() to determine how many pages
+  had been formatted.&nbsp; We would then set currPage
+  (below) to the page that we wanted to display.&nbsp; In
+  this example, however, we are going to display only the
+  first page. 
+</P> <PRE STYLE="margin-left: 0.5in">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int currPage = 0;</PRE>
+
+<P> Now we set the rendering device to the panel's
+  canvas.&nbsp; Since we have not cleared the formatting
+  buffer, the target device is not needed, so we set it to
+  zero.&nbsp; Then we fill in the remaining parts of the
+  FORMATRANGE structure with the values we saved in
+  FPageOffsets.&nbsp; Finally, we render the text to the
+  screen (WPARAM is non-zero). 
+</P> <PRE STYLE="margin-left: 0.5in">        fr.hdc = hdcCanvas;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.hdcTarget = 0;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.rc = FPageOffsets[currPage].rendRect;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.rcPage = pageRect;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.chrg.cpMin = FPageOffsets[currPage].Start;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.chrg.cpMax = FPageOffsets[currPage].End;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.chrg.cpMin = ::SendMessage(Form1-&gt;RichEdit1-&gt;Handle, EM_FORMATRANGE, (WPARAM) 1, (LPARAM) &amp;fr);</PRE>
+
+<P> As I mentioned, the text may be drawn outside of the
+  rendering rectangle.&nbsp; To make that easier to see,
+  let's draw a rectangle that shows where the rendering
+  rectangle should be. 
+</P> <PRE STYLE="margin-left: 0.5in">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::SetMapMode(hdcCanvas, MM_TEXT);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::SetViewportOrgEx(hdcCanvas, 0, 0, NULL);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RECT frameRect = rendRect;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OffsetRect(&amp;frameRect, 1440 + 1440, 1440 + 1440);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int xFactor = ::MulDiv(PreviewPanel-&gt;ClientWidth, (pageRect.right - rendRect.right) &gt;&gt; 1, pageRect.right);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int yFactor = ::MulDiv(PreviewPanel-&gt;ClientHeight, (pageRect.bottom - rendRect.bottom) &gt;&gt; 1, pageRect.bottom);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frameRect.left = xFactor;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frameRect.right = PreviewPanel-&gt;ClientWidth - xFactor;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frameRect.top = yFactor;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frameRect.bottom = PreviewPanel-&gt;ClientHeight - yFactor;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::FrameRect(hdcCanvas, &amp;frameRect, ::GetStockObject(BLACK_BRUSH));</PRE>
+
+<P> To wrap up, we restore the panel's canvas to the
+  original state, release the desktop DC, clear the Rich Edit
+  control's formatting buffer, empty the page offset table,
+  and close the DrawRichEdit() method. 
+</P> <PRE STYLE="margin-left: 0.5in">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::RestoreDC(hdcCanvas, -1);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::ReleaseDC(::GetDesktopWindow(), hdcDesktop);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::SendMessage(Form1-&gt;RichEdit1-&gt;Handle, EM_FORMATRANGE, (WPARAM) 0, (LPARAM) 0);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FPageOffsets.erase(FPageOffsets.begin(), FPageOffsets.end());
+}</PRE>
+
+<P> You now have a preview window.&nbsp; The last step is
+  to go back to the main form and add code to the Preview
+  button&#146;s OnClick handler to show the form: 
+</P> <PRE STYLE="margin-left: 0.5in">void __fastcall TForm1::PreviewBtnClick(TObject *Sender)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PreviewForm-&gt;ShowModal();
+}</PRE>
+
+<P> <A HREF="REPnP2.html" TARGET="_top">Back to Part 2:
+  Printing Rich Edit Controls</A> 
+</P> 
+<P><A HREF="REPnP4.html" TARGET="_top">On to Part 4:
+  Page-Breaks in Rich Edit Controls</A> 
+</P> 
+<P>The complete project for parts 1 - 3 is available for
+  download. 
+</P> 
+<P><A HREF="../CodeSamples/RichEditPnP.zip"
+  TARGET="_top">Download BCB 3.0 Project</A>. 
+</P> 
+<P><A HREF="../CodeSamples/RichEditPnP40.zip"
+  TARGET="_top">Download BCB 4.0 Project</A>. 
+</P> 
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="2"
+ CELLSPACING="0"> 
+<TR VALIGN="TOP">
+  <TD WIDTH="*" BGCOLOR="#e6e6e6">
+	 <P><FONT SIZE="-1"><B><A HREF="../Yacs.html"
+		TARGET="_top">Home</A> | <A HREF="#TopOfPage"
+		TARGET="_top"><B>Top Of Page</B></A> |
+		<A HREF="../Yacs.html#CodeSection" TARGET="_top">Code</A> |
+		<A HREF="../Yacs.html#Papers" TARGET="_top">Papers</A> |
+		<A HREF="../Yacs.html#FAQs" TARGET="_top">FAQs</A> |
+		<A HREF="../Links.html" TARGET="_top">Links</A> |
+		<A HREF="../Yacs.html#SiteSearch" TARGET="_top">Search</A>
+		| <A HREF="../Yacs.html#ContactMe"
+		TARGET="_top">Feedback</A></B></FONT> 
+	 </P> 
+  </TD>
+  <TD WIDTH="*" BGCOLOR="#e6e6e6">
+	 <P ALIGN="RIGHT"><FONT SIZE="-1">Page updated 
+		<SCRIPT LANGUAGE="javascript" TYPE="text/javascript" SRC="../lstmoddt.js">
+			</SCRIPT> </FONT> 
+	 </P> 
+  </TD>
+</TR>
+</TABLE> 
+<P ALIGN="CENTER"><FONT SIZE="-1"><B>Copyright &copy;
+  1998-2001 Thin Air Enterprises and Robert Dunn.&nbsp; All
+  rights reserved.</B></FONT> 
+</P> 
+</BODY>
+</HTML>
+
+

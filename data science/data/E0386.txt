@@ -1,0 +1,214 @@
+ID=E0386
+URL=http://www.intap.net/~drw/cpp/cpp07_04.htm
+SIZE=6742
+DATE=12/07/02
+TIME=19:20:26
+DATASET=C
+HTML=
+<html>
+<head> 
+<title>
+online C++ tutorial: Protect your Private Parts
+</title>
+</head>
+
+<body bgcolor="#ffffff"
+       link = "#ff0000"
+      alink = "#00ff00"
+      vlink = "#660000" >
+
+
+<table width="100%" border=0>
+<tr>
+<td align=left>
+<a href="cpp07_01.htm"><img border=0 src="pictures/buttons/prevs.gif" width=51 height=34 alt="&lt;&lt;=="></a>
+<a href="cpp07_03.htm"><img border=0 src="pictures/buttons/prevp.gif" width=37 height=34 alt="&lt;="></a>
+</td>
+<td align=center>
+<a href="index.htm">
+<img border=0 width=122 height=34 src="pictures/buttons/toc.gif"
+    alt="[table of contents]"></a>
+<a href="/cgi-bin/drw/cpp/search.cgi">
+<img border=0 width=46 height=34 src="pictures/buttons/search.gif"
+    alt="[search]"></a>
+<a href="glossary.htm">
+<img border=0 width=61 height=34 src="pictures/buttons/glossary.gif"
+    alt="[glossary]"></a>
+<a href="feedback.htm">
+<img border=0 width=65 height=34 src="pictures/buttons/feedback.gif"
+    alt="[feedback]"></a>
+</td>
+<td align=right>
+
+<a href="cpp07_05.htm"><img border=0 src="pictures/buttons/nextp.gif" width=37 height=34 alt="=&gt;"></a>
+<a href="cpp08_01.htm"><img border=0 src="pictures/buttons/nexts.gif" width=51 height=34 alt="==&gt;&gt;"></a>
+</td>
+</tr>
+</table>
+<hr>
+<table width="100%"><tr><td align=left><img src="pictures/buttons/cppsm.gif" width=143 height=37 alt="[online C++ tutorial]"></td><td align=right><b>Section 7: Class Declarations </b></td></tr></table>
+<center><h2>Section 7.4: Protect your Private Parts</h2></center>
+<p>
+
+At the beginning of Section 7, we used the following example of a
+class declaration:
+
+<pre>
+class Player {
+  int health;
+  int strength;
+  int agility;
+
+  void move();
+  void attackMonster();
+  void getTreasure();
+};
+</pre>
+
+Although this is perfectly legal C++, we left out an important part of
+class declarations to simplify the example.  Every data member and
+member function in a class is either <code>private</code>,
+<code>public</code>, or <code>protected</code>.  We'll explain the
+meaning of each in this chapter.
+
+</p>
+
+<h3> Private </h3>
+
+<p>
+
+Specifying that a data member or member function is
+<code>private</code> means that it can only be accessed from
+within the class.  For data members, this means that the data can be
+accessed or modified only while inside a member function of the class.
+For member functions, this means that the function can be called only
+while inside another member function of the class.  This is the
+default, if no specifiers are used.
+
+</p>
+
+
+<h3>  Public </h3>
+
+<p>
+
+Specifying that a data member or member function is
+<code>public</code> means that it can be accessed from anywhere
+in your code.  The <code>public</code> specifier is less restrictive
+than <code>private</code>.
+
+</p>
+
+<h3> Protected </h3>
+
+<p>
+
+Specifying that a data member or member function is
+<code>protected</code> means that it can only be accessed from within
+the class or a subclass.  We haven't yet talked about subclasses
+(Section 10), so don't worry about using <code>protected</code> just
+yet.  The <code>protected</code> specifier is less restrictive than
+<code>private</code> but more restrictive than <code>public</code>.
+
+</p>
+
+<h3> How do I use these specifiers? </h3>
+
+<p>
+
+Using <code>private</code>, <code>public</code>, and
+<code>protected</code> are easy.  The specifier affects all data
+members and member functions until the next occurrence of a specifier.
+Here's the <code>Player</code> class, with protection specifiers
+added:
+
+<pre>
+class Player {
+private:
+  int health;
+  int strength;
+  int agility;
+public:
+  void move();
+  void attackMonster();
+  void getTreasure();
+};
+</pre>
+
+
+In this example, the <code>private</code> keyword begins a
+<code>private</code> section encompassing the three data members.  The
+<code>public</code> keyword specifies that the next three member
+functions should be <code>public</code>.  So, only code which is in a
+<code>Player</code> member function can access the data members, while
+any code in the program is free to call the member functions in the
+<code>Player</code> class.
+
+</p>
+
+
+<h3> Why bother with this stuff? </h3>
+
+<p>
+
+Specifiers allow a class to be very complex, with many member
+functions and data members, while having a simple <i>public
+interface</i> that other classes can use.  A class which has two
+hundred data members and one hundred member functions can be very
+complicated to write; but if there are only three or four
+<code>public</code> member functions, and the rest are all
+<code>private</code>, it can be easy for someone to learn how to use
+the class.
+
+He only needs to understand how to use a small handful of
+<code>public</code> functions, and doesn't need to bother with the two
+hundred data members, because he's not allowed to access this data.
+He can only access the <code>private</code> data through the class'
+public interface.
+
+Without a doubt, in a small program, using these specifiers may seem
+unnecessary.  However, they are worth understanding if you plan to do
+any program of reasonable size (more than a couple hundred lines).  In
+general, it is good practice to make data members
+<code>private</code>.  Member functions which must be called from
+outside the class should be <code>public</code>, and member functions
+which are only called from within the class (also known as "helper
+functions") should probably be <code>private</code>.  These specifiers
+are especially useful in a large program involving more than one
+programmer.
+
+</p>
+
+
+
+<hr>
+<table width="100%" border=0>
+<tr>
+<td align=left>
+<a href="cpp07_01.htm"><img border=0 src="pictures/buttons/prevs.gif" width=51 height=34 alt="&lt;&lt;=="></a>
+<a href="cpp07_03.htm"><img border=0 src="pictures/buttons/prevp.gif" width=37 height=34 alt="&lt;="></a>
+</td>
+<td align=center>
+<a href="index.htm">
+<img border=0 width=122 height=34 src="pictures/buttons/toc.gif"
+    alt="[table of contents]"></a>
+<a href="/cgi-bin/drw/cpp/search.cgi">
+<img border=0 width=46 height=34 src="pictures/buttons/search.gif"
+    alt="[search]"></a>
+<a href="glossary.htm">
+<img border=0 width=61 height=34 src="pictures/buttons/glossary.gif"
+    alt="[glossary]"></a>
+<a href="feedback.htm">
+<img border=0 width=65 height=34 src="pictures/buttons/feedback.gif"
+    alt="[feedback]"></a>
+</td>
+<td align=right>
+
+<a href="cpp07_05.htm"><img border=0 src="pictures/buttons/nextp.gif" width=37 height=34 alt="=&gt;"></a>
+<a href="cpp08_01.htm"><img border=0 src="pictures/buttons/nexts.gif" width=51 height=34 alt="==&gt;&gt;"></a>
+</td>
+</tr>
+</table>
+</body>
+</html>
+

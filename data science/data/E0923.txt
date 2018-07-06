@@ -1,0 +1,465 @@
+ID=E0923
+URL=http://gcc.gnu.org/codingconventions.html
+SIZE=17880
+DATE=12/07/02
+TIME=19:25:52
+DATASET=C
+HTML=<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html
+          PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rev="made" href="mailto:gcc@gcc.gnu.org" />
+<link rel="shortcut icon" href="http://gcc.gnu.org/favicon.ico" />
+<title>
+GCC Coding Conventions
+- GNU Project - Free Software Foundation (FSF)</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#1F00FF" alink="#FF0000" vlink="#9900DD">
+
+<h1 align="center">
+GCC Coding Conventions
+</h1>
+
+<p>There are some additional coding conventions for code in GCC,
+beyond those in the <a
+href="http://www.gnu.org/prep/standards_toc.html">GNU Coding
+Standards</a>.  Some existing code may not follow these conventions,
+but they must be used for new code.  If changing existing
+code to follow these conventions, it is best to send changes to follow
+the conventions separately from any other changes to the code.</p>
+
+
+<h2>Documentation</h2>
+
+<p>Documentation, both of user interfaces and of internals, must be
+maintained and kept up to date.  In particular:</p>
+
+<ul>
+
+  <li>All command-line options must be documented in the GCC manual.</li>
+
+  <li>Any change to documented behavior (for example, the behavior of
+  a command-line option or a GNU language extension) must include the
+  necessary changes to the manual.</li>
+
+  <li>All target macros must be documented in the GCC manual.</li>
+
+  <li>The documentation of the <code>tree</code> and RTL data
+  structures and interfaces must be kept complete and up to date.</li>
+
+  <li>In general, the documentation of all documented aspects of the
+  front-end and back-end interfaces must be kept up to date, and the
+  opportunity should be taken where possible to remedy gaps in or
+  limitations of the documentation.</li>
+
+</ul>
+
+
+<h2>ChangeLogs</h2>
+
+<p>GCC requires ChangeLog entries for documentation changes (see <a
+href="http://gcc.gnu.org/ml/gcc-bugs/1998-03/msg00564.html">message</a>),
+though for changes to the GCC web pages (as opposed to the java and
+libstdc++-v3 ones) there is no appropriate ChangeLog file and the CVS
+logs suffice.</p>
+
+<p>See also what the <a
+href="http://www.gnu.org/prep/standards_toc.html">GNU Coding
+Standards</a> have to say about what goes in ChangeLogs; in
+particular, descriptions of the purpose of code and changes should go
+in comments rather than the ChangeLog, though a single line overall
+description of the changes may be useful above the ChangeLog entry for
+a large batch of changes.</p>
+
+<p>There is no established convention on when ChangeLog entries are to
+be made for testsuite changes; see messages <a
+href="http://gcc.gnu.org/ml/gcc/2000-09/msg00287.html">1</a> and <a
+href="http://gcc.gnu.org/ml/gcc/2000-09/msg00290.html">2</a>.</p>
+
+
+<h2>Portability</h2>
+
+<p>There are strict requirements for portability of code in GCC to
+older systems whose compilers do not implement the ISO C standard.
+See <a
+href="http://gcc.gnu.org/cgi-bin/cvsweb.cgi/~checkout~/gcc/gcc/README.Portability?content-type=text/plain&amp;only_with_tag=HEAD">README.Portability</a>
+for details of some of the portability problems that may arise.  Some
+of these problems are warned about by <code>gcc -Wtraditional</code>,
+which is included in the default warning options in a bootstrap.
+(Code outside the C front end is only compiled by GCC, so such
+requirements do not apply to it.)</p>
+
+<p>The programs included in GCC are linked with the
+libiberty library, which will replace some standard
+library functions if not present on the system used, so those
+functions may be freely used in GCC.  In particular, the ISO C string
+functions <code>memcmp</code>, <code>memcpy</code>,
+<code>memmove</code>, <code>memset</code>, <code>strchr</code> and
+<code>strrchr</code> are preferred to the old functions
+<code>bcmp</code>, <code>bcopy</code>, <code>bzero</code>,
+<code>index</code> and <code>rindex</code>; see messages <a
+href="http://gcc.gnu.org/ml/gcc/1998-09/msg01000.html">1</a> and <a
+href="http://gcc.gnu.org/ml/gcc/1998-09/msg01127.html">2</a>.  The
+older functions must no longer be used in GCC; apart from
+<code>index</code>, these identifiers are poisoned to prevent their
+use.</p>
+
+<p>Machine-independent files may contain conditionals on features of a
+particular system, but should never contain conditionals such as
+<code>#ifdef __hpux__</code> on the name or version of a particular
+system.  Exceptions may be made to this on a release branch late in
+the release cycle, to reduce the risk involved in fixing a problem
+that only shows up on one particular system.</p>
+
+
+<h2>Makefiles</h2>
+
+<p><code>touch</code> should never be used in GCC Makefiles.  Instead
+of <code>touch foo</code> always use <code>$(STAMP) foo</code>.</p>
+
+
+<h2>Testsuite Conventions</h2>
+
+<p>Every language or library feature, whether standard or a GNU
+extension, and every warning GCC can give, should have testcases
+thoroughly covering both its specification and its implementation.
+Every bug fixed should have a testcase to detect if the bug
+recurs.</p>
+
+<p>The testsuite READMEs discuss the requirement to use <code>abort
+()</code> for runtime failures and <code>exit (0)</code> for success.
+For compile-time tests, a trick taken from autoconf may be used to evaluate
+expressions: a declaration <code>extern char x[(EXPR) ? 1 :
+-1];</code> will compile successfully if and only if <code>EXPR</code>
+is nonzero.</p>
+
+<p>Where appropriate, testsuite entries should include comments giving
+their origin: the people who added them or submitted the bug report
+they relate to, possibly with a reference to a PR in GNATS.  There are
+some <a
+href="http://gcc.gnu.org/ml/gcc/2000-01/msg00593.html">copyright
+guidelines</a> on what can be included in the testsuite.</p>
+
+
+<h2>Miscellaneous Conventions</h2>
+
+<p>Code should generally use <code>abort ()</code> rather than
+<code>assert ()</code> for tests for "can't happen" conditions; see <a
+href="http://gcc.gnu.org/ml/gcc-patches/2000-07/msg01304.html">message</a>.
+Such conditions should not be generated by invalid user input.  If the
+checks are expensive or the compiler can reasonably carry on after the
+error, they may be conditioned on <code>--enable-checking</code>.</p>
+
+<p>Code in GCC should use the following formatting conventions:</p>
+
+<table cellpadding="4">
+<tr>
+  <th align="right">Use...</th><th align="left">...instead of</th>
+</tr><tr>
+  <td align="right"><code>!x</code></td><td><code>! x</code></td>
+</tr><tr>
+  <td align="right"><code>~x</code></td><td><code>~ x</code></td>
+</tr><tr>
+  <td align="right"><code>-x</code> (unary minus)</td><td><code>- x</code></td>
+</tr><tr>
+  <td align="right"><code>(foo) x</code> (cast)</td>
+  <td><code>(foo)x</code></td>
+</tr><tr>
+  <td align="right"><code>*x</code> (pointer dereference)</td>
+  <td><code>* x</code></td>
+</tr>
+</table>
+
+
+<p>Macros names should be in <code>ALL_CAPS</code> when it's important
+to be aware that it's a macro (e.g. accessors and simple predicates),
+but in lowercase (e.g., <code>size_int</code>) where the macro is a
+wrapper for efficiency that should be considered as a function; see
+messages <a
+href="http://gcc.gnu.org/ml/gcc-patches/2000-09/msg00901.html">1</a>
+and <a
+href="http://gcc.gnu.org/ml/gcc-patches/2000-09/msg00912.html">2</a>.</p>
+
+<p>Testing for <code>ERROR_MARK</code>s should be done by comparing
+against <code>error_mark_node</code> rather than by comparing the
+<code>TREE_CODE</code> against <code>ERROR_MARK</code>; see <a
+href="http://gcc.gnu.org/ml/gcc-patches/2000-10/msg00792.html">message</a>.</p>
+
+
+<h2>Spelling, terminology and markup</h2>
+
+<p>The following conventions of spelling and terminology apply
+throughout GCC, including the manuals, web pages, diagnostics,
+comments, and (except where they require spaces or hyphens to be used)
+function and variable names, although consistency in user-visible
+documentation and diagnostics is more important than that in comments
+and code.  The following table lists some simple cases:</p>
+
+<table cellpadding="4">
+  <tr>
+    <th>Use...</th><th>...instead of</th><th>Rationale</th>
+  </tr>
+  <tr>
+    <td>American spelling (in particular -ize, -or)</td>
+    <td>British spelling (in particular -ise, -our)</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>"32-bit" (adjective)</td>
+    <td>"32 bit"</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>"back end" (noun)</td>
+    <td>"back-end" or "backend"</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>"back-end" (adjective)</td>
+    <td>"back end" or "backend"</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>"bit-field"</td>
+    <td>"bit field" or "bitfield"</td>
+    <td>Spelling used in C and C++ standards</td>
+  </tr>
+  <tr>
+    <td>"built-in" as an adjective ("built-in function") or "built in"</td>
+    <td>"builtin"</td>
+    <td>"builtin" isn't a word</td>
+  </tr>
+  <tr>
+    <td>"dependent" (adjective), "dependence", "dependency"</td>
+    <td>"dependant", "dependance", "dependancy"</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>"front end" (noun)</td>
+    <td>"front-end" or "frontend"</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>"front-end" (adjective)</td>
+    <td>"front end" or "frontend"</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>"MIPS"</td>
+    <td>"Mips" or "mips"</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>"nonzero"</td>
+    <td>"non-zero" or "non zero"</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>"Objective-C"</td>
+    <td>"Objective C"</td>
+  </tr>
+  <tr>
+    <td>"PowerPC"</td>
+    <td>"powerpc", "powerPC" or "PowerPc"</td>
+  </tr>
+  <tr>
+    <td>"SPARC"</td>
+    <td>"Sparc" or "sparc"</td>
+  </tr>
+  <tr>
+    <td>"VAX", "VAXen", "MicroVAX"</td>
+    <td>"vax" or "Vax", "vaxen" or "vaxes", "microvax" or "microVAX"</td>
+  </tr>
+</table>
+
+<p>"GCC" should be used for the GNU Compiler Collection, both
+generally and as the GNU C Compiler in the context of compiling C;
+"G++" for the C++ compiler; "gcc" and "g++" (lowercase), marked up
+with <code>@command</code> when in Texinfo, for the commands for
+compilation when the emphasis is on those; "GNU C" and "GNU C++" for
+language dialects; and try to avoid the older term "GNU CC".</p>
+
+<p>Use a comma after "e.g." or "i.e." if and only if it is appropriate
+in the context and the slight pause a comma means helps the reader; do
+not add them automatically in all cases just because some style guides
+say so.  (In Texinfo manuals, <code>@:</code> should to be used after
+"e.g." and "i.e." when a comma isn't used.)</p>
+
+<p>In Texinfo manuals, Texinfo 4.0 features may be used, and should be
+used where appropriate.  URLs should be marked up with
+<code>@uref</code>; email addresses with <code>@email</code>;
+command-line options with <code>@option</code>; names of commands with
+<code>@command</code>; environment variables with <code>@env</code>.
+NULL should be written as <code>@code{NULL}</code>.  Tables of
+contents should come just after the title page; printed manuals will
+be formatted (for example, by <code>make dvi</code>) using
+<code>texi2dvi</code> which reruns TeX until cross-references
+stabilize, so there is no need for a table of contents to go at the
+end for it to have correct page numbers.  The <code>@refill</code>
+feature is obsolete and should not be used.  All manuals should use
+<code>@dircategory</code> and <code>@direntry</code> to provide Info
+directory information for <code>install-info</code>.</p>
+
+<p>It is useful to read the <a
+href="http://www.gnu.org/manual/texinfo/">Texinfo manual</a>.  Some
+general Texinfo style issues discussed in that manual should be
+noted:</p>
+
+<ul>
+
+  <li>For proper formatting of the printed manual, TeX quotes (matched
+  <code>`</code> or <code>``</code> and <code>'</code> or
+  <code>''</code>) should be used; neutral ASCII double quotes
+  (<code>"..."</code>) should not be.  Similarly, TeX dashes
+  (<code>--</code> (two hyphens) for an en dash and <code>---</code>
+  (three hyphens) for an em dash) should be used; normally these
+  dashes should not have whitespace on either side.  Minus signs
+  should be written as <code>@minus{}</code>.</li>
+
+  <li>For an ellipsis, <code>@dots{}</code> should be used; for a
+  literal sequence of three dots in a programming language, the dots
+  should be written as such (<code>...</code>) rather than as
+  <code>@dots{}</code>.</li>
+
+  <li>English text in programming language comments in examples should
+  be enclosed in <code>@r{}</code> so that it is printed in a
+  non-fixed-width font.</li>
+
+  <li>Full stops that end sentences should be
+  followed by two spaces or by end of line.  Full
+  stops that are preceded by a lower-case letter but do not end a
+  sentence should be followed by <code>@:</code> if they are not
+  followed by other punctuation such as a comma; full stops, question
+  marks and exclamation marks that end a sentence but are preceded by
+  an upper-case letter should be written as "<code>@.</code>",
+  "<code>@?</code>" and "<code>@!</code>", respectively.  (This is not
+  required if the capital letter is within <code>@code</code> or
+  <code>@samp</code>.)</li>
+
+</ul>
+
+
+<h2>Upstream packages</h2>
+
+<p>Some files and packages in the CVS tree are imported from elsewhere,
+and we want to minimize divergence from their upstream sources.  The
+following files should be updated only according to the rules set
+below:</p>
+
+<ul>
+
+<li>config.guess, config.sub: The master copy of these files is at <a
+href="ftp://ftp.gnu.org/pub/gnu/config/">ftp://ftp.gnu.org/pub/gnu/config</a>.
+Proposed changes should be e-mailed to <a
+href="mailto:config-patches@gnu.org">config-patches@gnu.org</a>.  Only
+after the change makes it to the FTP site should the new files be
+installed in the GCC CVS tree, so that their version numbers remain
+meaningful and unique.  Don't install the patch, install the whole
+file.</li>
+
+<li>ltconfig, ltmain.sh, libtool.m4, ltcf-c.sh, ltcf-cxx.sh,
+ltcf-gcj.sh: The master copy of these files is the CVS repository of
+<a href="http://www.gnu.org/software/libtool/libtool.html">GNU
+libtool</a>.  Patches should be posted to <a
+href="mailto:libtool-patches@gnu.org">libtool-patches@gnu.org</a>.
+Only after the change makes it to the libtool CVS tree should the new
+files be installed in the GCC CVS tree.  ltconfig and ltmain.sh are
+generated files from ltconfig.in and ltmain.in, respectively, so, when
+you post the patch, make sure you're patching the source file, not the
+generated one.  When you update these generated files in the GCC CVS
+tree, make sure they report the same timestamp and version number, and
+note this version number in the ChangeLog.</li>
+
+<li>Top-level configure.in, configure, Makefile.in, config-ml.in,
+config.if and most other top-level shell-scripts: Please try to keep
+these files in sync with the corresponding files in the src repository
+at sources.redhat.com.  Some people hope to eventually merge these CVS
+trees into a single repository; keeping them in sync helps this goal.
+When you check in a patch to one of these files, please check it in
+the src tree too, or ask someone else with CVS write access there to
+do so.</li>
+
+<li>fastjar: The master sources are at <a
+href="http://fastjar.sourceforge.net/">fastjar.sourceforge.net</a>.
+Local patches should be sent upstream, but it's acceptable to check
+them in the GCC CVS tree before getting them installed in the master
+tree.</li>
+
+<li>boehm-gc: The master sources are at <a
+href="http://www.hpl.hp.com/personal/Hans_Boehm/gc/">www.hpl.hp.com/personal/Hans_Boehm/gc/</a>.
+Patches should be sent to <a href="mailto:boehm@acm.org">boehm@acm.org</a>,
+but it's acceptable to check them in the GCC CVS tree before getting
+them installed in the master tree.</li>
+
+<li>libstdc++-v3:  In docs/doxygen, comments in *.cfg.in are
+partially autogenerated from <a href="http://www.doxygen.org/">the
+Doxygen tool</a>.  In docs/html, the ext/lwg-* files are copied from <a
+href="http://anubis.dkuug.dk/jtc1/sc22/wg21/">the C++ committee homepage</a>,
+the 27_io/binary_iostream_* files are copies of Usenet postings, and most
+of the files in 17_intro are either copied from elsewhere in GCC or the
+FSF website, or are autogenerated.  These files should not be changed
+without prior permission, if at all.</li>
+
+</ul>
+
+
+<hr />
+
+<p>Please send FSF &amp; GNU inquiries &amp; questions to
+<a href="mailto:gnu@gnu.org">gnu@gnu.org</a>.
+There are also <a href="http://www.gnu.org/home.html#ContactInfo">other ways
+to contact</a> the FSF.</p>
+
+<p>These pages are maintained by
+<a href="http://gcc.gnu.org/about.html">The GCC team</a>.</p>
+
+<address>Please send comments on these web pages and GCC to
+<a href="mailto:gcc@gnu.org">gcc@gnu.org</a> or
+<a href="mailto:gcc@gcc.gnu.org">gcc@gcc.gnu.org</a>,
+send other questions to <a href="mailto:gnu@gnu.org">gnu@gnu.org</a>.
+</address>
+
+<p>Copyright (C) Free Software Foundation, Inc.,
+59 Temple Place - Suite 330, Boston, MA  02111,  USA.</p>
+
+<p>Verbatim copying and distribution of this entire article is
+permitted in any medium, provided this notice is preserved.</p>
+
+<table width="100%" border="0"><tr><td>
+  <!-- IGNORE DIFF -->Last modified 2002-05-29
+</td><td align="right" valign="bottom">
+  <a href="http://validator.w3.org/check/referer"><img
+  src="http://www.w3.org/Icons/valid-xhtml10"
+  alt="Valid XHTML 1.0" 
+  border="0" width="88" height="31" /></a>
+</td></tr></table>
+
+</body>
+</html>
+

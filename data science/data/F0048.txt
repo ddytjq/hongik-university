@@ -1,0 +1,398 @@
+ID=F0048
+URL=http://www.stlvbug.org/news.asp
+SIZE=18021
+DATE=09/07/2002
+TIME=13:13:21
+DATASET=Visual Basic
+HTML=
+
+<html>
+<head>
+	<title>VBUG News</title>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body background="images/grytxtr5.jpg" bgcolor="#d5d5d5" BGPROPERTIES=FIXED>
+<p><img src="images/vbug.gif" width="576" height="144"></p>
+<!-- begin CoolBar Control -->
+<STYLE TYPE="text/css"><!--
+	
+	A { text-decoration:none; }
+
+	TABLE#tblCoolbar { 
+		background-color:threedface; padding:1px; color:menutext; 
+		border-width:1px; border-style:solid; 
+		border-color:threedhighlight threedshadow threedshadow threedhighlight;
+	}
+
+	TABLE#tblCoolbar TABLE { 
+		font-family:tahoma; font-size:70%; color:menutext; 
+		border:1px solid threedface; cursor:hand; padding:1px; 
+	}
+	
+--></STYLE>
+
+<SCRIPT LANGUAGE="JScript"><!--
+
+	// SET SOME "CONSTANT" VALUES FOR THE SCRIPT
+	// MAKES PLAYING WITH LOOK AND FEEL A LOT EASIER
+
+	var sOffBackColor = "threedface";
+	var sOffTextColor = "menutext"
+	var sOffBorderColor = "threedface";
+	var sOffPadding = "1px 1px 1px 1px";
+
+	var sOverBackColor = "threedface";
+	var sOverTextColor = "menutext"
+	var sOverBorderColor = "threedhighlight threedshadow threedshadow threedhighlight";
+	var sOverPadding = "1px 1px 1px 1px";
+
+	var sDownBackColor = "window"
+	var sDownTextColor = "menutext"
+	var sDownBorderColor = "threedshadow threedhighlight threedhighlight threedshadow";
+	var sDownPadding = "2px 0px 0px 2px";
+
+	var sPaneName = "";
+	var eActiveButton = null;
+
+	// TWO HELPER FUNCTIONS
+	// ONE TO SET BUTTON PADDING AND ONE TO SET BUTTON IMAGE
+
+	function SetButtonPadding(eButton,sPaddingStyle)
+	{
+		eButton.rows[0].cells[0].style.padding = sPaddingStyle;
+		eButton.rows[0].cells[1].style.padding = sPaddingStyle;
+	}
+	
+	function SetButtonImage(eButton,sState)
+	{
+		var eImg = eButton.rows[0].cells[0].children[0];
+		if (eImg) 
+		{
+			var sImgSrc = eImg.src;
+			
+			if (sState == "over")
+			{
+				eImg.src = "../images/minus.gif";
+			}
+			
+			if (sState == "off")
+			{
+				eImg.src = "../images/plus.gif";
+			}
+
+		}
+	}
+	
+	// FOUR EVENT-HANDLER FUNCTIONS
+
+	function button_over(eButton)
+	{
+
+		// IF WE'RE JUST MOUSING ABOUT WITHIN THE BUTTON, THEN BAIL
+
+		if (window.event && eButton.contains(window.event.fromElement)) return false;
+
+		// OTHERWISE CHANGE BUTTON STYLE
+
+		eButton.style.backgroundColor = sOverBackColor;
+		eButton.style.color = sOverTextColor;
+		if (eActiveButton != eButton)
+		{
+			eButton.style.borderColor = sOverBorderColor;
+			SetButtonImage(eButton,"over");
+		}
+	}
+
+
+	function button_out(eButton)
+	{
+		// IF WE'RE JUST MOUSING ABOUT WITHIN THE BUTTON, THEN BAIL
+		
+		if (window.event && eButton.contains(window.event.toElement)) return false;
+
+		// OTHERWISE CHANGE BUTTON STYLE
+
+		if (eActiveButton != eButton)
+		{
+			eButton.style.backgroundColor = sOffBackColor;
+			eButton.style.borderColor = sOffBorderColor;
+			eButton.style.color = sOffTextColor;
+			SetButtonPadding(eButton,sOffPadding);
+			SetButtonImage(eButton,"off")
+		}
+		else
+		{
+			eButton.style.backgroundColor = sDownBackColor;
+			eButton.style.borderColor = sDownBorderColor;
+			eButton.style.color = sDownTextColor;
+		}
+	}
+
+	function button_down(eButton)
+	{
+		eButton.style.borderColor = sDownBorderColor;
+		SetButtonPadding(eButton,sDownPadding);
+	}
+
+	function button_up(eButton)
+	{
+
+		// IF ANOTHER BUTTON IS ACTIVE, RESET IT
+
+		if (null != eActiveButton && eButton != eActiveButton)
+		{
+			eActiveButton.style.backgroundColor = sOffBackColor;
+			eActiveButton.style.borderColor = sOffBorderColor;
+			eActiveButton.style.color = sOffTextColor;
+			SetButtonImage(eActiveButton,"off");
+			SetButtonPadding(eActiveButton,sOffPadding);
+			eActiveButton = null; 
+
+			// insert code here for button hiding 
+			window.status = window.defaultStatus;
+		}
+
+		// IF THE BUTTON WE CLICKED IS NOT THE ACTIVE BUTTON, MAKE IT ACTIVE
+
+		if (eButton != eActiveButton)  
+		{
+			eActiveButton = eButton;
+			eActiveButton.style.borderColor = sDownBorderColor;
+			eActiveButton.style.color = sDownTextColor;
+			SetButtonPadding(eActiveButton,sDownPadding);
+			sPaneName = eActiveButton.id.replace(/tbl(.*)Button/,"$1");
+
+			// insert code here for button showing 
+			//window.status = "Now showing: " + sPaneName;
+		}
+
+		// OTHERWISE, RESET IT
+
+		else  
+		{
+			eActiveButton.style.backgroundColor = sOverBackColor;
+			eActiveButton.style.borderColor = sOverBorderColor;
+			eActiveButton.style.color = sOverTextColor;
+			SetButtonPadding(eActiveButton,sOverPadding);
+			eActiveButton = null;
+
+			// insert code here for button hiding 
+			window.status = window.defaultStatus;
+		}
+
+	}
+
+//--></SCRIPT>
+
+<TABLE ID="tblCoolbar" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONSELECTSTART="return false;">
+<TR VALIGN="middle">
+
+	<TD>
+	<TABLE ID="tblHomeButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="VBUG Home">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><A HREF="default.asp">Home</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>
+
+	<TD>
+	<TABLE ID="tblFeedbackButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="Send Us Feedback">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><A HREF="feedback.asp">Feedback</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>
+
+	<TD>
+	<TABLE ID="tblAppButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="Join VBUG!">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><A HREF="vbugapp.asp">VBUG Application</A>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>	
+	
+	<TD>
+	<TABLE ID="tblMeetingButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="Current Meeting">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><a href="currmtg.asp">Current Meeting</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>
+	
+	<TD>
+	<TABLE ID="tblTipsButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="VBUG Tips and Tricks">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><a href="tips.asp">Tips and Tricks</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>	
+
+	<TD>
+	<TABLE ID="tblNewsButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="VBUG Newsgroup">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><a href="newsgroup.asp">VBUG Online Newsgroup</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>	
+
+	<TD>&nbsp;</TD>
+
+</TR>
+</TABLE>
+
+<P><P>
+
+<!-- End CoolBar Control -->
+
+<P>
+<center>
+<img src="./images/news3.gif" border=0>
+</center>
+<P>
+<UL> 
+<LI>3/25/2002 9:56:30 PM<BR>
+The powerpoint presentation from the March meeting (ABC's Of XML) is now in the download section.  Enjoy!<P>
+<LI>3/22/2002 9:54:54 AM<BR>
+There is a young man that would very much like to attend meetings.  He has been sending email to the steering committee members but we are not coming from the right direction.<br>My name is Bryan and i'm in south county.<BR>I'm also legally blind and would like to know if there is anybody i could ride with to attend the meetings?<br>If you can help him out his email address is b.schulz@worldnet.att.net.<br><P>
+<LI>3/18/2002 1:35:10 PM<BR>
+We have lost another committee member.  Chris Prysock is no longer with us due to personal responsibilities.  He plans on attending the meetings though and offering any input.  He is planning on presenting the third piece of his MSMQ series in the next few months.<P>
+<LI>1/14/2002 1:11:53 PM<BR>
+The problem with the email subscription editing and removal process has been fixed.  Sorry for the inconvienence.  You may now remove yourself from the the newsletter and/or update your email address AND be notified of changes to your account.<P>
+<LI>1/9/2002 9:31:21 AM<BR>
+The problem with the feedback and application pages have been fixed.  The mail server's address changed and we weren't told - hence the message "Host not found." when trying to send the application or feedback form.  Sorry for any confusion.<P>
+<LI>12/20/2001 9:18:45 AM<BR>
+December's meeting was a wonderful success.  We had a small group but everyone participated actively.  It made for a much more social meeting than usual.  Kathi did a wonderful job keeping us all focused.  The follow up at TGIFriday's was one of the best ever with hopes for an even better January.  Don't miss out!<P>
+<LI>10/18/2001 11:20:43 AM<BR>
+The meeting in November has been <strong>cancelled</strong> because the third Wednesday is the day before Thanksgiving.  We will resume normal meeting schedule in December.<P>
+<LI>10/18/2001 11:17:43 AM<BR>
+The October (2001) presentation was great. Steve Loethen, from Microsoft Kansas City, gave an <strong>excellent</strong> talk about what VB.Net is and how it can help.  If you know someone who attended, get all the great details from them.  If you would like to ask Steve a question (and consequently join his mailing list), you may send him an email at <a href=mailto:sloethen@microsoft.com>sloethen@microsoft.com</a>.  Steve's title is .Net Evangelist, so you will be getting some "spam" mail about some of the neat articles and/or blurbs he runs across that should be interesting.  None of the emails he sends will purtain to anything other than .Net.<P>
+<LI>8/8/2001 9:55:13 PM<BR>
+The newsgroup has had another enhancement.  Now, when a message has been posted to an existing thread, the entire thread is moved to the top of the listing.  Give it a test drive <a href=newsgroup.asp>here</a>.<BR><P>
+<LI>7/22/2001 10:14:04 PM<BR>
+The code from the July 2001 meeting is now available for online viewing and downloading.  Check it out on the <a href=ftpintro.asp>download page</a> or the <a href=choosecode.asp>View Code online</a> page.<P>
+<LI>7/19/2001 9:46:01 PM<BR>
+The meeting on July 18th was a huge success!  The small group activities really opened up the group and allowed people to communicate with each other.  We plan on doing this every meeting (when applicable).  The members were able to ask questions to other members, learn from them and help others all at the same time.  Dont let this resource go to waste!  We're VERY confident that you will learn something from each of these activities and urge to you to attend and participate.<P>
+<LI>6/18/2001 11:20:19 PM<BR>
+Please help us welcome our newest committee member:  Eva Donaldson.  She is going to help us implement some new and exciting ideas we have for the group.  Be on the lookout for some new meeting structures in the next few months.<P>
+<LI>5/16/2001 12:52:03 AM<BR>
+We would like apologize for the tardiness of this month's newsletter and website update.  Our sources were not sensitive to our deadlines.  We hope you understand.  Please know that we are doing everything we can to streamline our processes so you get the information you need as soon as you need it.  Sorry for the inconvenience.  - the VBUG Committee<P>
+<LI>5/16/2001 12:51:08 AM<BR>
+We would like to welcome back John Pirkey after taking off this semester to help out at a local university.  He'll be presenting this month to make up for his absense.<P>
+<LI>1/11/2001 10:19:03 PM<BR>
+John Pirkey will not be attending the next four VBUG meetings because of his teaching position with a local university.  He hopes to be able to give a presentation on ASP.Net in the near future.  He is scheduled to return in May, 2001.  <P>Feel free to continue to send him questions/comments in the mean time.<P>
+<LI>12/4/2000 3:31:06 PM<BR>
+We have gained a NEW member of the committee.  We would like to officially welcome Kelly Murphy, of Daugherty Systems, to the St. Louis Visual Basic Users Group committee.  For those of you who may not have the pleasure of knowing Kelly, he is exceptionally knowledgable in programming and technology.  The group should benefit greatly with his addition.<BR><BR>See you in the trenches, Kelly.<P>
+<LI>8/30/2000 1:13:14 PM<BR>
+As some of you may have noticed, we have lost a committee member.  Michelle Winkel has resigned from the committee due to availability conflicts.  She is still an active member of the group and will continue to attend the meetings.<BR><BR>We will miss her.<P>
+<LI>8/30/2000 1:10:39 PM<BR>
+We would like to see what you want to see.  We have put together another voting page.  This time you get to choose which programming topics interest you most.  Please take a look at it <a href=topics.asp>here</a>.  This is your chance to have your voice heard (and anonymously if your shy :).<P>
+<LI>8/8/2000 3:05:28 PM<BR>
+VBUG Members:<BR><BR>Due to the recent panic about upgrading to VS.NET (VS7), I wrote to Jeff Hadfield, Publisher of VBPJ and expressed our concerns.  I asked him if he could clarify some of the rumors we have been receiving about upgrading.  Finally, I asked him to write a column about this topic.  He responded with a very short answer: It's in the making.  Just a few days later an article appeared on the www.devx.com website entitled "Eight (More) Essential VS.NET Answers " in which he addresses the upgrading issue.  Here is the URL of the article : <a href=http://www.devx.com/free/hotlinks/2000/ednote072600.asp>http://www.devx.com/free/hotlinks/2000/ednote072600.asp</a><BR><BR>I will let you know if I receive any further information.<BR><BR>John<P>
+<LI>7/6/2000 12:48:01 PM<BR>
+The newsgroup is now paged!  In other words, you dont have to wait for all the messages to load - they are presented in sets of 10 threads per page.<P>
+<LI>7/6/2000 9:00:40 AM<BR>
+The people have spoken!  With the final ratio of votes being nearly 2.5 to 1 for articles, we are now accepting articles, ideas, topics, requests and anything else you want to send us.<BR>If you have an article, but are a little shy about having your name associated with it, you can send to us, and we will post it with one of our names.  Any questions we receive on it, will be directed to you.  You can then send the answer to us, and we will forward that on to the inquisitor.<BR>If you have written an article for another site, and that site does NOT own rights to your article, you may submit that article to us as well and chalk up another web site publication.  If the site your article resides on does own it, then you may send us the link to your article on that site.<BR>More article news on the way!<P>
+<LI>6/28/2000 5:44:20 PM<BR>
+The newsgroup has been upgraded.  When choosing a topic the entire thread is shown, so no longer do you have to click each individual message!<P>
+<LI>5/15/2000 2:19:53 PM<BR>
+We are thinking about adding an article section to the web site.  Before we do that, we would like your opinion.  We know there are a lot of other sites that have arcticles on cool code, how-to articles, but the articles that will be here will be authored by your fellow VBUG members.  This way, you know the author, you will be able to ask questions directly to him/her about their article.  It will also give some members the opportunity to share their code and explain how they do things.<P>
+<LI>5/9/2000 5:09:56 PM<BR>
+Some of you may have heard rumors about a St. Louis based SQL Server User Group. Well, here's the thing : It's TRUE!!! We, the VBUG, are acting as the kick-off point for the St. Louis SQL Server User Group. In fact, this new group's first meeting is set for Wednesday, May 17th 2000. Yes that's right -the same night of our meeting. Because our meeting is actually the first meeting of the StLSSUG.
+<BR>
+Some might wonder why a programming group would want to start a database group. We see it as: What programming language is the most widely used to access a SQL Server database? - VB! As well as, every VB programmer should know SQL Server.  The more you know about your database, the better prepared you are for using it.
+<BR>
+The second question that logically follows is : Will the presentations of this new group be programmer oriented, or from a DBA perspective? Our answer : BOTH! Why? So we don't exclude anyone from any of our meetings. Some meetings may cover improving performance of the server and others may cover writing stored procedures for use with VB. Some meetings will incorporate both aspects, like using the SQL-DMO object library to perform administrative tasks on the server.
+<BR><BR>
+Please help us support this new group as it gains popularity on it's own. And as always, if you have any suggestions or ideas about the group, please don't hesitate to voice them. We are currently looking for volunteers to help steer the SQL Server user group. If you are interested in becoming a committee member for the SSUG, see one of the VBUG committee members at the next meeting.
+<BR><BR>
+Thank you - The St. Louis Visual Basic User Group committee.<P>
+<LI>4/3/2000 4:54:30 PM<BR>
+You can now update your email address on line!  Visit <a href=email/>www.stlvbug.org/email</a> to see for yourself!<P>
+<LI>3/23/2000 1:06:32 PM<BR>
+The newsgroup has been modified to now hold the formatting you enter.  It now keeps the line breaks and spacing that you specify.<P>
+<LI>3/21/2000 10:11:29 PM<BR>
+This site is now "data-driven".  This meaning that nearly 90% of the site's content, links, and text is being pulled from a database.  I will be posting the code as soon as I can get in there and clean it up and make it presentable for you. :)<P>
+<LI>11/22/1999<BR>
+The code from the November meeting on the 17th is now online and download-able.  If you have any questions about the code, feel free to contact either Michelle or myself at your convenience.<P>
+<LI>10/21/1999<BR>
+The VBUG Committee would like to apologize for any inconvenience that the meeting this month may have caused. There was a misunderstanding between several people and the result was no presenter. We would like to thank all the attendees for their input and views on the group.<P>
+<LI>10/19/1999<BR>
+The newsgroup no longer requires that message are under 255 characters.  The message sender's email address is now a hyperlink.  Site is currenlty undergoing a major overhaul, as I plan to move this site to WebClasses in addition to ASP pages.  Anyone with any suggestions may send them on, they are appreciated.<P>
+<LI>9/21/1999<BR>
+You can now view all the code we have to offer online! AND in a very familiar way!  Check it out <a href='choosecode.asp'>here</a>.<P>
+<LI>9/4/1999<BR>
+There is a new Tips and Tricks section - Check it out <a href="tips.asp">here</a>.<P>
+<LI>8/1/1999<BR>
+There has been some re-arranging of the Steering Committee recently.  Here are some of the new aditions and their hopes for the new VBUG.<P><P><UL><LI><b>Larry Whitehall </b>has withdrawn from the committee as WebMaster.  He is still an active member of the group and welcomes 'Stump Larry' questions at the meetings.<LI><b>Chris Prysock </b>has joined the committee to help organize and gather information for the group on a montly basis.  It is still uncertain if he is to do some presentations in the future.<LI><b>Michelle Winkel </b>has joined the committee, and as her first official act, she was the 'Host' for the meeting on July 21st.  She, too, is interested in giving some presentations.  Her first presentation (not schedueled yet) is to cover the 'New and Cool' tools in Visual Basic 6.0<LI><b>John Pirkey </b>has accepted the position of WebMaster.  Among his enhancements to the web site will be automatic email sending for new members and feedback.  A working page counter. :)  The posibility of an HTML newsgroup.  He will giving a presentation on the DHTML Page Designer in VB 6 toward the later part of this year.</UL><P>
+
+</UL>
+
+</UL>
+<P>&nbsp;</P>
+
+<h3>
+	<strong><b><font size="2">Steering Committee:</font></b></strong>
+</h3>
+<p>
+	<font size="2">Click below to send us an email message! </font>
+</p>
+<font size="2">
+	<table border="0">
+		<!--
+  <tr>
+    <td><img src="images/pinpurpl.gif" alt="Image Not Found" align="middle" WIDTH="21" HEIGHT="21"> </td>
+    <td><font size=2>Fred Gowin</font></td>
+    <td><font size=2>314-655-7493</font></td>
+    <td><a href="mailto:VBGuy@iname.com"><font size=2>VBGuy@iname.com</font></a></td>
+  </tr>
+-->
+		<tr>
+			<td>
+				<img src="images/pinpurpl.gif" alt="Image Not Found" align="middle" WIDTH="21" HEIGHT="21">
+			</td>
+			<td>
+				<font size="2">John Pirkey</font>
+			</td>
+			<td>
+				<font size="2">636-225-3262</font>
+			</td>
+			<td>
+				<font size="2"><a href="mailto:webmaster@stlvbug.org">webmaster@stlvbug.org</a></font>
+			</td>
+			<td>
+				&nbsp;
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<img src="images/pinpurpl.gif" alt="Image Not Found" align="middle" WIDTH="21" HEIGHT="21">
+			</td>
+			<td>
+				<font size="2">Dave Wickersheim</font>
+			</td>
+			<td>
+				<font size="2">&nbsp;</font>
+			</td>
+			<td>
+				<font size="2"><a href="mailto:dave@stlvbug.org">dave@stlvbug.org</a></font>
+			</td>
+		</tr>
+	</table>
+</font>
+<font size=2>Send an email to all of us here : <a href="mailto:committee@stlvbug.org">committee@stlvbug.org</a></font>
+<p>
+<p>
+	<font size="2">News Editor and Web Master: <em>John Pirkey</em></font>
+	<br>
+
+
+</body>
+</html>
+

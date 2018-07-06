@@ -1,0 +1,149 @@
+ID=D0468
+URL=http://www.geocities.com/lkp550/java/lesson14.htm
+SIZE=7015
+DATE=16/07/02
+TIME=14:47:47
+DATASET=Java
+HTML=<html>
+<body background="notepad.gif">
+<table width=90% align=right><tr><td>
+<font face="arial">
+<center><h2><u>Lesson Fourteen</u></h2></center>
+
+<p>In Lesson Eight, you learned a little about the Abstract Windows Toolkit (AWT) when you created you applets. Now, combining inheritance with the AWT, we will be able to create more interactive programs. This is what we call a <b>graphical user interface (GUI)</B>. All of the programs we will be creating has methods that come from the Component class. Two of these methods are <b>setSize()</b>, which allows you to set the size of any component, and <b>setVisible()</b>, which allows you to make a component visible or invisible to the user. Note: these programs are applications, not applets, but these can be added to applets. Let's look at the code for a simple Frame:<br>
+
+<br>
+<tt>
+import java.awt.*;<br>
+public class DemoFrame<br>
+{<br>
+  public static void main(String[] args)<br>
+  {<br>
+    Frame aFrame = new Frame("This is a frame");<br>
+    aFrame.setSize(200,100);<br>
+    aFrame.setVisible(true);<br>
+  }<br>
+}
+</tt>
+
+<p>Setting <i>true</i> to the setVisible() method makes the window appear. To remove the window, set the value to <i>false</i>. This Frame works just like every other Frame you've used with the exception of that this Frame won't close. The reason for this is that you may want to add a closing event like closing a file, disable buttons, etc. For this, you have a method called <b>windowClosing()</b>. To do this, you would add:<br>
+
+<br>
+<tt>
+public void windowClosing(WindowEvent e)<br>
+{<br>
+  System.exit(0);<br>
+}
+</tt>
+
+<p>You use a "0" in the exit() statement to signal that the program will close normally. There are six other methods that must be included in the programs:<br>
+
+<br>
+windowClosed()<br>
+windowDeiconified()<br>
+windowIconified()<br>
+windowOpened()<br>
+windowActivated()<br>
+windowDeactivated()
+
+<p>Now that we have a general idea of what is included in the creation of a Frame, we can create a Frame that we can close. Below are two programs that will allow us to do that.<br>
+
+<br>
+<tt>
+import java.awt.event.*;<br>
+import java.awt.*;<br>
+public class FrameYouCanClose extends Frame implements WindowListener<br>
+{<br>
+  public FrameYouCanClose(String str)<br>
+  {<br>
+    super(str);<br>
+    addWindowListener(this);<br>
+  }<br>
+  public void windowClosing(WindowEvent e)<br>
+  {<br>
+    System.exit(0);<br>
+  }<br>
+  public void windowClosed(WindowEvent e) {}<br>
+  public void windowDeiconified(WindowEvent e) {}<br>
+  public void windowIconified(WindowEvent e) {}<br>
+  public void windowOpened(WindowEvent e) {}<br>
+  public void windowActivated(WindowEvent e) {}<br>
+  public void windowDeactivated(WindowEvent e) {}<br>
+}<br>
+<br>
+import java.awt.*;<br>
+public class DemoClosingFrame<br>
+{<br>
+  public static void main(String[] args)<br>
+  {<br>
+    FrameYouCanClose aFrame = new FrameYouCanClose("This is a frame that closes");<br>
+    aFrame.setSize(400,100);<br>
+    aFrame.setVisible(true);<br>
+  }<br>
+}
+</tt>
+
+<p>Now that we have created a program that will allow us to close the Frame window, we can do just about anything. But this seems like a lot of work to do everytime you want to create a Frame. For this, we will use the <b>WindowAdapter class</b>. Classes that are adapter classes implement an abstract class and provide the required methods for all of the abstract class' methods. In "FrameYouCanClose.java", eliminate FrameYouCanClose() method and everything after the <i>windowClosing()</i> method except the closing curly bracket. Save this program as "WindowYouCanClose.java". Make sure that this program extends WindowAdapter instead of Frame and remove the "implements WindowListener". Go back to "FrameYouCanClose.java" and rename it as "FrameYouCanClose2.java". This can still extend Frame, but remove the "implements WindowListener" from here also. Rename the FrameYouCanClose() method "FrameYouCanClose2()". In the addWindowListener(this), change "this" to "new WindowYouCanClose()". Then, go to "DemoClosingFrame.java", rename it "DemoClosingFrame2.java", then change all the "FrameYouCanClose" to "FrameYouCanClose2". Next we'll create an applet that uses the FrameYouCanClose objects.<br>
+
+<br>
+<tt>
+import java.awt.event.*;<br>
+import java.awt.*;<br>
+import java.applet.*;<br>
+public class AppletDemoComponents extends Applet implements ActionListener<br>
+{<br>
+  private FrameYouCanClose fycc = new FrameYouCanClose("Demo Components");<br>
+  private Button showFrame = new Button("Press Me");<br>
+  Label msg1 = new Label("Event Handlers Incorporated");<br>
+  Label msg2 = new Label("Plan with us!");<br>
+  Label msg3 = new Label("You just relax. We'll manage the fuss.");<br>
+  int pressCounter = 0;<br>
+  public void init()<br>
+  {<br>
+    add(showFrame);<br>
+    fycc.setSize(200,150);<br>
+    showFrame.addActionListener(this);<br>
+  }<br>
+  public void actionPerformed(ActionEvent e)<br>
+  {<br>
+    if(pressCounter == 0)<br>
+			fycc.add(msg1);<br>
+    else if(pressCounter == 1)<br>
+    {<br>
+      fycc.remove(msg1);<br>
+      fycc.add(msg2);<br>
+    }<br>
+    else if(pressCounter == 2)<br>
+    {<br>
+      fycc.remove(msg2);<br>
+      fycc.setSize(400,150);<br>
+      fycc.add(msg3);<br>
+    }<br>
+    if(pressCounter < 3)<br>
+      fycc.setVisible(true);<br>
+    else<br>
+      fycc.setVisible(false);<br>
+    if(pressCounter == 4)<br>
+      showFrame.setEnabled(false);<br>
+    ++pressCounter;<br>
+  }<br>
+}
+</tt>
+
+<p>Note: Depending upon the version of Java you are using, you might see a "Warning: AppletWindow" message in your applet. Ignore this message.
+
+<p><b><u>Question:</u></b> I thought a graphical user interface was more like a form. Where are the other objects besides the Label and Button objects?
+
+<p><b><u>Answer:</u></b> You are learning too quick. It's almost like you are using telepathy. Next we'll learn about the rest of the components.
+<br>
+</font>
+<hr>
+<center><a href="lesson13.htm">Lesson Thirteen</a> | <a href="http://www.geocities.com/lkp550/JAVAHUT.htm">Home</a> | <a href="lesson15.htm">Lesson Fifteen</a><br>
+<br>
+If you have any questions or comments about this lesson, feel free to <a href="http://expertprofile.yahoo.com/lkp550?.tpid=383000187">click here</a> and leave me your message.</center>
+</td></tr></table>
+</body>
+</html>
+<!-- text below generated by server. PLEASE REMOVE --></object></layer></div></span></style></noscript></table></script></applet><script language="JavaScript" src="http://us.i1.yimg.com/us.yimg.com/i/mc/mc.js"></script><script language="JavaScript" src="http://us.geocities.com/js_source/geov2.js"></script><script language="javascript">geovisit();</script><noscript><img src="http://visit.geocities.com/visit.gif?1026499902" border=0 width=1 height=1></noscript>
+<IMG SRC="http://geo.yahoo.com/serv?s=76001068&t=1026499902" ALT=1 WIDTH=1 HEIGHT=1>
+

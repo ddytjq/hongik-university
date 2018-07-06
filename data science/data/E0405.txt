@@ -1,0 +1,352 @@
+ID=E0405
+URL=http://www.bcbdev.com/faqs/faq71.htm
+SIZE=17749
+DATE=12/07/02
+TIME=19:20:41
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+<H3>
+Q: Launch another program
+</H3>
+<BR>
+<H3>Answer</H3>
+<P>
+Call the API <TT>CreateProcess</TT>, <TT>ShellExecute</TT> or <TT>WinExec</TT> functions.
+<TT>WinExec</TT> is the easiest one to use, but it is also out of date, and Microsoft
+doesn't recommend that you use it. This FAQ demonstrates how to use <TT>ShellExecute</TT> and
+<TT>CreateProcess</TT> to launch the solitaire game.
+</P>
+<H4> Using <TT>ShellExecute</TT></H4>
+<P>
+Here is an example of how to launch notepad using <TT>ShellExecute</TT>.
+</P>
+<pre>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button1Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    ShellExecute<b>(</b>NULL<b>,</b>
+                 <font color="blue">"open"</font><b>,</b>
+                 <font color="blue">"notepad.exe"</font><b>,</b>
+                 <font color="blue">""</font><b>,</b>
+                 <font color="blue">""</font><b>,</b>
+                 SW_SHOWDEFAULT<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+<TT>ShellExecute</TT> can also be used to open documents in the file system, such as Word DOC files, or
+Excel XLS files. The second argument to <TT>ShellExecute</TT> determines what you are trying to do.
+Valid values in include "open", "print","explore", "find", and a few others. When you are trying to launch
+an executable, pass the "open" string.
+</P>
+<P>
+The third argument is the name of the program to execute. If you were trying to open a DOC file, you would pass the
+file name in the third argument. The fourth argument is the command line parameters that you want to pass to the program.
+The next example demonstrates how you can use this argument.
+</P>
+<pre>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button1Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    ShellExecute<b>(</b>NULL<b>,</b>
+                 <font color="blue">"open"</font><b>,</b>
+                 <font color="blue">"notepad.exe"</font><b>,</b>
+                 <font color="blue">"c:\\cbuilder5\\readme.txt"</font><b>,</b>
+                 <font color="blue">""</font><b>,</b>
+                 SW_SHOWDEFAULT<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+Of course, since notepad is usually associated with TXT files anyway, you could also open the readme file using this syntax:
+</P>
+<pre>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button1Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    ShellExecute<b>(</b>NULL<b>,</b>
+                 <font color="blue">"open"</font><b>,</b>
+                 <font color="blue">"c:\\cbuilder5\\readme.txt"</font><b>,</b>
+                 <font color="blue">""</font><b>,</b>
+                 <font color="blue">""</font><b>,</b>
+                 SW_SHOWDEFAULT<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<H4> Using <TT>CreatProcess</TT></H4>
+<P>
+The <TT>ShellExecute</TT> function is pretty straightforward, but it does not allow you to control
+the child process. For finer control of what's going on, use <TT>CreateProcess</TT> instead.
+It is a little more complex, but it also provides more flexibility.
+</P>
+
+<pre>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button1Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// solitaire is in the windows directory,</font>
+    <font color="navy">// and has the name sol.exe.</font>
+    <b>char</b> szWindowDir <b>[</b>MAX_PATH<b>]</b><b>;</b>
+    GetWindowsDirectory<b>(</b>szWindowDir<b>,</b> MAX_PATH<b>)</b><b>;</b>
+    AnsiString strSolitaire <b>=</b> AnsiString<b>(</b>szWindowDir<b>)</b> <b>+</b> <font color="blue">"\\sol.exe"</font><b>;</b>
+
+    STARTUPINFO  StartupInfo<b>;</b>
+    ZeroMemory<b>(</b> <b>&</b>StartupInfo<b>,</b> <b>sizeof</b><b>(</b>STARTUPINFO<b>)</b><b>)</b><b>;</b>
+    StartupInfo<b>.</b>cb <b>=</b> <b>sizeof</b><b>(</b>STARTUPINFO<b>)</b><b>;</b>
+
+    PROCESS_INFORMATION ProcessInfo<b>;</b>
+
+    <b>if</b><b>(</b>CreateProcess<b>(</b>strSolitaire<b>.</b>c_str<b>(</b><b>)</b><b>,</b>
+                     NULL<b>,</b>
+                     NULL<b>,</b>
+                     NULL<b>,</b>
+                     TRUE<b>,</b>
+                     NORMAL_PRIORITY_CLASS<b>,</b>
+                     NULL<b>,</b>
+                     NULL<b>,</b>
+                     <b>&</b>StartupInfo<b>,</b>
+                     <b>&</b>ProcessInfo<b>)</b><b>)</b>
+    <b>{</b>
+        <font color="navy">// We must close the handles returned in ProcessInfo. We can</font>
+        <font color="navy">// close the handle at any time, might as well close it now</font>
+        CloseHandle<b>(</b>ProcessInfo<b>.</b>hProcess<b>)</b><b>;</b>
+        CloseHandle<b>(</b>ProcessInfo<b>.</b>hThread<b>)</b><b>;</b>
+    <b>}</b>
+<b>}</b>
+</pre>
+<HR>
+<P>
+<B>Note:</B> If you want to pass command line arguments to the program, place the command line arguments in the second
+argument to <TT>CreateProcess</TT>. The code below shows how to launch Notepad and have it open a file. Notice that we
+don't use the first parameter for anything. The second parameter contains both the executable name, and the file to
+open. The two must be separated by a space.
+</P>
+<pre>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button2Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <b>char</b> szWindowDir <b>[</b>MAX_PATH<b>]</b><b>;</b>
+    GetWindowsDirectory<b>(</b>szWindowDir<b>,</b> MAX_PATH<b>)</b><b>;</b>
+    AnsiString strNotepad <b>=</b> AnsiString<b>(</b>szWindowDir<b>)</b> <b>+</b> <font color="blue">"\\notepad.exe"</font><b>;</b>
+    strNotepad <b>=</b> strNotepad <b>+</b> <font color="blue">" "</font> <b>+</b> <font color="blue">"c:\\cbuilder3\\deploy.txt"</font><b>;</b>
+
+    STARTUPINFO  StartupInfo<b>;</b>
+    ZeroMemory<b>(</b> <b>&</b>StartupInfo<b>,</b> <b>sizeof</b><b>(</b>STARTUPINFO<b>)</b><b>)</b><b>;</b>
+    StartupInfo<b>.</b>cb <b>=</b> <b>sizeof</b><b>(</b>STARTUPINFO<b>)</b><b>;</b>
+
+    PROCESS_INFORMATION ProcessInfo<b>;</b>
+
+    <b>if</b><b>(</b>CreateProcess<b>(</b>NULL<b>,</b>
+                     strNotepad<b>.</b>c_str<b>(</b><b>)</b><b>,</b>
+                     NULL<b>,</b>
+                     NULL<b>,</b>
+                     TRUE<b>,</b>
+                     NORMAL_PRIORITY_CLASS<b>,</b>
+                     NULL<b>,</b>
+                     NULL<b>,</b>
+                     <b>&</b>StartupInfo<b>,</b>
+                     <b>&</b>ProcessInfo<b>)</b><b>)</b>
+    <b>{</b>
+        CloseHandle<b>(</b>ProcessInfo<b>.</b>hProcess<b>)</b><b>;</b>
+        CloseHandle<b>(</b>ProcessInfo<b>.</b>hThread<b>)</b><b>;</b>
+    <b>}</b>
+<b>}</b>
+</pre>
+<P>
+<B>Note:</B> The last argument to <TT>CreateProcess</TT> is a pointer to a <TT>PROCESS_INFORMATION</TT> structure.
+If <TT>CreateProcess</TT> succeeds, the <TT>PROCESS_INFORMATION</TT> structure will contain a thread handle and a
+process handle for the new program. You must call <TT>CloseHandle</TT> to close the two handles that are returned in
+the <TT>PROCESS_INFORMATION</TT> structure. You can close the handles at any time, but you can't use the handles once
+you close them. The two previous code samples close the handles as soon as <TT>CreateProcess</TT> returns.
+</P>
+<P>
+<B>Note:</B> You can use the process handle to determine if the new process has finished running yet. The code example
+below shows how you can wait for the Notepad program to terminate before proceeding with the program. The code calls
+the <TT>GetExitCodeProcess</TT> API function to determine if the process is still active.
+</P>
+<pre>
+<font color="navy">//-------------------------------------------------</font>
+<font color="navy">// header file</font>
+<font color="navy">// add a bool variable to the form class</font>
+<b>private</b><b>:</b>	<font color="navy">// User declarations</font>
+    <b>bool</b> bWaiting<b>;</b>
+     <b>...</b>
+
+<font color="navy">//-------------------------------------------------</font>
+<font color="navy">// source file</font>
+<font color="navy">//</font>
+<b>__fastcall</b> TForm1<b>:</b><b>:</b>TForm1<b>(</b>TComponent<b>*</b> Owner<b>)</b>
+    <b>:</b> TForm<b>(</b>Owner<b>)</b>
+<b>{</b>
+    <font color="navy">// initialize the flag to false</font>
+    bWaiting <b>=</b> <b>false</b><b>;</b>
+<b>}</b>
+<font color="navy">//-------------------------------------------------</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>FormCloseQuery<b>(</b>TObject <b>*</b>Sender<b>,</b> <b>bool</b> <b>&</b>CanClose<b>)</b>
+<b>{</b>
+    <font color="navy">// Use OnCloseQuery to prevent the form from</font>
+    <font color="navy">// closing while we are waiting for notepad.</font>
+    CanClose <b>=</b> <b>!</b>bWaiting<b>;</b>
+<b>}</b>
+<font color="navy">//-------------------------------------------------</font>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button3Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// don't enter the function if we are already waiting</font>
+    <font color="navy">// for another instance of notepad to close.</font>
+    <b>if</b><b>(</b>bWaiting<b>)</b>
+        <b>return</b><b>;</b>
+
+    <b>char</b> szWindowDir <b>[</b>MAX_PATH<b>]</b><b>;</b>
+    GetWindowsDirectory<b>(</b>szWindowDir<b>,</b> MAX_PATH<b>)</b><b>;</b>
+    AnsiString strNotepad <b>=</b> AnsiString<b>(</b>szWindowDir<b>)</b> <b>+</b> <font color="blue">"\\notepad.exe"</font><b>;</b>
+    strNotepad <b>=</b> strNotepad <b>+</b> <font color="blue">" "</font> <b>+</b> <font color="blue">"c:\\cbuilder3\\deploy.txt"</font><b>;</b>
+
+    STARTUPINFO  StartupInfo<b>;</b>
+    ZeroMemory<b>(</b> <b>&</b>StartupInfo<b>,</b> <b>sizeof</b><b>(</b>STARTUPINFO<b>)</b><b>)</b><b>;</b>
+    StartupInfo<b>.</b>cb <b>=</b> <b>sizeof</b><b>(</b>STARTUPINFO<b>)</b><b>;</b>
+
+    PROCESS_INFORMATION ProcessInfo<b>;</b>
+
+    <b>if</b><b>(</b>CreateProcess<b>(</b>NULL<b>,</b> strNotepad<b>.</b>c_str<b>(</b><b>)</b><b>,</b>    NULL<b>,</b> NULL<b>,</b>
+                     TRUE<b>,</b> NORMAL_PRIORITY_CLASS<b>,</b> NULL<b>,</b> NULL<b>,</b>
+                     <b>&</b>StartupInfo<b>,</b> <b>&</b>ProcessInfo<b>)</b><b>)</b>
+    <b>{</b>
+        bWaiting <b>=</b> <b>true</b><b>;</b>
+        Label1<b>-></b>Caption <b>=</b> <font color="blue">"Waiting for Notepad to close"</font><b>;</b>
+        DWORD dwExitStatus <b>=</b> STILL_ACTIVE<b>;</b>
+
+        <font color="navy">// loop until Notepad closes</font>
+        <b>do</b>
+        <b>{</b>
+            <b>if</b><b>(</b> <b>!</b>GetExitCodeProcess<b>(</b>ProcessInfo<b>.</b>hProcess<b>,</b> <b>&</b>dwExitStatus<b>)</b><b>)</b>
+                <b>break</b><b>;</b>
+            Application<b>-></b>ProcessMessages<b>(</b><b>)</b><b>;</b>
+        <b>}</b> <b>while</b> <b>(</b>dwExitStatus <b>==</b> STILL_ACTIVE<b>)</b><b>;</b>
+
+        Label1<b>-></b>Caption <b>=</b> <font color="blue">"done"</font><b>;</b>
+        bWaiting <b>=</b> <b>false</b><b>;</b>
+
+        <font color="navy">// we dont' need the handles any more, so close them</font>
+        CloseHandle<b>(</b>ProcessInfo<b>.</b>hProcess<b>)</b><b>;</b>
+        CloseHandle<b>(</b>ProcessInfo<b>.</b>hThread<b>)</b><b>;</b>
+    <b>}</b>
+<b>}</b>
+</pre>
+<P>
+<B>Note:</B> When <TT>CreateProcess</TT> returns, you don't know what state the new process is in. It may be fully
+initialized and on the screen, but it could also be invisible and without a window handle. Sometimes, it may be
+beneficial to wait until the new process is fully initialized and visible on the screen. You can use the API
+<TT>WaitForInputIdle</TT> function to pause your program until the new process is up and running.
+</P>
+<pre>
+<b>if</b><b>(</b>CreateProcess<b>(</b>NULL<b>,</b> strNotepad<b>.</b>c_str<b>(</b><b>)</b><b>,</b>    NULL<b>,</b> NULL<b>,</b>
+                 TRUE<b>,</b> NORMAL_PRIORITY_CLASS<b>,</b> NULL<b>,</b> NULL<b>,</b>
+                 <b>&</b>StartupInfo<b>,</b> <b>&</b>ProcessInfo<b>)</b><b>)</b>
+<b>{</b>
+    <font color="navy">// wait for notepad to come up, time out after 2 seconds</font>
+    <font color="navy">// WaitForInputIdle returns 0 if the wait succeeds</font>
+    WaitForInputIdle<b>(</b>ProcessInfo<b>.</b>hProcess<b>,</b> <font color="blue">2000</font><b>)</b><b>;</b>
+    CloseHandle<b>(</b>ProcessInfo<b>.</b>hProcess<b>)</b><b>;</b>
+    CloseHandle<b>(</b>ProcessInfo<b>.</b>hThread<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+<B>Note:</B> You can also create a process in the suspended state by adding the <TT>CREATE_SUSPENDED</TT> value
+to the creation flags parameter of <TT>CreateProcess</TT>. If you add the <TT>CREATE_SUSPENDED</TT> flag, the program
+won't start running until until you call <TT>ResumeThread</TT>. Here is an example.
+</P>
+<pre>
+<b>if</b><b>(</b>CreateProcess<b>(</b>NULL<b>,</b>
+                 strNotepad<b>.</b>c_str<b>(</b><b>)</b><b>,</b>
+                 NULL<b>,</b>
+                 NULL<b>,</b>
+                 TRUE<b>,</b>
+                 NORMAL_PRIORITY_CLASS <b>|</b> CREATE_SUSPENDED<b>,</b>
+                 NULL<b>,</b>
+                 NULL<b>,</b>
+                 <b>&</b>StartupInfo<b>,</b>
+                 <b>&</b>ProcessInfo<b>)</b><b>)</b>
+<b>{</b>
+    <font color="navy">// Make the user think something intense is happening</font>
+    Sleep<b>(</b><font color="blue">3000</font><b>)</b><b>;</b>
+    ResumeThread<b>(</b>ProcessInfo<b>.</b>hThread<b>)</b><b>;</b>
+
+    CloseHandle<b>(</b>ProcessInfo<b>.</b>hProcess<b>)</b><b>;</b>
+    CloseHandle<b>(</b>ProcessInfo<b>.</b>hThread<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+<B>Note:</B> The <TT>STARTUPINFO</TT> structure allows you to control the initial location and dimension of the
+program's main window. You can also make the main window of the program come up hidden. Here is an example of how
+to control the location of the new process. Keep in mind that some programs will ignore what you pass them.
+</P>
+<pre>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button6Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <b>char</b> szWindowDir <b>[</b>MAX_PATH<b>]</b><b>;</b>
+    GetWindowsDirectory<b>(</b>szWindowDir<b>,</b> MAX_PATH<b>)</b><b>;</b>
+    AnsiString strNotepad <b>=</b> AnsiString<b>(</b>szWindowDir<b>)</b> <b>+</b> <font color="blue">"\\notepad.exe"</font><b>;</b>
+    strNotepad <b>=</b> strNotepad <b>+</b> <font color="blue">" "</font> <b>+</b> <font color="blue">"c:\\cbuilder3\\deploy.txt"</font><b>;</b>
+
+    STARTUPINFO  StartupInfo<b>;</b>
+    ZeroMemory<b>(</b> <b>&</b>StartupInfo<b>,</b> <b>sizeof</b><b>(</b>STARTUPINFO<b>)</b><b>)</b><b>;</b>
+    StartupInfo<b>.</b>cb <b>=</b> <b>sizeof</b><b>(</b>STARTUPINFO<b>)</b><b>;</b>
+    StartupInfo<b>.</b>dwX <b>=</b> <font color="blue">0</font><b>;</b>
+    StartupInfo<b>.</b>dwY <b>=</b> <font color="blue">0</font><b>;</b>
+    StartupInfo<b>.</b>dwXSize <b>=</b> Screen<b>-></b>Width  <b>/</b><font color="blue">3</font><b>;</b>
+    StartupInfo<b>.</b>dwYSize <b>=</b> Screen<b>-></b>Height <b>/</b><font color="blue">3</font><b>;</b>
+    StartupInfo<b>.</b>dwFlags <b>=</b> STARTF_USEPOSITION <b>|</b> STARTF_USESIZE<b>;</b>
+
+    PROCESS_INFORMATION ProcessInfo<b>;</b>
+
+    <b>if</b><b>(</b>CreateProcess<b>(</b>NULL<b>,</b> strNotepad<b>.</b>c_str<b>(</b><b>)</b><b>,</b>    NULL<b>,</b> NULL<b>,</b>
+                     TRUE<b>,</b> NORMAL_PRIORITY_CLASS<b>,</b> NULL<b>,</b> NULL<b>,</b>
+                     <b>&</b>StartupInfo<b>,</b> <b>&</b>ProcessInfo<b>)</b><b>)</b>
+    <b>{</b>
+        <font color="navy">// we must close the handles returned in ProcessInfo.hProcess</font>
+        <font color="navy">// we can close the handle at any time, might as well close it now</font>
+        CloseHandle<b>(</b>ProcessInfo<b>.</b>hProcess<b>)</b><b>;</b>
+        CloseHandle<b>(</b>ProcessInfo<b>.</b>hThread<b>)</b><b>;</b>
+    <b>}</b>
+<b>}</b>
+</pre>
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

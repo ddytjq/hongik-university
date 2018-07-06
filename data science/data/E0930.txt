@@ -1,0 +1,81 @@
+ID=E0930
+URL=http://www.hh.se/stud/d98rolb/ansi/mktime().html
+SIZE=2926
+DATE=12/07/02
+TIME=19:25:55
+DATASET=C
+HTML=<html>
+<head>
+  <title>mktime()</title>
+  <meta name="Generator" content="GuideML V1.6">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+<body>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="memset().html"><img src="prev.gif" alt="PREV" border=0></a><a href="modf().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+<hr>
+<pre>
+mktime-Convert the broken-down time to a time_t value
+
+Synopsis
+
+        #include &#060;time.h&#062;
+
+        t = mktime(ts);
+
+        time_t t;          /* number of seconds since 1/1/70 */
+        struct tm *ts;          /* broken down time structure */
+
+Description
+
+        This function converts the broken-down time, expressed as local
+        time, to a time_t value identical to what the <a href="time().html"> time </a> function would
+        return for the specified date and time.
+
+   The functions <a href="localtime().html"> localtime </a>, <a href="gmtime().html"> gmtime </a>, <a href="ctime().html"> ctime </a>, and mktime share a
+   static data area.  A call to any one of these destroys the
+   results of the previous call.
+
+
+Returns
+
+        The mktime function returns the number of seconds since January 1,
+        1970.
+
+Example
+
+        /*
+         *
+         * Get a time value for a very important event
+         *  Sept 8, 1988 20:16:02
+         *
+         */
+        #include &#060;stdio.h&#062;
+        #include &#060;time.h&#062;
+
+        void main(void)
+        {
+            struct tm inputtm;
+            time_t    event;
+
+            inputtm.tm_sec  = 02;     /* seconds after the minute   */
+            inputtm.tm_min  = 16;     /* minutes after the hour     */
+            inputtm.tm_hour = 20;     /* hours since midnight            */
+            inputtm.tm_mday = 8;      /* day of the month            */
+            inputtm.tm_mon  = 9;      /* months since January            */
+            inputtm.tm_year = 88;     /* years since 1900            */
+            inputtm.tm_isdst = 1;     /* Daylight Savings Time flag */
+            event = mktime(&amp;inputtm);
+
+            printf(&quot;%d seconds passed between 1/1/70, 00:00:00&quot;
+                   &quot; and 9/8/88, 20:16:02n&quot;, event);
+        }
+
+See Also
+
+        <a href="time().html"> time </a>
+</pre>
+<hr>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="memset().html"><img src="prev.gif" alt="PREV" border=0></a><a href="modf().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+</body>
+</html>
+

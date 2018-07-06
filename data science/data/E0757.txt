@@ -1,0 +1,99 @@
+ID=E0757
+URL=http://www.hh.se/stud/d98rolb/ansi/rename().html
+SIZE=3159
+DATE=12/07/02
+TIME=19:24:05
+DATASET=C
+HTML=<html>
+<head>
+  <title>rename()</title>
+  <meta name="Generator" content="GuideML V1.6">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+<body>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="remove().html"><img src="prev.gif" alt="PREV" border=0></a><a href="rewind().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+<hr>
+<pre>
+rename-Rename a file
+
+Synopsis
+
+        #include &#060;stdio.h&#062;
+
+        error = rename(old,new);
+
+        int error;           /* 0 for success, nonzero for error */
+        const char *old;   /*  old file name */
+        const char *new;   /*  new file name */
+
+Description
+
+        This function renames a file, if possible.  The old name can
+        include a path, but the new name should not.  This function fails
+        if it cannot find the old file or if the new name is the same as
+        an existing file.
+
+
+Returns
+
+        If the function fails, it returns a nonzero integer and places
+        additional error information into the external integers <a href="errno.html"> errno </a>.
+        If it is successful, it returns a 0.
+
+Example
+
+        /*
+         * This is a version of the rename command
+         * that prompts for the old and new names.
+         */
+        #include &#060;stdio.h&#062;
+        #include &#060;stdlib.h&#062;
+        #include &#060;fcntl.h&#062;
+        #include &#060;dos.h&#062;
+
+        void main(int argc, char *argv[])
+        {
+            char old[FMSIZE],new[FMSIZE];
+            char *pold,*pnew;
+            if (argc &#060; 2)       /* Get old file name */
+            {
+                printf(&quot;OLD FILE: &quot;);
+                if (fgets(old,sizeof(old),stdin) == NULL)
+                {
+                    exit(EXIT_FAILURE);
+                }
+                old[strlen(old)-1] = '0';
+                pold = old;
+            }
+            else
+            {
+                pold = argv[1];
+            }
+
+            if (argc &#060; 3)
+            {
+                printf(&quot;NEW FILE: &quot;);
+                if (fgets(new,sizeof(new),stdin) == NULL)
+                {
+                    exit(EXIT_FAILURE);
+                }
+                new[strlen(new)-1] = '0';
+                pnew = new;
+            }
+            else
+            {
+                pnew = argv[2];
+            }
+
+            if (rename(pold,pnew))
+            {
+                perror(&quot;RENAME&quot;);
+                exit(EXIT_FAILURE);
+            }
+        }
+</pre>
+<hr>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="remove().html"><img src="prev.gif" alt="PREV" border=0></a><a href="rewind().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+</body>
+</html>
+

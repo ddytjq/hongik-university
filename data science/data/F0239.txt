@@ -1,0 +1,117 @@
+ID=F0239
+URL=http://www.chez.com/scribe/en/directx/directx_isp.htm
+SIZE=7860
+DATE=09/07/2002
+TIME=13:17:10
+DATASET=Visual Basic
+HTML=<HTML>
+<HEAD>
+<LINK rel="stylesheet" type="text/css" href="../..//global.css">
+</HEAD>
+<BODY>
+<TABLE class="menu" width="100%"><TR><TD class="header">
+<A href="../index.htm">Home</A> - <A href="../about/index.htm">About</A> - <A href="../assembly/index.htm">Assembly</A> - <A href="../directx/index.htm">DirectX</A> - <A href="../opengl/index.htm">OpenGL</A> - <A href="../dotnet/index.htm">.NET</A> - <A href="../psdk/index.htm">Platform SDK</A> - <A href="../downloads/index.htm">Downloads</A> - <A href="../links/index.htm">Links</A></TD>
+<TD class="header" style="text-align:right">May 21, 2000</TD></TR></TABLE><TABLE align="right"><TR><TD><!-- BEGIN WEBSIDESTORY CODE -->
+<!-- COPYRIGHT 1997-2001 WEBSIDESTORY, INC. ALL RIGHTS RESERVED. U.S.PATENT PENDING. Privacy notice at: http://websidestory.com/privacy -->
+<!-- webbot bot="HTMLMarkup" startspan -->
+<script language="javascript">
+var _pn="en - Introduction to Space Partitioning"; //page name
+var _acct="WQ5909151KCE94EN7";   //account number
+var _pndef="title";var _hcv=65;var _mn="wf200";
+var _lp=location.protocol.indexOf('https')==0?"https://":"http://";
+var _gn="hg1.hitbox.com";function _ps(_h){if(_h.indexOf("en - Introduction to Space Partitioning")==0) {
+if (_pndef=="title"){return document.title?document.title:_pndef;}else{
+var _g=location.pathname;_h=_g.substring(_g.lastIndexOf("/")+1,_g.length);
+if(_h==""){return _pndef};}};return _h;}var _sv=10;var _bn=navigator.appName;
+if(_bn.substring(0,9)=="Microsoft"){_bn="MSIE";};var _bv=Math.round(parseFloat(navigator.appVersion)*100);
+if((_bn=="MSIE")&&(parseInt(_bv)==2))_bv=301;var _rf=escape(document.referrer);_pn=_ps(_pn);
+var _hbfa="<a href='http://rd1.hitbox.com/rd?acct="+_acct+"' target=_top><img src='";
+var _hbfc="' border=0 width=125 height=125></a><div><font face='MS Sans Serif,Arial,Helvetica '"+
+"size=1><a href='http://counter.hitbox.com/a/hitboxfree.cgi' target='_blank'>privacy</a></font></div>";
+var _hbfb="";</script><script language="javascript1.1" id="_hbc">_sv=11;</script><script
+language="javascript1.1" src="http://stats.hitbox.com/js/hbf.js"></script><script language="javascript">
+if(_hbfb.length!=0){document.write(_hbfa+_hbfb+_hbfc);}else{if((_rf=="undefined")||(_rf=="")){
+_rf="bookmark";};document.write(_hbfa+_lp+_gn+"/HG?hc="+_mn+"&hb="+_acct+"&n="+escape(_pn)+
+"&cd=1&hv=6"+"&bn="+escape(_bn)+"&bv="+_bv+"&ss=na&sc=na&dt=&sv="+_sv+"&ja=na&ln=na&pl=&rf="+_rf+_hbfc);}
+</script><noscript><a href="http://rd1.hitbox.com/rd?acct=WQ5909151KCE94EN7" target=_top><img
+src = "http://hg1.hitbox.com/HG?hc=wf200&cd=1&hv=6&ce=u&hb=WQ5909151KCE94EN7&n=en - Introduction to Space Partitioning"
+border="0" width=125 height=125></a><div><font face="MS Sans Serif,Arial,Helvetica" size=1><a
+href="http://counter.hitbox.com/a/hitboxfree.cgi" target="_blank">privacy</a></font></div>
+</noscript><!--//-->
+
+<!-- webbot bot="HTMLMarkup" endspan -->
+<!-- END WEBSIDESTORY CODE  -->
+</TD></TR></TABLE>
+<TABLE align="center"><TR><TD align="right" class="header" width="45%"><A href="directx_class.htm">The DirectX 7 Class</A>&nbsp;&lt;&lt;</TD>
+<TD align="center" class="header" width="10%"><A href="index.htm">Up</A></TD><TD align="left" class="header" width="45%">&gt;&gt;&nbsp;<A href="ddraw7.htm">DirectDraw Essentials</A></TD></TR></TABLE>
+<H1>Introduction to Space Partitioning</H1>
+<P><I>Though there is numerous resources about this subject, hopefully this article will fill over time a need for simplest, "hands-on" initiation materials regarding this matter.</I></P>
+<P>Wether you are rendering an indoor or outdoor scene, there is likely a small fraction of the whole scene, visible at any one time. The situation is much like transmitting data over a low connection link to finally figure out at the other end that most of these data are not needed.</P>
+<P>A first thought could be to reject uneedeed polygons with your own code. Though this could save memory bandwidth, testing each and every polygon is still a demanding task, especially when competing with rejection done in hardware.</P>
+<P>That's where space partioning comes into play. Wether it is done using <A href="#BSP">BSP trees</A>, <A href="#Quadtree">quadtrees</A>, <A href="#Octree">octrees</A>, portals or whatever else, the idea is to discard a whole set of polygons with simple tests. Basically, the principle is to divide the whole scene into smaller areas and to test the visibility of each area.</P>
+<P>If the tested area is not visible, you can reject all polygons in this area as none of them are visible.</P>
+<P>If the tested area is entirely visible, you could draw all polygons as all of them are potentially visible. You could also test individual polygons in this area (for example to reject polygons hidden by nearest polygons).</P>
+<P>If the area is partially visible, you could divide this area into smaller areas and repeat this process. If you can't further refine this area, you could draw all polygons as all of them are potentially visible. You could also test individual polygons in this area (for example to reject both non visible polygons or - if visible - occluded polygons)
+</UL>
+Note that if you may still testing individual polygons, you can now quickly reject polygons that are for sure not visible, and to test only those polygons that are in a visible or partially visible area.
+</P>
+<H2>Quadtree</H2>
+<TABLE width="100%"><TR>
+<TD align="center" width="25%"><IMG src="../../images/quad0.gif" width="120" height="120"><BR>Level 0</TD>
+<TD align="center" width="25%"><IMG src="../../images/quad1.gif" width="120" height="120"><BR>Level 1</TD>
+<TD align="center" width="25%"><IMG src="../../images/quad2.gif" width="120" height="120"><BR>Level 2</TD>
+<TD align="center" valign="center" width="25%">...</TD>
+</TR></TABLE>
+<P>A quadtree uses a rectangular (for example square) area as the root node. This area is divided in four rectnagular areas. This process is repeated to the maximum subdivision level we choosed. As for most other space partioning techniques, you'll notice that you should divide first those areas with the highest number of polygons as you'll the test you perform will have then a better chance to reject numerous polygons.</P>
+<P>The provided sample just deals with interactive creation of a quadtree and rendering of the finest needed level. As the quadtree is, at its finest level, a regular grid, the tree is implemented as a two dimensional array. The indices of the array are the coordinates of the center. The cell value is a flag that indicates if this rectangle is splitted.</P>
+<P>To search where the mouse was clicked, we just have to compare the x and y coordinates with the rectangle axis to finally find out which of the four child is concerned. This search is performed recursivly until we find a non divided rectangle (which we'll then divide).</P>
+<P>Similarly we render the quadtree be rendering a rectangle. Based upon the visibility of this rectangle, we then render recursivly the childs.</P>
+<TABLE width="100%"><TR>
+<TD align="center" valign="center" width="25%"><IMG src="../../images/quadb.gif"><BR>Original Quadtree</TD>
+<TD align="center" valign="center" width="25%"><IMG src="../../images/quadr1.gif"><BR>Rendered Quadtree</TD>
+<TD align="center" valign="center" width="25%"><IMG src="../../images/quadr2.gif"><BR>Refinement</TD>
+<TD align="center" valign="center" width="25%">Download <A href="../../downloads/quadtree.zip">Quadtree.zip</A> (5 Kb)</TD>
+</TR></TABLE>
+
+<H2>Octree</H2>
+<P>An octree is very similar to a quadtree structure. Instead of using a square divided into four squares, the octree uses a cube dividing into eight cubes...
+
+<H2><A name="BSP">BSP Tree</A></H2>
+<TABLE width="100%"><TR>
+<TD align="center" valing="center"><IMG src="../../images/bsp.gif"></TD>
+<TD align="center" valign="center"><A href="../../downloads/bsp.zip">bsp.zip (? Kb)</TD>
+</TR></TABLE>
+<P>BSP Trees are based on the same principal. This time instead of dividing our quadrangle in four parts, we'll just split it in two parts, arbitrary first using a vertical line. If we want to split one of the two childs, we'll use then an horizontal line to split this child in two smaller parts. If needed these parts are themselves divided using a vertical line in two parts and so on...</P>
+<P>This time we'll use an array to store each node starting with the cell numbered 1. As this is a binary tree, we'll use <CODE>CurrentNode * 2</CODE> to access the "left" child node and <CODE>CurrentNode * 2 + 1</CODE> to access the "right" child node.</P>
+We have now to realize that we don't have to bound our start area. With this point of view, we are just using a line (or a 3D plan) and we just have to find out to which side of this plane, the tested point belongs. Similarly as we don't start using a bounded area, we are just interested in finding this side and we don't care any more of any particular bounded area. Because of this, the successive plans we are tested doesn't need to have a particular placement in regard with the parent node. That's where most BSP papers on the Internet starts, trying to build successive planes "arbitrary" from the geometry so that the produced tree is "good", and just testing the side to which a particular point belongs.</P>
+<HR>
+<DIV class="copyright"><A href="../mail.htm">Patrice Scribe</A></DIV>
+</BODY>
+</HTML>
+<!-- -->
+</noscript>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+<!--
+var rnd = Math.floor(Math.random() * 9) + 1 ; 
+if (rnd <= 4) { 
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl//default','pub','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=470,height=120');
+} else if(rnd == 5) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl//autre4','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+} else if(rnd == 6) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl//autre2','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+} else if(rnd >= 7) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl//autre','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+}
+// -->
+</SCRIPT>
+
+<script language="javascript">
+WEBO_ZONE=122;
+WEBO_PAGE=1;
+weboplus_ok=0;
+</script>
+<script language="javascript"
+src="http://js.libertysurf.fr/chez/weborama/weboscopeplus.js"></SCRIPT>
+<SCRIPT>if(weboplus_ok==1){weboplus_zp(WEBO_ZONE,WEBO_PAGE);}
+</script>
+

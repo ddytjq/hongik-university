@@ -1,0 +1,268 @@
+ID=E0408
+URL=http://www.troubleshooters.com/codecorn/littperl/perlfuncorder.htm
+SIZE=8681
+DATE=12/07/02
+TIME=19:20:42
+DATASET=C
+HTML=<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="description" content="Debugging and Troubleshooting Source Code including MS Access, C++, Delphi, FoxPro, MFC, SQL, Visual Basic">
+   <meta name="keywords" content="debugging, troubleshooting, Source Code, Access, C++, Delphi, FoxPro, MFC, Microsoft Foundation Classes, SQL, Visual Basic">
+   <meta name="FORMATTER" content="Microsoft FrontPage 1.1">
+   <meta name="Author" content="Steve Litt">
+   <meta name="Description" content="Subroutines and References in PERL">
+   <meta name="KeyWords" content="perl,Perl,PERL,subroutines,function,references,pointers">
+   <meta name="GENERATOR" content="Mozilla/4.5 [en] (Win98; U) [Netscape]">
+   <title>Subroutines and References in PERL</title>
+</head>
+<body text="#000000" bgcolor="#FFFFF0" link="#0000EE" vlink="#551A8B" alink="#FF0000" background="../../tcbk.gif">
+
+<center>
+<h2>
+<a NAME="top"></a><a href="../../troubleshooters.htm">Troubleshooters.Com</a>
+and <a href="../index.htm">Code Corner</a> Present</h2></center>
+
+<center>
+<h1>
+<a href="index.htm">Steve Litt's PERLs of Wisdom</a>:<br>
+Quirky Behavior of Args in Prototyped Subroutines</h1></center>
+
+<center><a href="../../cpyright.htm">Copyright (C) 2000 by Steve Litt</a></center>
+
+<p><br>
+<center>
+<h1>
+Danger! Warning! Peligro! Achtung! Watch it!</h1></center>
+When using prototyped subroutines, subroutine order (sometimes) counts.
+This is especially true of hash and array arguments. When passing arguments
+in subroutines prototyped certain ways, if the called subroutine is defined
+after the call, a <b><i>very non-obvious</i></b> runtime error is generated.
+<p>I have nothing against the language requiring the programmer to order
+subroutines correctly (as long as he has some method of forward references
+for recursion), but the error should be compile time and informative. This
+error is not, and can lead to long and frustrating debugging sessions.
+Until solved, it can even look intermittent.
+<p>Once again, the problem is in the order of subroutine definition. As
+a hash argument example, consider the following program:
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<tr>
+<td>
+<pre>#!/usr/bin/perl -w
+
+use strict;
+
+sub showHash(\%)
+&nbsp; {
+&nbsp; my(%hashh) = %{(shift)};
+&nbsp; my($temp);
+&nbsp; foreach $temp (keys(%hashh)) { print "$temp=" . $hashh{$temp} . "\n"; }
+&nbsp; print "\n";
+&nbsp; }
+
+sub higherLevel(\%)
+&nbsp; {
+&nbsp; my(%hashh) = %{(shift)};
+&nbsp; showHash(%hashh);
+&nbsp; }
+
+my(%hashh) = ("1"=>"one","2"=>"two","3"=>"three");
+higherLevel(%hashh);&nbsp;&nbsp;</pre>
+</td>
+</tr>
+</table>
+
+<p>In the preceding program, every call is to a previously defined function,
+so everything works. Running this problem (assume it's called jj) yields
+the expected output, as follows:
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#FFFFCC" >
+<tr>
+<td>
+<pre>[slitt@mydesk slitt]$ ./jj
+1=one
+2=two
+3=three
+
+[slitt@mydesk slitt]$</pre>
+</td>
+</tr>
+</table>
+
+<p>But now make the simple change of moving subroutine higherLevel() above
+subroutine showHash(), as shown in the listing that follows:
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<tr>
+<td>
+<pre>#!/usr/bin/perl -w
+
+use strict;
+
+sub higherLevel(\%)
+&nbsp; {
+&nbsp; my(%hashh) = %{(shift)};
+&nbsp; showHash(%hashh);
+&nbsp; }
+
+sub showHash(\%)
+&nbsp; {
+&nbsp; my(%hashh) = %{(shift)};
+&nbsp; my($temp);
+&nbsp; foreach $temp (keys(%hashh)) { print "$temp=" . $hashh{$temp} . "\n"; }
+&nbsp; print "\n";
+&nbsp; }
+
+my(%hashh) = ("1"=>"one","2"=>"two","3"=>"three");
+higherLevel(%hashh);</pre>
+</td>
+</tr>
+</table>
+
+<p>Running the preceding code yields the following non-obvious error:
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#FFFFCC" >
+<tr>
+<td>
+<pre>[slitt@mydesk slitt]$ ./jj
+Can't use string ("1") as a HASH ref while "strict refs" in use at ./jj line 13.
+[slitt@mydesk slitt]$&nbsp;</pre>
+</td>
+</tr>
+</table>
+
+<p>As you can see, the program somehow thinks that %{(shift)} is delivering
+the first key of the hash, instead of the hash itself. An odd outcome to
+be produced by a simple change of subroutine order.
+<p><b>ALWAYS BE ON THE LOOKOUT FOR THIS!</b> Although it looks simple enough
+here, when occurring in a large program, especially when subroutines have
+both hash args and array args, this can be *extremely* non-obvious. It
+took an effort to synthesize this error into a 20 line program.
+<p>This looks obvious in this 20 line program, but it's VERY CRYPTIC in
+a large program, especially with multiple args like myFunction(\%\@$).
+Unless you're aware of this, it can take hours to track down in a large
+program. Even more misleading is the fact that if you have the functions
+defined after calls to them, you can "fix" the problem by backslashing
+the args in the call. However, if you then move the calls with backslashed
+args below the subroutine definitions, that will cause an error. The whole
+thing looks very intermittent unless you understand the role of definition
+order. Watch out!
+<p>Whenever an error message seems to say you're dealing with an element
+of an array or hash when you know it to be the hash or array (or more correctly,
+a reference to the hash or array), ascertain correct subroutine definition.
+You can save hours.
+<center>
+<p>-*-*-*-</center>
+The following shows a similar problem when passing arrays, starting with
+the correct code:
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<tr>
+<td>
+<pre>#!/usr/bin/perl -w
+
+use strict;
+
+sub showArray(\@)
+&nbsp; {
+&nbsp; my(@arr) = @{(shift)};
+&nbsp; my($temp);
+&nbsp; foreach $temp (@arr) { print "$temp\n"; }
+&nbsp; }
+
+sub higherLevel(\@)
+&nbsp; {
+&nbsp; my(@arr) = @{(shift)};
+&nbsp; showArray(@arr);
+&nbsp; }
+
+my(@arr) = ("one","two","three");
+higherLevel(@arr);</pre>
+</td>
+</tr>
+</table>
+
+<p>As you can see, the preceding code calls already defined subroutines
+and yields the following output, as expected:
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#FFFFCC" >
+<tr>
+<td>
+<pre>[slitt@mydesk slitt]$ ./jj
+one
+two
+three
+[slitt@mydesk slitt]$</pre>
+</td>
+</tr>
+</table>
+
+<p>But now place higherLevel() above showArray(), as follows:
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<tr>
+<td>
+<pre>#!/usr/bin/perl -w
+
+use strict;
+
+sub higherLevel(\@)
+&nbsp; {
+&nbsp; my(@arr) = @{(shift)};
+&nbsp; showArray(@arr);
+&nbsp; }
+
+sub showArray(\@)
+&nbsp; {
+&nbsp; my(@arr) = @{(shift)};
+&nbsp; my($temp);
+&nbsp; foreach $temp (@arr) { print "$temp\n"; }
+&nbsp; }
+
+my(@arr) = ("one","two","three");
+higherLevel(@arr);</pre>
+</td>
+</tr>
+</table>
+
+<p>The preceding code involves a call to an as of yet undefined subroutine,
+and results in the extremely non-obvious error message shown following:
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#FFFFCC" >
+<tr>
+<td>
+<pre>[slitt@mydesk slitt]$ ./jj
+Can't use string ("one") as an ARRAY ref while "strict refs" in use at ./jj line
+&nbsp;13.
+[slitt@mydesk slitt]$</pre>
+</td>
+</tr>
+</table>
+
+<p><b>ALWAYS BE ON THE LOOKOUT FOR THIS!</b>. To repeat, it looks obvious
+in this 20 line program, but it's VERY CRYPTIC in a large program, especially
+with multiple args like myFunction(\%\@$). Unless you're aware of this,
+it can take hours to track down in a large program. Even more misleading
+is the fact that if you have the functions defined after calls to them,
+you can "fix" the problem by backslashing the args in the call. However,
+if you then move the calls with backslashed args below the subroutine definitions,
+that will cause an error. The whole thing looks very intermittent unless
+you understand the role of definition order. Watch out!
+<p>Whenever an error message seems to say you're dealing with an element
+of an array or hash when you know it to be the hash or array (or more correctly,
+a reference to the hash or array), ascertain correct subroutine definition.
+You can save hours.
+<p>
+<hr>
+<p>&nbsp;[ <a href="../../troubleshooters.htm">Troubleshooters.com</a>
+| <a href="../index.htm">Code Corner</a> | <a href="mailto:slitt@troubleshooters.com">Email
+Steve Litt</a> ]
+<p><a href="../../cpyright.htm#top"><img SRC="../../images/biglcpyr.gif" BORDER=0 height=30 width=30></a><a href="../../cpyright.htm#top">Copyright
+(C)2000 by Steve Litt</a> -- <a href="../../cpyright.htm#top">Legal</a>
+<br>&nbsp;
+<br>&nbsp;
+</body>
+</html>
+

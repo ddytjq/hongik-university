@@ -1,0 +1,593 @@
+ID=D0091
+URL=http://www.geocities.com/SiliconValley/Horizon/6481/AltUI11s.html
+SIZE=23682
+DATE=16/07/02
+TIME=14:36:53
+DATASET=Java
+HTML=<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Serializing UI Components</title>
+</head>
+
+<body bgcolor="#C0C0C0" text="#000000" link="#FF0000"
+vlink="#800080" alink="#0000FF">
+
+<p align="center"><a href="index.html#top" name="top"><img
+src="JavaDevPage.gif" alt="Java Developer's Page" align="middle"
+border="0" width="461" height="118"></a></p>
+
+<p>&nbsp;</p>
+
+<h1 align="center">Serializing UI Components</h1>
+
+<p>&nbsp;</p>
+
+<p>In the <a href="AltUI11.html#top">previous</a> article, I
+showed you how to convert your components to AWT 1.1, to benefit
+by the advantages of the delegation event model. Next I will show
+you how object serialization can be used to create persistent
+user interfaces.</p>
+
+<p>&nbsp;</p>
+
+<h3><b>Transforming the applet into an application</b></h3>
+
+<p>Not to have trouble with the security politics of the
+browsers, the Test applet should be transformed into an
+application named <a href="#TestApp_java" name="TestApp_back">TestApp</a>.
+First the java.applet.Applet superclass must be replaced with
+java.awt.Frame, so that the application can run into a window.
+The init() method can be kept. The only one modification is in
+the line that set the font. Its name can't be obtained with
+getFont().getName() anymore, because when init() is called,
+getFont() returns null. A void string is used for the font's
+name, letting AWT to choose a valid name for the application's
+font. After these modifications, the TestApp class needs only a
+main() method.</p>
+
+<p>&nbsp;</p>
+
+<h3><b>Initializing the application</b></h3>
+
+<p>The <b>main()</b> method tries first to &quot;read&quot; a
+TestApp object from the TestApp.ser file. The
+FileNotFoundException exception will be ignored because at the
+first run of the application this file won't exist. If the
+deserialization succeeds then the TestApp object is shown on the
+screen with the show() method inherited from java.awt.Frame.
+Otherwise the main() method creates a TestApp window, it sets the
+title and the size, it calls the init() method to create the
+buttons that form the user interface, then it registers a
+WindowListener and in the final it shows the window. After it
+returns from main(), the application continue to run. It is
+finished when the user closes the window.</p>
+
+<p>&nbsp;</p>
+
+<h3><b>Closing the application</b></h3>
+
+<p>The instance of the <b>TestWindowAdapter</b> class, which was
+created in main() method, receive the event that is fired when
+the user tries to close the window of the application. Before it
+calls System.exit(), it serialize the TestApp object in the
+TestApp.ser file, together with the components referenced by this
+object. The listeners are also serialized because they are
+referenced by the components. When the next run of the
+application occurs the TestApp window is deserialized and shown
+on the screen at the same position with the same dimension, and
+the checkbox and radio buttons have the same state as they had at
+the last close of the application.</p>
+
+<p>The application isn't multi-user. If you launch more than one
+instance when they are closed, they override same TestApp.ser
+file.</p>
+
+<p>&nbsp;</p>
+
+<h3><b>Serializing Listeners</b></h3>
+
+<p>All Listeners must implement the <b>java.io.Serializable </b>interface
+to make serialization possible. This interface has no methods and
+acts like a mark.</p>
+
+<p>If one of the EastListener or SouthListener classes doesn't
+implement java.io.Serializable interface then the application
+works, but exceptions are thrown, caught, and shown to console.
+The user interface won't be persistent. <b>However, if
+TestWindowAdapter do not implement java.io.Serializable then the
+application manifest a strange behavior.</b> At the first run
+everything seems to be OK. No exception is thrown. When the next
+runs occur the deserialization works, but the application can't
+be closed and the user interface isn't serialized anymore. <b>This,
+because the TestWindowAdapter instance was simply not serialized
+at the first run.</b> I deduced this conclusion on two ways.
+First I compared the TestApp.ser files generated in both
+situations with TestWindowAdapter serializable and not (and
+keeping same state for buttons, and same dimension and position
+for the window). I observed that if I cut a certain continuous
+part from the file that was generated in the case in which
+TestWindowAdapter implemented java.io.Serializable, then I obtain
+the file that was generated in the second case (in which it
+didn't implement it). Even more, the cut part contains the string
+&quot;TestWindowAdapter&quot;. The second way was based on the
+analysis of the source code of the java.awt.AWTEventMulticaster
+class.</p>
+
+<p>&nbsp;</p>
+
+<h3><a name="bug"><b>A bug in java.awt.AWTEventMulticaster class</b></a></h3>
+
+<p>The add/remove&lt;EventType&gt;Listener() methods of the
+components call add() and remove() methods of the <b>java.awt.AWTEventMulticaster
+</b>class. The values that are returned from these methods are
+stored in transient variables. The AWTEventMulticaster class is
+used to build chains of Listeners, but isn't serializable. </p>
+
+<p>At serialization, the components call the save() method of
+AWTEventMulticaster, which call saveInternal(). These methods can
+serialize both AWTEventMulticaster objects and serializable
+Listeners, but <b>do not consider the case in which
+non-serializable Listeners are passed to them</b>. When they
+receive the TestWindowAdapter object, they should throw an
+exception, but they don't. You may correct this bug by modifying
+the final part of the AWTEventMulticaster.java file. This
+becomes:</p>
+
+<pre>................................................
+import java.io.NotSerializableException;
+................................................
+
+protected void saveInternal(...) throws IOException
+{
+    if (a instanceof AWTEventMulticaster)
+        ... ... ...
+    else if (a instanceof Serializable)
+        ... ... ...
+    else
+        throw (new NotSerializableException(a.getClass().getName()));
+
+    if (b instanceof AWTEventMulticaster)
+        ... ... ...
+    else if (b instanceof Serializable)
+        ... ... ...
+    else
+        throw (new NotSerializableException(b.getClass().getName()));
+}
+
+protected static void save(...) throws IOException
+{
+    ... ... ...
+    else
+        throw (new NotSerializableException(l.getClass().getName()));
+}</pre>
+
+<p>Next, AWTEventMulticaster.java must be compiled, and the
+resulted .class file must be moved in classes.zip.</p>
+
+<p><b>It should be highlighted that this bug creates problems
+only at debugging. If you take care that all Listener classes
+implement java.io.Serializable then this bug won't affect you.
+But imagine that you work on an application, which registers
+hundreds of Listeners to AWT components. If only one Listener
+doesn't implement java.io.Serializable, then your application
+won't serialize well, and won't signal this (no exception is
+thrown). </b></p>
+
+<p>&nbsp;</p>
+
+<h3><b>A bug in my own AltButton</b></h3>
+
+<p>In this moment it might look strange that my application works
+well, because the AltButton class uses
+java.awt.AWTEventMulticaster without calling save() methods (it
+isn't public, so it can't use it), and the actionListener member
+variable isn't transient like in java.awt.Button class. The
+explication can be found by analyzing the chaining mechanism of
+the Listeners. <b>If a button has only one ActionListener then it
+won't create any instances of the AWTEventMulticaster class.</b>
+This phenomenon allows TestApp to serialize / deserialize right.</p>
+
+<p>But if you add, for example, two Listeners at one of the
+buttons from east, as bellow, then the application won't offer
+persistency anymore, and throws exceptions at serialization.</p>
+
+<pre>e2 = new AltButton(&quot;Button 2&quot;);
+e2.addActionListener(new EastListener(w2));
+e2.addActionListener(new EastListener(w2));
+p.add(e2);</pre>
+
+<p>The application continues to work because the exceptions are
+caught. By clicking on the second button from east, you won't
+change the state of that from west because the first EastListener
+modifies it, and the second modifies it again, bringing the
+button in the initial state. This behavior is right. If
+java.awt.AWTEventMulticaster is modified again to implement
+java.io.Serializable, then the persistency will work.</p>
+
+<p><b>To modify the Java classes isn't a good solution</b> for at
+least two reasons. First, the programs become non-portable - they
+run only on the machines in which same modifications were made in
+the source code of the standard classes. Second, you can't know
+which effect the modifications have on other Java classes or
+other applications. These modifications are good only for
+experimenting.</p>
+
+<p><b>The right solution consist in modifying the
+add/removeActionListener() methods of AltButton</b>. Instead of
+AWTEventMulticaster you must use another class. Such a file: </p>
+
+<pre>// AltEventMulticaster.java
+public class AltEventMulticaster extends java.awt.AWTEventMulticaster 
+implements java.io.Serializable
+{
+}</pre>
+
+<p>won't compile. This solution would have worked if
+java.awt.AWTEventMulticaster had a public or protected no-arg
+constructor. In the variant listed below, the file compiles, but
+the persistency don't work. The error is signaled at runtime.</p>
+
+<pre>// AltEventMulticaster.java
+import java.util.EventListener;
+public class AltEventMulticaster extends java.awt.AWTEventMulticaster 
+implements java.io.Serializable
+{
+    protected AltEventMulticaster(EventListener a, EventListener b) 
+    {
+        super(a, b);
+    }
+}</pre>
+
+<p>A solution would be to make AltButton member of java.awt
+package and implement the serialization like java.awt.Button
+does. But this is a bad idea. Another solution is to make a copy
+of the AWTEventMulticaster.java file, and rename it
+AltEventMulticaster.java. You must remove the declaration
+&quot;package java.awt;&quot; from the beginning of the new file,
+and the string &quot;AWTEventMulticaster&quot; must be replaced
+with &quot;AltEventMulticaster&quot;. The new class must
+implement java.io.Serializable. But this cannot be distributed
+because of the License Agreement.</p>
+
+<p>The only solution, I recommend you, is to write a less
+generally class - <a href="#AltActionEventMulticaster_java"
+name="AltActionEventMulticaster_back">AltActionEventMulticaster</a>
+that implements methods like those of
+java.awt.AWTEventMulticaster. The add/removeActionListener()
+methods of AltButton will call the add/remove() methods of
+AltActionEventMulticaster, instead of those of
+AWTEventMulticaster.</p>
+
+<p>&nbsp;</p>
+
+<h3><b>Conclusion</b></h3>
+
+<p>There are a few important frameworks that offer components
+written 100% in Java: JFC (Sun), IFC (Netscape) and AFC
+(Microsoft). Nevertheless, there is a place for small companies
+or individual programmers. They may offer specialized components
+or with a &quot;nonstandard&quot; look, like these presented in
+my articles. But their work won't be easy.</p>
+
+<p>My application runs, and the persistency works in all right
+scenarios that I imagined and it fails when it's expected to.
+This, without to modify the sources of the AWT classes. But I
+would have a few questions for the programmers from JavaSoft:</p>
+
+<blockquote>
+    <p><b>Why do new methods call deprecated methods?<br>
+    Why isn't eventEnebled() protected?<br>
+    Why isn't AWTEventMulticaster serializable?</b></p>
+</blockquote>
+
+<p>&nbsp;</p>
+
+<h3><b>Resources</b></h3>
+
+<p>The JavaBeans HomePage<br>
+<a href="http://java.sun.com/beans/index.html" target="resource">http://java.sun.com/beans/index.html</a></p>
+
+<p>Object Serialization<br>
+<a
+href="http://java.sun.com/products/jdk/1.1/docs/guide/serialization/index.html"
+target="resource">http://java.sun.com/products/jdk/1.1/docs/guide/serialization/index.html</a></p>
+
+<p>JFC vs. AFC: Which GUI toolkit should you use?<br>
+<a
+href="http://www.javaworld.com/javaworld/jw-02-1998/jw-02-afc.v.jfc.html"
+target="resource">http://www.javaworld.com/javaworld/jw-02-1998/jw-02-afc.v.jfc.html</a></p>
+
+<p>&nbsp;</p>
+
+<h3><a name="TestApp_java"><strong>TestApp.java</strong></a></h3>
+
+<pre><font color="#A00000">// TestApp.java</font>
+
+<font color="#0000F0">import</font> java.awt.Color;
+<font color="#0000F0">import</font> java.awt.Font;
+<font color="#0000F0">import</font> java.awt.GridLayout;
+<font color="#0000F0">import</font> java.awt.Panel;
+<font color="#0000F0">import</font> java.awt.event.ActionEvent;
+<font color="#0000F0">import</font> java.awt.event.ActionListener;
+<font color="#0000F0">import</font> java.awt.event.WindowEvent;
+<font color="#0000F0">import</font> java.awt.event.WindowAdapter;
+<font color="#0000F0">import</font> java.io.*;
+
+<font color="#0000F0">public</font> <font color="#0000F0">class</font> TestApp <font
+color="#0000F0">extends</font> java.awt.Frame
+{
+    AltCheckboxGroup n, s;
+    AltCheckbox n1, n2, n3;
+    AltCheckbox s1, s2, s3;
+    AltCheckbox w1, w2, w3;
+    AltButton   e1, e2, e3;
+
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> init()
+    {
+        setBackground(Color.lightGray);
+        setForeground(Color.black);
+        setFont(<font color="#0000F0">new</font> Font(&quot;&quot;, Font.PLAIN, 14));
+        setLayout(<font color="#0000F0">new</font> GridLayout(5,1));
+        Panel p;
+
+        p = <font color="#0000F0">new</font> Panel();
+        p.setLayout(<font color="#0000F0">new</font> GridLayout(1, 3));
+        n = <font color="#0000F0">new</font> AltCheckboxGroup();
+        n1 = <font color="#0000F0">new</font> AltCheckbox(&quot;Radio 1&quot;, false, n);
+        p.add(n1);
+        n2 = <font color="#0000F0">new</font> AltCheckbox(&quot;Radio 2&quot;, false, n);
+        p.add(n2);
+        n3 = <font color="#0000F0">new</font> AltCheckbox(&quot;Radio 3&quot;, false, n);
+        p.add(n3);
+        n.setSelectedCheckbox(n2);
+        add(p);
+
+        p = <font color="#0000F0">new</font> Panel();
+        p.setLayout(<font color="#0000F0">new</font> GridLayout(1, 2));
+        w1 = <font color="#0000F0">new</font> AltCheckbox(&quot;Check 1&quot;, true);
+        p.add(w1);
+        e1 = <font color="#0000F0">new</font> AltButton(&quot;Button 1&quot;);
+        e1.addActionListener(<font color="#0000F0">new</font> EastListener(w1));
+        p.add(e1);
+        add(p);
+
+        p = <font color="#0000F0">new</font> Panel();
+        p.setLayout(<font color="#0000F0">new</font> GridLayout(1, 2));
+        w2 = <font color="#0000F0">new</font> AltCheckbox(&quot;Check 2&quot;, false);
+        p.add(w2);
+        e2 = <font color="#0000F0">new</font> AltButton(&quot;Button 2&quot;);
+        e2.addActionListener(<font color="#0000F0">new</font> EastListener(w2));
+        p.add(e2);
+        add(p);
+
+        p = <font color="#0000F0">new</font> Panel();
+        p.setLayout(<font color="#0000F0">new</font> GridLayout(1, 2));
+        w3 = <font color="#0000F0">new</font> AltCheckbox(&quot;Check 3&quot;, true);
+        p.add(w3);
+        e3 = <font color="#0000F0">new</font> AltButton(&quot;Button 3&quot;);
+        e3.addActionListener(<font color="#0000F0">new</font> EastListener(w3));
+        p.add(e3);
+        add(p);
+
+        p = <font color="#0000F0">new</font> Panel();
+        p.setLayout(<font color="#0000F0">new</font> GridLayout(1, 3));
+        s = <font color="#0000F0">new</font> AltCheckboxGroup();
+        s1 = <font color="#0000F0">new</font> AltCheckbox(&quot;First&quot;, false, s);
+        s1.addActionListener(<font color="#0000F0">new</font> SouthListener(n, n1));
+        p.add(s1);
+        s2 = <font color="#0000F0">new</font> AltCheckbox(&quot;Second&quot;, false, s);
+        s2.addActionListener(<font color="#0000F0">new</font> SouthListener(n, n2));
+        p.add(s2);
+        s3 = <font color="#0000F0">new</font> AltCheckbox(&quot;Third&quot;, false, s);
+        s3.addActionListener(<font color="#0000F0">new</font> SouthListener(n, n3));
+        p.add(s3);
+        s.setSelectedCheckbox(s2);
+        add(p);
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">static</font> <font
+color="#0000F0">void</font> main(String args[]) 
+    {
+        TestApp t;
+        <font color="#0000F0">try</font>
+        {
+            FileInputStream in = <font color="#0000F0">new</font> FileInputStream(&quot;TestApp.ser&quot;);
+            ObjectInputStream s = <font color="#0000F0">new</font> ObjectInputStream(in);
+            t = (TestApp) s.readObject();
+            t.show();
+            <font color="#0000F0">return</font>;
+        }
+        <font color="#0000F0">catch</font> (FileNotFoundException e)
+        {
+        }
+        <font color="#0000F0">catch</font> (IOException e)
+        {
+            System.out.println(e);
+        }
+        <font color="#0000F0">catch</font> (ClassNotFoundException e)
+        {
+            System.out.println(e);
+        }
+        <font color="#0000F0">catch</font> (SecurityException e)
+        {
+            System.out.println(e);
+        }
+
+        t = <font color="#0000F0">new</font> TestApp();
+        t.setTitle(&quot;TestApp&quot;);
+        t.setSize(200,200);
+        t.init();
+        t.addWindowListener(<font color="#0000F0">new</font> TestWindowAdapter(t));
+        t.show();
+    }
+
+}
+
+<font color="#0000F0">class</font> TestWindowAdapter <font
+color="#0000F0">extends</font> WindowAdapter <font
+color="#0000F0">implements</font> Serializable
+{
+    TestApp t;
+
+    TestWindowAdapter(TestApp t)
+    {
+        <font color="#0000F0">this</font>.t = t;
+    }
+    
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> windowClosing(WindowEvent we)
+    {
+        <font color="#0000F0">try</font>
+        {
+            FileOutputStream out = <font color="#0000F0">new</font> FileOutputStream(&quot;TestApp.ser&quot;);
+            ObjectOutputStream s = <font color="#0000F0">new</font> ObjectOutputStream(out);
+            s.writeObject(t);
+            s.flush();
+        }
+        <font color="#0000F0">catch</font> (IOException e)
+        {
+            System.out.println(e);
+        }
+        <font color="#0000F0">catch</font> (SecurityException e)
+        {
+            System.out.println(e);
+        }
+
+        System.exit(0);
+    }
+
+}
+
+<font color="#0000F0">class</font> EastListener <font
+color="#0000F0">implements</font> ActionListener, Serializable
+{
+    AltCheckbox w;
+
+    EastListener(AltCheckbox w)
+    {
+        <font color="#0000F0">this</font>.w = w;
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> actionPerformed(ActionEvent e)
+    {
+        w.setState(!w.getState());
+    }
+
+}
+
+<font color="#0000F0">class</font> SouthListener <font
+color="#0000F0">implements</font> ActionListener, Serializable
+{
+    AltCheckboxGroup g;
+    AltCheckbox n;
+
+    SouthListener(AltCheckboxGroup g, AltCheckbox n)
+    {
+        <font color="#0000F0">this</font>.g = g;
+        <font color="#0000F0">this</font>.n = n;
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> actionPerformed(ActionEvent e)
+    {
+        g.setSelectedCheckbox(n);
+    }
+
+}
+</pre>
+
+<p><a href="#TestApp_back">Back to story</a></p>
+
+<p>&nbsp;</p>
+
+<h3><a name="AltActionEventMulticaster_java"><strong>AltActionEventMulticaster.java</strong></a></h3>
+
+<pre><font color="#A00000">// AltActionEventMulticaster.java</font>
+
+<font color="#0000F0">import</font> java.awt.event.ActionEvent;
+<font color="#0000F0">import</font> java.awt.event.ActionListener;
+<font color="#0000F0">import</font> java.io.Serializable;
+
+
+<font color="#0000F0">public</font> <font color="#0000F0">class</font> AltActionEventMulticaster <font
+color="#0000F0">implements</font> Serializable, ActionListener
+{
+    <font color="#0000F0">protected</font> <font color="#0000F0">final</font> ActionListener a, b;
+
+    <font color="#0000F0">protected</font> AltActionEventMulticaster(ActionListener a, ActionListener b) 
+    {
+        <font color="#0000F0">this</font>.a = a; 
+        <font color="#0000F0">this</font>.b = b;
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">void</font> actionPerformed(ActionEvent e) 
+    {
+        a.actionPerformed(e);
+        b.actionPerformed(e);
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">static</font> ActionListener add(ActionListener a, ActionListener b) 
+    {
+        <font color="#0000F0">if</font> (a == null) <font
+color="#0000F0">return</font> b;
+        <font color="#0000F0">if</font> (b == null) <font
+color="#0000F0">return</font> a;
+        <font color="#0000F0">return</font> <font color="#0000F0">new</font> AltActionEventMulticaster(a, b);
+    }
+
+    <font color="#0000F0">public</font> <font color="#0000F0">static</font> ActionListener remove(ActionListener l, ActionListener oldl) 
+    {
+        <font color="#0000F0">if</font> (l == oldl || l == null) 
+            <font color="#0000F0">return</font> null;
+        <font color="#0000F0">else</font> <font color="#0000F0">if</font> (l <font
+color="#0000F0">instanceof</font> AltActionEventMulticaster) 
+            <font color="#0000F0">return</font> ((AltActionEventMulticaster)l).remove(oldl);
+        <font color="#0000F0">else</font>
+            <font color="#0000F0">return</font> l;
+    }
+
+    <font color="#0000F0">protected</font> ActionListener remove(ActionListener oldl) 
+    {
+        <font color="#0000F0">if</font> (oldl == a) <font
+color="#0000F0">return</font> b;
+        <font color="#0000F0">if</font> (oldl == b) <font
+color="#0000F0">return</font> a;
+        ActionListener a2 = remove(a, oldl);
+        ActionListener b2 = remove(b, oldl);
+        <font color="#0000F0">if</font> (a2 == a &amp;&amp; b2 == b)
+            <font color="#0000F0">return</font> <font
+color="#0000F0">this</font>;
+        <font color="#0000F0">return</font> add(a2, b2);
+    }
+
+}
+</pre>
+
+<p><a href="#AltActionEventMulticaster_back">Back to story</a></p>
+
+<hr>
+
+<p><br>
+The author of this page can be reached at <a
+href="mailto:andcio@hotmail.com">andcio@hotmail.com</a>. <br>
+<a href="InsideAWT.html#top">Back to Inside AWT</a><br>
+<a href="index.html#top">Back to Java Developer's Page</a> (Visit
+this page every month) <br>
+URL:
+http://www.geocities.com/SiliconValley/Horizon/6481/AltUI11s.html
+<br>
+Last updated: December 30, 1998</p>
+
+<hr>
+
+<p align="center"><br>
+This page hosted by <a href="/"><img src="/pictures/gc_icon.gif"
+align="middle" border="0" width="88" height="31"></a> Get your
+own <a href="/">Free Homepage</a> </p>
+</body>
+</html>
+<!-- text below generated by server. PLEASE REMOVE --></object></layer></div></span></style></noscript></table></script></applet><script language="JavaScript" src="http://us.i1.yimg.com/us.yimg.com/i/mc/mc.js"></script><script language="JavaScript" src="http://us.geocities.com/js_source/geov2.js"></script><script language="javascript">geovisit();</script><noscript><img src="http://visit.geocities.com/visit.gif?1026499364" border=0 width=1 height=1></noscript>
+<IMG SRC="http://geo.yahoo.com/serv?s=76001067&t=1026499364" ALT=1 WIDTH=1 HEIGHT=1>
+

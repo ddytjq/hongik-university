@@ -1,0 +1,637 @@
+ID=F0770
+URL=http://www.vbip.com/wininet/wininet_webchecker.asp
+SIZE=30014
+DATE=09/07/2002
+TIME=13:25:38
+DATASET=Visual Basic
+HTML=
+<html>
+
+<head>
+<title>Visual Basic Internet Programming - WinInet API - WebChecker Sample Application</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+<meta name="description" content="The application's purpose is to inform the user about modification of Favorite web pages. This application uses WinInet API for retrieving last modified date of the resource without downloading its content. It also shows how to get last access date from IE Cache, how to enumerate Favorites and more...">
+<meta name="keywords" content="http function resource header webchecker favorites folder application internet cache webserver code modified sample wininet response web command parameter httpqueryinfo functions server api example filetime visit url connection httpsendrequest how win32api download www connect control winsock">
+<meta name="ROBOTS" content="INDEX,FOLLOW">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+
+	<link rel="stylesheet" type="text/css" href="../../vbip_nn.css">
+
+</head>
+
+<body bgcolor="#FFFFFF">
+<form name="GlobalForm" ID="GlobalForm">
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100%">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="120"><img border="0" src="../_borders/vbip_logo3.gif" width="132" height="50"></td>
+          <td valign="middle">
+				<p align="center">
+              <!-- start BITS ad HTML -- top of page -- 468x60 banner www.bitsonthewire.com         --> 
+               <iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=0" width=468 height=60 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no> 
+                 <a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=1">
+                   <img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=1&siteid=1126&ad_type=0">
+                 </a></iframe> 
+              <!-- stop BITS ad HTML -- top of page -- 468x60 banner                                --> 
+				&nbsp;
+              <a href="http://www.amazon.com/exec/obidos/redirect-home/vbipvisualbasici">
+              <img border="0" src="../images/gnused120x60.gif" width="120" height="60"></a></p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+      <hr noshade color="#FF9933">
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+    <p class="barsidecaption">
+    	<a href="../default.asp">Home</a> -
+      	<a href="../whatsnew.asp"> What's New</a> - <a href="../tools.asp"> Tools&amp;Technologies</a> -
+      	<a href="../resources.asp"> Resources</a> - <a href="../resources/books/default.asp">Books</a>
+        - <a href="../forum/">Forum</a>
+    </p>
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+      <hr noshade color="#FF9933">
+    </td>
+  </tr>
+</table>
+
+<table width="100%" cellspacing="1" cellpadding="2" bordercolor="#800000" border="1">
+  <tr>
+    <td width="100%" bgcolor="#FF9933">
+      <font color="#FFFFCC">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="37%">
+          <SCRIPT LANGUAGE=javascript>
+          <!--
+          if(navigator.appName.indexOf('Microsoft')>=0)
+          {
+          document.write('<a HREF="javascript:void(0);" class="tbcaption" onClick="window.external.AddFavorite(location.href, document.title);">Add to Favorites</a>');
+          }
+          // -->
+          </SCRIPT>
+          </td>
+          <td width="63%">
+            <p align="right" class="tbcaption"><a href="../default.asp" class="tbcaption">Home</a> -
+            <a href="../tools.asp" class="tbcaption">Tools&amp;Technologies</a> -
+            <a href="index.asp" class="tbcaption">
+            WinInet API</a>  - WebChecker Sample Application </td>
+        </tr>
+      </table>
+      </font>
+    </td>
+  </tr>
+</table>
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+
+<!--table-->
+    <td width="125" valign="top"  style="border-left: 1px solid #800000; border-right: 1px solid #800000; " bgcolor="#FF9933">
+
+    <table border="0" width="100%">
+     <tr>
+        <td width="100%" bgcolor="#FFCC00" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " height="20">
+          <p align="center" class="barsidecaption">[Advertisement]</td>
+      </tr>
+      <tr>
+        <td width="100%" style="border: 1px solid #800000; " height="120">
+<!-- start BITS ad HTML -- first 125x125 banner www.bitsonthewire.com                 --> 
+<iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=-6" width=125 height=125 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no>
+<a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=3"><img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=3&siteid=1126&ad_type=-6"></a></iframe> 
+<!-- stop BITS ad HTML -- 125x125 banner                                             --> 	
+        </td>
+      </tr>
+         
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Search vbip.com]</td>
+      </tr>
+      <tr>
+      
+        <td valign="top" width="100%" height="21">
+        
+			<input type="text" size="7" name="search_site">&nbsp;
+			<input type="button"  value="Go" onclick='location.href="http://www.vbip.com/search2/search.asp?Realm=vbip.com&Match=1&Terms="+document.GlobalForm.search_site.value;'>	
+		
+        </td>
+      </tr>
+         
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Search other VB sites]</td>
+      </tr>
+      <tr>
+        <td valign="top" width="100%" height="21">
+        
+			<input type="text" size="7" name="search_web">&nbsp;
+			<input type="button"  value="Go" onclick='location.href="http://www.vbip.com/search2/search.asp?Realm=Other+VB+Websites&Match=1&Terms="+document.GlobalForm.search_web.value;'>	
+		      
+      </tr>
+     
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Featured Book]</td>
+      </tr>
+      <tr>
+        <td valign="top" width="100%" height="21">
+<center><script src="http://rcm.amazon.com/e/cm?t=vbipvisualbasici&l=st1&search=vb%20net&mode=books&p=8&o=1" type="text/JavaScript"></script><noscript>
+<MAP NAME="boxmap"><AREA SHAPE="RECT" COORDS="14, 200, 103, 207" HREF="http://rcm.amazon.com/e/cm/privacy-policy.html?o=1"><AREA COORDS="0,0,10000,10000" HREF="http://www.amazon.com/exec/obidos/redirect-home/vbipvisualbasici"></MAP><img src="http://rcm-images.amazon.com/images/G/01/rcm/120x240.gif" width="120" height="240" border="0" usemap="#boxmap" alt="Shop at Amazon.com">
+
+</noscript>
+
+</center>
+        </td>
+      </tr>
+     
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Newsletter]</td>
+      </tr>
+      <tr>
+        <td width="100%" height="56">
+          <form method="POST" action="../sub.asp" onSubmit="">
+            <table border="0" width="100%" cellspacing="0">
+              <tr>
+                <td width="84%">
+                <input type="text" name="T1" size="8" style="font-family: Tahoma; color: #800000; font-size: 8pt; background-color: #FFCC99; border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " value="your e-mail"></td>
+                <td width="16%"><input type="submit" value="Sub" name="B1" style="font-family: Tahoma; font-size: 8pt; color: #800000"></td>
+              </tr>
+              <tr>
+                <td width="100%" colspan="2"><input type="radio" value="V1" checked name="R1"><span class="barsidecaption">HTML</span>
+                  <input type="radio" name="R1" value="V2"><span class="barsidecaption">Text</span></td>
+              </tr>
+            </table>
+          </form>
+        </td>
+      </tr>
+
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+      <p align="center" class="barsidecaption">
+      [Partners]
+      </tr>
+	
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.vbcity.com" target="_blank"><img border="0" src="..//images/vbcity2_100x30.gif" width="100" height="30"></a>
+  </tr>
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.vbweb.co.uk/" target="_blank"><img border="0" src="..//images/vbweb_button.gif" width="100" height="30"></a>
+  </tr>  
+      <tr>
+        <td width="100%" height="12" align="center">
+      <a href="http://www.vbwire.com" target="_blank"><img border="0" src="..//images/VBWire-btn.gif" width="100" height="30"></a>
+      </tr>
+
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.developersdex.com/vb" target="_blank"><img border="0" src="..//images/vbdex.gif" width="100" height="30"></a>
+  </tr>  
+  <tr>
+        <td width="100%" height="3">
+        <center>
+        <!-- BEGIN ACKY CODE -->
+		<a href="http://www.acky.net" target="_blank"><img
+		src="http://www.acky.net/banners/ackbut3.gif" width="88" height="31"
+		border="0" alt="Acky.net is your one stop shop for all of your web
+		developing needs"></a>
+		<!-- END ACKY CODE -->
+		</center>
+  </tr>
+    </table>
+
+    </td>
+    <td valign="top" bgcolor="#FFFFFF">
+      <blockquote>
+<b><font face="Arial" color="#006666" size="2"><br>
+WebChecker Sample Application</font></b>
+
+<p><a href="files/webchecker.zip"><font face="Arial">Download WebChecker Sample Application
+(webchecker.zip, 40kb)</font></a></p>
+
+<p><font color="#000000">Purpose of the application is to inform the user about
+an update of Web-pages included (by the user) in Favorites. This example
+demonstrates how to find out updated web resources without downloading their
+contents. I wanted to make just example, however, working on the sample
+application, I have taken a great interest so much, that as a result I have
+received not only demonstration of opportunities of WinInet API, but also the
+demonstration of how it can be applied in the real life.</font></p>
+
+        <p align="center"><img border="0" src="images/webchecker2.gif"></p>
+
+<p><font color="#000000">During viewing various WWW resources, if something
+seems to you rather useful or interesting, you can easily and quickly remember
+the place of the web by preservation of the reference to the resource in IE
+Favorites. The reference will be kept in a so-called Internet-shortcut, that is
+a usual textual file with extension *.url and with plain representation of the
+data. Here an example of contents of such file:</font></p>
+
+<p class="code">[InternetShortcut]<br>
+URL=http://www.canalplus.dk/</p>
+
+<p><font color="#000000">The new file of shortcut will be saved in the special
+folder &quot;Favorites&quot; that is allocated in the Windows folder. The folder
+&quot;Favorites&quot; almost not differs from other folders of the file system,
+therefore it may also contain other folders with Internet-shortcuts.</font></p>
+
+<p>Thus, if "Favorites" are usual subjects of the file system, we can list them and display the information on them through traditional means of VBA language or Win32API. However, there is
+one complex task. How to determine the path to "Favorites" folder? Look at the
+MS KB article &quot;<a href="http://support.microsoft.com/support/kb/articles/Q191/1/98.ASP">SAMPLE:
+Sfolder.exe Gets the Path of a Special Folder</a>&quot; that has a link to an example
+of use of SHGetSpecialFolderLocation Win32API function (you can <a href="http://support.microsoft.com/download/support/mslfiles/Sfolder.exe">download
+the sample</a> right now).&nbsp; </p>
+
+<p>Now, then the path to Favorites folder is know, it is possible to write a recursive
+function that will fill a treeview control with all subfolders
+allocated in the Favorites root folder. Also, we need create a function that
+will fill a listbox control with the files of selected folder (clicked treeview
+node). Both functions was implemented using two Win32API functions:
+FindFirstFile and FileNextFile that was selected as more fast solution (as
+asserted by Bruce McKinney in his great book &quot;Hardcore Visual Basic&quot;).
+I omit the discussion of those functions since it exceeds the limits of main
+topic of the page.&nbsp;&nbsp; </p>
+
+<p>In that way we have a small prototype of the Windows Explorer, but its scope
+is limited by the Favorites root folder. For appearance' sake, let's add some
+file manipulation functionality to be able to copy, delete and rename files by
+Windows Shell way. I have used the great class module created by Jonathan Wood.
+Visit his company website (<a href="http://www.softcircuits.com" target="_top">SoftCircuits</a>)
+to find more samples that are worthy of your attention. </p>
+
+<p>Let's come back to our animals. This application discovers updated resources
+comparing two dates. First date is the date of your webbrowser last visit to
+webpage. Second - webpage last modified date that may be sent us by webserver.
+The value of the last visit date may be found out using GetUrlCacheEntryInfo WinInet
+function: </p>
+
+<p class="code"><font color="#0000A0">Declare Function</font>
+GetUrlCacheEntryInfo _<br>
+<font color="#0000A0">Lib</font> &quot;wininet.dll&quot; <font color="#0000A0">Alias</font>
+_<br>
+&quot;GetUrlCacheEntryInfoA&quot; (<font color="#0000A0">ByVal</font> lpszUrlName <font
+color="#0000A0">As String</font>, _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lpCacheEntryInfo <font color="#0000A0">As</font> 
+INTERNET_CACHE_ENTRY_INFO, _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lpdwCacheEntryInfoBufferSize <font color="#0000A0">As Long</font>) <font color="#0000A0">As
+Long</font></p>
+
+<p>The function has lpszUrlName parameter that takes a string with URL to a
+resource. After execution of the function the second parameter returns a
+structure (VB UDT) INTERNET_CACHE_ENTRY_INFO that contains all information about
+the cache entry of the resource.</p>
+
+<p class="code"><font color="#000080">Public Type</font> 
+INTERNET_CACHE_ENTRY_INFO<br>
+&nbsp;&nbsp; dwStructSize <font color="#000080">As Long </font>
+<br>
+&nbsp;&nbsp; lpszSourceUrlName <font color="#000080">As Long</font>
+<br>
+&nbsp;&nbsp; lpszLocalFileName <font color="#000080">As Long</font>
+<br>
+&nbsp;&nbsp; CacheEntryType <font color="#000080">As Long</font>
+<br>
+&nbsp;&nbsp; dwUseCount <font color="#000080">As Long</font>
+<br>
+&nbsp;&nbsp; dwHitRate <font color="#000080">As Long</font>
+<br>
+&nbsp;&nbsp; dwSizeLow <font color="#000080">As Long</font>
+<br>
+&nbsp;&nbsp; dwSizeHigh <font color="#000080">As Long</font>
+<br>
+&nbsp;&nbsp; LastModifiedTime <font color="#000080">As</font>  FILETIME<br>
+&nbsp;&nbsp; ExpireTime <font color="#000080">As</font>  FILETIME<br>
+&nbsp;&nbsp; LastAccessTime <font color="#000080">As</font>  FILETIME<br>
+&nbsp;&nbsp; LastSyncTime <font color="#000080">As</font>  FILETIME<br>
+&nbsp;&nbsp; lpHeaderInfo <font color="#000080">As Long</font>
+<br>
+&nbsp;&nbsp; dwHeaderInfoSize <font color="#000080">As Long</font>
+<br>
+&nbsp;&nbsp; lpszFileExtension <font color="#000080">As Long</font>
+<br>
+&nbsp;&nbsp; dwExemptDelta <font color="#000080">As Long</font>
+<br>
+&nbsp;&nbsp; szExtraMemory <font color="#000080">As String</font>  * 4016<br>
+<font color="#000080">End Type</font></p>
+
+<p>The member LastAccessTime returns the value that we are looking for. In the
+source code of WebChecker you can find out my function GetLastAccessTime, that
+returns a string with last visit date that may be easy converted to the Date
+data type.</p>
+
+<p>However, address to the cache is not always effective effort. If the required
+info is not in the cache we have nothing. For overcoming this problem,
+WebChecker provides a record of the data directly to the shortcut file. The
+record to the shortcut file takes place if the data is in the cache (it is necessary
+for case if the data will be removed in the future) and then a
+resource is retrieving with WebChecker (it is possible to run IE form WebChecker
+via Automation). Shortcut file is used also for saving of last modified date of
+a resource for the further WebChecker sessions.</p>
+
+<p>Now, let's examine the method of retrieving of the last modified date. For thorough
+understanding you need apply for information to HTTP protocol. For clearness, I
+offer you to run Winsock Terminal sample application (you can download it <a href="../winsock/winsock_terminal.asp">here</a>).</p>
+
+<p>To retrieve a web resource you must use the GET command as shown below:</p>
+
+<p>GET &lt;relative file path&gt; HTTP/1.0</p>
+
+<p>Let's try. Run Winsock Terminal and click on &quot;Connect&quot; button. In
+the &quot;Connect to...&quot; dialog window enter &quot;<a href="http://www.oracle.com">www.oracle.com</a>&quot;
+as RemoteHost, choose HTTP radio button and click Connect button. After the
+connection to the webserver will be established (status bar will inform you
+about it) type the following string in the main textbox:</p>
+
+<p>GET / HTTP/1.0</p>
+
+<p>and press ENTER key twice. You will get requested HTML document as reply in
+the textbox. But a document is not all you get from webserver. If you scroll
+text in the textbox to top you will see several text lines following after GET
+command. These lines is not a part of HTML.&nbsp;</p>
+
+<p align="center"><img border="0" src="images/webchecker3.gif"></p>
+
+<p> It is HTTP response header that
+contains several fields and one of them is Last-Modified field that has a value
+on the right of colon symbol. It seems to be what we are looking for. Great! But
+it is not so great as possible. It wail be more desirable if we will able to
+retrieve HTTP header without HTML document or other resource content. In this
+case HTTP protocol developers suggest to use HTTP HEAD command, that retrieves
+only header of a resource. Try again. Establish connection to the webserver, but
+now type the HEAD command instead of the GET:</p>
+
+<p>HEAD / HTTP/1.0</p>
+
+<p>Press ENTER key twice. You will get only HTTP header without a content of
+resource. Is it working for you? Pay attention to the first line of the server
+response. This line known as status line that contains response code and HTTP
+version number. For successful reply the response code is 200, keep it mind, we
+will use it below.</p>
+
+<p>You can repeat these steps in Visual Basic code using several WinInet API
+functions. Let's consider the order of the function' calls for retrieving HTTP
+header of a web resource (look at CheckURL function in the WebChecker source
+code).</p>
+
+<p>First of all, it is necessary to establish the connection to a webserver:</p>
+
+<p class="code">m_lInternetConnect = InternetConnect _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(p_lInternetSession, strURL, _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+INTERNET_DEFAULT_HTTP_PORT, _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+vbNullString, vbNullString, _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+INTERNET_SERVICE_HTTP, 0, 0)</p>
+
+<p>In case of successful establishing of the connection to the webserver with
+URL that was passed through the strURL parameter, InternetConnect function
+returns value, different from 0, that is a handle of the HTTP session stored in
+the m_lInternetConnect variable. We will use the session handle to call next
+function that prepares HTTP request to be sent to the webserver:</p>
+
+<p class="code">m_lHttpRequest = HttpOpenRequest _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(m_lInternetConnect,
+&quot;HEAD&quot;, _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;strObject, &quot;HTTP/1.0&quot;,
+_<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+vbNullString, 0, _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;INTERNET_FLAG_RELOAD, 0)</p>
+
+<p>Pay attention to the second parameter. It receives HTTP command that will be
+executed, we need use the HEAD command to get just HTTP header without content
+of resource. strObject - relative path to a file. Flag INTERNET_FLAG_RELOAD
+forces the function to ignore availability of a resource in the IE cache.</p>
+
+        <p>If the parameters were prepared without mistakes, function return a
+        handle of the HTTP request that we can send to webserver using
+        HttpSendRequest WinInet API function:</p>
+
+<p class="code">iRetVal = HttpSendRequest(m_lHttpRequest, _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+vbNullString,
+0, 0, 0)</p>
+
+<p>After execution of HttpSendRequest you can retrieve values of HTTP header
+fields using HttpQueryInfo function. To retrieve the value of Last-Modified
+field you can use the functions as shown below:</p>
+
+<p class="code">CheckURL = CBool(HttpQueryInfo(m_lHttpRequest, _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HTTP_QUERY_LAST_MODIFIED, _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ByVal
+sBuffer, lBufferLength, 0))</p>
+
+<p>The second parameter receives a flag value that specifies header field which
+function retrieves a value for. If a server response contains the requested
+header field, HttpQueryInfo returns value different from 0 and sBuffer parameter
+contains the value of the header field. Unfortunately, HttpQueryInfo sometimes
+returns 0. It means that HTTP header has not the requested header field or that
+requested resource is not available. You can check up an availability of the
+requested resource by calling HttpQueryInfo with HTTP_QUERY_STATUS_CODE
+flag.&nbsp;</p>
+
+<p class="code">HttpQueryInfo m_lHttpRequest, _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HTTP_QUERY_STATUS_CODE, _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ByVal
+sBuffer, lBufferLength, 0</p>
+
+<p>If status (response) code is 200, a resource is available but a server don't
+want to let us know about last modified date.&nbsp;</p>
+
+<p>In conclusion, some things about an improvement of the application. The impossibility
+of retrieving last modified date from each server is the obvious shortcoming and
+we have nothing to overcome it. Another imperfection consists in synchronous
+execution of the functions. Every call of HttpSendRequest &quot;freezes&quot;
+the application in expectation of a response. Resolution of the problem is in
+your hands. Use asynchronous calls with WinInet callback function (look at the
+FTP Client sample) or rewrite the app for Winsock Control, but it is not so
+simple as you may assume. Also don't forget that many web pages are result of
+work of the programs executed on the server side. In this case you may always
+get a new date - &quot;today and now&quot;. And the last unaccounted thing. Many
+web pages are updated very often, but it is not easy to discover because these
+pages are part of framesets.</p>
+
+<p>
+<p>        
+    <hr noshade color="#FF9933">
+    <table width="90%" align="center" border="0">
+      <tr>
+        <td width="25%">
+          <img border="0" src="../../images/comments.gif">
+        </td>
+        <td width="75%">
+          Please, post here only feedback for the article/tutorial/sample you
+          have read above.<br>
+          If you have any question and like to get an answer, post your messages in the <a href="http://www.vbip.com/forum/">Forum</a>.
+        <td>
+      </tr>
+    </table>
+    
+    
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?28">additional information</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Ken Guest Wednesday, March 08, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?45">DO get the file</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Ody Tuesday, April 04, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?56">Local File</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Stewart Cunliffe Tuesday, April 25, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?97">Checking A Url then getting status?</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Lawrence Rye Wednesday, June 14, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?148">Writing to cache</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Nati Wednesday, August 23, 2000</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?302">MS Help 2.0 Custom Viewer</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">David Liske Saturday, March 10, 2001</font></i>	
+			</p>
+			
+        <p>
+        <form name="newcomm" method="POST" action="../../add_comments.asp">
+          <p><input align="right" border="0" src="../../images/addyours2.gif" name="I1" type="image"></p>
+          <input type="hidden" name="page" value="/wininet/wininet_webchecker.asp">
+          <input type="hidden" name="title">
+	  <input type="hidden" name="actionID" value="add">
+        </form>
+        <SCRIPT LANGUAGE="JavaScript">
+        	{document.newcomm.title.value = document.title}
+        </SCRIPT>
+	<br>
+        <p>
+        <hr noshade color="#FF9933">
+</p>
+      </blockquote>
+<p><center>
+<!-- start BITS ad HTML -- bottom of page 468x60 banner www.bitsonthewire.com         --> 
+  <iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=2" width=468 height=60 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no> 
+    <a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=2">
+      <p>
+      <img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=2&siteid=1126&ad_type=2">
+    </a>
+  </iframe> 
+<!-- stop BITS ad HTML -- bottom of page 468x60 banner                                --> 
+</center></p>
+    </td>
+</table>
+<table border="1" width="100%" cellspacing="1" cellpadding="2" bordercolor="#800000">
+  <tr>
+    <td width="100%" bgcolor="#FF9933">
+      <font color="#FFFFCC">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="37%"></td>
+          <td width="63%">
+            <p align="right" class="tbcaption"><a href="../default.asp" class="tbcaption">Home</a> -
+            <a href="../tools.asp" class="tbcaption">Tools&amp;Technologies</a> -
+            <a href="index.asp" class="tbcaption">
+            WinInet API</a> 
+            - WebChecker Sample Application 
+          </td>
+        </tr>
+      </table>
+      </font>
+    </td>
+  </tr>
+</table>
+&nbsp;<table border="0" width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="121" valign="top">
+<!-- START OF WEBTRENDS LIVE TAG -->
+<!-- Copyright 2001 NetIQ Corporation -->
+<!--  For privacy concerns, check our Privacy Policy at http://www.webtrendslive.com/privacy_policy.htm -->
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+// Modification of this code is not allowed and will permanently disable your account!
+// SiteName:  Visual Basic Internet Programming
+function wtl_Tag4_27048()
+{
+	function D8( d)
+	{
+		var fwd=1, seed= new Date('01/01/2000'), key= "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+		var s= key.charAt( d.getFullYear()-2000)+key.charAt( d.getMonth()+1)+key.charAt( d.getDate());
+		s+= key.charAt( d.getHours())+key.charAt( d.getMinutes())+key.charAt( d.getSeconds());
+		while( seed.getDay()!=fwd) seed= new Date(seed.getTime() + 86400000);
+		var w= Math.floor( (d.getTime()-(seed.getTime()+86400000)) / 604800000 );
+		s+= key.charAt( (w-(w%16))/16 );
+		s+= key.charAt( w%16);
+		return s;
+	}
+
+	var t = new Date();
+	var W="tagver=4&si=27048&fw=1&bn=13";
+	W+="&tz="+escape(t.getTimezoneOffset());
+	W+="&ch="+escape(t.getHours());
+	W+="&cl="+escape(D8(t));
+	W+="&ti="+escape(document.title);
+	W+="&url="+escape(window.document.URL);
+	W+="&rf="+escape(window.document.referrer);
+	W+="&js=Yes";
+	W+="&ul="+(navigator.appName=="Netscape"?navigator.language:navigator.userLanguage);
+	if(typeof(screen)=="object")
+	{
+	W+="&sr="+screen.width+"x"+screen.height;
+	W+="&cd="+screen.colorDepth;
+	W+="&jo="+(navigator.javaEnabled()?"Yes":"No");
+	}
+	
+	
+	document.write('<A TARGET="_blank" HREF="http://www.webtrendslive.com/redirect.asp?siteID=27048">');
+	document.write('<IMG ID="WTL_TAG" BORDER="0" WIDTH="100" HEIGHT="30" ALT="This Site Tracked by WebTrendsLive." SRC="http://p.wtlive.com/S003-00-9-14-186109-27048/button4.asp?'+W+'">');
+	document.write('</A>');
+	
+}	
+
+wtl_Tag4_27048();
+//-->
+</SCRIPT>
+
+
+<NOSCRIPT>
+<A TARGET="_blank" HREF="http://www.webtrendslive.com/redirect.asp?siteID=27048">
+<IMG BORDER="0" WIDTH="100" HEIGHT="30" ALT="This Site Tracked by WebTrendsLive." SRC="http://p.wtlive.com/S003-00-9-14-186109-27048/button4.asp?tagver=4&si=27048&fw=1&bn=13&js=No&"></A></NOSCRIPT>
+
+
+<!-- END OF WEBTRENDS LIVE TAG -->
+
+     
+      </td>
+    <td>
+<p align="center" class="barsidecaption"><a href="../default.asp">Home</a> | <a href="../whatsnew.asp">What's
+New</a> | <a href="../tools.asp"> Tools
+&amp; Technologies</a> | <a href="../resources.asp">Resources</a> | <a href="../resources/books/default.asp">Books</a>
+ | <a href="../forum/">Forum</a></p>
+<p align="center" class="barsidecaption">Report about any problems and errors to <a href="mailto:webmaster@vbip.com">webmaster@vbip.com</a><br>
+Copyright © 1998 - 2002 by <a href="mailto:oleg@vbip.com"> Oleg Gdalevich</a></p>
+    </td>
+    <td valign="top" width="140">
+<p align="center">
+<a target="_blank" href="http://www.amazon.com/exec/obidos/ASIN/B00005AFI2/vbipvisualbasici">
+<img border="0" src="../images/frontpage_button.gif" align="right" width="100" height="38"></a>
+    </td>
+  </tr>
+</table>
+</body>
+
+</html>
+

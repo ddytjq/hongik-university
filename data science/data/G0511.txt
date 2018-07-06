@@ -1,0 +1,299 @@
+ID=G0511
+URL=http://astro.estec.esa.nl/SA-general/Projects/Planck/technical/payl/node12.html
+SIZE=10287
+DATE=09/07/2002
+TIME=16:18:56
+DATASET=Astronomy
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!--Converted with LaTeX2HTML 98.1p1 release (March 2nd, 1998)
+originally by Nikos Drakos (nikos@cbl.leeds.ac.uk), CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Data Management</TITLE>
+<META NAME="description" CONTENT="Data Management">
+<META NAME="keywords" CONTENT="payl">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<LINK  HREF="payl.css">
+<LINK REL="next" HREF="node13.html">
+<LINK REL="previous" HREF="node11.html">
+<LINK REL="up" HREF="node9.html">
+<LINK REL="next" HREF="node13.html">
+</HEAD>
+<BODY BACKGROUND="quaderno.gif" > <DL><DD>
+<!--Navigation Panel-->
+
+<table 
+width=90% border=0><tr>
+<td align=left>
+<A NAME="tex2html159"
+ HREF="node13.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/latex2html/icons/next_motif.gif"></A> 
+<A NAME="tex2html157"
+ HREF="node9.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/latex2html/icons/up_motif.gif"></A> 
+<A NAME="tex2html151"
+ HREF="node11.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/latex2html/icons/previous_motif.gif"></A>   
+</td>
+<td align=right> 
+<a href="node12.old.html"> [Older version]</a>
+</td>
+</table>
+
+<BR>
+<B> Next:</B> <A NAME="tex2html160"
+ HREF="node13.html">Assembly, Test and Verification</A>
+<B> Up:</B> <A NAME="tex2html158"
+ HREF="node9.html">Payload System Engineering</A>
+<B> Previous:</B> <A NAME="tex2html152"
+ HREF="node11.html">Optical Quality</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00363000000000000000">
+Data Management</A>
+</H2>
+
+<P>The Planck instruments acquire data continuously during routine operations.
+In order to preserve all information, each pixel on the sky is sampled
+at least at the Shannon rate (2.44 samples per beam).
+The minimum acquisition data rate of each instrument thus depends on the beam size
+at each frequency, the number of detectors, the spinning rate (1 rpm), and the
+angle between the boresight and the spin axis. Due to various hardware
+constraints (e.g. the desire to use identical electronic subsystems for all
+channels), it may in fact be necessary to sample data at a faster than
+the minimal rate. Further, for the LFI it is required to acquire two 
+simultaneous samples per detector, corresponding to the two branches of its
+differencing scheme.
+
+
+<P>
+The instrument electronic units independently interface the LFI and HFI to the 
+spacecraft. The science data is packetized and transferred by the electronics
+to the spacecraft computer, which stores the data into a solid state recorder
+(SSR). All the data in the SSR will be downlinked to the ground in a time
+span of approximately 2 hours during
+visibility windows. 
+
+<P>The minimal instrument real-time data acquisition rates are 
+summarized in Table 1 (assuming 16 bits per sample), and add up
+to a total of <IMG
+ WIDTH="18" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
+ SRC="img2.gif"
+ ALT="$\sim$">270 kbit/s. To this must be added an allowance for 
+instrument housekeeping
+data, estimated at a total of 1.0 kbit/s per instrument.
+
+<P>
+The amount of data which can actually be downlinked is strongly limited 
+by the TM/TC link budget to an equivalent acquisition rate of
+<IMG
+ WIDTH="18" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
+ SRC="img2.gif"
+ ALT="$\sim$">30 kbit/s (averaged over 24 hrs). Thus, the real-time data rate must be reduced by a
+factor of <IMG
+ WIDTH="18" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
+ SRC="img2.gif"
+ ALT="$\sim$">9 for downlink to ground. 
+This goal is achievable using a two-step strategy, the
+first part of which will be the use of a classical noiseless data compression
+algorithm (likely to be a variant of Differential Pulse Code Modulation, which
+in its simplest implementation consists of downlinking sample-to-sample
+differences rather than absolute values). Simulations indicate that this
+first step will achieve a compression factor of <IMG
+ WIDTH="18" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
+ SRC="img2.gif"
+ ALT="$\sim$">4-5. The signal resulting
+from this initial stage will be dominated by noise and can thus no
+longer be compressed in a lossless fashion. The remaining factor of <IMG
+ WIDTH="18" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
+ SRC="img2.gif"
+ ALT="$\sim$">2 in
+compression can be achieved with either one of two strategies, lossy
+(transform) compression of large sets of data, or the averaging of data
+acquired on successive spin revolutions (to achieve a reduction in the amount
+of data of a factor of 2, only 2 successive circles need be averaged).
+The implementation of the latter requires the on-board availability of 
+continuous pointing information, which can be achieved in practice by
+synchronizing the data acquisition to the signal emitted by the star mapper
+when it crosses the brightest star in its field of view (i.e. once every spin
+period). Although averaging successive circles is a straightforward
+possibility, it has two undesirable side effects: (1) random events (such
+as cosmic-ray hits) will lead to the rejection of a larger fraction of
+data; and (2) the ability to detect spin-synchronized systematic effects
+will be reduced. 
+For this reason, the option of using lossy compression is also being 
+investigated, via analysis of realistic, simulated data streams.
+
+<P>
+<BR>
+<DIV ALIGN="CENTER">
+<A NAME="626">&#160;</A>
+<TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
+<CAPTION><STRONG>Table 1:</STRONG>
+Estimated Real-time Science Data Acquisition Rates</CAPTION>
+<TR><TD ALIGN="LEFT">Inst.</TD>
+<TD ALIGN="CENTER">Band</TD>
+<TD ALIGN="CENTER">No. Det.</TD>
+<TD ALIGN="CENTER">Beam</TD>
+<TD ALIGN="CENTER">Rate/Det.</TD>
+<TD ALIGN="CENTER">Rate/Det.</TD>
+<TD ALIGN="CENTER">Rate/Band</TD>
+<TD ALIGN="CENTER">Rate/Inst.</TD>
+</TR>
+<TR><TD ALIGN="LEFT">&nbsp;</TD>
+<TD ALIGN="CENTER">(GHz)</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+<TD ALIGN="CENTER">(arcmin)</TD>
+<TD ALIGN="CENTER">(word/s)</TD>
+<TD ALIGN="CENTER">(kbit/s)</TD>
+<TD ALIGN="CENTER">(kbit/s)</TD>
+<TD ALIGN="CENTER">(kbit/s)</TD>
+</TR>
+<TR><TD ALIGN="LEFT">LFI</TD>
+<TD ALIGN="CENTER">30</TD>
+<TD ALIGN="CENTER">4</TD>
+<TD ALIGN="CENTER">33</TD>
+<TD ALIGN="CENTER"> 60.7</TD>
+<TD ALIGN="CENTER">0.97</TD>
+<TD ALIGN="CENTER">3.88</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="LEFT">&nbsp;</TD>
+<TD ALIGN="CENTER">44</TD>
+<TD ALIGN="CENTER">6</TD>
+<TD ALIGN="CENTER">23</TD>
+<TD ALIGN="CENTER"> 87.1</TD>
+<TD ALIGN="CENTER">1.39</TD>
+<TD ALIGN="CENTER">8.36</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="LEFT">&nbsp;</TD>
+<TD ALIGN="CENTER">70</TD>
+<TD ALIGN="CENTER">12</TD>
+<TD ALIGN="CENTER">14</TD>
+<TD ALIGN="CENTER"> 143.1</TD>
+<TD ALIGN="CENTER">2.29</TD>
+<TD ALIGN="CENTER">27.47</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="LEFT">&nbsp;</TD>
+<TD ALIGN="CENTER">100</TD>
+<TD ALIGN="CENTER">34</TD>
+<TD ALIGN="CENTER">10</TD>
+<TD ALIGN="CENTER"> 200.3</TD>
+<TD ALIGN="CENTER">3.2</TD>
+<TD ALIGN="CENTER">108.95</TD>
+<TD ALIGN="CENTER">148.7</TD>
+</TR>
+<TR><TD ALIGN="LEFT">&nbsp;</TD>
+<TD ALIGN="CENTER" COLSPAN=6>Thermometers</TD>
+<TD ALIGN="CENTER">1.6</TD>
+</TR>
+<TR><TD ALIGN="LEFT">&nbsp;</TD>
+<TD ALIGN="CENTER" COLSPAN=6>Housekeeping</TD>
+<TD ALIGN="CENTER">1.0</TD>
+</TR>
+<TR><TD ALIGN="LEFT">HFI</TD>
+<TD ALIGN="CENTER">100</TD>
+<TD ALIGN="CENTER">4</TD>
+<TD ALIGN="CENTER">10.7</TD>
+<TD ALIGN="CENTER"> 90</TD>
+<TD ALIGN="CENTER">1.44</TD>
+<TD ALIGN="CENTER">5.76</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="LEFT">&nbsp;</TD>
+<TD ALIGN="CENTER">150</TD>
+<TD ALIGN="CENTER">12</TD>
+<TD ALIGN="CENTER">8</TD>
+<TD ALIGN="CENTER"> 90</TD>
+<TD ALIGN="CENTER">1.44</TD>
+<TD ALIGN="CENTER">17.28</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="LEFT">&nbsp;</TD>
+<TD ALIGN="CENTER">217</TD>
+<TD ALIGN="CENTER">12</TD>
+<TD ALIGN="CENTER">5.5</TD>
+<TD ALIGN="CENTER"> 180</TD>
+<TD ALIGN="CENTER">2.88</TD>
+<TD ALIGN="CENTER">34.56</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="LEFT">&nbsp;</TD>
+<TD ALIGN="CENTER">353</TD>
+<TD ALIGN="CENTER">6</TD>
+<TD ALIGN="CENTER">5</TD>
+<TD ALIGN="CENTER"> 180</TD>
+<TD ALIGN="CENTER">2.88</TD>
+<TD ALIGN="CENTER">17.28</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="LEFT">&nbsp;</TD>
+<TD ALIGN="CENTER">545</TD>
+<TD ALIGN="CENTER">8</TD>
+<TD ALIGN="CENTER">5</TD>
+<TD ALIGN="CENTER"> 180</TD>
+<TD ALIGN="CENTER">2.88</TD>
+<TD ALIGN="CENTER">23.04</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="LEFT">&nbsp;</TD>
+<TD ALIGN="CENTER">857</TD>
+<TD ALIGN="CENTER">6</TD>
+<TD ALIGN="CENTER">5</TD>
+<TD ALIGN="CENTER"> 180</TD>
+<TD ALIGN="CENTER">2.88</TD>
+<TD ALIGN="CENTER">17.28</TD>
+<TD ALIGN="CENTER">115.2</TD>
+</TR>
+<TR><TD ALIGN="LEFT">&nbsp;</TD>
+<TD ALIGN="CENTER" COLSPAN=6>Thermometers</TD>
+<TD ALIGN="CENTER">4.48</TD>
+</TR>
+<TR><TD ALIGN="LEFT">&nbsp;</TD>
+<TD ALIGN="CENTER" COLSPAN=6>Housekeeping</TD>
+<TD ALIGN="CENTER">1.0</TD>
+</TR>
+</TABLE></DIV>
+<BR>
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html159"
+ HREF="node13.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/latex2html/icons/next_motif.gif"></A> 
+<A NAME="tex2html157"
+ HREF="node9.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/latex2html/icons/up_motif.gif"></A> 
+<A NAME="tex2html151"
+ HREF="node11.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/latex2html/icons/previous_motif.gif"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html160"
+ HREF="node13.html">Assembly, Test and Verification</A>
+<B> Up:</B> <A NAME="tex2html158"
+ HREF="node9.html">Payload System Engineering</A>
+<B> Previous:</B> <A NAME="tex2html152"
+ HREF="node11.html">Optical Quality</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+
+<BR>
+</ADDRESS>
+</BODY>
+</HTML>
+

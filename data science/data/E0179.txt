@@ -1,0 +1,623 @@
+ID=E0179
+URL=http://home.att.net/~robertdunn/Papers/REPnP2.html
+SIZE=29487
+DATE=12/07/02
+TIME=19:18:21
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+ 
+<HTML>
+ 
+<HEAD>
+<TITLE>Yet Another Code Site - Printing and Previewing Rich
+Edit Controls Part 2</TITLE>
+<META NAME="GENERATOR" CONTENT="StarOffice/5.1 (Win32)"> 
+<META NAME="CREATED" CONTENT="19981221;21460511"> 
+<META NAME="CHANGEDBY" CONTENT="Robert Dunn"> 
+<META NAME="CHANGED" CONTENT="19991127;22452071"> 
+<META NAME="Template"
+ CONTENT="C:\Program Files\Microsoft Office\Templates\Web Pages\Web Page Wizard.wiz">
+
+</HEAD>
+
+<BODY>
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="0"
+ CELLSPACING="0"> 
+<TR>
+  <TD WIDTH="100%" VALIGN="TOP" BGCOLOR="#000080">
+	 <H1 ALIGN="CENTER" STYLE="margin-top: 0in"><FONT
+	 COLOR="#ffffff"> <A NAME="TopOfPage"></A> Yet Another Code
+	 Site</FONT></H1>
+  </TD>
+</TR>
+</TABLE> 
+<H2 ALIGN="CENTER">Printing and Previewing Rich Edit
+Controls </H2>
+<H3 ALIGN="CENTER">Part 2: Printing Rich Edit Controls</H3>
+<P>In Part 1 of this paper, &quot;About
+  TRichEdit::Print(),&quot; we saw that the VCL does not give
+  you very much control &#150; in fact, essentially no
+  control &#150; over how the contents of a TRichEdit are
+  printed on a page. 
+</P> 
+<P>This part will cover printing Rich Edit controls in
+  depth and supply you with the details needed to print a
+  Rich Edit control on a specific portion of a page,
+  calculate the number of pages needed to print an entire
+  document, and print selected pages of a document.&nbsp; If
+  you skipped Part 1, no problem.&nbsp; You can start here if
+  you are already convinced that TRichEdit::Print() is not
+  what you need. 
+</P> 
+<P>Part 3 of this paper, &quot;Previewing Rich Edit
+  Controls,&quot; will describe creating a print preview
+  window for Rich Edit controls.&nbsp; If you already
+  understand using FORMATRANGE and EM_FORMATRANGE to print
+  Rich Edit controls, you can skip ahead to Part 3.&nbsp;
+  Otherwise, I suggest you at least scan though this paper. 
+</P> 
+<H4>Rich Edit Printing Overview</H4>
+<P>To start with, Rich Edit controls print themselves or,
+  more accurately, they &quot;render&quot; or draw
+  themselves.&nbsp; This means that you provide information
+  about: 
+</P> <UL>
+<LI>The device to be rendered to (the printer or screen), 
+</LI>
+<LI>The device to use for formatting (typically the
+printer), </LI>
+<LI>The area of the page on which to print, and </LI>
+<LI>The range of text to be formatted. </LI>
+</UL>
+<P>Then you ask the control to render itself. 
+</P> 
+<P>The basic process for rendering a Rich Edit control is: 
+</P> <OL>
+<LI>Create and initialize a FORMATRANGE structure with
+handles for the rendering and target devices, the size of
+the page, and the size of the rendering area.&nbsp;
+Initialize the CHARRANGE structure within the FORMATRANGE
+structure with values that tell the Rich Edit control to
+render all of the text in the control. </LI>
+<LI>Send an EM_FORMATRANGE message to the control and pass
+it the FORMATRANGE structure.&nbsp; The control will render
+a page and return how much of the requested range it was
+able to fit inside the rectangle.&nbsp; The text offsets
+that correspond to the rendered range are returned in the
+CHARRANGE structure of the FORMATRANGE structure. </LI>
+<LI>If not finished, adjust the requested range for the
+text successfully rendered (or, more accurately, the text
+not rendered) and repeat step (2). </LI>
+</OL>
+<P>The CHARRANGE and FORMATRANGE structures are going to
+  become close friends, so spend the time now to get to know
+  them well. 
+</P> 
+<H4>The CHARRANGE and FORMATRANGE Structures</H4>
+<P>The CHARRANGE structure looks like this: 
+</P> <PRE STYLE="margin-left: 0.5in">typedef struct _charrange {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LONG cpMin;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LONG cpMax;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} CHARRANGE;</PRE>
+
+<P> Before starting the rendering loop (steps 2 and 3
+  above), you typically set cpMin to 0 and cpMax to
+  &#150;1.&nbsp; While in the rendering loop, you simply set
+  cpMin to the value returned by the EM_FORMATRANGE message
+  (below). 
+</P> 
+<P>The FORMATRANGE structure is declared as: 
+</P> <PRE STYLE="margin-left: 0.5in">typedef struct _formatrange {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HDC hdc;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HDC hdcTarget;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RECT rc;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RECT rcPage;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHARRANGE chrg;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} FORMATRANGE;</PRE>
+
+<P> The structure's values are: 
+</P> 
+<P STYLE="margin-left: 0.5in"><B>hdc</B> - The handle to
+  the device context that will be rendered (drawn) on.&nbsp;
+  Typically a printer or screen device context.&nbsp; This
+  can also be a user-created device context if you need to
+  draw on a bitmap in memory. 
+</P> 
+<P STYLE="margin-left: 0.5in"><B>hdcTarget</B> - Typically
+  the handle to the device context for the printer.&nbsp; May
+  be set to zero if rendering and target DCs are identical,
+  i.e., if they are the same DC.&nbsp; May also be set to
+  zero if the formatting buffer is already filled. 
+</P> 
+<P STYLE="margin-left: 0.5in"><B>rc</B> - A rectangle
+  describing the area on the page to render in.&nbsp; The
+  text will be formatted to fit within the rectangle. 
+</P> 
+<P STYLE="margin-left: 0.5in"><B>rcPage</B> - A rectangle
+  describing the entire &quot;page&quot; within which
+  &quot;rc&quot; is located. 
+</P> 
+<P STYLE="margin-left: 0.5in"><B>chrg</B> - A CHARRANGE
+  structure as described above and used below. 
+</P> 
+<P>As above, and for the remainder of this discussion, I
+  will occasionally refer to the hdc and hdcTarget parameters
+  as the rendering and target DCs, respectively.&nbsp; Make
+  no mistake &#150; the drawing will always take place on the
+  rendering DC but will be based on (or look like) the target
+  DC.&nbsp; Stated another way, text will be wrapped as if it
+  was rendered to the target DC but will be drawn on the
+  rendering DC. 
+</P> 
+<H4>The EM_FORMATRANGE Message</H4>
+<P>The EM_FORMATRANGE message is sent, of course, with the
+  SendMessage WinAPI call.&nbsp; So, the SendMessage() call
+  to render the Rich Edit control call is: 
+</P> <PRE STYLE="margin-left: 0.5in">SendMessage(handle, EM_FORMATRANGE, (WPARAM) fRender, (LPARAM) lpFmt);</PRE>
+
+<P> The help text says: 
+</P> <BLOCKQUOTE><B>fRender</B> - Value specifying whether
+to render the text. If this parameter is non-zero, the text
+is rendered.&nbsp; Otherwise, the text is just measured. 
+</BLOCKQUOTE>
+<BLOCKQUOTE><B>lpFmt</B> - Pointer to a FORMATRANGE
+structure containing information about the output device,
+or NULL to free information cached by the control. 
+</BLOCKQUOTE>
+<P><B>fRender</B> is a simple flag &#150; if zero, nothing
+  is drawn on the output device; if non-zero, the output is
+  actually rendered.&nbsp; Passing zero is useful to
+  calculate the pages that would be printed.&nbsp; When you
+  pass zero, the Rich Edit control measures the size of the
+  rendering rectangle that would be used and returns this
+  value in the rc member of the FORMATRANGE structure. 
+</P> 
+<P><B>lpFmt</B> is the address of a FORMATRANGE structure
+  as described above.&nbsp; If this parameter is zero (or
+  NULL), then the formatting buffer will be cleared.&nbsp;
+  Any time this parameter is not zero, information about the
+  page rendered is stored in the formatting buffer. 
+</P> 
+<P>The return value for the EM_FORMATRANGE message is the
+  beginning offset for the next page to be rendered. 
+</P> 
+<H4>An Example</H4>
+<P>Hopefully, an example will make this clear.&nbsp; The
+  code is based on a project that I have been working on for
+  more than a year now.&nbsp; For this paper, I have
+  extracted the pertinent code from the class, simplified it
+  where possible, and put it into event functions that
+  respond to simple button clicks.&nbsp; To follow along with
+  the example: 
+</P> <OL>
+<LI>Create a new project. </LI>
+<LI>Drop a TPanel on the form and set the Alignment
+property to alRight.&nbsp; Make it just wide enough for a
+button or two. </LI>
+<LI>Drop a TRichEdit on the form (not the TPanel) and set
+the Alignment property to alClient.&nbsp; Next, and this is
+rather important, set the TRichEdit font to a TrueType font
+&#150; I suggest that you start with Courier New. </LI>
+<LI>Drop three buttons on the TPanel. Name the buttons
+PrintBtn, PreviewBtn, and CloseBtn.&nbsp; Create OnClick
+event handlers for the PrintBtn and CloseBtn buttons.&nbsp;
+PreviewBtn is covered in part 3 of this paper, so forget it
+for now. </LI>
+<LI>Add the following code to the CloseBtn OnClick handler:
+</LI>
+</OL>
+<PRE STYLE="margin-left: 0.5in">Close();</PRE>
+
+<P> The example demonstrates the following general steps: 
+</P> <OL>
+<LI>General setup and declarations/definitions. </LI>
+<LI>Build a table or list of text ranges and other
+information that correspond to each printed page. </LI>
+<LI>Print each page. </LI>
+</OL>
+<P>The second step is not truly required if you are
+  printing the entire contents of the TRichEdit
+  control.&nbsp; However, you will probably want to advise
+  the user of the total number of pages that will be printed
+  before actually printing or allow the user to select a
+  range of pages to be printed.&nbsp; To do that, you will
+  need to pre-calculate the number of pages.&nbsp; Step 2 is
+  included to demonstrate this. 
+</P> 
+<P>One purpose of this paper is to demonstrate how to print
+  a TRichEdit with arbitrary margins.&nbsp; However, for the
+  purpose of the exercise, we will assume that the printer is
+  loaded with paper that is the (US) standard 8.5&quot; by
+  11&quot; size.&nbsp; Further, we will hard-code two-inch
+  margins. 
+</P> 
+<P>The example also assumes that we are printing to the
+  default printer.&nbsp; This printer is, in VCL-speak,
+  Printer() and is an automatically instantiated object of
+  the TPrinter class. 
+</P> 
+<P>Obviously, a bit of work will be required to change
+  these assumptions.&nbsp; Other limitations or shortcomings
+  are noted in the following discussion. 
+</P> 
+<P>Here we go&#133;.&nbsp; First, add the following to the
+  main form's *.cpp file after the TForm* Form1 declaration
+  (created by default) to include printer declarations so
+  that we can use TPrinter. 
+</P> <PRE STYLE="margin-left: 0.5in">#include &lt;vcl\printers.hpp&gt;</PRE>
+
+<P> After that, add the following so that we can use the
+  standard template library (STL) vector class. 
+</P> <PRE STYLE="margin-left: 0.5in">#include &lt;vector&gt;</PRE>
+
+<P> Immediately after that, add the following code. 
+</P> <PRE STYLE="margin-left: 0.5in">typedef struct tagTPageOffset {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;long int Start;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;long int End;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RECT rendRect;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} TPageOffsets;</PRE>
+
+<P> The above structure that will be used later to store
+  the information that describes the starting and ending
+  offsets and rendering rectangle for each page that could be
+  rendered by the TRichEdit control.&nbsp; For now, just take
+  my word for it. 
+</P> 
+<P>All of the above said and done, add an OnClick handler
+  to PrintBtn.&nbsp; All of the following code will be in
+  this OnClick handler. 
+</P> 
+<P>First, we get the size of a printed page (assuming
+  8.5&quot; by 11&quot;) in printer device units. 
+</P> <PRE STYLE="margin-left: 0.5in">int wPage = ::GetDeviceCaps(Printer()-&gt;Handle, PHYSICALWIDTH);
+int hPage = ::GetDeviceCaps(Printer()-&gt;Handle, PHYSICALHEIGHT);</PRE>
+
+<P> Next, get the device units per inch for the printer. 
+</P> <PRE STYLE="margin-left: 0.5in">int xPPI = ::GetDeviceCaps(Printer()-&gt;Handle, LOGPIXELSX);
+int yPPI = ::GetDeviceCaps(Printer()-&gt;Handle, LOGPIXELSY);</PRE>
+
+<P> Convert the page size from device units to twips. 
+</P> <PRE STYLE="margin-left: 0.5in">int wTwips = ::MulDiv(wPage, 1440, xPPI);
+int hTwips = ::MulDiv(hPage, 1440, yPPI);</PRE>
+
+<P> Save the page size in twips. 
+</P> <PRE STYLE="margin-left: 0.5in">RECT pageRect;
+pageRect.left = pageRect.top = 0;
+pageRect.right = wTwips;
+pageRect.bottom = hTwips;</PRE>
+
+<P> Next, calculate the size of the rendering rectangle in
+  twips.&nbsp; Remember &#150; two-inch margins are
+  hard-coded, so the below code reduces the width of the
+  output by four inches. 
+</P> <PRE STYLE="margin-left: 0.5in">RECT rendRect;
+rendRect.left = rendRect.top = 0;
+rendRect.right = pageRect.right - 1440 * 4;
+rendRect.bottom = pageRect.bottom - 1440 * 4;</PRE>
+
+<P> Now we declare the STL vector class that will be used
+  to save the information about each page.&nbsp; This is used
+  to to save a list of text offsets that correspond to
+  printed pages as well as the values for a single page. 
+</P> <PRE STYLE="margin-left: 0.5in">std::vector&lt;TPageOffsets&gt; FPageOffsets;</PRE>
+
+<P> Define a single page and set the starting offset to
+  zero. 
+</P> <PRE STYLE="margin-left: 0.5in">TPageOffsets po;
+po.Start = 0;</PRE>
+
+<P> Define and initialize a TFormatRange structure.&nbsp;
+  As described above, this structure is passed to the
+  TRichEdit with a request to format as much text as will fit
+  on a page starting with the chrg.cpMin offset and ending
+  with the chrg.cpMax.&nbsp; Initially, we tell the Rich Edit
+  control to start at the beginning (cpMin = 0) and print as
+  much as possible (cpMax = -1)&nbsp;. We also tell it to
+  render to the printer. 
+</P> <PRE STYLE="margin-left: 0.5in">TFormatRange fr;
+fr.hdc = Printer()-&gt;Handle;
+fr.hdcTarget = Printer()-&gt;Handle;
+fr.chrg.cpMin = po.Start;
+fr.chrg.cpMax = -1;</PRE>
+
+<P> In order to recognize when the last page is rendered,
+  we need to know how much text is in the control.&nbsp; (For
+  this example, we will use the WM_GETTEXTLENGTH
+  message.&nbsp; TRichEdit uses Rich Edit version 1.0 so this
+  is fine.&nbsp; However, if you are implementing the Rich
+  Edit 2.0 control, you will need to use the EM_GETTEXTLENEX
+  message.) 
+</P> <PRE STYLE="margin-left: 0.5in">int lastOffset = ::SendMessage(RichEdit1-&gt;Handle, WM_GETTEXTLENGTH, 0, 0);</PRE>
+
+<P> As a precaution, clear the formatting buffer: 
+</P> <PRE STYLE="margin-left: 0.5in">::SendMessage(RichEdit1-&gt;Handle, EM_FORMATRANGE, (WPARAM) 0, (LPARAM) 0);</PRE>
+
+<P> Printers frequently cannot print at the absolute
+  top-left position on the page.&nbsp; In other words, there
+  is usually a minimum margin on each edge of the page.&nbsp;
+  When rendering to the printer, Rich Edit controls adjust
+  the top-left corner of the rendering rectangle for the
+  amount of the page that is unprintable.&nbsp; Since we are
+  printing with two-inch margins, we are presumably already
+  within the printable portion of the physical page.&nbsp; We
+  use the SetViewportOrgEx() Windows API call to move the
+  origin of the printable page up and left by the amount of
+  the unprintable margins to undo the control's
+  adjustment.&nbsp; Notice that we first save the device
+  context settings with SaveDC(). 
+</P> <PRE STYLE="margin-left: 0.5in">::SaveDC(fr.hdc);
+::SetMapMode(fr.hdc, MM_TEXT);
+int xOffset = -::GetDeviceCaps(Printer()-&gt;Handle, PHYSICALOFFSETX);
+int yOffset = -::GetDeviceCaps(Printer()-&gt;Handle, PHYSICALOFFSETY);
+xOffset += ::MulDiv(1440 + 1440, xPPI, 1440);
+yOffset += ::MulDiv(1440 + 1440, yPPI, 1440);
+::SetViewportOrgEx(fr.hdc, xOffset, yOffset, NULL);</PRE>
+
+<P> Now we build a table of page entries, one entry for
+  each page that would be printed.&nbsp; Before explaining,
+  here is the code: 
+</P> <PRE STYLE="margin-left: 0.5in">do {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.rc = rendRect;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.rcPage = pageRect;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;po.Start = fr.chrg.cpMin;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.chrg.cpMin = ::SendMessage(RichEdit1-&gt;Handle, EM_FORMATRANGE,(WPARAM) 0, (LPARAM) &amp;fr);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;po.End = fr.chrg.cpMin - 1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;po.rendRect = fr.rc;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FPageOffsets.push_back(po);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} while (fr.chrg.cpMin != -1 &amp;&amp; fr.chrg.cpMin &lt; lastOffset);</PRE>
+
+<P> There are a number of things to notice in the above
+  code. 
+</P> 
+<P>First, we are using the EM_FORMATRANGE message to tell
+  the control to render itself.&nbsp; However, the WPARAM
+  value is set to zero to tell the control to simply measure
+  the rectangle which would be rendered, but not to actually
+  draw anything on the device. 
+</P> 
+<P>Next, note that we are saving the value returned in the
+  rc member of the FORMATRANGE structure.&nbsp; There are
+  only glancing references to this &#150; fr.rc is modified
+  by the call.&nbsp; The actual size of the rendering
+  rectangle is returned here.&nbsp; The really odd thing is
+  that the returned rectangle may actually be larger than the
+  rendering rectangle passed into the call.&nbsp; I believe
+  that this is only an issue when the rendering and target
+  device contexts are different.&nbsp; They are the same
+  here, but in Part 3 of this paper they will be different. 
+</P> 
+<P>Finally, the value returned by the SendMessage() call is
+  one character greater than the size of the text
+  rendered.&nbsp; It is the beginning offset for the next
+  page. 
+</P> 
+<P>At this point, FPageOffsets contains one entry for each
+  page that would have been rendered.&nbsp; You could use the
+  following to determine the actual number of pages to be
+  printed: 
+</P> <PRE STYLE="margin-left: 0.5in">int pageCount = FPageOffsets.size();</PRE>
+
+<P> For this exercise, we are printing only the first page
+  so: 
+</P> <PRE STYLE="margin-left: 0.5in">pageCount = 1;</PRE>
+
+<P> Ok.&nbsp; We are ready to print.&nbsp; We are going to
+  print to the default printer, Printer().&nbsp; Printer()
+  returns a pointer to a global TPrinter that is
+  automatically instantiated by the VCL. 
+</P> 
+<P>Now there is a small problem with TPrinter.&nbsp; When
+  we used Printer()-&gt;Handle above, we did not get a handle
+  to a device context.&nbsp; What Printer()-&gt;Handle really
+  returned was a handle to an &quot;information
+  context,&quot; or an HIC.&nbsp; Before drawing on the real
+  printer device context (HDC), we must call
+  Printer()-&gt;BeginDoc().&nbsp; However, after that call,
+  Printer()-&gt;Handle will actually return a true device
+  context handle.&nbsp; That is, the prior value returned by
+  Printer()-&gt;Handle is no longer valid.&nbsp; After we
+  call Printer()-&gt;EndDoc(), Printer()-&gt;Handle once
+  again returns an HIC, but it may not be the same HIC
+  returned before the Printer()-&gt;BeginDoc() call. 
+</P> 
+<P>The moral of this story?&nbsp; Do not save
+  TPrinter::Handle across TPrinter::BeginDoc()/EndDoc()
+  calls. 
+</P> 
+<P>That said (and hopefully re-read until understood), we
+  have to clear the Rich Edit's formatting buffer because the
+  HDC/HIC to which we will be rendering has changed.&nbsp;
+  Let's go ahead and restore the HDC&#146;s settings, too. 
+</P> <PRE STYLE="margin-left: 0.5in">::SendMessage(RichEdit1-&gt;Handle, EM_FORMATRANGE, (WPARAM) 0, (LPARAM) 0);
+::RestoreDC(fr.hdc, -1);</PRE>
+
+<P> Now, we are almost ready to actually print.&nbsp;
+  First, we tell the printer that we are beginning to print,
+  next we set the rendering and target devices to the
+  printer, then we save the printer's HDC settings, and then
+  we adjust the page origins to account for the unprintable
+  portion of the page. 
+</P> <PRE STYLE="margin-left: 0.5in">Printer()-&gt;BeginDoc();
+fr.hdc = Printer()-&gt;Handle;
+fr.hdcTarget = Printer()-&gt;Handle;
+::SaveDC(fr.hdc);
+::SetViewportOrgEx(fr.hdc, xOffset, yOffset, NULL);</PRE>
+
+<P> Ready to print?&nbsp; Ok, here we go&#133;. 
+</P> <PRE STYLE="margin-left: 0.5in">bool firstPage = true;
+int currPage = 0;
+
+do {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (firstPage) firstPage = false;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else Printer()-&gt;NewPage();</PRE>
+
+<P> <B>[ Bug Report ]</B> 
+</P> 
+<P>As presented, the second and subsequent pages are
+  aligned to the top, left corner of the page.&nbsp;
+  Presumably, NewPage() resets the viewport origin.&nbsp; To
+  correct this problem, add the following&nbsp; here (it may
+  be deleted above): 
+</P> <PRE STYLE="margin-left: 0.5in">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::SetViewportOrgEx(fr.hdc, xOffset, yOffset, NULL);</PRE>
+
+<P> The correction has been applied to the code sample from
+  Part 4 of this paper.&nbsp; It has not been added to the
+  code samples available at the end of Part 3 of this paper. 
+</P> 
+<P>Thanks to Jan verhave for chasing this one down and
+  sharing it! 
+</P> 
+<P><B>[ End Bug Report ]</B> 
+</P> <PRE STYLE="margin-left: 0.5in">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.rc = FPageOffsets[currPage].rendRect;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.rcPage = pageRect;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.chrg.cpMin = FPageOffsets[currPage].Start;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.chrg.cpMax = FPageOffsets[currPage].End;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fr.chrg.cpMin = ::SendMessage(RichEdit1-&gt;Handle, EM_FORMATRANGE, (WPARAM) 1, (LPARAM) &amp;fr);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} while (++currPage &lt; pageCount);</PRE>
+
+<P> Here is what happened above:&nbsp; We defined and
+  initialized variables to track the current page number and
+  set a flag for the first page.&nbsp; Next, we entered a
+  loop to print each page (remember that we are printing only
+  one page if you religiously followed the code).&nbsp;
+  Within the loop, we started a new page (if not printing the
+  first page) and set the formatting rectangle and beginning
+  and ending offsets to the saved values for the current
+  page.&nbsp; Then we actually printed the page
+  (SendMessage() with WPARAM not zero). 
+</P> 
+<P><B>[ Begin Big Note ]</B> 
+</P> 
+<P>A diligent netizen, Mark Wigmore, pointed out that I
+  elsewhere implied that this series of papers would explain
+  how to implement page headers and/or footers.&nbsp; In
+  fact, the original paper did not explain that
+  clearly.&nbsp; Here I hope to remedy that oversight. 
+</P> 
+<P>If you are not already familiar with drawing text on a
+  TCanvas, now is the time to look it up in the &quot;Using
+  C++ Builder&quot; help.&nbsp; Spend some time learning
+  about the Text* methods.&nbsp; The bottom line is that you
+  can draw on Printer()-&gt;Canvas using any of the TCanvas
+  methods at any time between the Printer()-&gt;BeginDoc()
+  and Printer()-&gt;EndDoc() calls. 
+</P> 
+<P>The logical place to do this is in the do-while
+  rendering loop since it makes one pass for each printed
+  page.&nbsp; The only real &quot;trick&quot; is to make sure
+  that the Rich Edit rendering rectangle is below/above the
+  header/footer respectively.&nbsp; Well, the other trick is
+  to understand that Rich Edit controls always use twips for
+  measurements whereas TCanvas methods use the logical units
+  for the current mapping mode for the device context.&nbsp;
+  Above, we set the printer mapping mode to MM_TEXT, which
+  sets the logical units to device units.&nbsp; So, here you
+  will use printer device units (i.e., pixels; if your
+  printer resolution is 300 vertical pixels per inch, then
+  you have 300 device units per vertical inch). 
+</P> 
+<P>Use the WinAPI GetDeviceCaps() function to get the
+  printer pixels per inch. Make the calls near the top of the
+  rendering function (in this case, the OnClick
+  handler).&nbsp; For example: 
+</P> <PRE STYLE="margin-left: 0.5in">int printerHorzUnitsPerInch = ::GetDeviceCaps(Printer()-&gt;Handle, LOGPIXELSX);
+int printerVertUnitsPerInch = ::GetDeviceCaps(Printer()-&gt;Handle, LOGPIXELSY);</PRE>
+
+<P> gets the horizontal and vertical pixels per inch for
+  the printer. 
+</P> 
+<P>To add complexity (I always seem to do that), you may
+  want to have a first-page header that is different than the
+  second and remaining page headers.&nbsp; Assume for the
+  moment that you have set the top of the Rich Edit rendering
+  rectangle to one inch (1440 twips) and that you wish to
+  have a header one-half inch from the top and left edges of
+  the page.&nbsp; Using the above, you might re-code the
+  do-while loop to start like this: 
+</P> <PRE STYLE="margin-left: 0.5in">do {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// set page origin to top left so that TextOut() coordinates are<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// from top of page
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::SetViewportOrgEx(fr.hdc, 0, 0, NULL);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// if not first page, eject the page and print the second-page header
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (firstPage) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;firstPage = false;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Printer()-&gt;Canvas-&gt;TextOut(printerHorzUnitsPerInch / 2, printerVertUnitsPerInch / 2, 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;First page&quot;);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Printer()-&gt;NewPage();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Printer()-&gt;Canvas-&gt;TextOut(printerHorzUnitsPerInch / 2, printerVertUnitsPerInch / 2, 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;Second and following pages&quot;);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// set page origin to offset where the text should be rendered
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;::SetViewportOrgEx(fr.hdc, xOffset, yOffset, NULL);</PRE>
+
+<P> Note that you are not limited to TCanvas::Text*
+  functions.&nbsp; You can use any TCanvas method to draw
+  anything anywhere on the page.&nbsp; Naturally, if you draw
+  something at a position on the page that will subsequently
+  be drawn on by the Rich Edit control, it will be obscured
+  by the Rich Edit control's drawing. 
+</P> 
+<P>Of course, if you implement a page preview function as
+  described in the third part of this paper, you will need to
+  add functionally similar code to the preview rendering
+  method.&nbsp; When doing this, pay attention to the mapping
+  mode. 
+</P> 
+<P>My thanks to Robin Huang for helping me chase down bugs
+  in earlier versions of this note. 
+</P> 
+<P><B>[ End Big Note ]</B> 
+</P> 
+<P>At this point, we have finished rendering the contents
+  of the Rich Edit control.&nbsp; Now we restore the
+  printer's HDC settings and tell Windows that we are through
+  printing this document. 
+</P> <PRE STYLE="margin-left: 0.5in">::RestoreDC(fr.hdc, -1);
+Printer()-&gt;EndDoc();</PRE>
+
+<P> Finally, we clear the Rich Edit control&#146;s
+  formatting buffer and delete the saved page table
+  information. 
+</P> <PRE STYLE="margin-left: 0.5in">::SendMessage(RichEdit1-&gt;Handle, EM_FORMATRANGE, (WPARAM) 0, (LPARAM) 0);
+FPageOffsets.erase(FPageOffsets.begin(), FPageOffsets.end());</PRE>
+
+<P> That's it. 
+</P> 
+<P><A HREF="REPnP1.html" TARGET="_top">Back To Part 1:
+  About TRichEdit::Print()</A> 
+</P> 
+<P><A HREF="REPnP3.html" TARGET="_top">On to Part 3:
+  Previewing Rich Edit Controls</A> 
+</P> 
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="2"
+ CELLSPACING="0"> 
+<TR VALIGN="TOP">
+  <TD WIDTH="*" BGCOLOR="#e6e6e6">
+	 <P><FONT SIZE="-1"><B><A HREF="../Yacs.html"
+		TARGET="_top">Home</A> | <A HREF="#TopOfPage"
+		TARGET="_top">Top Of Page</A> |
+		<A HREF="../Yacs.html#CodeSection" TARGET="_top">Code</A> |
+		<A HREF="../Yacs.html#Papers" TARGET="_top">Papers</A> |
+		<A HREF="../Yacs.html#FAQs" TARGET="_top">FAQs</A> |
+		<A HREF="../Links.html" TARGET="_top">Links</A> |
+		<A HREF="../Yacs.html#SiteSearch" TARGET="_top">Search</A>
+		| <A HREF="../Yacs.html#ContactMe"
+		TARGET="_top">Feedback</A></B></FONT> 
+	 </P> 
+  </TD>
+  <TD WIDTH="*" BGCOLOR="#e6e6e6">
+	 <P ALIGN="RIGHT"><FONT SIZE="-1">Page updated 
+		<SCRIPT LANGUAGE="javascript" TYPE="text/javascript" SRC="../lstmoddt.js">
+			</SCRIPT> </FONT> 
+	 </P> 
+  </TD>
+</TR>
+</TABLE> 
+<P ALIGN="CENTER"><FONT SIZE="-1"><B>Copyright &copy;
+  1998-2001 Thin Air Enterprises and Robert Dunn.&nbsp; All
+  rights reserved.</B></FONT> 
+</P> 
+</BODY>
+</HTML>
+
+

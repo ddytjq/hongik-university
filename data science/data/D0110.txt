@@ -1,0 +1,102 @@
+ID=D0110
+URL=http://www.ejbtut.com/EjbSecurity.jsp
+SIZE=4004
+DATE=16/07/02
+TIME=14:37:18
+DATASET=Java
+HTML=<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.75 [en] (Win98; U) [Netscape]">
+   <meta name="Description" content="EJB Tutorial">
+   <meta name="Keywords" content="JSP Tutorial">
+   <meta name="KeyWords" content="EJB Tutorial">
+   <title>EJB Tutorial</title>
+</head>
+<body>
+&nbsp;
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0 COLS=1 WIDTH="100%" >
+<tr>
+<td>
+<center><b><font size=+3>EJB Tutorial</font></b>
+<br><img SRC="ejbtut.gif" ></center>
+</td>
+</tr>
+
+<tr>
+<td><i><font size=-1><a href="/">Tutorial Index Page</a></font></i>
+<h2>
+Security in EJBs</h2>
+Security issues in EJBs are handled almost completely in the deployment
+descriptor (this allows changes in security rules without rewriting or
+recompiling Java code.)
+<p>The primary concept for EJB security is that of "roles".&nbsp; A user
+may be in one or more roles.&nbsp; It is only roles that have particular
+access rights, not users.&nbsp; So for instance, the "administrator" role
+might have certain access right, that the "client" roles might not.&nbsp;
+If a user is switched from being a "client" to an "administrator" (or is
+given both roles), that user will then have access to all the methods accessible
+to the "administrator" role.
+<p>Each method can be restricted based upon roles.&nbsp; The restrictions
+are listed in the &lt;assembly-descriptor> tag.&nbsp; First of all, all
+roles must be listed.&nbsp; Then for each method, the access rights are
+listed by role.&nbsp; An example is shown below:
+<p><tt>&lt;assembly-descriptor></tt>
+<br><tt>&lt;security-role></tt>
+<br><tt>&lt;role-name>administrator&lt;/role-name></tt>
+<br><tt>&lt;/security-role></tt>
+<br><tt>&lt;security-role></tt>
+<br><tt>&lt;role-name>client&lt;/role-name></tt>
+<br><tt>&lt;/security-role></tt>
+<br><tt>&lt;method-permission></tt>
+<br><tt>&lt;role-name>administrator&lt;/role-name></tt>
+<br><tt>&lt;role-name>client&lt;/role-name></tt>
+<br><tt>&lt;method></tt>
+<br><tt>&lt;ejb-name>StockQuotes&lt;/ejb-name></tt>
+<br><tt>&lt;method-name>buy&lt;/method-name></tt>
+<br><tt>&lt;/method></tt>
+<br><tt>&lt;method></tt>
+<br><tt>&lt;ejb-name>StockQuotes&lt;/ejb-name></tt>
+<br><tt>&lt;method-name>getPrice&lt;/method-name></tt>
+<br><tt>&lt;/method></tt>
+<br><tt>&lt;/method-permission></tt>
+<br><tt>&lt;/assembly-descriptor></tt>
+<p>Each method-permission tag may list one or more role names, followed
+by one or more methods that are accessible for that role.&nbsp; The "*"
+character may be used to specify method names (indicating all methods.)&nbsp;
+For multiple methods with the same name, the EJB specifications allow detailed
+parameter lists and interface type to identify methods uniquely, but this
+is outsie the scope of this tutorial -- check reference material if you
+need to do this.
+<p>The actual mapping from user names to security roles, and the specification
+of user names and passwords is application-server dependent.
+<p><i>Exercise:</i>&nbsp; Add a set of security roles to the StockQuotes
+or the bank-account EJB (and rebuild and redeploy the EJB.)&nbsp; Check
+application server documentation to find out how to specify usernames and
+passwords.&nbsp; Test the security by providing incorrect as well as correct
+usernames and passwords.&nbsp; Check to see how this works in in linked
+EJBs, when the bank-account EJB calls a method in the StockQuotes EJB.&nbsp;
+What happens if the username/password provided is ok for the first but
+not for the called method in the second (linked) EJB, and vice versa?
+<br>&nbsp;</td>
+</tr>
+
+<tr>
+<td>
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%" >
+<tr>
+<td><a href="Further.jsp">Further Reading</a></td>
+
+<td>
+<div align=right><font size=-1><a href="Index.html#contents">Contents</a></font></div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+</body>
+</html>
+

@@ -1,0 +1,682 @@
+ID=D0969
+URL=http://www.microjava.com/articles/techtalk/kvmprogramming?content_id=1090
+SIZE=24983
+DATE=16/07/02
+TIME=15:03:15
+DATASET=Java
+HTML=
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- Copyright 2001 microjava.com (MicroDevGroup) -->
+<html>
+  <head>
+  
+    <title>Micro Java Network - The J2ME Resource : Serious KVM Programming    </title>
+    <link rel="stylesheet" type="text/css" href="/_includes/mj_blue2.css">
+	<meta http-equiv="Content-Type" content="text/html;"  charset="ISO-8859-2" 	>
+	<meta name="Keywords" content="">
+	<meta name="Description" content="This article talks about the experience gained from porting the full featured GIS applet to J2ME CLDC and MIDP programs for KVM devices.">
+   
+	<SCRIPT LANGUAGE='JavaScript1.2' SRC='/_includes/toolbar_preload.js' TYPE='text/javascript'></SCRIPT>
+	<SCRIPT LANGUAGE='JavaScript1.2' SRC="/_includes/validate.js"        TYPE='text/javascript'></SCRIPT>
+  </head>
+  <body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#b7c2ca"><img src="/images/spacer.GIF" width="1" height="3"></td>
+  </tr>
+  <tr>
+    <td bgcolor="#E8E8E8"><img src="/images/spacer.GIF" width="1" height="3"></td>
+  </tr>
+</table>
+
+<table width=778 border=0 cellspacing=0 cellpadding=0 align=center>
+  <tr> 
+    <td width="304" align="left"><a href="/"><img src="/images/advframe/logo.gif" width="195" height="70" alt="" border="0" vspace="3"></a></td>
+    <td valign="center">
+<a href="http://www.zucotto.com" target="new1"><img src="/images/ads/zucotto.gif" width="468" height="60" alt="" border="0"></a></td>
+  </tr>
+</table>
+   
+<TABLE WIDTH=778 BORDER=0 CELLPADDING=0 CELLSPACING=0 align=center background="/images/toolbar/b_px.gif">
+	<TR>
+		<TD ROWSPAN=5><IMG SRC="/images/toolbar/b_end_left.gif" WIDTH=14 HEIGHT=29></TD>
+		<TD COLSPAN=15><IMG SRC="/images/toolbar/b_top.gif" WIDTH=747 HEIGHT=5></TD>
+		<TD ROWSPAN=5><IMG SRC="/images/toolbar/b_end_right.gif" WIDTH=17 HEIGHT=29></TD>
+	</TR>
+	<form action="/search" method="post" name="search_form">
+	<TR>
+		<TD COLSPAN="12"><IMG SRC="/images/toolbar/b_px.gif" height="1"></td>
+		<TD ROWSPAN="3" width="238" align="center"><INPUT type="text" size="10" style="border: 1 solid #000000;height:17px;width=100;font-size:12;background-color:#C8D3DC;" name="keywords" value="keyword search" maxlength="30">&nbsp;&nbsp;</TD>
+		<TD COLSPAN="2"><IMG SRC="/images/toolbar/b_px.gif" height="1"></td>
+	</tr>
+	</form>	
+	<TR>
+		<TD><A HREF="/downloads" TARGET="_top" ONMOUSEOVER="rollIn('downloads');" ONMOUSEOUT="rollOut('downloads');">
+				<IMG NAME="downloads" SRC="/images/toolbar/b_downloads_off.gif" WIDTH=83 HEIGHT=17 BORDER=0 ALT="Downloads"></A></TD>
+		<TD><IMG SRC="/images/toolbar/b_divider.gif" WIDTH=8 HEIGHT=17></TD>
+		<TD><A HREF="/articles" TARGET="_top" ONMOUSEOVER="rollIn('articles');" ONMOUSEOUT="rollOut('articles');">
+				<IMG NAME="articles" SRC="/images/toolbar/b_articles_off.gif" WIDTH=58 HEIGHT=17 BORDER=0 ALT="Articles"></A></TD>
+		<TD><IMG SRC="/images/toolbar/b_divider.gif" WIDTH=8 HEIGHT=17></TD>
+		<TD><A HREF="/devices" TARGET="_top" ONMOUSEOVER="rollIn('devices');" ONMOUSEOUT="rollOut('devices');">
+				<IMG NAME="devices" SRC="/images/toolbar/b_devices_off.gif" WIDTH=76 HEIGHT=17 BORDER=0 ALT="Devices"></A></TD>
+		<TD><IMG SRC="/images/toolbar/b_divider.gif" WIDTH=8 HEIGHT=17></TD>
+		
+		
+		<TD><A HREF="/news" TARGET="_top" ONMOUSEOVER="rollIn('news');" ONMOUSEOUT="rollOut('news');">
+				<IMG NAME="news" SRC="/images/toolbar/b_news_off.gif" WIDTH=87 HEIGHT=17 BORDER=0 ALT="News & Info"></A></TD>
+		<TD><IMG SRC="/images/toolbar/b_divider.gif" WIDTH=8 HEIGHT=17></TD>
+		<TD><A HREF="/developer" TARGET="_top" ONMOUSEOVER="rollIn('developer');" ONMOUSEOUT="rollOut('developer');">
+				<IMG NAME="developer" SRC="/images/toolbar/b_developer_off.gif" WIDTH=76 HEIGHT=17 BORDER=0 ALT="Developer"></A></TD>
+		<TD><IMG SRC="/images/toolbar/b_divider.gif" WIDTH=8 HEIGHT=17></TD>
+		<TD><A HREF="/discussions" TARGET="_top" ONMOUSEOVER="rollIn('discussions');" ONMOUSEOUT="rollOut('discussions');">
+				<IMG NAME="discussions" SRC="/images/toolbar/b_discussions_off.gif" WIDTH=86 HEIGHT=17 BORDER=0 ALT="Discussions"></A></TD>
+		<TD><IMG SRC="/images/toolbar/b_divider.gif" WIDTH=8 HEIGHT=17></td>
+		
+		<TD><IMG SRC="/images/toolbar/b_divider.gif" WIDTH=8 HEIGHT=17></td>		
+		
+		<TD><A HREF="/signin" TARGET="_top" ONMOUSEOVER="rollIn('blogin');" ONMOUSEOUT="rollOut('blogin');">
+				<IMG NAME="blogin" SRC="/images/toolbar/b_sign_in_off.gif" WIDTH=87 HEIGHT=17 BORDER=0 ALT="Sign In"></A></TD>
+		
+	</TR>
+	<TR>
+		<TD colspan="12"><IMG SRC="/images/toolbar/b_px.gif" height="1"></td>
+		<TD colspan="2"><IMG SRC="/images/toolbar/b_px.gif" height="1"></td>
+	</tr>
+	<TR>
+		<TD COLSPAN=15><IMG SRC="/images/toolbar/b_bottom.gif" WIDTH=747 HEIGHT=5></TD>
+	</TR>
+</TABLE>  
+
+<br>
+
+<!-- main content -->
+<center>
+<table width="772" border="0" cellspacing="0" cellpadding="0" align="center">
+  <tr>
+    <td valign="top" width="160">
+
+      <!-- left column -->
+
+<table width="160" border="0" cellspacing="0" cellpadding="0">
+
+  <tr>
+  		<td colspan="2"> 
+
+<!-- ~-------------START REGION 2------------ -->
+
+
+		
+
+<table cellspacing=0 cellpadding=0 border=0 width="100%" align="center">
+
+	<tr>
+		<td>
+			<table cellpadding=1 cellspacing=0 width=100% align=center border=0>	
+			
+				</table>
+				<table width=100% cellspacing=1 cellpadding=1 >
+					<tr>
+						<td><a href="/articles" class="title">Articles</a></td>
+					</tr>
+					<tr><td><img src="/_images/1x1.GIF" width="1" height="1" alt="" border="0"></td></tr>
+				</table>
+			
+				<table cellpadding=1 cellspacing=0 width=98% align=center border=0>	
+				
+				<TR>
+					<td><img src="/_images/1x1.GIF" width="1" height="1" alt="" border="0"></td>
+					<td valign=top>
+						<img src="/images/1x1_999999.gif" width="4" height="4" alt="" vspace="4" hspace="1" border="0">
+						
+						</td>
+					<td width=100%><a href="/articles/perspective" class="blueSmall">Perspective Articles      </a></td>
+				</tr>
+				<tr><td colspan=3><img src="/_images/1x1.GIF" width="1" height="1" alt="" border="0"></td></tr>
+				
+				<TR>
+					<td><img src="/_images/1x1.GIF" width="1" height="1" alt="" border="0"></td>
+					<td valign=top>
+						<img src="/images/1x1_999999.gif" width="4" height="4" alt="" vspace="4" hspace="1" border="0">
+						
+						</td>
+					<td width=100%><a href="/articles/techtalk" class="blueSmall">Tech Talk   </a></td>
+				</tr>
+				<tr><td colspan=3><img src="/_images/1x1.GIF" width="1" height="1" alt="" border="0"></td></tr>
+				
+				<TR>
+					<td><img src="/_images/1x1.GIF" width="1" height="1" alt="" border="0"></td>
+					<td valign=top>
+						<img src="/images/1x1_999999.gif" width="4" height="4" alt="" vspace="4" hspace="1" border="0">
+						
+						</td>
+					<td width=100%><a href="/articles/reviews" class="blueSmall">Product Reviews   </a></td>
+				</tr>
+				<tr><td colspan=3><img src="/_images/1x1.GIF" width="1" height="1" alt="" border="0"></td></tr>
+				
+				<TR>
+					<td><img src="/_images/1x1.GIF" width="1" height="1" alt="" border="0"></td>
+					<td valign=top>
+						<img src="/images/1x1_999999.gif" width="4" height="4" alt="" vspace="4" hspace="1" border="0">
+						
+						</td>
+					<td width=100%><a href="/articles/interviews" class="blueSmall">Interviews         </a></td>
+				</tr>
+				<tr><td colspan=3><img src="/_images/1x1.GIF" width="1" height="1" alt="" border="0"></td></tr>
+					
+			</table>
+		<br>
+		
+		</td>
+	</tr>
+</table>
+
+
+
+
+
+	
+<!-- ~-------------END REGION 2 ------------- -->
+
+</td>
+  </tr>
+
+  <tr>
+    <td colspan="2"><img src="/images/spacer.GIF" width="1" height="10"></td>
+  </tr>
+  		<tr>
+				<td class="header" colspan="2" width="160" height="18" background="/images/advframe/t_bar2.gif" align="center" valign="center">
+					Related Content
+				</td>
+		</tr>
+		<tr>
+			<td colspan="2" bgcolor="#ebebeb"><img src="/images/spacer.GIF" width="1" height="10"></td>
+		</tr>
+		<tr>
+			<td colspan="2" bgcolor="#ebebeb">
+				
+
+<!-- ~-------------START REGION 3------------ -->
+
+
+		<table cellspacing=0 cellpadding=0 border=0 width="100%">
+	<tr>
+
+		<td class="blueHeaderbold" colspan="2" width="160" align="center" valign="center">
+		Articles
+		</td>
+
+	</tr>
+	<tr>
+		<td colspan="2"><img src="/images/spacer.GIF" width="1" height="4" alt="" border="0"></td>
+
+	</tr>
+	
+	<tr>
+		<td>&nbsp;</td>
+		<td class="source">
+			
+					<a href="/articles/techtalk/integration?content_id=3457" class="bluesmall" >Strategies For J2ME MIDP/J2EE Integration Over HTTP</a><br>
+					
+					-07/09/2002</td>
+	</tr>
+	<tr>
+		<td colspan="2"><img src="/images/spacer.GIF" width="1" height="4" alt="" border="0"></td>
+
+	</tr>
+	
+	<tr>
+		<td>&nbsp;</td>
+		<td class="source">
+			
+					<a href="/articles/techtalk/ide?content_id=3388" class="bluesmall" >J2ME IDE Comparison</a><br>
+					
+					-06/12/2002</td>
+	</tr>
+	<tr>
+		<td colspan="2"><img src="/images/spacer.GIF" width="1" height="4" alt="" border="0"></td>
+
+	</tr>
+	
+	<tr>
+		<td>&nbsp;</td>
+		<td class="source">
+			
+					<a href="/articles/techtalk/knudsen?content_id=1295" class="bluesmall" >Wireless Java: Developing with J2ME</a><br>
+					
+					-05/30/2002</td>
+	</tr>
+	<tr>
+		<td colspan="2"><img src="/images/spacer.GIF" width="1" height="4" alt="" border="0"></td>
+
+	</tr>
+	
+	<tr>
+		<td>&nbsp;</td>
+		<td class="source">
+			
+					<a href="/articles/perspective/moving?content_id=3157" class="bluesmall" >Moving Your Application from Wired to Wireless?</a><br>
+					
+					-05/01/2002</td>
+	</tr>
+	<tr>
+		<td colspan="2"><img src="/images/spacer.GIF" width="1" height="4" alt="" border="0"></td>
+
+	</tr>
+	
+	<tr>
+		<td colspan="2"><img src="/images/spacer.GIF" width="1" height="4" alt="" border="0"></td>
+
+	</tr>
+</table>
+
+	
+<!-- ~-------------END REGION 3 ------------- -->
+
+
+
+<!-- ~-------------START REGION 4------------ -->
+
+
+		<table cellspacing=0 cellpadding=0 border=0 width="100%">
+	<tr>
+
+		<td class="blueHeaderbold" colspan="2" width="160" align="center" valign="center">
+		Downloads
+		</td>
+
+	</tr>
+	<tr>
+		<td colspan="2"><img src="/images/spacer.GIF" width="1" height="4" alt="" border="0"></td>
+
+	</tr>
+	
+	<tr>
+		<td>&nbsp;</td>
+		<td class="source">
+			
+					<a href="/downloads/games?content_id=3473" class="bluesmall" >Dr Bok</a><br>
+					
+					-07/11/2002</td>
+	</tr>
+	<tr>
+		<td colspan="2"><img src="/images/spacer.GIF" width="1" height="4" alt="" border="0"></td>
+
+	</tr>
+	
+	<tr>
+		<td>&nbsp;</td>
+		<td class="source">
+			
+					<a href="/downloads/games?content_id=3474" class="bluesmall" >Adventurer</a><br>
+					
+					-07/10/2002</td>
+	</tr>
+	<tr>
+		<td colspan="2"><img src="/images/spacer.GIF" width="1" height="4" alt="" border="0"></td>
+
+	</tr>
+	
+	<tr>
+		<td>&nbsp;</td>
+		<td class="source">
+			
+					<a href="/downloads/misc?content_id=3465" class="bluesmall" >Coolaz Comics</a><br>
+					
+					-07/09/2002</td>
+	</tr>
+	<tr>
+		<td colspan="2"><img src="/images/spacer.GIF" width="1" height="4" alt="" border="0"></td>
+
+	</tr>
+	
+	<tr>
+		<td>&nbsp;</td>
+		<td class="source">
+			
+					<a href="/downloads/games?content_id=3464" class="bluesmall" >Cave</a><br>
+					
+					-07/08/2002</td>
+	</tr>
+	<tr>
+		<td colspan="2"><img src="/images/spacer.GIF" width="1" height="4" alt="" border="0"></td>
+
+	</tr>
+	
+	<tr>
+		<td colspan="2"><img src="/images/spacer.GIF" width="1" height="4" alt="" border="0"></td>
+
+	</tr>
+</table>
+
+	
+<!-- ~-------------END REGION 4 ------------- -->
+
+
+
+<!-- ~-------------START REGION 5------------ -->
+
+
+		<table cellspacing=0 cellpadding=0 border=0 width="100%">
+	<tr>
+
+		<td class="blueHeaderbold" colspan="2" width="160" align="center" valign="center">
+		FAQ
+		</td>
+
+	</tr>
+	<tr>
+		<td colspan="2"><img src="/images/spacer.GIF" width="1" height="4" alt="" border="0"></td>
+
+	</tr>
+	
+	<tr>
+		<td>&nbsp;</td>
+		<td class="source">
+			
+					<a href="/developer/faq/compile_run_debug?content_id=2115" class="bluesmall" >How do I debug on an actual device (i85s/i50sx)?</a><br>
+					
+					-10/13/2001</td>
+	</tr>
+	<tr>
+		<td colspan="2"><img src="/images/spacer.GIF" width="1" height="4" alt="" border="0"></td>
+
+	</tr>
+	
+	<tr>
+		<td>&nbsp;</td>
+		<td class="source">
+			
+					<a href="/developer/faq/compile_run_debug?content_id=2075" class="bluesmall" >How do I obfuscate using RetroGuard?</a><br>
+					
+					-10/01/2001</td>
+	</tr>
+	<tr>
+		<td colspan="2"><img src="/images/spacer.GIF" width="1" height="4" alt="" border="0"></td>
+
+	</tr>
+	
+	<tr>
+		<td>&nbsp;</td>
+		<td class="source">
+			
+					<a href="/developer/faq/general?content_id=1551" class="bluesmall" >Are there any beginner CLDC and MIDP articles and tutorials?</a><br>
+					
+					-07/24/2001</td>
+	</tr>
+	<tr>
+		<td colspan="2"><img src="/images/spacer.GIF" width="1" height="4" alt="" border="0"></td>
+
+	</tr>
+	
+	<tr>
+		<td>&nbsp;</td>
+		<td class="source">
+			
+					<a href="/developer/faq/connections?content_id=1566" class="bluesmall" >Can I make a phone call using J2ME using my MIDlet?</a><br>
+					
+					-07/24/2001</td>
+	</tr>
+	<tr>
+		<td colspan="2"><img src="/images/spacer.GIF" width="1" height="4" alt="" border="0"></td>
+
+	</tr>
+	
+	<tr>
+		<td colspan="2"><img src="/images/spacer.GIF" width="1" height="4" alt="" border="0"></td>
+
+	</tr>
+</table>
+
+	
+<!-- ~-------------END REGION 5 ------------- -->
+
+
+
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" bgcolor="#ebebeb"><img src="/images/spacer.GIF" width="1" height="10"></td>
+		</tr>
+		<tr>
+			<td colspan="2" width="160" height="12"><img src="/images/advframe/b_bar.gif" width="160" height="12" alt="" border="0"></td>
+		</tr>
+		<tr>
+			<td colspan="2"><img src="/images/spacer.GIF" width="1" height="10"></td>
+		</tr>
+		<tr>
+			<td colspan="2"><img src="/images/advframe/t_bar.gif" width="160" height="10" alt="" border="0"></td>
+		</tr>
+		<tr>
+			<td colspan="2" bgcolor="#C8D3DC" align="center">
+
+
+<a href="http://www.crispwireless.com" target="new1"><img src="/images/ads/crisp_banner.gif" width="120" height="120" alt="" border="0"></a>
+
+<img src="/images/spacer.GIF" width="160" height="10" alt="" border="0"><br>
+
+<a href="http://www.esmertec.com" target="new1"><img src="/images/ads/esmertec_125x125.gif" width="125" height="125" alt="" border="0"></a>
+
+<img src="/images/spacer.GIF" width="160" height="10" alt="" border="0"><br>
+
+<a href="http://www.perimind.com" target="new1"><img src="/images/ads/periMind120.gif" width="120" height="120" alt="" border="0"></a>
+
+
+
+
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"><img src="/images/advframe/b_bar.gif" width="160" height="10" alt="" border="0"></td>
+		</tr>
+ 		<tr>
+			<td colspan="2"><img src="/images/spacer.GIF" width="1" height="10"></td>
+		</tr>
+		<tr>
+			<td colspan="2"> 
+</td>
+		</tr>
+	</table>
+<!-- End left column -->
+
+
+    </td>
+    <td width="8"><img src="/images/spacer.GIF" width="8" height="1"></td>
+
+
+    <td width="610" valign="top">
+
+	     
+
+	        
+
+<!-- ~-------------START REGION 1------------ -->
+
+
+		<br>
+
+<TABLE cellpadding="0" cellspacing="0" border="0" width="100%">
+
+	
+	<TR>
+		<TD>
+		<img src="/_media/20020204/kshape.gif" width="150" height="100" border="0" align="left" vspace=5 hspace=5 alt="">
+		<h4>Serious KVM Programming</h4>
+		
+			<em>by Shiuh-Lin Lee</em><br><font class="author"> -02/04/2002</font>
+		<p>
+		<P>In this article, I assume the readers are already familiar with KVM (K Virtual Machine), and I won't spend time to discuss the benefits of KVM applications in the wireless world. If readers are interested on those missing topics, there are several good articles can be found in the reference section. In this article, I will mainly address the experience gained from a port of my full-featured GIS (Geographic Information System) program from the Java SE (Standard Edition) to the Java ME (Micro Edition) KVM environment.</P>
+<P>In 1997, I implemented an Internet Java GIS applet program, JShape, which allows users to load the GIS, CAD or image data from the web server and display them on the user's web browser screen. After Sun introduced KVM, in the latter portion of 1999, I ported JShape to the Java ME CLDC (Connected Limited Device Configuration) Palm KVM environment as KShape. Also, in the early months of 2000, I implemented a new MShape GIS program, which can run on the Java ME MIDP (Mobile Information Device Profile) Motorola iDEN phone environment. Due to the different computing environment, the resulted programs have the different features. Here are the major differences between Java SE and Java ME (CLDC and MIDP), and the features supported in JShape, KShape and Mshape.</P>
+<TABLE cellSpacing=1 cellPadding=1 border=1>
+<TBODY>
+<TR>
+<TD class=Subtitle vAlign=top width=148>&nbsp;</TD>
+<TD class=Subtitle vAlign=top width=148>
+<CENTER>Java SE</CENTER></TD>
+<TD class=Subtitle vAlign=top width=148>
+<CENTER>Java ME - CLDC (Palm)</CENTER></TD>
+<TD class=Subtitle vAlign=top width=148>
+<CENTER>Java ME - MIDP</CENTER></TD></TR>
+<TR>
+<TD class=Subtitle vAlign=top width=148>Hardware Type</TD>
+<TD class=Article vAlign=top width=148>PC, Workstation</TD>
+<TD class=Article vAlign=top width=148>Handheld device, PDA</TD>
+<TD class=Article vAlign=top width=148>Cellular Phone, Pager</TD></TR>
+<TR>
+<TD class=Subtitle vAlign=top width=148>CPU Speed</TD>
+<TD class=Article vAlign=top width=148>100+ MHz</TD>
+<TD class=Article vAlign=top width=148>16 - 20 MHz (slow)</TD>
+<TD class=Article vAlign=top width=148>Very Slow</TD></TR>
+<TR>
+<TD class=Subtitle vAlign=top width=148>Program Memory Size</TD>
+<TD class=Article vAlign=top width=148>16+ MB</TD>
+<TD class=Article vAlign=top width=148>128 - 256 KB</TD>
+<TD class=Article vAlign=top width=148>Less Than 128 KB</TD></TR>
+<TR>
+<TD class=Subtitle vAlign=top width=148>Storage Size</TD>
+<TD class=Article vAlign=top width=148>1+ GB</TD>
+<TD class=Article vAlign=top width=148>1 - 8 MB</TD>
+<TD class=Article vAlign=top width=148>Less Than 256 KB</TD></TR>
+<TR>
+<TD class=Subtitle vAlign=top width=148>Display Size</TD>
+<TD class=Article vAlign=top width=148>640 x 480 pixels +</TD>
+<TD class=Article vAlign=top width=148>160 x 160 pixels</TD>
+<TD class=Article vAlign=top width=148>Around 100 x 100 pixels</TD></TR>
+<TR>
+<TD class=Subtitle vAlign=top width=148>Internet Connection</TD>
+<TD class=Article vAlign=top width=148>56.6 Kbps +</TD>
+<TD class=Article vAlign=top width=148>19.2 - 33.6 Kbps for regular modems<BR>14.4 Kpbs for some wireless modems</TD>
+<TD class=Article vAlign=top width=148>9600 Kbps</TD></TR>
+<TR>
+<TD class=Subtitle vAlign=top width=148>Java Class Library</TD>
+<TD class=Article vAlign=top width=148>Full</TD>
+<TD class=Article vAlign=top width=148>Subset</TD>
+<TD class=Article vAlign=top width=148>Subset</TD></TR>
+<TR>
+<TD class=Subtitle vAlign=top width=148>GUI Class Library</TD>
+<TD class=Article vAlign=top width=148>AWT, Swing</TD>
+<TD class=Article vAlign=top width=148>N/A</TD>
+<TD class=Article vAlign=top width=148>N/A</TD></TR>
+<TR>
+<TD class=Subtitle vAlign=top width=148>Internet Connection Class Library</TD>
+<TD class=Article vAlign=top width=148>HTTP, Socket, Datagram</TD>
+<TD class=Article vAlign=top width=148>Socket</TD>
+<TD class=Article vAlign=top width=148>Datagram</TD></TR>
+<TR>
+<TD class=Subtitle vAlign=top width=148>Math Class Library</TD>
+<TD class=Article vAlign=top width=148>Yes</TD>
+<TD class=Article vAlign=top width=148>N/A</TD>
+<TD class=Article vAlign=top width=148>N/A</TD></TR>
+<TR>
+<TD class=Subtitle vAlign=top width=148>Float &amp; Double Data Types</TD>
+<TD class=Article vAlign=top width=148>Supported</TD>
+<TD class=Article vAlign=top width=148>N/A</TD>
+<TD class=Article vAlign=top width=148>N/A</TD></TR>
+<TR>
+<TD class=Subtitle vAlign=top width=148>Implemented GIS</TD>
+<TD class=Article vAlign=top width=148>JShape</TD>
+<TD class=Article vAlign=top width=148>KShape</TD>
+<TD class=Article vAlign=top width=148>MShape</TD></TR></TBODY></TABLE><BR><BR><B>JShape</B> 
+<TABLE cellSpacing=0 cellPadding=0 border=0>
+<TBODY>
+<TR>
+<TD vAlign=top width=175>
+<CENTER><IMG height=154 src="http://www.microjava.com/images/image002.gif" width=160></CENTER></TD>
+<TD vAlign=top width=415><STRONG>JShape- </STRONG>An internet web based GIS program, which provides the following features:<BR><BR>
+<OL>
+<LI>Reads input vector data from ESRI shapefile,ESRI SDE, Oracle Spatial, and user defined text file.</LI>
+<LI>Reads input image files from different sources (.gif, .jpg, dynamic map, multiple resolution map, etc.)</LI>
+<LI>Provides Java API and Java Beans programming interface.</LI>
+<LI>Provides JShape Script language interface.</LI>
+<LI>Fully integrated with DHTML &amp; Javascript languages.</LI></OL></TD></TR></TBODY></TABLE><BR><BR><B>KShape</B> 
+<TABLE cellSpacing=0 cellPadding=0 border=0>
+<TBODY>
+<TR>
+<TD class=Subtitle vAlign=top width=175>
+<CENTER><IMG height=228 src="http://www.microjava.com/images/image004.gif" width=160></CENTER></TD>
+<TD class=Article vAlign=top width=415><STRONG>KShape- </STRONG>A vector based GIS program for Palm KVM. It can access GIS data either from WWW Server or HotSync from the local machine. The retrieved data may be stored in Palm database for the later uses. Here are some screen images that illustrate the uses of KShape.<BR><BR></TD></TR>
+<TR>
+<TD colSpan=2>
+<CENTER><IMG height=128 src="http://www.microjava.com/images/image006.gif" width=128> <IMG height=128 src="http://www.microjava.com/images/image008.gif" width=128> <IMG height=128 src="http://www.microjava.com/images/image010.gif" width=128></CENTER><BR><BR>The following diagram outlines the KShape Systems Architecture. <BR><BR>
+<CENTER><IMG height=228 src="http://www.microjava.com/images/image012.gif" width=350> </CENTER></TD></TR></TBODY></TABLE><BR><BR><B>MShape</B> 
+<TABLE cellSpacing=0 cellPadding=0 border=0>
+<TBODY>
+<TR>
+<TD class=Subtitle vAlign=top width=175>
+<CENTER><IMG height=316 src="http://www.microjava.com/images/image014.jpg" width=120></CENTER></TD>
+<TD class=Article vAlign=top width=415><STRONG>MShape- </STRONG>GIS raster map client for Motorola iDEN phones. This client program sends the GIS map request through JSGateway to a remote WWW GIS map server. The WWW map server will process the map request, generate the raster image, and send the requested image back to the MShape client.<BR><BR><IMG height=205 src="http://www.microjava.com/images/image016.gif" width=400><BR><BR>The following screen images illistrate the uses of MShape. 
+<CENTER><IMG height=296 src="http://www.microjava.com/images/image018.gif" width=324><BR><BR></CENTER></TD></TR></TBODY></TABLE> 
+		
+		</P>
+		</td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>		
+	
+	<tr>
+		<TD>
+			
+		<strong>1 of 2</strong>&nbsp;
+		<a href="/articles/techtalk/kvmprogramming?PageNo=2">Next</a> <strong>&gt;&gt;</strong>
+		</td>
+	</tr>
+	
+</table>
+<br>
+
+
+
+
+
+	
+<!-- ~-------------END REGION 1 ------------- -->
+
+
+
+		 
+
+    </td>
+
+  </tr>
+  <tr>
+    <td colspan="5" height="8"><img src="/images/spacer.GIF" width="3" height="8"></td>
+  </tr>
+</table>
+</center>
+
+<br>
+ <!-- Begin footer-->
+<table width="772" border="0" cellspacing="0" cellpadding="0" align="center" name="template_footer">
+	<tr>
+		<td colspan="9" align="center"><img src="/images/spacer.GIF" width="1" height="20"></td>
+	</tr>
+
+	<tr>
+		<td colspan="3">&nbsp; </td>
+		<td width="5"  bgcolor="#FFFFFF"><img src="/images/spacer.GIF" width="5" height="1" alt="" border="0"></td>
+		<td align="center" bgcolor="#FFFFFF"><font size="1">
+		<a href="/about_us"><font size="1">about us</a> | <a href="/about_us/contact_us"><font size="1">contact us</a> | <a href="/contribute"><font size="1">contribute</a> | <a href="/about_us/sponsors"><font size="1">advertise</a> | <a href="/discussions"><font size="1">discussions</a> | <a href="/about_us/privacy"><font size="1">privacy</a> | 
+		<a href="/signup"><font size="1">register</a><br>
+		<a href="/copyright"><font size="1">Copyright &copy; 2000 - 2002 Micro Java Network</font></a>
+		</td>
+		<td width="5"  bgcolor="#FFFFFF"><img src="/images/spacer.GIF" width="5" height="1" alt="" border="0"></td>
+		<td colspan="3">&nbsp; </td>
+	</tr>
+	<tr>
+			<td colspan="9" align="center"><img src="/images/spacer.GIF" width="1" height="5"></td>
+	</tr>
+</table>
+<a name="#bottom"></a>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+		<td align="center"><img src="/images/spacer.GIF" width="1" height="5"></td>
+  </tr> 
+  <tr>
+    <td bgcolor="#b7c2ca"><img src="/images/spacer.GIF" width="1" height="3"></td>
+  </tr>
+
+</table>
+</body>
+</html>
+
+
+

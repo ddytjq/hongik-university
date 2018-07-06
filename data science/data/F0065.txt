@@ -1,0 +1,311 @@
+ID=F0065
+URL=http://www.chez.com/scribe/en/directx/ddraw7.htm
+SIZE=17182
+DATE=09/07/2002
+TIME=13:13:40
+DATASET=Visual Basic
+HTML=<HTML>
+<HEAD>
+<LINK rel="stylesheet" type="text/css" href="../..//global.css">
+</HEAD>
+<BODY>
+<TABLE class="menu" width="100%"><TR><TD class="header">
+<A href="../index.htm">Home</A> - <A href="../about/index.htm">About</A> - <A href="../assembly/index.htm">Assembly</A> - <A href="../directx/index.htm">DirectX</A> - <A href="../opengl/index.htm">OpenGL</A> - <A href="../dotnet/index.htm">.NET</A> - <A href="../psdk/index.htm">Platform SDK</A> - <A href="../downloads/index.htm">Downloads</A> - <A href="../links/index.htm">Links</A></TD>
+<TD class="header" style="text-align:right">October 3, 1999</TD></TR></TABLE><TABLE align="right"><TR><TD><!-- BEGIN WEBSIDESTORY CODE -->
+<!-- COPYRIGHT 1997-2001 WEBSIDESTORY, INC. ALL RIGHTS RESERVED. U.S.PATENT PENDING. Privacy notice at: http://websidestory.com/privacy -->
+<!-- webbot bot="HTMLMarkup" startspan -->
+<script language="javascript">
+var _pn="en - DirectDraw Essentials"; //page name
+var _acct="WQ5909151KCE94EN7";   //account number
+var _pndef="title";var _hcv=65;var _mn="wf200";
+var _lp=location.protocol.indexOf('https')==0?"https://":"http://";
+var _gn="hg1.hitbox.com";function _ps(_h){if(_h.indexOf("en - DirectDraw Essentials")==0) {
+if (_pndef=="title"){return document.title?document.title:_pndef;}else{
+var _g=location.pathname;_h=_g.substring(_g.lastIndexOf("/")+1,_g.length);
+if(_h==""){return _pndef};}};return _h;}var _sv=10;var _bn=navigator.appName;
+if(_bn.substring(0,9)=="Microsoft"){_bn="MSIE";};var _bv=Math.round(parseFloat(navigator.appVersion)*100);
+if((_bn=="MSIE")&&(parseInt(_bv)==2))_bv=301;var _rf=escape(document.referrer);_pn=_ps(_pn);
+var _hbfa="<a href='http://rd1.hitbox.com/rd?acct="+_acct+"' target=_top><img src='";
+var _hbfc="' border=0 width=125 height=125></a><div><font face='MS Sans Serif,Arial,Helvetica '"+
+"size=1><a href='http://counter.hitbox.com/a/hitboxfree.cgi' target='_blank'>privacy</a></font></div>";
+var _hbfb="";</script><script language="javascript1.1" id="_hbc">_sv=11;</script><script
+language="javascript1.1" src="http://stats.hitbox.com/js/hbf.js"></script><script language="javascript">
+if(_hbfb.length!=0){document.write(_hbfa+_hbfb+_hbfc);}else{if((_rf=="undefined")||(_rf=="")){
+_rf="bookmark";};document.write(_hbfa+_lp+_gn+"/HG?hc="+_mn+"&hb="+_acct+"&n="+escape(_pn)+
+"&cd=1&hv=6"+"&bn="+escape(_bn)+"&bv="+_bv+"&ss=na&sc=na&dt=&sv="+_sv+"&ja=na&ln=na&pl=&rf="+_rf+_hbfc);}
+</script><noscript><a href="http://rd1.hitbox.com/rd?acct=WQ5909151KCE94EN7" target=_top><img
+src = "http://hg1.hitbox.com/HG?hc=wf200&cd=1&hv=6&ce=u&hb=WQ5909151KCE94EN7&n=en - DirectDraw Essentials"
+border="0" width=125 height=125></a><div><font face="MS Sans Serif,Arial,Helvetica" size=1><a
+href="http://counter.hitbox.com/a/hitboxfree.cgi" target="_blank">privacy</a></font></div>
+</noscript><!--//-->
+
+<!-- webbot bot="HTMLMarkup" endspan -->
+<!-- END WEBSIDESTORY CODE  -->
+</TD></TR></TABLE>
+<TABLE align="center"><TR><TD align="right" class="header" width="45%"><A href="directx_isp.htm">Introduction to Space Partitioning</A>&nbsp;&lt;&lt;</TD>
+<TD align="center" class="header" width="10%"><A href="index.htm">Up</A></TD><TD align="left" class="header" width="45%">&gt;&gt;&nbsp;<A href="ddraw_pixelformat.htm">Pixel Format</A></TD></TR></TABLE>
+<H1>DirectDraw Essentials</H1>
+<P>Note that DirectDraw is no more part of DirectX 8. DirectDraw specific hardware capabilities such as overlays should be included back in DirectX 9. Other calls, if they ever show up again in DirectX 9 are likely to result as a call in the Direct3D layer, the current direction for 2D graphics being to be a special case for 3D (to take full benefit of the 3D hardware capabilities)</P>
+
+The DirectDraw API is the part of DirectX that handles 2D graphics. It provides capabilities such as :
+<UL>
+<LI>querying underlying hardware capabilities
+<LI>emulation for some missing capabilities
+<LI>memory management for graphics content either in video memory or system memory
+<LI>color management through palettes, color control or gamma control
+</UL>
+Additionaly DirectDraw is used by the Direct3D Immediate Mode API (that is itself used by the Direct3D Retained Mode API).
+<HR>
+<H1>DirectDraw Class</H1>
+As usual, we create the DirectDraw class object, that is at the root of the DirectDraw API, from a newly created <A href="directx_class.htm">DirectX7 class</A> object :
+<TABLE class="code" width="100%"><TR><TD><PRE>
+Option Explicit
+
+Private DirectX As DirectX7
+Private DirectDraw As DirectDraw7
+
+Private Sub Form_Load()
+    Set DirectX = New DirectX7
+    Set DirectDraw = DirectX.DirectDrawCreate("")
+End Sub
+
+Private Sub Form_Unload()
+    Set DirectDraw = Nothing
+    Set DirectX = Nothing
+End Sub
+</PRE></TD></TR></TABLE>
+<P>The string argument used in the <CODE>DirectX7.DirectDrawCreate</CODE> call is a GUID (Globally Unique IDentifier) that identifies the needed display driver. An empty string indicates the default display.</P>
+<H2><A name="Enumeration">Enumeration</A></H2>
+Though in most cases, using the default device is fine, by using <CODE>DirectX7.GetDDEnum</CODE>, you could enumerate available drivers :
+<TABLE class="code" width="100%"><TR><TD><PRE>
+Private DirectX As New DirectX7
+
+Private Sub Main()
+    Dim i As Long
+    With DirectX.GetDDEnum
+        For i = 1 To .GetCount
+            Debug.Print .GetDescription(i)
+            Debug.Print .GetGuid(i)
+            Debug.Print .GetMonitorHandle(i)
+            Debug.Print .GetName(i)
+        Next
+    End With
+End Sub</PRE></TD></TR></TABLE>
+This way you can create a DirectDraw object for another card. You could have also to use this sequence to retrieve 3D accelerator cards such as Voodoo 2 that are a complement not a replacement for your 3D card (we'll see that 3D mode is initialized through a DirectDraw object).
+<H2><A name="Hardware Capabilities">Hardware Capabilities</A></H2>
+If you are new to DirectX, you should note that DirectX does <STRONG>not insulate</STRONG> you from the underlying hardware. Instead it <STRONG>exposes hardware capabilities</STRONG> to your application. By using the <CODE>DirectDraw7.GetCaps</CODE> method, you can retrieve both hardware and software capabilities. DirectDraw :
+<UL>
+<LI>uses automatically hardware capabilities (though basic capabilities are common, support is likely to differ much for more advanced capabilities)
+<LI>if a capability is not implemented in hardware, will emulate this capability in software (if available). Software capabilities are of course part of the DirectX runtime and are the same for each PC (at least for a given release of DirectX)
+<LI>as this is exposed to your application, you are still free to provide an alternate solution if a given capability is not implemented in both hardware and software. This solution could even be to just suppress an effect (rather than just not running at all)
+</UL>
+Capabilities are retrieved using :
+<TABLE class="code" width="100%"><TR><TD><PRE>
+Private DirectX As DirectX7
+Private DirectDraw As DirectDraw7
+Private hwCaps As DDCAPS
+Private swCaps As DDCAPS
+
+Private Sub Form_Load()
+    Set DirectX = New DirectX7
+    Set DirectDraw = DirectX.DirectDrawCreate("")
+    DirectDraw.GetCaps hwCaps, swCaps
+    <SPAN class="comment">' hwCaps, swCaps structures filled with capabilities</SPAN>
+End Sub</PRE></TD></TR></TABLE>
+<HR>
+<H1>Primary Surface</H1>
+"Surfaces" are the core concept of DirectDraw. They are nothing else than a memory area that holds graphics data that can be handled using a number of methods. These surfaces are specialized depending upon their usage.<BR>
+The primary surface is the DirectDraw surface that is visible on screen at any one time.
+<TABLE class="code" width="100%"><TR><TD><PRE>
+Option Explicit
+
+Private DirectX As DirectX7
+Private DirectDraw As DirectDraw7
+Private SurfaceDesc As DDSURFACEDESC2
+Private PrimarySurface As DirectDrawSurface7
+Private EmptyRect As RECT
+
+Private Sub Main()
+    Set DirectX = New DirectX7
+    Set DirectDraw = DirectX.DirectDrawCreate("")
+    DirectDraw.SetCooperativeLevel 0, DDSCL_NORMAL
+    With SurfaceDesc
+        .lFlags = DDSD_CAPS
+        .ddsCaps.lCaps = DDSCAPS_PRIMARYSURFACE
+    End With
+    Set PrimarySurface = DirectDraw.CreateSurface(SurfaceDesc)
+    PrimarySurface.BltColorFill EmptyRect, Rnd*&h7FFFFF
+    Set PrimarySurface = Nothing
+    Set DirectDraw = Nothing
+    Set DirectX = Nothing
+End Sub
+</PRE></TD></TR></TABLE>
+<P>A surface is created from a description. The <CODE>lFlags</CODE> member of this structure allows to specify what are the members that the creation method should take into account. Here, the <CODE>DDSD_CAPS</CODE> constant indicates that only the member describing the surface capabilities, <CODE>ddsCaps</CODE> will be valid. This member is itself a structure. The <CODE>lCaps</CODE> member indicates the main capabilities of the surface.</P>
+<P>The use of the <CODE>DDSCAPS_PRIMARYSURFACE</CODE> flag indicates that the surface to create is a "primary surface", that is the DirectDraw surface that gives access to whatever is displayed on the screen at any one time.</P>
+<P>As we'll see at a later time, other flags allows to create much other types of DirectDraw surfaces such as "offscreen", "overlays" or even "texture" surfaces.<P>
+<P>Once this description is filled, the call of the <CODE>CreateSurface</CODE> creates the appropriate surface. We can then handle this surface and especially :<UL>
+<LI>draw text and graphics using the <CODE>DrawBox</CODE>, <CODE>DrawCircle</CODE>, <CODE>DrawEllipse</CODE>, <CODE>DrawLine</CODE>, <CODE>DrawRoundedBox</CODE>, <CODE>DrawText</CODE> methods
+<LI>copy rectangular areas from other surfaces using the <CODE>Blt</CODE>, <CODE>BltFast</CODE> or <CODE>BltFx</CODE> method or filling such an area with a color using the <CODE>BltColorFill</CODE>.
+<LI>... and much other things
+</UL>
+<H2>Full Screen mode</H2>
+Using full screen mode enables some more possibilities. Especially both the primary surface and the back buffer are using the current resolution previously set with a <CODE>DirectDraw7.SetDisplayMode</CODE> call. Instead of copying the back buffer surface content to the primary surface, most cards are able to swap pointers to the primary surface and the back buffer memory, method being known as "page flipping". Once this is done :
+<UL>
+<LI>The graphic card uses now the memory area that was handled through the back buffer surface to display the image. The old back buffer is now nothing else than the current primary surface.
+<LI>The memory area that was previously used for the primary surface is now used by the back buffer.
+<LI>This is transparent to your application. You just create the scene to the back buffer and once <CODE>DirectDrawSurface7.Flip</CODE> is called, the back buffer you just constructed is revealed to the screen as the new primary.
+</UL>
+When using this scheme, the primary surface and the back buffer are created with a single call :
+<TABLE class="code" width="100%"><TR><TD><PRE>
+With SurfaceDesc
+   .lFlags = DDSD_CAPS Or DDSD_BACKBUFFERCOUNT
+   .ddsCaps.lCaps = DDSCAPS_PRIMARYSURFACE Or DDSCAPS_COMPLEX Or DDSCAPS_FLIP
+   .lBackBufferCount = 1
+End With
+Set PrimarySurface = DirectDraw.CreateSurface(SurfaceDesc)
+</PRE></TD></TR></TABLE>
+<HR>
+<H1>Back Buffer</H1>
+In most cases, you won't write directly to the primary surface. Instead you'll use a back buffer that allows to compose a scene offscreen and reveal this scene quickly by copying its content to the primary surface.
+<H2>Windowed mode</H2>
+In windowed mode the back buffer is created as a separate offscreen surface
+<TABLE class="code" width="100%"><TR><TD><PRE>
+ScaleMode = vbPixels
+With SurfaceDesc
+    .lFlags = DDSD_CAPS Or DDSD_WIDTH Or DDSD_HEIGHT
+    .ddsCaps = DDSCAPS_OFFSCREENPLAIN
+    .lWidth = ScaleWidth
+    .lHeight = ScaleHeight
+End With
+Set BackBuffer = DirectDraw.CreateSurface(SurfaceDesc)
+</PRE></TD></TR></TABLE>
+<P>We first make sure we're working using pixel dimensions. The surface is created, much like what we saw for the primary surface. <CODE>lFlags</CODE> indicates that <CODE>ddsCaps</CODE> is used but we added <CODE>DDSD_WIDTH</CODE> and <CODE>DDSD_HEIGHT</CODE> to indicate we are also indicating the surface size.</P>
+<CODE>ddsCaps</CODE> indicates an offscreen surface and we then fill <CODE>lWidth</CODE> and <CODE>lHeight</CODE> with the size of the form.</P>
+The only thing left is to call <CODE>DirectDraw7.CreateSurface</CODE> with this description to return our newly created BackBuffer.</P>
+<H2>Full screen mode</H2>
+In full screen mode we are using a slightly different scheme. As we are using the whole screen, the back surface uses the same size as the primary surface that uses always the full size of the screen. Additionaly when using full screen mode, the primary surface and the back buffer are often tied one with the other. A graphic card takes data from a given memory location. These data indicates the color of each pixel for the full screen. In full screen mode, instead of copying a new screen of data to this location, the card can just take its data from another memory location by swapping pointers to the primary surface and the back buffer. It allows to change the display without having to move data in memory. For this reason, the primary surface and the back buffer are created with the same call as a "chain".
+<TABLE class="code" width="100%"><TR><TD><PRE>
+With SurfaceDesc
+     .lFlags = DDSD_CAPS Or DDSD_BACKBUFFERCOUNT
+     .ddsCaps.lCaps = DDSCAPS_PRIMARYSURFACE Or DDSCAPS_COMPLEX Or DDSCAPS_FLIP
+     .lBackBufferCount = 1
+End With
+Set PrimarySurface = DirectDraw.CreateSurface(SurfaceDesc)
+SurfaceDesc.ddsCaps.lCaps = DDSCAPS_BACKBUFFER
+Set BackBuffer = PrimarySurface.GetAttachedSurface(SurfaceDesc.ddsCaps)
+</PRE></TD></TR></TABLE>
+As usual, we'll use the <CODE>ddsCaps</CODE> and this time we added the <CODE>DDSD_BACKBUFFERCOUNT</CODE> flag so that <CODE>lBackBufferCount</CODE> is used also in this creation process.</P>
+Our surface is a primary surface, a complex surface (a "chain" of surfaces) and those surfaces are flippable (that is each surface may be pointed). We then specify the number of back buffers we need. The <CODE>DirectDraw7.CreateSurface</CODE> method returns the newly created primary surface. A back buffer has been also created. To retrieve this surface we are filling a <CODE>DDSCAPS</CODE> structure with its description and we then call <CODE>DirectDrawSurface7.GetAttachedSurface</CODE> to retrieve this surface. Here we just reused the <CODE>DDSCAPS</CODE> structure included in <CODE>DDSURFACEDESC2</CODE>
+<H2>At this point</H2>
+Wether we're using windowed or full screen mode, we have now a primary surface and a back buffer.
+<HR>
+<H1>DirectDrawClipper</H1>
+<P>We saw that to render the back buffer to the primary surface in windowed mode we need to blit the back buffer to the primary. However is the area we are blitting to, if partially or totally obscured, this place is overidden by the content of our back buffer and this results in seeing always the back buffer.</P> A <CODE>DirectDrawClipper</CODE> class object will take care of that for us and is quite simple to use. We'll only need :
+<UL>
+<LI>to create a DirectDrawClipper object by calling <CODE>DirectDraw7.CreateClipper</CODE>
+<LI>the clipper is then binded to the Window using its hWnd property
+<LI>and binded to the destination surface for which we need to protect some area, this is in most cases the primary surface
+</UL>
+<P>Then when the Blit method is called against this surface, the areas of the Window currently obscured by other windows, will not be blitted. As a result our window appears to match usual Windows criteria regarding windowing.</P>
+<P>The source code below shows what happens when using - or not - a clipper. Run this code and place another window so that it overlaps the first. Though active, this second window is still erased when the back buffer is erased. By pressing the "C" key, a clipper is created. You'll see then that obscured area are no more blitted to.</P>
+<P>Notice also that when a part of the destination window is out of the screen limits, blitting doesn't work any more when no clipper is in use. When the clipper is enabled, the Blit method works again even if the window is partially out of the screen limits.</P>
+<TABLE class="code" width="100%"><TR><TD><PRE>
+Option Explicit
+
+Private DirectX As DirectX7
+Private DirectDraw As DirectDraw7
+Private SurfaceDesc As DDSURFACEDESC2
+Private PrimarySurface As DirectDrawSurface7
+Private BackBuffer As DirectDrawSurface7
+Private EmptyRect As RECT
+Private WindowRect As RECT
+Private Clipper As DirectDrawClipper
+
+' System events
+
+Private Sub Form_Load()
+    ' Initiliaze DirectDraw
+    Set DirectX = New DirectX7
+    Set DirectDraw = DirectX.DirectDrawCreate("")
+    DirectDraw.SetCooperativeLevel 0, DDSCL_NORMAL
+    ' Create primary surface
+    With SurfaceDesc
+        .lFlags = DDSD_CAPS
+        .ddsCaps.lCaps = DDSCAPS_PRIMARYSURFACE
+    End With
+    Set PrimarySurface = DirectDraw.CreateSurface(SurfaceDesc)
+    ' Create back buffer
+    ScaleMode = vbPixels
+    With SurfaceDesc
+        .lFlags = DDSD_CAPS Or DDSD_WIDTH Or DDSD_HEIGHT
+        .ddsCaps.lCaps = DDSCAPS_OFFSCREENPLAIN
+        .lWidth = ScaleWidth
+        .lHeight = ScaleHeight
+    End With
+    Set BackBuffer = DirectDraw.CreateSurface(SurfaceDesc)
+End Sub
+
+Public Sub Run()
+    Do
+        BackBuffer.BltColorFill EmptyRect, Rnd * &H7FFFFFFF
+        'WindowRect.Top = Top + ScaleTop
+        'WindowRect.Left = Left + ScaleLeft
+        'WindowRect.Right = WindowRect.Left + ScaleWidth
+        'WindowRect.Bottom = WindowRect.Top + ScaleHeight
+        DirectX.GetWindowRect Picture1.hWnd, WindowRect
+        PrimarySurface.Blt WindowRect, BackBuffer, EmptyRect, DDBLT_WAIT
+    Loop While DoEvents
+End Sub
+
+' User events
+
+Private Sub Form_KeyPress(KeyAscii As Integer)
+    If Chr$(KeyAscii) = "c" Then
+        If Clipper Is Nothing Then
+            Set Clipper = DirectDraw.CreateClipper(0)
+            Clipper.SetHWnd hWnd
+            PrimarySurface.SetClipper Clipper
+        Else
+            PrimarySurface.SetClipper Nothing
+            Set Clipper = Nothing
+        End If
+    End If
+End Sub
+
+Private Sub Form_Resize()
+    Picture1.Move 0, 0, ScaleWidth, ScaleHeight
+End Sub
+</PRE></TD></TR></TABLE>
+<HR>
+<DIV class="copyright"><A href="../mail.htm">Patrice Scribe</A></DIV>
+<HR>
+<DIV class="copyright"><A href="../mail.htm">Patrice Scribe</A></DIV>
+</BODY>
+</HTML>
+<!-- -->
+</noscript>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+<!--
+var rnd = Math.floor(Math.random() * 9) + 1 ; 
+if (rnd <= 4) { 
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/default','pub','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=470,height=120');
+} else if(rnd == 5) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre4','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+} else if(rnd == 6) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre2','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+} else if(rnd >= 7) {
+window.open('http://pub.chez.com/cgi-bin/perl/popup.pl/popup/autre','pub2','location=no,toolbar=no,status=no,directories=no,scrollbars=no,width=250,height=250');
+}
+// -->
+</SCRIPT>
+
+<script language="javascript">
+WEBO_ZONE=122;
+WEBO_PAGE=1;
+weboplus_ok=0;
+</script>
+<script language="javascript"
+src="http://js.libertysurf.fr/chez/weborama/weboscopeplus.js"></SCRIPT>
+<SCRIPT>if(weboplus_ok==1){weboplus_zp(WEBO_ZONE,WEBO_PAGE);}
+</script>
+

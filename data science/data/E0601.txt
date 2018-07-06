@@ -1,0 +1,148 @@
+ID=E0601
+URL=http://www.troubleshooters.com/codecorn/littperl/chmod.htm
+SIZE=5023
+DATE=12/07/02
+TIME=19:22:35
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>chmod -- Changing File Access</TITLE>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="description" CONTENT="Debugging and Troubleshooting Source Code including MS Access, C++, Delphi, FoxPro, MFC, SQL, Visual Basic">
+   <META NAME="keywords" CONTENT="debugging, troubleshooting, Source Code, Access, C++, Delphi, FoxPro, MFC, Microsoft Foundation Classes, SQL, Visual Basic">
+   <META NAME="FORMATTER" CONTENT="Microsoft FrontPage 1.1">
+   <META NAME="Author" CONTENT="Steve Litt">
+   <META NAME="Description" CONTENT="Hello World in Perl and CGI">
+   <META NAME="KeyWords" CONTENT="PERL, CGI, Hello World">
+   <META NAME="GENERATOR" CONTENT="Mozilla/3.01Gold (Win95; U) [Netscape]">
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFF0" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000" BACKGROUND="../../tcbk.gif">
+
+<H2 ALIGN=CENTER><A NAME="top"></A><A HREF="../../troubleshooters.htm">Troubleshooters.Com</A>
+and <A HREF="../index.htm">Code Corner</A> Present</H2>
+
+<H1 ALIGN=CENTER><A HREF="index.htm">Steve Litt's PERLs of Wisdom</A>:<BR>
+chmod -- Changing File Permissions</H1>
+
+<CENTER><P><A HREF="../../cpyright.htm">Copyright (C) 1998 by Steve Litt</A></P></CENTER>
+
+<P>
+<HR></P>
+
+<P>All operating systems have file attributes. They can be called permissions
+(UNIX), rights (Novell), attributes (DOS). Some are incredibly simple,
+like DOS, with their readonly, system and hidden attributes, while some
+are incredibly rich, like Novell with its read, write, create, delete,
+filescan, supervisor, accesscontrol.</P>
+
+<P>Unix has three permissions, which can be given or denied to three different
+populations:</P>
+
+<TABLE BORDER=1 >
+<TR>
+<TD></TD>
+
+<TD>Owner</TD>
+
+<TD>Other</TD>
+
+<TD>All</TD>
+</TR>
+
+<TR>
+<TD>Read</TD>
+
+<TD>Y/N</TD>
+
+<TD>Y/N</TD>
+
+<TD>Y/N</TD>
+</TR>
+
+<TR>
+<TD>Write</TD>
+
+<TD>Y/N</TD>
+
+<TD>Y/N</TD>
+
+<TD>Y/N</TD>
+</TR>
+
+<TR>
+<TD>Execute</TD>
+
+<TD>Y/N</TD>
+
+<TD>Y/N</TD>
+
+<TD>Y/N</TD>
+</TR>
+</TABLE>
+
+<P>You can see the file permissions by doing the ls command with the proper
+arguments. Below is an example. Note the column on the left indicates the
+permissions for the file for each user population.</P>
+
+<TABLE BORDER=1 >
+<TR>
+<TD>
+<PRE>-rwxr-xr-x   1 slitt    200         6331 Mar 24 18:33 big.cgi
+-rwxr-x-wx   1 slitt    200          225 Mar 24 13:20 small.cgi
+-rw-rw-r--   1 slitt    200         7791 Mar 24 18:30 robust.htm</PRE>
+</TD>
+</TR>
+</TABLE>
+
+<P>Without getting into a big UNIX thing, I'd like to show you how to make
+a CGI script executable to all users. Note that CGI scripts must be executable
+to all in order for the HTTP server to execute them.</P>
+
+<P>One way is to telnet in, and do the following command:</P>
+
+<PRE>chmod a+x myfile.cgi</PRE>
+
+<P>However, many ISP's won't let you telnet in -- it's too big a security
+risk. Never fear, you can do it from some versions of ftp. I use WS_FTP
+LE. To make a file executable to all, I simply click the file (in the remote
+side, of course) to highlight it, then right click it, choose chmod (UNIX).
+It presents me with this screen:<BR>
+<IMG SRC="images/chmod.gif" HEIGHT=210 WIDTH=297></P>
+
+<P>Click all 3 execute checkboxes, then (<B>and please note this is important</B>)
+make sure all 9 checkboxes represent the permissions you want the file
+to have. That's because the checkmarks you see when you pull up this window
+aren't necessarily accurate. Often you can check and re-check execute,
+and it's still not checked when you pull it up again. However, it IS now
+executable. What this means is that every time in WS_FTP that you pull
+up this screen, the checkboxes might not represent the file's present state,
+so you must make sure that all 9 checkboxes are exactly how you want them,
+or else you might unintentionally change rights you didn't want to change.</P>
+
+<P>To find the real rights in WS_FTP, simply right click on a blank portion
+of the remote files window, and choose &quot;directory listing&quot;. You'll
+get all the files, together with their attributes, exactly like if you'd
+done an ls -lt command. Note you can do the same from Windows95's built-in
+FTP by typing &quot;dir&quot; on their angle bracket prompt. Unfortunately,
+I could find no way of changing attributes from Windows95's built-in FTP.</P>
+
+<P><B>Note: Click your browser's &quot;back&quot; button to return to the
+page you came from.</B></P>
+
+<P>
+<HR></P>
+
+<P>&nbsp;[ <A HREF="../../troubleshooters.htm">Troubleshooters.com</A>
+| <A HREF="../index.htm">Code Corner</A> | <A HREF="mailto:slitt@troubleshooters.com">Email
+Steve Litt</A> ] </P>
+
+<P><A HREF="../../cpyright.htm#top"><IMG SRC="../../images/biglcpyr.gif" BORDER=0 HEIGHT=30 WIDTH=30></A>
+<A HREF="../../cpyright.htm#top">Copyright (C)1998 by Steve Litt</A> --
+<A HREF="../../cpyright.htm#top">Legal</A></P>
+
+<P>&nbsp;</P>
+
+</BODY>
+</HTML>
+

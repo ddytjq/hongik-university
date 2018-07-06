@@ -1,0 +1,408 @@
+ID=E0380
+URL=http://www.bcbdev.com/faqs/faq96.htm
+SIZE=18985
+DATE=12/07/02
+TIME=19:20:25
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+
+<H3>
+Q: Design forms that work with both Large Fonts and Small Fonts
+</H3>
+
+<BR>
+<H3>Answer</H3>
+
+<P>
+Many people have posted questions on the Borland newsgroups asking how to
+create forms that look right with both the small font and large font setting.
+Ensuring that forms to look correct on machines with different font settings can be a
+real pain. This FAQ summarizes a couple of strategies that I use to limit problems
+caused by the font settings.
+</P>
+<P>
+In order to make sure your forms look correct with both font settings, try to stay in one of these
+three camps.
+</p>
+
+<HR>
+
+<H4>
+Camp A, the better camp:
+</H4>
+
+<UL>
+<LI> Design your program from a machine that uses small fonts
+<LI> Never open the project on a machine with large fonts
+<LI> Set <TT>Scaled</TT> to <TT>true</TT> for the form
+<LI> Set <TT>AutoScroll</TT> to <TT>false</TT>
+</UL>
+<P>
+With this strategy, the <TT>AutoScroll</TT> property is critical. When <TT>Scaled</TT> is true,
+the controls on a form expand by a ratio of <TT>1.25</TT> <TT>(120/96)</TT> when run on a large font machine. By
+expand I mean that their height and width are increased by a factor of <TT>1.25</TT>. Left and Top
+are also increased by <TT>25%</TT>. When the form's <TT>AutoScroll</TT> property is set to false,
+the size of the form also grows by the same factor. However, if <TT>AutoScroll</TT>
+is <TT>true</TT>, the form does not grow. When this happens, the resized and repositioned controls fall of the edge of
+the form (see Figure 3). When <TT>AutoScroll</TT> is on, the form apparently decides that showing the
+scroll bars is a better idea than resizing the form.
+</p>
+<P>
+</P>
+
+<P>
+<TABLE WIDTH="100%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Note:</b>
+<hr size = 1>
+When you create a new form, <TT>Scaled</TT> is automatically set to <TT>true</TT> by default, which
+is good. Unfortunately, the <TT>AutoScale</TT> property also defaults to <TT>true</TT>. If you want
+your forms to appear correctly on a large font machine, you must actively turn off <TT>AutoScroll</TT>
+ on all of your forms.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+<P>
+Here is something to keep in mind with respect to form scaling. When you design with the small font setting, your form will
+expand when run on a machine with large fonts. If you design your forms with the large font setting on, then you have to deal
+with forms that shrink when they are run on a small font machine. The problems that are caused by expanding forms
+are probably easier to deal with the problems of forms that shrink, which is what happens when you design at large fonts and
+run at small fonts. For this reason, if you use the Camp A technique, you should always work in the Form Designer with
+your system set to small fonts.
+</P>
+<P>
+I have included some screen shots at the bottom of this FAQ to illustrate how these properties work. The screen shots are
+taken from an wizard like application that I wrote for a former employer, TRG (which is now
+<A HREF="http://www.handera.com">Handera</A>). Figure 1 shows what the form looks like on a machine with small fonts.
+The form's <TT>Scaled</TT> property is set to true and <TT>AutoScroll</TT> is off. Figure 2 shows the same program running
+on a large font machine.  Although the form looks different, for the most part its appearance is acceptable. Notice how
+the picture of the PalmPilot appears to shrink. In reality, the picture has not changed in size. The form has grown by a factor
+of <TT>120/96</TT>, giving the illusion that the picture is smaller. Figure 1 and Figure 2 are shown at their actual size so you can see
+how much the form grows on a large fonts system.
+</P>
+<P>
+Figure 3 shows what happens when <TT>AutoScroll</TT> is left on. Notice how the controls are just chopped off.
+When <TT>AutoScroll</TT> is on, the VCL does not adjust the form's width or height to account for the expansion
+of the form's controls. Curiously enough, the scroll bars don't appear either, despite the fact that <TT>AutoScroll</TT>
+is true. Apparently, the scroll bars never appear when <TT>BorderStyle</TT> is set to <TT>bsDialog</TT> or <TT>bsSingle</TT>.
+Figure 4 shows what happens when <TT>AutoScroll</TT> is true and <TT>BorderStyle</TT> is set to <TT>bsSizeable</TT>.
+Hideous!! What's really funny is that this is the behavior that you get by default from a new form.
+</p>
+<BR>
+
+<IMG SRC="faq96_figure1.png" BORDER=0 ALIGN="BOTTOM">  <BR>
+<H4>Figure 1. Form running on a small font system</H4>
+<HR>
+<P>
+&nbsp;
+</P>
+
+
+<IMG SRC="faq96_figure2.png" BORDER=0 ALIGN="BOTTOM">  <BR>
+<H4>Figure 2. Form running on a large font system</H4>
+<HR>
+<P>
+&nbsp;
+</P>
+
+<IMG SRC="faq96_figure3.png" BORDER=0 ALIGN="BOTTOM">  <BR>
+<H4>Figure 3. Form running on large fonts with AutoScroll=true</H4>
+<HR>
+<P>
+&nbsp;
+</P>
+
+<IMG SRC="faq96_figure4.png" BORDER=0 ALIGN="BOTTOM">  <BR>
+<H4>Figure 4. Sizeable Form running on large fonts with AutoScroll=true</H4>
+<HR>
+<P>
+&nbsp;
+</P>
+
+<HR>
+
+
+<H4>
+Camp B
+</H4>
+
+<UL>
+<LI> Design using large fonts or small fonts (but be consistent)
+<LI> Always set <TT>Scaled</TT> to false
+<LI> Set <TT>AutoScroll</TT> to false (it's just not a very useful property)
+<LI> Add code to your form that detects the font setting and adjusts properties as needed
+</UL>
+
+<P>
+This essentially turns off all scaling and leaves it up to you. It also tends to cause as many problems as it solves.
+However, one benefit of this strategy is that the width and height of your form remains constant regardless of the font
+setting. This is both a benefit and a hindrance.
+</P>
+<P>
+The key to this strategy is to position the controls on your form so that they spaced far enough away from each other
+so they won't collide when run on a machine with large fonts. If you are going to follow the Camp B philosophy, you may
+actually want to use large fonts when designing your forms. This way you can rely on the fact that the size of text on your
+form will shrink if the user runs the form on a small font machine. Imagine that you have an autosized label on your form that
+just happens to be 120 pixels wide when designing the form on a large fonts system. When you run the same app on a small fonts
+system, the label will shrink to 96 pixels wide. Given that the width and height of the form are remaining constant (because
+<TT>Scaled</TT> is false) it is easier to deal with controls that are shrinking rather than controls that are expanding.
+</p>
+<P>
+Another benefit of designing your forms on a large fonts system is the behavior of buttons. If <TT>Scaled</TT> is false, a
+button's width remains constant on both small fonts and large fonts systems. If you design your form with small fonts on, there
+is a chance that the button's text will outgrow the width of the button when run on a large font system. If you design on a large
+font system, then you can ensure that the text will fit. When you move the program to a small font system, the text will shrink
+inside the confines of the button.
+</P>
+
+<P>
+If you use the Camp B strategy and you decide that you still want to design your forms on a small
+fonts system, you may run into trouble with labels not appearing correctly because of how they
+auto size. A single line label will never convert itself to multi-line if needs more room. It will
+only expand to the right. A mutli line label will only expand downward. These two facts may cause
+labels to collide when <TT>Scaled</TT> is false and you are designing your forms on a small fonts system.
+</P>
+<P>
+If you can't design your form on a large fonts system, follow these suggestions to solve the problem with
+labels that collide. If single line labels collide with something, try setting <TT>AutoSize</TT> to false
+for the label. Then widen the label by a factor of <TT>1.25</TT> or more. This gives the text room to grow.
+If this expansion causes the label's boundary to collide with another control, then you need to convert
+to label to be multi-line. For multi-line labels, set <TT>AutoSize</TT> to false, keep <TT>WordWrap</TT>
+to true, and expand the <A>Height</A> of the label so it has a spare line or two. This allows the text to
+grow <A> and fill up the rest of the label. At small fonts, these labels will seem farther apart than they
+do to a user running a large fonts.
+</P>
+
+<P>
+One drawback to the Camp B strategy is that it takes more manual effort to get it right. Another issue
+is that if you design your forms from a large fonts system, your forms will look their best when run on
+other large fonts systems, but they may look sub optimal on a small fonts system. Because small fonts seems to
+be the more prevalent setting, it makes sense that forms should look their best on machines with small fonts. This is why
+I think the Camp A strategy is the better alternative.
+</P>
+<P>
+Figure 5 shows the Camp B strategy in action. I have taken the the form from Figure 1 and simply turned the <TT>Scaled</TT>
+property off. Then I recompiled from a small fonts system and ran the app on a large fonts system. Figure 5 is a
+screenshot of the app running on a large fonts system. Notice how the form's size has remained constant. Also notice how
+the labels are all crowded together now. Another problem is that the text for the Cancel Upload button is too large for the
+width of the button control. Despite these problems, the form's appearance is acceptable (barely!).
+</P>
+<P>
+In order to use the Camp B technique for my wizard form, some changes need to be made. I decided to try and
+design the form from a large font system first, and then run it on small font system. Figure 6 shows the
+new form at design time on the large font system. Figure 7 shows the new form running on a small font system.
+</P>
+
+<IMG SRC="faq96_figure5.png" BORDER=0 ALIGN="BOTTOM">  <BR>
+<H4>Figure 5. Form running on large fonts with Scaled=false</H4>
+<HR>
+<P>
+&nbsp;
+</P>
+
+<IMG SRC="faq96_figure6.png" BORDER=0 ALIGN="BOTTOM">  <BR>
+<H4>Figure 6. New layout with Scaled=false from large font machine</H4>
+<HR>
+<P>
+&nbsp;
+</P>
+
+<IMG SRC="faq96_figure7.png" BORDER=0 ALIGN="BOTTOM">  <BR>
+<H4>Figure 7. Testing new layout on a small font machine</H4>
+<HR>
+<P>
+&nbsp;
+</P>
+
+<HR>
+<H4>
+Camp C
+</H4>
+<P>
+Tell users of large fonts to take a hike. This isn't always practical, but
+where I work now, it is :) I currently work in an IT department where all of the
+apps are for internal use. Because Visual C++ and MFC are no better at dealing
+with fonts (in fact they're worse), our IT department has specified that our
+programs (both MFC and BCB programs) will function correctly at 800x600, 16
+bit high color, small fonts. If you are not running that, don't complain (I
+didn't make these rules by the way, but I don't seek their abolishment
+either).
+</P>
+<P>
+If your software ends up on a shelf at CompUSA, this strategy might
+not be wise. The screen shots in this FAQ are from a past employer, Handera (they were called TRG
+when I worked for them). Handera currently makes a Palm OS handheld that competes
+with products from Palm and Handspring. In the past, they made expansion memory cards for
+the older line of PalmPilots. The program in the screen shots was a wizard
+like application that walked the user through process of configuring their memory
+card.
+</P>
+<P>
+Because the progam was sold as a package to customers outside of the company, we
+did not have the luxury of simply forcing people to use small fonts. We had to
+design the program to function correctly on both small font and large fonts systems.
+We ended up using a combination of method A and method B.
+</P>
+
+<H4>
+Notes
+</H4>
+
+<P>
+Here are some other tips that I posted to the newsgroups.
+</P>
+<P>
+<B>1-</B> Test until you are blue in the face. Usually, labels, edit controls,
+buttons, and scale themselves ok. Images appear to shrink on a large fonts system
+because the number of pixels per inch increases with large fonts. Space
+everything out so that the controls look ok when you switch to large fonts.
+</P>
+<P>
+<B>2-</B> Sometimes, label's will run together on a large font machine, even though
+the text of the labels don't touch. The result is that one label will obscure
+another, despite the fact that there is plenty of clearance between the text
+in the labels. You can use the <i>Send to back</i> feature in the Form Designer
+to bring the obscured text back into view.
+</P>
+<P>
+<B>3-</B> Whenever you create a new form, the <TT>BorderStyle</TT> is initially set
+to <TT>bsSizeable</TT>. For any form that looks and acts like a dialog box, you
+should change the border style to <TT>bsSingle</TT> or <TT>bsDialog</TT>.
+</P>
+<P>
+<B>4-</B> Never hardcode the <TT>Width</TT> and <TT>Height</TT> of a form
+to an integer constant in code if the form's <TT>Scaled</TT> property is true. If you do, the form's
+client area will chop off some of the controls at runtime when you run the program on a large font machine.
+The result is exactly the same as what you see in Figure 3.
+</P>
+<P>
+So instead of writing code like this:
+</P>
+<pre>
+<b>__fastcall</b> TForm1<b>:</b><b>:</b>TForm1<b>(</b>TComponent<b>*</b> Owner<b>)</b>
+    <b>:</b> TForm<b>(</b>Owner<b>)</b>
+<b>{</b>
+  Width <b>=</b> <font color="blue">320</font><b>;</b>
+  Height <b>=</b> <font color="blue">240</font><b>;</b>
+<b>}</b>
+</pre>
+<P>
+Write code that accounts for the fact that the form may need to scale
+</P>
+
+<pre>
+<b>__fastcall</b> TForm1<b>:</b><b>:</b>TForm1<b>(</b>TComponent<b>*</b> Owner<b>)</b>
+    <b>:</b> TForm<b>(</b>Owner<b>)</b>
+<b>{</b>
+  Width  <b>=</b> <font color="blue">320</font> <b>*</b> Screen<b>-></b>PixelsPerInch <b>/</b> <font color="blue">96</font><b>;</b>
+  Height <b>=</b> <font color="blue">240</font> <b>*</b> Screen<b>-></b>PixelsPerInch <b>/</b> <font color="blue">96</font><b>;</b>
+<b>}</b>
+</pre>
+<P>
+Keep in mind that you only want to scale the values if the <TT>Scaled</TT> property
+is <TT>true</TT>. If it is <TT>false</TT>, you don't want to scale. Because of this,
+you might want to create a helper function for scaling the value.
+</P>
+<P>
+Note that this suggestion also applies to setting the <TT>Left</TT>, <TT>Top</TT>,
+<TT>Width</TT> and <TT>Height</TT> properties of controls that are on your form.
+For example, you want to avoid writing code like this if <TT>Scaled</TT> is <TT>true</TT>:
+</P>
+
+<pre>
+<b>__fastcall</b> TForm1<b>:</b><b>:</b>TForm1<b>(</b>TComponent<b>*</b> Owner<b>)</b>
+    <b>:</b> TForm<b>(</b>Owner<b>)</b>
+<b>{</b>
+  <font color="navy">// put the label to the right and above the help button</font>
+  Label1<b>-></b>Left <b>=</b> <font color="blue">150</font><b>;</b>
+  Label1<b>-></b>Top  <b>=</b> <font color="blue">300</font><b>;</b>
+<b>}</b>
+</pre>
+<p>
+The reason you want to avoid this practice is because the coordinate 150,300 shifts
+relative to everything else on the form when you move your program to a large font
+machine. On a small font machine, the coordinate 150,300 may have been in the middle
+of some open space in your form. On a large font machine, that same point might be
+smack in the middle of a button or some other control.
+</P>
+<p>
+There are better ways to position the label. One method is to adjust the coordinates
+by the font size ratio. Another solution is to position the control relative to other
+controls around it. When the form scales on a large font machine, the relative
+coordinates will also scale.
+</P>
+<pre>
+<b>__fastcall</b> TForm1<b>:</b><b>:</b>TForm1<b>(</b>TComponent<b>*</b> Owner<b>)</b>
+    <b>:</b> TForm<b>(</b>Owner<b>)</b>
+<b>{</b>
+  <font color="navy">// Solution #1: scale the coordinates with the rest of the form.</font>
+  Label1<b>-></b>Left <b>=</b> <font color="blue">150</font> <b>*</b> Screen<b>-></b>PixelsPerInch <b>/</b> <font color="blue">96</font><b>;</b>
+  Label1<b>-></b>Top  <b>=</b> <font color="blue">300</font> <b>*</b> Screen<b>-></b>PixelsPerInch <b>/</b> <font color="blue">96</font><b>;</b>
+
+  <font color="navy">// Solution #2: position relative to the help button.</font>
+  Label1<b>-></b>Left <b>=</b> Button1<b>-></b>Left <b>+</b> Button1<b>-></b>Width <b>+</b> <font color="blue">10</font><b>;</b>
+  Label1<b>-></b>Top  <b>=</b> Button1<b>-></b>Top  <b>-</b> <font color="blue">15</font><b>;</b>
+
+  <font color="navy">// Solution #2.01: Technically, the constants 10 and 15 should</font>
+  <font color="navy">//                 be scaled according to the font size.</font>
+  Label1<b>-></b>Left <b>=</b> Button1<b>-></b>Left <b>+</b> Button1<b>-></b>Width <b>+</b> <font color="blue">10</font><b>*</b>Screen<b>-></b>PixelsPerInch<b>/</b><font color="blue">96</font><b>;</b>
+  Label1<b>-></b>Top  <b>=</b> Button1<b>-></b>Top  <b>-</b> <font color="blue">15</font><b>*</b>Screen<b>-></b>PixelsPerInch<b>/</b><font color="blue">96</font><b>;</b>
+<b>}</b>
+</pre>
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+
+

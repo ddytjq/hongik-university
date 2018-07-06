@@ -1,0 +1,784 @@
+ID=E0543
+URL=http://msdn.microsoft.com/visualc/productinfo/previous/vc6/articles/cab/default.asp
+SIZE=36805
+DATE=12/07/02
+TIME=19:22:07
+DATASET=C
+HTML=
+<html>
+<head>
+<title>Creating Signed CAB Files for MFC and ATL Controls</title>
+<meta name="KEYWORDS" content="technical articles, whitepapers" />
+<meta name="DESCRIPTION" content="Technical articles and whitepapers about Microsoft Visual C++" />
+<meta name="MS.LOCALE" content="EN-US" />
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1" />
+<meta name="DTC_TEMPLATE" content="TEMPLATE=endnode" />
+
+		          <link rel="stylesheet" href="/visualc/css.asp?template=EP" type="text/css" />
+          
+
+     <meta http-equiv="PICS-Label" CONTENT='(PICS-1.1 "http://www.rsac.org/ratingsv01.html" l comment "RSACi North America Server" by "inet@microsoft.com" r (n 0 s 0 v 0 l 0))' />
+     <script src="/products/shared/global.js" type="text/javascript"></script>
+     
+<link rel="stylesheet" type="text/css" href="/library/flyoutmenu/default.css" />
+
+
+	
+	<script type="text/javascript"><!--
+	
+	sImgDefaultArrow = "/products/shared/images/imgArrwUp_VS.gif";
+	sImgExpandedArrow = "/products/shared/images/imgArrwDwn_VS.gif";
+
+	if (sImgDefaultArrow == ""){
+		sImgDefaultArrow = "/products/shared/images/arrow_default.gif";
+	}
+	if (sImgExpandedArrow == ""){
+		sImgExpandedArrow = "/products/shared/images/arrow_expand.gif";
+	}
+	
+	//-->
+	</script>
+   
+</head>
+<body bgcolor="#ffffff" topmargin="0" leftmargin="0" marginheight="0" marginwidth="0">	
+
+
+          <span id="donotprint">
+<!-- Start: ToolBar V2.0-->
+<script type="text/javascript" language="JavaScript" src="/library/toolbar/toolbar.js"></script>
+<script type="text/javascript" language="JavaScript" src="/library/toolbar/en-us/globalMNP.js"></script>
+<script type="text/javascript" language="JavaScript" src="/products/shared/toolbar_vstudio.js"></script>
+<!-- Start: ToolBar for down-level browsers-->
+<span id="TBDownLevelDiv">
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#6699CC">
+		<tr>
+			<td bgcolor="#6699CC" valign="top" width="250" rowspan="2"><a href="/visualc/" target="_top"><img src="/products/shared/images/bnr_VisualStudio.gif" alt="Visual C++ Home" border="0" /></a></td>
+			<td bgcolor="#6699CC" valign="top" height="20" width="19" align="right"><img src="/library/toolbar/images/curve.gif" /></td>
+			<td bgcolor="#000000" valign="middle" height="20" align="right" nowrap colspan="2"><font color="#ffffff" face="Verdana, Arial, Helvetica" size="1">
+					&nbsp;&nbsp;<a style="color:#ffffff;text-decoration:none;" href="http://www.microsoft.com/products/" target="_top"><font color="#ffffff">All Products</font></a>&nbsp;&nbsp;<font color="#ffffff">|</font>
+					&nbsp;&nbsp;<a style="color:#ffffff;text-decoration:none;" href="http://www.microsoft.com/support/" target="_top"><font color="#ffffff">Support</font></a>&nbsp;&nbsp;<font color="#ffffff">|</font>
+					&nbsp;&nbsp;<a style="color:#ffffff;text-decoration:none;" href="http://search.microsoft.com/" target="_top"><font color="#ffffff">Search</font></a>&nbsp;&nbsp;<font color="#ffffff">|</font>
+					&nbsp;&nbsp;<a style="color:#ffffff;text-decoration:none;" href="http://www.microsoft.com/" target="_top"><font color="#ffffff">microsoft.com Guide</font></a>&nbsp;&nbsp;</font></td>
+		</tr>
+		<tr>
+			<td bgcolor="#6699CC" valign="top" height="40" width="19"><img src="/library/Images/Gifs/General/Trans.gif" width="1" height="1" border="0" alt></td>
+			<td valign="top" height="40" align="right" nowrap colspan="2"><a href="/isapi/gomscom.asp?target=/" target="_top"><img src="/library/toolbar/images/mslogo6699CC.gif" width="112" height="40" alt="microsoft.com home" border="0"></a></td>
+		</tr>
+		<tr>
+	<!-- Start: Local menus -->
+		<td bgcolor="#6699CC" height="20" VALIGN="MIDDLE" NOWRAP COLSPAN="4">
+			<font color="#FFFFFF" class="fontSize1"><b>
+				&nbsp;&nbsp;<a style="color:#FFFFFF;text-decoration:none;" href="/visualc/" target="_top"><font color="#FFFFFF">Visual C++ Home</font></a>&nbsp;&nbsp;<font color="#FFFFFF">|</font>
+		
+			</b></font>
+		</td>
+	<!-- End: Local menus -->
+		</tr>
+	</table>
+</span>
+<!-- End: ToolBar for old browsers-->
+
+<script language="JavaScript" type="text/javascript">
+<!--// Hide from old browsers
+
+var ToolBar_Supported = ToolBar_Supported;
+if (ToolBar_Supported != null && ToolBar_Supported == true && (navigator.platform=="Win32"))
+{
+	TBDownLevelDiv.style.display ='none';
+	drawToolbar();
+	var fBrowserOK = true;
+}
+
+//-->
+</script>
+<!-- End: ToolBar V2.0-->
+
+
+
+</span>
+          <a name="top"></a>
+          <table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td bgcolor="#ffffff" height="1"><img src="/products/shared/images/ts.gif" height="1" width="1" /></td>
+			</tr>
+		</table>
+          <table cellpadding="0" cellspacing="0" border="0" width="100%">
+               <tr valign="top">
+                    <td valign="top">
+                         <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                              <tr valign="top">
+                                   <td width="178" valign="top" id="donotprint" > 
+
+									<!-- start leftnav And search code -->
+										<table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#6699CC">
+											<tr height="38">
+												<td bgcolor="#6699CC" align="center">
+													<!-- quick search-->
+													<table cellpadding="0" cellspacing="0" border="0" width="179">
+													
+													<form action="http://search.microsoft.com/us/products/vs/visualc/advanced_search.asp" method="GET" id="form1" name="form1">
+													
+														<tr>
+															<td><img src="/products/shared/images/Trans.gif" height="1" width="5"></td>
+															<td>
+														<!--[if IE ]><span class="fontSize1" style="color:#FFFFFF">Search This Site</span><br>														<input type="hidden" name="IntCat" value="0" />														<input type="hidden" name="Boolean" value="ALL" />																													<input type="hidden" name="Nq" value="new" />																													<input type="text" name="qu" size="14" maxlength="255" style="height:20 px; width: 125 px;" />																													<img src="/products/shared/images/trans.gif" height="1" width="2" border="0" />															<input alt="go" type="submit" name="finish" value="Go" class="btnSearch">														<![endif]-->
+														<![if ! ie ]>
+															<span class="fontSize1" style="color:#FFFFFF">Search This Site<br>
+															<input type="HIDDEN" name="IntCat" value="0" />
+															<input type="HIDDEN" name="Boolean" value="ALL" />
+															<input type="HIDDEN" name="Nq" value="NEW" />
+															<input type="TEXT" name="qu" size="10" maxlength="255" />
+															<input alt="Go" type="SUBMIT" name="FINISH" value="Go" />
+															</span>
+														<![endif]>
+														</td>
+														</tr>
+										      		</form>
+													</table>
+													<!--end quick search -->
+												</td>
+												<td width="1" bgcolor="#6699CC"><img src="/products/shared/images/Trans.gif" alt height="0" width="1" border="0"></td>
+											</tr>
+											<tr>
+												<td>
+													<table cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="#6699CC">
+														<tr>
+															<td><img src="/products/shared/images/Trans.gif" height="1" width="3"></td>
+															<td VALIGN="TOP" class="AdvSearch"><a HREF="http://search.microsoft.com/us/products/vs/visualc/advanced_search.asp?IntCat=0">Advanced Search</a></td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+										</table>
+										<table border="0" cellpadding="0" cellspacing="0" width="100%" onmouseover="if(document.readyState=='complete'&amp;&amp;fBrowserOK)delayRemove();" onmouseout="if (document.readyState=='complete'&amp;&amp;fBrowserOK)cancelDelay();">
+										<tr>
+										<td bgcolor="#6699CC"><img src="/products/shared/images/Trans.gif" alt height="9" width="179"></td>
+										<td width="1" bgcolor="#6699CC"><img src="/products/shared/images/Trans.gif" alt height="0" width="1" border="0"></td>
+										</tr>
+										</table>
+
+										<table cellpadding="0" cellspacing="0" border="0" width="100%">
+										    <tr>
+										         <td>
+										         
+<table class="flyoutMenu" menudata="/visualc/inc/MnpXmlDataGen.asp?subroot=productinfo" width="180" cellpadding="2" cellspacing="0" border="0" >
+	<tr>
+		<td>
+
+			<table width="175" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+				
+					<td class="flyoutLink" ><a href="/vstudio/default.asp">Visual Studio Home</a></td>
+				
+				</tr>
+			</table>
+
+			<table width="175" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+				
+					<td class="flyoutLink" ><a href="/visualc/default.asp">Visual C++ Home</a></td>
+				
+				</tr>
+			</table>
+
+			<table width="175" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+				
+					<td class="flyoutLink" handle="1001"><a href="/visualc/productinfo/default.asp">Product Information</a></td>
+				
+				</tr>
+			</table>
+
+			<table width="175" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+				
+					<td class="flyoutLink" handle="1074"><a href="/visualc/howtobuy/default.asp">How to Buy</a></td>
+				
+				</tr>
+			</table>
+
+			<table width="175" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+				
+					<td class="flyoutLink" handle="1078"><a href="/visualc/techinfo/default.asp">Technical Resources</a></td>
+				
+				</tr>
+			</table>
+
+			<table width="175" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+				
+					<td class="flyoutLink" handle="1084"><a href="/visualc/downloads/default.asp">Downloads</a></td>
+				
+				</tr>
+			</table>
+
+			<table width="175" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+				
+					<td class="flyoutLink" handle="1082"><a href="/visualc/support/default.asp">Support</a></td>
+				
+				</tr>
+			</table>
+
+			<table width="175" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+				
+					<td class="flyoutLink" handle="1142"><a href="/visualc/community/default.asp">Community</a></td>
+				
+				</tr>
+			</table>
+			
+		</td>
+	</tr>
+</table>
+
+<table class="flyoutMenu" menudata="/vstudio/templateMembers.xml" width="180" cellpadding="2" cellspacing="0" border="0" >
+	<tr>
+		<td>
+
+			<table width="175" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+				
+					<td class="flyoutLink" handle="0420"><a href="/vstudio/">Developer Tools</a></td>
+				
+				</tr>
+			</table>
+
+
+<html>
+<head>
+<!--TOOLBAR_START-->
+<!--TOOLBAR_EXEMPT-->
+<!--TOOLBAR_END-->
+</head>
+<body>
+</body>
+</html>			
+		</td>
+	</tr>
+</table>
+
+												</td>
+												</tr>
+											</table>
+										<!-- end leftnav And search code -->
+									<table cellpadding="0" cellspacing="0" border="0" width="100%">
+									    <tr>
+									         <td><br>
+
+     <!-- -->
+
+		
+                                                  </td>
+                                             </tr>
+                                        </table>
+                                   </td>
+                                   <td width="100%"> 
+								<table cellpadding="20" cellspacing="0" border="0" width="100%">
+                                             <tr>
+                                                  <td style="padding: 11px 20px 20px 20px;">
+<!-- -->
+
+                              <table cellpadding="0" cellspacing="0" border="0" width="100%">
+		                         <tr>
+		                    		<td><span id="donotprint" class="fontSize1" style="color: #0066cc;"><a href="/visualc/productinfo/default.asp" class="eyebrow" TARGET="_top">Visual C++ .NET Product Information</a>
+			
+			&nbsp;&gt;&nbsp;<a href="/visualc/productinfo/previous/default.asp" class="eyebrow" TARGET="_top">Visual C++ 6.0</a>
+			
+			&nbsp;&gt;&nbsp;<a href="/visualc/productinfo/previous/articles.asp" class="eyebrow" TARGET="_top">Technical Articles</a>
+			
+			&nbsp;&gt;&nbsp;<a href="/visualc/productinfo/previous/vc6/articles/client.asp" class="eyebrow" TARGET="_top">Client-Side Technologies</a>
+			
+			</span></td>
+		                    	</tr>
+		                    	<tr>
+		                    		<td><span id="donotprint"><img src="/products/shared/images/ts.gif" width="1" height="5" alt=""></span></td>
+		                     	</tr>
+		                    	<tr>
+		                    		<td><h1>Creating Signed CAB Files for MFC and ATL Controls</h1></td>
+		                    	</tr>
+		                     	<tr>
+		                     		<td><h2 class="Subtitle"></h2></td>
+		                     	</tr>
+		                     	<tr>
+		                    		<td><img src="/products/shared/images/ts.gif" width="1" height="5" alt=""></td>
+		                     	</tr>
+		                     	<tr>
+		                    		<td height="1" bgcolor="#cccccc" width="100%"><img src="/products/shared/images/ts.gif" width="1" height="1" alt=""></td>
+		                    	</tr>
+		                    	<tr>
+		                    		<td>
+		                    			<table cellpadding="0" cellspacing="0" border="0" width="100%">
+		                    				<tr>
+		                    					<td align="left">
+		                    						<table cellpadding="0" cellspacing="0" border="0">
+		                    							<tr>
+		                    								
+		                    								<td><img src="/products/shared/images/ts.gif" width="28" height="20" alt=""></td>
+		                    							</tr>
+		                    						</table>		
+		                    					</td>							 
+		                    					<td align="right" >
+		                    						
+		                    					</td>
+		                    				</tr>
+		                    			</table>
+		                    		</td>						
+		                    	</tr>
+		                     	<tr>
+		                    		<td height="1" bgcolor="#CCCCCC" width="100%"><img src="/products/shared/images/ts.gif" width="1" height="1" alt=""></td>
+		                    	</tr>
+		                    </table>
+		                    <table cellspacing="0" cellpadding="0" border="0" width="100%">
+		                    	<tr>
+		                    		<td><img src="/products/shared/images/ts.gif" height="10" width="1" alt=""></td>
+		                    	</tr>
+		                    </table>
+                                                       <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                                            <tr>
+                                                                 <td align="left" valign="top">		                    
+	                                                             		                    	                                           
+<!-- -->
+<!-- Main Content Area START -->
+
+     <table id="donotprint" align="right" cellpadding="0" cellspacing="0" border="0" width="175">
+          <tr><td><img src="/products/shared/images/ts.gif" width="1" height="4" alt></td><td><img src="/products/shared/images/ts.gif" width="1" height="1" alt></td></tr>
+          <tr>
+               <td><img src="/products/shared/images/ts.gif" width="10" height="1" alt></td>
+               <td>
+
+
+			<span id="donotprint">
+			<table cellpadding="0" cellspacing="0" border="0 " width="175">
+				<tr valign="top" align="left">
+					<td>
+						<table id="headeridArticle" cellpadding="0" cellspacing="0" border="0" width="175" class="componentBorder" onmouseover="if (fBrowserOK) chngColour('idArticle')" onmouseout="if (fBrowserOK) chngColour('idArticle')">
+							<tr>								
+								<td id="articleidArticle" class="componentHeader" width="175"><img src="/products/shared/images/ts.gif" width="6" border="0">On this page</td>
+                                <script language="javascript" type="text/javascript">
+								<!--	
+								if (fBrowserOK) {
+                                document.write("<td style=\"width:1px;background-color:#999999;\"></td>")
+								document.write("<td id=\"arrowColidArticle\" bgcolor=\"#6699CC\" width=\"21\" height=\"17\"><img id=\"ImgArrowidArticle\" src=" + sImgDefaultArrow + " alt=\"collapse menu\" border=\"0\" style=\"cursor:hand;\" onclick=\"change_display\(\'headingidArticle\'\)\"></td>")
+								} 
+								//-->
+								</script>								
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			<div id="headingidArticle" style="display:visible">
+          	<table id="mainidArticle" cellpadding="8" cellspacing="0" border="0" width="175" class="componentBorder" style="border-top:0px;">
+				<tr valign="top" align="left">
+					<td width="100%">
+
+						<table cellpadding="0" cellspacing="0" border="0" width="100%">
+							<tr>
+								<td valign="top" class="componentBodyText"><img src="/products/shared/images/jump2.gif" width="11" border="0" height="11"></td>
+								<td class="componentBodyText" align="left" width="100%"><a href="#GettingaSoftwarePublisherCertificate">Getting a Software Publisher Certificate</a></td>
+							</tr>
+							<tr>
+								<td><img src="/products/shared/images/ts.gif" width="1" border="0" height="10"></td>
+								<td><img src="/products/shared/images/ts.gif" width="1" border="0" height="10"></td>
+							</tr>
+						</table>
+
+						<table cellpadding="0" cellspacing="0" border="0" width="100%">
+							<tr>
+								<td valign="top" class="componentBodyText"><img src="/products/shared/images/jump2.gif" width="11" border="0" height="11"></td>
+								<td class="componentBodyText" align="left" width="100%"><a href="#MakingaTestSoftwarePublisherCertificate">Making a Test Software Publisher Certificate</a></td>
+							</tr>
+							<tr>
+								<td><img src="/products/shared/images/ts.gif" width="1" border="0" height="10"></td>
+								<td><img src="/products/shared/images/ts.gif" width="1" border="0" height="10"></td>
+							</tr>
+						</table>
+
+						<table cellpadding="0" cellspacing="0" border="0" width="100%">
+							<tr>
+								<td valign="top" class="componentBodyText"><img src="/products/shared/images/jump2.gif" width="11" border="0" height="11"></td>
+								<td class="componentBodyText" align="left" width="100%"><a href="#CreatingaCABfile">Creating a CAB File</a></td>
+							</tr>
+							<tr>
+								<td><img src="/products/shared/images/ts.gif" width="1" border="0" height="10"></td>
+								<td><img src="/products/shared/images/ts.gif" width="1" border="0" height="10"></td>
+							</tr>
+						</table>
+
+						<table cellpadding="0" cellspacing="0" border="0" width="100%">
+							<tr>
+								<td valign="top" class="componentBodyText"><img src="/products/shared/images/jump2.gif" width="11" border="0" height="11"></td>
+								<td class="componentBodyText" align="left" width="100%"><a href="#SigningaCABFile">Signing a CAB File</a></td>
+							</tr>
+							<tr>
+								<td><img src="/products/shared/images/ts.gif" width="1" border="0" height="10"></td>
+								<td><img src="/products/shared/images/ts.gif" width="1" border="0" height="10"></td>
+							</tr>
+						</table>
+
+						<table cellpadding="0" cellspacing="0" border="0" width="100%">
+							<tr>
+								<td valign="top" class="componentBodyText"><img src="/products/shared/images/jump2.gif" width="11" border="0" height="11"></td>
+								<td class="componentBodyText" align="left" width="100%"><a href="#EmbeddingaSignedCABFileonaWebPage">Embedding a Signed CAB File on a Web Page</a></td>
+							</tr>
+							<tr>
+								<td><img src="/products/shared/images/ts.gif" width="1" border="0" height="10"></td>
+								<td><img src="/products/shared/images/ts.gif" width="1" border="0" height="10"></td>
+							</tr>
+						</table>
+
+					</td>
+				</tr>
+			</table>
+			</div><br>
+			</span>
+
+      
+               </td>
+               <td><img src="/products/shared/images/ts.gif" width="10" height="1" alt></td>
+          </tr>
+          <tr><td><img src="/products/shared/images/ts.gif" width="1" height="4" alt></td><td><img src="/products/shared/images/ts.gif" width="1" height="1" alt></td></tr>          
+     </table>
+
+
+
+<p>
+If you plan to distribute MFC and ATL controls via the Internet, you should package them as signed 
+Cabinet (CAB) files. Signed files assure a user downloading your control that the code is safe. A CAB file 
+contains a compressed version of your control plus information about how your control is to be installed, for 
+example, what DLLs need to be installed along with the OCX. </p>
+<p>The tools you need to create and sign CAB files are provided on the Visual C++ 5.0 CD in the 
+CAB&amp;SIGN directory. The utilities in the CAB&amp;SIGN directory are not installed automatically when you 
+install Visual C++, so you must copy the contents of the CAB&amp;SIGN directory to your hard drive.</p>
+<p>Before you can sign files, you need to get a Software Publisher Certificate. You must apply for your own 
+certificate to a Certification Authority. With the tools in the CAB&amp;SIGN directory you can create a test 
+certificate for testing purposes, but this certificate cannot be used to sign code for distribution. See step 1 
+for information about applying for a Software Publisher Certificate.</p>
+<p>These are the steps to create a signed CAB file:</p>
+<ol>
+<li><a href="#GettingaSoftwarePublisherCertificate">Get a Software Publisher Certificate</a> (you only need to do this once)
+<li><a href="#CreatingaCABfile">Create the CAB file</a>
+<li><a href="#SigningaCABFile">Sign your files</a>
+<li><a href="#EmbeddingaSignedCABFileonaWebPage">Embed the signed CAB file in a Web page</a> (optional)
+</ol>
+
+				<table cellpadding="0" cellspacing="0" border="0" id="donotprint">
+					<tr valign="bottom">
+						<td align="left"><a href="/visualc/productinfo/previous/vc6/articles/cab/default.asp#top"><img src="/products/shared/images/top_v1.gif" width="40" height="20" alt="To top of page" border="0" /></a></td>
+					</tr>
+				</table>
+
+<a name="GettingaSoftwarePublisherCertificate"></a>
+<h2>Getting a Software Publisher Certificate</h2>
+<p>Before you can sign files, you need to obtain a Software Publisher Certificate (SPC). To do this, you must 
+make a request to a Certification Authority. During the application process, you must generate a key pair 
+and provide the Certification Authority with identification information, such as your name, address, and 
+public key. You must also make a legally binding pledge that you cannot and will not distribute software you 
+know or should have known contains viruses or will otherwise maliciously harm the user's machine or code. </p>
+<p>The Certification Authority generates a Software Publisher Certificate that conforms to the industry standard 
+X.509 certificate format with Version 3 extensions. The certificate identifies you and contains your public 
+key. It is stored by the Certification Authority for reference and a copy is returned to you via electronic mail. 
+After accepting the certificate, you should include a copy in all published software signed with the private 
+key. </p>
+
+				<table cellpadding="0" cellspacing="0" border="0" id="donotprint">
+					<tr valign="bottom">
+						<td align="left"><a href="/visualc/productinfo/previous/vc6/articles/cab/default.asp#top"><img src="/products/shared/images/top_v1.gif" width="40" height="20" alt="To top of page" border="0" /></a></td>
+					</tr>
+				</table>
+
+<a name="MakingaTestSoftwarePublisherCertificate"></a>
+<h2>Making a Test Software Publisher Certificate</h2>
+<p>You can use the MAKECERT and CERT2SPC utilities provided in the CAB&amp;SIGN directory on the 
+Visual C++ 5.0 CD to make a test Software Publisher Certificate. Note that this test SPC is not valid for 
+software publishing, but can be used to test <a href="#SigningaCABFile">code signing</a>. </p>
+<p>To make a private key file called MYKEY.PVK and a company certificate called CERT.CER, run the 
+MAKECERT utility with the following command:</p>
+<pre>C:\CAB&SIGN\MAKECERT -u:<em>MyKey</em> -n:CN=<em>MySoftwareCompany</em>
+ -k:MYKEY.PVK CERT.CER</pre><BR>
+<p><em>MyKey</em> is the name you give to your key and <em>MySoftwareCompany</em> is the name of your company. Note 
+that the MAKECERT utility is case sensitive to command-line options, so you must use lowercase <strong>-u</strong>, <strong>-n</strong>, 
+and <strong>-k</strong>. The value for the <strong>-n</strong> option must be an uppercase <strong>CN=</strong>.</p>
+<p>To create a test Software Publisher Certificate (SPC) called CERT.SPC, run the CERT2SPC utility with 
+the following command:</p>
+<pre>C:\CAB&SIGN\CERT2SPC C:\CAB&amp;SIGN\ROOT.CER CERT.CER CERT.SPC</pre>
+<p>Note that the CERT.SPC file is created from the CERT.CER file you created with MAKECERT and from 
+the ROOT.CER file provided in the CAB&amp;SIGN directory. </p>
+
+
+				<table cellpadding="0" cellspacing="0" border="0" id="donotprint">
+					<tr valign="bottom">
+						<td align="left"><a href="/visualc/productinfo/previous/vc6/articles/cab/default.asp#top"><img src="/products/shared/images/top_v1.gif" width="40" height="20" alt="To top of page" border="0" /></a></td>
+					</tr>
+				</table>
+
+<a name="CreatingaCABfile"></a>
+<h2>Creating a CAB File</h2>
+<p>This section describes creating CAB files for distributing ATL and MFC controls over the Internet. If you 
+need more information about CAB files, see the Cabinet File Reference in the <em>Platform SDK</em> section Setup 
+and System Management Services\Setup API\Overview\Cabinet Files. The <em>Platform SDK</em> is included with 
+the Visual C++ 5.0 online documentation.</p>
+
+<a href="#CreatinganINFfile"></a>
+<h3>To create a CAB file:</h3>
+<ol>
+<li>Create an INF file.
+<li>Run the CABARC utility (available in the CAB&amp;SIGN directory on the CD). For example:
+<pre>  C:\CAB&SIGN\CABARC -s 6144 n MYCTL.CAB NEEDED1.DLL
+           NEEDED2.DLL MYCTL.OCX MYCTL.INF</pre>
+CABARC creates a CAB file called MYCTL.CAB.
+<br><br>
+You should run CABARC in the directory that contains your source files (the INF, OCX, and DLL files). 
+The files archived in the CAB file should be listed on the command line in the same order they are listed in 
+the INF file. In the example above, the INF file should list NEEDED1.DLL first, then NEEDED2.DLL, 
+then MYCTL.OCX.
+<br><br>
+The <tt>-s</tt> option reserves space in the cabinet for <a href="#SigningaCABFile">code signing</a>. The n command specifies that you want to 
+create a CAB file. For a list of CABARC commands and options, type CABARC alone on the command 
+line:
+<pre>  C:\CAB&SIGN\CABARC </pre>
+</ol>
+
+<h3><a name="CreatinganINFfile"></a>Creating an INF File</h3>
+<p>The INF file is a text file that specifies the files (such as DLLs or other OCXs) that need to be present or 
+downloaded for your control to run. An INF file allows you to bundle all the needed files in one compressed 
+CAB file. By default, files with the same version numbers as existing files on the user's hard disk will not be 
+downloaded. For more information about INF files and their options, including how to create 
+platform-independent INF files, see the 
+<em>Platform SDK</em> section Setup and System management Services\Setup API\Overview\INF Files. The 
+<em>Platform SDK</em> is included with the Visual C++ 5.0 online documentation.</p>
+<p>As an example, the following INF will be used to create a CAB file for the ATL Polygon control. You can 
+build POLYGON.DLL by downloading the ATL POLYGON sample files from the Visual C++ 5.0 CD 
+and building a MinSize version. If you build a MinSize version of the Polygon control, you need one 
+additional DLL, ATL.DLL. Since ATL.DLL needs to be registered before POLYGON.DLL, put 
+ATL.DLL first in the INF.</p>
+<pre>
+; Sample INF file for POLYGON.DLL<BR>
+[version] <BR>
+; version signature (same for both NT and Win95) do not remove<BR>
+signature=&quot;$CHICAGO$&quot;<BR>
+AdvancedINF=2.0&nbsp;&nbsp;<BR>
+<BR>
+[Add.Code]<BR>
+polygon.dll=polygon.dll<BR>
+atl.dll=atl.dll<BR>
+<BR>
+; needed DLL<BR>
+[atl.dll]<BR>
+file-win32-x86=thiscab<BR>
+FileVersion=2,00,0,7024<BR>
+DestDir=11<BR>
+RegisterServer=yes <BR>
+<BR>
+[polygon.dll]<BR>
+file-win32-x86=thiscab<BR>
+clsid={4CBBC676-507F-11D0-B98B-000000000000} <BR>
+FileVersion=1,0,0,1 <BR>
+RegisterServer=yes&nbsp;&nbsp;<BR>
+; end of INF file
+</pre>
+<p>This INF specifies that ATL.DLL with the given version needs to be installed on the system. If ATL.DLL 
+doesn't exist already on the system, it will be downloaded from the CAB file created with this INF. &quot;thiscab&quot; 
+is a keyword meaning the CAB containing this INF. You can also download a needed DLL from an HTTP 
+location by specifying an absolute or relative path, for example:</p>
+<p><tt>file-win32-x86=http://www.mysite.com/mydir/NEEDED.DLL </tt></p>
+<p>The keyword &quot;file-win32-x86&quot; identifies the platform as x86 specific.</p>
+<p>You can get the version number of a file by clicking the right mouse button on the file in Windows NT or 
+Windows 95 Explorer. Select Properties from the list that appears, then select the Version tab on the dialog 
+box that appears. You will sometimes need to insert an extra 0 in the file version. For example, the version 
+number for the ATL.DLL is shown as 2.00.7024 in the dialog box. This becomes 2, 00, 0, 7024 in the INF 
+file. </p>
+<p>The &quot;DestDir&quot; is where the directory where the file will be loaded: 11 specifies the system directory 
+WINDOWS/SYSTEM or WINNT/SYSTEM32; 10 specifies the windows directory, WINDOWS or 
+WINNT. If no DestDir is specified (typical case), code is installed in the fixed OCCACHE directory. </p>
+<p>The &quot;clsid&quot; is the CLSID of the control to be installed.</p>
+<p>Once you have created an INF file, run the CABARC utility (available in the CAB&amp;SIGN directory on the 
+Visual C++ 5.0 CD) to create the CAB file. You should run CABARC in the directory that contains your 
+source files. Put the source files in the order they appear in the INF and the INF file last. For example, to 
+make a CAB file for the Polygon control from the INF above, use the following command:</p>
+<pre>  C:\CAB&SIGN\CABARC -s 6144 POLYGON.CAB ATL.DLL
+          POLYGON.DLL POLYGON.INF</pre>
+<p>This CAB file contains a compressed version of ATL.DLL and POLYGON.DLL along with the 
+information needed to extract them in the POLYGON.INF file.</p>
+<!--<p>For an example of building a CAB file that downloads an MFC control, see 
+<a href="/visualc/techmat/whitepapers/mfcdnld.htm">MFC 4.2b Component Download Information</a>. The DLL files you need to include with an MFC 
+control are MSVCRT.DLL, MFC42.DLL, and OLEPRO32.DLL.</p>-->
+
+				<table cellpadding="0" cellspacing="0" border="0" id="donotprint">
+					<tr valign="bottom">
+						<td align="left"><a href="/visualc/productinfo/previous/vc6/articles/cab/default.asp#top"><img src="/products/shared/images/top_v1.gif" width="40" height="20" alt="To top of page" border="0" /></a></td>
+					</tr>
+				</table>
+
+<h2><a name="SigningaCABFile"></a>Signing a CAB File</h2>
+<p>To sign a CAB file using the Code Signing Wizard:</p>
+<ol>
+<li>Run the SIGNCODE utility (available in the CAB&amp;SIGN directory on the Visual C++ 5.0 CD) to 
+launch the Code Signing Wizard.
+<pre>C:\CAB&SIGN\SIGNCODE</pre>
+<li>In the <strong>Code Signing Wizard</strong> dialog box, click <strong>Next</strong> to advance to the next page.
+<li>In the <strong>Which program would you like to sign?</strong> edit box, enter the name of the CAB file you want to 
+sign.
+<li>In the <strong>What would you like to call this program? </strong>edit box, enter the name as you want it to appear on 
+the certificate.
+<li>Click <strong>Next</strong> to advance to the next page.
+<li>In the <strong>Under which Software Publishing Credentials would you like to sign this program</strong>? edit 
+box, enter the name of the Software Publisher Certificate (SPC) file.
+<li>In the <strong>Where can you find the secret, private key that goes with these credentials?</strong> edit box, 
+enter the name of the private key (PVK) file.
+<li>Click <strong>Next</strong> twice to advance to the last page.
+<li>Click <strong>Sign</strong> to sign the CAB file. Your file will be digitally signed.
+</ol>
+<p>You can sign your DLLs and OCXs directly, without using a CAB file. The advantages of a CAB file are 
+compression and, if used with an INF file, the bundling of all necessary code together.&#160;</p>
+
+				<table cellpadding="0" cellspacing="0" border="0" id="donotprint">
+					<tr valign="bottom">
+						<td align="left"><a href="/visualc/productinfo/previous/vc6/articles/cab/default.asp#top"><img src="/products/shared/images/top_v1.gif" width="40" height="20" alt="To top of page" border="0" /></a></td>
+					</tr>
+				</table>
+
+<h2><a name="EmbeddingaSignedCABFileonaWebPage"></a>Embedding a Signed CAB File on a Web Page</h2>
+<p>ATL and MFC controls are embedded in web pages using the &lt;OBJECT&gt; tag. Within the &lt;OBJECT&gt; 
+tag, you need to specify three attributes for the control:</p>
+<ul>
+<li>ID - the name of the control
+<li>CLASSID - the CLSID of the control
+<li>CODEBASE - the location from which to download the control. CODEBASE can point at a number of 
+different file types successfully. 
+</ul>
+<p>As an example, the following web page displays the ATL Polygon control archived in the CAB file created 
+in the section on <a href="#CreatinganINFfile">Creating an INF File</a>. The address http://www.mysite.com/mydir/polygon.cab should be replaced with the actual HTTP address of the CAB file:</p>
+<pre>
+&lt;HTML&gt;<BR>
+&lt;HEAD&gt;<BR>
+&lt;TITLE&gt;ATL 2.0 test page for object PolyCtl&lt;/TITLE&gt;<BR>
+&lt;/HEAD&gt;<BR>
+&lt;BODY&gt;<BR>
+&lt;OBJECT ID=&quot;PolyCtl&quot; <BR>
+CLASSID=&quot;CLSID:4CBBC676-507F-11D0-B98B-000000000000&quot;<BR>
+CODEBASE=&quot;http://www.mysite.com/mydir/polygon.cab&quot;&gt;<BR>
+&lt;/OBJECT&gt;<BR>
+&lt;SCRIPT LANGUAGE=&quot;VBScript&quot;&gt;<BR>
+&lt;!--<BR>
+Sub PolyCtl_ClickIn(x, y)<BR>
+PolyCtl.Sides = PolyCtl.Sides + 1<BR>
+End Sub<BR>
+Sub PolyCtl_ClickOut(x, y)<BR>
+PolyCtl.Sides = PolyCtl.Sides - 1<BR>
+End Sub<BR>
+--&gt;<BR>
+&lt;/SCRIPT&gt;<BR>
+&lt;/BODY&gt;<BR>
+&lt;/HTML&gt;<BR>
+</pre>
+<p>CODEBASE can point directly to an OCX or DLL file:</p>
+<pre>CODEBASE=&quot;http://www.mysite.com/mydir/polygon.dll#version=1,0,0,1&quot;</pre>
+<p>Since this causes only the DLL or OCX file to be downloaded and installed, any necessary supporting 
+DLLs must already be on the client machine. </p>
+<p>If you include the optional version number with a CAB file, the version number should refer to the control 
+being downloaded. For example, since POLYGON.DLL has a version number of 1, 0, 0, 1, the version for 
+the CAB is also 1, 0, 0, 1:</p>
+<pre>CODEBASE=&quot;http://www.mysite.com/mydir/polygon.cab#version=1,0,0,1&quot;</pre>
+<p>If you do not include the version number, older versions of the same control will not be replaced if they are 
+found on the client machine.</p>
+
+
+
+<!-- Main Content Area END -->
+
+
+													</td>
+                                                            </tr>
+                                                            <tr>
+                                                                 <td>				
+				<br>
+				<table cellpadding="0" cellspacing="0" border="0" width="100%" id="donotprint">
+					<tr valign="bottom">
+						<td align="left"><a href="#top"><img src="/products/shared/images/top_v1.gif" width="40" height="20" alt="To top of page" border="0" /></a></td>
+						<td align="right">	
+										
+						</td>
+					</tr>
+				</table>
+                                                                 </td>
+                                                            </tr>  
+                                                       </table>					
+<!-- -->
+
+										</td>
+                                             </tr>
+                                        </table>
+     
+                                   </td> 
+                              </tr>
+                         </table>
+                    </td>
+               </tr>
+               <tr valign="top">
+                    <td>
+                         <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                              <tr>
+                                   <td width="100%">
+                                        <span id="donotprint">
+	<span id="pgFooter">
+
+		<table cellpadding="0" cellspacing="0" width="100%" height="20" border="0" class="FooterBranding">
+			<tr>
+				<td align="left">
+					<table cellpadding="0" cellspacing="0" border="0" height="100%">
+						<tr class="MNPFooterRow1">
+							<td width="10">&nbsp;&nbsp;</td>
+
+							<td nowrap><a href="/isapi/goregwiz.asp?target=/contactus30/contactus.asp?domain=devtools/vc" target="_top">Contact Us</a></td>
+							<td width="10">&nbsp;&nbsp;</td>
+
+						<script language="javascript"  type="text/javascript">
+							var sItemURL = "mailto:?subject=A link from Microsoft&body=This link is from the Visual C++ Web site" + " "  + top.parent.location.href
+							document.write('<td nowrap><a href="' + sItemURL + '"  target=>E-Mail This Page</a></td>')
+							document.write ('<td>&nbsp;&nbsp;</td>')
+						</script>
+	
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+
+		<table cellpadding="0" cellspacing="0" width="100%" height="30" border="0" class="FooterBranding">
+			<tr>
+				<td align="left">
+					<table cellpadding="0" cellspacing="0" border="0" height="100%">
+						<tr class="MNPFooterRow2">
+							<td width="10">&nbsp;&nbsp;</td>
+
+							<td nowrap><a href="http://www.microsoft.com/info/cpyright.htm" target="_top">© 2002 Microsoft Corporation. All rights reserved.  Terms of Use.</a></td>
+							<td width="10">&nbsp;&nbsp;</td>
+
+							<td nowrap><a href="http://www.microsoft.com/info/privacy.htm" target="_top">Privacy Statement</a></td>
+							<td width="10">&nbsp;&nbsp;</td>
+
+							<td nowrap><a href="http://www.microsoft.com/enable/" target="_top">Accessibility</a></td>
+							<td width="10">&nbsp;&nbsp;</td>
+
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+
+	</span>
+</span>
+                                   </td>
+                              </tr>
+                         </table>
+                    </td>
+               </tr>
+          </table>     
+     
+
+</body>
+</html>
+

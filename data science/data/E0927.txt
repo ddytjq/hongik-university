@@ -1,0 +1,499 @@
+ID=E0927
+URL=http://www.gotw.ca/gotw/006.htm
+SIZE=27143
+DATE=12/07/02
+TIME=19:25:54
+DATASET=C
+HTML=
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+
+
+<title>GotW #6: Const-Correctness</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<link rel="stylesheet" type="text/css" href="../gotw.css">
+<meta name="Microsoft Theme" content="gotw 111, default">
+<meta name="Microsoft Border" content="tlb, default">
+</head>
+
+<body background="../_themes/gotw/glabkgnd.jpg" bgcolor="#CCFFFF" text="#000000" link="#008080" vlink="#008080" alink="#0000FF"  ><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><table border="0" cellspacing="0" width="100%">
+  <tr>
+    <td colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="6"><strong>
+    GotW #6</strong></font> <!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+
+
+
+<p align="left" style="margin-top: 0; margin-bottom: 0">
+
+<script language="JavaScript"><!--
+MSFPhover = 
+  (((navigator.appName == "Netscape") && 
+  (parseInt(navigator.appVersion) >= 3 )) || 
+  ((navigator.appName == "Microsoft Internet Explorer") && 
+  (parseInt(navigator.appVersion) >= 4 ))); 
+function MSFPpreload(img) 
+{
+  var a=new Image(); a.src=img; return a; 
+}
+// --></script><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav1n=MSFPpreload("../_derived/home_cmp_gotw110_hbtn.gif"); MSFPnav1h=MSFPpreload("../_derived/home_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1h.src" onmouseout="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1n.src"><img src="../_derived/home_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Home" align="middle" name="MSFPnav1"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav2n=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn.gif"); MSFPnav2h=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../news.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2h.src" onmouseout="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2n.src"><img src="../_derived/news.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="News &amp; Events" align="middle" name="MSFPnav2"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav3n=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav3h=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../resources/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3h.src" onmouseout="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3n.src"><img src="../resources/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Community Resources" align="middle" name="MSFPnav3"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav4n=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn.gif"); MSFPnav4h=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../consulting.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4h.src" onmouseout="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4n.src"><img src="../_derived/consulting.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Consulting Services" align="middle" name="MSFPnav4"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav5n=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn.gif"); MSFPnav5h=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../presentations.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5h.src" onmouseout="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5n.src"><img src="../_derived/presentations.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Presentations" align="middle" name="MSFPnav5"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav6n=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav6h=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../publications/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6h.src" onmouseout="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6n.src"><img src="../publications/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Publications" align="middle" name="MSFPnav6"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav7n=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav7h=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7h.src" onmouseout="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7n.src"><img src="_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Guru of the Week" align="middle" name="MSFPnav7"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav8n=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav8h=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../conv/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8h.src" onmouseout="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8n.src"><img src="../conv/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Conversations" align="middle" name="MSFPnav8"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav9n=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn.gif"); MSFPnav9h=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../search.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9h.src" onmouseout="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9n.src"><img src="../_derived/search.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Search GotW.ca" align="middle" name="MSFPnav9"></a>
+</p>
+
+
+
+
+    <!--mstheme--></font></td>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 0">
+      <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav10n=MSFPpreload("../_derived/back_cmp_gotw110_back.gif"); MSFPnav10h=MSFPpreload("../_derived/back_cmp_gotw110_back_a.gif"); }
+// --></script><a href="005.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10h.src" onmouseout="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10n.src"><img src="../_derived/back_cmp_gotw110_back.gif" width="100" height="20" border="0" alt="Prev" name="MSFPnav10"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav11n=MSFPpreload("../_derived/up_cmp_gotw110_up.gif"); MSFPnav11h=MSFPpreload("../_derived/up_cmp_gotw110_up_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11h.src" onmouseout="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11n.src"><img src="../_derived/up_cmp_gotw110_up.gif" width="100" height="20" border="0" alt="Up" name="MSFPnav11"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav12n=MSFPpreload("../_derived/next_cmp_gotw110_next.gif"); MSFPnav12h=MSFPpreload("../_derived/next_cmp_gotw110_next_a.gif"); }
+// --></script><a href="007.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12h.src" onmouseout="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12n.src"><img src="../_derived/next_cmp_gotw110_next.gif" width="100" height="20" border="0" alt="Next" name="MSFPnav12"></a><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td height="5" background="../images/bar.gif" colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td></tr><!--msnavigation--></table><!--msnavigation--><table dir="ltr" border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td valign="top" width="1%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<!--mstheme--></font><table border="0" cellspacing="0" bgcolor="#000000" cellpadding="0">
+  <tr>
+    <td><!--mstheme--><font face="Arial, Arial, Helvetica">
+    <!--mstheme--></font><table border="0" cellpadding="2" cellspacing="1" width="100%" height="483">
+        <tr>
+          <td align="center" bgcolor="#000000" colspan="2" height="16"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-top: 0; margin-bottom: 0"><a href="../news.htm"><b><font color="#FFFF00">News</font></b></a><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <font size="1" color="#0000FF">J<br>
+          U<br>
+          L<br>
+          Y</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-left: 3; margin-right: 3; margin-top: 0" align="center"><font size="1" color="#0000FF">
+            Print articles newly available online</font><!--mstheme--></font><table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%" id="AutoNumber1" bgcolor="#FFFFCC" bordercolordark="#006666" bordercolorlight="#99CCCC">
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill20.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 1&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000" bgcolor="#FFFFCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mxc++-item-4.htm">
+                <font color="#0000FF">Excerpt from MXC++, &quot;Extensible Templates: 
+                Via Inheritance or Traits?&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mcd_review.htm"><font color="#0000FF">
+                Book Review: Modern C++ Design</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill21.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 2: Namespaceops and 
+                Library Versioning&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+            </table><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;A Pragmatic Look at Exception Specifications&quot;<br>
+            </font><font size="1" color="#000080">The usefulness, or lack 
+            thereof, of exception specifications, and how results can vary 
+            across real-world compilers</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <a target="_blank" href="http://www.cuj.com/experts/2007/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;Getting to the Point&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">The Boost library has five 
+            smart pointers that provide a rich array [sic] of useful behaviors.</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font color="#0000FF" size="1">A<br>
+            U<br>
+          G<br>
+          U<br>
+          S<br>
+          T</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin:0 3; ">
+            <a target="_blank" href="http://www.cuj.com/experts/2008/sutter.htm"><i><b><font size="1" color="#0000FF">The New C++</font></b></i> <font size="1" color="#0000FF">
+            column, &quot;Smart(er) Pointers&quot;</font></a><font size="1" color="#000080"><br>
+            A closer look at one of the proposed new standard C++ library 
+            features -- smart pointers, particularly those in Boost and Loki, 
+            and a sneak peek at the usefulness of the proposed typedef templates</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin:0 3; ">
+          <a target="_blank" href="http://www.cuj.com/experts/2008/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;A Midsummer Night's Madness&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">A brew that mixes pointers, 
+          typedefs, and const</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin-top: 0; margin-bottom: 0">
+          <font size="1" color="#0000FF">S<br>
+          E<br>
+          P<br>
+          T<br>
+          E<br>
+          M<br>
+          B<br>
+          E<br>
+          R</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <font size="1" color="#0000FF">&quot;Standard C++ Meets Managed C++&quot;<br>
+            </font><font size="1" color="#000080">A survey of the main (in)compatibilities 
+            between Standard C++ and Microsoft’s managed extensions for C++, and 
+            how the two could converge</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;Export Restrictions, Part 1&quot;<br>
+            </font><font size="1" color="#000080">The scoop on export -- what 
+            some people think it does, what it actually does, and why it’s the 
+            most widely-ignored feature in the C++ standard</font><!--mstheme--></font></td>
+        </tr>
+      </table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p style="margin-top: 0; margin-bottom: 0">
+<img border="0" src="../images/140.gif" width="140" height="1"></p>
+
+<!--mstheme--></font></td><td valign="top" width="24"></td><!--msnavigation--><td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><table border="1" cellpadding="6" cellspacing="0" width="100%" bgcolor="#FFCC99" bordercolordark="#006666" bordercolorlight="#99CCCC">
+  <tr>
+    <td width="100%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p align="center">This is the original GotW problem and solution
+      substantially as posted
+      to Usenet. See the book <i><a href="../publications/xc++.htm"><b>Exceptional
+      C++</b></a></i> (Addison-Wesley, 2000) for the most current solutions to
+      GotW issues #1-30. The solutions in the book have been revised and
+      expanded since their initial appearance in GotW. The book versions also
+      incorporate corrections, new material, and conformance to the final
+      ANSI/ISO C++ standard.</p>
+    <!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+<h2><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Const-Correctness<font size="3"><br>
+      Difficulty: 6 / 10</font><!--mstheme--></font></h2>
+<p><i>Always use const as much as possible, but no more. Here are some obvious
+and not-so-obvious places where const should be used -- or shouldn't.</i></p>
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Problem<!--mstheme--></font></h3>
+
+<p>Const is a powerful tool for writing safer code, and it can help compiler
+optimizations. You should use it as much as possible... but what does &quot;as
+much as possible&quot; really mean?</p>
+<p>Don't comment on or change the structure of this program; it's contrived and
+condensed for illustration only. Just add or remove &quot;const&quot; (including
+minor variants and related keywords) wherever appropriate. Bonus Question: In
+what places are the program's results undefined/uncompilable due to const
+errors?</p>
+<!--mstheme--></font><pre>    class Polygon {
+    public:
+      Polygon() : area_(-1) {}
+
+      void AddPoint( const Point pt ) {
+        InvalidateArea();
+        points_.push_back(pt);
+      }
+
+      Point GetPoint( const int i ) {
+        return points_[i];
+      }
+
+      int GetNumPoints() {
+        return points_.size();
+      }
+
+      double GetArea() {
+        if( area_ &lt; 0 ) // if not yet calculated and cached
+          CalcArea();     // calculate now
+        return area_;
+        }
+
+    private:
+      void InvalidateArea() { area_ = -1; }
+
+      void CalcArea() {
+        area_ = 0;
+        vector&lt;Point&gt;::iterator i;
+        for( i = points_.begin(); i != points_.end(); ++i )
+          area_ += /* some work */;
+      }
+
+      vector&lt;Point&gt; points_;
+      double        area_;
+    };
+
+    Polygon operator+( Polygon&amp; lhs, Polygon&amp; rhs ) {
+      Polygon ret = lhs;
+      int last = rhs.GetNumPoints();
+      for( int i = 0; i &lt; last; ++i ) // concatenate
+        ret.AddPoint( rhs.GetPoint(i) );
+      return ret;
+    }
+
+    void f( const Polygon&amp; poly ) {
+      const_cast&lt;Polygon&amp;&gt;(poly).AddPoint( Point(0,0) );
+    }
+
+    void g( Polygon&amp; const rPoly ) {
+      rPoly.AddPoint( Point(1,1) );
+    }
+
+    void h( Polygon* const pPoly ) {
+      pPoly-&gt;AddPoint( Point(2,2) );
+    }
+
+    int main() {
+      Polygon poly;
+      const Polygon cpoly;
+      f(poly);
+      f(cpoly);
+      g(poly);
+      h(&amp;poly);
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a name="Solution"></a>Solution<!--mstheme--></font></h3>
+
+<!--mstheme--></font><pre><font color="#999933">    class Polygon {
+    public:
+      Polygon() : area_(-1) {}
+
+      void AddPoint( const Point pt ) {
+        InvalidateArea();
+        points_.push_back(pt);
+      }</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>1. Since the point object is passed by value, there is little or no benefit
+to declaring it const.</p>
+
+<!--mstheme--></font><pre><font color="#999933">      Point GetPoint( const int i ) {
+        return points_[i];
+      }</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>2. Same comment about the parameter as above. Normally const pass-by-value is
+unuseful and misleading at best.</p>
+<p>3. This should be a const member function, since it doesn't change the state
+of the object.</p>
+<p>4. (Arguable.) Return-by-value should normally be const for non-builtin
+return types. This assists client code by making sure the compiler emits an
+error if the caller tries to modify the temporary (for example,
+&quot;poly.GetPoint(i) = Point(2,2);&quot;... after all, if this was intended to
+work, GetPoint() should have used return-by-reference and not return-by-value in
+the first place, and as we will see later it makes sense for GetPoint() to
+return a const value or a const reference since it should be usable on const
+Polygon objects in operator+()).</p>
+<blockquote>
+  <p><b>Note:</b> Lakos (pg. 618) argues against returning const value, and
+  notes that it is redundant for builtins anyway (for example, returning
+  &quot;const int&quot;), which he notes may interfere with template
+  instantiation.</p>
+  <p><b>Guideline:</b> When using return-by-value for non-builtin return types,
+  prefer returning a const value.</p>
+</blockquote>
+<!--mstheme--></font><pre><font color="#999933">      int GetNumPoints() {
+        return points_.size();
+      }</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>5. Again, the function should be const.</p>
+<p>(It should not return 'const int' in this case, though, since the int is
+already an rvalue and to put in 'const' can interfere with template
+instantiation and is confusing, misleading, and probably fattening.)</p>
+<!--mstheme--></font><pre><font color="#999933">      double GetArea() {
+        if( area_ &lt; 0 ) // if not yet calculated and cached
+          CalcArea();     // calculate now
+        return area_;
+        }</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>6. Even though it modifies the object's internal state, this function should
+be const because the object's observable state is unchanged (we are doing some
+caching, but that's an implementation detail and the object is logically const).
+This means that area_ should be declared mutable. If your compiler doesn't
+support mutable yet, kludge this with a const_cast of area_ (and a comment to
+remove the cast when mutable is available!), but do make the function const.</p>
+
+<!--mstheme--></font><pre><font color="#999933">    private:
+      void InvalidateArea() { area_ = -1; }</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>7. While this one is debatable, I'd still recommend that this function ought
+also to be const, even if for no other reason than consistency. (Granted,
+semantically it will only be called from non-const functions, since its purpose
+is to invalidate the cached area_ when the object's state changes.)</p>
+
+<!--mstheme--></font><pre><font color="#999933">      void CalcArea() {
+        area_ = 0;
+        vector&lt;Point&gt;::iterator i;
+        for( i = points_.begin(); i != points_.end(); ++i )
+          area_ += /* some work */;
+      }</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>8. This member function definitely should be const. After all, it will be
+called from another const member function, namely GetArea().</p>
+<p>9. Since the iterator should not change the state of the points_ collection,
+it ought to be a const_iterator.</p>
+<!--mstheme--></font><pre><font color="#999933">      vector&lt;Point&gt; points_;
+      double        area_;
+    };
+
+    Polygon operator+( Polygon&amp; lhs, Polygon&amp; rhs ) {</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>10. Pass by const references, of course.</p>
+<p>11. Again, return-by-value should be const.</p>
+<!--mstheme--></font><pre><font color="#999933">      Polygon ret = lhs;
+      int last = rhs.GetNumPoints();</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>12. Since 'last' should never change, say so with &quot;const int&quot;.</p>
+
+<!--mstheme--></font><pre><font color="#999933">      for( int i = 0; i &lt; last; ++i ) // concatenate
+        ret.AddPoint( rhs.GetPoint(i) );</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>(Another reason why GetPoint() should be a const member function, returning
+either const value or const reference.)</p>
+
+<!--mstheme--></font><pre><font color="#999933">      return ret;
+    }
+
+    void f( const Polygon&amp; poly ) {
+      const_cast&lt;Polygon&amp;&gt;(poly).AddPoint( Point(0,0) );</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Bonus: This result is undefined if the referenced object is declared as const
+(which it is in the case of f(cpoly) below). The parameter isn't really const,
+so don't declare it as const!</p>
+
+<!--mstheme--></font><pre><font color="#999933">    }
+
+    void g( Polygon&amp; const rPoly ) {
+      rPoly.AddPoint( Point(1,1) );
+    }</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>13. This 'const' is useless, since references cannot be changed to refer to a
+different object anyway.</p>
+
+<!--mstheme--></font><pre><font color="#999933">    void h( Polygon* const pPoly ) {
+      pPoly-&gt;AddPoint( Point(2,2) );
+    }</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>14. This 'const' is equally useless, but for a different reason: since you're
+passing the pointer by value, this makes as little sense as passing a parameter
+'const int' above.</p>
+<p>(If your answer to the bonus part said something about these functions being
+uncompilable... sorry, they're quite legal C++. You were probably thinking of
+putting the 'const' to the left of the &amp; or *, which would have made the
+function body illegal.)</p>
+<!--mstheme--></font><pre><font color="#999933">    int main() {
+      Polygon poly;
+      const Polygon cpoly;
+      f(poly);</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>This is fine.</p>
+
+<!--mstheme--></font><pre><font color="#999933">      f(cpoly);</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>This causes undefined results when f() tries to cast away the constness of
+and then modify its parameter.</p>
+
+<!--mstheme--></font><pre><font color="#999933">      g(poly);</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>This is fine.</p>
+
+<!--mstheme--></font><pre><font color="#999933">      h(&amp;poly);</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>This is fine.</p>
+
+<!--mstheme--></font><pre><font color="#999933">    }</font></pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>That's it. Here's a corrected version (remember, correcting const only, not
+other poor style):</p>
+
+<!--mstheme--></font><pre>    class Polygon {
+    public:
+        Polygon() : area_(-1) {}
+
+        void  AddPoint( Point pt )       { InvalidateArea();
+                                           points_.push_back(pt); }
+        const Point GetPoint( int i ) const  { return points_[i]; }
+        int         GetNumPoints() const { return points_.size(); }
+
+        double GetArea() const {
+            if( area_ &lt; 0 ) // if not yet calculated and cached
+                CalcArea();     // calculate now
+            return area_;
+        }
+
+    private:
+        void InvalidateArea() const { area_ = -1; }
+
+        void CalcArea() const {
+            area_ = 0;
+            vector&lt;Point&gt;::const_iterator i;
+            for( i = points_.begin(); i != points_.end(); ++i )
+                area_ += /* some work */;
+        }
+
+        vector&lt;Point&gt;  points_;
+        mutable double area_;
+    };
+
+    const Polygon operator+( const Polygon&amp; lhs,
+                             const Polygon&amp; rhs ) {
+        Polygon ret = lhs;
+        const int last = rhs.GetNumPoints();
+        for( int i = 0; i &lt; last; ++i ) // concatenate
+            ret.AddPoint( rhs.GetPoint(i) );
+        return ret;
+    }
+
+    void f( Polygon&amp; poly ) {
+        poly.AddPoint( Point(0,0) );
+    }
+
+    void g( Polygon&amp; rPoly ) { rPoly.AddPoint( Point(1,1) ); }
+
+    void h( Polygon* pPoly ) { pPoly-&gt;AddPoint( Point(2,2) ); }
+
+    int main() {
+        Polygon poly;
+        f(poly);
+        g(poly);
+        h(&amp;poly);
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<!--mstheme--></font><!--msnavigation--></td></tr><!--msnavigation--></table><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><h4 align="right"><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a href="../copyright.htm"><font size="2">Copyright ©
+2002 Herb Sutter</font></a><!--mstheme--></font></h4>
+
+<!--mstheme--></font></td></tr><!--msnavigation--></table></body>
+</html>
+

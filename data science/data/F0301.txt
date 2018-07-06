@@ -1,0 +1,98 @@
+ID=F0301
+URL=http://www.angelfire.com/ny3/visualbasic/28.html
+SIZE=5262
+DATE=09/07/2002
+TIME=13:18:22
+DATASET=Visual Basic
+HTML=<style TYPE="text/css">
+   A{text-decoration: none;}
+   A:hover { color: blue; text-decoration: underline;  }
+</style>
+
+<p align=center>
+<font face="tahoma">
+<font size="2">
+<font color="red">
+<B>Arrays</b>
+</font>
+</p>
+
+<p align=left>
+<font face="tahoma">
+<B>Arrays</b> are a group of certain things, such as <B>Controls arrays</b>, or <B>Variable arrays</b>. Arrays are identical in type, for example, if you were to use control arrays, they would all be the same type of control (ex. Text Boxes), and if you used variable arrays, they would all be the same data type (ex. Strings).<Br>
+<Br>
+<font color="blue">
+Variable Arrays<Br></font>
+<Br>
+Sometimes when programming, your going to be dealing with a lot of values/things, for example say Test Grades. And assume you had 50 different test grades, and had to declare 50 grade integers in code... You could spend half an hour doing this:<Br>
+<Br>
+&nbsp;&nbsp;&nbsp; Dim TestGrade1%<Br>
+&nbsp;&nbsp;&nbsp; Dim TestGrade2%<Br>
+&nbsp;&nbsp;&nbsp; Dim TestGrade3%...<Br>
+<Br>
+Or spend 10 seconds typing this:<Br>
+<Br>
+&nbsp;&nbsp;&nbsp; Dim TestGrade(49) As Integer<Br>
+<Br>
+As you can see, using variable arrays is much more efficient, and less (much less) time consuming... Notice it says 49 instead of 50. Well that still gives us 50 Test Grade integers... Why? Because they have Index values, and so, by default they start by 0, and increase by one, for each array you have. Count from 0-49 and you will get 50. Now what if you don't want to use 0 as the starting Index value? It's simple, put "Option Base 1" in the general section of your form and your array will start with an Index value of 1. <Br>
+<Br>
+Sometime you will know how many arrays your going to need, and sometimes your not. How would you go about doing this? By using the ReDim Statement:<Br>
+<Br>
+&nbsp;&nbsp;&nbsp; Dim LottoJackpot() As Currency<Br>
+&nbsp;&nbsp;&nbsp; Dim Winners%<Br>
+<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Winners = Text1.Text<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ReDim LottoJackpot(Winners)<Br>
+<Br>
+It 's also important to know what the lowest and highest Indexes are, you would use the LBound and UBound functions for that. The LBound(YourArray) function returns the smallest Index value (either 0 or 1), and the UBound(YourArray) function returns the largest Index value. This is especially important to know if your dealing with Control Arrays, which are also explained in this tutorial...<Br>
+<Br>
+There are more ways than one to declare an array, as you can see below.<Br>
+<Br>
+<font color="red">*Straight from VB's Help File</font><Br>
+&nbsp;&nbsp;&nbsp; Dim MyArray(1 To 10, 5 To 15, 10 To 20)<Br>
+&nbsp;&nbsp;&nbsp; Dim AnyArray(10)<Br>
+&nbsp;&nbsp;&nbsp; Dim Lower<Br>
+<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lower = Lbound(MyArray, 1) <font color="green">' Returns 1.</font><Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lower = Lbound(MyArray, 3) <font color="green">' Returns 10.</font><Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lower = Lbound(AnyArray) <font color="green">' Returns 0 or 1, depending on setting of Option Base.</font><Br>
+<Br>
+<font color="blue">
+Control Arrays<Br></font>
+<Br>
+Control arrays come in handy from time to time, the bigger your programs get and the more vb knowledge you have, the more you will agree with me. We can make control arrays a few ways. In developement time, we can simply copy & paste a control and VB will ask us if we want to make a control array. Another way is to do it in code:<Br>
+<Br>
+<font color="green">'Make an Option button, name it "OptButton," and set its index property to 1</font><Br>
+<Br>
+<font color="red">*Straight from VB's Help File</font><Br>
+&nbsp;&nbsp;&nbsp; Static MaxIdx ' Largest index in array.<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If MaxIdx = 0 Then MaxIdx = 1 <font color="green">' Preset MaxIdx.</font><Br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MaxIdx = MaxIdx + 1 <font color="green">' Increment index.</font><Br>
+<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If MaxIdx > 7 Then Exit Sub <font color="green">' Put eight buttons on form.</font><Br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Load OptButton(MaxIdx) <font color="green">' Create new item in array.</font><Br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="green">' Set location of new option button under previous button.</font><Br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OptButton(MaxIdx).Top = OptButton(MaxIdx - 1).Top + 360</font><Br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OptButton(MaxIdx).Visible = True <font color="green">' Make new button visible.</font><Br>
+<Br>
+We can also use the LBound/UBound functions with control arrays, and here's an example of why you would want to use them:<Br>
+<Br>
+&nbsp;&nbsp;&nbsp; Dim i<Br>
+<Br>
+&nbsp;&nbsp;&nbsp; For i = CommandBtn.LBound To CommandBtn.UBound<Br>
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CommandBtn(i).Enabled = False<Br>
+&nbsp;&nbsp;&nbsp; Next i<Br>
+<Br>
+And there you have it, now you should know what an array is, and how to use them efficiently, thanks to me :7<Br>
+</p>
+
+<p align=center>
+<font face="tahoma">
+<A HREF ="27.html" TARGET="MainWindow"><font color="blue">Back</a>
+<A HREF ="29.html" TARGET="MainWindow"><font color="blue">Next</a>
+</p>
+
+
+
+
+

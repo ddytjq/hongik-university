@@ -1,0 +1,1052 @@
+ID=E0047
+URL=http://www.bcbdev.com/articles/bcbdll.htm
+SIZE=50275
+DATE=12/07/02
+TIME=19:16:50
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: Articles</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2>
+<IMG SRC="../images/articlebuilding.gif" BORDER=0 HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 HSPACE="0" >
+</TD>
+</TR>
+<TR>
+<TD WIDTH="7" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">      <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">         <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">      <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">          <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">       <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+
+<H2>
+Creating DLLs in BCB that can be used from Visual C++
+</H2>
+
+<P>
+In a <A HREF="vcdll.htm">past article</A>, we discussed how to call a DLL created by MS Visual C++ from a C++Builder
+project. This article reverses that scenario by illustrating how to create a DLL with C++Builder that you can call from
+a Visual C++ project.
+</P>
+
+</P>
+<UL>
+<LI><A HREF="#introduction"  >Introduction: why is this so difficult</A>
+<LI><A HREF="#guidelines"    >Summary of guidelines</A>
+<LI><A HREF="#example1"      >Example 1: Implicit linking</A>
+<LI><A HREF="#example2"      >Example 2: Explicit linking</A>
+<LI><A HREF="#example3"      >Example 3: Implicit linking with a #define kludge</A>
+<LI><A HREF="#example4"      >Example 4: Implicit linking with stdcall functions</A>
+<LI><A HREF="#conclusion"    >Conclusion</A>
+</UL>
+</P>
+<BR>
+<H3>
+<A NAME="introduction">Introduction: why is this so difficult</A>
+</H3>
+<P>
+If you have ever created a DLL with BCB that you called from another BCB executable, then you know that using DLLs in this
+manner is not that difficult. When you build a DLL, BCB generates an import library with a .LIB file exension. You take this
+LIB file and add it to the project for your application. The linker uses the import library to resolve calls into the DLL. When you
+run your program, the DLL is implicitly loaded for you, and calls into the DLL work without much thought required on your part.
+</P>
+<P>
+The situation becomes more complex when the EXE is compiled with Microsoft Visual C++. There are 3 main problems. First, BCB and MSVC
+do not agree on how functions should be named in the DLL. BCB uses one convention, and MSVC uses a different convention. Of course,
+the two conventions are not compatible. The naming problems are discussed in the article on how to <A HREF="vcdll.htm">use VC++ compiled DLLs in BCB</A>.
+Table 1 summarizes how each compiler would export a function called MyFunction based on its calling convention. Notice that Borland
+prepends a leading underscore to exported <TT>__cdecl</TT> functions. MSVC does not. On the other hand, MSVC does expect
+<TT>__stdcall</TT> functions to be exported with a leading underscore and some garbage at the end.
+
+</P>
+<PRE>
+<B>Table 1: Visual C++ and C++Builder naming conventions</B>
+
+Calling convention  VC++ name       VC++ (DEF used)     C++Builder Name
+-----------------------------------------------------------------------
+__stdcall           _MyFunction@4   MyFunction          MyFunction
+__cdecl             MyFunction      MyFunction          _MyFunction
+</PRE>
+<P>
+The second problem is that Borland import libraries are not binary compatible with MSVC. The import library that BCB creates when you
+compile the DLL cannot be linked with MSVC. If you want to use implicit linking, then you need to create an MSVC import library. The
+other alternative is to switch to explicit linking (<TT>LoadLibrary</TT> and <TT>GetProcAddress</TT>).
+</P>
+<P>
+The third problem is that you can't export C++ classes and member functions from your DLL if you want MSVC users to be able to call it.
+Well, that's not entirely true. Your DLL can export C++ classes and member functions, but MSVC will not be able to use them. The reason
+is that C++ member function names are mangled by the compiler. This mangled name ends up in the DLL. In order to call a mangled function
+in a DLL, you have to know how that function was mangled. Borland and Microsoft do not use the same name mangling scheme. As a
+reasult, MSVC cannot even see C++ classes and member functions in a Borland compiled DLL.
+</P>
+
+<P>
+<TABLE WIDTH="100%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Note:</b>
+<hr size = 1>
+Borland and Microsoft do not mangle functions the same way because C++ compilers
+are not supposed to adhere to the same guidelines, according to the ANSI C++ standard. Name mangling
+is something that is implementation specific.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+<P>
+These three issues make it difficult to create a DLL in Borland that can be called from MSVC, but it isn't impossible.
+This article describes a set of guidelines that you can follow to make your BCB DLLs Microsoft compatible. We will
+discuss four different techniques. Three involve implicit linking with an import library, and one technique utilizes
+explicit linking at runtime.
+</P>
+
+<H3>
+<A NAME="guidelines">Summary of guidelines</A>
+</H3>
+
+<P>
+The following lists summarize the guidelines that you should follow for building
+your DLL. The first list discusses implicit linking. The second list describes
+explicit lnking. The third technique uses implicit linking and a <TT>#define</TT> trick.
+The last example utilizes a dummy MSVC DLL project to create a import library for
+<TT>__stdcall</TT> functions.
+</P>
+
+<PRE>
+<B>Technique 1: Implicit linking</B>
+------------------------------------------------------------------------------
+<B>1</B>- Use the __cdecl calling convention instead of __stdcall.
+<B>2</B>- Export plain "C" functions. No C++ classes or member functions.
+<B>3</B>- Make sure you have an extern "C" {} around your function prototypes.
+<B>4</B>- Create a DEF file that aliases the exported functions to a Microsoft
+   compatible name. Alias the names so they don't contain a leading
+   underscore. The DEF file will look like this:
+
+   EXPORTS
+   ; MSVC name    = Borland name
+     Foo          = _Foo
+     Bar          = _Bar
+
+<B>5</B>- Add the DEF file to your BCB DLL project and rebuild it.
+<B>6</B>- Copy the DLL and the DLL header file to your MSVC project directory.
+<B>7</B>- Run impdef on the DLL to create a second DEF file for the DLL. This DEF
+   file is used to create the import library.
+     > impdef mydll.def mydll.dll
+<B>8</B>- Run Microsoft's LIB tool to create a COFF import library from the DEF file
+   created in the previous step. The format is:
+     > lib /DEF mydll.def
+<B>9</B>- Add the LIB file created by LIB.EXE to your MSVC project.
+</pre>
+<BR>
+<PRE>
+<B>Technique 2: Explicit linking</B>
+------------------------------------------------------------------------------
+<B>1</B>- Use either __cdecl or __stdcall. If you use __stdcall, you can skip steps
+   4 and 5.
+<B>2</B>- Export plain "C" functions. No C++ classes or member functions.
+<B>3</B>- Make sure you have an extern "C" {} around your function prototypes.
+<B>4</B>- If you are using __cdecl, then you may want to strip off the leading
+   underscore in your exported function names, but you don't have to. You can
+   strip off the unscore by following steps 4 and 5 from Example 1. If you
+   don't strip off the underscores, users will have to include the underscore
+   in the function name when they call <TT>GetProcAddress</TT>.
+<B>5</B>- Copy the DLL to the MSVC project directory.
+<B>6</B>- From the MSVC app, use the API LoadLibrary routine to load the DLL.
+<B>7</B>- Call the API GetProcAddres function to find functions in the DLL. Store the
+   result of GetProcAddress in a function pointer. Dereference the function
+   pointer when you want to call the function.
+<B>8</B>- Call FreeLibrary when you are done using the DLL.
+</pre>
+<BR>
+<PRE>
+<B>Technique 3: Implicit linking with a #define kludge</B>
+------------------------------------------------------------------------------
+<B>1</B>- Use the __cdecl calling convention instead of __stdcall.
+<B>2</B>- Export plain "C" functions. No C++ classes or member functions.
+<B>3</B>- Make sure you have an extern "C" {} around your function prototypes.
+<B>4</B>- In your DLL header file, create a #define for each exported function name.
+   The #define will tell the preprocessor to add a leading underscore to each
+   function name. The code checks for _MSC_VER because we only want to do this
+   aliasing from MSVC.
+
+     #ifdef _MSC_VER
+     #define Foo _Foo
+     #define Bar _Bar
+     #endif
+
+<B>5</B>- Copy the DLL and the DLL header file to your MSVC project directory.
+<B>6</B>- Run impdef on the DLL to create a DEF file for the DLL.
+     > impdef mydll.def mydll.dll
+<B>7</B>- Use Microsoft's LIB tool to create a COFF import library from the DEF file.
+     >lib /def mydll.def
+<B>8</B>- Add the LIB file created by LIB.EXE to your MSVC project.
+</pre>
+<BR>
+<PRE>
+<B>Technique 4: Implicit linking with __stdcall functions</B>
+------------------------------------------------------------------------------
+<B>1</B>- Use the __stdcall calling convention when building your DLL.
+<B>2</B>- Export plain "C" functions. No C++ classes or member functions.
+<B>3</B>- Make sure you have an extern "C" {} around your function prototypes.
+<B>4</B>- Create an import library for MSVC. This is the difficult part. You cannot
+   create an import library for __stdcall functions with LIB.EXE. You must
+   create the import library by compiling a dummy DLL in MSVC. To do so,
+   follow these steps:
+     <B>4a</B>- Create a non-MFC DLL project with MSVC
+     <B>4b</B>- Copy over your DLL header file and DLL source code from BCB
+     <B>4c</B>- Edit your DLL source code and rip out the function bodies of each
+         routine. Use dummy return statements in routines that return values.
+     <B>4d</B>- Configure the MSVC project to generate a DLL with the same file name
+         as the BCB DLL.
+     <B>4e</B>- Add a DEF file to the MSVC project to suppress its hoaky __stdcall
+         name decorations (_Foo@4)
+<B>5</B>- Compile the dummy DLL project from step 4. This will generate a DLL (which
+   you can pitch in the trash) and a LIB file (which you need).
+<B>6</B>- Add the LIB file from step 5 to any MSVC project the needs to call the BCB
+   DLL. The LIB file will satisfy the linker. Deploy the MSVC executable with
+   the BCB DLL (not the dummy DLL).
+</pre>
+<BR>
+
+
+<P>
+<TABLE WIDTH="100%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Note:</b>
+<hr size = 1>
+Under normal circumstances, implicit linking is preferred over explicit linking
+simply because implicit linking is easier for the programmer and because it is more
+typesafe (errors are generated at link time as opposed to runtime). However, when you
+share a DLL across compilers, you must create compatible import libraries for
+each compiler if you choose to stick with implicit linking. The added burden of
+creating compatible import libraries makes explicit linking at runtime look
+more appealling.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+<P>
+<TABLE WIDTH="100%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Note:</b>
+<hr size = 1>
+The guidelines for explicit linking also apply if you want to make your DLL
+available to Visual Basic developers. If you want to give your DLL to VB
+developers, follow the explicit linking guidelines, and use the <TT>__stdcall</TT>
+calling convention.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+<P>
+The next 4 sections describe each technique in detail.
+</P>
+
+
+<H3>
+<A NAME="example1">Example 1: Implicit linking</A>
+</H3>
+<P>
+This example elaborates on the guidelines in Technique 1 from the previous section. The
+guidelines for Technique 1 can be split into two groups. Items 1-5 deal with compiling the
+DLL on the BCB side. Items 6-9 deal with using the DLL from the MSVC side. We
+will separate our discussion along these lines.
+</P>
+
+In this example, we will build a DLL with BCB that exports two functions: <TT>Foo</TT>
+and <TT>Bar</TT>. Both functions return an integer value. The functions look like this:
+
+<pre>
+<b>int</b> Foo <b>(</b><b>int</b> Value<b>)</b><b>;</b>
+<b>int</b> Bar <b>(</b><b>void</b><b>)</b><b>;</b>
+</pre>
+
+We will then build a test EXE in MSVC that calls the Borland DLL.
+
+<H4>Compiling the DLL with BCB</H4>
+
+The following two listings contain the source code for our DLL. Listing 1 is
+a header file that will be shared by both BCB and MSVC. Listing 2 contains
+the implementations of our DLL functions. Create a BCB DLL project and paste in the the code
+from listings 1 and 2. Or you can save time by dowloading the source code for this article.
+The BCB DLL project is already already set up for you. (see the Downloads section at the very bottom).
+
+<pre>
+<font color="navy">// ----------------------------------------------</font>
+<font color="navy">// Listing 1- DLL header file</font>
+<font color="green">#ifndef BCBDLL_H</font>
+<font color="green">#define BCBDLL_H</font>
+
+<font color="green">#ifdef __cplusplus</font>
+<b>extern</b> <font color="blue">"C"</font> <b>{</b>
+<font color="green">#endif</font>
+
+<font color="green">#ifdef BUILD_DLL</font>
+<font color="green">#define IMPORT_EXPORT __declspec(dllexport)</font>
+<font color="green">#else</font>
+<font color="green">#define IMPORT_EXPORT __declspec(dllimport)</font>
+<font color="green">#endif</font>
+
+IMPORT_EXPORT <b>int</b> <b>__cdecl</b>  Foo  <b>(</b><b>int</b> Value<b>)</b><b>;</b>
+IMPORT_EXPORT <b>int</b> <b>__cdecl</b>  Bar  <b>(</b><b>void</b><b>)</b><b>;</b>
+
+<font color="green">#ifdef __cplusplus</font>
+<b>}</b>
+<font color="green">#endif</font>
+
+<font color="green">#endif</font>
+<font color="navy">// ----------------------------------------------</font>
+</pre>
+
+<pre>
+<font color="navy">// ----------------------------------------------</font>
+<font color="navy">// Listing 2- DLL source code</font>
+<font color="green">#include &lt;windows.h></font>
+<font color="green">#pragma hdrstop</font>
+
+<font color="green">#define BUILD_DLL</font>
+<font color="green">#include "bcbdll.h"</font>
+
+<b>int</b> <b>__cdecl</b>  Foo  <b>(</b><b>int</b> Value<b>)</b>
+<b>{</b>
+    <b>return</b> Value <b>+</b> <font color="blue">1</font><b>;</b>
+<b>}</b>
+
+<b>int</b> <b>__cdecl</b>  Bar  <b>(</b><b>void</b><b>)</b>
+<b>{</b>
+    <b>static</b> <b>int</b> ret <b>=</b> <font color="blue">0</font><b>;</b>
+    <b>return</b> ret<b>++</b><b>;</b>
+<b>}</b>
+<font color="navy">// ----------------------------------------------</font>
+</pre>
+
+<P>
+There are couple of points to notice about the header file.
+First, observe how we use <TT>extern "C"</TT> to ensure that the function names are not mangled by the C++
+compiler. Second, notice that the exported functions are prefixed by the special directive <TT>__declspec(dllexport)</TT>
+when we build the DLL. When we use the DLL from MSVC, the prefix changes to <TT>__declspec(dllimport)</TT>. The directive
+is controlled via the <TT>IMPORT_EXPORT #define</TT>.
+</P>
+<P>
+Lastly, note that we explicitly declare <TT>__cdecl</TT> to be the calling convention. Technically, we could omit the
+<TT>__cdecl</TT> keyword, since <TT>__cdecl</TT> is already the default. However, I think it is a good practice to list
+it anyway. By listing the calling convention, you explicitly tell people that you chose <TT>__cdecl</TT> for a reason.
+Also, the default calling convention in both compilers can be changed via compiler switches. You don't want these
+compiler switches to interfere with the usability of your DLL.
+</P>
+<P>
+The header file alone satisfies Items 1-3 in our list of guidelines. The next thing we need to
+do is handle item #4: aliasing the exported functions names.
+</P>
+<P>
+First, build the DLL code as it stands now. Next, run the <TT>TDUMP</TT> tool to verify to yourself that the exported
+function names really do contain a leading underscore.
+</P>
+<PRE>
+c:> tdump -m -ee bcbdll.dll
+Turbo Dump  Version 5.0.16.12 Copyright (c) 1988, 2000 Inprise Corporation
+                    Display of File BCBDLL.DLL
+
+EXPORT ord:0001='_Bar'
+EXPORT ord:0002='_Foo'
+EXPORT ord:0003='___CPPdebugHook'
+</PRE>
+
+<P>
+<TABLE WIDTH="100%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Note:</b>
+<hr size = 1>
+Don't forget to use the -m switch with <TT>TDUMP</TT>. <TT>TDUMP</TT> attempts to unmangle decorated names so they
+are easier to read. However, when you are working with DLLs, it is wise to see the functions in their raw
+format. The -m switch tells <TT>TDUMP</TT> to display raw function names.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+<P>
+As you can see, both <TT>Foo</TT> and <TT>Bar</TT> contain a leading underscore. As for that <TT>__CPPdebugHook</TT> stuff, you can
+simply ignore that man behind the curtain. Pretend <TT>__CPPdebugHook</TT> doesn't exist. It doesn't mean much to you, and you
+can't make it go away, so there isn't much point worrying about it.
+</P>
+<P>
+In order to alias away the underscores, we need to do three things: First create a DEF file from the DLL. Next, tweak the DEF
+file to alias from Borland names to MSVC names. Lastly, add this DEF file to your BCB project and rebuild the DLL.
+</P>
+<P>
+To create the DEF file, run Borland's <TT>IMPDEF</TT> tool on the DLL.
+</P>
+<PRE>
+C:> impdef bcbdllx.def bcbdll.dll
+</PRE>
+<P>
+I chose to name the DEF file <TT>bcbdllx.def</TT> because we will make another DEF later on (just before we create the
+MSVC import library). I wanted to avoid confusion between the two. <TT>bcbdllx.def</TT> should look like this:
+</P>
+<PRE>
+LIBRARY     BCBDLL.DLL
+
+EXPORTS
+    _Bar                           @1   ; _Bar
+    _Foo                           @2   ; _Foo
+    ___CPPdebugHook                @3   ; ___CPPdebugHook
+</PRE>
+
+<P>
+Notice the leading underbar in front of <TT>Foo</TT> and <TT>Bar</TT>. If the DLL exports <TT>Foo</TT> and <TT>Bar</TT>
+as <TT>_Foo</TT> and <TT>_Bar</TT>, MSVC users will see linker errors when they try to build their projects. We need to
+strip the underbars away. We do this by aliasing the function names in the DEF file.
+</P>
+<P>
+DEF file aliasing allows us to export a function name that acts as a proxy, or placeholder, for the real function. The real
+functions in the DLL will still be <TT>_Foo</TT> and <TT>_Bar</TT>. The proxy names will be <TT>Foo</TT> and <TT>Bar</TT> (note the
+missing underscores). When we alias the two original functions, the DLL will export two new symbols that refer back to the originals.
+</P>
+<P>
+To perform the alias, edit the DEF file and change it so it looks like this:
+</P>
+<PRE>
+LIBRARY     BCBDLL.DLL
+
+EXPORTS
+    Bar = _Bar
+    Foo = _Foo
+</PRE>
+<P>
+This DEF file creates two new exports, <TT>Foo</TT> and <TT>Bar</TT>, that act as placeholders for <TT>_Foo</TT> and
+<TT>_Bar</TT> respectively. Save this DEF file back to your hard drive. Once you have done that, add the DEF file to your
+BCB project using the Project-Add To Project menu item. BCB will display the DEF file in the project manager tree after you add it.
+</P>
+<P>
+Once you have the DEF file added to your project, do a complete rebuild. After the project has linked, run <TT>TDUMP</TT> on the
+DLL again to verify that the undecorated functions are being exported from the DLL.
+</P>
+<PRE>
+>tdump -m -ee bcbdll.dll
+Turbo Dump  Version 5.0.16.12 Copyright (c) 1988, 2000 Inprise Corporation
+                    Display of File BCBDLL.DLL
+
+EXPORT ord:0004='Bar'
+EXPORT ord:0005='Foo'
+EXPORT ord:0002='_Bar'
+EXPORT ord:0001='_Foo'
+EXPORT ord:0003='___CPPdebugHook'
+</PRE>
+<P>
+There are a couple things to notice about the output from <tt>TDUMP</tt>. First, obsverve the presence of <TT>Foo</TT> and <TT>Bar</TT>
+(without the leading underscore). Now the DLL is exporting function names that agree with MSVC. Also notice that the original
+functions, <TT>_Foo</TT> and <TT>_Bar</TT>, are still there. The decorated functions are still exported from the DLL. Using a DEF file
+to alias the names does not hide the originals.
+</P>
+<P>
+You might think that it would be advantageous to somehow hide the original two functions, <TT>_Foo</TT> and <TT>_Bar</TT>. However,
+this would be detrimental to people who want to use your DLL from a BCB project. Remember that the BCB linker expects the
+leading underscore to be there. If you were to somehow hide <TT>_Foo</TT> and <TT>_Bar</TT> from the DLL (which is not
+possible to the best of my knowledge), then your DLL would be difficult to call from BCB.
+</P>
+<P>
+If the output from <TT>TDUMP</TT> does not list the proxy functions (the ones without the underscore), then go back and check your
+DEF file. You need to get the alias names to appear before you can proceed. If the DLL looks OK, then it is time to move over to
+the MSVC side.
+</P>
+<P>
+<H4>Calling the DLL from MSVC</H4>
+<P>
+Once you have the DLL molded into shape so that it exports unmangled, <TT>__cdecl</TT> functions, the next step is to generate an
+import library for your MSVC users. For this, you will need the DLL that you just created, Borland's <TT>IMPDEF</TT> utility (again),
+and the <TT>LIB.EXE</TT> tool from MSVC. The first step is to create a DEF file from the DLL. For this, I suggest that you copy the
+DLL and the DLL header file over to your MSVC project directory, and work from there.
+</P>
+<PRE>
+C:> impdef bcbdll.def  bcbdll.dll
+</PRE>
+<P>
+Impef will create a DEF file that looks like this:
+</p>
+<PRE>
+C:> impdef bcbdll.def  bcbdll.dll
+
+LIBRARY     BCBDLL.DLL
+
+EXPORTS
+    Bar                            @4   ; Bar
+    Foo                            @5   ; Foo
+    _Bar                           @2   ; _Bar
+    _Foo                           @1   ; _Foo
+    ___CPPdebugHook                @3   ; ___CPPdebugHook
+</PRE>
+<P>
+Open the DEF file in an editor, and alter it so it looks like this:
+<PRE>
+LIBRARY     BCBDLL.DLL
+
+IMPORTS
+    Bar                            @4   ; Bar
+    Foo                            @5   ; Foo
+</PRE>
+<P>
+Notice that we removed the functions that contain underscores, and the debug hook function. We also changed the word
+<TT>EXPORTS</TT> to <TT>IMPORTS</TT> because we are importing the functions now, rather than exporting them (I doubt that
+this makes a difference to the MSVC <TT>LIB.EXE</TT> tool).
+</P>
+<P>
+Next, we create a COFF library from this DEF file using the Microsoft <TT>LIB.EXE</TT> tool. The syntax is:
+<PRE>
+lib /DEF:bcbdll.def /out:bcbdll_msvc.lib
+</PRE>
+
+<P>
+<TABLE WIDTH="100%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Note:</b>
+<hr size = 1>
+The MSVC command line utilities are not, by default, configured to be in your path. You may need to run a batch file
+the comes with MSVC in order to make <TT>LIB.EXE</TT> visible. The batch file is called <TT>VCVARS32.BAT</TT>, and it is
+located in the <TT>\VC\BIN</TT> subdirectory of the DevStudio installation directory.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+<P>
+At this point, all of the hard work is done. Now all you need to to is give your DLL, the MSVC LIB file, and the DLL header file to your
+MSVC clients. To use the DLL, they need to add the LIB file to their MSVC project and <TT>#include</TT> the DLL header file from
+there source code.
+</P>
+<P>
+I have a provided MSVC sample projects that prove the concept. Listing 3 shows the source code for the DLL client code.
+There is nothing exciting here, just a <TT>main</TT> function, a <TT>#include</TT> for the DLL header, and the DLL calls themselves.
+The important thing is that you add the correct import library, the one generated by <TT>LIB.EXE</TT>, to your MSVC project.
+</P>
+
+<pre>
+<font color="navy">// ----------------------------------------------</font>
+<font color="navy">// Listing 3- MSVC DLL client code</font>
+<font color="green">#include &lt;iostream></font>
+<font color="green">#include &lt;windows.h></font>
+<b>using</b> <b>namespace</b> std<b>;</b>
+
+<font color="green">#include "bcbdll.h"</font>
+
+<b>int</b> main<b>(</b><b>)</b>
+<b>{</b>
+    cout <b><<</b> <font color="blue">"Foo(10) = "</font> <b><<</b> Foo<b>(</b><font color="blue">10</font><b>)</b> <b><<</b> endl<b>;</b>
+    cout <b><<</b> <font color="blue">"Bar()   = "</font> <b><<</b> Bar<b>(</b><b>)</b> <b><<</b> endl<b>;</b>
+    cout <b><<</b> <font color="blue">"Bar()   = "</font> <b><<</b> Bar<b>(</b><b>)</b> <b><<</b> endl<b>;</b>
+    cout <b><<</b> <font color="blue">"Bar()   = "</font> <b><<</b> Bar<b>(</b><b>)</b> <b><<</b> endl<b>;</b>
+    <b>return</b> <font color="blue">0</font><b>;</b>
+<b>}</b>
+<font color="navy">// ----------------------------------------------</font>
+</pre>
+
+
+<H3>
+<A NAME="example2">Example 2: Explicit linking</A>
+</H3>
+<P>
+This example shows how you can use explicit linking to call a BCB compiled DLL from MSVC. With explicit linking, you don't
+have to mess with creating an MSVC compatible import library. The disadvantages to explicit linking are that it requires
+more work on the users part, it is less typesafe than implicit linking with an import library, and errors are deferred
+until runtime instead of compile or link time. Even with the many disadvantages to explicit linking, it can still be quite
+useful in certain situations.
+</P>
+<P>
+In this example, we will create a DLL that exports two functions: <TT>Foo</TT> and <TT>Bar</TT>. The functions look like
+the same two functions from the previous example.
+</P>
+<pre>
+<b>int</b> Foo <b>(</b><b>int</b> Value<b>)</b><b>;</b>
+<b>int</b> Bar <b>(</b><b>void</b><b>)</b><b>;</b>
+</pre>
+<P>
+The guidelines for explicit linking are similar to the guidelines for implicit linking. We need to export plain C functions,
+and we need to prevent C++ name mangling. If we use the <TT>__cdecl</TT> calling convention, then we may also want to alias our function
+names to remove the leading underscore that BCB puts in front of exported functions. If we choose not to alias away the leading
+underscore, then we will have to include the underscore when loading the function by name. In other words, you have to deal with the
+underscore at some point when working with <TT>__cdecl</TT> functions</TT>. You can either deal with underscore when you build your
+DLL with BCB, or you can deal with it when you call the DLL at runtime. We can circumvent the entire underscore issue altogether
+by utilizing <TT>__stdcall</TT> instead of <TT>__cdecl</TT>. This is what we will do in this example. Listings 4 and 5 show the source
+code for our DLL.
+</P>
+
+<P>
+<TABLE WIDTH="100%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Note:</b>
+<hr size = 1>
+If you export <TT>__stdcall</TT> functions, it is crucial that client apps know this. Some people make the mistake of thinking that
+using <TT>__stdcall</TT> does nothing more than strip off the leading underscore that <TT>__cdecl</TT> functions have. Don't fall into
+this trap. <TT>__stdcall</TT> functions manage the stack differently. Bad things will happen if a client app calls treats a
+<TT>__stdcall</TT> function as if it were a <TT>__cdecl</TT> function (namely, the stack will get corrupted and the client app
+will die a horrible death).
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+
+<pre>
+<font color="navy">// ----------------------------------------------</font>
+<font color="navy">// Listing 4- DLL header file</font>
+<font color="green">#ifndef BCBDLL_H</font>
+<font color="green">#define BCBDLL_H</font>
+
+<font color="green">#ifdef __cplusplus</font>
+<b>extern</b> <font color="blue">"C"</font> <b>{</b>
+<font color="green">#endif</font>
+
+<font color="green">#ifdef BUILD_DLL</font>
+<font color="green">#define IMPORT_EXPORT __declspec(dllexport)</font>
+<font color="green">#else</font>
+<font color="green">#define IMPORT_EXPORT __declspec(dllimport)</font>
+<font color="green">#endif</font>
+
+IMPORT_EXPORT <b>int</b> <b>__stdcall</b> Foo  <b>(</b><b>int</b> Value<b>)</b><b>;</b>
+IMPORT_EXPORT <b>int</b> <b>__stdcall</b> Bar  <b>(</b><b>void</b><b>)</b><b>;</b>
+
+<font color="green">#ifdef __cplusplus</font>
+<b>}</b>
+<font color="green">#endif</font>
+
+<font color="green">#endif</font>
+<font color="navy">// ----------------------------------------------</font>
+</pre>
+
+<pre>
+<font color="navy">// ----------------------------------------------</font>
+<font color="navy">// Listing 5- DLL source code</font>
+<font color="green">#include &lt;windows.h></font>
+
+<font color="green">#define BUILD_DLL</font>
+<font color="green">#include "bcbdll.h"</font>
+
+<b>int</b> <b>__stdcall</b>  Foo  <b>(</b><b>int</b> Value<b>)</b>
+<b>{</b>
+    <b>return</b> Value <b>+</b> <font color="blue">1</font><b>;</b>
+<b>}</b>
+
+<b>int</b> <b>__stdcall</b> Bar  <b>(</b><b>void</b><b>)</b>
+<b>{</b>
+    <b>static</b> <b>int</b> ret <b>=</b> <font color="blue">0</font><b>;</b>
+    <b>return</b> ret<b>++</b><b>;</b>
+<b>}</b>
+<font color="navy">// ----------------------------------------------</font>
+</pre>
+<P>
+Note that this code is pretty much the same as the DLL code from the implicit linking example. The only difference is
+that we changed <TT>Foo</TT> and <TT>Bar</TT> to use the <TT>__stdcall</TT> calling convention instead of <TT>__cdecl</TT>.
+</P>
+<P>
+Now lets look at the code for the MSVC program that calls this DLL. The code is shown in Listing 6.
+</P>
+<pre>
+<font color="navy">// ----------------------------------------------</font>
+<font color="navy">// Listing 6- MSVC client code</font>
+<font color="green">#include &lt;iostream></font>
+<font color="green">#include &lt;windows.h></font>
+<b>using</b> <b>namespace</b> std<b>;</b>
+
+HINSTANCE hDll <b>=</b> <font color="blue">0</font><b>;</b>
+<b>typedef</b> <b>int</b> <b>(</b><b>__stdcall</b> <b>*</b>foo_type<b>)</b>  <b>(</b><b>int</b> Value<b>)</b><b>;</b>
+<b>typedef</b> <b>int</b> <b>(</b><b>__stdcall</b> <b>*</b>bar_type<b>)</b>  <b>(</b><b>)</b><b>;</b>
+foo_type Foo<b>=</b><font color="blue">0</font><b>;</b>
+bar_type Bar<b>=</b><font color="blue">0</font><b>;</b>
+
+<b>void</b> DLLInit<b>(</b><b>)</b>
+<b>{</b>
+    hDll <b>=</b> LoadLibrary<b>(</b><font color="blue">"bcbdll.dll"</font><b>)</b><b>;</b>
+    Foo <b>=</b> <b>(</b>foo_type<b>)</b>GetProcAddress<b>(</b>hDll<b>,</b> <font color="blue">"Foo"</font><b>)</b><b>;</b>
+    Bar <b>=</b> <b>(</b>bar_type<b>)</b>GetProcAddress<b>(</b>hDll<b>,</b> <font color="blue">"Bar"</font><b>)</b><b>;</b>
+<b>}</b>
+
+<b>void</b> DLLFree<b>(</b><b>)</b>
+<b>{</b>
+    FreeLibrary<b>(</b>hDll<b>)</b><b>;</b>
+<b>}</b>
+
+<b>int</b> main<b>(</b><b>)</b>
+<b>{</b>
+    DLLInit<b>(</b><b>)</b><b>;</b>
+
+    cout <b><<</b> <font color="blue">"Foo() = "</font> <b><<</b> Foo<b>(</b><font color="blue">10</font><b>)</b> <b><<</b> endl<b>;</b>
+    cout <b><<</b> <font color="blue">"Bar() = "</font> <b><<</b> Bar<b>(</b><b>)</b> <b><<</b> endl<b>;</b>
+    cout <b><<</b> <font color="blue">"Bar() = "</font> <b><<</b> Bar<b>(</b><b>)</b> <b><<</b> endl<b>;</b>
+    cout <b><<</b> <font color="blue">"Bar() = "</font> <b><<</b> Bar<b>(</b><b>)</b> <b><<</b> endl<b>;</b>
+    DLLFree<b>(</b><b>)</b><b>;</b>
+    <b>return</b> <font color="blue">0</font><b>;</b>
+<b>}</b>
+<font color="navy">// ----------------------------------------------</font>
+</pre>
+<P>
+There is a lot to digest in this code snippet. First and foremost, observe that the code itself is compiler independent.
+You can compile it with BCB or MSVC. I compiled it first with BCB to make sure that it worked as I had hoped.
+</P>
+<P>
+Secondly, notice that the code does not bother to <TT>#include bcbdll.h</TT>. There is an important reason for this.
+<TT>bcbdll.h</TT> declares prototypes for the <TT>Foo</TT> and <TT>Bar</TT> functions. However, we are not linking our code
+with anything that will provide a definition for those prototypes. Normally, the stubs for those prototypes would come from an
+import library. But this example demonstrates explicit linking, and you don't use import libraries when you explicitly link.
+Since we don't have an import library, the <TT>Foo</TT> and <TT>Bar</TT> prototypes in the header file won't mean much to us.
+</p>
+<P>
+The third thing to notice about the code is the presence of the <TT>typedef</TT>'s and function pointers located near the top
+of the source file. Explicit linking requires that you load the addresses of the DLL functions at runtime using the
+API <TT>GetProcAddress</TT> function. You must store the result of <TT>GetProcAddress</TT> in some location. The best place is to store
+the result in a function pointer. By storing the function address in a function pointer, you can call the function using
+normal function call syntax (ie <TT>Foo(10)</TT>).
+</P>
+<P>
+The <TT>typedef</TT> statements create two new types: <TT>foo_type</TT> and <TT>bar_type</TT>. These types are function pointer types.
+<TT>foo_type</TT> declares a type that is a pointer to a <TT>__stdcall</TT> function that takes one integer argument and returns an
+integer value. <TT>bar_type</TT> declares a type that is a pointer to a <TT>__stdcall</TT> function with no arguments and an
+integer return value. These <TT>typedef</TT>'s serve two purposes. First, they provide a clean way to declare the function
+pointer variables <TT>Foo</TT> and <TT>Bar</TT>. Secondly, they give us a convenient way to cast the result of
+<TT>GetProcAddress</TT>. The return value from <TT>GetProcAddress</TT> is a pointer to a <TT>__stdcall</TT> function with no
+arguments and an integer result. Unless your function follows this same format, you will need to perform a cast on the
+<TT>GetProcAddress</TT> result (this casting is why explicit linking is less type safe than implicit linking).
+</P>
+<P>
+Below the <TT>typedef</TT>'s are two variables called <TT>Foo</TT> and <TT>Bar</TT>. These variables are function pointer variables.
+They will hold the addresses of the two functions that we want to call. Note that the names of these variables are arbitrary. I chose
+<TT>Foo</TT> and <TT>Bar</TT> to make the code resemble the implicit linking example. Don't be tripped up by this. The <TT>Foo</TT>
+and <TT>Bar</TT> variable names have no connection with the names of the actual functions in the DLL.
+We could have named the variables <TT>Guido</TT> and <TT>Bjarne</TT> if we wanted to.</P>
+<P>
+Below the function pointer declarations you will see two routines called <TT>DllInit</TT> and <TT>DllFree</TT>. These two routines
+handle the task of loading the DLL, finding the exported functions, and freeing the library when we are done with it.
+This way, the rest of the code doesn't have to know that the DLL was explicitly linked. It can just call <TT>Foo</TT> and
+<TT>Bar</TT> like it normally would (or <TT>Guido</TT> and <TT>Bjarne</TT> if you change the names). The only hitch is that we must
+call <TT>DllInit</TT> before calling any DLL routines. We should also be nice and call <TT>DllFree</TT> to release the library.
+</P>
+
+<P>
+<TABLE WIDTH="100%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Note:</b>
+<hr size = 1>
+<TT>GetProcAddress</TT> is your last line of defense when fighting naming issues between
+the Borland compiler and the Microsoft compiler. You can pass any string that you like
+to <TT>GetProcAddress</TT>. This includes Borland <TT>__cdecl</TT> names with a leading
+underscore (ie <TT>_Foo</TT>). It also includes mangled C++ names. If someone hands you a DLL
+with mangled functions names in it, you can always pass those ugly, mangled names to <TT>GetProcAddress</TT>.
+Whether you will actually be able to call the function without crashing is another matter, but at least you
+will have a chance.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+<P>
+That's all there is to it. Just compile the code in MSVC and your off. You don't have to mess with DEF files or import libraries.
+But you do have some grunt work to handle from inside your code.
+</P>
+
+<H3>
+<A NAME="example3">Example 3: Implicit linking with a #define kludge</A>
+</H3>
+<P>
+This example shows probably the easiest way to use a BCB DLL from an MSVC project, but it is probably also the least
+attractive way. The code uses a crafty <TT>#define</TT> to add the leading underscore to <TT>__cdecl</TT> functions whenever
+the Microsoft compiler is detected. In other words, we simply <TT>#define Foo</TT> to be <TT>_Foo</TT>.
+</P>
+<P>
+The advantage of this technique is that we don't have to perform any function aliasing. We can just export <TT>__cdecl</TT> functions
+that contain a leading underscore. However, we still have to create an MSVC compatible import library using Microsoft's <TT>LIB.EXE</TT>
+</P>
+<P>
+The key to this technique is that MSVC does not expect <TT>__cdecl</TT> functions to be decorated in any way (see Table 1). They
+should just appear as is. If an MSVC app tries to execute a <TT>__cdecl</TT> DLL function called Foo, it expects to find an
+undecorated function called <TT>Foo</TT> inside the DLL. If we change the MSVC code so it calls <TT>_Foo</TT>, then it will try to find
+a function called <TT>_Foo</TT> in the DLL.
+</P>
+<P>
+Borland adds a leading underscore to all <TT>__cdecl</TT> functions. We can coax MSVC into calling this function by simply
+adding a leading underscore to the function name. Keep in mind though that we only want to add an underscore on the MSVC side,
+and not on the Borland side.
+</P>
+<P>
+The DLL code for the <TT>#define</TT> kludge is exactly the same as the code in Listing 2 from Example 1
+The only difference is the DLL header file. The DLL header file adds an underscore to each function prototpype when MSVC is detected.
+Listing 7 shows the modified header file.
+</P>
+<pre>
+<font color="navy">// ----------------------------------------------</font>
+<font color="navy">// Listing 7- DLL header file</font>
+<font color="green">#ifndef BCBDLL_H</font>
+<font color="green">#define BCBDLL_H</font>
+
+<font color="green">#ifdef __cplusplus</font>
+<b>extern</b> <font color="blue">"C"</font> <b>{</b>
+<font color="green">#endif</font>
+
+<font color="green">#ifdef BUILD_DLL</font>
+<font color="green">#define IMPORT_EXPORT __declspec(dllexport)</font>
+<font color="green">#else</font>
+<font color="green">#define IMPORT_EXPORT __declspec(dllimport)</font>
+<font color="green">#endif</font>
+
+<font color="navy">// #define kludge. If we are being compiled with MSVC, then just tack on a</font>
+<font color="navy">// leading underscore because Borland C++ will export Foo and Bar as _Foo</font>
+<font color="navy">// and _Bar respectively</font>
+<font color="green">#ifdef _MSC_VER</font>
+<font color="green">#define Foo _Foo</font>
+<font color="green">#define Bar _Bar</font>
+<font color="green">#endif</font>
+
+IMPORT_EXPORT <b>int</b> <b>__cdecl</b>  Foo  <b>(</b><b>int</b> Value<b>)</b><b>;</b>
+IMPORT_EXPORT <b>int</b> <b>__cdecl</b>  Bar  <b>(</b><b>void</b><b>)</b><b>;</b>
+
+<font color="green">#ifdef __cplusplus</font>
+<b>}</b>
+<font color="green">#endif</font>
+<font color="green">#endif</font>
+<font color="navy">// ----------------------------------------------</font>
+</pre>
+<P>
+In addition to the <TT>#define</TT> kludge in the header file, you still have to create an MSVC compatible
+import library. You do this using the same steps as before. Run <TT>IMPDEF</TT> on the
+compiled DLL to get a DEF file. Then run the Microsoft <TT>LIB.EXE</TT> tool to create a COFF import library. This time, you don't
+have to worry about editing the DEF file. Finally, copy the DLL, the COFF import library, and the DLL header to your MSVC project.
+Add the library to your MSVC project and rebuild it.
+</P>
+<P>
+Here are the command line examples for creating the MSVC import library. Note that we don't have to edit the DEF file. We can just
+pass it as-is to <TT>LIB.EXE</TT>
+</P>
+<PRE>
+// Create def file
+> impdef bcbdll.def bcbdll.dll
+
+// create COFF import library using MS lib.exe
+>lib /def bcbdll.def
+</PRE>
+
+<H3>
+<A NAME="example4">Example 4: Implicit linking with __stdcall functions</A>
+</H3>
+<P>
+Before we proceed, let's examine why we need to treat <TT>__stdcall</TT> functions separately. MSVC does not provide a tool that is
+equivalent to Borland's <TT>IMPLIB</TT> tool. You cannot grab a DLL and generate an import library for it using MSVC. The closest tool
+is <TT>LIB.EXE</TT>, which can create an import library from a DEF file. The DEF file must be either be created by hand, or generated
+from a utility tool such as Borland's <TT>IMPDEF</TT> tool.
+</P>
+<P>
+No big deal right? You can still create MSVC import libraries, you just have to go through the intermediate step of creating the
+DEF file an passing it to the <TT>LIB.EXE</TT> tool. Correct, as long as you stick to <TT>__cdecl</TT> functions. You will run into
+problems as soon as you switch to <TT>__stdcall</TT>. The problem is that Microsoft's <TT>LIB.EXE</TT> tool is completely incapable
+of generating an import libary for a DLL that exports <TT>__stdcall</TT> functions.
+</P>
+<P>
+For this reason, I have separated implicit linking with <TT>__stdcall</TT> into it's own section. We need to follow a different
+sequence of steps to create the Microsoft compatible import library. (Also note that I put this section last for good reason, the steps
+are tedious to say the very least).
+</P>
+<P>
+Since we can't use <TT>LIB.EXE</TT> to generate an import library for a BCB DLL with <TT>__stdcall</TT> functions, we need to come up
+with a different strategy. One way to generate the import library (and perhaps the only way), is to rely on the fact that MSVC generates
+an import library whenever you build a DLL. If you build an MSVC DLL that contains <TT>__stdcall</TT> functions, the compiler and linker
+generate an import library the will correctly resolve the exported <TT>__stdcall</TT> routines.
+</P>
+<P>
+So how does this help us you ask? After all, we are compiling the DLL in Borland C++. What good does it do to create a DLL project
+in MSVC? We want the EXE to be compiled with MSVC, but the DLL should remain on the Borland side. The answer to this question is that
+we can compile a dummy DLL project in MSVC for the sole purpose of generating a <TT>__stdcall</TT> import library. The DLL
+created by MSVC can be pitched in the trash. We don't need it.
+</P>
+<P>
+The dummy DLL project is the foundation of this technique. We create a dummy DLL project in MSVC for the sake of generating a Microsoft
+import library. We then combine this import library with the BCB generated DLL to give MSVC users a way to call our Borland DLL with
+<TT>__stdcall</TT> routines.
+</p>
+<P>
+Here are the steps necessary for this technique. First, compile your DLL with BCB. Use the <TT>__stdcall</TT> calling convention, export
+plain C functions, and wrap all prototypes with extern "C". The code for the DLL is the same as the code in Listings 4 and 5 from
+Example 2, so I won't list them again. The second step is to create the dummy DLL project in MSVC. Compile the dummy DLL project and
+swipe the generated import library. The last step is to add this import library to any MSVC project that wants to call the borland
+DLL.
+</P>
+<P>
+The most challenging part of this technique is genering the dummy DLL project and the import libary. To build the dummy DLL project,
+create a non-MFC DLL workspace with MSVC. Edit the MSVC project settings so that the name of the generated DLL matches the name of
+the BCB DLL (bcbdll.dll in our examples). This setting can be found under <I>Project-Settings-Link</I>. Copy your DLL header file and source file from the Borland project directory over to
+the dummy DLL project directory. If your project consists of multiple CPP files, then copy over only the header files and source
+files that contain exported functions. Add the CPP source file to the dummy workspace.
+</P>
+<P>
+Next, go into the definition of each exported function and rip out the code for each routine. You should end up with a bunch of
+empty functions. If a routine has a return value, leave a return statement in place. Just have the return value be some dummy
+value (such as 0). In addition to ripping out the function bodies, remove any <TT>#include</TT> statements that are not necessary (you
+should be able to remove most <TT>#includes</TT>, since all the function bodies are empty).
+</P>
+<P>
+Our BCB DLL contains the same code that was shown in Listings 4 and 5 from example 2. Listing 8 shows the trimmed down version of the
+same code. This trimmed down version is added to the dummy DLL workspace.
+</P>
+<pre>
+<font color="navy">// ----------------------------------------------</font>
+<font color="navy">// Listing 8- dummy DLL source code</font>
+<font color="green">#define BUILD_DLL</font>
+<font color="green">#include "bcbdll.h"</font>
+
+<b>int</b> <b>__stdcall</b>  Foo  <b>(</b><b>int</b> Value<b>)</b>
+<b>{</b>
+    <b>return</b> <font color="blue">0</font><b>;</b>
+<b>}</b>
+
+<b>int</b> <b>__stdcall</b> Bar  <b>(</b><b>void</b><b>)</b>
+<b>{</b>
+    <b>return</b> <font color="blue">0</font><b>;</b>
+<b>}</b>
+<font color="navy">// ----------------------------------------------</font>
+</pre>
+<P>
+At this point, we should be able to compile the dummy DLL project in MSVC. But before we do, we must perform one more step to combat
+some hoakiness in the Microsoft compiler. Our dummy DLL exports <TT>__stdcall</TT> functions. When a Microsoft DLL exports a
+<TT>__stdcall</TT> routine, in normally decorates them by adding a leading underscore and appending an '@' symbol and a number
+to the end of the function (see Table 1 at the beginning of the article). For example, <TT>Foo</TT> would be exported as <TT>_Foo@4</TT>.
+This is not the behavior we want. The entire purpose of the dummy DLL is to generate an MSVC import library for our BCB DLL.
+Our BCB DLL contains plain, undecorated, <TT>__stdcall</TT> functions (<TT>Foo</TT> and <TT>Bar</TT>).
+It doesn't do any good to generate an import library with decorated names (<TT>_Foo@4</TT> and <TT>_Bar@0</TT>) that don't match.
+</P>
+<P>
+Fortunately, we can prevent MSVC from decorating the dummy <TT>__stdcall</TT> functions by adding a DEF file to the dummy DLL project.
+The DEF file should simply list each exported routine. Like this:
+</P>
+<PRE>
+LIBRARY     BCBDLL.DLL
+
+EXPORTS
+    Bar
+    Foo
+</PRE>
+<P>
+<TABLE WIDTH="100%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Note:</b>
+<hr size = 1>
+The library name in the DEF file should match the name of the dummy DLL generated by MSVC, which in turn should match the name of the
+DLL we created with BCB. If these three items don't match, then you will run into a variety of different errors (usually unresolved
+linker errors).
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+<P>
+Add the DEF file to the dummy DLL project and build the dummy DLL. MSVC should create an import library when it builds the DLL project.
+This import library is the key ingredient to allowing MSVC users to implicitly link with a BCB DLL that exports <TT>__stdcall</TT>
+functions. Save this import library, and give it to MSVC users along with your DLL. Your users should add this import library to
+any MSVC project that calls your BCB DLL.
+</P>
+
+<H3>
+<A NAME="conclusion">Conclusion</A>
+</H3>
+
+<P>
+This article provided four techniques for calling a BCB compiled DLL from
+Microsoft Visual C++. I hope that the article has described each technique
+adequately (some of this stuff is not easy to follow). To help you understand
+each technique, I have made the sample code for each technique available for
+download. The zip file extracts into four subdirectories, one for each technique.
+Each of those subdirectories contains a DLL directory with a BCB5 DLL project, and
+and EXE directory with an MSVC project that calls the BCB DLL. The MSVC projects
+are VC++ 5 projects, but they should work in MSVC 6 as well.
+</P>
+
+<BR>
+<H3>
+<A NAME="downloads">Downloads</A>
+</H3>
+
+<BR>
+<TABLE  BORDER=1 CELLPADDING=10 CELLSPACING=0 WIDTH="100%">
+<TR> <TD colspan = 2><B>Downloads for this article</B> </TD> </TR>
+<TR> <TD><TT><A HREF="http://www.bcbdev.com/ftp/source/bcbdll.zip">bcbdll.zip </A></TT></TD><TD>Source code for all 4 techniques (130 kB).</TD> </TR>
+</TABLE>
+
+
+
+
+
+
+
+
+
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2002 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

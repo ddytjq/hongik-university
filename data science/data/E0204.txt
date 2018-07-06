@@ -1,0 +1,418 @@
+ID=E0204
+URL=http://home.att.net/~robertdunn/FAQs/RE30New.html
+SIZE=24774
+DATE=12/07/02
+TIME=19:18:38
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<TITLE>Yet Another Code Site - New Rich Edit 3.0 Features</TITLE>
+	<META NAME="GENERATOR" CONTENT="StarOffice/5.1 (Win32)">
+	<META NAME="CREATED" CONTENT="19981222;17265927">
+	<META NAME="CHANGEDBY" CONTENT="Robert Dunn">
+	<META NAME="CHANGED" CONTENT="20000116;10351148">
+	<META NAME="Template" CONTENT="C:\Program Files\Microsoft Office\Templates\Web Pages\Web Page Wizard.wiz">
+</HEAD>
+<BODY>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=0 CELLSPACING=0 STYLE="page-break-before: always">
+	<COL WIDTH=256*>
+	<TR>
+		<TD WIDTH=100% VALIGN=TOP BGCOLOR="#000080">
+			<H1 ALIGN=CENTER STYLE="margin-top: 0in"><A NAME="TopOfPage"></A><FONT COLOR="#ffffff">Yet
+			Another Code Site</FONT></H1>
+		</TD>
+	</TR>
+</TABLE>
+<H2 ALIGN=CENTER>New Rich Edit 3.0 Features</H2>
+<P>Here is a list of features new to or extended in Rich Edit 3.0.&nbsp;
+This information is taken largely from Microsoft's developer site as
+of December 13, 1998, and I consider it to be very preliminary.&nbsp;
+I have only begun testing of these features and, therefore, cannot
+attest to the accuracy of the information.&nbsp; To get the most
+up-to-date information, see the Microsoft developer site link on the
+main page and keep checking back with this site.</P>
+<P>I have organized the information into the following rather
+arbitrary categories (see the last category for new information):</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="#Overview">Overview</A> 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="#Improved character and paragraph formatting">Improved
+	character and paragraph formatting</A> 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="#Improved program control">Improved
+	program control</A> 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="#Nice finishing touches">Nice
+	finishing touches</A> 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="#Where to get it">Where
+	to get it</A></P>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="#Ready to code" TARGET="_top">Got
+	it &#150; ready to code</A></P>
+	<LI><P STYLE="margin-bottom: 0in"><A HREF="#Latest Information" TARGET="_top">The
+	Latest Information</A></P>
+</UL>
+<P>Ok, some of this page is old news.&nbsp; This Rich Edit 3.0 thing
+is evolving each day so check the last category (&quot;<A HREF="#Latest Information" TARGET="_top">Latest
+Information</A>&quot;) for the newest information.</P>
+<HR>
+<H3><A NAME="Overview"></A>Overview</H3>
+<P>The Rich Edit 3.0 control adds or improves support in a number of
+areas.&nbsp; Most notable to me are:</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">Improved character and paragraph
+	formatting including built-in normal and heading styles, paragraph
+	numbering, basic table support, and more underline types and colors.
+		</P>
+	<LI><P STYLE="margin-bottom: 0in">Better program control such as the
+	ability to defer screen updates across multiple content changes (you
+	should be able to reduce screen flicker when inserting and modifying
+	multiple lines of text), fetching and restoring the current scroll
+	position precisely, suspending and resuming undo recording, and the
+	ability to (as I read it) increase or decrease the size of fonts in
+	text containing mixed text sizes while retaining relative font
+	sizes.&nbsp; Also, there is improved support, or at least better
+	documentation, for the Text Object Model (TOM). 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Other nice finishing touches such
+	as support for smart quotes, soft hyphenation, and an italics
+	cursor. 
+	</P>
+</UL>
+<P>Finally, there is better support for internationalization and &quot;RTF
+roundtripping.&quot;&nbsp; (For more information on international
+character support, see the Microsoft Developer Network link on the
+main page.)&nbsp; RTF roundtripping, as I understand it, is the
+ability to retain RTF formatting that the Rich Edit control cannot
+actually display.&nbsp; For example, Rich Edit 2.0 had a number of
+character and paragraph formatting codes that the control could
+recognize but not display.&nbsp; You could recognize, and even set,
+formats such as paragraph borders programmatically even though the
+control would not actually display them.&nbsp; This is presumably
+useful only if you would be viewing the RTF text later in a more
+sophisticated word processor such as Microsoft Word.&nbsp; I assume
+that &quot;improved RTF roundtripping&quot; means that RTF formatting
+not supported directly by Rich Edit 3.0 will not be lost when editing
+the text.</P>
+<P>Anyway, here are some of the details:</P>
+<H4><A NAME="Improved character and paragraph formatting"></A><STRONG><IMG SRC="../Images/bludiamd.gif" NAME="Graphic1" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+<B>Improved character and paragraph formatting</B></STRONG></H4>
+<P STYLE="margin-left: 0.5in"><STRONG>Paragraph numbering<BR></STRONG>Rich
+Edit 2.0 supported setting paragraph numbering styles for RTF
+roundtripping.&nbsp; The control now supports displaying numeric,
+upper/lower alphabetic, or Roman numeral paragraph numbering.&nbsp;
+The depth of paragraph numbering is apparently limited to one (per
+the online documentation).&nbsp; These features are implemented in
+the existing CHARFORMAT2 and PARAFORMAT2 structures.</P>
+<P STYLE="margin-left: 0.5in"><B>Simple tables</B><BR>Support for
+simple tables (no wrapping inside cells) is now included.&nbsp; The
+user interface is limited -- there is no support for resizing -- but
+you can delete and insert rows.&nbsp; By enabling &quot;advanced
+typography,&quot; you can set column alignments within cells.&nbsp;
+See the EM_GETTYPOGRAPHYOPTIONS and EM_SETTYPOGRAPHYOPTIONS messages
+for enabling the column alignment within table cells.&nbsp; (I am
+unsure how to put text into tables, but check back here occasionally
+for more information as I get it.) 
+</P>
+<P STYLE="margin-left: 0.5in"><B>Normal and heading styles<BR></B>Normal
+style and heading styles 1 through 9 are supported. See the
+EM_SETPARAFORMAT and EM_GETPARAFORMAT messages and the TOM
+interfaces. 
+</P>
+<P STYLE="margin-left: 0.5in"><B>More underline types<BR></B>Rich
+Edit 2.0 implemented more underline types than were actually
+documented.&nbsp; Now we get documented support for dashed, dash-dot,
+dash-dot-dot, and dot underlines.&nbsp; See the CHARFORMAT2 structure
+for more information. 
+</P>
+<P STYLE="margin-left: 0.5in"><B>Underline coloring<BR></B>15 colors
+of underlines are now documented as supported.&nbsp; See the
+CHARFORMAT2 structure for more information. 
+</P>
+<P STYLE="margin-left: 0.5in"><B>Hidden text<BR></B>RTF roundtripping
+support is now provided for hidden text. 
+</P>
+<H4 STYLE="margin-right: 0.39in; margin-top: 0in"><A NAME="Improved program control"></A>
+<STRONG><IMG SRC="../Images/bludiamd.gif" NAME="Graphic2" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0>
+</STRONG>Improved program control</H4>
+<P STYLE="margin-left: 0.5in"><STRONG>Zoom<BR></STRONG>In older
+versions of the Rich Edit control, the size of the text within the
+Rich Edit control on the screen was a direct function of the
+formatted size of the text in the control.&nbsp; Now, you can
+increase or decrease the size of the text within the control from
+1/64th to 64 times the underlying font size.&nbsp; (Tests indicate a
+downward limit of 100%, significant visual evidence of upward scaling
+beyond 200%, and bugs in reporting the true zoom factor when less
+than 100% (i.e., &lt;64/64) -- but this should be considered *very*
+preliminary.)&nbsp; This functionality is implemented in the new
+EM_GETZOOM and EM_SETZOOM messages. 
+</P>
+<P STYLE="margin-left: 0.5in"><STRONG>Increased Freeze Control<BR></STRONG>The
+display can be frozen over multiple API calls and then unfrozen to
+display the updates.&nbsp; This should allow you to, for example,
+insert multiple lines of text without visibly changing the control's
+contents until all changes are complete.&nbsp; (This is in the online
+documentation, but I have not found specifics on how to do this.) 
+</P>
+<P STYLE="margin-left: 0.5in"><B>Better Control Over Scrolling<BR></B>One
+of the most frequently asked Rich Edit questions on newsgroups is
+&quot;How do I position the Rich Edit control back to the position
+prior to appending text?&quot;&nbsp; This is at least partially
+solved with Rich Edit 3.0; the control supports messages to retrieve
+and restore the *pixel* position within the control's &quot;virtual
+text space.&quot;&nbsp; (The only complication that I foresee is if
+the text prior to the current control scroll position is
+modified....)&nbsp; The EM_GETSCROLLPOS and EM_SETSCROLLPOS messages
+are provided to support this clearly needed functionality. 
+</P>
+<P STYLE="margin-left: 0.5in"><STRONG>Increased Undo Control<BR></STRONG>You
+can now suspend and resume undo tracking.&nbsp; (Yes, again, I do not
+yet know how to do this.) 
+</P>
+<P STYLE="margin-left: 0.5in"><B>Increase/Decrease Font Size<BR></B>Rich
+Edit 3.0 allows you to increase or decrease font sizes to one of six
+standard values (12, 28, 36, 48, 72, 80 points).&nbsp; Although I
+have not yet tried it, I take this to mean that you can select a
+range of text and instruct the control to increase or decrease the
+(potentially multiple) font size(s) all at once.&nbsp; Again assuming
+that I understand the online documentation, this should be different
+than changing the zoom factor as described above; changing the zoom
+factor should change what is displayed but not what is printed or
+stored in files -- changing the font size should affect what is
+printed and stored and displayed in other RTF-enabled word processing
+applications.&nbsp; See the new EM_SETFONTSIZE message for more
+information. 
+</P>
+<P STYLE="margin-left: 0.5in"><B>Text Object Model (TOM)
+Support<BR></B>Microsoft has finally documented the TOM interfaces.&nbsp;
+With TOM, programs can manage the Rich Edit 2.0 and 3.0 (and possibly
+Microsoft Word and other TOM-compliant word processor) document
+contents using OLE interfaces.&nbsp; Significantly more information
+about these interfaces is now available on the Microsoft developer's
+site.&nbsp; See the Microsoft developer link on the main page.</P>
+<H4 STYLE="margin-right: 0.39in; margin-top: 0in"><A NAME="Nice finishing touches"></A>
+<STRONG><IMG SRC="../Images/bludiamd.gif" NAME="Graphic3" ALIGN=BOTTOM WIDTH=14 HEIGHT=14 BORDER=0></STRONG>
+Nice finishing touches</H4>
+<P STYLE="margin-left: 0.5in"><B>More default hot keys<BR></B>Hot
+keys now operate similarly to Microsoft Word default hot keys.&nbsp;
+For example, the number hot key (CTRL+L) now cycles through numbering
+options available, starting with the bullet style. 
+</P>
+<P STYLE="margin-left: 0.5in"><B>Smart-quotes<BR></B>Smart-quotes can
+now be toggled on and off using CTRL+ALT+' on US keyboards. 
+</P>
+<P STYLE="margin-left: 0.5in"><B>Soft hyphens<BR></B>Soft hyphens
+(presumably providing more advanced word and line breaks) are
+supported.&nbsp; (Use 0xAD in plain text; \- in RTF.) 
+</P>
+<P STYLE="margin-left: 0.5in"><B>Italics Caret/Cursor<BR></B>With
+Rich Edit 2.0 and before, the cursor remained strictly vertical when
+editing italics text.&nbsp; Rich Edit 3.0 slants the cursor when
+inside italics text.&nbsp; Also the mouse pointer changes to a hand
+when moved over URLs.&nbsp; This was, I believe, supported under Rich
+Edit 2.0 -- now it is documented.</P>
+<H3><A NAME="Where to get it"></A>Where to get it</H3>
+<P>To use the Rich Edit 3.0 control, you will need two things:&nbsp;
+The Rich Edit 3.0 DLL and updated header files with additional
+version 3.0 declarations.&nbsp; 
+</P>
+<H4>Where To Get The Rich Edit 3.0 DLL</H4>
+<P>A kind visitor, Michael Tan, offered the following news, solving
+the first problem:</P>
+<P STYLE="margin-left: 0.5in">In the newly released Office 2000
+Resource Kit (free), you can find riched20.dll, the Rich Edit 3.0
+DLL!!</P>
+<P STYLE="margin-left: 0.5in">Here's the link:&nbsp;
+<A HREF="http://www.microsoft.com/office/ork/2000/appndx/toolbox.htm">http://www.microsoft.com/office/ork/2000/appndx/toolbox.htm</A></P>
+<P>(Michael gets special credit because he is not a Borland product
+user and, presumably, not a regular site visitor.&nbsp; In spite of
+that, he was the first to pass on this information.&nbsp; Thanks for
+taking the time, Michael!)</P>
+<P>The easiest way to get the Rich Edit 3.0 DLL is to install the
+Office 2000 Resource Kit (ORK).&nbsp; However, if you do not want to
+install the ORK, here are the detailed steps to download and extract
+only the Rich Edit DLL:</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0in">Find the riched20.dll file on your
+	machine (if you previously had it) and make a note about where you
+	found it.&nbsp; For Windows98, the file is in the \Windows\System
+	folder by default.&nbsp; Make a copy of this file as a backup.</P>
+	<LI><P STYLE="margin-bottom: 0in">Go to the page linked above.&nbsp;
+	Download ORKTools.exe (approximately 9MB).</P>
+	<LI><P STYLE="margin-bottom: 0in">Run the executable or extract the
+	files from ORKTools.exe using PKZIP, WinZip, or a similar tool, to
+	an empty folder.</P>
+	<LI><P STYLE="margin-bottom: 0in">In that folder, find the MSI
+	subfolder.&nbsp; Locate instmsi.exe in that subfolder.</P>
+	<LI><P STYLE="margin-bottom: 0in">Extract the riched20.dll (you may
+	also need usp10.dll) from instmsi.exe, either by running it or using
+	PKZIP, WinZip, or a similar tool.</P>
+	<LI><P STYLE="margin-bottom: 0in">Copy the new riched20.dll to the
+	folder where the original version was located in the first step
+	above.</P>
+	<LI><P>Restart your machine (probably not necessary, but a good
+	precautionary measure).</P>
+</UL>
+<P>At this point, any program that previously used Rich Edit 2.0 will
+now actually execute Rich Edit 3.0.&nbsp; Of course, these programs
+will not automatically provide any additional functionality (unless,
+of course, they were written to recognize which Rich Edit version
+they were using &#150; possible, but unlikely today).&nbsp; The good
+news is that you now have the benefit of any bug-fixes that Rich Edit
+3.0 provides.</P>
+<P>I suspect that Rich Edit 3.0 is still evolving &#150; if you find
+a newer version than the following, please let me know.</P>
+<P STYLE="margin-left: 0.5in">riched20.dll<BR>426,033 bytes<BR>Created:
+02-05-99 2:57:32 pm<BR>File version: 5.30.11.2410</P>
+<H4>Where To Get The Rich Edit 3.0 Header Files</H4>
+<P>Now for the second part of the problem &#150; where to get the
+necessary header files.</P>
+<P>There are several header files that you will or may need.&nbsp;
+Richedit.h contains the basic Rich Edit declarations that you will
+almost certainly need.&nbsp; RichOle.h contains OLE interface
+declarations that you probably want.&nbsp; Tom.h contains the Text
+Object Model (OLE) declarations that you will probably not need
+today.&nbsp; However, TOM contains some truly slick interfaces which
+Microsoft hopes that we will all learn to rely upon.&nbsp; My
+experience to date:&nbsp; The Rich Edit 2.0/3.0 controls do not
+implement TOM functionality particularly well or completely.&nbsp;
+For now, you can easily ignore it.</P>
+<P>So, where to get updated versions of the header files?&nbsp;
+Zulkarnain Lah sent the following information:</P>
+<P STYLE="margin-left: 0.5in; margin-bottom: 0in"><FONT FACE="Courier New"><FONT SIZE=2>In
+my Internet Client SDK headers and samples dir:</FONT></FONT></P>
+<P STYLE="margin-left: 0.5in; margin-bottom: 0in"><FONT FACE="Courier New"><FONT SIZE=2>\Include\NT5\richedit.h;
+Size: 35.8K (36,753b); Created: 03-25-1999; Modified: 03-25-1999</FONT></FONT></P>
+<P STYLE="margin-left: 0.5in; margin-bottom: 0in"><FONT FACE="Courier New"><FONT SIZE=2>\Include\NT50\richole.h;
+Size: 6.36K (6518b); Created: 03-25-1999; Modified: 03-25-1999</FONT></FONT></P>
+<P STYLE="margin-left: 0.5in; margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-left: 0.5in; margin-bottom: 0in"><FONT FACE="Courier New"><FONT SIZE=2>In
+my Platform SDK:</FONT></FONT></P>
+<P STYLE="margin-left: 0.5in; margin-bottom: 0in"><FONT FACE="Courier New"><FONT SIZE=2>\include\Richedit.h;
+Size: 35.5K (36,440b); Created: 05-10-1999; Modified: 06-19-1998</FONT></FONT></P>
+<P STYLE="margin-left: 0.5in; margin-bottom: 0in"><FONT FACE="Courier New"><FONT SIZE=2>\include\RichOle.h;
+Size: 6.32K (6473b); Created: 05-10-1999; Modified: 04-02-1998</FONT></FONT></P>
+<P STYLE="margin-left: 0.5in; margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-left: 0.5in; margin-bottom: 0in"><FONT FACE="Courier New"><FONT SIZE=2>tom.h
+only in Platform SDK.</FONT></FONT></P>
+<P STYLE="margin-left: 0.5in; margin-bottom: 0in"><BR>
+</P>
+<P>Naturally, I went immediately to MSDN to search for free versions
+of the Platform SDK and Internet Client SDK.&nbsp; I found the
+Platform SDK (iBldEnv.exe) and downloaded it.&nbsp; In that file (a
+ZIP executable), I found Win32-B.cab which contains
+INCLUDE_Richedit.h (06-18-98), INCLUDE_RichOle.h (04-01-98), and
+INCLUDE_TOM.h (06-09-98).&nbsp; All of these are older than the
+Internet Client SDK files that Mr. Zulkarnain mentions.&nbsp;
+However, when I found the Internet Client SDK pages, they led me back
+to the Platform SDK for these files.&nbsp; Oh, well....</P>
+<P>Every time I turn around, Microsoft changes the MSDN site and I
+find that I can no longer locate the SDK download.&nbsp; Thanks to
+Shawn Bullock for passing on the following links and information
+which works as of 07-24-99:</P>
+<P>Platform SDK Page:&nbsp;
+<A HREF="http://msdn.microsoft.com/developer/sdk/platform.asp">http://msdn.microsoft.com/developer/sdk/platform.asp</A></P>
+<P><SPAN STYLE="font-style: normal">Platform SDK Download Page:&nbsp;
+h</SPAN><A HREF="http://www.microsoft.com/msdownload/platformsdk/setuplauncher.htm"><SPAN STYLE="font-style: normal">ttp://www.microsoft.com/msdownload/platformsdk/setuplauncher.htm</SPAN></A></P>
+<P>From the Platform SDK page, there is a link to the Platform SDK
+Download page labeled as something like &quot;Platform SDK setup.&quot;&nbsp;
+Currently, it takes you to the second link above which allows you to
+run the first stage setup program.&nbsp; This setup program lets you
+select which Platform SDK components to download.&nbsp; Once you have
+selected the items to download, it runs a second setup program that
+actually downloads and installs the selected items.&nbsp; Warning:&nbsp;
+I was worried that Microsoft would again change the links so I
+grabbed all of the components at once.&nbsp; This download took
+several days at 56 kbps to complete and, I think, more than a
+gigabyte of disk space.&nbsp; You probably will want to be somewhat
+more selective although I cannot tell you what, exactly, you will
+need for Rich Edit 3.0.</P>
+<P>Note:&nbsp; The Platform SDK help files contain the Rich Edit
+documentation.&nbsp; This is great -- no more going online to get the
+basic information!</P>
+<P>Many thanks to Mr. Zulkarnain and Mr. Bullock for giving us
+something to work with.&nbsp; If you know where to find more recent
+versions of these files, please share.</P>
+<H3><A NAME="Ready to code"></A>Got it &#150; ready to code</H3>
+<P>Rich Edit 3.0 is no more complex than Rich Edit 2.0.&nbsp;
+Microsoft recently revamped the MSDN site (see the Links page) and it
+now includes substantially more information about both versions.&nbsp;
+Unfortunately, some of the information is inaccurate or easily
+misunderstood, so I will be working through it for a while.&nbsp; Let
+me know what you learn.</P>
+<P>Once you have Rich Edit 3.0 installed, see the <A HREF="../CodeSamples/RE30CodeSamples.html" TARGET="_top">Rich
+Edit 3.0 Code Samples</A> page for what I have learned about the Rich
+Edit 3.0 so far and code to get you started using it with the Borland
+VCL.</P>
+<H3><A NAME="Latest Information"></A>The Latest Information</H3>
+<P>Joel Harrison informed me that the &quot;\page&quot; RTF code does
+actually work in Rich Edit 3.0.&nbsp; I have tested and confirmed
+this with Rich Edit 3.0 version 5.30.18.0300 on Windows 98.&nbsp;
+This is great news -- thanks, Joel!&nbsp; Now the bad news:&nbsp; The
+obvious way to insert a page break in Rich Edit 3.0 is to use the
+PFE_PAGEBREAKBEFORE and PFM_PAGEBREAKBEFORE flags in the PARAFORMAT2
+structure.&nbsp; This inserts a &quot;\pagebb&quot; RTF code which
+does nothing when rendering.&nbsp; So how do we insert the &quot;\page&quot;
+code and, once inserted, how do we find and remove it?</P>
+<P>Shawn Bullock offers the following:&nbsp; &quot;Just as an update,
+there is now another source where one might find the necessary header
+files and (dlls?)... the September Edition of Platform SDK.&nbsp; My
+CD came with the October shipment of MSDN Universal (likely
+professional also) and can still be downloaded in the usual spot, and
+is also available as part of the Windows2000 SDK, too...&quot;</P>
+<P><B>New information as of January 13, 2000</B></P>
+<P>Would you believe that Microsoft has a page that looks up DLLs and
+tells you where they came from?&nbsp; Thanks to a frequent but
+anonymous (by his request) visitor for the following links:&nbsp; 
+</P>
+<P>To search Microsoft's site for the distribution code/product that
+contains a specific DLL. See <A HREF="http://support.microsoft.com/servicedesks/fileversion/default.asp" TARGET="_top"><SPAN STYLE="font-weight: medium">The
+Microsoft DLL Help Database</SPAN></A>.</P>
+<P>He added the following:</P>
+<P>For NT -- So you don't have to redownload the whole platform sdk,
+I should also say that the msi package is available at:</P>
+<P><A HREF="ftp://ftp.microsoft.com/developr/PlatformSDK/Jan2000/msi/winnt/x86/instmsi.exe" TARGET="_top">
+ftp://ftp.microsoft.com/developr/PlatformSDK/Jan2000/msi/winnt/x86/instmsi.exe</A></P>
+<P>or For Windows 9x -- 
+</P>
+<P><A HREF="ftp://ftp.microsoft.com/developr/PlatformSDK/Jan2000/msi/win95/instmsi.exe" TARGET="_top">ftp://ftp.microsoft.com/developr/PlatformSDK/Jan2000/msi/win95/instmsi.exe</A></P>
+<P>Eric DuPont provided the following source for Rich Edit 3.0
+(riched20.dll; version 5.30.13.0906):&nbsp;
+<A HREF="http://www.smartftp.com/smartftp/Riched30.exe" TARGET="_top">http://www.smartftp.com/smartftp/Riched30.exe</A>.&nbsp;
+The home page is <A HREF="http://www.smartftp.com/download.html" TARGET="_top">http://www.smartftp.com/download.html</A>.</P>
+<HR>
+<P><STRONG>Please send me additional information as you get it or
+figure it out so that we can help those that follow -- rest assured
+that you will get full credit for your contributions to the site.</STRONG></P>
+<P><STRONG>In particular, if you learn how to use new functionality
+or identify other products with which Rich Edit 3.0 is distributed,
+please let me know.</STRONG></P>
+<HR>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=2 CELLSPACING=0>
+	<COL WIDTH=128*>
+	<COL WIDTH=128*>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50% BGCOLOR="#e6e6e6">
+			<P><A HREF="../Yacs.html" NAME="Home"><B><FONT SIZE=2 STYLE="font-size: 9pt">Home</FONT></B></A><B><FONT SIZE=2 STYLE="font-size: 9pt">
+			| </FONT></B><A HREF="#TopOfPage" NAME="Top Of Page"><B><FONT SIZE=2 STYLE="font-size: 9pt">Top
+			Of Page</FONT></B></A><B><FONT SIZE=2 STYLE="font-size: 9pt"> |
+			</FONT></B><A HREF="../Yacs.html#CodeSection" NAME="Code Section"><B><FONT SIZE=2 STYLE="font-size: 9pt">Code</FONT></B></A><B><FONT SIZE=2 STYLE="font-size: 9pt">
+			| </FONT></B><A HREF="../Yacs.html#Papers"><B><FONT SIZE=2 STYLE="font-size: 9pt">Papers</FONT></B></A><B><FONT SIZE=2 STYLE="font-size: 9pt">
+			| </FONT></B><A HREF="../Yacs.html#FAQs" NAME="Frequently Asked Questions"><B><FONT SIZE=2 STYLE="font-size: 9pt">FAQs</FONT></B></A><B><FONT SIZE=2 STYLE="font-size: 9pt">
+			| </FONT></B><A HREF="../Links.html" NAME="Links To Other Sites"><B><FONT SIZE=2 STYLE="font-size: 9pt">Links</FONT></B></A><B><FONT SIZE=2 STYLE="font-size: 9pt">
+			| <FONT SIZE=2 STYLE="font-size: 9pt"><A HREF="../Yacs.html#SiteSearch" TARGET="_top">Search</A>
+			|</FONT> </FONT></B><A HREF="../Yacs.html#ContactMe" NAME="Contacting Me"><B><FONT SIZE=2 STYLE="font-size: 9pt">Feedback</FONT></B></A></P>
+		</TD>
+		<TD WIDTH=50% BGCOLOR="#e6e6e6">
+			<P ALIGN=RIGHT><FONT SIZE=2 STYLE="font-size: 9pt">Page updated <SDFIELD TYPE=DOCINFO SUBTYPE=CHANGE FORMAT=DATE SDNUM="1033;1033;MMMM D, YYYY">January 16, 2000</SDFIELD></FONT></P>
+		</TD>
+	</TR>
+</TABLE>
+<P ALIGN=CENTER><STRONG><B><SPAN STYLE="font-style: normal"><FONT SIZE=2 STYLE="font-size: 9pt">Copyright
+&copy; 1998, 1999, 2000 Thin Air Enterprises and Robert Dunn.&nbsp;
+All rights reserved.</FONT></SPAN></B></STRONG></P>
+</BODY>
+</HTML>

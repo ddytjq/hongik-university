@@ -1,0 +1,104 @@
+ID=E0692
+URL=http://www.hh.se/stud/d98rolb/ansi/calloc().html
+SIZE=3185
+DATE=12/07/02
+TIME=19:23:32
+DATASET=C
+HTML=<html>
+<head>
+  <title>calloc()</title>
+  <meta name="Generator" content="GuideML V1.6">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+<body>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="bsearch().html"><img src="prev.gif" alt="PREV" border=0></a><a href="ceil().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+<hr>
+<pre>
+calloc-Allocate and clear memory
+
+Synopsis
+
+        #include &#060;stdlib.h&#062;
+
+        b = calloc(nelt,esize);
+
+        void *b;       /* block pointer      */
+        size_t nelt;   /* number of elements */
+        size_t esize;  /* element size             */
+
+Description
+
+        This function is called a level 3 memory allocation function
+        because it calls upon level 2 functions.  This level is fully
+        compatible with UNIX and with the  Standard.
+
+        The calloc function uses the <a href="malloc().html"> malloc </a> function to get a level 3
+        memory block whose size in bytes is given by
+
+            n = nelts * esize;
+
+        Then, the block is cleared to zeroes.  The calloc function returns
+        a NULL pointer if the block cannot be allocated.  The calloc
+        function can only allocate 64 kilobytes at a time if you are
+        compiling with short integers.
+
+        You can free the block returned from the calloc function
+        with the <a href="free().html"> free </a> function.
+
+
+Returns
+
+        A NULL pointer is returned if there is not enough space for the
+        requested block.
+
+Example
+
+        /*
+         * The following example allocates an array large enough for 100 long
+         * integers and initializes the block to zeroes.
+         */
+        long *lary;
+
+        lary=calloc(100,sizeof(long));
+
+
+        /* The following example allocates an array of data structures. */
+
+        #include &#060;stdio.h&#062;
+        #include &#060;stdlib.h&#062;
+
+        #define MAXENTRIES 50
+
+        struct data
+        {
+            int age;
+            char name[30];
+            int height;
+        };
+
+        struct data *datap;
+
+        void init(void)
+        {
+            if ((datap=calloc(MAXENTRIES,sizeof(struct data)))==NULL)
+            {
+                abort();
+            }
+        }
+
+        void main(void)
+        {
+            init();
+            printf(&quot;Memory allocated.n&quot;);
+            free(datap);
+        }
+
+See Also
+
+        <a href="free().html"> free </a>, <a href="malloc().html"> malloc </a>, <a href="realloc().html"> realloc </a>
+</pre>
+<hr>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="bsearch().html"><img src="prev.gif" alt="PREV" border=0></a><a href="ceil().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+</body>
+</html>
+

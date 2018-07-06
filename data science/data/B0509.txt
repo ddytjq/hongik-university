@@ -1,0 +1,307 @@
+ID=B0509
+URL=http://www.theuniversal.co.uk/mortgage/mortgage2.php3.orig
+SIZE=10790
+DATE=28/06/2002
+TIME=12:51:05
+DATASET=Building Societies
+HTML=<style type="text/css">
+<!--
+.nounder { text-decoration: none; color: white}
+-->
+</style>
+<html>
+<body bgcolor='white'>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td width=10><img src='tl.gif'></td><td background='top.gif'><img src=top.gif></td><td><img src='tr.gif'></td></tr>
+<tr><td background='left.gif'><img src=left.gif></td><td bgcolor='#EFF392'>
+<center><table cellpadding=5 cellspacing=5 width=470 height=50>
+<tr><td valign=top>
+<font face='arial' size=-1>
+<center><b>CALCULATION RESULTS</b></center>
+</font><br>
+<font face='arial,helvetica' size=-2>
+Based on the information you have provided, the potential monthly mortgage payments are shown below. You can change the
+original details you entered to see what effect they have on the monthly mortgage payments, by re-entering the details and
+clicking on CALCULATE.
+<p>For details of the APR and further details on any of the mortgage listed, please click on the relevant coloured box under
+"Mortgage Type".
+<p>If you would like to apply for one of the mortgages listed, simply click on "Quick Decision" and complete the sections as
+necessary, for further details.
+
+ </font>
+</td></tr>
+</table></center>
+</td><td background='right.gif' width=10><img src=right.gif></td></tr>
+<tr><td width=10><img src='bl.gif'></td><td background='bottom.gif'><img src=bottom.gif></td><td><img src='br.gif'></td></tr>
+</table>
+
+
+<form method=post action=mortgage2.php3>
+
+
+
+<table cellpadding=0 cellspacing=0 border=0> 
+<tr><td width=10><img src='tl.gif'></td><td background='top.gif'><img src=top.gif></td><td><img src='tr.gif'></td></tr>
+<tr><td background='left.gif'><img src=left.gif></td><td bgcolor='#EFF392'>
+<br><center><table width=470>
+<tr>
+
+<?php
+if((strlen($borrow) == '0') || (ereg("[^0-9]",$borrow))) { $borrow = "30000"; }
+if((strlen($loan) == '0') || (ereg("[^0-9]",$loan))) { $loan = "30"; }
+if(ereg("[^0-9]",$value)) { $value = ""; }
+echo "
+<td><font face=\"arial,helvetica\"  size=-1><center>Borrowing (&pound;s): <input type=text name=borrow value='$borrow' size=6 onChange='document.forms[0].submit()'></td>
+<td><font face=\"arial,helvetica\"  size=-1><center>Period of (years): <input type=text name=loan value='$loan' size=6 onChange='document.forms[0].submit()'></td>
+<td><font face=\"arial,helvetica\"  size=-1><center>Property Value (&pound;s): <input type=text name=value value='$value'
+size=6 onChange='document.forms[0].submit()'></td>
+<td><font face=\"arial,helvetica\"  size=-1><center>Remortgage: <font size=+1><input type=checkbox name=remortgage onClick='document.forms[0].submit()' "; if($remortgage == 'on') { echo " checked "; } echo "></td>
+";
+?>
+</tr></table>
+<br>
+</td><td background='right.gif' width=10><img src=right.gif></td></tr>
+<tr><td width=10><img src='bl.gif'></td><td background='bottom.gif'><img src=bottom.gif></td><td><img src='br.gif'></td></tr>
+</table>
+
+<br>
+
+<table cellpadding=0 cellspacing=0 border=0> 
+<tr><td width=10><img src='tl.gif'></td><td background='top.gif'><img src=top.gif></td><td><img src='tr.gif'></td></tr>
+<tr><td background='left.gif'><img src=left.gif></td><td bgcolor='#EFF392'>
+<br><center><table cellpadding=0 cellspacing=0 border=0 width=470>
+<tr><td>
+<center>
+<?php
+
+function calculate($rate,$borrow,$years)
+{
+ $total = $borrow * ($rate / 100) * (1 / 12);
+ return(round($total));
+}
+
+function capital($rate,$borrow,$years)
+{
+ $total = calculate($rate,$borrow,$years) * (pow((1 + $rate / 100),$years) / (pow((1 + $rate / 100),$years) - 1));
+ return(round($total));
+}
+
+function disp()
+{
+  echo "
+  <center>
+  <table><tr><td><br></td></tr></table>
+  <table cellpadding=5 cellspacing=0 border=0>
+  <tr>
+   <td width=100><center><font face='arial,helvetica' size=-1>Mortgage Type</font></td>
+   <td width=100><center><font face='arial,helvetica' size=-1>Interest Only</font></td>
+   <td width=100><center><font face='arial,helvetica' size=-1>Capital & Interest</font></td>
+   <td width=100><center><font face='arial,helvetica' size=-1><br></font></td>
+  </tr>
+  </table>";
+}
+
+ $mysql_user = "root";
+ $mysql_data = "theuniversal";
+ $mysql_host = "localhost";
+ $mysql_pass = "toshiba";
+ $link = mysql_connect($mysql_host,$mysql_user,$mysql_pass);
+ mysql_select_db($mysql_data);
+
+ if(strlen($value) == '0') { $value = "99999999999999"; }
+
+ if($remortgage == 'on')
+ {
+  $array1 = mysql_query("select * from mortgageproduct where mtype = 'both' and active = 'yes' or active = '1' order by productid");
+  $array2 = mysql_query("select * from mortgageproduct where mtype = 'remortgage' and active = 'yes' or active = '1' order by productid");
+ }
+ else
+ {
+  $array1 = mysql_query("select * from mortgageproduct where mtype = 'both' and active = 'yes' or active = '1' order by productid");
+  $array2 = mysql_query("select * from mortgageproduct where mtype = 'mortgage' and active = 'yes' or active = '1' order by productid");
+ }
+
+  $array3 = mysql_query("select rate from rates where productid = 'variable' order by productid");
+  $rdata = mysql_fetch_array($array3);
+
+  $found = 0;
+
+ if((mysql_num_rows($array1) > 0) || (mysql_num_rows($array2) > 0))
+ {
+ 
+  while($data = mysql_fetch_array($array1))
+  {
+   if(($borrow <= (($data["ltv"] / 100) * $value)) && ($borrow >= $data["min"]) && ($borrow <= $data["max"]))
+   {
+   if($found == '0') { disp(); }
+   $found++;
+   if($data["type"] == 'fixed') { $irate = $data["interestrate"]; }
+   elseif($data["type"] == 'variable') { $irate = $rdata["rate"]; }
+   elseif($data["type"] == 'discounted') { $irate = $rdata["rate"] - $data["interestrate"]; }
+   
+ echo "
+  <table cellpadding=5 cellspacing=0 border=0>   
+  <tr>
+   <td width=100><center>
+<table cellpadding=1 cellspacing=0 bgcolor=black border=0 width=100>
+<tr><td>
+<table cellpadding=2 cellspacing=0 bgcolor=",$data["color"]," border=0 width=110>
+
+<tr><td><center><a href='#'
+onClick='window.open(\"mdisplay.php3?productid=",urlencode($data["productid"]),"\",\"\",\"scrollbars=yes,toolbars=no,width=450,height=600,top=10,left=10\")'
+class=nounder><font face='arial,helvetica' size=-1 color=white>",$data["marketingname"],"</font></a></center>
+
+
+</td></tr>
+</table>
+</td></tr>
+</table></center>
+</td>  
+   <td width=100><center>
+<table cellpadding=1 bgcolor=black cellspacing=0 border=0 width=80>
+<tr><td>
+<table cellpadding=2 cellspacing=0 border=0 bgcolor=white width=80>
+<tr><td>
+<center><font face='arial,helvetica' size=-1>
+",calculate($irate,$borrow,$loan),"
+</font></center>
+</td></tr>
+</table>
+</td></tr>
+</table>
+   </td>  
+   <td width=100><center>
+<table cellpadding=1 bgcolor=black cellspacing=0 border=0 width=80>
+<tr><td>
+<table cellpadding=2 cellspacing=0 border=0 bgcolor=white width=80>
+<tr><td>
+<center><font face='arial,helvetica' size=-1>
+",capital($irate,$borrow,$loan),"
+</font></center>
+</td></tr>
+</table>  
+</td></tr>
+</table>  
+   </td>  "; if($value > 99999999999) { $svalue = ""; } else { $svalue = $value; } echo "
+   <td width=100><center><a
+href='mortgage3.php3?borrow=$borrow&loan=$loan&value=$svalue&productid=",urlencode($data["productid"]),"'><img
+src='moreinfo.gif' border=0></a></center></td>  
+  </tr>
+  </table>
+  <table width=430 cellpadding=5 cellspacing=0><tr><td>
+  <font face='arial,helvetica' size=-2>","</font>
+  </td></tr></table>
+<div    
+id=\"Layer3\" style=\"position:absolute; left:40px; top:355px; z-index:1\">
+<font face='arial,helvetica' size=-1>
+For further details, and an APR example on your chosen mortgage <br>please click on the coloured box under mortgage type.
+</font>
+</div>
+   ";
+   }
+  }
+
+  while($data = mysql_fetch_array($array2))
+  {
+   if(($borrow <= (($data["ltv"] / 100) * $value)) && ($borrow >= $data["min"]) && ($borrow <= $data["max"]))
+   {
+   if($found == '0') { disp(); }
+   $found++;
+   if($data["type"] == 'fixed') { $irate = $data["interestrate"]; }
+   elseif($data["type"] == 'variable') { $irate = $rdata["rate"]; }
+   elseif($data["type"] == 'discounted') { $irate = $rdata["rate"] - $data["interestrate"]; }
+   
+   echo "
+  <table cellpadding=5 cellspacing=0 border=0>   
+  <tr>
+   <td width=100><center>
+<table cellpadding=1 cellspacing=0 bgcolor=black border=0 width=100>
+<tr><td>
+<table cellpadding=2 cellspacing=0 bgcolor=",$data["color"]," border=0 width=110>
+<tr><td><center><a href='#'
+onClick='window.open(\"mdisplay.php3?productid=",urlencode($data["productid"]),"\",\"\",\"scrollbars=yes,toolbars=no,width=450,height=600,top=10,left=10\")'
+class=nounder><font face='arial,helvetica' size=-1 color=white>",$data["marketingname"],"</font></a></center> </td></tr>
+</table>
+</td></tr>
+</table></center>
+</td>  
+   <td width=100><center>
+<table cellpadding=1 bgcolor=black cellspacing=0 border=0 width=80>
+<tr><td>
+<table cellpadding=2 cellspacing=0 border=0 bgcolor=white width=80>
+<tr><td>
+<center><font face='arial,helvetica' size=-1>
+",calculate($irate,$borrow,$loan),"
+</font></center>
+</td></tr>
+</table>
+</td></tr>
+</table>
+   </td>  
+   <td width=100><center>
+<table cellpadding=1 bgcolor=black cellspacing=0 border=0 width=80>
+<tr><td>
+<table cellpadding=2 cellspacing=0 border=0 bgcolor=white width=80>
+<tr><td>
+<center><font face='arial,helvetica' size=-1>
+",capital($irate,$borrow,$loan),"
+</font></center>
+</td></tr>
+</table>  
+</td></tr>
+</table>  
+   </td>  "; if($value > 99999999999) { $svalue = ""; } else { $svalue = $value; } echo "
+   <td width=100><center><a
+href='mortgage3.php3?borrow=$borrow&loan=$loan&value=$svalue&productid=",urlencode($data["productid"]),"'><img
+src='moreinfo.gif' border=0></a></center></td>  
+  </tr>
+  </table>
+  <table width=430 cellpadding=5 cellspacing=0><tr><td>
+ 
+  <font face='arial,helvetica' size=-2>","
+
+</font>
+  </td></tr></table>
+   ";
+   }
+  }
+
+  echo "
+  </center>
+  ";
+ }
+
+ if($found == '0')
+ {
+  echo "
+ <center><table width=370><tr><td><center>
+  <font face='arial,helvetica' size=-1>
+Unfortunately, based on the information you have just provided, none of the mortgages listed meet your criteria.
+
+<p>If you are able to change some of your criteria, such as the amount you want to borrow, the property value or the loan
+period,
+we will try and find a suitable mortgage to meet your needs.
+<p>Simply change the relevant figures and select \"recalculate.\"
+<p><input type=button value='recalculate'>
+  </font></td></tr></table>
+  ";
+ }
+?>
+
+</td></tr></table>
+<br>
+</td><td background='right.gif' width=10><img src=right.gif></td></tr>
+<tr><td width=10><img src='bl.gif'></td><td background='bottom.gif'><img src=bottom.gif></td><td><img src='br.gif'></td></tr>
+</table>
+
+
+
+</form>
+<div
+id="Layer1" style="position:absolute; left:353px; top:275px; z-index:1">
+<img src='recalc.gif'>
+</div>
+
+</body>
+</html>
+

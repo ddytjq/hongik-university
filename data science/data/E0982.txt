@@ -1,0 +1,200 @@
+ID=E0982
+URL=http://www.bcbdev.com/faqs/faq49.htm
+SIZE=9380
+DATE=12/07/02
+TIME=19:26:26
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+<H3>
+Q: Set or remove the bold and italic settings of <TT>Font-&gt;Style</TT>
+</H3>
+<BR>
+<H3>Answer:</H3>
+<P>
+The <TT>Style</TT> property of <TT>TFont</TT> is a set object. If you
+look in GRAPHICS.HPP, you will see something that looks like this:
+</P>
+<pre>
+<b>enum</b> TFontStyle <b>{</b> fsBold<b>,</b> fsItalic<b>,</b> fsUnderline<b>,</b> fsStrikeOut <b>}</b><b>;</b>
+<b>typedef</b> Set &lt; TFontStyle<b>,</b> fsBold<b>,</b> fsStrikeOut <b>></b>  TFontStyles<b>;</b>
+
+<font color="navy">//...</font>
+<font color="navy">// skip some stuff</font>
+<font color="navy">// ...</font>
+
+<b>class</b> <b>__declspec</b><b>(</b>pascalimplementation<b>)</b> TFont <b>:</b> <b>public</b> TGraphicsObject
+<b>{</b>
+<font color="navy">// ...</font>
+<b>__published</b><b>:</b>
+<font color="navy">// ...</font>
+	<b>__property</b> TFontStyles Style<b>=</b><b>{</b>read<b>=</b>GetStyle<b>,</b> write<b>=</b>SetStyle<b>,</b> nodefault<b>}</b><b>;</b>
+<b>}</b><b>;</b>
+
+</pre>
+<P>
+Notice that the <TT>Style</TT> property of <TT>TFont</TT> is a
+<TT>TFontStyles</TT> set. To manipulate the <TT>Style</TT> of a font object you
+must modify the <TT>TFontStyles</TT> set. You can use any of the set operations
+to do your work. Here are some code examples.
+</P>
+<pre>
+<font color="navy">// Add the bold style to the font of a label</font>
+<font color="navy">// Any other Style settings remain intact</font>
+Label1<b>-></b>Font<b>-></b>Style <b>=</b> Label1<b>-></b>Font<b>-></b>Style <b><<</b> fsBold<b>;</b>
+
+<font color="navy">// Remove bold style</font>
+<font color="navy">// Any other Style settings remain intact</font>
+Label1<b>-></b>Font<b>-></b>Style <b>=</b> Label1<b>-></b>Font<b>-></b>Style <b>>></b> fsBold<b>;</b>
+
+<font color="navy">// Add bold, italic, and underline in one shot</font>
+Label1<b>-></b>Font<b>-></b>Style <b>=</b> Label1<b>-></b>Font<b>-></b>Style<b><<</b>fsBold<b><<</b>fsItalic<b><<</b>fsUnderline<b>;</b>
+
+<font color="navy">// Add bold and italic, but remove fsUnderline</font>
+Label1<b>-></b>Font<b>-></b>Style<b>=</b><b>(</b>Label1<b>-></b>Font<b>-></b>Style<b><<</b>fsBold<b><<</b>fsItalic<b>)</b> <b>>></b>fsUnderline<b>;</b>
+
+<font color="navy">// Clear all styles and return to normal</font>
+Label1<b>-></b>Font<b>-></b>Style <b>=</b> Label1<b>-></b>Font<b>-></b>Style<b>.</b>Clear<b>(</b><b>)</b><b>;</b>
+
+<font color="navy">// Another way to clear all styles</font>
+Label1<b>-></b>Font<b>-></b>Style <b>=</b> TFontStyles<b>(</b><b>)</b><b>;</b>
+
+<font color="navy">// Set the Style to bold, and nothing else.</font>
+Label1<b>-></b>Font<b>-></b>Style <b>=</b> TFontStyles<b>(</b><b>)</b> <b><<</b> fsBold<b>;</b>
+
+<font color="navy">// Test to see if the Style contains fsBold.</font>
+<font color="navy">// Note that Contains is called using a dot and not -></font>
+<b>if</b><b>(</b> Label1<b>-></b>Font<b>-></b>Style<b>.</b>Contains<b>(</b>fsBold<b>)</b><b>)</b>
+    Application<b>-></b>Terminate<b>(</b><b>)</b><b>;</b>
+
+<font color="navy">// Toggle the fsBold property</font>
+<b>if</b><b>(</b> Label1<b>-></b>Font<b>-></b>Style<b>.</b>Contains<b>(</b>fsBold<b>)</b><b>)</b>
+    Label1<b>-></b>Font<b>-></b>Style <b>=</b> Label1<b>-></b>Font<b>-></b>Style <b>>></b> fsBold<b>;</b>
+<b>else</b>
+    Label1<b>-></b>Font<b>-></b>Style <b>=</b> Label1<b>-></b>Font<b>-></b>Style <b><<</b> fsBold<b>;</b>
+
+<font color="navy">// mask out the fsUnderline and fsStrikeThrough properties.</font>
+<font color="navy">// leave the other two alone.</font>
+TFontStyles style<b>;</b>
+style <b><<</b> fsBold <b><<</b> fsItalic<b>;</b>
+style <b>*</b><b>=</b> Label1<b>-></b>Font<b>-></b>Style<b>;</b>  <font color="navy">// set intersection, similar to bitwise and</font>
+Label1<b>-></b>Font<b>-></b>Style <b>=</b> style<b>;</b>
+</pre>
+<P>
+<B>Note:</B> Changing the font property of a control does not immediately redraw the
+control with it's new font. The control is invalidated, and will be redrawn when the
+application gets a chance to process the messages in its queue. To see this concept in
+action, use the <TT>Sleep</TT> command to halt the process directly after a change
+to the font of a <TT>TLabel</TT> control. You should see that the control is not
+repainted until after the delay (see code below). To force a repaint immediately,
+call the <TT>Update</TT> method of <TT>TLabel</TT>.
+</P>
+<pre>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button1Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    Label1<b>-></b>Font<b>-></b>Style <b>=</b> Label1<b>-></b>Font<b>-></b>Style <b><<</b> fsBold<b>;</b>
+    Sleep<b>(</b><font color="blue">4000</font><b>)</b><b>;</b>
+    <font color="navy">// Label does not redraw until after the delay, when</font>
+    <font color="navy">// the function returns.</font>
+<b>}</b>
+</pre>
+<P>
+<B>Note:</B> The insertion and extraction operators<TT> &lt;&lt; </TT> and<TT> &gt;&gt; </TT>
+are members of the set class. You can insert items into a sets using code
+like this (note the lack of an equal sign) because<TT> &lt;&lt; </TT> is a member
+function of <TT>TFontStyles</TT>:
+</P>
+<pre>
+TFontStyles style<b>;</b>
+style <b><<</b> fsBold<b>;</b>
+</pre>
+<P>
+However, you cannot insert items directly into properties of a control. The
+code below does not work. It compiles, but the <TT>Style</TT> property of the
+control is not modifed. This is due to the way that properties work. The read
+method of the property returns the <TT>TFontStyles</TT> value, but the write
+method for the property is not called after you modify the property.
+</P>
+<pre>
+<font color="navy">// This code does not work.</font>
+Label1<b>-></b>Font<b>-></b>Style <b><<</b> fsBold<b>;</b>
+</pre>
+<P>
+<B>Note:</B> The read and write methods for the <TT>Style</TT> property must
+call private <TT>GetData</TT> and <TT>SetData</TT> functions within the
+<TT>TFont</TT> class. Since every read and write of a control's font <TT>Style</TT>
+will call these functions, you may want to minimize the number of times you
+access the <TT>Style</TT> property directly if you are doing a lot of
+manipulation with the font. The code below shows two ways of doing the same
+thing, but the second strategy is a little more efficient.
+</P>
+<pre>
+Label1<b>-></b>Font<b>-></b>Style <b>=</b> TFontStyles<b>(</b><b>)</b><b>;</b>
+<b>if</b> <b>(</b>CheckBox1<b>-></b>Checked<b>)</b>
+    Label1<b>-></b>Font<b>-></b>Style <b>=</b> Label1<b>-></b>Font<b>-></b>Style <b><<</b> fsBold<b>;</b>
+<b>if</b> <b>(</b>CheckBox2<b>-></b>Checked<b>)</b>
+    Label1<b>-></b>Font<b>-></b>Style <b>=</b> Label1<b>-></b>Font<b>-></b>Style <b><<</b> fsItalic<b>;</b>
+<b>if</b> <b>(</b>CheckBox3<b>-></b>Checked<b>)</b>
+    Label1<b>-></b>Font<b>-></b>Style <b>=</b> Label1<b>-></b>Font<b>-></b>Style <b><<</b> fsUnderline<b>;</b>
+<b>if</b> <b>(</b>CheckBox4<b>-></b>Checked<b>)</b>
+    Label1<b>-></b>Font<b>-></b>Style <b>=</b> Label1<b>-></b>Font<b>-></b>Style <b><<</b> fsStrikeOut<b>;</b>
+
+<font color="navy">// a better way to do the same thing</font>
+TFontStyles style<b>;</b>
+<b>if</b> <b>(</b>CheckBox1<b>-></b>Checked<b>)</b>
+    style <b><<</b> fsBold<b>;</b>
+<b>if</b> <b>(</b>CheckBox2<b>-></b>Checked<b>)</b>
+    style <b><<</b> fsItalic<b>;</b>
+<b>if</b> <b>(</b>CheckBox3<b>-></b>Checked<b>)</b>
+    style <b><<</b> fsUnderline<b>;</b>
+<b>if</b> <b>(</b>CheckBox4<b>-></b>Checked<b>)</b>
+    style <b><<</b> fsStrikeOut<b>;</b>
+Label1<b>-></b>Font<b>-></b>Style <b>=</b> style<b>;</b>
+</pre>
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

@@ -1,0 +1,331 @@
+ID=E0159
+URL=http://www.le.ac.uk/cc/iss/tutorials/cprog/ccccfile.html
+SIZE=16529
+DATE=12/07/02
+TIME=19:18:06
+DATASET=C
+HTML=<!-- Filename: ccccfile.html -->
+<!-- Author: mc39/rjm1 -->
+<!-- Supplied by: Richard Mobbs -->
+<!-- Created: 20-06-95 -->
+<!-- Expires: 20-06-96 -->
+
+<HTML>
+
+<HEAD>
+
+<TITLE>Computer Centre: Introduction to C Programming Course</TITLE>
+
+</HEAD> 
+
+<BODY>
+
+<H1><IMG ALT="[CWC logo]" ALIGN=middle SRC="http://www.le.ac.uk/images/compcen.gif" > File Handling</H1>
+
+
+<P>
+<HR>
+
+<H2>Objectives</H2>
+<P>So far we have entered information into our programs via the computer's keyboard. This is somewhat laborious if we have a lot of data to process. The solution is to combine all the input data into a file and let our <B>C</B> program read the information when it is required.
+<P>Having read this section you should be able to:
+<OL>
+<LI>open a file for reading or writing
+<LI>read/write the contents of a file
+<LI>close the file
+</OL>
+<HR>
+<P>
+
+<A NAME="SF"></A>
+<H3>The Stream File</H3>
+
+Although <B>C</B> does not have any built-in method of performing file I/O, the <B>C</B> standard library contains a very rich set of I/O functions providing an efficient, powerful and flexible approach. We will cover the ANSI file system but it must be mentioned that a second file system based upon the original UNIX system is also used but not covered on this course.<P>
+
+A very important concept in <B>C</B> is the <B><TT>stream</TT></B>. In <B>C</B>, the <B><TT>stream</TT></B> is a common, logical interface to the various devices that comprise the computer. In its most common form, a <TT><B>stream</B></TT> is a logical interface to a <B><TT>file</TT></B>. As <B>C</B> defines the term "file", it can refer to a disk file, the screen, the keyboard, a port, a file on tape, and so on. Although files differ in form and capabilities, all <B>s<TT>treams</TT></B> are the same. The <B><TT>stream</TT></B> provides a consistent interface and to the programmer one hardware device will look much like another.<P>
+
+A <TT><B>stream</B></TT> is linked to a file using an <B><TT>open operation</TT></B>. A <TT><B>stream</B></TT> is disassociated from a file using a <B><TT>close operation</TT></B>. The current location, also refered to as the current position, is the location in a file where the next file access will occur. There are two types of <TT><B>streams: text</B></TT> (used with ASCII characters some character translation takes place, may not be one-to-one correspondence between stream and whats in the file) and <B><TT>binary</TT></B> (used with any type of data, no character translation, one-to-one between stream and file).<P>
+
+To open a file and associate it with a <TT><B>stream</B></TT>, use <B><TT>fopen()</TT></B>. Its prototype is shown here:<P>
+
+<B><TT>FILE *fopen(char *fname,char *mode);</TT></B><P>
+
+The <B><TT>fopen()</TT></B> function, like all the file-system functions, uses the header <TT><B>stdio.h </B></TT>. The name of the file to open is pointed to by <B><I>fname</I></B> (must be a valid name). The string pointed at for <B><I>mode</I> </B>determines how the file may be accesed as shown:<P>
+
+<PRE>
+<B>Mode                      Meaning
+
+r                  Open a text file for reading
+w                  Create a text file for writing
+a                  Append to a text file
+rb                 Open a binary file for reading
+wb                 Open a binary file for writing
+ab                 Append to a binary file
+r+                 Open a text file for read/write
+w+                 Create a text file for read/write
+a+                 Append or create a text file for read/write
+r+b                Open a binary file for read/write
+w+b                Create a binary file for read/write
+a+b                Append a binary file for read/write
+</B>
+</PRE>
+
+If the open operation is successful, <B><TT>fopen()</TT></B> returns a valid <TT><B>file pointer</B></TT>. The type <B><B>FILE</B></B> is defined in <B><TT>stdio.h</TT></B>. It is a structure that holds various kinds of information about the file, such as size.The <TT><B>file pointer</B></TT> will be used with all other functions that operate on the file and it must never be altered or the object it points to. If <B><TT>fopen()</TT></B> fails it returns a <B><TT>NULL pointer</TT></B> so this must always be checked for when opening a file. For example:<P>
+
+<PRE>
+<B>FILE *fp;
+
+if ((fp = fopen("myfile", "r")) ==NULL){
+  printf("Error opening file\n");
+  exit(1); 
+}</B>
+</PRE>
+
+To close a file, use <B><TT>fclose()</TT></B>, whose prototype is<P>
+
+<B><TT>int fclose(FILE *fp);</TT></B><P>
+
+The <B><TT>fclose()</TT></B> function closes the file associated with <I>fp</I>, which must be a valid <TT><B>file pointer</B></TT> previously obtained using <B><TT>fopen()</TT></B>, and disassociates the <TT><B>stream</B></TT> from the file. The <B><TT>fclose()</TT></B> function returns 0 if successful and <B><TT>EOF</TT></B> (end of file) if an error occurs.<P>
+
+Once a file has been opened, depending upon its mode, you may read and/or write bytes to or from it using these two functions.<P>
+<PRE>
+<B>int fgetc(FILE *fp);
+int fputc(int ch, FILE *fp);</B>
+</PRE>
+
+The <B><TT>getc()</TT></B> function reads the next byte from the file and returns its as an integer and if error occurs returns <B><TT>EOF</TT></B>. The <B><TT>getc()</TT></B> function also returns <B><TT>EOF</TT></B> when the end of file is reached. Your routine can assign <TT><B>fget()</B></TT>'s return value to a <B><TT>char</TT></B> you dont't have to assign it to an integer.<P>
+
+The <B><TT>fput()</TT> </B>function writes the bytes contained in <I>ch</I> to the file associated with <I>fp</I> as an unsigned <B><TT>char</TT></B>. Although <I>ch</I> is defined as an <B><TT>int</TT></B>, you may call it using simply a <B><TT>char</TT></B>. The <B><TT>fput()</TT> </B>function returns the character written if successful or <B><TT>EOF</TT></B> if an error occurs.
+
+<P>
+<HR>
+<P>
+
+<A NAME="TF"></A>
+<H3>Text File Functions</H3>
+
+When working with <B>text files</B>, <B>C</B> provides four functions which make file operations easier. The first two are called <B><TT>fputs()</TT></B> and <B><TT>fgets()</TT></B>, which write or read a string from a file, respectively. Their prototypes are:<P>
+
+<PRE>
+<B>int fputs(char *str,FILE *fp);
+char *fgets(char *str, int num, FILE *fp);
+</B></PRE>
+
+The <B><TT>fputs()</TT></B> function writes the string pointed to by <I>str</I> to the file associated with <I>fp</I>. It returns <B><TT>EOF</TT></B> if an error occurs and a non-negative value if successful. The null that terminates <I>str</I> is not written and it does not automatically append a carriage return/linefeed sequence.<P>
+
+The <B><TT>fget()</TT></B> function reads characters from the file associated with <I>fp</I> into a string pointed to by <I>str</I> until num-1 characters have been read, a newline character is encountered, or the end of the file is reached. The string is null-terminated and the newline character is retained. The function returns <I>str</I> if successful and a <TT><B>null pointer</B></TT> if an error occurs.<P>
+
+The other two file handling functions to be covered are <B><TT>fprintf()</TT></B> and <B><TT>fscanf()</TT></B>. These functions operate exactly like <B><TT>printf()</TT></B> and <B><TT>scanf()</TT></B> except that they work with files. Their prototypes are:<P>
+
+<PRE>
+<B>int fprintf(FILE *fp, char *control-string, ...);
+int fscanf(FILE *fp, char *control-string ...);
+</B></PRE>
+
+Instead of directing their I/O operations to the console, these functions operate on the file specified by <I>fp</I>. Otherwise their operations are the same as their console-based relatives. The advantages to <B><TT>fprintf()</TT> </B>and <B><TT>fscanf()</TT></B> is that they make it very easy to write a wide variety of data to a file using a text format.
+<P>
+<HR>
+<P>
+
+<A NAME="BF"></A>
+<H3>Binary File Functions</H3>
+
+The <B>C </B>file system includes two important functions: <B><TT>fread()</TT></B> and <B><TT>fwrite()</TT></B>. These functions can read and write any type of data, using any kind of representation. Their prototypes are:<P>
+
+<PRE>
+<B>size_t fread(void *buffer, size_t size, size_t num,FILE *fp);
+size_t fwrite(void *buffer, size_t size, size_t num, FILE *fp);</B>
+</PRE>
+
+The <B><TT>fread()</TT></B> function reads from the file associated with <I>fp</I>, <I>num</I> number of objects, each object size bytes long, into buffer pointed to by <I>buffer</I>. It returns the number of objects actually read. If this value is 0, no objects have been read, and either end of file has been encountered or an error has occurred. You can use <B><TT>feof()</TT></B> or <B><TT>ferror()</TT> </B>to find out which. Their prototypes are:<P>
+
+<PRE>
+<B>int feof(FILE *fp);
+int ferror(FILE *fp);
+</B></PRE>
+
+The <B><TT>feof()</TT> </B>function returns non-0 if the file associated with <I>fp</I> has reached the end of file, otherwise it returns 0. This function works for both binary files and text files. The <B><TT>ferror()</TT></B> function returns non-0 if the file associated with <I>fp</I> has experienced an error, otherwise it returns 0. <P>
+
+The <B><TT>fwrite()</TT> </B>function is the opposite of <B><TT>fread()</TT></B>. It writes to file associated with <I>fp</I>, <I>num</I> number of objects, each object size bytes long, from the buffer pointed to by <I>buffer</I>. It returns the number of objects written. This value will be less than <I>num</I> only if an output error as occurred.<P>
+
+The <B><TT>void pointer</TT></B> is a pointer that can point to any type of data without the use of a TYPE cast (known as a generic pointer). The type <B><I>size_t</I></B> is a variable that is able to hold a value equal to the size of the largest object surported by the compiler. As a simple example, this program write an integer value to a file called MYFILE using its internal, binary representation.<P>
+<PRE>
+
+<B>#include &lt;stdio.h&gt;  /* header file  */
+#include &LT;stdlib.h&GT;
+void main(void)
+{
+
+ FILE *fp;   /* file pointer */
+ int i;
+
+ /* open file for output */
+ if ((fp = fopen("myfile", "w"))==NULL){
+  printf("Cannot open file \n");
+  exit(1);
+ }
+ i=100;
+
+ if (fwrite(&i, 2, 1, fp) !=1){
+  printf("Write error occurred");
+  exit(1);
+ }
+ fclose(fp);
+
+ /* open file for input */
+ if ((fp =fopen("myfile", "r"))==NULL){
+  printf("Read error occurred");
+  exit(1);
+ }
+ printf("i is %d",i);
+ fclose(fp);
+}</B>
+</PRE>
+[<A HREF="file1.c">program</A>]
+<P>
+<HR>
+<P>
+
+<A NAME="FS"></A>
+<H3>File System Functions</H3>
+
+You can erase a file using <B><TT>remove()</TT></B>. Its prototype is<P>
+
+<B><TT>int remove(char *file-name);</TT></B><P>
+
+You can position a file's current location to the start of the file using <B><TT>rewind()</TT></B>. Its prototype is<P>
+
+<B><TT>void rewind(FILE *fp);</TT></B><P>
+
+Hopefully I have given you enough information to at least get you started with files. Its really rather easy once you get started.
+
+<P>
+<HR>
+<P>
+<A NAME="CL"></A>
+<H3>Command Line Parameters</H3>
+
+Many programs allow command-line arguments to be specified when they are run. A command-line argument is the information that follows the program's name on the command line of the operating system. Command-line arguments are used to pass information to the program. For example, when you use a text editor, you probably specify the name of the file you want to edit after the name of the word processing program. For example, if you use a word processor called WP, then this line causes the file TEST to be edited.<P>
+
+<B>WP TEST</B>
+
+<P>Here, TEST is a command-line argument. Your <B>C</B> programs may also utilize command-line arguments. These are passed to a <B>C</B> program through two arguments to the <B><TT>main() </TT></B>function. The parameters are called <B><TT><TT>argc</TT></TT></B> and <B><TT>argv</TT></B>. These parameters are optional and are not used when no command-line arguments are being used.
+
+<P>The <B><TT>argc</TT> </B>parameter holds the number of arguments on the command-line and is an integer. It will always be at least 1 because the name of the program qualifies as the first argument. The <B><TT>argv</TT></B> parameter is an array of string pointers. The most common method for declaring <B><TT>argv</TT></B> is shown here.
+
+<P><B><TT>char *argv[];</TT></B>
+
+<P>The empty brackets indicate that it is an <TT><B>array</B></TT> of undetermined length. All command-line arguments are passed to <B><TT>main()</TT></B> as strings. To access an indivual string, index <B><TT>argv</TT></B>. For example, <B><TT>argv[0]</TT></B> points to the program's name and <B><TT>argv[1]</TT></B> points to the first argument. This program displays all the command-line arguments that it is called with.<P>
+
+<PRE>
+<B>#include &LT;stdio.h&GT;
+
+void main(int argc, char *argv[])
+{
+ int i;
+
+ for (i=1; i&ltargc; i++) printf("%s",argv[i]);
+}
+</B></PRE>
+
+The ANSI C standard does not specify what constitutes a command-line argument, because operatoring systems vary considerably on this point. However, the most common convention is as follows:<P>
+Each command-line argument must be separated by a space or a tab character. Commas, semicolons, and the like are not considered separators. For example:<P>
+
+<B><TT>This is a test</TT></B><P>
+
+is made up of four strings, but<P>
+
+<B><TT>this,that,and,another</TT></B><P>
+
+is one string. If you need to pass a command-line argument that does, in fact contain spaces, you must place it between quotes, as shown in this example:<P>
+
+<B><TT>"this is a test"</TT></B><P>
+
+A further example of the use of <B><TT>argc</TT></B> and <B><TT>argv</TT></B> now follows: <P>
+<PRE>
+<B>void main(int argc, char *argv[])
+{
+  if (argc !=2)  {
+     printf("Specify a password");
+     exit(1);
+  }
+  if (!strcmp(argv[1], "password"))
+     printf("Access Permitted");
+  else 
+    {
+       printf("Access denied");
+       exit(1);
+    }
+program code here ......
+}</B></PRE>
+
+This program only allows access  to its code if the correct password is entered as a command-line argument. There are many uses for command-line arguments and they can be a powerful tool.<P>
+
+My final example program takes two command-line arguments. The first is the name of a file, the second is a character. The program searches the specified file, looking for the character. If the file contains at least one of these characters, it reports this fact. This program uses <TT><B>argv</B></TT> to access the file name and the character for which to search.<P>
+
+<PRE>
+<B>/*Search specified file for specified character. */
+
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+void main(int argc, char *argv[])
+{
+  FILE *fp;   /* file pointer */
+  char ch;
+
+  /* see if correct number of command line arguments */
+   if(argc !=3)  {
+     printf("Usage: find &lt;filename&gt; &lt;ch&gt;\n");
+     exit(1);
+   }
+
+   /* open file for input */
+   if ((fp = fopen(argv[1], "r"))==NULL)  {
+     printf("Cannot open file \n");
+     exit(1);
+   }
+
+  /* look for character */
+  while ((ch = getc(fp)) !=EOF)  /* where getc() is a */
+    if (ch== *argv[2]) {         /*function to get one char*/
+      printf("%c found",ch);     /* from the file */
+      break;
+    }
+   fclose(fp);
+}
+</B>
+</PRE>
+[<A HREF="file2.c">program</A>]
+
+<P>The names of <B><TT>argv</TT></B> and <B><TT>argc</TT></B> are arbitrary - you can use any names you like. However, <B><TT>argc</TT></B> and <B><TT>argv</TT></B> have traditionally been used since <B>C</B>'s origin. It is a good idea to use these names so that anyone reading your program can quickly identify them as command-line parameters.
+
+<P>
+<HR>
+
+<A HREF="http://www.le.ac.uk/">
+<IMG ALT="[Leicester University]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/lhomebut.gif"></A>
+
+
+
+
+
+<A HREF="http://www.le.ac.uk/CWIS/AS/CC/cc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/ccbut.gif">
+ Computer Centre</A>   
+
+<A HREF="cccc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/backbut.gif">
+Introduction C Programming</A>
+
+<HR>
+<ADDRESS>Information Suppliers: <A HREF="http://www.le.ac.uk/rjm1.html">Richard Mobbs</A>, Head of Information Services, Leicester University Computer
+ Centre and Marina Carter, Postgraduate Student, Loughborough University.
+</ADDRESS>
+
+<ADDRESS>Last Updated: September 1995</ADDRESS>
+
+</BODY>
+
+</HTML>
+

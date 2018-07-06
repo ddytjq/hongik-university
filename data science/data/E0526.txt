@@ -1,0 +1,281 @@
+ID=E0526
+URL=http://www.bcbdev.com/faqs/faq77.htm
+SIZE=16768
+DATE=12/07/02
+TIME=19:21:53
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+<H3>
+Q: Send keystrokes to a control or window
+</H3>
+<BR>
+<H3>Answer</H3>
+<P>
+The API function <TT>keybd_event</TT> allows you to synthesize a keyboard event. This is the same function that the
+keyboard driver uses to tell the OS that the user is pressing or releasing a key. The keyboard messages will be sent
+to the control or window that currently has the input focus. To simulate a key press, you call <TT>keybd_event</TT> once
+to simulate the user pressing a key, and then you call <TT>keybd_event</TT> a second time to signal that the key was
+released.
+</P>
+<UL>
+<LI><A HREF="#keybd_event">Understanding the keybd_event function</A>
+<LI><A HREF="#example"    >Sample code</A>
+<LI><A HREF="#control"    >Encapsulating keybd_event</A>
+<LI><A HREF="#notes"      >Notes</A>
+</UL>
+
+
+<BR>
+<H4>
+<A NAME="keybd_event">Understanding the keybd_event function</A>
+</H4>
+<P>
+The prototype for <TT>keybd_event</TT> looks like this:
+</P>
+<pre>
+VOID keybd_event<b>(</b>  BYTE bVk<b>,</b>         <font color="navy">// virtual-key code</font>
+                   BYTE bScan<b>,</b>       <font color="navy">// hardware scan code</font>
+                   DWORD dwFlags<b>,</b>    <font color="navy">// options flag</font>
+                   DWORD dwExtraInfo <font color="navy">// additional data</font>
+                <b>)</b><b>;</b>
+</pre>
+<P>
+The first argument is the virtual key code for the key that you want to simulate. Possible values include
+<TT>VK_RETURN</TT>, <TT>VK_NUMPAD0</TT>, <TT>VK_F1</TT>, and the ASCII codes for the upper case alpha keys and
+the numeric keys. For a complete list of virtual key codes, look in the API include file <TT>WINUSER.H</TT>, or look in the microsoft API help file
+win32.hlp under the index Virtual-Key Codes.
+</P>
+<P>
+The second argument to <TT>keybd_event</TT> specifies the hardware scan code of the key. You can usually set this value
+to 0 when you specify the virtual key code in the first argument. Hardware scan codes are OEM dependent, and the only
+way to reliably obtain one is to pass a virtual key code to the <TT>MapVirtualKey</TT> API funtion.
+</P>
+<P>
+The <TT>dwFlags</TT> argument is a bit flag that be can contain any or none of the following values.
+</P>
+<PRE>
+    KEYEVENTF_EXTENDEDKEY
+    KEYEVENTF_KEYUP
+</PRE>
+<P>
+The first flag works in conjunction with the scan code, so you won't use it very often. The <TT>KEYEVENTF_KEYUP</TT>
+flag tells the OS that the key is being released.
+</P>
+<P>
+The <TT>dwExtraInfo</TT> parameter is a utility argument that is rarely used.
+</P>
+<BR>
+<H4>
+<A NAME="example">Sample code</A>
+</H4>
+<P>
+The examples below demonstrate how to use <TT>keybd_event</TT> to simulate a variety of keystrokes.
+</P>
+<pre>
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button1Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// This function simulates the press of a lower case 'a'</font>
+    <font color="navy">// The key will be 'a' and not 'A' because we don't</font>
+    <font color="navy">// simulate a press of the shift key. Note that we</font>
+    <font color="navy">// must pass upper case letters to keybd_event.</font>
+
+    <font color="navy">// Note: if you hold down the shift key while testing this code</font>
+    <font color="navy">//       an uppercase 'A' will appear in the edit box</font>
+
+    <font color="navy">// Focus the edit control so it receives the key event</font>
+    Edit1<b>-></b>SetFocus<b>(</b><b>)</b><b>;</b>
+
+    <font color="navy">// Simulate the user pressing the A on the keyboard</font>
+    keybd_event<b>(</b><font color="blue">'A'</font><b>,</b> <font color="blue">0</font><b>,</b><font color="blue">0</font><b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+
+    <font color="navy">// Simulate the user releasing the the A on the keyboard</font>
+    keybd_event<b>(</b><font color="blue">'A'</font><b>,</b> <font color="blue">0</font><b>,</b>KEYEVENTF_KEYUP<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+<b>}</b>
+
+
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button2Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// The previous function put an 'a' in the edit box if the code</font>
+    <font color="navy">// happened to run while the user was not holding the shift key or had</font>
+    <font color="navy">// the caps lock on. This code ensures that a lower case 'a' is sent, even</font>
+    <font color="navy">// if the user is holding down the ctrl key, alt key, the shift key, etc</font>
+
+    <font color="navy">// Find out which of the special keys are down</font>
+    <b>bool</b> bCtrlDown     <b>=</b> GetKeyState <b>(</b>VK_CONTROL<b>)</b> <b>&</b>  <font color="blue">0x8000</font><b>;</b>
+    <b>bool</b> bAltDown      <b>=</b> GetKeyState <b>(</b>VK_MENU<b>)</b>    <b>&</b>  <font color="blue">0x8000</font><b>;</b>
+    <b>bool</b> bShiftDown    <b>=</b> GetKeyState <b>(</b>VK_SHIFT<b>)</b>   <b>&</b>  <font color="blue">0x8000</font><b>;</b>
+    <b>bool</b> bLWindowsDown <b>=</b> GetKeyState <b>(</b>VK_LWIN<b>)</b>    <b>&</b>  <font color="blue">0x8000</font><b>;</b>
+    <b>bool</b> bRWindowsDown <b>=</b> GetKeyState <b>(</b>VK_RWIN<b>)</b>    <b>&</b>  <font color="blue">0x8000</font><b>;</b>
+    <b>bool</b> bAppsDown     <b>=</b> GetKeyState <b>(</b>VK_APPS<b>)</b>    <b>&</b>  <font color="blue">0x8000</font><b>;</b>
+    <b>bool</b> bCapsOn       <b>=</b> GetKeyState <b>(</b>VK_CAPITAL<b>)</b> <b>&</b>  <font color="blue">0x0001</font><b>;</b>
+
+    <font color="navy">// For each special key that was down, simulate that the</font>
+    <font color="navy">// user has let go of the key</font>
+    <b>if</b><b>(</b>bCtrlDown<b>)</b>      keybd_event<b>(</b>VK_CONTROL<b>,</b> <font color="blue">0</font><b>,</b>KEYEVENTF_KEYUP<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    <b>if</b><b>(</b>bAltDown<b>)</b>       keybd_event<b>(</b>VK_MENU<b>,</b>    <font color="blue">0</font><b>,</b>KEYEVENTF_KEYUP<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    <b>if</b><b>(</b>bShiftDown<b>)</b>     keybd_event<b>(</b>VK_SHIFT<b>,</b>   <font color="blue">0</font><b>,</b>KEYEVENTF_KEYUP<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    <b>if</b><b>(</b>bLWindowsDown<b>)</b>  keybd_event<b>(</b>VK_LWIN<b>,</b>    <font color="blue">0</font><b>,</b>KEYEVENTF_KEYUP<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    <b>if</b><b>(</b>bRWindowsDown<b>)</b>  keybd_event<b>(</b>VK_RWIN<b>,</b>    <font color="blue">0</font><b>,</b>KEYEVENTF_KEYUP<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    <b>if</b><b>(</b>bAppsDown<b>)</b>      keybd_event<b>(</b>VK_APPS<b>,</b>    <font color="blue">0</font><b>,</b>KEYEVENTF_KEYUP<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    <b>if</b><b>(</b>bCapsOn<b>)</b>
+    <b>{</b>
+        <font color="navy">// If caps lock is on, we need to press the caps lock</font>
+        <font color="navy">// and then let go of it to turn it off</font>
+        keybd_event<b>(</b>VK_CAPITAL<b>,</b> <font color="blue">0</font><b>,</b> <font color="blue">0</font> <b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+        keybd_event<b>(</b>VK_CAPITAL<b>,</b> <font color="blue">0</font><b>,</b> KEYEVENTF_KEYUP<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    <b>}</b>
+
+    <font color="navy">// At this point, we know that caps lock is off, and the</font>
+    <font color="navy">// shift, ctrl, alt, and other keys have been released</font>
+
+    <font color="navy">// Focus the edit control so it receives the key event</font>
+    Edit1<b>-></b>SetFocus<b>(</b><b>)</b><b>;</b>
+
+    <font color="navy">// Simulate the user pressing the A on the keyboard</font>
+    keybd_event<b>(</b><font color="blue">'A'</font><b>,</b> <font color="blue">0</font><b>,</b><font color="blue">0</font><b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+
+    <font color="navy">// Simulate the user releasing the the A on the keyboard</font>
+    keybd_event<b>(</b><font color="blue">'A'</font><b>,</b> <font color="blue">0</font><b>,</b>KEYEVENTF_KEYUP<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+
+    <font color="navy">// now return the shift, ctrl, capslock, etc to their original state</font>
+    <b>if</b><b>(</b>bCtrlDown<b>)</b>      keybd_event<b>(</b>VK_CONTROL<b>,</b> <font color="blue">0</font><b>,</b><font color="blue">0</font><b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    <b>if</b><b>(</b>bAltDown<b>)</b>       keybd_event<b>(</b>VK_MENU<b>,</b>    <font color="blue">0</font><b>,</b><font color="blue">0</font><b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    <b>if</b><b>(</b>bShiftDown<b>)</b>     keybd_event<b>(</b>VK_SHIFT<b>,</b>   <font color="blue">0</font><b>,</b><font color="blue">0</font><b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    <b>if</b><b>(</b>bLWindowsDown<b>)</b>  keybd_event<b>(</b>VK_LWIN<b>,</b>    <font color="blue">0</font><b>,</b><font color="blue">0</font><b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    <b>if</b><b>(</b>bRWindowsDown<b>)</b>  keybd_event<b>(</b>VK_RWIN<b>,</b>    <font color="blue">0</font><b>,</b><font color="blue">0</font><b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    <b>if</b><b>(</b>bAppsDown<b>)</b>      keybd_event<b>(</b>VK_APPS<b>,</b>    <font color="blue">0</font><b>,</b><font color="blue">0</font><b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    <b>if</b><b>(</b>bCapsOn<b>)</b>
+    <b>{</b>
+        keybd_event<b>(</b>VK_CAPITAL<b>,</b> <font color="blue">0</font><b>,</b> <font color="blue">0</font> <b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+        keybd_event<b>(</b>VK_CAPITAL<b>,</b> <font color="blue">0</font><b>,</b> KEYEVENTF_KEYUP<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    <b>}</b>
+<b>}</b>
+
+
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button3Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// This function toggles the state of the caps lock</font>
+    keybd_event<b>(</b>VK_CAPITAL<b>,</b> <font color="blue">0</font><b>,</b> <font color="blue">0</font> <b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    keybd_event<b>(</b>VK_CAPITAL<b>,</b> <font color="blue">0</font><b>,</b> KEYEVENTF_KEYUP<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+<b>}</b>
+
+
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button4Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// This function performs a screen capture of the active</font>
+    <font color="navy">// window by simulating a press of the print screen key</font>
+    keybd_event<b>(</b>VK_SNAPSHOT<b>,</b> <font color="blue">0</font><b>,</b> <font color="blue">0</font> <b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    keybd_event<b>(</b>VK_SNAPSHOT<b>,</b> <font color="blue">0</font><b>,</b> KEYEVENTF_KEYUP<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+<b>}</b>
+
+
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button5Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// This function captures the entire screen to the clipboard</font>
+    keybd_event<b>(</b>VK_SNAPSHOT<b>,</b> <font color="blue">1</font><b>,</b> <font color="blue">0</font> <b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    keybd_event<b>(</b>VK_SNAPSHOT<b>,</b> <font color="blue">1</font><b>,</b> KEYEVENTF_KEYUP<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+<b>}</b>
+
+
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button6Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// Here is a cheesy way to tab to the next process by</font>
+    <font color="navy">// simulating an ALT-TAB event.</font>
+    keybd_event<b>(</b>VK_MENU<b>,</b> <font color="blue">0</font><b>,</b> <font color="blue">0</font> <b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    keybd_event<b>(</b>VK_TAB<b>,</b>  <font color="blue">0</font><b>,</b> <font color="blue">0</font> <b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    keybd_event<b>(</b>VK_TAB<b>,</b>  <font color="blue">0</font><b>,</b> KEYEVENTF_KEYUP<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    keybd_event<b>(</b>VK_MENU<b>,</b> <font color="blue">0</font><b>,</b> KEYEVENTF_KEYUP<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+<b>}</b>
+
+
+<b>void</b> <b>__fastcall</b> TForm1<b>:</b><b>:</b>Button7Click<b>(</b>TObject <b>*</b>Sender<b>)</b>
+<b>{</b>
+    <font color="navy">// This code simulates the Windows + M hotkey for</font>
+    <font color="navy">// minimizing all open windows.</font>
+    keybd_event<b>(</b>VK_LWIN<b>,</b> <font color="blue">0</font><b>,</b> <font color="blue">0</font> <b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    keybd_event<b>(</b><font color="blue">'M'</font><b>,</b>     <font color="blue">0</font><b>,</b> <font color="blue">0</font> <b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    keybd_event<b>(</b><font color="blue">'M'</font><b>,</b>     <font color="blue">0</font><b>,</b> KEYEVENTF_KEYUP<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+    keybd_event<b>(</b>VK_LWIN<b>,</b> <font color="blue">0</font><b>,</b> KEYEVENTF_KEYUP<b>,</b><font color="blue">0</font><b>)</b><b>;</b>
+<b>}</b>
+</pre>
+
+<BR>
+<H4>
+<A NAME="control">Encapsulating keybd_event</A>
+</H4>
+<P>
+The <TT>keybd_event</TT> API function isn't too difficult to understand. However, it might be a good idea to
+add a wrapper to <TT>keybd_event</TT>. There are several reasons you might want to do this. For starters,
+<TT>keybd_event</TT> looks sort of cryptic, so you might not want to litter your code with <TT>keybd_event</TT>
+calls. Secondly, you can really mess up the system if you depress a key, and then forget to release it when you are
+done. Encapsulating keybd_event can help prevent this from happening.
+</P>
+<P>
+The Delphi developer support page at the <A HREF="http://www.inprise.com">Inprise website</A> contains an FAQ for
+<A HREF="http://www.inprise.com/devsupport/delphi/qanda/FAQ1500D.html">simulating keystrokes</A>. 
+</P>
+
+<BR>
+<H4>
+<A NAME="notes">Notes</A>
+</H4>
+<P>
+<B>Note:</B> Due to a limitation in the OS, you cannot use the <TT>keybd_event</TT> function to toggle the num lock
+key on a machine that runs Windows 95. It will work on Windows NT. 
+</P>
+
+
+<BR>
+<TABLE  BORDER=1 CELLPADDING=10 CELLSPACING=0 WIDTH="100%">
+<TR> <TD colspan = 2><B>Downloads for this FAQ</B> </TD> </TR>
+<TR> <TD><TT><A HREF="http://www.bcbdev.com/ftp/source/sendkey.zip" >sendkey.zip </A></TT></TD> <TD>BCB3 project that demonstrates how to use <TT>keybd_event</TT> to simulate keystrokes.</TD> </TR>
+<TR> <TD><TT><A HREF="http://www.bcbdev.com/ftp/source/sendkeyx.zip">sendkeyx.zip</A></TT></TD> <TD>Same as sendkey.zip. Includes an EXE. Download is 138 k.</TD> </TR>
+</TABLE>
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

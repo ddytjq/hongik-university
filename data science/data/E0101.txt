@@ -1,0 +1,1023 @@
+ID=E0101
+URL=http://www.bcbdev.com/articles/wwwtc6answer.htm
+SIZE=35633
+DATE=12/07/02
+TIME=19:17:30
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: Articles</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2>
+<IMG SRC="../images/articlebuilding.gif" BORDER=0 HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 HSPACE="0" >
+</TD>
+</TR>
+<TR>
+<TD WIDTH="7" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">      <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">         <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">      <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">          <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">       <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+<H2>
+What's Wrong With This Code? Volume #6
+</H2>
+<HR>
+<H4>
+The STL<BR>
+<I> by Chris Uzdavinis</I>
+</H4>
+<P>
+For reference, each question is listed again, followed by its answer.
+</P>
+<pre>
+<b>class</b> A
+<b>{</b>
+<b>public</b><b>:</b>
+  <b>void</b> do_something<b>(</b><b>)</b><b>;</b>
+  <b>bool</b> is_even<b>(</b><b>)</b> <b>const</b><b>;</b>
+<b>}</b><b>;</b>
+
+<b>typedef</b> std<b>:</b><b>:</b>vector&lt;A<b>*</b><b>></b> V<b>;</b>
+V  v1<b>,</b> v2 <b>;</b>
+</pre>
+<HR>
+<P>
+<B>Question #1:</B>
+</P>
+<pre>
+<font color="navy">// assign contents of v2 to v1</font>
+v1 <b>=</b> v2<b>;</b>
+</pre>
+<P>
+What can potentially go wrong here? What considerations should
+you make when doing this?
+</P>
+<P>
+<B>Answer #1:</B>
+</P>
+<P>
+<TT>v1 = v2</tT> has potential for memory leaks.  Since <TT>v1</TT> gets overwritten,
+any contents that it previously held are lost.  If <TT>v1</TT> was the only
+reference to those old values, they are leaked.
+</P>
+
+<P>
+<TABLE WIDTH="75%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Tip:</b>
+<hr size = 1>
+Remember to consider possible resource leaks when
+removing elements from containers that hold pointers.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+<P>
+Correct code would (probably) first iterate through <TT>v1</TT> and call
+<TT>delete</TT> on each element and then do the assignment, unless you can
+guarantee that the objects have other references besides the
+elements of <TT>v1</TT>.
+</P>
+<HR>
+<P>
+<B>Question #2:</B>
+</P>
+<pre>
+<font color="navy">// delete the element in position 5</font>
+<b>void</b> f<b>(</b><b>)</b>
+<b>{</b>
+  <b>if</b> <b>(</b>v1<b>.</b>size<b>(</b><b>)</b> <b>></b> <font color="blue">5</font><b>)</b>
+  <b>{</b>
+    <b>delete</b> v1<b>[</b><font color="blue">5</font><b>]</b><b>;</b>
+  <b>}</b>
+<b>}</b>
+</pre>
+<P>
+Why is calling <TT>f()</TT> most likely going to lead to a program crash?
+</P>
+<P>
+<B>Answer #2:</B>
+</P>
+<P>
+The error here is that after element 5 is deleted, the vector still
+holds has the pointer to that deleted item. This is classic dangling
+pointer bug. It is a good idea to remove <TT>v1[5]</TT> from the vector after you call
+<TT>delete</TT>.
+</P>
+<P>
+
+<P>
+<TABLE WIDTH="75%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Note" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Tip:</b>
+<hr size = 1>
+Removing an element from a container will invalidate any
+iterators currently pointing into the vector.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+<HR>
+
+<P>
+<B>Question #3:</B>
+</P>
+<pre>
+<font color="navy">// copy v1 into v2</font>
+<b>void</b> f<b>(</b><b>)</b>
+<b>{</b>
+  std<b>:</b><b>:</b>copy<b>(</b>v1<b>.</b>begin<b>(</b><b>)</b><b>,</b> v1<b>.</b>end<b>(</b><b>)</b><b>,</b> v2<b>.</b>begin<b>(</b><b>)</b><b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+How can this blow up?
+</P>
+<B>Answer #3:</B>
+</P>
+<P>
+This is a correct call to copy.  It copies the range of the first
+two iterators into a corresponding range starting with the third
+parameter, <TT>v2.begin()</TT>.  Unfortunately, there is potential for
+disastrous results.  Notice, this is the entire body of a function,
+which emphasizes the fact that this code is run in isolation.
+</P>
+<P>
+What's the problem?  There is no check to see that the destination range is
+big enough to hold all the items. If <TT>v2</tt> is not large enough to hold
+all of the items, the call to <TT>copy</TT> could cause a buffer overrun
+and corrupt your program and hopefully crash it.  Suppose vector <TT>v1</TT>
+had a size of 10, but <TT>v2</TT> had a size of only 3.  After the third
+element is copied, the next element written to <TT>v2</TT> is out of bounds.
+</P>
+<P>
+Remember that STL algorithms assume that their arguments are correct. They
+don't perform any checking on their arguments.  Therefore, it is up to the
+author of <TT>f()</TT> to check that <TT>v2</TT> is at least as large as <TT>v1</TT>
+before calling the copy algorithm.
+</P>
+<P>
+Also, if <TT>v2</TT> is longer than <TT>v1</TT>, the extra elements at the end of
+<TT>v2</TT> are not cleared.  Thus, it's incorrect to assume <TT>v2</TT> to be an exact copy
+of <TT>v1</TT> after returning from <TT>f()</TT>.  All we can know is that for a <TT>v1</TT> of
+size <TT>N</TT>, after returning from this call to <TT>copy()</TT>, <TT>v2</TT>'s first <TT>N</TT>
+elements are copies of <TT>v1</TT>'s corresponding elements.  Everything
+after <TT>N</TT> in <TT>v2</TT> is unchanged.  To ensure that <TT>v1</TT> and <TT>v2</TT> are identical
+after the call to copy, resize <TT>v2</TT> to the size of <TT>v1</TT> first.
+</P>
+<P>
+Here is a safer implementation:
+</P>
+<pre>
+<font color="navy">// copy v1 into v2</font>
+<b>void</b> f<b>(</b><b>)</b>
+<b>{</b>
+  v2<b>.</b>resize<b>(</b>v1<b>.</b>size<b>(</b><b>)</b><b>)</b><b>;</b>
+  std<b>:</b><b>:</b>copy<b>(</b>v1<b>.</b>begin<b>(</b><b>)</b><b>,</b> v1<b>.</b>end<b>(</b><b>)</b><b>,</b> v2<b>.</b>begin<b>(</b><b>)</b><b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+But that should sound off some alarm in your head.  Why?  Well,
+you're reimplementing the <TT>operator=</TT> now, and probably in a less
+efficient way than the provided <TT>operator=</TT>.
+</P>
+<P>
+Therefore, I suggest replacing <TT>f()</TT> with:
+</P>
+<pre>
+<b>void</b> f<b>(</b><b>)</b>
+<b>{</b>
+  v2 <b>=</b> v1<b>;</b>
+<b>}</b>
+</pre>
+<P>
+All considerations for potential memory leaks from #1 above also
+apply to this situation. If this will leak, we need to delete the items in <TT>v2</TT> first.  For
+pointers, using reference counts would be very helpful here.
+</P>
+
+
+<HR>
+<P>
+<B>Question #4:</B>
+</P>
+<pre>
+<font color="navy">// find an element and remove it from container.</font>
+<font color="navy">// assume the caller keeps a reference to a so it</font>
+<font color="navy">// isn't leaked.</font>
+<b>void</b> f<b>(</b>A <b>*</b>a<b>)</b>
+<b>{</b>
+  V<b>:</b><b>:</b>iterator i <b>=</b> std<b>:</b><b>:</b>find<b>(</b>v1<b>.</b>begin<b>(</b><b>)</b><b>,</b> v1<b>.</b>end<b>(</b><b>)</b><b>,</b> a<b>)</b><b>;</b>
+  <b>if</b> <b>(</b>i<b>)</b>
+  <b>{</b>
+    v1<b>.</b>erase<b>(</b>i<b>)</b><b>;</b>
+  <b>}</b>
+<b>}</b>
+</pre>
+<P>
+What is the subtle bug here that has serious consequences?
+</P>
+<P>
+<B>Answer #4:</B>
+</P>
+<P>
+This time, the problem is subtle.  If you don't see it, take a second
+look.  The problem here is frequent enough and sinister enough to
+spend a minute thinking about it.  Hint: <TT>v1.erase(i)</TT> is *always* called!
+</P>
+<P>
+What the programmer had intended to do was to search for the element
+and remove it from the container if it was found. But the code contains a
+subtle (and nasty!) bug.
+</p>
+<P>
+The programmer correctly searches <TT>v1</TT> for a particular element a by
+calling <TT>find()</TT>, and correctly gets back an iterator into the
+sequence.  So far, all is well.  But the bug occurs in the <TT>if()</TT>
+condition, because (contrary to what the programmer had thought)
+this code is not testing if the item was found.  The comparison is
+actually testing if the iterator is not zero.  Most iterators are
+implemented as pointers, so this will compile (since a pointer can
+be implicitly tested against zero.)  But the meaning is flawed
+because <TT>find()</TT> will always return an iterator that is not
+"null".
+</P>
+<P>
+<TT>find()</TT> returns an iterator pointing to the one-past-last element
+in the sequence when the element is not found, equal to the iterator
+returned by calling <TT>end()</TT>.  We therefore must compare the returned
+iterator against the container's <TT>end()</TT> value, and not against zero.
+</p>
+
+<P>
+<TABLE WIDTH="75%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Note" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Note:</b>
+<hr size = 1>
+<tt> find(iter1, iter2, value);</tt> <br><br>
+<TT>find</tt> returns <tt>iter2</TT> if value is not found. <tt>find</TT> does not return <tt>NULL</tt>. Don't
+compare the return value of <TT>find</TT> with <TT>NULL</TT> or zero, because the comparison will never be true!
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+<P>
+The code should be like this:
+</P>
+<pre>
+V<b>:</b><b>:</b>iterator i <b>=</b> std<b>:</b><b>:</b>find<b>(</b>v1<b>.</b>begin<b>(</b><b>)</b><b>,</b> v1<b>.</b>end<b>(</b><b>)</b><b>,</b> a<b>)</b><b>;</b>
+<b>if</b> <b>(</b>i <b>!=</b> v1<b>.</b>end<b>(</b><b>)</b><b>)</b> <font color="navy">// Note the change!!!</font>
+<b>{</b>
+  v1<b>.</b>erase<b>(</b>i<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+
+<P>
+Again, consider the possibility of leaking the object to which the
+pointer being erased still points.  We remove the element but don't
+delete the pointer.  We'll assume that <TT>v1[i]</TT> has other references so
+it is not leaked by this operation.
+</P>
+<HR>
+<P>
+<B>Question #5:</B>
+</P>
+<pre>
+<font color="navy">// count all a's in the range that are "special"</font>
+<b>extern</b> <b>bool</b> is_special_value<b>(</b>A <b>*</b><b>)</b><b>;</b>
+
+<b>int</b> count_special_values<b>(</b>V <b>const</b> <b>&</b> v<b>)</b>
+<b>{</b>
+  <b>int</b> count <b>=</b> <font color="blue">0</font><b>;</b>
+  V<b>:</b><b>:</b>iterator i <b>=</b> v<b>.</b>begin<b>(</b><b>)</b><b>;</b>
+  <b>while</b> <b>(</b>i <b>!=</b> v<b>.</b>end<b>(</b><b>)</b><b>)</b>
+  <b>{</b>
+    <b>if</b> <b>(</b>is_special_value<b>(</b><b>*</b>i<b>)</b><b>)</b>
+    <b>{</b>
+      <b>++</b>count<b>;</b>
+    <b>}</b>
+    i<b>++</b><b>;</b>
+  <b>}</b>
+  <b>return</b> count<b>;</b>
+<b>}</b>
+</pre>
+<P>
+Why doesn't this compile?  Once it compiles, what can be improved
+about this function?
+</P>
+<P>
+<B>Answer #5:</B>
+</P>
+<P>
+Actually, there are several things that can be improved here.  First
+is a minor efficiency detail, but it occurs frequently enough that
+it is worth mentioning. In the for loop, the <TT>i</TT> is postfix
+incremented (<TT>i++</TT>). That means that the old value is returned in a
+temporary copy, and the iterator is also incremented. Because it
+returns a temporary iterator that is not used, it is wasted
+overhead. ALWAYS use prefix increment (<TT>++i</TT>) whenever the
+return value is not used, for *any* data type. On some platforms,
+it's even faster for integers. Unless someone overloads the
+prefix operator in a nonsensical way, it's always as fast or faster
+than postfix.
+</P>
+
+<P>
+<TABLE WIDTH="75%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Tip:</b>
+<hr size = 1>
+Prefer <TT>++i</TT> over <TT>i++</TT> whenever possible. I think the name of
+the language, C++,  is partially to blame for the over use of postfix
+operator.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+<P>
+Next, since <TT>v</TT> is a const reference, it must use a <TT>const_iterator</TT> or
+it will not compile.  For read-only operations, using <TT>const_iterator</TT> is
+always the best choice.  Const is a safety measure.  Most
+professionals use safety equipment:  football players wear pads,
+doctors wear latex gloves, and (good) computer programmers use const
+whenever possible.  After all, it's crazy to enter a construction
+yard without a hard-hat.
+</P>
+<P>
+Now for the main point of this exercise. This question was designed to point
+out that the standard library supplies a great deal of functionality
+that many people do not use. Consider the <TT>count_if()</TT> algorithm to
+implement this function, since it does what the programmer wants,
+straight out of the box.
+</P>
+<P>
+<TABLE WIDTH="75%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Tip:</b>
+<hr size = 1>
+Use the standard library as often as possible. If you don't know what's in the standard library, it's worth
+the time to learn.  The upfront cost of learning what is available
+is more than paid for when you can actually make use of the standard
+library.  It's tested, efficient, correct, and standardized.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+<P>
+A better way to have written this function, then would be to use the
+standard library algorithm <TT>count_if()</TT>.
+</P>
+<pre>
+<font color="navy">// count all a's in the range that are "special"</font>
+<b>extern</b> <b>bool</b> is_special_value<b>(</b>A <b>*</b><b>)</b><b>;</b>
+
+<b>int</b> count_special_values<b>(</b><b>)</b>
+<b>{</b>
+  <b>return</b> std<b>:</b><b>:</b>count_if<b>(</b>v<b>.</b>begin<b>(</b><b>)</b><b>,</b> v<b>.</b>end<b>(</b><b>)</b><b>,</b> is_special_value<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+What are the chances of this new version being buggy?  Practically
+zero.  What are the chances of accidentally using an inefficient
+operation?  Practically zero, since you write no code.  Of course,
+the existence of <TT>count_if()</TT> almost eliminates the need for
+<TT>count_special_values()</TT> altogether.
+</P>
+
+<P>
+<TABLE WIDTH="75%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Tip:</b>
+<hr size = 1>
+Avoid writing home-brew algorithms whenever possible because doing
+so will often turn out to be a waste of your time.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+
+<HR>
+<P>
+<B>Question #6:</B>
+</P>
+<pre>
+<font color="navy">// erase all members of v1</font>
+<b>void</b> f<b>(</b><b>)</b>
+<b>{</b>
+  V<b>:</b><b>:</b>iterator i<b>;</b>
+  V<b>:</b><b>:</b>iterator end <b>=</b> v1<b>.</b>end<b>(</b><b>)</b><b>;</b>
+  <b>for</b> <b>(</b>i<b>=</b> v1<b>.</b>begin<b>(</b><b>)</b><b>;</b> i <b>!=</b> end<b>;</b> <b>++</b>i<b>)</b>
+  <b>{</b>
+    v1<b>.</b>erase<b>(</b>i<b>)</b><b>;</b>
+  <b>}</b>
+<b>}</b>
+</pre>
+<P>
+What's wrong with the assumptions in this code?  How can this be made
+more efficient?
+</P>
+<P>
+<B>Answer #6:</B>
+</P>
+<P>
+First and foremost, <TT>i</TT> is an iterator into a vector <TT>v</TT>, but after you
+erase an element the iterator becomes invalid.
+</p>
+<P>
+When a vector removes an element, it moves everything around, and the
+old iterators are pointing to the wrong things, possibly to the
+wrong memory entirely. Do not use invalid iterators, they are some
+of the toughest bugs to track down!
+</P>
+<P>
+We could replace the body of <TT>f()</TT> with this:
+</P>
+<pre>
+<b>void</b> f<b>(</b><b>)</b>
+<b>{</b>
+  <b>int</b> size <b>=</b> v1<b>.</b>size<b>(</b><b>)</b><b>;</b>
+  <b>for</b> <b>(</b><b>int</b> ii <b>=</b> <font color="blue">0</font><b>;</b> ii &lt; size<b>;</b> <b>++</b>ii<b>)</b>
+  <b>{</b>
+    v1<b>.</b>erase<b>(</b>v1<b>.</b>begin<b>(</b><b>)</b><b>)</b><b>;</b>
+  <b>}</b>
+<b>}</b>
+</pre>
+<P>
+This is now correct, but is extremely slow. The vector must shift
+all elements after the removed element to fill in the "hole".
+Therefore, it must shift <TT>N</TT> elements <TT>N</TT> times, making this
+an <TT>N^2</TT> algorithm.
+</P>
+<P>
+Can we do better?  Yes.
+</P>
+<P>
+One might try a more efficient algorithm: instead of removing the head
+of the vector, remove the tail. Then nothing needs shifting because
+its only the tail that is removed, thus no holes are introduced into
+the vector.
+</p>
+<pre>
+<b>void</b> f<b>(</b><b>)</b>
+<b>{</b>
+  <b>int</b> size <b>=</b> v1<b>.</b>size<b>(</b><b>)</b><b>;</b>
+  <b>for</b> <b>(</b>size_t ii <b>=</b> <font color="blue">0</font><b>;</b> ii &lt; size<b>;</b> <b>++</b>ii<b>)</b>
+  <b>{</b>
+    v1<b>.</b>erase<b>(</b>v1<b>.</b>end<b>(</b><b>)</b><b>)</b><b>;</b>
+  <b>}</b>
+<b>}</b>
+</pre>
+<P>
+Unfortunately, it is undefined to remove <TT>end()</TT> from a sequence, since
+<TT>end()</TT> is not referring to an actual element in the container.  We
+could do this instead:
+<pre>
+<b>void</b> f<b>(</b><b>)</b>
+<b>{</b>
+  size_t size <b>=</b> v1<b>.</b>size<b>(</b><b>)</b><b>;</b>
+  <b>for</b> <b>(</b>size_t ii <b>=</b> <font color="blue">0</font><b>;</b> ii &lt; size<b>;</b> <b>++</b>ii<b>)</b>
+  <b>{</b>
+    v1<b>.</b>erase<b>(</b><b>--</b>v1<b>.</b>end<b>(</b><b>)</b><b>)</b><b>;</b>
+  <b>}</b>
+<b>}</b>
+</pre>
+<P>
+It may seem strange to decrement end, but for bidirectional iterator
+it's ok, since we did test that the container is not empty.  However,
+this still creates a temporary iterator and then modifies it for each
+iteration through the loop. A more efficient way would be to call
+<TT>pop_back()</TT>.
+<pre>
+<b>void</b> f<b>(</b><b>)</b>
+<b>{</b>
+  size_t size <b>=</b> v1<b>.</b>size<b>(</b><b>)</b><b>;</b>
+  <b>for</b> <b>(</b>size_t ii <b>=</b> <font color="blue">0</font><b>;</b> ii &lt; size<b>;</b> <b>++</b>ii<b>)</b>
+  <b>{</b>
+    v1<b>.</b>pop_back<b>(</b><b>)</b><b>;</b>
+  <b>}</b>
+<b>}</b>
+</pre>
+<P>
+The above algorithm operates in linear time. Again I ask, is there a
+better way? Again the answer is "yes".
+</p>
+<P>
+The solution is to use the right operation. All containers have a
+<TT>clear()</TT> method that efficiently removes all elements. <TT>clear()</TT> must
+also be linear, but the constant overhead is certainly smaller than
+for the code in the above implementation of <TT>f()</TT>.
+</P>
+<P>
+In situations like this, there is absolutely zero benefit to rolling
+your own code. Let the library do the work, it knows the best way to
+operate on itself.
+</P>
+<pre>
+<b>void</b> f<b>(</b><b>)</b>
+<b>{</b>
+  v1<b>.</b>clear<b>(</b><b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+Now the question of the century: Why does <TT>f()</TT> exist at all, if
+clearing <TT>v1</TT> is all we want to accomplish? If there are no other
+preconditions, and no other post conditions, calling <TT>f()</TT> has a price
+of an extra function call, without ANY benefits of being an extra
+function.  It requires more documentation, more testing, and adds
+complexity.  Without other benefits, in this case, it is better to
+just call <TT>clear()</TT> directly.
+</P>
+<HR>
+<P>
+<B>Question #7:</B>
+</P>
+<pre>
+<font color="navy">// remove even-valued entries from the list</font>
+<b>typedef</b> std<b>:</b><b>:</b>list&lt;A<b>*</b><b>></b> List<b>;</b>
+
+<b>void</b> f<b>(</b>List <b>&</b> lst<b>)</b>
+<b>{</b>
+  <font color="navy">// now operate on the list</font>
+  List<b>:</b><b>:</b>iterator i <b>=</b> lst<b>.</b>begin<b>(</b><b>)</b><b>;</b>
+  <b>while</b> <b>(</b>i <b>!=</b> lst<b>.</b>end<b>(</b><b>)</b><b>)</b>
+  <b>{</b>
+   <b>if</b> <b>(</b><b>(</b><b>*</b>i<b>)</b><b>-></b>is_even<b>(</b><b>)</b><b>)</b>
+   <b>{</b>
+     lst<b>.</b>erase<b>(</b>i<b>)</b><b>;</b>
+   <b>}</b>
+   <b>++</b>i<b>;</b>
+  <b>}</b>
+<b>}</b>
+</pre>
+<P>
+What common mistake is the programmer making?
+</P>
+<P>
+<B>Answer #7:</B>
+</P>
+<P>
+Again we have iterator invalidation.  After <TT>i</TT> is erased from the list,
+it becomes invalid.  But later, that invalid iterator is incremented,
+resulting in undefined behavior.
+</P>
+<P>
+But this item highlights a special case: that the <TT>std::list</TT> collection
+guarantees that insertions and removals of elements only affect the
+specific element being removed or added, and do NOT affect other
+elements, nor do they invalidate iterators referring to other elements.
+</P>
+<P>
+With that in mind, we can rewrite the above loop to be correct.
+</P>
+<pre>
+<font color="navy">//</font>
+<font color="navy">//  Correct implementation</font>
+<font color="navy">//</font>
+<b>void</b> f<b>(</b>List <b>&</b> lst<b>)</b>
+<b>{</b>
+  <font color="navy">// now operate on the list</font>
+  List<b>:</b><b>:</b>iterator i <b>=</b> lst<b>.</b>begin<b>(</b><b>)</b><b>;</b>
+  <b>while</b> <b>(</b>i <b>!=</b> lst<b>.</b>end<b>(</b><b>)</b><b>)</b>
+  <b>{</b>
+   <b>if</b> <b>(</b><b>(</b><b>*</b>i<b>)</b><b>-></b>is_even<b>(</b><b>)</b><b>)</b>
+   <b>{</b>
+     lst<b>.</b>erase<b>(</b>i<b>++</b><b>)</b><b>;</b>
+   <b>}</b>
+   <b>else</b>
+   <b>{</b>
+     <b>++</b>i<b>;</b>
+   <b>}</b>
+  <b>}</b>
+<b>}</b>
+</pre>
+<P>
+The "trick" (if you consider it one) is to postfix-increment the
+iterator in the call to <TT>erase()</TT>, or prefix increment it otherwise.
+Why does this work?  Remember how postfix increment works:  It
+creates a temporary copy of the iterator, increments the real
+iterator, and returns the temporary.  Since it is done in that exact
+order, the temporary is a valid iterator when we increment.  The
+real iterator is safely advanced to the next node, and then the
+temporary is returned to the <TT>erase()</TT> function, which then removes
+that element that our iterator USED to point to.  Since lists only
+invalidate iterators that point to the element when it's deleted,
+the real iterator is already on the next node before the old element
+<TT>i</TT> referred to is removed.
+</P>
+<P>
+Also, you will notice that in the correct implementation above, the
+increment of <TT>i</TT> is moved into an <TT>else</TT> block.  This way, if <TT>*i</TT> is
+even, we don't increment twice.
+</P>
+<pre>
+<font color="navy">//</font>
+<font color="navy">// incorrect implementation</font>
+<font color="navy">//</font>
+<b>void</b> f<b>(</b>List <b>&</b> lst<b>)</b>
+<b>{</b>
+  <font color="navy">// now operate on the list</font>
+  List<b>:</b><b>:</b>iterator i <b>=</b> lst<b>.</b>begin<b>(</b><b>)</b><b>;</b>
+  <b>while</b> <b>(</b>i <b>!=</b> lst<b>.</b>end<b>(</b><b>)</b><b>)</b>
+  <b>{</b>
+   <b>if</b> <b>(</b><b>(</b><b>*</b>i<b>)</b><b>-></b>is_even<b>(</b><b>)</b><b>)</b>
+   <b>{</b>
+     lst<b>.</b>erase<b>(</b>i<b>++</b><b>)</b><b>;</b>
+   <b>}</b>
+   <b>++</b>i<b>;</b>  <font color="navy">// PROBLEM: i may be twice incremented</font>
+  <b>}</b>
+<b>}</b>
+</pre>
+
+<P>
+<TABLE WIDTH="75%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Tip:</b>
+<hr size = 1>
+Never blindly double-increment an iterator. When you must
+increment an iterator, be sure it is not equal to <TT>end()</TT>.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+<HR>
+<P>
+<B>Question #8:</B>
+</P>
+<pre>
+std<b>:</b><b>:</b>mismatch<b>(</b>v1<b>.</b>begin<b>(</b><b>)</b><b>,</b> v2<b>.</b>begin<b>(</b><b>)</b><b>,</b> v2<b>.</b>end<b>(</b><b>)</b><b>)</b><b>;</b>
+</pre>
+<P>
+Something is wrong with this call that has undefined runtime behavior
+(though you can reasonably expect a crash.)  What?
+</P>
+<P>
+<B>Answer #1:</B>
+</P>
+<P>
+<TT>std::mismatch</TT> scans two sequences to find the first element that is
+not equal. It takes a range for one of the sequences, and a
+starting point for the second sequence. It assumes that the second
+sequence is at least as long as the first.
+<P>
+</P>
+The functionality of mismatch is really irrelevant to the problem
+with the code though. The argument list in the above code is where
+you will find the problem. The programmer is passing in the wrong
+iterators in the wrong places. A parameter mismatch, if you like
+puns.
+</P>
+<P>
+<TT>std::mismatch</TT> is declared like this:
+</P>
+<pre>
+<b>template</b> &lt;<b>class</b> InputIterator1<b>,</b> <b>class</b> InputIterator2<b>></b>
+pair&lt;InputIterator1<b>,</b> InputIterator2<b>></b> mismatch<b>(</b>InputIterator1 first1<b>,</b>
+                                            InputIterator1 last1<b>,</b>
+                                            InputIterator2 first2<b>)</b><b>;</b>
+</pre>
+<P>
+If the template syntax is distracting you, just look at the
+parameters the function takes: three input iterators. <TT>first1</TT> and
+<TT>last1</TT> specify a range in the first sequence, and <TT>first2</TT> is an
+iterator to the beginning of the second sequence. That is, the first
+two arguments form a range of one sequence, the third argument is
+the start of another sequence.
+</P>
+<P>
+So what's wrong with the original code? The programmer thought that
+the first argument was the start of a sequence, the second parameter
+was the start of the second sequence, and the third parameter was
+the end of the second sequence. Passing the iterators in the wrong
+order has some very serious consequences:
+</P>
+<table>
+<tr>
+<td valign="top"> <B>1)</B> </TD>
+<td>The range specified is invalid.  Iterating through the range that
+ the programmer provided would probably cause a memory fault or a
+ program crash.  Actually, it's undefined, but undefined can be
+ translated to mean "bad things will happen."  Usually a crash.
+
+A range specified by a pair of iterators has some rules:
+The range specified must be two iterators in the SAME sequence,
+and the first iterator must be capable of reaching the second
+iterator by repeated application of <TT>operator++</TT>.
+</td></tr>
+<tr>
+<td valign="top"> <B>2)</B> </TD>
+<td>
+Because the third parameter is expected to contain the iterator
+corresponding to the beginning of the second sequence, the
+mismatch algorithm will start one past the end, and increment
+from there, a recipe for disaster.
+</td>
+</tr>
+</table>
+<P>
+Unfortunately, the code compiles without any problems. Here is the correct
+way to call the function:
+</P>
+<pre>
+V <b>*</b> seq1<b>;</b>
+V <b>*</b> seq2<b>;</b>
+<b>if</b> <b>(</b>v1<b>.</b>size<b>(</b><b>)</b> &lt; v2<b>.</b>size<b>(</b><b>)</b><b>)</b>
+<b>{</b>
+  seq1 <b>=</b> <b>&</b>v1<b>;</b>
+  seq2 <b>=</b> <b>&</b>v2<b>;</b>
+<b>}</b>
+<b>else</b>
+<b>{</b>
+  seq1 <b>=</b> <b>&</b>v2<b>;</b>
+  seq2 <b>=</b> <b>&</b>v1<b>;</b>
+<b>}</b>
+std<b>:</b><b>:</b>mismatch<b>(</b>seq1<b>-></b>begin<b>(</b><b>)</b><b>,</b> seq1<b>-></b>end<b>(</b><b>)</b><b>,</b> seq2<b>-></b>begin<b>(</b><b>)</b><b>)</b><b>;</b>
+</pre>
+<P>
+The extra work done before the call to mismatch is simply setting up
+intermediate pointers to the lists, such that we can guarantee that
+the second sequence is at least as large as the first.  This way we
+never walk past the end of a sequence.
+</p>
+
+<P>
+<TABLE WIDTH="75%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Tip:</b>
+<hr size = 1>
+There is no way for the compiler to detect a problem when the
+programmer gives the iterators in the wrong order. Therefore when
+you use STL algorithms, slow down just a bit and make sure you're
+using them correctly, and passing in the arguments in the correct
+order. Check the documentation (or header files!) to make SURE that
+what you think the algorithms expect are really what you provide.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+<P>
+<TABLE WIDTH="75%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Tip:</b>
+<hr size = 1>
+If a program is crashing in an STL algorithm, always think
+of potential problems with iterators first: could they have been
+invalidated?  Are the ranges correct? Are my arguments to functions
+in the correct order? When applicable, is the second sequence long
+enough (for example, <TT>mismatch()</TT>, <TT>equal()</TT>, <TT>search()</TT>, etc)?
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+<HR>
+<P>
+<B>Question #9:</B>
+</P>
+<pre>
+<font color="navy">// call do_something_with() for each item in v1 that is not even</font>
+<b>extern</b> <b>void</b> do_something_with<b>(</b>A<b>*</b><b>)</b><b>;</b>
+
+<b>void</b> f<b>(</b><b>)</b>
+<b>{</b>
+  V<b>:</b><b>:</b>iterator i <b>=</b> v1<b>.</b>begin<b>(</b><b>)</b><b>;</b>
+  <b>while</b> <b>(</b>i <b>!=</b> v1<b>.</b>end<b>(</b><b>)</b><b>)</b>
+  <b>{</b>
+    <b>if</b> <b>(</b><b>(</b><b>*</b>i<b>)</b><b>-></b>is_even<b>(</b><b>)</b><b>)</b>
+    <b>{</b>
+      <font color="navy">// skip this item</font>
+      <b>++</b>i<b>;</b>
+    <b>}</b>
+    do_something_with<b>(</b><b>*</b>i<b>)</b><b>;</b>
+    i<b>++</b><b>;</b>
+  <b>}</b>
+<b>}</b>
+</pre>
+<P>
+What bugs are in this code?  It not only contains logic bugs (it
+doesn't do what the documentation (comment at top) says), but it
+has iterator problems as well.  How many can you find?
+</P>
+<P>
+<B>Answer #1:</B>
+</P>
+<P>
+Hopefully, from the earlier problems, this one is a piece of cake.
+Do you see the problem? Two things already discussed should jump
+out, one big, one small. Plus, though perhaps a little subtle,
+there is a logic bug lurking in there as well, but fixing the first
+two problems will also fix the logic bug for free!
+</P>
+<P>
+First the small problem. <TT>i++</TT> by itself is inefficient. It should
+be <TT>++i</TT> or we are wasting CPU cycles. This is especially important in
+loops, where the overhead is multiplied by the number of
+iterations. This was discussed earlier in item #5.
+<P>
+</p>
+The bigger problem is that, once again, we are doing a blind double-increment, without
+checking that <TT>i</TT> is not already equal to <TT>end()</TT> after the first increment.
+(I say "blind" because it is not checking for the problem, assuming the problem cannot (or will not)
+happen.)
+<P>
+</p>
+The logic bug also exists in the "skip even" logic, also related to
+the blind-double-increment.  The problem is that if we check the
+very last element for evenness, and it is, we advance the iterator
+to one-past-the-end.  Since we blindly increment it again, the
+iterator is now one-past the one-past-end element, and program
+behavior is undefined.  This is the danger of double increments: you
+can accidentally jump "over" the loop termination condition, and then
+practically enter an infinite loop (at least until your program
+crashes.)  Accessing past the end of a sequence is undefined and out
+of bounds.
+</P>
+<p>
+As for the logic bug, suppose the vector has all even numbers in it
+(or <TT>is_even()</TT> returns true for every element.)  This code will skip the
+first even, and then immediately <TT>do_something_with()</TT> the next value
+without first checking that it's not even.  Since the documentation
+at the top of the function says that <TT>do_something_with()</TT> shall be
+called only on items that are not even, this is a logic bug.  The
+above code is capable of calling <TT>do_something_with()</TT> on elements
+that are even.  This is another side-effect of blindly incrementing
+the loop variable.
+</p>
+
+<P>
+<TABLE WIDTH="75%">
+<TR>
+<TD VALIGN="top">
+<IMG SRC="../images/exclamation.gif" ALT="Tip" BORDER=0 HSPACE="0" ALIGN="top">
+</TD>
+<TD valign="top">
+<b>Tip:</b>
+<hr size = 1>
+Never increment your loop control variable in more than
+one place in the body of your loop, whenever you can help it. When
+you think you need to, think twice before coding it. That is, it's
+wise to treat double incrementing a loop variable as "incorrect"
+until proven otherwise.
+<hr size = 1>
+</TD>
+</TR>
+</TABLE>
+</p>
+
+<P>
+Here is a better implementation that restructures the logic to
+eliminate the extra increment, so it is only incremented in one
+place.  This also fixes the logic bug described earlier.  (Isn't it
+funny how removing a double-increment can fix more than one problem?)
+Hopefully you're convinced by now that incrementing a loop variable
+multiple times can be bad, if the conditions are not checked before
+each increment.  This is especially true of iterators, even if they
+are not in a loop they can walk past the end if they're double
+incremented blindly.
+</P>
+<pre>
+<font color="navy">//</font>
+<font color="navy">// correct rewrite</font>
+<font color="navy">//</font>
+<b>void</b> f<b>(</b><b>)</b>
+<b>{</b>
+  V<b>:</b><b>:</b>iterator i <b>=</b> v1<b>.</b>begin<b>(</b><b>)</b><b>;</b>
+  <b>while</b> <b>(</b>i <b>!=</b> v1<b>.</b>end<b>(</b><b>)</b><b>)</b>
+  <b>{</b>
+    <b>if</b> <b>(</b><b>!</b><b>(</b><b>*</b>i<b>)</b><b>-></b>is_even<b>(</b><b>)</b><b>)</b>
+    <b>{</b>
+      do_something_with<b>(</b><b>*</b>i<b>)</b><b>;</b>
+    <b>}</b>
+    <b>++</b>i<b>;</b>
+  <b>}</b>
+<b>}</b>
+</pre>
+<P>
+Here we simplified it to only <TT>do_something_with()</TT> if the value is
+not even. This code is much more straight forward, and now bug
+free. (Well, assuming that elements cannot be null.)
+</P>
+<P>
+The above function can still be improved, for those wishing to
+squeeze every ounce of efficiency as possible out of the compiler.
+The remaining concern is the overhead of returning a temporary value
+from <TT>end()</TT> each time we iterate through the loop. This is solely an
+efficiency issue, and while probably minor, there is no reason not
+to fix this because it's clean and elegant, and faster.
+</p>
+<p>
+Since the container cannot change in size, (since the body of the
+loop does not modify it), we can be sure that <TT>end()</TT> will always
+return an iterator to the same element. Therefore, there is
+no need to call <TT>end()</TT> and recalculate the end for each iteration,
+since it always returns the same value. Even though it's an inline
+function, it is not "free" due to the construction of a temporary
+iterator. Iterators are objects (or can be implemented that way),
+and they have a cost to create. Fortunately, we can cache the
+return value, and then compare against our cached value rather than
+recalculating it each iteration. We can be more efficient if we
+make the minor change as follows:
+</p>
+<pre>
+<b>void</b> f<b>(</b><b>)</b>
+<b>{</b>
+  V<b>:</b><b>:</b>iterator i <b>=</b> v1<b>.</b>begin<b>(</b><b>)</b><b>;</b>
+  V<b>:</b><b>:</b>iterator e <b>=</b> v1<b>.</b>end<b>(</b><b>)</b><b>;</b> <font color="navy">// cache end()'s return value</font>
+  <b>while</b> <b>(</b>i <b>!=</b> e<b>)</b><b>)</b>
+  <b>{</b>
+    <b>if</b> <b>(</b><b>!</b><b>(</b><b>*</b>i<b>)</b><b>-></b>is_even<b>(</b><b>)</b><b>)</b>
+    <b>{</b>
+      do_something_with<b>(</b><b>*</b>i<b>)</b><b>;</b>
+    <b>}</b>
+    <b>++</b>i<b>;</b>
+  <b>}</b>
+<b>}</b>
+</pre>
+<P>
+And there you have it, fast, bug free, and easy.
+</p>
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2002 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

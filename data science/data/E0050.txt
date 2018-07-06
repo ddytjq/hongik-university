@@ -1,0 +1,921 @@
+ID=E0050
+URL=http://www.troubleshooters.com/codecorn/littperl/perlhashexamps.htm
+SIZE=40762
+DATE=12/07/02
+TIME=19:16:51
+DATASET=C
+HTML=<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="description" content="Debugging and Troubleshooting Source Code including MS Access, C++, Delphi, FoxPro, MFC, SQL, Visual Basic">
+   <meta name="keywords" content="debugging, troubleshooting, Source Code, Access, C++, Delphi, FoxPro, MFC, Microsoft Foundation Classes, SQL, Visual Basic">
+   <meta name="FORMATTER" content="Microsoft FrontPage 1.1">
+   <meta name="Author" content="Steve Litt">
+   <meta name="Description" content="File access in PERL">
+   <meta name="KeyWords" content="PERL,File,Input,Output,Sorting">
+   <meta name="GENERATOR" content="Mozilla/4.5 [en] (Win98; U) [Netscape]">
+   <title>PERL File Input, Output and Sorting</title>
+</head>
+<body text="#000000" bgcolor="#FFFFF0" link="#0000EE" vlink="#551A8B" alink="#FF0000" background="../../tcbk.gif">
+
+<center>
+<h2>
+<a NAME="top"></a><a href="../../troubleshooters.htm">Troubleshooters.Com</a>
+and <a href="../index.htm">Code Corner</a> Present</h2></center>
+
+<center><b><font size=+3><a href="index.htm">Steve Litt's PERLs of Wisdom</a>:</font></b>
+<br><font size=+4>PERL Hash Reference Examples</font>
+<br><a href="../../cpyright.htm">Copyright (C) 2000 by Steve Litt</a></center>
+
+<p>
+<hr>
+<h1>
+<a NAME="Contents"></a>Contents</h1>
+
+<blockquote>
+<li>
+<b><a href="#Introduction">Introduction</a></b></li>
+
+<li>
+<b><a href="#smbconf">smb.conf Share Program</a></b></li>
+
+<li>
+<b><a href="#ifconfig">ifconfig Parser and Reporter</a></b></li>
+
+<li>
+<b><a href="#browsershell">Creating a Browser Shell for Your Reports</a></b></li>
+</blockquote>
+
+<h1>
+<a NAME="Introduction"></a>Introduction</h1>
+This page has a few examples using references to hashes, primarily to simulate
+in-memory databases.
+<h1>
+<a NAME="smbconf"></a>smb.conf Share Program</h1>
+This program reads the Samba configuration file as arg0, and stores the
+entire contents as a hash of anonomyous hashes, such that each share name
+is a key name of the top level hash, and the share parameters are hash
+key-value pairs contained in an anonomous hash which is the value associated
+with the share name. Here's the program:
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<tr>
+<td>
+<pre>#!/usr/bin/perl -w
+
+use strict;
+
+sub usage()
+&nbsp; {
+&nbsp; print "\n\nProgram shares. Syntax:\n";
+&nbsp; print "./shares conffile sharename&nbsp; # prints out params for sharename\n";
+&nbsp; print "./shares conffile&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # prints out params for all shares\n";
+&nbsp; print "Anything else prints out this message.\n\n";
+&nbsp; }
+
+sub newShare(\%$)
+&nbsp; {
+&nbsp; %{$_[0]} = ("sharename"=>$_[1]);
+&nbsp; }&nbsp;
+
+sub parseSmbDotConf($)
+&nbsp; {
+&nbsp; open(CONFIGFILE, "&lt;" . $_[0]) || die "Cannot read file $_[0]\n";
+&nbsp; my(@configMemoryImage) = &lt;CONFIGFILE>;
+&nbsp; close(CONFIGFILE);
+
+&nbsp; my($state) = "init";
+&nbsp; my(%allShares);
+
+&nbsp; my(%share);
+&nbsp; my($configLine);
+&nbsp; foreach $configLine (@configMemoryImage)
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; if($configLine =~ /^\s*$/) {next;}; #Blow off blank lines
+&nbsp;&nbsp;&nbsp; chomp($configLine);
+&nbsp;&nbsp;&nbsp; $configLine =~ s/^\s+//;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Delete leading blanks
+&nbsp;&nbsp;&nbsp; $configLine =~ s/\s+$//;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Delete trailing blanks
+&nbsp;&nbsp;&nbsp; $configLine =~ s/;.*//;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Delete comments
+&nbsp;&nbsp;&nbsp; $configLine =~ s/#.*//;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Delete comments
+&nbsp;&nbsp;&nbsp; if($state eq "init")
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newShare(%share, "GLOBAL");&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Leading params w/o share are [GLOBAL]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $state = "init2";
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+
+&nbsp;&nbsp;&nbsp; if($configLine =~ /^\s*\[\s*(.+)\s*\]\s*$/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #if bracket line
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if($state ne "init2")
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ### RECORD PRIOR SHARE IN %allShares ###
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $allShares{$share{"sharename"}} = {%share};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; newShare(%share, uc($1));&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $state = "brackets";
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; elsif($configLine =~ /^\s*(.+?)\s*=\s*(.+)\s*$/)&nbsp;&nbsp;&nbsp; #if param line
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; my($key) = uc($1);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; my($value) = $2;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $key =~ s/\s//g;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $share{$key} = $value;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $state = "param";
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; }
+&nbsp; ### ADD FINAL SHARE TO %allShares ###
+&nbsp; $allShares{$share{"sharename"}} = {%share};
+&nbsp; return(%allShares);
+&nbsp; }
+
+
+sub displayOneShare(\%$)
+&nbsp; {
+&nbsp; my(%allShares) = %{(shift)};
+&nbsp; my($shareName) = shift;
+&nbsp; my(%share) = %{$allShares{$shareName}};&nbsp;
+&nbsp; my($key,$value);
+&nbsp; print "\n\n********** [$shareName] **********\n";
+&nbsp; foreach $key (sort(keys(%share)))
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; print "$key=" . $share{$key} . "\n";
+&nbsp;&nbsp;&nbsp; }
+&nbsp; }
+
+sub displayAll(\%)
+&nbsp; {
+&nbsp; my(%allShares) = %{(shift)};
+&nbsp; my($key,$value);
+&nbsp; foreach $key (sort(keys(%allShares)))
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; displayOneShare(%allShares, $key)
+&nbsp;&nbsp;&nbsp; }
+&nbsp; }
+
+sub main()
+&nbsp; {
+&nbsp; my(%shares);
+&nbsp; if($#ARGV &lt; 0)
+&nbsp;&nbsp;&nbsp; {
+&nbsp; usage();
+&nbsp;&nbsp;&nbsp; }
+&nbsp; else
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; %shares = parseSmbDotConf($ARGV[0]);
+&nbsp;&nbsp;&nbsp; if($#ARGV == 0)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; displayAll(%shares);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; elsif($#ARGV == 1)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; displayOne(%shares, uc($ARGV[1]));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; usage();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; }
+&nbsp; }
+
+main();</pre>
+</td>
+</tr>
+</table>
+
+<p>The usage() subroutine prints a syntax diagram, and the newShare(\%$)
+subroutine empties its hash arg of all elements, and then adds an element
+called "sharename" whose value is the second argument. This emptying is
+done in preparation for the adding of elements gleaned from a parsing of
+the Samba config file.
+<p>Subroutine parseSmbDotConf($) does that parsing and element adding.
+It first declares an empty hash (%allShares) to hold all shares, and a
+hash (%share) to hold all the parameters in the current share, then reads
+through the file, ignoring blank lines and trimming space from the start
+and end of each line. On encountering a string in brackets, which is the
+beginning of a new share, it saves the prior share to %allShares, using
+the share name as a key, and then "zeroes out" the new share with a call
+to newShare(\%$). State indicator $state prevents an empty share from being
+written the first time through, and also accommodates config files that
+start with a share (typically but not necesssarily [global]), and those
+that start with parameters, which by Samba specifications are part of the
+[global] share. After all lines have been parsed the current share is saved
+to %allShares, and %allShares is returned via the subroutine return. The
+main routine assigns that hash to a variable called %shares, which is a
+hash whose element values are themselves anonymous hashes. To summarize,
+parseSmbDotConf($) parses the Samba config file into a hash of hashes suitable
+for passing to other subroutines.
+<p>One of those routines is displayOneShare(\%$). This routine takes the
+hash of hashes, and picks out the element whose share name is the second
+argument. It then prints all keys and values for that share, in key-alpha
+order.
+<p>Subroutine displayAll(\%) is passed the hash of hashes as an arg, loops
+through the keys, and calls displayOneShare(\%$) for each. The main routine
+checks command line syntax and determines whether to print a single share
+or all shares.
+<p>Please spend some time acquainting yourself with the referencing and
+dereferencing of the hashes. Note also that this program is written in
+the new, prototyped syntax, and therefore the caller passes without the
+backslash. Note also that all subroutine calls *must* be to subroutines
+already defined, <a href="perlfuncorder.htm">or non-obvious and hard to
+troubleshoot runtime errors will result</a>.
+<h1>
+<a NAME="ifconfig"></a>ifconfig Parser and Reporter</h1>
+Given the existence of Samba's testparm program, the preceding example
+was of academic interest only. The parsing task was trivial, and it basically
+did nothing but regurgitate smb.conf, although a few modifications could
+make it useful.
+<p>This program will be presented in two sections: Fixed Output and Configurable
+Reports. The first section is academic like the preceding example, where
+the ifconfig output is parsed into a hash of hashes, and that hash of hashes
+is looped through to produce output. It's little more than a neater formatting
+of the ifconfig command. The second section adds configurable reporting
+capabilities, and as such is quite useful. Furthermore, such a program
+can be written to parse and write configurable reports on anything.
+<h2>
+Basic Fixed Output Program</h2>
+In the Samba Config File parser, few parameters were common to several
+shares. Contrast this to the ifconfig parser, where the hash of hashes
+is very much like a database, where the elements of the containing hash
+can be considered records (and because it's a hash it's indexed), while
+the elements of the contained hashes can be considered the columns. Note
+in this program all devices have an IP address, a netmask, and an interface
+type. Packet and error counts are common to all primary interfaces (as
+opposed to "virtual" interfaces like eth0:0).
+<p>All information can be defined by a list of fields. This is implemented
+in the newInterface(\%$) routine. You can see the fields in its source
+code. The isValidField(\%$) routine tests a given field name for existence
+in the hash, and if it hasn't put there by newInterface(\%$) it's assumed
+invalid. All recording of field values is done by the setField(\%$$) routine,
+which prevents insertion of data in a key not already contained by the
+hash created by newInterface(\%$). The result is that every hash serves
+as a "record" or "row" for its interface, and each such hash has all the
+same "fields". This is important in reporting, which is covered in the
+section on Adding Configurable Report Capability.
+<p>The program starts by creating a memory image of the output of the ifconfig
+command, using the ifconfig2list() subroutine to deliver a list whose each
+element is a line from the ifconfig output. That list then forms the input
+to sub parseIfconfig(\@), which parses the memory image into a hash of
+hashes, which is returned to the main programming.
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<tr>
+<td>
+<pre>#!/usr/bin/perl -w
+
+use strict;
+
+sub ifconfig2list()
+&nbsp; {
+&nbsp; my(@configList) = `/sbin/ifconfig`;
+&nbsp; return(@configList);
+&nbsp; }
+
+sub newInterface(\%$)
+&nbsp; {
+&nbsp; %{$_[0]} = ();&nbsp;
+&nbsp; %{$_[0]} =&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "a_bcast"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; => "",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "a_inet"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; => "",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "a_mask"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; => "",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "hw_addr"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; => "",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "hw_irq"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; => "",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "i_mac"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; => "",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "i_name"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; => $_[1],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "i_type"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; => "",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "n_collide"&nbsp;&nbsp;&nbsp; => "",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "n_txqlen"&nbsp;&nbsp;&nbsp;&nbsp; => "",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "rx_drop"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; => "",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "rx_errs"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; => "",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "rx_frame"&nbsp;&nbsp;&nbsp;&nbsp; => "",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "rx_overrun"&nbsp;&nbsp; => "",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "rx_packets"&nbsp;&nbsp; => "",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tx_carrier"&nbsp;&nbsp; => "",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tx_drop"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; => "",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tx_errs"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; => "",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tx_overrun"&nbsp;&nbsp; => "",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "tx_packets"&nbsp;&nbsp; => ""
+&nbsp;&nbsp;&nbsp;&nbsp; );
+&nbsp; }&nbsp;
+
+sub isValidField(\%$)
+&nbsp; {
+&nbsp; return(defined(${$_[0]}{$_[1]}))
+&nbsp; }
+
+sub setField(\%$$)
+&nbsp; {
+&nbsp; isValidField(%{$_[0]}, $_[1]) or
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; die "\n\nInternal programming error, illegal field name >$_[1]&lt;\n";
+&nbsp; ${$_[0]}{$_[1]} = $_[2];&nbsp;
+&nbsp; }
+
+sub parseIfconfig(\@)
+&nbsp; {
+&nbsp; my(@ifconfigMemoryImage) = ifconfig2list();
+
+&nbsp; my($state) = "init";
+&nbsp; my(%allInterfaces);
+
+&nbsp; my(%interface);
+&nbsp; my($ifconfigLine);
+&nbsp; foreach $ifconfigLine (@ifconfigMemoryImage)
+&nbsp;&nbsp;&nbsp; {
+&nbsp; if($ifconfigLine =~ /^\s*$/) {next;}; #Blow off blank lines
+&nbsp; chomp($ifconfigLine);
+&nbsp; $ifconfigLine =~ s/\s+$//;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #Delete trailing blanks
+&nbsp; if($ifconfigLine =~ /^(\S+)/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #if new interface&nbsp;
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; my($newName) = $1;
+&nbsp;&nbsp;&nbsp; if($state ne "init")
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ### RECORD PRIOR INTERFACE IN %allInterfaces ###
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $allInterfaces{$interface{"i_name"}} = {%interface};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; newInterface(%interface, $newName);&nbsp;
+&nbsp;&nbsp;&nbsp; newInterface(%interface, $newName);&nbsp;
+&nbsp;&nbsp;&nbsp; if($ifconfigLine =~ /Link encap:(.+)\s+HWaddr\s+(\S+)/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; setField(%interface, "i_type", $1);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; setField(%interface, "i_mac", $2);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; elsif($ifconfigLine =~ /Link encap:(.+)/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $interface{"i_type"} = $1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; setField(%interface, "i_type", $1);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; $state = "finishedfirstline";
+&nbsp;&nbsp;&nbsp; }
+&nbsp; elsif($ifconfigLine =~ /^\s+inet addr:(\S+)/)
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; $interface{"a_inet"} = $1;
+&nbsp;&nbsp;&nbsp; setField(%interface, "a_inet", $1);
+&nbsp;&nbsp;&nbsp; if($ifconfigLine =~ /Bcast:(\S+)/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {setField(%interface, "a_bcast", $1);}
+&nbsp;&nbsp;&nbsp; if($ifconfigLine =~ /Mask:(\S+)/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {setField(%interface, "a_mask", $1);}
+&nbsp;&nbsp;&nbsp; $state = "finishedinetaddr";
+&nbsp;&nbsp;&nbsp; }
+&nbsp; elsif($ifconfigLine =~ /^\s+RX packets:(\S+)/)
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; $interface{"rx_packets"} = $1;
+&nbsp;&nbsp;&nbsp; if($ifconfigLine =~ /\berrors:(\S+)/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {setField(%interface, "rx_errs", $1);}
+&nbsp;&nbsp;&nbsp; if($ifconfigLine =~ /\bdropped:(\S+)/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {setField(%interface, "rx_drop", $1);}
+&nbsp;&nbsp;&nbsp; if($ifconfigLine =~ /\boverruns:(\S+)/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {setField(%interface, "rx_overrun", $1);}
+&nbsp;&nbsp;&nbsp; if($ifconfigLine =~ /\bframe:(\S+)/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {setField(%interface, "rx_frame", $1);}
+&nbsp;&nbsp;&nbsp; $state = "finished_rx";
+&nbsp;&nbsp;&nbsp; }
+&nbsp; elsif($ifconfigLine =~ /^\s+TX packets:(.+?)\s+/)
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; setField(%interface, "tx_packets", $1);
+&nbsp;&nbsp;&nbsp; if($ifconfigLine =~ /\berrors:(\S+)/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {setField(%interface, "tx_errs", $1);}
+&nbsp;&nbsp;&nbsp; if($ifconfigLine =~ /\bdropped:(\S+)/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {setField(%interface, "tx_drop", $1);}
+&nbsp;&nbsp;&nbsp; if($ifconfigLine =~ /\boverruns:(\S+)/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {setField(%interface, "tx_overrun", $1);}
+&nbsp;&nbsp;&nbsp; if($ifconfigLine =~ /\bcarrier:(\S+)/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {setField(%interface, "tx_carrier", $1);}
+&nbsp;&nbsp;&nbsp; $state = "finished_tx";
+&nbsp;&nbsp;&nbsp; }
+&nbsp; elsif($ifconfigLine =~ /^\s+Metric:(.+?)\b/)
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; setField(%interface, "z_metric", $1);
+&nbsp;&nbsp;&nbsp; if($ifconfigLine =~ /^\bMTU:(.+?)\b/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {setField(%interface, "z_mtu", $1);}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ## "UP BROADCAST RUNNING MULTICAST&nbsp; MTU:1500&nbsp; Metric:1" unimplemented
+&nbsp;&nbsp;&nbsp; $state = "finished_state";
+&nbsp;&nbsp;&nbsp; }
+&nbsp; else
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; if($ifconfigLine =~ /\bcollisions:(\S+)/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {setField(%interface, "n_collide", $1);}
+&nbsp;&nbsp;&nbsp; if($ifconfigLine =~ /\btxqueuelen:(\S+)/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {setField(%interface, "n_txqlen", $1);}
+&nbsp;&nbsp;&nbsp; if($ifconfigLine =~ /\bInterrupt:(\S+)/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {setField(%interface, "hw_irq", $1);}
+&nbsp;&nbsp;&nbsp; if($ifconfigLine =~ /\bBase address:(\S+)/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {setField(%interface, "hw_addr", $1);}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $state = "finished_misc";
+&nbsp;&nbsp;&nbsp; }
+&nbsp; }
+&nbsp; ### ADD FINAL INTERFACE TO %allInterfaces ###
+&nbsp; $allInterfaces{$interface{"i_name"}} = {%interface};
+&nbsp; return(%allInterfaces);
+&nbsp; }
+
+sub displayOneInterface(\%$)
+&nbsp; {
+&nbsp; my(%allInterfaces) = %{(shift)};
+&nbsp; my($interfaceName) = shift;
+&nbsp; my(%interface) = %{$allInterfaces{$interfaceName}};&nbsp;
+&nbsp; my($key,$value);
+&nbsp; print "\n\n[$interfaceName]======================================\n";
+&nbsp; foreach $key (sort(keys(%interface)))
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; print "$key=" . $interface{$key} . "\n";
+&nbsp;&nbsp;&nbsp; }
+&nbsp; }
+
+sub displayAll(\%)
+&nbsp; {
+&nbsp; my(%allInterfaces) = %{(shift)};
+&nbsp; my($key,$value);
+&nbsp; foreach $key (sort(keys(%allInterfaces)))
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; displayOneInterface(%allInterfaces, $key)
+&nbsp;&nbsp;&nbsp; }
+&nbsp; }
+
+sub main()
+&nbsp; {
+&nbsp; my(@lines) = ifconfig2list();
+&nbsp; my(%interfaces) = parseIfconfig(@lines);
+&nbsp; displayAll(%interfaces);
+&nbsp; }
+
+main();</pre>
+</td>
+</tr>
+</table>
+
+<p>The parseIfconfig(\@) routine is a typical elsif type parser whose parsing
+depends almost exclusively on the contents of the current line, without
+regard to already read lines. However, it maintains a state variable ($state)
+so that the algorithm can be used to parse a file whose actions depend
+not only on the current line, but also on what's come before. The state
+variable is also used to prevent writing an empty record the first shot
+through the loop.
+<p>Break logic is accomplished by detecting a non-whitespace in column
+1, which in the ifconfig output signifies a new interface. At that point
+the present interface's hash is saved to the hash of hashes under that
+interface's name, then the hash is initialized for the new interface. This
+break logic requires saving the last interface to the hash of hashes after
+the loop terminates.
+<p>The parseIfconfig(\@) routine returns a hash to the main routine. The
+values of that hashes elements are hashes themselves, each of which represents
+an interface. The displayAll(\%) routine takes the hash of hashes as an
+argument, and prints each interface record by calling displayOneInterface(\%$)
+for each key of the hash of hashes. As in the previous example, you should
+note the dereferencing used in displayOneInterface(\%$).
+<p>This program is useful because it provides a more readable format for
+the ifconfig program, but such a reformatting could certainly be accomplished
+without hashes of hashes, etc. The real convenience comes when you add
+routines to implement configurable reporting. Read on...
+<h2>
+Adding Configurable Report Capability</h2>
+What we want to do here is to produce a sorted columnar report showing
+only the desired fields, in the order desired, sorted from the leftmost
+field to the rightmost. The configuration is defined in a file whose format
+looks something like the following:
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<tr>
+<td>
+<pre>rx_errs{8}
+tx_errs{8}
+i_name{12}
+a_inet{16}
+a_mask{16}
+a_bcast{16}</pre>
+</td>
+</tr>
+</table>
+
+<p>The preceding delivers a columnar report showing the fields from left
+to right in the order shown in the report definition file, and sorted by
+those fields. The numbers in the braces are the field widths. In all cases
+one space is added at the end to facilitate field separation. If a field's
+contents are longer than the width, it's truncated. If the field's contents
+are shorter than the field width, the field is backpadded with space. Headings
+are produced by a similar algorithm, except that it's the field names that
+are compared, truncated or padded.
+<p>Part of the specification is to abort if a field in the report definition
+file does not match the fields defined in newInterface(\%$), the program
+is aborted with a meaningful error message. Case counts. This was decided
+to facilitate interfacing with other systems where case counts. It's easy
+enough to write down the right field names.
+<p>To further facilitate correct field names, a subroutine is defined whose
+sole purpose is to output the field names. This subroutine, called showFieldNames(),
+can have its output piped to a file for easy report configuration.
+<p>To make this program into a comfigurable reporting program, you need
+to add several subroutines and replace the main() subroutine. Subroutine
+definition order is important. Place the following routines, in this order,
+below all other subroutines except main():
+<ul>
+<li>
+<b><tt>sub usage()</tt></b></li>
+
+<li>
+<b><tt>sub printFields()</tt></b></li>
+
+<li>
+<b><tt>sub acquireReportFieldList($)</tt></b></li>
+
+<li>
+<b><tt>sub makeReportString(\%\@)</tt></b></li>
+
+<li>
+<b><tt>sub makeHeadings(\@)</tt></b></li>
+
+<li>
+<b><tt>sub makeReport(\%$)</tt></b></li>
+</ul>
+The explanations of these subroutines are given following the code listing.
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<tr>
+<td>
+<pre>sub usage()
+&nbsp; {
+&nbsp; print "\n\nProgram ifclook, to run ifconfig and report on interfaces. Syntax:\n";
+&nbsp; print "ifclook {report reportfile|fields|full}\n\n";
+&nbsp; print "report&nbsp;&nbsp;&nbsp; creates report with fields in reportfile, sorted\n";
+&nbsp; print "fields&nbsp;&nbsp;&nbsp; lists the fields available to list\n";
+&nbsp; print "full&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lists all info for all interfaces\n\n";
+&nbsp; }
+
+sub printFields()
+&nbsp; {
+&nbsp; my(%dummyInterface);
+&nbsp; newInterface(%dummyInterface, "dummy");
+&nbsp; print "The reportable fields, in alpha order, are:\n";
+&nbsp; print(join("\n", sort(keys(%dummyInterface))));
+&nbsp; print "\n";
+&nbsp; }
+
+sub acquireReportFieldList($)
+&nbsp; {
+&nbsp; my($reportFormatFile) = shift;
+&nbsp; my(@fields);
+&nbsp; my(%dummyInterface);
+&nbsp; newInterface(%dummyInterface, "dummy");
+&nbsp; open(REPORTFORMATFILE, "&lt;" . $reportFormatFile)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; or die "Cannot open report definition file $reportFormatFile\n";
+&nbsp; while(&lt;REPORTFORMATFILE>)
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; my($line) = $_;
+&nbsp;&nbsp;&nbsp; chomp($line);
+&nbsp;&nbsp;&nbsp; push(@fields, $line);
+&nbsp;&nbsp;&nbsp; $line =~ m/^(.+)\{/;
+&nbsp;&nbsp;&nbsp; isValidField(%dummyInterface, $1) or
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; die "Bad field name >$1&lt; in report definition $reportFormatFile.\n";
+&nbsp;&nbsp;&nbsp; }
+&nbsp; close(REPORTFORMATFILE);
+&nbsp; return(@fields);
+&nbsp; }
+
+&nbsp;&nbsp;
+sub makeReportString(\%\@)
+&nbsp; {
+&nbsp; my(%record) = %{(shift)};
+&nbsp; my(@fields) = @{(shift)};
+&nbsp; my($recordString);
+&nbsp; my($lengthString) = "0";
+&nbsp; my($blankString) = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ";
+&nbsp; $blankString = $blankString . $blankString . $blankString . $blankString;
+&nbsp; $blankString = $blankString . $blankString . $blankString . $blankString;
+&nbsp; my($field);
+&nbsp; foreach $field (@fields)
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; chomp($field);
+&nbsp;&nbsp;&nbsp; if($field =~ /(\S+)\{(.+)\}/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; my($fieldName) = $1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; my($fieldValue) = $record{$fieldName};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(!defined($fieldValue))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $fieldValue = "|n/a$fieldName|";
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; my($fieldLength) = length($fieldValue);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $lengthString = $2;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if($lengthString eq "n")
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { $lengthString = 1000; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; elsif ($lengthString eq "")
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { $lengthString = 0; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; elsif (!defined($lengthString))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { $lengthString = 0; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; elsif($lengthString =~ /^\d+$/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {$lengthString = $lengthString; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { $lengthString = 0; }
+&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if($lengthString == 0)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $recordString .= ($fieldValue . ", ");
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; elsif ($lengthString == 1000)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $recordString .= ($fieldValue . "\n");
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; elsif ($lengthString > $fieldLength)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $recordString .= $fieldValue;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $recordString .= substr($blankString, 0, 1 + $lengthString - $fieldLength);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $recordString .= substr($fieldValue, 0, $lengthString -1);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $recordString .= " ";&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } #end if regex
+&nbsp;&nbsp;&nbsp; } #end foreach
+&nbsp; return($recordString);
+&nbsp; }
+
+sub makeHeadings(\@$)
+&nbsp; {
+&nbsp; my(@fields) = @{(shift)};
+&nbsp; my($reportDefinitionFilename) = shift;
+&nbsp; my(%dummyInterface);
+&nbsp; newInterface(%dummyInterface, "dummy");
+&nbsp; my($field);
+&nbsp; my($blankString) = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ";
+&nbsp; $blankString = $blankString . $blankString . $blankString . $blankString;
+&nbsp; my($dashString) = "-------------------";
+&nbsp; $dashString = $dashString . $dashString . $dashString . $dashString;
+&nbsp; my($headingString) = "\nReport definition $reportDefinitionFilename,&nbsp;&nbsp;&nbsp; ";
+&nbsp; $headingString .= "run date ";
+&nbsp; $headingString .= `date +"%Y/%m/%d @ %H:%M:%S"`;
+&nbsp; $headingString .= "\n\n";
+&nbsp; foreach $field (@fields)
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; chomp($field);
+&nbsp;&nbsp;&nbsp; if($field =~ /(\S+)\{(.+)\}/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; my($fieldName) = $1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; my($fieldLength) = length($fieldName);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; my($lengthString) = $2;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if($lengthString eq "n")
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { $lengthString = 1000; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; elsif ($lengthString eq "")
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { $lengthString = 0; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; elsif (!defined($lengthString))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { $lengthString = 0; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; elsif($lengthString =~ /^\d+$/)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {$lengthString = $lengthString; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { $lengthString = 0; }
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if($lengthString == 0)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $headingString .= ($fieldName . ", ");
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; elsif ($lengthString == 1000)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $headingString .= ($fieldName);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; last;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; elsif ($lengthString > $fieldLength)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $headingString .= $fieldName;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $headingString .= substr($blankString, 0, 1 + $lengthString - $fieldLength);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $headingString .= substr($fieldName, 0, $lengthString);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $headingString .= " ";&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } #end if regex
+&nbsp;&nbsp;&nbsp; } #end foreach
+&nbsp; $headingString .= "\n$dashString\n";
+&nbsp; return($headingString);
+&nbsp; }
+
+sub makeReport(\%$)
+&nbsp; {
+&nbsp; my($reportString);
+&nbsp; my(@reportStrings);
+&nbsp; my(%records) = %{(shift)};
+&nbsp; my($reportFormatFile) = shift;
+&nbsp; my(@fields) = acquireReportFieldList($reportFormatFile);
+
+&nbsp; print makeHeadings(@fields,$reportFormatFile);
+&nbsp;&nbsp;
+&nbsp; my($key);
+&nbsp; foreach $key (sort(keys(%records)))
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; my(%rec) = %{$records{$key}};
+&nbsp;&nbsp;&nbsp; push(@reportStrings, makeReportString(%rec, @fields));
+&nbsp;&nbsp;&nbsp; }
+&nbsp; print join("\n", sort(@reportStrings));
+&nbsp; print "\n";
+&nbsp; }</pre>
+</td>
+</tr>
+</table>
+
+<p>The usage() subroutine prints out how the program is used.
+<p>The printFields() subroutine prints out all field names, in alpha order.
+These are the only field names acceptable in report definition files. Case
+counts. The best way to use this functionality is to redirect it to a new
+report definition file, after which formatting is a simple matter of reordering,
+deleting unneeded fields, and appending field lengths in braces.
+<p>The acquireReportFieldList($) subroutine uses the filename contained
+in its argument as the report definition file filename, reads the file,
+and returns a list of field names and their lengths, in the same format
+as in the file itself. It's the responsibility of subroutines using this
+list to parse out the name and length.
+<p>Subroutine makeReportString(\%\@) takes two arguments, the first being
+a hash defining all fields for a specific interface. The second argument
+is a list of fields to be reported on, in the proper order, with field
+lengths (the list returned by acquireReportFieldList($)).&nbsp; makeReportString(\%\@)
+returns a properly spaced string containing the proper fields in the proper
+order. This subroutine is called for each interface by sub makeReport(\%$).
+It is called exclusively by makeReport(\%$).
+<p>Subroutine makeHeadings(\@) produces a properly spaced header including
+field names, based on the field list in its argument. Once again, the field
+list is the return from acquireReportFieldList($). Subroutine makeHeadings(\@)
+is called exclusively by the makeReport(\%$) subroutine.
+<p>Subroutine makeReport(\%$) has total responsibility for making the report.
+The first arg is a hash having an element for each interface. The key of
+each element is the interface name, while the value is an anonymous hash
+reference. This hash has all information about all interfaces. The second
+argument is the name of the report definition file. Based on these two
+arguments, a complete report can be made. This subroutine works its magic
+by delegating the work to makeHeadings(\@), makeReportString(\%\@), and
+acquireReportFieldList($).
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<tr>
+<td>
+<pre>sub main()
+&nbsp; {
+&nbsp; my(@lines) = ifconfig2list();
+&nbsp; my(%interfaces) = parseIfconfig(@lines);
+
+&nbsp; if($#ARGV &lt; 0)
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; usage();
+&nbsp;&nbsp;&nbsp; }
+&nbsp; elsif($ARGV[0] eq "report")&nbsp;
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; if($#ARGV == 1)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; makeReport(%interfaces, $ARGV[1]);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; usage();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; }
+&nbsp; elsif($ARGV[0] eq "full")&nbsp;
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; if($#ARGV == 0)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; displayAll(%interfaces);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; usage();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; }
+&nbsp; elsif($ARGV[0] eq "fields")&nbsp;
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; if($#ARGV == 0)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printFields();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; usage();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; }
+&nbsp; else
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; usage();
+&nbsp;&nbsp;&nbsp; }
+&nbsp; }
+
+main();</pre>
+</td>
+</tr>
+</table>
+
+<p>The preceding main routine is self-explanitory. According to your command
+line, it calls either printFields(), makeReport(), displayAll(), or usage().
+Be sure to include the call to main() at the bottom, or your program will
+do nothing.
+<h1>
+<a NAME="browsershell"></a>Creating a Browser Shell for Your Reports</h1>
+
+<hr WIDTH="100%"><font size=+2>Warning! As written here, this script is
+a security risk for any production or Internet connected computer. Adopt
+a level of security appropriate to your environment before implementing
+this script!</font>
+<hr WIDTH="100%">
+<br>The reports discussed earlier on this page work just fine on your Linux
+desktop. It's likely that these reports, or something like them, need to
+be accessed by clerical employees on their browsers -- possibly Windows
+or Mac hosted browsers. Fortunately that's not difficult. You need to write
+a CGI script to act as a shell to the reporting commands, and pass them
+in after the question mark in the URL. The following is the CGI script
+acting as a browser shell:
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" BGCOLOR="#CCFFFF" >
+<tr>
+<td>
+<pre>#!/usr/bin/perl -w
+# By Steve Litt
+# PUBLIC DOMAIN, NO WARRANTEE. USE AT YOUR OWN RISK
+# THIS SCRIPT IS A KNOWN SERIOUS SECURITY RISK
+# MODIFY AS NECESSARY TO PREVENT PROBLEMS AT YOUR SITE
+
+use strict;
+&nbsp;&nbsp;
+sub decode($)
+&nbsp; {
+&nbsp; $_[0] =~ s/\+/ /g;&nbsp;&nbsp; ### Change + to space
+&nbsp; my(@parts) = split /%/, $_[0];
+&nbsp; my($returnstring) = "";
+
+&nbsp; (($_[0] =~ m/^\%/) ? (shift(@parts)) : ($returnstring = shift(@parts)));
+
+&nbsp; my($part);
+&nbsp; foreach $part (@parts)
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; $returnstring .= chr(hex(substr($part,0,2)));
+&nbsp;&nbsp;&nbsp; my($tail) = substr($part,2);
+&nbsp;&nbsp;&nbsp; $returnstring .= $tail if (defined($tail));
+&nbsp;&nbsp;&nbsp; }
+&nbsp; return($returnstring);
+&nbsp; }
+
+sub printHeader()
+&nbsp; {
+&nbsp; print "Content-type: text/html\n\n&lt;html>&lt;body>&lt;pre>\n";
+&nbsp; }
+
+sub printReport()
+&nbsp; {
+&nbsp; my($cmd) = decode($ENV{"QUERY_STRING"}) . " 2>&amp;1";
+&nbsp; my(@lines) = `$cmd`;
+&nbsp; my($line);
+&nbsp; foreach $line (@lines)
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp; chomp($line);
+&nbsp;&nbsp;&nbsp; print $line . "\n";
+&nbsp;&nbsp;&nbsp; }
+&nbsp; }
+
+sub printFooter()
+&nbsp; {
+&nbsp; print "&lt;/pre>&lt;/body>&lt;/html>";
+&nbsp; }
+
+sub main()
+&nbsp; {
+&nbsp; printHeader();
+&nbsp; printReport();
+&nbsp; printFooter();
+&nbsp; }
+
+main();</pre>
+</td>
+</tr>
+</table>
+
+<p>Assume the script that reports on the ifconfig program is called ifclook,
+and the CGI shell to make ifclook available on browsers is called showrpt.cgi.
+<p>In my case, my ifclook script is in /home/slitt/sample, while the showrpt.cgi
+script, to be web accessible, must be in /home/slitt/public_html. Therefore,
+I can web access the report, using report definition file inet.rpt in the
+sample directory, with the following url:
+<br>&nbsp;
+<table BORDER COLS=1 WIDTH="100%" >
+<tr>
+<td>
+<pre>http://mydesk.domain.cxm/~slitt/showrpt.cgi?../sample/ifclook+report+../sample/inet.rpt</pre>
+</td>
+</tr>
+</table>
+
+<p>Because Linux demands a full path to executables not on the path, you
+must precede ifclook by ./ even if ifclook (or whatever other command you
+want to run) is in the same directory as showrpt.cgi.
+<br>
+<hr WIDTH="100%"><b><font size=+2>WARNING! Do not use the preceding showrpt.cgi
+script in an environment requiring security. As is obvious, a simple change
+of url can do anything the default Apache user is capable of, including
+pulling up the /etc/passwd file or deleting files. Change the script as
+appropriate to protect your environment.</font></b>
+<p><b><font size=+2>You may wish to start by preventing commands outside
+the current directory, and hardcoding the ./, and possibly hardcoding an
+extension on the report script.</font></b>
+<p><b><font size=+3>Do not use the showrpt.cgi script on a production or
+Internet-connected box until you have fixed these security issues!!!</font></b>
+<br>
+<hr>
+<p>&nbsp;[ <a href="../../troubleshooters.htm">Troubleshooters.com</a>
+| <a href="../index.htm">Code Corner</a> | <a href="mailto:slitt@troubleshooters.com">Email
+Steve Litt</a> ]
+<p><a href="../../cpyright.htm#top"><img SRC="../../images/biglcpyr.gif" BORDER=0 height=30 width=30></a><a href="../../cpyright.htm#top">Copyright
+(C)1998 by Steve Litt</a> --
+<a href="../../cpyright.htm#top">Legal</a>
+<br>&nbsp;
+<br>&nbsp;
+</body>
+</html>
+

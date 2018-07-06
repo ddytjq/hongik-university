@@ -1,0 +1,885 @@
+ID=F0314
+URL=http://www.vbip.com/xml/soap_syd.asp
+SIZE=44070
+DATE=09/07/2002
+TIME=13:18:41
+DATASET=Visual Basic
+HTML=
+<html>
+
+<head>
+<title>Simple Object Access Protocol: A Step-By-Step Approach</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+<meta name="description" content="In the article, we will create a simple SOAP service, and a client to access that service.">
+<meta name="keywords" content=" ">
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta name="ROBOTS" content="INDEX,FOLLOW">
+
+	<link rel="stylesheet" type="text/css" href="../../vbip_nn.css">
+
+</head>
+
+<body bgcolor="#FFFFFF">
+<form name="GlobalForm" ID="GlobalForm">
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="100%">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="120"><img border="0" src="../_borders/vbip_logo3.gif" width="132" height="50"></td>
+          <td valign="middle">
+				<p align="center">
+              <!-- start BITS ad HTML -- top of page -- 468x60 banner www.bitsonthewire.com         --> 
+               <iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=0" width=468 height=60 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no> 
+                 <a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=1">
+                   <img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=1&siteid=1126&ad_type=0">
+                 </a></iframe> 
+              <!-- stop BITS ad HTML -- top of page -- 468x60 banner                                --> 
+				&nbsp;
+              <a href="http://www.amazon.com/exec/obidos/redirect-home/vbipvisualbasici">
+              <img border="0" src="../images/gnused120x60.gif" width="120" height="60"></a></p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+      <hr noshade color="#FF9933">
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+    <p class="barsidecaption">
+    	<a href="../default.asp">Home</a> -
+      	<a href="../whatsnew.asp"> What's New</a> - <a href="../tools.asp"> Tools&amp;Technologies</a> -
+      	<a href="../resources.asp"> Resources</a> - <a href="../resources/books/default.asp">Books</a>
+        - <a href="../forum/">Forum</a>
+    </p>
+    </td>
+  </tr>
+  <tr>
+    <td width="100%" height="1" valign="top">
+      <hr noshade color="#FF9933">
+    </td>
+  </tr>
+</table>
+
+<table width="100%" cellspacing="1" cellpadding="2" bordercolor="#800000" border="1">
+  <tr>
+    <td width="100%" bgcolor="#FF9933">
+      <font color="#FFFFCC">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="21%">
+          <SCRIPT LANGUAGE=javascript>
+          <!--
+          if(navigator.appName.indexOf('Microsoft')>=0)
+          {
+          document.write('<a HREF="javascript:void(0);" class="tbcaption" onClick="window.external.AddFavorite(location.href, document.title);">Add to Favorites</a>');
+          }
+          // -->
+          </SCRIPT>
+          </td>
+          <td width="79%">
+            <p align="right" class="tbcaption"><a href="../default.asp" class="tbcaption">Home</a> -
+            <a href="../tools.asp" class="tbcaption">Tools&amp;Technologies</a> -
+            <a href="./" class="tbcaption">
+            XML and SOAP</a> - SOAP: A Step-By-Step Approach</td>
+        </tr>
+      </table>
+      </font>
+    </td>
+  </tr>
+</table>
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+
+<!--table-->
+    <td width="125" valign="top"  style="border-left: 1px solid #800000; border-right: 1px solid #800000; " bgcolor="#FF9933">
+
+    <table border="0" width="100%">
+     <tr>
+        <td width="100%" bgcolor="#FFCC00" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " height="20">
+          <p align="center" class="barsidecaption">[Advertisement]</td>
+      </tr>
+      <tr>
+        <td width="100%" style="border: 1px solid #800000; " height="120">
+<!-- start BITS ad HTML -- first 125x125 banner www.bitsonthewire.com                 --> 
+<iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=-6" width=125 height=125 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no>
+<a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=3"><img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=3&siteid=1126&ad_type=-6"></a></iframe> 
+<!-- stop BITS ad HTML -- 125x125 banner                                             --> 	
+        </td>
+      </tr>
+         
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Search vbip.com]</td>
+      </tr>
+      <tr>
+      
+        <td valign="top" width="100%" height="21">
+        
+			<input type="text" size="7" name="search_site">&nbsp;
+			<input type="button"  value="Go" onclick='location.href="http://www.vbip.com/search2/search.asp?Realm=vbip.com&Match=1&Terms="+document.GlobalForm.search_site.value;'>	
+		
+        </td>
+      </tr>
+         
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Search other VB sites]</td>
+      </tr>
+      <tr>
+        <td valign="top" width="100%" height="21">
+        
+			<input type="text" size="7" name="search_web">&nbsp;
+			<input type="button"  value="Go" onclick='location.href="http://www.vbip.com/search2/search.asp?Realm=Other+VB+Websites&Match=1&Terms="+document.GlobalForm.search_web.value;'>	
+		      
+      </tr>
+     
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Featured Book]</td>
+      </tr>
+      <tr>
+        <td valign="top" width="100%" height="21">
+<center><script src="http://rcm.amazon.com/e/cm?t=vbipvisualbasici&l=st1&search=vb%20net&mode=books&p=8&o=1" type="text/JavaScript"></script><noscript>
+<MAP NAME="boxmap"><AREA SHAPE="RECT" COORDS="14, 200, 103, 207" HREF="http://rcm.amazon.com/e/cm/privacy-policy.html?o=1"><AREA COORDS="0,0,10000,10000" HREF="http://www.amazon.com/exec/obidos/redirect-home/vbipvisualbasici"></MAP><img src="http://rcm-images.amazon.com/images/G/01/rcm/120x240.gif" width="120" height="240" border="0" usemap="#boxmap" alt="Shop at Amazon.com">
+
+</noscript>
+
+</center>
+        </td>
+      </tr>
+     
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+          <p align="center" class="barsidecaption">[Newsletter]</td>
+      </tr>
+      <tr>
+        <td width="100%" height="56">
+          <form method="POST" action="../sub.asp" onSubmit="">
+            <table border="0" width="100%" cellspacing="0">
+              <tr>
+                <td width="84%">
+                <input type="text" name="T1" size="8" style="font-family: Tahoma; color: #800000; font-size: 8pt; background-color: #FFCC99; border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " value="your e-mail"></td>
+                <td width="16%"><input type="submit" value="Sub" name="B1" style="font-family: Tahoma; font-size: 8pt; color: #800000"></td>
+              </tr>
+              <tr>
+                <td width="100%" colspan="2"><input type="radio" value="V1" checked name="R1"><span class="barsidecaption">HTML</span>
+                  <input type="radio" name="R1" value="V2"><span class="barsidecaption">Text</span></td>
+              </tr>
+            </table>
+          </form>
+        </td>
+      </tr>
+
+      <tr>
+        <td width="100%" style="border-left: 1px solid #800000; border-right: 1px solid #FFFFCC; border-top: 1px solid #800000; border-bottom: 1px solid #FFFFCC; " bgcolor="#FFCC00" height="21">
+      <p align="center" class="barsidecaption">
+      [Partners]
+      </tr>
+	
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.vbcity.com" target="_blank"><img border="0" src="..//images/vbcity2_100x30.gif" width="100" height="30"></a>
+  </tr>
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.vbweb.co.uk/" target="_blank"><img border="0" src="..//images/vbweb_button.gif" width="100" height="30"></a>
+  </tr>  
+      <tr>
+        <td width="100%" height="12" align="center">
+      <a href="http://www.vbwire.com" target="_blank"><img border="0" src="..//images/VBWire-btn.gif" width="100" height="30"></a>
+      </tr>
+
+  <tr>
+        <td width="100%" height="22">
+      <p align="center"><a href="http://www.developersdex.com/vb" target="_blank"><img border="0" src="..//images/vbdex.gif" width="100" height="30"></a>
+  </tr>  
+  <tr>
+        <td width="100%" height="3">
+        <center>
+        <!-- BEGIN ACKY CODE -->
+		<a href="http://www.acky.net" target="_blank"><img
+		src="http://www.acky.net/banners/ackbut3.gif" width="88" height="31"
+		border="0" alt="Acky.net is your one stop shop for all of your web
+		developing needs"></a>
+		<!-- END ACKY CODE -->
+		</center>
+  </tr>
+    </table>
+
+    </td>
+    <td valign="top" bgcolor="#FFFFFF">
+      <blockquote>
+<p align="right"><br>
+SOAP - Simple Object Access Protocol - is the hottest thing in XML development
+right now. It has a major role to play in Microsoft's next generation of Visual
+Studio, and it is the basis of their &quot;.NET&quot; strategy. If you're
+looking to write a bullet-proof SOAP service now, in VB6, then look no further
+than Microsoft's SOAP toolkit for VB; but if you really want to <b>understand</b> 
+what SOAP is all about, then you need to get under the hood, and start building
+your own objects around the SOAP standard. This article aims to get you started.</p>
+<p align="right">In the article, we will create a simple SOAP service, and a
+client to access that service. The service will be in the form of an Active
+Server Page, which I have called soap.asp - it will need to live in the root
+directory of your Personal Web Service (by default c:\inetpub\wwwroot\) Our
+service will accept and process SOAP requests made by our client - a VB exe,
+with a single module, and a start-up <i>Sub Main()</i>.</p>
+<p class="ChapterTitle" align="right">
+<font color="#008080">Simple Object Access Protocol: A Step-By-Step Approach<br>
+</font>
+<font size="4" color="#000000">By Syd Egan</font>
+</p>
+<p><img border="0" src="../images/A.gif" align="left">s we know, SOAP is a call-response mechanism, which operates in a
+client-server paradigm. The client (your application) makes a <i>call</i> to the
+server (a web server, somewhere on the internet), passing in parameters; and the
+server provides a <i>response</i>. Both call and response are transported in the
+form of XML documents. Therefore, to build our own example SOAP system, we need
+both a client and a server - a <i>caller</i> and a <i>responder</i>.</p>
+<p>The example we will follow is a very simple one: we will build a service that
+will calculate the tax due on a sales transaction. In traditional VB terms well
+will create a function with the following definition:</p>
+<blockquote>
+<p class="code"><font color="#000080">Public Function</font> GetSalesTax(<font color="#000080">ByVal</font>
+pSalesTotal <font color="#000080">As Double</font>) <font color="#000080">As
+Double</font><br>
+&nbsp;&nbsp;&nbsp; GetSalesTax = pSalesTotal * 0.04<br>
+<font color="#000080">End Function</font></p>
+</blockquote>
+<p>Crude, but effective (if you live in a state where the sales tax rate is 4%!)</p>
+<p>This function defines a method name (GetSalesTax), a parameter (pSalesTotal -
+representing the total value of the sale) and a return value (the result of the
+function). In more traditional object-oriented terms, we might think of
+pSalesTotal as an &quot;IN&quot; parameter, and the GetSalesTax result as an
+&quot;OUT&quot; parameter. Quite straightforwardly: sales-total in; sales-tax
+out. A SOAP service can be thought of in terms of &quot;IN&quot; and
+&quot;OUT&quot; parameters - the client passes &quot;IN&quot; parameters to the
+server, and then receives the &quot;OUT&quot; parameters in return. So, in order
+to create our SOAP service, we need a server that will listen for requests to
+GetSalesTax, accompanied by &quot;IN&quot; parameters, and which will respond
+with &quot;OUT&quot; parameters, indicating the correct tax amount. Let's start
+with the client - the <i>caller</i>. How do we call the SOAP service to make our
+request.</p>
+<p class="ChapterH2">The Client</p>
+<p>In traditional VB terms, our request to the GetSalesTax function described
+above, would be something such as:</p>
+<blockquote>
+<p class="code">dblSalesTax = GetSalesTax(100)</p>
+</blockquote>
+<p>Returning a value of $4.</p>
+<p>If the GetSalesTax function was contained within an external object, such as
+an MTS server, then the call would need to reference the server DLL:</p>
+<blockquote>
+<p class="code"><font color="#000080">Dim</font> objTax <font color="#000080">As
+New</font> CTaxCalc<br>
+dblSalesTax = objTax.GetSalesTax(100)</p>
+</blockquote>
+<p>In a SOAP system the call is little different, only the request is formatted
+as an XML document, which is passed up to the server. The appropriate document
+contains the same details as the MTS call -a method to call, and the parameter
+name and value.</p>
+<blockquote>
+<p class="code">&lt;GetSalesTax&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;SalesTotal&gt;100&lt;/SalesTotal&gt;<br>
+&lt;GetSalesTax&gt;</p>
+</blockquote>
+<p>In order to ensure that the server can correctly identify and decrypt this
+method call, it is wrapped up in a larger document, called a SOAP envelope,
+which references the universal name-space of the SOAP envelope standard.</p>
+<blockquote>
+<p class="code">&lt;SOAP:Envelope xmlns:SOAP=&quot;urn:schemas-xmlsoap-org:soap.v1&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;SOAP:Header&gt;&lt;/SOAP:Header&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;SOAP:Body&gt;<br>
+<font color="#808080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;GetSalesTax&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;SalesTotal&gt;100&lt;/SalesTotal&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;GetSalesTax&gt;</font><br>
+&nbsp;&nbsp;&nbsp; &lt;/SOAP:Body&gt;<br>
+&lt;/SOAP:Envelope&gt;</p>
+</blockquote>
+<p>Finally, to complete our SOAP request document, we will add a name-space
+reference to our method call, which points to the object which contains the
+method - the equivalent of the object declaration (Dim objTax As New CTaxCalc)
+in our MTS method call.</p>
+<blockquote>
+<p class="code"><font color="#808080">&lt;SOAP:Envelope xmlns:SOAP=&quot;urn:schemas-xmlsoap-org:soap.v1&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;SOAP:Header&gt;&lt;/SOAP:Header&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;SOAP:Body&gt;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;m:GetSalesTax xmlns:m=&quot;urn:myserver/soap:TaxCalc&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;SalesTotal&gt;100&lt;/SalesTotal&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/m:GetSalesTax&gt;<br>
+<font color="#808080">&nbsp;&nbsp;&nbsp; &lt;/SOAP:Body&gt;<br>
+&lt;/SOAP:Envelope&gt;</font></p>
+</blockquote>
+<p>Now that we have built our SOAP request document, we are ready to send it to
+the server. The request is a simple HTTP post - just like posting a web form in
+your internet browser. Of course, your internet browser masks all the complexity
+of sending a form to a server; and in the longer-term .NET will mask this
+process from your VB code too. But for now, we need to do the job ourselves; and
+I have been using Microsoft's XML HTTP Request object to give me a helping hand.
+(The XMLHTTPRequest is an object within the MSXML class library (MSXML.DLL), and
+it comes with IE5.) Assuming that <i>strEnvelope</i> contains the XML document
+described above, the request is formatted thus:</p>
+<blockquote>
+  <p class="code"><font color="#000080">Dim</font> objHTTP <font color="#000080">As
+  New</font> MSXML.XMLHTTPRequest<br>
+  <font color="#000080">Dim</font> strEnvelope <font color="#000080">As String</font><br>
+  <br>
+  <font color="#008000">'Set up to post to our localhost server</font><br>
+  objHTTP.open &quot;post&quot;, &quot;http://localhost/soap/soap.asp&quot;<br>
+  <br>
+  <font color="#008000">'Set a standard SOAP/ XML header for the content-type</font><br>
+  objHTTP.setRequestHeader &quot;Content-Type&quot;, &quot;text/xml&quot;<br>
+  <br>
+  <font color="#008000">'Set a header for the method to be called</font><br>
+  objHTTP.setRequestHeader &quot;SOAPMethodName&quot;, _<br>
+  &quot;urn:myserver/soap:TaxCalc#GetSalesTax&quot;<br>
+  <br>
+  <font color="#008000">'Make the SOAP call</font><br>
+  objHTTP.send strEnvelope<br>
+  <br>
+  <font color="#008000">'Get the return value</font><br>
+  strReturn = objHTTP.responseBody</p>
+</blockquote>
+<p>Now that we have sent our request,
+we move to the server, to see how we set up a SOAP service to listen and respond
+to our calls.</p>
+<p class="ChapterH2">The Server</p>
+<p>Our server needs to be configured to accept the HTTP post sent by the client.
+It will be noted that we direct the client's post to a URL on our local server -
+http://localhost/soap.asp. So our first job is to create this page, to listen
+for, and process, SOAP calls to our server. We know that our ASP will receive an
+XML document, in the form of an HTTP post, with a method name (GetSalesTax), and
+a parameter (SalesTotal). So, to write our basic listener service, all we need
+do is deconstruct the body of the request (the SOAP envelope) and pull out the
+value of the SalesTotal parameter.</p>
+<p>The SOAP envelope posted by the client is contained in the body of the
+request, or in ASP terms the Request object; and because it is XML, we can load
+it into an instance of Microsoft's XMLDOM in our ASP. Soap.asp begins like this:</p>
+<blockquote>
+<p class="code"><font color="#000080">Set</font> objReq =
+Server.CreateObject(&quot;Microsoft.XMLDOM&quot;)<br>
+objReq.Load Request</p>
+</blockquote>
+<p>Thus objReq contains the SOAP envelope we created on the client, and we can
+extract the value of the SalesTotal parameter by running an XSL pattern query,
+using the SelectSingleNode method of the XML DOM object :</p>
+<blockquote>
+<p class="code">strQuery = &quot;SOAP:Envelope/SOAP:Body/m:GetSalesTax/SalesTotal&quot;&nbsp;<br>
+varSalesTotal = objReq.SelectSingleNode(strQuery).Text</p>
+</blockquote>
+<p>With the parameter extracted, we
+can make our calculation to get the sales-tax:</p>
+<blockquote>
+<p class="code">varSalesTax = varSalesTotal * 0.04</p>
+</blockquote>
+<p>Now we have the return value for sales-tax - the <i>response</i> - ready to
+pass back to the client, but as with the request, we need to format this
+response correctly, in order to comply with the SOAP standard. The SOAP response
+envelope conforms to a format-type identical to the request. The only difference
+is that the &quot;IN&quot; parameter (SalesTotal, in our case) is replaced by an
+&quot;OUT&quot; parameter - SalesTax, and the method name indicates that the
+document is a <i>response</i>:</p>
+<blockquote>
+<p class="code"><font color="#808080">&lt;SOAP:Envelope xmlns:SOAP=&quot;urn:schemas-xmlsoap-org:soap.v1&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;SOAP:Header&gt;&lt;/SOAP:Header&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;SOAP:Body&gt;</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;m:GetSalesTaxResponse xmlns:m=&quot;urn:myserver/soap:TaxCalc&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;SalesTax&gt;4&lt;/SalesTax&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/m:GetSalesTaxResponse&gt;<br>
+<font color="#808080">&nbsp;&nbsp;&nbsp; &lt;/SOAP:Body&gt;<br>
+&lt;/SOAP:Envelope&gt;</font></p>
+</blockquote>
+<p>We can build up this document, either by string-concatenation, or by creating
+a new instance of a DOM, and appending the appropriate nodes.</p>
+<p>Back on the client, the response is received, and can be decoded by
+extracting the appropriate node from the Envelope document:</p>
+<blockquote>
+  <p class="code"><font color="#000080">Dim</font> objReturn <font color="#000080">As
+  New</font> MSXML.DomDocument<br>
+  objReturn.LoadXML strReturn</p>
+  <p class="code">strQuery = _<br>
+  &quot;SOAP:Envelope/SOAP:Body/m:GetSalesTaxResponse/SalesTax&quot;<br>
+  dblTax = objReturn.SelectSingleNode(strQuery).Text</p>
+</blockquote>
+<p>And that's it! A functional, compliant SOAP service in a few easy steps. Of
+course, the service that we have provided is far from sophisticated, but that is
+to miss the point. In the not-too-distant future, Visual Studio 7 will
+completely mask the implementation of SOAP; but I believe that there is value in
+understanding the way the engine turns beneath the hood. SOAP itself is a very
+simple protocol; and I hope you leave this article with a better understanding
+the infrastructure that lies behind SOAP, and the methodology through which
+SOAP-based component services are going to be provided in the future.</p>
+<p class="ChapterH2">Appendix 1: VB Client Code</p>
+<p>NB - This project contains a single module, with a Sub Main start-up object,
+and references the MSXML library.&nbsp;</p>
+<p align="center"><span style="font-size:10.0pt;mso-bidi-font-size:12.0pt;
+font-family:Verdana;mso-fareast-font-family:&quot;Times New Roman&quot;;mso-bidi-font-family:
+&quot;Times New Roman&quot;;mso-ansi-language:EN-US;mso-fareast-language:EN-US;
+mso-bidi-language:AR-SA">
+<img width="449" height="357" src="images/soap_s1.jpg" v:shapes="_x0000_i1025"></span></p>
+<p>The code assumes you are running a <i>local</i> web server (<i>localhost</i>),
+and that <i>soap.asp</i> is located in the web root, as described below.</p>
+<div align="center">
+  <center>
+  <table border="0" width="90%" bgcolor="#EFEFEF" cellspacing="0" cellpadding="4">
+    <tr>
+      <td width="100%">
+        <blockquote>
+          <p class="code"><font color="#000080">Sub</font> Main()<br>
+          <br>
+          &nbsp;&nbsp; <font color="#000080">Dim</font> objHTTP <font color="#000080">As
+          New</font> MSXML.XMLHTTPRequest<br>
+          &nbsp;&nbsp; <font color="#000080">Dim</font> strEnvelope <font color="#000080">As
+          String<br>
+          &nbsp;&nbsp; Dim</font> strReturn <font color="#000080">As String<br>
+          &nbsp;&nbsp; Dim</font> objReturn <font color="#000080">As New</font>
+          MSXML.DOMDocument<br>
+          &nbsp;&nbsp; <font color="#000080">Dim</font> dblTax <font color="#000080">As
+          Double<br>
+          &nbsp;&nbsp; Dim</font> strQuery <font color="#000080">As String</font><br>
+          <br>
+          <font color="#008000">&nbsp;&nbsp; 'Create the SOAP Envelope</font><br>
+          &nbsp;&nbsp; strEnvelope = _<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;&lt;SOAP:Envelope xmlns:SOAP=&quot;&quot;urn:schemas-xmlsoap-org:soap.v1&quot;&quot;&gt;&quot;
+          &amp; _<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;&lt;SOAP:Header&gt;&lt;/SOAP:Header&gt;&quot;
+          &amp; _<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;&lt;SOAP:Body&gt;&quot; &amp; _<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;&lt;m:GetSalesTax xmlns:m=&quot;&quot;urn:myserver/soap:TaxCalculator&quot;&quot;&gt;&quot;
+          &amp; _<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;&lt;SalesTotal&gt;100&lt;/SalesTotal&gt;&quot;
+          &amp; _<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;&lt;/m:GetSalesTax&gt;&quot;
+          &amp; _<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;&lt;/SOAP:Body&gt;&quot; &amp; _<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;&lt;/SOAP:Envelope&gt;&quot;<br>
+          <font color="#008000"><br>
+          </font>&nbsp;&nbsp; <font color="#008000">'Set up to post to our local
+          server</font><br>
+          &nbsp;&nbsp; objHTTP.open &quot;post&quot;, &quot;http://localhost/soap.asp&quot;,
+          False<br>
+          <br>
+          &nbsp;&nbsp; <font color="#008000">'Set a standard SOAP/ XML header
+          for the content-type</font><br>
+          &nbsp;&nbsp; objHTTP.setRequestHeader &quot;Content-Type&quot;,
+          &quot;text/xml&quot;<br>
+          <br>
+          &nbsp;&nbsp;<font color="#008000"> 'Set a header for the method to be
+          called</font><br>
+          &nbsp;&nbsp; objHTTP.setRequestHeader &quot;SOAPMethodName&quot;, _<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;urn:myserver/soap:TaxCalculator#GetSalesTax&quot;<br>
+          <br>
+          &nbsp;&nbsp;<font color="#008000"> 'Make the SOAP call</font><br>
+          &nbsp;&nbsp; objHTTP.send strEnvelope<br>
+          <br>
+          &nbsp;&nbsp; <font color="#008000">'Get the return envelope</font><br>
+          &nbsp;&nbsp; strReturn = objHTTP.responseText<br>
+          <br>
+          &nbsp;&nbsp; 'Load the return envelope into a DOM<br>
+          &nbsp;&nbsp; objReturn.loadXML strReturn<br>
+          <br>
+          &nbsp;&nbsp; <font color="#008000">'Query the return envelope</font><br>
+          &nbsp;&nbsp; strQuery = _<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;SOAP:Envelope/SOAP:Body/m:GetSalesTaxResponse/SalesTax&quot;<br>
+          &nbsp;&nbsp; dblTax = objReturn.selectSingleNode(strQuery).Text<br>
+          <br>
+          &nbsp;&nbsp; Debug.Print dblTax<br>
+          <br>
+          <font color="#000080">End Sub</font></p>
+        </blockquote>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+<p class="ChapterH2">Appendix 2: ASP Server Code</p>
+<p>This code resides in an ASP - Soap.asp, in the root directory of the web
+server.</p>
+<div align="center">
+  <center>
+  <table border="0" width="90%" bgcolor="#EFEFEF" cellspacing="0" cellpadding="4">
+    <tr>
+      <td width="100%">
+        <blockquote>
+          <p class="code"><span style="background-color: #FFFF00">&lt;%</span><br>
+          <br>
+          <font color="#000080">Set</font> objReq =
+          Server.CreateObject(&quot;Microsoft.XMLDOM&quot;)<br>
+          <br>
+          <font color="#008000">'Load the request into XML DOM</font><br>
+          objReq.Load Request<br>
+          <br>
+          <font color="#008000">'Query the DOM for the input parameter</font><br>
+          strQuery = &quot;SOAP:Envelope/SOAP:Body/m:GetSalesTax/SalesTotal&quot;<br>
+          varSalesTotal = objReq.SelectSingleNode(strQuery).Text<br>
+          <br>
+          <font color="#008000">'Calculate the sales tax</font><br>
+          varSalesTax = varSalesTotal * 0.04<br>
+          <br>
+          <font color="#008000">'Prepare the return envelope</font><br>
+          strTmp = _<br>
+          &quot;&lt;SOAP:Envelope xmlns:SOAP=&quot;&quot;urn:schemas-xmlsoap-org:soap.v1&quot;&quot;&gt;&quot;
+          &amp; _<br>
+          &quot;&lt;SOAP:Header&gt;&lt;/SOAP:Header&gt;&quot; &amp; _<br>
+          &quot;&lt;SOAP:Body&gt;&quot; &amp; _<br>
+          &quot;&lt;m:GetSalesTaxResponse xmlns:m=&quot;&quot;urn:myserver/soap:TaxCalc&quot;&quot;&gt;&quot;
+          &amp; _<br>
+          &quot;&lt;SalesTax&gt;&quot; &amp; varSalesTax &amp; &quot;&lt;/SalesTax&gt;&quot;
+          &amp; _<br>
+          &quot;&lt;/m:GetSalesTaxResponse&gt;&quot; &amp; _<br>
+          &quot;&lt;/SOAP:Body&gt;&quot; &amp; _<br>
+          &quot;&lt;/SOAP:Envelope&gt;&quot;<br>
+          <br>
+          <font color="#008000">'Write the return envelope</font><br>
+          Response.Write strTmp<br>
+          <br>
+          <span style="background-color: #FFFF00">%&gt;</span></p>
+        </blockquote>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+<p align="right">Syd Egan is a Project
+Leader at ComponentSource<br>
+<a href="http://www.componentsource.com" target="_blank">http://www.componentsource.com</a><br>
+The Definitive Source Of Software Components</p>
+<hr noshade color="#FF9933">
+<p align="center">
+<script src="http://rcm.amazon.com/e/cm?t=vbipvisualbasici&l=st1&search=soap%20programming%20&mode=books&p=15&o=1" type="text/JavaScript"></script><noscript>
+<MAP NAME="boxmap"><AREA SHAPE="RECT" COORDS="7, 224, 96, 232" HREF="http://rcm.amazon.com/e/cm/privacy-policy.html?o=1"><AREA COORDS="0,0,10000,10000" HREF="http://www.amazon.com/exec/obidos/redirect-home/vbipvisualbasici"></MAP><img src="http://rcm-images.amazon.com/images/G/01/rcm/468x240.gif" width="468" height="240" border="0" usemap="#boxmap" alt="Shop at Amazon.com"></noscript>
+</p>
+        
+    <hr noshade color="#FF9933">
+    <table width="90%" align="center" border="0">
+      <tr>
+        <td width="25%">
+          <img border="0" src="../../images/comments.gif">
+        </td>
+        <td width="75%">
+          Please, post here only feedback for the article/tutorial/sample you
+          have read above.<br>
+          If you have any question and like to get an answer, post your messages in the <a href="http://www.vbip.com/forum/">Forum</a>.
+        <td>
+      </tr>
+    </table>
+    
+    
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?307">comments for Syd Egan</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Sathyanathan Sundaram Saturday, March 24, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?335">Perpetual error message</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Barney Monday, April 30, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?339">VB Module</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Derrick Wednesday, May 02, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?341">explanation on TaxCalc component</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">mprb Thursday, May 03, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?345">Great example</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Ray Carmody Monday, May 14, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?347">Best One</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">S Apte Monday, May 14, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?353">Great example</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">real term Sunday, May 20, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?396">Component</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">M.N.Arunkumar Thursday, June 28, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?417">Example a HUGE help.</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Royden Friday, July 13, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?418">ERROR 91</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Manoj Friday, July 13, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?421">Error 91 - object variable not set</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Amin Monday, July 16, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?423">error 91.. solution doesn't work...</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Manoj Monday, July 16, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?437">Soap does not work</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">jsevere Friday, July 27, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?451">Nice Example</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Wesley Thursday, August 02, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?457">Good Example with some clarifications</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Karthik Tuesday, August 07, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?460">Good example</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Cesar Thursday, August 09, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?474">Exact what I needed</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Abdullah Harput Tuesday, August 28, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?475">Worthless</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Ned Robinson Tuesday, August 28, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?476">Worthless</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Ned Robinson Tuesday, August 28, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?477">OK, I got it working</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Ned Robinson Tuesday, August 28, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?494">Best I have seen</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Partha Monday, September 03, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?495">Best I have seen</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Partha Monday, September 03, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?535">It worked fine (local and remote)</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Pablo Friday, September 21, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?560">SOAP with VB service on APACHE-SOAP?</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Nishant Tuesday, October 16, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?568">Truly Great; Simplifying it...</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Sarat Vepachedu Wednesday, October 17, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?573">Fixed Error-91</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Kevin Thursday, October 18, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?575">NICE!</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">sjors pals Monday, October 22, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?586">It doesn't work fo me</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Tom Carr Tuesday, October 30, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?606">Good one!</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Krishna Tuesday, November 13, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?607">Goo example for understanding SOAP</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Philip Tuesday, November 13, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?615">Error doesn't work at all.</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Manoj Monday, November 19, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?631">Error msg</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Rovina Friday, December 07, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?636">Soap Setup</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Tom Carr Monday, December 10, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?640">Excellent SOAP example</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Hari Bandaru Wednesday, December 12, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?641">Ivory Soap</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Nick Hrones Wednesday, December 12, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?650">Really good explanation</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Vasu Tuesday, December 18, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?656">How to resolve Error </a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Abhijeet Thursday, December 20, 2001</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?674">The best way to present SOAP concept </a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Bhanu Prasad M Tuesday, January 01, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?686">A trick to error  91 </a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">stranger Tuesday, January 08, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?721">Worked First Time.  Excellent Example</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Mark Castle Friday, February 01, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?722">Eror</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Ameur Friday, February 01, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?763">Object.required: Solution?</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Albert Wednesday, March 06, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?802">Please help me!!!!</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Deniz Friday, April 05, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?838">This is not an example of SOAP !!!</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">man Thursday, April 25, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?852">Inadequate explanation</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">Virendra Verma Friday, May 10, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?806">NO ONE HAS THE ANSWER FOR THE ERROR ...</a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">JP Sunday, April 07, 2002</font></i>	
+			</p>
+			
+			<p><b><font face="Arial" size="2" color="#800000"><a href="../../comment.asp?818">Error Executing </a></font></b><br>
+			<i><font color="#808080" face="Times New Roman" size="2">pbrune Monday, April 15, 2002</font></i>	
+			</p>
+			
+        <p>
+        <form name="newcomm" method="POST" action="../../add_comments.asp">
+          <p><input align="right" border="0" src="../../images/addyours2.gif" name="I1" type="image"></p>
+          <input type="hidden" name="page" value="/xml/soap_syd.asp">
+          <input type="hidden" name="title">
+	  <input type="hidden" name="actionID" value="add">
+        </form>
+        <SCRIPT LANGUAGE="JavaScript">
+        	{document.newcomm.title.value = document.title}
+        </SCRIPT>
+	<br>
+        <p>
+        <hr noshade color="#FF9933">
+
+</blockquote>
+<p><center>
+<!-- start BITS ad HTML -- bottom of page 468x60 banner www.bitsonthewire.com         --> 
+  <iframe src="http://ads.bitsonthewire.com/admgriframe.asp?siteid=1126&ad_type=2" width=468 height=60 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no> 
+    <a href="http://ads.bitsonthewire.com/adrdrmanager.asp?loc=2">
+      <p>
+      <img border="0" src="http://ads.bitsonthewire.com/admanager.asp?loc=2&siteid=1126&ad_type=2">
+    </a>
+  </iframe> 
+<!-- stop BITS ad HTML -- bottom of page 468x60 banner                                --> 
+</center></p>
+    </td>
+</table>
+<table border="1" width="100%" cellspacing="1" cellpadding="2" bordercolor="#800000">
+  <tr>
+    <td width="100%" bgcolor="#FF9933">
+      <font color="#FFFFCC">
+      <table border="0" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="20%"></td>
+          <td width="80%">
+            <p align="right" class="tbcaption"><a href="../default.asp" class="tbcaption">Home</a> -
+            <a href="../tools.asp" class="tbcaption">Tools&amp;Technologies</a> -
+            <a href="./" class="tbcaption">
+            XML and SOAP</a> - SOAP: A Step-By-Step Approach
+          </td>
+        </tr>
+      </table>
+      </font>
+    </td>
+  </tr>
+</table>
+&nbsp;<table border="0" width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="121" valign="top">
+<!-- START OF WEBTRENDS LIVE TAG -->
+<!-- Copyright 2001 NetIQ Corporation -->
+<!--  For privacy concerns, check our Privacy Policy at http://www.webtrendslive.com/privacy_policy.htm -->
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+// Modification of this code is not allowed and will permanently disable your account!
+// SiteName:  Visual Basic Internet Programming
+function wtl_Tag4_27048()
+{
+	function D8( d)
+	{
+		var fwd=1, seed= new Date('01/01/2000'), key= "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+		var s= key.charAt( d.getFullYear()-2000)+key.charAt( d.getMonth()+1)+key.charAt( d.getDate());
+		s+= key.charAt( d.getHours())+key.charAt( d.getMinutes())+key.charAt( d.getSeconds());
+		while( seed.getDay()!=fwd) seed= new Date(seed.getTime() + 86400000);
+		var w= Math.floor( (d.getTime()-(seed.getTime()+86400000)) / 604800000 );
+		s+= key.charAt( (w-(w%16))/16 );
+		s+= key.charAt( w%16);
+		return s;
+	}
+
+	var t = new Date();
+	var W="tagver=4&si=27048&fw=1&bn=13";
+	W+="&tz="+escape(t.getTimezoneOffset());
+	W+="&ch="+escape(t.getHours());
+	W+="&cl="+escape(D8(t));
+	W+="&ti="+escape(document.title);
+	W+="&url="+escape(window.document.URL);
+	W+="&rf="+escape(window.document.referrer);
+	W+="&js=Yes";
+	W+="&ul="+(navigator.appName=="Netscape"?navigator.language:navigator.userLanguage);
+	if(typeof(screen)=="object")
+	{
+	W+="&sr="+screen.width+"x"+screen.height;
+	W+="&cd="+screen.colorDepth;
+	W+="&jo="+(navigator.javaEnabled()?"Yes":"No");
+	}
+	
+	
+	document.write('<A TARGET="_blank" HREF="http://www.webtrendslive.com/redirect.asp?siteID=27048">');
+	document.write('<IMG ID="WTL_TAG" BORDER="0" WIDTH="100" HEIGHT="30" ALT="This Site Tracked by WebTrendsLive." SRC="http://p.wtlive.com/S003-00-9-14-186109-27048/button4.asp?'+W+'">');
+	document.write('</A>');
+	
+}	
+
+wtl_Tag4_27048();
+//-->
+</SCRIPT>
+
+
+<NOSCRIPT>
+<A TARGET="_blank" HREF="http://www.webtrendslive.com/redirect.asp?siteID=27048">
+<IMG BORDER="0" WIDTH="100" HEIGHT="30" ALT="This Site Tracked by WebTrendsLive." SRC="http://p.wtlive.com/S003-00-9-14-186109-27048/button4.asp?tagver=4&si=27048&fw=1&bn=13&js=No&"></A></NOSCRIPT>
+
+
+<!-- END OF WEBTRENDS LIVE TAG -->
+
+     
+      </td>
+    <td>
+<p align="center" class="barsidecaption"><a href="../default.asp">Home</a> | <a href="../whatsnew.asp">What's
+New</a> | <a href="../tools.asp"> Tools
+&amp; Technologies</a> | <a href="../resources.asp">Resources</a> | <a href="../resources/books/default.asp">Books</a>
+ | <a href="../forum/">Forum</a></p>
+<p align="center" class="barsidecaption">Report about any problems and errors to <a href="mailto:webmaster@vbip.com">webmaster@vbip.com</a><br>
+Copyright © 1998 - 2002 by <a href="mailto:oleg@vbip.com"> Oleg Gdalevich</a></p>
+    </td>
+    <td valign="top" width="140">
+<p align="center">
+<a target="_blank" href="http://www.amazon.com/exec/obidos/ASIN/B00005AFI2/vbipvisualbasici">
+<img border="0" src="../images/frontpage_button.gif" align="right" width="100" height="38"></a>
+    </td>
+  </tr>
+</table>
+</body>
+
+</html>

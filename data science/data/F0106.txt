@@ -1,0 +1,301 @@
+ID=F0106
+URL=http://www.stlvbug.org/newsgroup.asp
+SIZE=8746
+DATE=09/07/2002
+TIME=13:15:00
+DATASET=Visual Basic
+HTML=
+<html>
+<head>
+	<title>VBUG News Group</title>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body background="images/grytxtr5.jpg" bgcolor="#d5d5d5" BGPROPERTIES=FIXED>
+<p><img src="images/vbug.gif" width="576" height="144"></p>
+
+<!-- begin CoolBar Control -->
+<STYLE TYPE="text/css"><!--
+	
+	A { text-decoration:none; }
+
+	TABLE#tblCoolbar { 
+		background-color:threedface; padding:1px; color:menutext; 
+		border-width:1px; border-style:solid; 
+		border-color:threedhighlight threedshadow threedshadow threedhighlight;
+	}
+
+	TABLE#tblCoolbar TABLE { 
+		font-family:tahoma; font-size:70%; color:menutext; 
+		border:1px solid threedface; cursor:hand; padding:1px; 
+	}
+	
+--></STYLE>
+
+<SCRIPT LANGUAGE="JScript"><!--
+
+	// SET SOME "CONSTANT" VALUES FOR THE SCRIPT
+	// MAKES PLAYING WITH LOOK AND FEEL A LOT EASIER
+
+	var sOffBackColor = "threedface";
+	var sOffTextColor = "menutext"
+	var sOffBorderColor = "threedface";
+	var sOffPadding = "1px 1px 1px 1px";
+
+	var sOverBackColor = "threedface";
+	var sOverTextColor = "menutext"
+	var sOverBorderColor = "threedhighlight threedshadow threedshadow threedhighlight";
+	var sOverPadding = "1px 1px 1px 1px";
+
+	var sDownBackColor = "window"
+	var sDownTextColor = "menutext"
+	var sDownBorderColor = "threedshadow threedhighlight threedhighlight threedshadow";
+	var sDownPadding = "2px 0px 0px 2px";
+
+	var sPaneName = "";
+	var eActiveButton = null;
+
+	// TWO HELPER FUNCTIONS
+	// ONE TO SET BUTTON PADDING AND ONE TO SET BUTTON IMAGE
+
+	function SetButtonPadding(eButton,sPaddingStyle)
+	{
+		eButton.rows[0].cells[0].style.padding = sPaddingStyle;
+		eButton.rows[0].cells[1].style.padding = sPaddingStyle;
+	}
+	
+	function SetButtonImage(eButton,sState)
+	{
+		var eImg = eButton.rows[0].cells[0].children[0];
+		if (eImg) 
+		{
+			var sImgSrc = eImg.src;
+			
+			if (sState == "over")
+			{
+				eImg.src = "../images/minus.gif";
+			}
+			
+			if (sState == "off")
+			{
+				eImg.src = "../images/plus.gif";
+			}
+
+		}
+	}
+	
+	// FOUR EVENT-HANDLER FUNCTIONS
+
+	function button_over(eButton)
+	{
+
+		// IF WE'RE JUST MOUSING ABOUT WITHIN THE BUTTON, THEN BAIL
+
+		if (window.event && eButton.contains(window.event.fromElement)) return false;
+
+		// OTHERWISE CHANGE BUTTON STYLE
+
+		eButton.style.backgroundColor = sOverBackColor;
+		eButton.style.color = sOverTextColor;
+		if (eActiveButton != eButton)
+		{
+			eButton.style.borderColor = sOverBorderColor;
+			SetButtonImage(eButton,"over");
+		}
+	}
+
+
+	function button_out(eButton)
+	{
+		// IF WE'RE JUST MOUSING ABOUT WITHIN THE BUTTON, THEN BAIL
+		
+		if (window.event && eButton.contains(window.event.toElement)) return false;
+
+		// OTHERWISE CHANGE BUTTON STYLE
+
+		if (eActiveButton != eButton)
+		{
+			eButton.style.backgroundColor = sOffBackColor;
+			eButton.style.borderColor = sOffBorderColor;
+			eButton.style.color = sOffTextColor;
+			SetButtonPadding(eButton,sOffPadding);
+			SetButtonImage(eButton,"off")
+		}
+		else
+		{
+			eButton.style.backgroundColor = sDownBackColor;
+			eButton.style.borderColor = sDownBorderColor;
+			eButton.style.color = sDownTextColor;
+		}
+	}
+
+	function button_down(eButton)
+	{
+		eButton.style.borderColor = sDownBorderColor;
+		SetButtonPadding(eButton,sDownPadding);
+	}
+
+	function button_up(eButton)
+	{
+
+		// IF ANOTHER BUTTON IS ACTIVE, RESET IT
+
+		if (null != eActiveButton && eButton != eActiveButton)
+		{
+			eActiveButton.style.backgroundColor = sOffBackColor;
+			eActiveButton.style.borderColor = sOffBorderColor;
+			eActiveButton.style.color = sOffTextColor;
+			SetButtonImage(eActiveButton,"off");
+			SetButtonPadding(eActiveButton,sOffPadding);
+			eActiveButton = null; 
+
+			// insert code here for button hiding 
+			window.status = window.defaultStatus;
+		}
+
+		// IF THE BUTTON WE CLICKED IS NOT THE ACTIVE BUTTON, MAKE IT ACTIVE
+
+		if (eButton != eActiveButton)  
+		{
+			eActiveButton = eButton;
+			eActiveButton.style.borderColor = sDownBorderColor;
+			eActiveButton.style.color = sDownTextColor;
+			SetButtonPadding(eActiveButton,sDownPadding);
+			sPaneName = eActiveButton.id.replace(/tbl(.*)Button/,"$1");
+
+			// insert code here for button showing 
+			//window.status = "Now showing: " + sPaneName;
+		}
+
+		// OTHERWISE, RESET IT
+
+		else  
+		{
+			eActiveButton.style.backgroundColor = sOverBackColor;
+			eActiveButton.style.borderColor = sOverBorderColor;
+			eActiveButton.style.color = sOverTextColor;
+			SetButtonPadding(eActiveButton,sOverPadding);
+			eActiveButton = null;
+
+			// insert code here for button hiding 
+			window.status = window.defaultStatus;
+		}
+
+	}
+
+//--></SCRIPT>
+
+<TABLE ID="tblCoolbar" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONSELECTSTART="return false;">
+<TR VALIGN="middle">
+
+	<TD>
+	<TABLE ID="tblHomeButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="VBUG Home">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><A HREF="default.asp">Home</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>
+
+	<TD>
+	<TABLE ID="tblFeedbackButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="Send Us Feedback">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><A HREF="feedback.asp">Feedback</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>
+
+	<TD>
+	<TABLE ID="tblAppButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="Join VBUG!">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><A HREF="vbugapp.asp">VBUG Application</A>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>	
+	
+	<TD>
+	<TABLE ID="tblMeetingButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="Current Meeting">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><a href="currmtg.asp">Current Meeting</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>
+	
+	<TD>
+	<TABLE ID="tblTipsButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="VBUG Tips and Tricks">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><a href="tips.asp">Tips and Tricks</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>	
+
+	<TD>
+	<TABLE ID="tblNewsButton" CELLPADDING="0" CELLSPACING="0" BORDER="0" ONMOUSEOVER="button_over(this);" ONMOUSEOUT="button_out(this);" ONMOUSEDOWN="button_down(this);" ONMOUSEUP="button_up(this);" TITLE="VBUG Newsgroup">
+	<TR VALIGN="middle">
+		<TD><IMG BORDER="0" SRC="../images/plus.gif"></TD>
+		<TD><a href="newsgroup.asp">VBUG Online Newsgroup</a>&nbsp;&nbsp;&nbsp;</TD>
+	</TR>
+	</TABLE>
+	</TD>	
+
+	<TD>&nbsp;</TD>
+
+</TR>
+</TABLE>
+
+<P><P>
+
+<!-- End CoolBar Control -->
+
+
+<P>&nbsp;</P>
+<font size=2>
+<a href="newmsg.asp">Post New Message</a>
+
+<P>
+
+<table border=0 width=700>
+<tr><td width=400><B>Message Subject</b></td>
+<td><b>Submitted On</b></td>
+<td><B>Submitted By</b></td></tr>
+<tr><td width=400><img src=images/parentmsg.gif><a href="display.asp?id=452"><font size=2>can we use crystal reports in vb6</font></a></td><td><font size=2>7/9/2002 12:30:28 AM</font></td><td>shirish</td></tr>
+<tr><td width=400><img src=images/parentmsg.gif><a href="display.asp?id=448"><font size=2>get username</font></a></td><td><font size=2>7/6/2002 9:56:35 AM</font></td><td>jimmy6</td></tr>
+<tr><td><img src=images/replyarrow.gif><img src=images/replymsg.gif><a href="display.asp?id=448&this=451"><font size=2>RE: get username</font></a></td><td><font size=2>7/8/2002 4:09:23 PM</font></td><td>John Pirkey</td></tr>
+<tr><td width=400><img src=images/parentmsg.gif><a href="display.asp?id=450"><font size=2>DataReport Page Layout</font></a></td><td><font size=2>7/7/2002 11:49:06 PM</font></td><td>John Whittington</td></tr>
+<tr><td width=400><img src=images/parentmsg.gif><a href="display.asp?id=449"><font size=2>find *.txt </font></a></td><td><font size=2>7/6/2002 10:14:52 AM</font></td><td>jimmy6</td></tr>
+<tr><td width=400><img src=images/parentmsg.gif><a href="display.asp?id=445"><font size=2>exe make exe</font></a></td><td><font size=2>7/3/2002 11:11:17 AM</font></td><td>jimmy6</td></tr>
+<tr><td><img src=images/replyarrow.gif><img src=images/replymsg.gif><a href="display.asp?id=445&this=446"><font size=2>RE: exe make exe</font></a></td><td><font size=2>7/3/2002 2:37:06 PM</font></td><td>Jim B</td></tr>
+<tr><td><img src=images/replyarrow.gif><img src=images/replymsg.gif><a href="display.asp?id=445&this=447"><font size=2>RE: RE: exe make exe</font></a></td><td><font size=2>7/4/2002 12:04:47 PM</font></td><td>jimmy6</td></tr>
+<tr><td width=400><img src=images/parentmsg.gif><a href="display.asp?id=444"><font size=2>VB.NET Data Grid Questions</font></a></td><td><font size=2>7/3/2002 9:16:12 AM</font></td><td>Mike</td></tr>
+<tr><td width=400><img src=images/parentmsg.gif><a href="display.asp?id=418"><font size=2>How pass an array control to a function</font></a></td><td><font size=2>6/10/2002 8:49:14 AM</font></td><td>Leonardo</td></tr>
+<tr><td><img src=images/replyarrow.gif><img src=images/replymsg.gif><a href="display.asp?id=418&this=422"><font size=2>RE: How pass an array control to a function</font></a></td><td><font size=2>6/11/2002 10:45:32 AM</font></td><td>Steve Wiseman</td></tr>
+<tr><td><img src=images/replyarrow.gif><img src=images/replymsg.gif><a href="display.asp?id=418&this=438"><font size=2>RE: RE: How pass an array control to a function</font></a></td><td><font size=2>6/20/2002 3:28:42 AM</font></td><td>leonardo</td></tr>
+<tr><td><img src=images/replyarrow.gif><img src=images/replymsg.gif><a href="display.asp?id=418&this=440"><font size=2>RE: How pass an array control to a function</font></a></td><td><font size=2>6/20/2002 2:31:00 PM</font></td><td>Steve Wiseman</td></tr>
+<tr><td><img src=images/replyarrow.gif><img src=images/replymsg.gif><a href="display.asp?id=418&this=443"><font size=2>RE: How pass an array control to a function</font></a></td><td><font size=2>7/1/2002 7:53:47 AM</font></td><td>leonardo</td></tr>
+<tr><td width=400><img src=images/parentmsg.gif><a href="display.asp?id=442"><font size=2>Manipulating an Image</font></a></td><td><font size=2>6/26/2002 8:51:10 AM</font></td><td>omid daghdar</td></tr>
+<tr><td width=400><img src=images/parentmsg.gif><a href="display.asp?id=435"><font size=2>Sending Mail out of VB with formatted text</font></a></td><td><font size=2>6/18/2002 3:29:01 AM</font></td><td>Nijazi Halimaji</td></tr>
+<tr><td><img src=images/replyarrow.gif><img src=images/replymsg.gif><a href="display.asp?id=435&this=436"><font size=2>RE: Sending Mail out of VB with formatted text</font></a></td><td><font size=2>6/18/2002 5:18:13 PM</font></td><td>John Pirkey</td></tr>
+<tr><td><img src=images/replyarrow.gif><img src=images/replymsg.gif><a href="display.asp?id=435&this=441"><font size=2>RE: RE: Sending Mail out of VB with formatted text by Piyush</font></a></td><td><font size=2>6/21/2002 4:56:39 AM</font></td><td>piyush</td></tr>
+<tr><td width=400><img src=images/parentmsg.gif><a href="display.asp?id=437"><font size=2>DB Connections</font></a></td><td><font size=2>6/19/2002 4:12:50 PM</font></td><td>Doug Reed</td></tr>
+<tr><td><img src=images/replyarrow.gif><img src=images/replymsg.gif><a href="display.asp?id=437&this=439"><font size=2>RE: DB Connections</font></a></td><td><font size=2>6/20/2002 8:07:35 AM</font></td><td>Jim B</td></tr>
+</table>
+<P>&nbsp;</p><center>Page 
+<A href=newsgroup.asp?page=1>1</A> <A href=newsgroup.asp?page=2>2</A> <A href=newsgroup.asp?page=3>3</A> <A href=newsgroup.asp?page=4>4</A> <A href=newsgroup.asp?page=5>5</A> <A href=newsgroup.asp?page=6>6</A> <A href=newsgroup.asp?page=7>7</A> <A href=newsgroup.asp?page=8>8</A> <A href=newsgroup.asp?page=9>9</A> <A href=newsgroup.asp?page=10>10</A> <A href=newsgroup.asp?page=11>11</A> <A href=newsgroup.asp?page=12>12</A> <A href=newsgroup.asp?page=13>13</A> <A href=newsgroup.asp?page=14>14</A> <A href=newsgroup.asp?page=15>15</A> <A href=newsgroup.asp?page=16>16</A> <A href=newsgroup.asp?page=17>17</A> <A href=newsgroup.asp?page=18>18</A> <A href=newsgroup.asp?page=19>19</A> <A href=newsgroup.asp?page=20>20</A> <A href=newsgroup.asp?page=21>21</A> <A href=newsgroup.asp?page=22>22</A> </center>
+</font>
+<SCRIPT LANGUAGE="JScript"><!--
+
+	//START WITH Home BUTTON ACTIVE
+
+	button_over(tblNewsButton);
+	button_up(tblNewsButton);
+	button_out(tblNewsButton);
+
+//--></SCRIPT>
+
+</body>
+</html>
+

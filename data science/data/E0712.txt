@@ -1,0 +1,218 @@
+ID=E0712
+URL=http://www.bcbdev.com/articles/wwwtc3answer.htm
+SIZE=12631
+DATE=12/07/02
+TIME=19:23:41
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: Articles</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2>
+<IMG SRC="../images/articlebuilding.gif" BORDER=0 HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 HSPACE="0" >
+</TD>
+</TR>
+<TR>
+<TD WIDTH="7" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">      <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">         <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">      <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">          <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">       <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+<H2>
+What's Wrong With This Code? Volume #3
+</H2>
+<HR>
+<H4>
+The hidden danger of overriding virtual pascal base functions
+</H4>
+<P>
+To help you debug the program, put a breakpoint in the <TT>CreateParams</TT> method of <TT>TForm2</TT>. Place another
+breakpoint on the line where <TT>m_WndClassName</TT> is initialized in the constructor. The red text in the code below
+shows where to place the breakpoints. Then run the program and see which breakpoint gets tripped first.
+</P>
+<!-- this uses a pre tag instead of a code tag because of the red formatting of
+     the break points. Could have used <raw> instead.
+-->
+<pre>
+<font color="navy">//---------------------------------------------------------------</font>
+<font color="navy">// form cpp file</font>
+<b>__fastcall</b> TForm2<b>:</b><b>:</b>TForm2<b>(</b>TComponent<b>*</b> Owner<b>,</b>
+                          <b>const</b> AnsiString <b>&</b>WndClassName<b>)</b>
+    <b>:</b> TForm<b>(</b>Owner<b>)</b><b>,</b>
+      <font color="red">m_WndClassName<b>(</b>WndClassName<b>)</b></font>
+<b>{</b>
+<b>}</b>
+<font color="navy">//---------------------------------------------------------------</font>
+<b>void</b> <b>__fastcall</b> TForm2<b>:</b><b>:</b>CreateParams<b>(</b>TCreateParams <b>&</b> Params<b>)</b>
+<b>{</b>
+    TForm<b>:</b><b>:</b>CreateParams<b>(</b>Params<b>)</b><b>;</b>
+    <font color="red">strcpy<b>(</b>Params<b>.</b>WinClassName<b>,</b>m_WndClassName<b>.</b>c_str<b>(</b><b>)</b><b>)</b><b>;</b></font>
+<b>}</b>
+</pre>
+<P>
+You may be suprised to find that the breakpoint in <TT>CreateParams</TT> gets tripped before the breakpoint on
+<TT>m_WndClassName</TT>. How can that be? That's not possible! <TT>CreateParams</TT> is a virtual function, and
+virtual functions are not supposed to get called before an object is fully constructed. How does <TT>CreateParams</TT>
+get called before the form's constructor runs?
+</P>
+<P>
+To investigate the problem, it is helpful to look at the call stack from the breakpoint in <TT>CreateParams</TT>.
+Figure 2 shows the call stack on my system.
+</P>
+<BR>
+<IMG SRC="wndclasscallstack.gif" BORDER=0 ALIGN="BOTTOM">  <BR>
+<H4>Figure 2. call stack as viewed from CreateParams</H4>
+<P>
+Notice the three lines that are highlighted. At the bottom of the call stack window is the button click event of the
+main form (there is some stuff on the call stack below that, but we don't need to worry about that). The button
+click event constructs a <TT>TForm2</TT> object, so we see the <TT>TForm2</TT> constructor on the call stack.
+The <TT>TForm2</TT> constructor immediately passes control to the base class constructor. As we move up the stack, we can see the base
+class constructors for <TT>TForm</TT> and <TT>TCustomForm</TT>. Moving closer to the top of the stack, we begin to
+reach some calls that have to do with creating the window handle for the form. These functions are called
+<TT>HandleNeeded</TT>, <TT>CreateHandle</TT>, and <TT>CreateWnd</TT>. We eventually reach <TT>CreateParams</TT> at the
+top of the call stack. It looks like <TT>CreateParams</TT> is called by the <TT>CreateWnd</TT> method of
+<TT>TWinControl</TT>. We can verify this by looking at the VCL source in <TT>CONTROLS.PAS</TT>.
+</P>
+<pre>
+<B>procedure</B> TWinControl.CreateWnd;
+<B>var</B>
+  Params: TCreateParams;
+  TempClass: TWndClass;
+  ClassRegistered: Boolean;
+<B>begin</B>
+  CreateParams(Params);
+  ...
+<B>end</B>;
+</pre>
+<P>
+The call stack reveals that <TT>CreateWnd</TT> is called from the base constructors
+of the form, and <TT>CreateWnd</TT> calls <TT>CreateParams</TT>. Here is the crux of the problem. <TT>CreateParams</TT>
+is a virtual function. In pure C++, you are not supposed to call virtual functions from the constructors of a base
+class. Well, that's not entirely correct. You can call them, but if a derived class overrides that function, the derived
+version of the function doesn't get called. This makes sense because you don't want to execute methods of a class before
+its constructor has had a chance to run.
+</p>
+<P>
+Object Pascal, on the other hand, is a different beast. Calling virtual functions from base class constructors is
+perfectly legal. If a derived class overrides a virtual function that is called by the base constructor, then
+the virtual method of the derived class will execute before the base constructor has returned control to
+the derived constructor. This is a dangerous scenario. What if the virtual function accesses an object that
+gets created in the constructor? An access violation will occur because the member object hasn't been initialized yet.
+</P>
+<P>
+Because C++Builder sits on top of a pascal foundation, your C++ forms, datamodules, and controls must play along with
+this oddity in object pascal. The behavior of virtual functions in object pascal explains why the <TT>CreateParams</TT>
+method was running before the constructor for <TT>TForm2</TT> had a chance to run.
+</P>
+<P>
+At this point, the problem should be coming into focus. The <TT>m_WndClassName</TT> string variable is initialized from
+the constructor of <TT>TForm2</TT>. This initialization does not occur until the base class constructor returns. The
+base class constructor calls <TT>CreateParams</TT>. <TT>CreateParams</TT> attempts to use the value of the string
+in <TT>m_WndClassName</TT>. But hold on a minute, <TT>m_WndClassName</TT> hasn't been initialized yet! We are still
+inside the base class constuctor, but <TT>CreateParams</TT> is trying to access a member variable that doesn't get
+initialized until the base constructor returns. As a result, <TT>m_WndClassName</TT> doesn't contain the string
+that we expect it to contain. When we copy <TT>m_WndClassName</TT> into the <TT>Params</TT> structure, we end up
+copying an empty string.
+</P>
+<P>
+The empty string turns out to be the cause of the error. A window cannot have an empty window class name. When we try
+to create the window, the operating system returns an error. The VCL transforms this error into the
+<TT>EWin32Error</TT> that we see via the message box.
+</P>
+<P>
+So now that we know the cause of the error, how do we fix it? Fortunately, the code is not really worth fixing. I can't
+think of a reason why we would want to initialize the window class name of a form from code that is outside the form's
+class. Usually, that sort of thing is initalized internally. Nevertheless, it is worth discussing how we might solve
+the problem. One way would be to use a static method and a static variable. Another method would be to have
+<TT>TForm2</TT> call a method of the main form to retrieve the class name. A third technique would be to create a
+utility class that dishes out class names. <TT>TForm2</TT> could execute a method of this object to fetch its class
+name. None of these solutions sound that appetizing.
+</P>
+<P>
+Instead of worrying about how to fix the code in this edition of w3TC, I think we should look at some of the
+implications of how object pascal deals with virtual functions. First of all, the normal rules of C++ don't always
+apply to C++Builder. This is just great. It's hard enough to memorize how C++ works, let alone trying to remember where
+and when C++Builder deviates from normal C++ behavior. Secondly, you have to be aware of what virtual functions are called
+by the base class constructors of your form. <TT>CreateWnd</TT> and <TT>CreateParams</TT> are two of them, but there
+might be others. If you override these functions, you must be careful not to access any member variables from the virtual
+function. Third, you should realize that the same strange behavior applies to destructors. If you override a virtual
+function and a pascal base class desctructor calls that function, your derived function will indeed execute. This is
+silly in my opinion, and it's a recipe for disaster. Pure C++ does not behave this way. Lastly, you should also realize
+that this behavior of object pascal plagues Delphi programmers too. I could convert the orignial code to Delphi, and
+the result would have been the same. The only difference with Delphi is that Object Pascal allows you to initialize
+variables before calling the base class constructor. 
+</P>
+<P>
+<B>Note: </B> When <TT>CreateParams</TT> attempts to use the contents of the string member variable, the string
+appears to be empty. This was a stroke of luck. There are no guarantees about what an unitialized variable will
+contain. The internal data for the string could have contained garbage. When I first tested the code, I was
+actually expecting an access violation.
+</P>
+<P>
+<B>Note: </B> In this issue, we saw how C++Builder breaks from C++ tradition when you derive a class from a pascal base.
+What happens when you don't derive from pascal classes? If you derive from a C++ base class, and it calls a virtual
+function in its constructor, will the derived version of the function execute? This question is left as an exercise.
+</P>
+<P>
+<B>Note: </B> It appears that we have found a clear deficiency in the object pascal language. Now, let's ask ourselves
+how Borland should fix the problem. Yes, it is bad that certain functions
+in your class might execute before your constructor has run, or after your destructor has run. But what is the best
+way to remedy the problem?
+</P>
+<P>
+One solution would be to delay the creation of the form's window handle until after the constructor has finished.
+This is how OWL worked. In OWL, after the constructor of your window had finished, you still didn't have a real window
+handle yet. The problem with this approach is that the
+<TT>Handle</TT> property of the form would not be available in the constructor of the form. You would not be able to
+set the Height and Width properties of the form in the constructor if this was the case. Furthermore, none of your
+child controls would be real controls yet either. You would not be able to set the Text property of an edit box from
+the form's constructor, because the edit box wouldn't be a real windows control at that point.
+</P>
+<P>
+Another solution would be to change object pascal so it behaves exactly like C++. If a base class constructor calls
+a virtual function, then don't execute the derived version of the function. This causes problems too. A lot of
+the VCL classes override <TT>CreateWnd</TT> and <TT>CreateParams</TT>. If object pascal behaved like C++, then
+<TT>CreateWnd</TT> and <TT>CreateParams</TT> would cease being called, except for the functions in <TT>TWinControl</TT>.
+This would completely break the VCL.
+</P>
+<P>
+At this point, there doesn't seem to be a clear cut way for Borland to make the situation any better than it is now.
+Perhaps the best course of action is to simply memorize which virtual functions are called during construction, and
+to remember not to access member variables of the class when you override those functions.
+</P>
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2002 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

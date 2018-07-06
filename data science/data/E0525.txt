@@ -1,0 +1,141 @@
+ID=E0525
+URL=http://home.att.net/~robertdunn/Papers/TRichEditHandles.html
+SIZE=5563
+DATE=12/07/02
+TIME=19:21:53
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+ 
+<HTML>
+ 
+<HEAD>
+<TITLE>Yet Another Code Site - TRichEdit Handles</TITLE>
+<META NAME="GENERATOR" CONTENT="StarOffice/5.1 (Win32)"> 
+<META NAME="CREATED" CONTENT="19981221;21465146"> 
+<META NAME="CHANGEDBY" CONTENT="Robert Dunn"> 
+<META NAME="CHANGED" CONTENT="19991127;22435772"> 
+<META NAME="Template"
+ CONTENT="C:\Program Files\Microsoft Office\Templates\Web Pages\Web Page Wizard.wiz">
+
+</HEAD>
+
+<BODY>
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="0"
+ CELLSPACING="0"> 
+<TR>
+  <TD WIDTH="100%" VALIGN="TOP" BGCOLOR="#000080">
+	 <H1 ALIGN="CENTER" STYLE="margin-top: 0in"><FONT
+	 COLOR="#ffffff"> <A NAME="TopOfPage"></A> Yet Another Code
+	 Site</FONT></H1>
+  </TD>
+</TR>
+</TABLE> 
+<H2 ALIGN="CENTER"><A NAME="WindowsHandlesMonograph"></A>
+Window Handles vs. TRichEdit (and Other VCL) Controls</H2>
+<P>When enhancing the TRichEdit class, I ran into a couple
+  of problems worth noting.&nbsp; The first is reasonably
+  obvious and the second is likely to be a mystery until
+  reading the VCL source code. 
+</P> 
+<H4>Problem #1</H4>
+<P>The first problem that I ran into was attempting to send
+  messages to a TRichEdit before the underlying Windows
+  handle was created.&nbsp; For example, if you try to do the
+  following in the form's constructor, it will not work. 
+</P> <PRE STYLE="margin-left: 0.5in">::SendMessage(RichEdit1-&gt;Handle, EM_EXLIMITTEXT, 0, (LPARAM) 0x7fffffff);</PRE>
+
+<P> The problem is two-fold:&nbsp; (1) RichEdit1-&gt;Handle
+  is not valid at the time the form's constructor is called
+  and (2) The EM_EXLIMITTEXT message does not return a value
+  indicating success or failure.&nbsp; Worse yet, the error
+  can be silent (no abend) if the handle parameter is a valid
+  window handle (zero, for example, is a valid handle).&nbsp;
+  I do not know for sure, but Windows may simply discard
+  invalid messages with invalid handle parameters, so you may
+  never get an error. 
+</P> 
+<P>I cannot blame anyone for myself for stumbling on this
+  one, though.&nbsp; The next one was much less obvious, at
+  least to me. 
+</P> 
+<H4>Problem #2</H4>
+<P>The second problem was that the VCL destroys and
+  re-creates the TRichEdit control's underlying Windows
+  handle unexpectedly.&nbsp; For example, and I am working
+  from memory here, changing the control's HideScrollBars and
+  ScrollBars properties causes the VCL to destroy the window
+  and re-create it.&nbsp; This is done because these
+  attributes are set when the window is created -- the
+  Windows API does not supply a way to change them on the
+  fly. 
+</P> 
+<P>The VCL jumps through some hoops to try to make this
+  transparent.&nbsp; For example, the current contents of the
+  control are saved in a memory stream and reloaded after the
+  window is re-created. 
+</P> 
+<P>The problem with all of this is that some information
+  about the TRichEdit's current state may get lost in the
+  shuffle.&nbsp; For example, the TRichEditOleCallback code
+  available on this site sends a message to the TRichEdit's
+  true Windows handle to set the Rich Edit OLE callback to
+  point to the TRichEditOleCallback class's OLE
+  handler.&nbsp; The VCL knows nothing about all of this and,
+  thus, does not save and restore the setting.&nbsp; The net
+  result is that, when the Windows handle is destroyed and
+  re-created, the OLE callback functionality is lost. 
+</P> 
+<P>This Windows handle destruction and re-creation dance
+  happens elsewhere in the VCL in a function called
+  RecreateWnd().&nbsp; This may affect your TRichEdit
+  unexpectedly.&nbsp; For example, I had placed my TRichEdit
+  on a TTabSheet on a TPageControl.&nbsp; I then added a user
+  option to change the TPageControl's MultiLine
+  property.&nbsp; Guess what&#133; when the user changes the
+  MultiLine property, the VCL does a RecreateWnd() on the
+  TPageControl which cascades down to all of its child
+  controls.&nbsp; My TRichEdit just got trashed and
+  re-created. 
+</P> 
+<P>I do not blame Borland for taking this approach.&nbsp;
+  In fact, I do not think there is a significantly better way
+  given the limitations in the Windows API.&nbsp; And I even
+  suppose that we should expect side-effects when changing
+  property values since that is pretty much what properties
+  are for.&nbsp; However, I do wish that Borland would
+  document these side-effects in the help files. 
+</P> 
+<P>The good news is that you can override RecreateWnd() in
+  your own TRichEdit-derived class to add the needed
+  functionality. 
+</P> 
+<TABLE WIDTH="100%" BORDER="0" CELLPADDING="2"
+ CELLSPACING="0"> 
+<TR VALIGN="TOP">
+  <TD WIDTH="*" BGCOLOR="#e6e6e6">
+	 <P><FONT SIZE="-1"><B><A HREF="../Yacs.html" TARGET="_top">Home</A> |
+		<A HREF="#TopOfPage" TARGET="_top">Top Of Page</A> |
+		<A HREF="../Yacs.html#CodeSection" TARGET="_top">Code</A> |
+		<A HREF="../Yacs.html#Papers" TARGET="_top">Papers</A> |
+		<A HREF="../Yacs.html#FAQs" TARGET="_top">FAQs</A> |
+		<A HREF="../Links.html" TARGET="_top">Links</A> |
+		<A HREF="../Yacs.html#SiteSearch" TARGET="_top">Search</A> | 
+		<A HREF="../Yacs.html#ContactMe" TARGET="_top">Feedback</A></B></FONT>
+	 </P> 
+  </TD>
+  <TD WIDTH="*" BGCOLOR="#e6e6e6">
+	 <P ALIGN="RIGHT"><FONT SIZE="-1">Page updated 
+		<SCRIPT LANGUAGE="javascript" TYPE="text/javascript" SRC="../lstmoddt.js">
+			</SCRIPT> </FONT> 
+	 </P> 
+  </TD>
+</TR>
+</TABLE> 
+<P ALIGN="CENTER"><FONT SIZE="-1"><B>Copyright &copy; 1998-2001 Thin Air
+  Enterprises and Robert Dunn.&nbsp; All rights reserved.</B></FONT>
+  
+</P> 
+</BODY>
+</HTML>
+
+

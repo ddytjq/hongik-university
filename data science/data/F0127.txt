@@ -1,0 +1,140 @@
+ID=F0127
+URL=http://www.angelfire.com/ny3/visualbasic/26.html
+SIZE=7035
+DATE=09/07/2002
+TIME=13:15:12
+DATASET=Visual Basic
+HTML=<style TYPE="text/css">
+   A{text-decoration: none;}
+   A:hover { color: blue; text-decoration: underline;  }
+</style>
+
+<p align="center">
+<font size="2">
+<font face="tahoma">
+<font color="red">
+<B>Error Handling</b>
+</font>
+</p>
+
+<p align="left">
+<font size="2">
+<font face="tahoma">
+Often when testing (running) our programs we will get a <B>Run-time error</b>. These errors can occur for various reasons, some may be your fault and others may not (for example say you distributed your program and someone renamed, modified, or even better removed a file that was needed). The way we handle these errors is called <B>Error Handling</b>. These are ways we try to handle errors when they happen, instead of letting VB handle it by itself and just ending the program.<Br>
+<Br>
+<font color="blue">
+&nbsp;&nbsp;&nbsp; On Error GoTo <i>MyErrorHandler</i><Br>
+</font>
+<Br>
+The syntax above is one way to handle errors. What it does is, if an error occurs it goes to MyErrorHandler to see what it should do to about the error. MyErrorHandler has to be defined, when defining your error handler you have to put a colon after it, so it would look like this MyErrorHandler: .<Br>
+<Br>
+&nbsp;&nbsp;&nbsp; Private Sub Command1_Click()<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; On Error GoTo HANDLER<Br>
+<Br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Command2.Caption = "TVBPS"<Br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Exit Sub<Br>
+    <Br>
+&nbsp;&nbsp;&nbsp; HANDLER:<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MsgBox "The following error occurred: " & Err.Description, vbCritical, "Error Number: " & Err.Number<Br>
+&nbsp;&nbsp;&nbsp; End Sub<Br>
+<Br>
+In the example above, I named my error handler HANDLER. As you noticed it's the first line of code I typed, that's where it should go, besides how effective would it be if it executed after I got the Run-time error and had to close the program? The run time error I get here is called "Object Required" and its number is "424." Why? I really don't have a Command button called Command2. Now as for the code "Exit Sub" it ends the sub if there is no error, and therefore there is no need for my error handling code to be executed. My error handler there doesn't really solve the problem, but it does tell the user what error has occurred, what number it is, and also the program does not Exit so the user may continue to use it. You also might have noticed the "Err" object in my error handler. What the Err object is is basically VB's way of telling you what error has occurred and how to take care of it.<Br>
+</p>
+
+<p align="center">
+<font size="2">
+<font face="tahoma">
+<font color="red">
+<img src="http://www.angelfire.com/ny3/visualbasic/images/note.jpg"> <B>Note:</b> When using error handlers, you will need to make an error handler for each procedure in your project. You will not be able to define your error handler in a bas and then call it from anywhere in your project. You will get the error "Label not defined."
+</font>
+</p>
+
+<p align="left">
+<font size="2">
+<font face="tahoma">
+<font color="blue">
+On Error Resume Next<Br>
+</font>
+<Br>
+Many programmers may want to skip program errors, keep the code going, and not even inform the user of it. To do that you would use the code <B>"On Error Resume Next."</b>
+</p>
+
+<p align="left">
+<font size="2">
+<font face="tahoma">
+<font color="blue">
+Resume statements<Br>
+</font>
+<Br>
+There are several different ways to use the Resume statements when handling errors. The <B>Resume keyword</b> will make VB retry the error that happened, if used like in the codes below the MsgBox will just loop and loop (since it cannot be corrected at runtime), and the user will be forced to Ctrl+Alt+Del it.<Br>
+<Br>
+&nbsp;&nbsp;&nbsp; Private Sub Command1_Click()<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; On Error GoTo HANDLER<Br>
+<Br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Command2.Caption = "TVBPS"<Br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Exit Sub<Br>
+    <Br>
+&nbsp;&nbsp;&nbsp; HANDLER:<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MsgBox "The following error occurred: " & Err.Description, vbCritical, "Error Number: " & Err.Number<Br>
+&nbsp;&nbsp;&nbsp; Resume<Br>
+&nbsp;&nbsp;&nbsp;End Sub<Br>
+<Br>
+The Resume Next keywords will tell VB to continue executing the codes after the line of code that the error occurs in.<Br>
+<Br>
+&nbsp;&nbsp;&nbsp; Private Sub Command1_Click()<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; On Error GoTo FloppyError<Br>
+<Br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Picture1.Picture = LoadPicture("A:\VBP.bmp")<Br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Form2.Show<Br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Exit Sub<Br>
+    <Br>
+&nbsp;&nbsp;&nbsp; FloppyError:<Br>
+<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Err.Number = 71 Then
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MsgBox "Please enter the Floppy disk, or make sure it is all the way in!"<Br>
+<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<Br>
+<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MsgBox "The following error occurred: " & Err.Description, vbCritical, "Error Number: " & Err.Number<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Resume Next<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<Br>
+<Br>
+&nbsp;&nbsp;&nbsp; End Sub<Br>
+<Br>
+The Resume <i>Label</i> statement tells VB you want it to continue executing code at a specific label or line of code. This Label must be defined just like error handler are defined. Here's an example...<Br>
+<Br>
+&nbsp;&nbsp;&nbsp; On Error GoTo FloppyError<Br>
+<Br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Picture1.Picture = LoadPicture("A:\VBP.bmp")<Br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Form2.Show<Br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Exit Sub<Br>
+<Br>
+&nbsp;&nbsp;&nbsp; FloppyError:<Br>
+<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Err.Number = 71 Then<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MsgBox "Please enter the Floppy disk, or make sure it is all the way in!"<Br>
+<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<Br>
+<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MsgBox "The following error occurred: " & Err.Description, vbCritical, "Error Number: " & Err.Number<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Resume Specific<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<Br>
+<Br>
+&nbsp;&nbsp;&nbsp; Specific:<Br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End<Br>
+<Br>
+&nbsp;&nbsp;&nbsp; End Sub<Br>
+<Br>
+You shouldn 't have to rely on Error Handlers for all errors that occur in your program. For example if in your program you are multiplying or dividing, and are using textboxes you should realize that if you try dividing a string and a number, it's not really going to work out. What I mean the more errors you try to prevent, the less errors your program will have and the better it will be.<Br>
+</p>
+
+<p align=center>
+<font face="tahoma">
+<A HREF ="25.html" TARGET="MainWindow"><font color="blue">Back</a>
+<A HREF ="27.html" TARGET="MainWindow"><font color="blue">Next</a>
+</p>
+
+
+
+
+

@@ -1,0 +1,380 @@
+ID=E0185
+URL=http://www.le.ac.uk/cc/iss/tutorials/cprog/ccccdo.html
+SIZE=15646
+DATE=12/07/02
+TIME=19:18:23
+DATASET=C
+HTML=<!-- Filename: ccccdo.html -->
+<!-- Author: mc39/rjm1 -->
+<!-- Supplied by: Richard Mobbs -->
+<!-- Created: 24-08-95 -->
+<!-- Expires: 24-08-96 -->
+
+<HTML>
+
+<HEAD>
+
+<TITLE>Computer Centre: Introduction to C Programming Course</TITLE>
+
+</HEAD> 
+
+<BODY>
+
+<H1><IMG ALT="[CWC logo]" ALIGN=middle SRC="http://www.le.ac.uk/images/compcen.gif" > Control Loops</H1>
+
+<P>
+<HR>
+<H2>Objectives</H2>
+<P>Having read this section you should have an idea about <B>C</B>'s:
+<OL>
+<LI>Conditional, or Logical, Expressions as used in program control
+<LI>the <TT><B>do while</B></TT> loop
+<LI>the <TT><B>while</B></TT> loop
+<LI>the <TT><B>for</B></TT> loop
+</OL>
+<HR>
+<P>
+
+<H3>Go With The Flow</H3>
+
+Our programs are getting a bit more sophisticated, but they still lack that essential something that makes a computer so necessary. Exactly what they lack is the most difficult part to describe to a beginner. There are only two great ideas in computing. The first is the <I>variable</I> and you've already met that. The second is <I>flow of control</I>.
+
+<P>When you write a list of instructions for someone to perform you usually expect them to follow the list from the top to the bottom, <I>one at a time</I>. This is the simple default flow of control through a program. The <B>C</B> programs we have
+written so far use this one-after-another default flow of control.
+
+<P>This is fine and simple, but it limits the running time of any program we can write. Why? Simply because there is a limit to the number of instructions you can write and it doesn't take long for a computer to read though and obey your list. So how is it that we have programs that run for hours on end if need be? The answer is statements that alter the one-after-another order of obeying instructions. Perhaps the most useful is the <I>loop</I>.
+
+<P>Suppose we ask you to display "Hello  World!" five times on the screen. <I>Easy!</I> you'd say:
+
+<P>
+<PRE>
+<B>
+#include &LT;stdio.h&GT;
+main()
+ {
+   printf("Hello World!\n");
+   printf("Hello World!\n");
+   printf("Hello World!\n");
+   printf("Hello World!\n");
+   printf("Hello World!\n");
+ }</B>
+</PRE>
+
+<P>Indeed, this does exactly what was asked. But now we up the bet and ask you to do the same job for 100 hellos or, if you're still willing to type that much code, maybe 1,000 Hello World's, 10,000 Hello World's, or whatever it takes you to realise this isn't a sensible method!
+
+<P>What you really need is some way of repeating the <B><TT>printf</TT></B> statements without having to write it out each time. The solution to this problem is the <TT><B>while</B></TT>  loop or the <B><TT>do while</TT></B> loop.
+
+<P>
+<HR>
+<P>
+<A NAME= "DW"></A>
+<H3>The <TT>while</TT> and <TT>do while</TT> Loops</H3>
+
+You can repeat any statement using either the <B><TT>while</TT></B> loop:
+
+<P><B><TT>while(<I>condition</I>) <I>compound statement</I>;</TT></B><P>
+
+or the <TT><B>do while</B></TT> loop:
+
+<P><B><TT>do <I>compound statement</I> while(<I>condition</I>);</TT></B>
+
+<P>The <I><B><TT>condition</TT></B></I> is just a test to control how long you want the <I><B><TT>compound statement</TT></B></I> to carry on repeating.
+
+<P>Each line of a <B>C</B> program up to the semicolon is called a statement. The semicolon is the statement's terminator. The braces { and } which have appeared at the beginning and end of our program unit can also be used to group together related declarations and statements into a <I><B><TT>compound statement</TT></B></I> or a <I>block</I>.
+
+<P>In the case of the <TT><B>while</B></TT> loop before the <I><B><TT>compound statement</TT></B></I> is carried out the <I><B><TT>condition</TT></B></I> is checked, and if it is <I>true</I> the <I><B><TT>statement</TT></B></I> is obeyed one more time. If the <I><B><TT>condition</TT></B></I> turns out to be <I>false</I>, the looping isn't obeyed and the program moves on to the next statement. So you can see that the instruction really means <I>while something or other is true keep on doing the statement</I>.
+
+<P>In the case of the <B><TT>do while</TT></B> loop it will always execute the code within the loop at least once, since the <I><B><TT>condition</TT></B></I> controlling the loop is tested at the bottom of the loop. The <B><TT>do while</TT></B> loop repeats the instruction while the <I><B><TT>condition</TT></B></I> is <I>true</I>. If the <I><B><TT>condition</TT></B></I> turns out to be <I>false</I>, the looping isn't obeyed and the program moves on to the next statement.
+
+<P>
+<HR>
+<P>
+<A NAME= "LE"></A>
+
+<H3>Conditions or Logical Expressions</H3>
+
+The only detail we need to clear up is what the <TT><B><I>condition</I></B></TT> (or <I>Logical Expression</I>) can be. How, for example, do we display 100 or 10,000 "Hello World!" messages? The <TT><B><I>condition</I></B></TT> can be any test of one value against another. For example:
+
+<P><B>a&GT;0</B>
+
+<P>is true if <B>a</B> contains a value greater than zero;
+
+<P><B>b&LT;0</B>
+
+<P>is true if <B>b</B> contains a value less than zero.
+
+<P>The only complication is that the test for '<I>something equals something else</I>' uses the character sequence <TT><B>==</B></TT> and not <TT><B>=</B></TT>. That's right: a test for equality uses two equal-signs, as in <B><TT>a==0</TT></B>, while an assignment, as in <B><TT>a=0</TT></B>, uses one. This use of the double or single equal sign to mean slightly different things is a cause of many a program bug for beginner and expert alike!
+
+<P>So what about answering the question? What about the 100 "Hello World"s? Well, for the moment we know easily how to produce an infinite number of Hello World!"s using <TT><B>while</B></TT> loop:
+
+<PRE>
+<B>
+#include &LT;stdio.h&GT;
+  main()
+   {
+    while (1 == 1) printf("Hello World!\n");
+   }</B>
+</PRE>
+
+and using the <B><TT>do while</TT></B> loop:
+
+<P>
+<PRE>
+<B>
+#include &LT;stdio.h&GT;
+  main()
+   {
+    do
+      printf("Hello World!\n");
+    while (1 == 1) 
+   }</B>
+</PRE>
+
+
+If you type either of these programs in and run it you
+will find that your screen fills with a never ending list of "Hello World!"s. Why? Because the condition to keep the repeat going is ( <TT><B>1 == 1</B></TT> ), <I>one equals one</I> in plain English, which is always true! So how do we stop the loop? In some cases it could be by pulling the plug out - but usually
+you can stop an infinite loop by pressing <B>Ctrl-Break</B> or <B>Ctrl-C</B>.
+
+<P>An infinite loop is sometimes useful - I certainly hope the program controlling the nearest nuclear power station is an
+infinite loop that never receives a <B>Ctrl-Break</B> signal! Most loops, however, have to stop some time.
+
+<P>To solve our problem of printing 100 "Hello World!"s we need a counter and a test for when that counter reaches 100. A counter is a simple variable that has one added to it each time through the loop, using an instruction like this:
+
+<P><B><TT>a=a+1;</TT></B>
+
+<P>This always confuses beginners, because they aren't used to seeing the variable on both sides of the equal-sign. All this
+means is that <TT><B>a</B></TT> has one added to it to produce a new value, and this value is stored back in the location called <<TT>B>a</B></TT>. If you're worried, try thinking about it as:
+
+<P>
+<PRE>
+<B>
+temp = a+l;
+a    = temp;
+</B>
+</PRE>
+
+The two approaches are more or less the same. <B>C</B> is a language where anything that's used often can be said concisely, so it lets you say "<I>add one to a variable</I>" using the shorter notation:
+
+<P><TT><B>++a;</B></TT>
+
+<P>The double plus is read "<I>increment <B>a</B> by one</I>". Make sure you know that <B><TT>++a</TT></B>; and <B><TT>a=a+1</TT></B>; are the same thing because you will often see both in typical C programs.
+
+<P>The increment operator <B><TT>++</TT></B> and the equivalent decrement operator <B><TT>--</TT></B>, can be used as either <A HREF="ccccppo.html"><I>prefix</I></A> (before the variable) or <A HREF="ccccppo.html"><I>postfix</I></A> (after the variable). <B>Note:</B> <B><TT>++a</TT></B> increments <B><TT>a</TT></B> before using its value; whereas <B><TT>a++</TT></B> which means use the value in <TT><B>a</B></TT> then increment the value stored in <TT><B>a</B></TT>.
+
+<P>Now it is easy to print "Hello World!" 100 times using the <B><TT>while</TT></B> loop:<P>
+
+<PRE>
+<B>
+#include &LT;stdio.h&GT;
+ main()
+  {
+   int count;
+   count=0;
+   while (count < 100)
+    {
+      ++count;
+      printf("Hello World!\n");
+    }
+  }</B>
+</PRE>
+
+<P>[<A HREF="while.c">program</A>]
+
+<P>or the <B><TT>do while</TT></B> loop:<P>
+
+<PRE>
+<B>
+#include &LT;stdio.h&GT;
+ main()
+  {
+   int count;
+   count=0;
+   do
+    {
+      ++count;
+      printf("Hello, World!\n");
+    } while (count < 100) 
+  }</B>
+</PRE>
+
+<P>[<A HREF="do.c">program</A>]
+
+<P><B>Note:</B> the use of the { and } to form a <I>compound statement</I>; all statements
+between the braces will be executed before the loop check is made.
+
+<P>The integer variable <TT><B>count</B></TT> is declared and then set to zero, ready to count the number of times we have gone round the loop. Each time round the loop the value of count is checked against 100. As long as it is less, the loop carries on. Each time the loop carries on, count is incremented and "Hello World!" is printed - so eventually count does reach 100 and the loop stops.
+
+These little programs are just a bit more subtle than you might think. Ask yourself, do they really print exactly 100 times? Ask yourself: what is the final value of <B><TT>count</TT></B>? If you want to make sure you are right change the <B><TT>printf</TT> </B>to:
+
+<P><B><TT>printf("count is %d",count);</TT></B>
+
+<P>and add a <B><TT>printf</TT></B> after the loop:
+
+<P><B><TT>printf("final value is %d",count);</TT></B>
+
+<P>Make sure you understand why you get the results that you do. What would happen if you changed the initial value of count to be one rather than zero?
+
+<P>
+<HR>
+<P>
+
+<H3>Looping the Loop</H3>
+
+
+We have seen that any list of statements enclosed in curly brackets is treated as a single statement, a <I>compound statement</I>. So to repeat a list of statements all you have to do is put them
+inside a pair of curly brackets as in:
+
+<P>
+<PRE>
+<B>
+while (condition)
+ {
+   statementl;
+   statement2;
+   statement3;
+ }</B>
+</PRE>
+    
+which repeats the list while the <I><B><TT>condition</TT></B></I> is true. Notice that the statements within the curly brackets have to be terminated by semicolons as usual. Notice also that as the <B><TT>while</TT></B> statement is a complete statement it too has to be terminated by a semi-colon - except for the influence of one other punctuation rule. <I>You never have to follow a right curly bracket with a semi-colon</I>. This rule was introduced to make <B>C</B> look tidier by avoiding things like
+
+<P><B><TT>};};};}</TT></B>
+
+<P>at the end of a complicated program. You can write the semi-colon after the right bracket if you want to, but most <B>C</B> programmers don't. You can use a compound statement anywhere you can use a single statement.
+
+<P>
+<HR>
+<P>
+<A NAME="FL"></A>
+
+<H3>The <TT>for</TT> Loop</H3>
+
+The <B><TT>while</TT></B>, and <B><TT>do-while</TT></B>, loop is a completely general way of repeating a section of program over and over again - and you don't really need anything else but... The <B><TT>while</TT></B> loop repeats a list of instructions while some condition or other is <I>true</I> and often you want to repeat something a given number of times.
+
+<P>The traditional solution to this problem is to introduce a variable that is used to count the number of times that a loop has been repeated and use its value in the condition to end the loop. For example, the loop:
+
+<P>
+<PRE>
+<B>
+i=l;
+while (i<10)
+ {
+   printf("%d \n",i);
+   ++i;
+ }</B>
+</PRE>
+
+repeats while <TT><B>i</B></TT> is less than 10. As the <TT><B>++</B></TT> operator is used to add one to <TT><B>i</B></TT> each time through the loop you can see that <B><TT>i</TT></B> is a loop counter and eventualy it will get bigger than 10, i.e. the loop will end.
+
+<P>The question is how many times does the loop go round? More specifically what values of <B><TT>i</TT></B> is the loop carried out for? If you run this program snippet you will find that it prints 1,2,3... and finishes at 10. That is, the loop repeats 10 times for values of <TT><B>i</B></TT> from 1 to 10. This sort of loop - one that runs from a starting value to a finishing value going up by one each time - is so common that nearly all programming languages provide special commands to implement it. In <B>C</B> this special type of loop can be implemented as a <B><TT>for</TT></B> loop.
+
+<P>
+<PRE>
+<B>
+for ( counter=start_value; counter <= finish_value; ++counter )
+  <I>compound statement</I>
+</B>
+</PRE>
+
+
+which is entirely equivalent to:
+
+<P>
+<PRE>
+<B>
+counter=start;
+while (couner <= finish)
+ {
+  statements;
+  ++counter;
+ }
+</B>
+</PRE>
+
+The condition operator &LT;= should be interpreted as <I>less than or equal too</I>. We will be covering all of <B>C</B>'s conditions , or logical expressions, in the next section.
+
+<P>For example to print the numbers 1 to 100 you could use:
+
+<P>
+<TT><B>for ( i=l; i <= 100; ++i ) printf("%d \n",i);</B></TT>
+
+<P>You can, of course repeat a longer list of instructions simply by using a <I>compound statement</I>.
+
+<P>The <B>C</B> <B><TT>for</TT></B> loop is much more flexible than this simple description. Indeed, many would be horrified at the way we have described the <B><TT>for</TT></B> loop without displaying its true generality, but keep in mind that there is more to come.
+
+<P>In the meantime consider the following program, it does a temperature conversion, but it also introduces one or two new concepts:
+
+<OL>
+<LI>our counter does not have to be incremented (deremented) by 1; we can use any value.
+<LI>we can do calculations within the <B><TT>printf</TT></B> statement.
+</OL>
+
+<P>
+<PRE>
+<B>
+#include &LT;stdio.h&GT;
+
+main()
+{
+    int fahr;
+
+    for ( fahr = 0 ; fahr <= 300 ; fahr = fahr + 20)
+        printf("%4d %6.1f\n" , fahr , (5.0/9.0)*(fahr-32));
+
+}
+</B>
+</PRE>
+
+<P>[<A HREF="for.c">program</A>]
+
+<P> and here's another one for you to look at:
+
+<PRE><B>
+#include &LT;stdio.h&GT;
+
+main()
+{
+    int lower , upper , step;
+    float fahr , celsius;
+
+    lower = 0  ;
+    upper = 300;
+    step  = 20 ;
+
+    fahr  = lower;
+
+    while ( fahr <= upper ) {
+                             celsius = (5.0 / 9.0) * (fahr - 32.0);
+                             printf("%4.0f %6.1f\n" , fahr , celsius);
+                             fahr = fahr + step;
+                            }
+}
+</B></PRE>
+<P>[<A HREF="temp.c">program</A>]
+
+<P>
+<HR>
+
+<A HREF="http://www.le.ac.uk/">
+<IMG ALT="[Leicester University]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/lhomebut.gif"></A>
+
+
+<A HREF="http://www.le.ac.uk/CWIS/AS/CC/cc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/ccbut.gif">
+ Computer Centre</A>   
+
+
+<A HREF="cccc.html">
+<IMG ALT="[]" ALIGN=middle SRC="http://www.le.ac.uk/buttons/backbut.gif">
+Introduction C Programming</A>
+
+<HR>
+<ADDRESS>Information Suppliers: <A HREF="http://www.le.ac.uk/rjm1.html">Richard Mobbs</A>, Head of Information Services, Leicester University Computer
+ Centre and Marina Carter, Postgraduate Student, Loughborough University.
+</ADDRESS>
+
+<ADDRESS>Last Updated: August 1995</ADDRESS>
+
+</BODY>
+
+</HTML>
+

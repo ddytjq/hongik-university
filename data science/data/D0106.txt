@@ -1,0 +1,86 @@
+ID=D0106
+URL=http://dogfeathers.com/java/hyprcube-crit.html
+SIZE=3992
+DATE=16/07/02
+TIME=14:37:16
+DATASET=Java
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<meta name="description" 
+content="Critique of My Stereoscopic Animated Hypercube Source Code">
+<meta name="keywords"
+content="hypercube, hyperspace, tesseract, polytope, polyhedron, stereoscopic, anaglyph, geometry, java, Newbold, critique">
+
+<title>Critique of My Stereoscopic Animated Hypercube Source Code</title>
+</head>
+
+<h2 align=center>Critique of My Stereoscopic Animated Hypercube Source Code</h2>
+
+The <a href="hyprcube.html">Stereoscopic Animated Hypercube</a> was my first Java applet.
+Its <a href="hyprjava.html">source code</a> is the only Java source code that I have published.
+This document lists the things that I think are wrong with the code.
+<p>
+I make no apologies for the fact that the Hypercube has not been upgraded from Java 1.0.
+There are still many people using browsers that don't support Java 1.1 and I don't want
+to "break" it for them. I use Java 1.1 for any new applets I write. I would like to be using
+Java 1.2, but the browsers aren't ready yet (as of November 30, 1999).
+<p>
+In Java 1.0, there were no "jar" files so each class file
+had to be a separate request from the web server. This was a strong motivation to minimize
+the number of distinct java classes, at the expense of modularity. The Hypercube applet
+has only 3 classes. Actually in Java 1.1, it could have been done with only 2 classes because the
+Java 1.1 event-listener mechanism would have made it unnecessary to subclass the Frame.
+<p>
+The reason that I didn't use a ScrollBar for the "Projection" and "Speed" controls is that
+scrollbars didn't work right.
+
+<h2>My Criticisms:</h2>
+<ul>
+<li>It is not "thread aware". There is nothing to keep the animation thread from
+	changing the transformation matrices at the same time that the event thread is
+	using them in the paint() function. All I can say is that the effect is (by pure luck)
+	not very noticeable.
+<li>It calls stop() on the animation thread. I have read in the JDK documentation that
+	the stop() function is now considered dangerous.
+	Instead, you are supposed to arrange for the thread to exit its run() function.
+<li>It calls Thread.sleep(). I have read that sleep() is incorrectly implemented in the
+	major browsers and using it can cause the applet to be unresponsive to UI events.
+	I can easily believe this because
+	I have had complaints from people that the applet is sluggish
+	in responding to button clicks, particularly in Windows 95 (though it seems fine on
+	my 200Mhz Pentium). Anyway, an alternative would be to use the wait() function.
+	Call some object's wait(msec) function inside a block of code that is synchronized on that
+	object. Disclaimer: I haven't actually done a performance comparison of the wait vs the sleep.
+	Maybe this is all just a Java urban legend.
+<li>The code that sets the GridBagConstraints is muddled. It would have been better to have
+	a function to set all the properties of a GridBagConstraints on a single function call.
+	Each time a component is added, that function would be called to prepare its constraints.
+<li>The timing in the animation thread could be made more precise. As it is, the calculation
+	time gets added to the sleep time. It would be better to time the calculation and deduct
+	its time from the sleep time.
+</ul>
+
+That's all I can think of at the moment.
+<br>
+--Mark Newbold
+
+<hr><a href="../index.html">&lt;Dogfeathers Home Page&gt;</a>
+&nbsp;
+<a href="../mark/index.html">&lt;Mark's Home Page&gt;</a>
+&nbsp;
+<a href="index.html">&lt;Mark's Java Stuff&gt;</a>
+&nbsp;
+<a href="hyprcube.html">&lt;Hypercube&gt;</a>
+&nbsp;
+<a href="hyprjava.html">&lt;The Source Code&gt;</a>
+<br>
+Email:
+<a href="../contacts.html">Mark Newbold</a>
+<hr>
+This page URL: <a href="http://dogfeathers.com/java/hyprcube-crit.html">
+http://dogfeathers.com/java/hyprcube-crit.html</a>
+
+</body>
+</html>
+

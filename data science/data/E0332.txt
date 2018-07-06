@@ -1,0 +1,109 @@
+ID=E0332
+URL=http://www.hh.se/stud/d98rolb/ansi/strtok().html
+SIZE=4137
+DATE=12/07/02
+TIME=19:19:57
+DATASET=C
+HTML=<html>
+<head>
+  <title>strtok()</title>
+  <meta name="Generator" content="GuideML V1.6">
+  <meta http-equiv="Content-Type" content="text/html">
+</head>
+<body>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="strtod().html"><img src="prev.gif" alt="PREV" border=0></a><a href="strtol().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+<hr>
+<pre>
+strtok-Get a token
+
+Synopsis
+
+        #include &#060;string.h&#062;
+
+        t = strtok(s,b);
+
+        char *t;        /* token pointer */
+        char *s;        /* input string pointer or NULL */
+        const char *b;        /* break character string pointer */
+
+Description
+
+        This function treats the input string as a series of one or more
+        tokens separated by one or more characters from the break string.
+        By making a sequence of calls to the strtok function, you can
+        obtain the tokens in left-to-right order.  To get the first
+        (leftmost) token, supply a non-NULL pointer for the s argument.
+        To get the next tokens, call the function repeatedly with a NULL
+        pointer for the s argument, until you get a NULL return pointer to
+        indicate that there are no more tokens.  The break string can be
+        changed from one call to another.
+
+        Each time it is entered, the strtok function takes the following
+        steps:
+
+            &middot; If the input string is NULL, the strtok function gets the
+              string pointer that was used on the preceding call.
+              Otherwise, it uses the new input string pointer.
+
+            &middot; The strtok function scans forward through the string to the
+              next nonbreak character.        If it is a NULL byte, the
+strtok
+              function returns a value of NULL to indicate that there are
+              no more tokens.
+
+            &middot; The strtok function scans forward through the string to the
+              next break character or the NULL terminator byte.  In the
+              former case, it writes a NULL byte into the string to
+              terminate the token, and then scans forward until the next
+              nonbreak character is found.  In either case, it saves the
+              final value of the string pointer for the next call and
+              returns the token pointer.
+
+        The input string gets changed as the scan progresses.
+        Specifically, a NULL byte is written at the end of each token.
+
+
+Returns
+
+        A NULL pointer is returned when there are no more tokens.
+
+Example
+
+        /*
+         * This example breaks out words that are separated
+         * by blanks or commas. The token pointer takes on
+         * the following values as the program loops:
+         *
+         *   LOOP   TOKEN
+         *    1    &quot;first&quot;
+         *    2    &quot;second&quot;
+         *    3    &quot;third&quot;
+         *    4    &quot;fourth&quot;
+         *    5    NULL
+         */
+        #include &#060;string.h&#062;
+        #include &#060;stdio.h&#062;
+
+        char test[] = &quot;first, second third, fourth&quot;;
+
+        void main(void)
+        {
+            char *token;
+
+            token = strtok(test,&quot;, &quot;);
+            while(token != NULL)
+            {
+                printf(&quot;%sn&quot;,token);
+                token = strtok(NULL,&quot;, &quot;);
+            }
+        }
+
+See Also
+
+        <a href="strcspn().html"> strcspn </a>, <a href="strspn().html"> strspn </a>
+</pre>
+<hr>
+<a href="main.html"><img src="toc.gif" alt="CONTENTS" border=0></a><a href="alphalist.html"><img src="index.gif" alt="INDEX" border=0></a><a href="strtod().html"><img src="prev.gif" alt="PREV" border=0></a><a href="strtol().html"><img src="next.gif" alt="NEXT" border=0></a><a href="http://www.hh.se/stud/d98rolb/programming.html"><img src="home.gif" alt="HOME" border=0></a>
+</body>
+</html>
+

@@ -1,0 +1,346 @@
+ID=G0597
+URL=http://aa.usno.navy.mil/AESOP/about_AESOP.html
+SIZE=15563
+DATE=09/07/2002
+TIME=16:19:21
+DATASET=Astronomy
+HTML=<html>
+<head>
+<title>
+	About AESOP
+</title>
+</head>
+<body background="graphics/bkgwhite.jpg"
+ text="#000000" link="#0000C0" vlink="#800000" alink="#FF0000">
+<basefont size=3>
+
+<table width=100%>
+<tr>
+   <td align=left>
+      <a href="index.html">
+         <img src="graphics/AESOP_logo.gif" align=left 
+          alt="AESOP" border=1 width=180 height=118>
+      </a>
+   </td>
+   <td align=center>
+      <h1>About AESOP</h1>
+   </td>
+</tr>
+</table>
+
+<hr>
+<a href="about_AESOP.html#intro">Introduction</a> &nbsp; &nbsp; &nbsp; 
+<a href="about_AESOP.html#how">How AESOP does Ray Tracing</a> &nbsp; &nbsp; &nbsp;
+<a href="about_AESOP.html#refs">References</a>
+<hr>
+
+<h3><a name="intro">Introduction</a></h3>
+
+Modern high-precision optical systems, such as space astrometric
+interferometers (e.g. Reasenberg et al. 1996, Loiseau and Malbet 1996, 
+Lindegren and Perryman 1996), can require optical path 
+tolerances in the sub-nanometer (1 nm = 10<sup>-9</sup> m) to picometer
+(1 pm = 10<sup>-12</sup> m) regimes over total path lengths on the
+order 10 m.  Such tolerances place extreme requirements on optical analysis 
+programs.  Two questions are of paramount importance:  1) to
+which specific perturbations is a system most sensitive? and 2) are
+there couplings between different perturbations that produce high
+sensitivities (i.e., are there strong correlations between
+perturbation parameters)?  AESOP can be, and has been 
+(<a href="about_AESOP.html#refs">Murison, 1993</a>),
+used to fully answer these questions, as well as to develop physical
+intuition in the picometer OPD regime.
+<p>
+
+<img src="graphics/BeamCompFig.gif" align=right border=1 width=300 height=388 border=0>
+
+A common optical subsystem employed in astronomical 
+interferometers is a <i>beam compressor</i>, used to convert a large aperture input 
+beam (starlight) to a narrow output beam (~1 cm) suitable for
+combining with another such beam to produce interference fringes of 
+sufficient visibility.  A typical beam compressor consists
+of a pair of confocal paraboloidal mirrors, as sketched in Figure 1.
+If perfectly aligned, a flat input wavefront results in a radially
+compressed flat output wavefront.  Misalignment analysis of even such
+a simple system as this generally requires resorting to numerical
+programs.  Usually, such programs are ill-suited for studies involving
+both misalignment parameter variation and aperture-averaged optical path
+difference (OPD) determination, especially in the pm regime.  The need for 
+picometer OPD tolerances is a relatively recent development, driven by 
+ever more demanding sciece objectives.  Such tolerance requirements will 
+likely become more common, and the lack of adequate analysis tools will 
+correspondingly be felt more strongly.
+<p>
+To develop a physical understanding of alignment sensitivities, one
+would much prefer an <i>analytical</i> rather than a numerical
+description of the output wavefront as a function of the misalignment
+parameters.  Unfortunately, an analytical wavefront description of
+misaligned optical systems as simple as a beam compressor, or even a
+single focussing optic, can be too complex to attempt by hand in the
+kind of detail required for sensitivity studies 
+(<a href="about_AESOP.html#refs">Noecker et al. 1993</a>).
+However, computer algebra systems such as Maple have advanced to such
+a state of capability and sophistication that, coupled with the
+processing power of modern computers, complete analytical descriptions
+are now becoming possible.  
+<p>
+AESOP was developed to support the analysis effort involved in
+determining critical sensitivities to optic misalignments in a proposed dual
+interferometric astrometric telescope, 
+<a href="http://cfa-www.harvard.edu/~reasen/points.html" target="_top">POINTS</a> 
+(<a href="about_AESOP.html#refs">Reasenberg et al. 1988, 1995a, 1995b, 1996</a>).  
+POINTS consists of a 
+pair of independent Michelson stellar interferometers and a laser 
+metrology system that measures both the critical starlight paths and the 
+angle between the two interferometer baselines.  The nominal design has 
+baselines of 2 m, telescope apertures of 35 cm, and observes target
+stars separated by roughly 90 degrees.  One of the distinguishing
+features of POINTS is that it employs holographic optical elements
+(HOEs) to accomplish picometer metrology over the full aperture of the
+starlight optical path.  See the Reasenberg et al. references for a
+full description of the instrument, its capabilities, and the
+astrophysical, astrometric, and planet-finding science that POINTS
+would significantly impact. (Information can also be found on the
+POINTS web pages at 
+<a href="http://cfa-www.harvard.edu/~reasen/points.html" target="_top">
+ http://www-cfa.harvard.edu/~reasen/points.html
+</a>.)
+<p>
+A key analysis problem regarding the POINTS interferometers is the
+determination of optical path length errors as a function of various
+optical element misalignments. The path length error budget in a
+precision system such as this is only several tens of picometers.
+With such a tight error budget, it is imperative to determine which
+perturbations lead to large path length errors.  At the pm
+level, often we cannot trust our optical intuition in determining
+misalignment sensitivities.  In such cases, we must rely on numerical 
+analysis to an uncomfortable degree, lacking reliable independent
+checks on the numerical results.  AESOP was created in part to fill this 
+niche.  In the case of POINTS, a numerical
+program called RayTrace (see <a href="about_AESOP.html#refs">Murison (1993)</a> 
+for a description) was written specifically to perform ultra-high 
+precision, sub-picometer OPD variation analyses.  AESOP was developed 
+in parallel with RayTrace.  The two analysis approaches &#150; numerical 
+and analytic &#150; are completely independent and therefore serve as 
+excellent checks upon one another.  
+<p>
+AESOP traces an input ray through a misaligned optical system and
+produces an analytic description of the output ray as a function of
+the system parameters, the misalignment parameters, and the input ray
+position and direction.  A crucial diagnostic is the <i>aperture-averaged</i>
+OPD variation.  The physical principles involved are quite
+simple, since AESOP takes a classical geometric optics approach.  At a
+given reflecting surface, all that is required is to calculate the
+reflected ray direction and the accumulated optical path up to that
+intersection point.  Similarly, at a refracting surface we use Snell's
+law to calculate the refracted ray direction.  If a holographic
+optical element (HOE) is encountered, it is a similarly simple process
+to calculate the output ray direction and the change in optical phase
+across the element (<a href="about_AESOP.html#refs">Murison and Noecker, 1993</a>).  
+The POINTS optical
+subsystems involve all three types of optical surfaces.
+AESOP currently handles reflecting and holographic optical elements.
+Refracting surfaces will be easy to add, due to the extensible
+structure of AESOP.
+<p>
+As simple as the physics is, such a ray tracing process is impossible to
+do analytically by hand (especially the aperture-averaged effects).  The
+inhibiting factor is the rapidly increasing (with
+each successive optical surface) complexity of the
+intermediate expressions that must be algebraically manipulated.  This
+kind of repetitive manipulation of unwieldy objects is precisely what
+computers can do well.  Hence, a programmable computer algebra system like
+Maple is well suited in principle to analyzing misaligned optical
+systems, at least simple ones involving relatively few focussing
+optical surfaces.  
+<p>
+<hr>
+<p>
+
+<a name="how">
+<table border=0 cellpadding=0 cellspacing=0>
+<tr>
+  <td>
+    <a href="about_AESOP.html">
+      <img src="graphics/AESOP_logo_small.gif" align=left
+       alt="AESOP" border=1 width=92 height=60>
+    </a>
+  </td>
+  <td width=15></td>
+  <td valign=bottom>
+    <h3>How AESOP does Ray Tracing</h3>
+  </td>
+</tr>
+</table>
+</a>
+
+<p>
+An overview of the ray tracing process using AESOP is as follows.
+<p>
+(1) In a Maple procedure that the user writes, the user first defines
+the various optical elements comprising the optical system.  These
+surfaces are assembled into a Maple list which AESOP routines will
+make use of.  Perturbations (misalignments) are applied in the form of
+rotations and/or translations of specified optical elements.  AESOP
+provides object rotation and translation procedures to make this a 
+simple process.
+<p>
+(2) The user then defines the input ray, which is subsequently
+launched into the optical system by calling the AESOP procedure
+<b>raytrace()</b>.  AESOP then
+automatically traces the ray to each successive optical element,
+performing series expansions on the perturbation parameter(s) as
+necessary and simplifying the cumbersome expressions as as much as
+possible, until finally an output ray is produced at the detector.
+Progress during this process is communicated via informational
+messages and key intermediate expressions to the monitor screen.  If
+nothing else, there is plenty of stuff the user can peruse while
+waiting for the ray trace to finish, since AESOP is intentionally a
+bit chatty.
+<p>
+(3) The OPD is then calculated from the output ray expressions,
+followed by calculation of the aperture-averaged OPD.
+<p>
+
+<img src="graphics/WavefrontExample.gif" align=right width=300 height=256 border=1>
+
+(4) Optionally, the Zernike components of the OPD are determined next,
+either at the Maple prompt or from within the user's driver procedure.
+The resulting Zernike coefficients may then be combined to produce
+wavefront aberration plots.  The aberrated wavefronts are represented
+by 3D Maple surface plots.  Maple procedures are supplied for making
+the wavefront plots in the Maple worksheet.
+<p>
+Two illustrative examples of this entire process for a simple beam
+compressor are shown 
+<img src="graphics/PDFsmall.gif" alt="PDF logo" width=15 height=16 border=0>
+<a href="Examples/BeamCompExample.pdf">here</a> 
+and 
+<img src="graphics/PDFsmall.gif" alt="PDF logo" width=15 height=16 border=0>
+<a href="Papers/MTN/AESOP_article.pdf">here</a>.
+<p>
+In practice, the essential step for useful analytical ray
+tracing is to make series expansions at each intersection of a ray
+with an optical surface.  (The original insight for this trick is due
+to R.D. Reasenberg.)  This reduces the "equation bloat" considerably.
+Even so, it is still rather easy to cause the intermediate expressions
+to mushroom in size so that they overwhelm the available machine
+resources.  The equation bloat seems to go as some power of the number of
+focussing optical elements in a system.  Flat surfaces certainly
+contribute to increasing equation complexity, but at a rate that pales
+in comparison to that of focussing surfaces.
+<p>
+Since we are interested in analyzing optical systems whose elements
+are slightly misaligned, the small parameters to perform the series
+expansion on are naturally the misalignment perturbations.  Hence,
+AESOP is not meant to analyze the very interesting properties of
+ideal, perfectly aligned optical systems.  It requires at least one
+misalignment or other perturbation parameter.
+<p>
+For a given optical system, a certain amount (sometimes a great
+amount) of tinkering on the part of the user is required to hit upon
+the best ways of simplifying the cumbersome expressions so that their
+size is managable.  Great care has been made in the types of
+simplification taking place in the AESOP ray tracing routines.
+However, they are no doubt optimized for the particular systems the
+author has analyzed and will therefore perhaps be less than
+optimum for other kinds of optical systems.  Hence, AESOP is
+nowhere near the "black box" stage, where a user can provide necessary
+input, crank the handle, and magically produce an answer without
+caring overmuch about the internals of the black box.  Nonetheless,
+AESOP can be quite useful and represents a significant
+advance in capability for analyzing perturbed optical systems and
+performing misalignment sensitivity studies.  It also serves as an
+invaluable check on numerical programs as well as an essential aid to
+developing reliable insight into the arcane and beautiful world of
+high-precision optics.
+<p>
+<hr>
+<p>
+
+<a name="refs">
+<table border=0 cellpadding=0 cellspacing=0>
+<tr>
+  <td>
+    <a href="about_AESOP.html">
+      <img src="graphics/AESOP_logo_small.gif" align=left
+       alt="AESOP" border=1 width=92 height=60>
+    </a>
+  </td>
+  <td width=15></td>
+  <td valign=bottom>
+    <h3>References</h3>
+  </td>
+</tr>
+</table>
+</a>
+
+<p>
+Note: copies of relevant Smithsonian Astrophysical Observatory (SAO) 
+Technical Memoranda are available <a href="Papers/index.html">here</a>.
+<p>
+<font size=-1>
+<blockquote>
+Lindegren, L., and Perryman, M.A.C. (1996).  "GAIA: Global Astrometric
+Interferometer for Astrophysics", <i>Astron. and Astrophys. Supp.</i> 
+<b>116</b>, 579.
+<p>
+Loiseau, S. (1996).  "Global Astrometry with OSI", 
+<i>Astron. and Astrophys. Supp.</i> <b>116</b>, 373. 
+<p>
+Murison, M.A. (1993).  "Ray Trace Analyses of Selected POINTS Optical
+Subsystems", <i>SAO Technical Memorandum</i> TM93-08.
+<p>
+Murison, M.A. (1995).  "Expansion of Wavefront Errors in an Infinite
+Series of Zernike Polynomials", <i>SAO Technical Memorandum</i>
+TM95-04.
+<p>
+Murison, M.A., and Noecker, M.C. (1993).  "Ray Tracing of and Optical
+Path across a Holographic Optical Element", <i>SAO Technical
+Memorandum</i> TM93-04.
+<p>
+Noecker, M.C., Murison, M.A., and Reasenberg, R.D. (1993).
+"Optic-misalignment tolerances for the POINTS interferometers",
+<i>Proceedings of the SPIE - The International Society for
+Optical Engineering</i>, <b>1947</b>, 218.
+<p>
+Reasenberg, R.D., Babcock, R.W., Chandler, J.F., Gorenstein, M.V.,
+Huchra, J.P., Pearlman, M.R., Shapiro, I.I., Taylor, R.S., Bender, P.,
+Buffington, A., Carney, B., Hughes, J.A., Johnston, K.J., Jones, B.F.,
+and Matson, L.E. (1988).  "Microarcsecond optical astrometry - An
+instrument and its astrophysical applications", <i>Astron. J.</i>
+<b>96</b>, 1731.
+<p>
+Reasenberg, R.D., Babcock, R.W., Murison, M.A., Noecker, M.C.,
+Phillips, J.D., and Schumaker, B.L. (1995a). "POINTS: The Instrument
+and its Mission," <i>Proceedings of the SPIE,</i> Conference #2477
+on Spaceborne Interferometry II (Orlando, FL, 17-20 April 1995).
+<p>
+Reasenberg, R.D., Babcock, R.W., Murison, M.A., Noecker, M.C.,
+Phillips, J.D., Schumaker, B.L., Ulvestad, J.S., McKinley, W.,
+Zielinski, R.J., and Lillie, C.F. (1995b).  "POINTS: A Small Low-Cost 
+Spaceborne Astrometric Optical Interferometer", <i>Bull. American
+Astron. Soc.</i>, <b>187</b>, #71.04.
+<p>
+R.D. Reasenberg, R.W. Babcock, M.A. Murison, M.C. Noecker, J.D.
+Phillips, B.L. Schumaker, J.S. Ulvestad, W. McKinley, R.J. Zielinski,
+and C.F. Lillie (1996).  "POINTS: High Astrometric Capacity at Modest
+Cost via Focused Design," <i>Proceedings of the SPIE,</i> Conference
+#2807 on Space Telescopes and Instrumentation IV (Denver, CO, 6-7
+August 1996), in press.
+</blockquote>
+</font>
+<p>
+
+<hr>
+
+<i>Last changed:  24 September 1996</i>
+<address>
+<a href="mailto:murison@arnold.usno.navy.mil">
+ murison@arnold.usno.navy.mil</a>
+</address>
+
+
+</body>
+</html>
+

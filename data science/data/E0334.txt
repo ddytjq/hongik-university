@@ -1,0 +1,237 @@
+ID=E0334
+URL=http://www.linuxdoc.org/HOWTO/C++Programming-HOWTO-7.html
+SIZE=8342
+DATE=12/07/02
+TIME=19:19:59
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
+ <TITLE>C++ Programming HOW-TO: The Standard C++ Library string class </TITLE>
+ <LINK HREF="C++Programming-HOWTO-8.html" REL=next>
+ <LINK HREF="C++Programming-HOWTO-6.html" REL=previous>
+ <LINK HREF="C++Programming-HOWTO.html#toc7" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="C++Programming-HOWTO-8.html">Next</A>
+<A HREF="C++Programming-HOWTO-6.html">Previous</A>
+<A HREF="C++Programming-HOWTO.html#toc7">Contents</A>
+<HR>
+<H2><A NAME="standard-string"></A> <A NAME="s7">7. The Standard C++ Library string class </A></H2>
+
+<P>While the previously mentioned String class (note the uppercase S), is a
+good thing for people coming from Java, then you should take notice of the
+"real" string class provided by The Standard C++ Library.
+<P>The string class was made to overcome one of the greatest pitfalls in C;
+character arrays. While character arrays are extremely fast, they have many
+bad sides. Character arrays are the cause of many bugs, and parsing character
+arrays is very time consuming.
+<P>The string class brings a good interface for parsing and handling strings,
+and it's even STL compatible, so it can be used with all the general STL
+algorithms. Actually you could say that a string is a
+<B>vector&lt;char&gt;</B>. A container of chars, or an advanced array of
+chars.
+<P>Useful string references can be found at the following sites:
+<UL>
+<LI>SGI STL basic_string reference: 
+<A HREF="http://www.sgi.com/tech/stl/basic_string.html">http://www.sgi.com/tech/stl/basic_string.html</A>.</LI>
+</UL>
+<P>
+<P>
+<P>
+<H2><A NAME="ss7.1">7.1 string by example</A>
+</H2>
+
+<P>Creating a string is easy:
+<HR>
+<PRE>
+#include &lt;string>
+#include &lt;iostream>
+
+using namespace std;
+
+int main()
+{
+    string str("Hello World!"); // Or string str = "Hello World!";
+    cout &lt;&lt; str &lt;&lt; endl;
+}
+</PRE>
+<HR>
+<P>This code will create a string called "<B>str</B>', and put "<B>Hello
+World!</B>' into it. It is then being outputted to standard output by using
+cout.
+<P>(Note that I will skip the headers and the namespace from now on.)
+<P>Taking a substring of a string is also easy:
+<HR>
+<PRE>
+string str("Hello Universe!");
+string start = str.substr(0, 5);
+string end = str.substr(5);
+</PRE>
+<HR>
+<P>This will put the first 6 characters into the string "<B>start</B>", and
+the rest into "<B>end</B>".
+<P>To get the size or length of a string, you would simply do this:
+<HR>
+<PRE>
+string str("How long is this string?");
+cout &lt;&lt; "Length of string is: " &lt;&lt; str.size() &lt;&lt; endl;
+</PRE>
+<HR>
+<P>You can also use <B>length()</B> which works exactly the same.
+<P>
+<P>
+<P>
+<H2><A NAME="ss7.2">7.2 Searching a string</A>
+</H2>
+
+<P>Searching a string is much easier than using plain character arrays, the
+string class provides efficient member functions to search through the
+string. All member functions return string::size_type.
+<CENTER><TABLE BORDER><TR><TD>
+<BR>
+Member function </TD><TD>Purpose </TD></TR><TR><TD>
+find() </TD><TD>find the first position of the specified substring </TD></TR><TR><TD>
+find_first_of() </TD><TD>equal to find(), but finds the first position of any character specified</TD></TR><TR><TD>
+find_last_of() </TD><TD>equal to find&thinsp;first&thinsp;of(), but finds the last position of any character specified </TD></TR><TR><TD>
+find_first_not_of() </TD><TD>equal to find&thinsp;first&thinsp;of(), but returns the position of the first character not of those specified </TD></TR><TR><TD>
+find_last_not_of() </TD><TD>equal to find&thinsp;last&thinsp;of(), but returns the last position of any characters not specified </TD></TR><TR><TD>
+rfind() </TD><TD>equal to find(), but searches backwards </TD></TR><TR><TD>
+
+<CAPTION><B>string search member functions</B></CAPTION>
+</TD></TR></TABLE></CENTER>
+<P>A very common thing to do, is to search a string for contents. This can be done by using <B>find()</B>
+<HR>
+<PRE>
+string str("Hello, can you find Ben?");
+string::size_type position = str.find("Ben");
+cout &lt;&lt; "First occurrence of Ben was found at: " &lt;&lt; position &lt;&lt; endl;
+</PRE>
+<HR>
+<P>This code makes a case sensitive search for '<B>Ben</B>' in the string, and
+puts the start position in the variable '<B>position</B>' of type
+string::size_type. Note that the return value is not an int, but a
+string::size_type which is a special implementation defined integral value.
+<P>The member function <B>find_first_of()</B> needs a practical introduction,
+consider this:
+<P>
+<HR>
+<PRE>
+string s = "C++ is an impressive language.";
+string::size_type pos = s.find_first_of(" .");
+
+while (pos != string::npos) {
+    cout &lt;&lt; "Found space or dot at: " &lt;&lt; pos &lt;&lt; endl;
+    pos = s.find_first_of(" .", pos + 1);
+}
+</PRE>
+<HR>
+<P>By using <B>find_first_of()</B>, we can search the string for <B>any</B>
+character of the first argument, here we decide to search for a space or a
+dot.
+<P>Try compiling the program and check the output.
+<P>
+<P>
+<P>
+<H2><A NAME="ss7.3">7.3 A string tokenizer</A>
+</H2>
+
+<P>A very common operation with strings, is to tokenize it with a delimiter of
+your own choice. This way you can easily split the string up in smaller
+pieces, without fiddling with the find() methods too much. In C, you could
+use <B>strtok()</B> for character arrays, but no equal function exists for
+strings. This means you have to make your own. Here is a couple of
+suggestions, use what suits your best.
+<P>The advanced tokenizer:
+<HR>
+<PRE>
+void Tokenize(const string&amp; str,
+                      vector&lt;string>&amp; tokens,
+                      const string&amp; delimiters = " ")
+{
+    // Skip delimiters at beginning.
+    string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+    // Find first "non-delimiter".
+    string::size_type pos     = str.find_first_of(delimiters, lastPos);
+
+    while (string::npos != pos || string::npos != lastPos)
+    {
+        // Found a token, add it to the vector.
+        tokens.push_back(str.substr(lastPos, pos - lastPos));
+        // Skip delimiters.  Note the "not_of"
+        lastPos = str.find_first_not_of(delimiters, pos);
+        // Find next "non-delimiter"
+        pos = str.find_first_of(delimiters, lastPos);
+    }
+}
+</PRE>
+<HR>
+<P>The tokenizer can be used in this way:
+<HR>
+<PRE>
+#include &lt;string>
+#include &lt;algorithm>
+#include &lt;vector>
+
+using namespace std;
+
+int main()
+{
+    vector&lt;string> tokens;
+
+    string str("Split me up! Word1 Word2 Word3.");
+
+    Tokenize(str, tokens);
+
+    copy(tokens.begin(), tokens.end(), ostream_iterator&lt;string>(cout, ", "));
+}
+</PRE>
+<HR>
+<P>The above code will use the Tokenize function, take the first argument
+<B>str</B> and split it up. And because we didn't supply a third parameter
+to the function, it will use the default delimiter " ", that is - a
+whitespace. All elements will be inserted into the vector <B>tokens</B> we
+created. 
+<P>In the end we copy() the whole vector to standard out, just to see the
+contents of the vector on the screen.
+<P>
+<P>Another approach is to let stringstreams do the work. streams in C++ have
+the special ability, that they read until a whitespace, meaning the
+following code works if you only want to split on spaces:
+<P>
+<HR>
+<PRE>
+#include &lt;vector>
+#include &lt;string>
+#include &lt;sstream>
+
+using namespace std;
+
+int main()
+{
+    string str("Split me by whitespaces");
+    string buf; // Have a buffer string
+    stringstream ss(str); // Insert the string into a stream
+
+    vector&lt;string> tokens; // Create vector to hold our words
+
+    while (ss >> buf)
+        tokens.push_back(buf);
+}
+</PRE>
+<HR>
+<P>And that's it! The stringstream will use the output operator (&gt;&gt;) and
+put a string into <B>buf</B> everytime a whitespace is met, <B>buf</B>
+is then used to push_back() into the vector. And afterwards our vector
+<B>tokens</B> will contain all the words in <B>str</B>.
+<P>
+<P>
+<P>
+<HR>
+<A HREF="C++Programming-HOWTO-8.html">Next</A>
+<A HREF="C++Programming-HOWTO-6.html">Previous</A>
+<A HREF="C++Programming-HOWTO.html#toc7">Contents</A>
+</BODY>
+</HTML>
+

@@ -1,0 +1,370 @@
+ID=E0425
+URL=http://www.delorie.com/djgpp/doc/ug/compiling/portother.html
+SIZE=13383
+DATE=12/07/02
+TIME=19:20:50
+DATASET=C
+HTML=<html><head><title>Porting code from other 32-bit compilers to DJGPP</title>
+<base href="http://www.delorie.com/djgpp/doc/ug/compiling/portother.html">
+</head><body><center><!-- BEGIN RICH-MEDIA BURST! CODE --> 
+     <script language="JavaScript"> 
+     <!-- /* (C) 1997-1999 BURST! Media, LLC. All Rights Reserved.*/ 
+     var TheAdcode = 'ad1954a'; 
+     var bN = navigator.appName; 
+     var bV = parseInt(navigator.appVersion); 
+     var base='http://www.burstnet.com/'; 
+     var Tv='/6847'; 
+     var agt=navigator.userAgent.toLowerCase(); 
+     if (bN=='Netscape'){ 
+          if ((bV>=4)&&(agt.indexOf("mac")==-1))
+     {  document.write('<s'+'cript src="'+ 
+           base+'cgi-bin/ads/'+TheAdcode+'.cgi/RETURN-CODE/JS' 
+           +Tv+'">'); 
+          document.write('</'+'script>');    
+     } 
+          else if (bV>=3) {document.write('<'+'a href="'+base+'ads/'+ 
+             TheAdcode+'-map.cgi'+Tv+'"target=_top>'); 
+             document.write('<img src="' + base + 'cgi-bin/ads/' + 
+             TheAdcode + '.cgi' + Tv + '" ismap width=468 height=60' + 
+             ' border=0 alt="Click Here"></a>');} 
+      } 
+     if (bN=='Microsoft Internet Explorer') 
+      document.write('<ifr'+'ame id=BURST src="'+base+'cgi-bin/ads/'
+     + 
+       TheAdcode + '.cgi' + Tv + '/RETURN-CODE" width=468 height=60' + 
+       'marginwidth=0 marginheight=0 hspace=0 vspace=0 ' + 
+       'frameborder=0 scrolling=no></ifr'+'ame>'); 
+     // --> 
+     </script> 
+     <noscript><a href="http://www.burstnet.com/ads/ad1954a-map.cgi" target=_top> 
+     <img src="http://www.burstnet.com/cgi-bin/ads/ad1954a.cgi" 
+      width=468 height=60 border=0 alt="Click Here"></a> 
+     </noscript> 
+     <!-- END BURST CODE --> 
+<table width=100% border=0 cellspacing=0 cellpadding=3><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">www.delorie.com</a>/<a href="/djgpp/" target="_top">djgpp</a>/<a href="/djgpp/doc/" target="_top">doc</a>/ug/compiling/portother.html</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/search/">search</a> &nbsp;
+</b></font></small></td>
+</tr></table><a href="bulktrap.html"></a><big><big><b>Porting code from other 32-bit compilers to DJGPP</b></big></big></td></p></center>
+
+
+<p>This chapter discusses porting 32-bit code written for other
+compilers to DJGPP.  Mainly for console (TTY or text mode)
+applications, and I am bias towards Watcom V11.0 (and 10.5).  In this
+chapter I will cover: </p>
+
+<p><ol>
+    <li> <strong>Watcom</strong>
+    <ol>
+        <li> Runtime environment differences
+        <li> Using DJGPP tools
+        <li> Using the right optimizer switches
+    </ol>
+    <li> <strong>LCC-WIN32</strong>
+    <ol>
+        <li> Runtime environment differences
+        <li> Using DJGPP tools
+    </ol>
+    <li> Tips on writting code that ports easily.
+</ol></p>
+
+
+<h2>Watcom</h2>
+
+<p>You may be wondering, if you have Watcom, why use DJGPP in the
+first place.  Well I will be the first to admit that Watcom generates
+some of the tightest code I have ever seen from a compiler.  However
+DJGPP is fairly respectiable too.  DJGPP and WATCOM both share alot of
+the same optimizations.  However the area where WATCOM really shines
+is in <strong>register calling convention</strong> and
+<strong>floating point math</strong>.  In this section I will cover
+the runtime differences, which are few.  The tools and how to use them
+(compared to Watcom) and what optimizations switches you would like to
+use (based on what you used for WATCOM).</p>
+
+<h3>Runtime Difference</h3>
+
+<p>The nice thing about standards, is that they differ very slightly.
+Now you make think that a standard doesn't change, but you would be
+thinking wrong.  First off WATCOM's differences are to make
+programming PC's (i386) a whole lot easier.  Where DJGPP strives to be
+compatible with GCC (which it is based on).</p>
+
+<h4>Hardware I/O</h4>
+
+<p>Hardware IO, is provided via the following functions:
+<tt>inportb</tt>, <tt>inportw</tt>, <tt>inportl</tt>,
+<tt>outportb</tt>, <tt>outportw</tt>, <tt>outportl</tt>.  All of which
+are defined in <strong>PC.H</strong>.  You use the
+<strong>inport</strong>X functions to read from the ports and
+<strong>outport</strong>X to write to them.  The X denotes one of the
+following.  <strong>b</strong> for a 8-bit byte sized operand.
+<strong>w</strong> for a 16-bit word sized operand.
+<strong>l</strong> for a 32-bit long sized operand.</p>
+
+<pre>
+/* Code example to write and read from ports */
+#include &lt;pc.io&gt;
+
+int main(void)
+{
+    char a;
+
+    /* read a byte from port 0x100 */
+    a = inportb(0x100);
+
+    /* write it to port 0x200 */
+    outportb(0x200, a);
+}
+</pre>
+
+<p> It's that simple </p>
+
+<h4>Inline Assembly</h4>
+
+<p>We all know that sometimes C doesn't suffice and you must use
+inline assembly for performace.  Well in DJGPP that too is no
+exception.  Therefore DJGPP provides a method for doing so.  I will
+write a simple yet complete inline function in watcom, then covert it
+to DJGPP and comment on it.</p>
+
+<p>DJ help me, I couldn't find info on inline asm in the gcc.inf!!!
+[it's under "Externsions...C..Asm" - DJ] </p>
+
+<h4>Inline Functions</h4>
+
+<p>Sometimes a function is small and written in C, and since you want
+it to become portable you decided to keep it in C.  However you would
+like to inline to save time.  Well that's ok, DJGPP supports this too.
+Making an inlined function is really quite simple watch.</p>
+
+<pre>
+/* TEST.H */
+
+__INLINE__ int sum(int a, int b)
+{
+    return a + b;
+}
+
+</pre>
+
+<p>That simple.  Note the <strong>__INLINE__</strong> is used in ANSI
+C headers only.  In C code you would use <strong>inline</strong>, but
+this only effects the one module only.  In C and objective C, the
+<strong>inline</strong> has no effect on how the object is linked in
+externally.  Put simply, if you use the <tt>inline</tt> keyword, the
+function will be inlined for all the other functions in that one
+compilation, and leads me to suggest not to define
+<strong>inline</strong> functions in headers, since that is bad
+design.</p>
+
+<pre>
+/* Test.C */
+
+inline int sum(int a, int b)
+{
+    return a + b;
+}
+
+int test(int a, b, c)
+{
+    return sum(a,b) + sum(b,c) + sum(c,a);
+}
+</pre>
+
+<p>In this case, the function sum is inlined in test.  Had you made a
+header to call <strong>sum</strong> from outside of this compilation,
+you would not have it inlined, <em>even if you add __INLINE__.</em>
+
+<h4>Zero based segments</h4>
+
+<p> In WATCOM you can write to the video memory, using the address
+0xA0000 however this is <strong> not true in DJGPP</strong>.  I
+suggest you read 'porting from 16-bit compilers' also written by me.
+It's <a
+href="http://www.delorie.com/djgpp/doc/ug/compiling/port16.html">here</a
+>.</p>
+
+<p></p>
+
+<p></p>
+
+<h3>Compiler Tools</h3>
+
+<p>In every compiler suite you must master (or atleast be able to use)
+the compiler tools contained within.  However for most ms-dos users,
+who are used to Sybase or Borland style compilers, may find DJGPP
+slightly harder to get started with.  However this is not the case.
+</p>
+
+<h4>WCL386</strong> vs. <strong>GCC</h4>
+
+<p>WCL386 is Sybases' frontend tool, that will compile, assemble and
+link together source/object code to make a final image (read EXE
+file).  DJGPP includes a front end too, and in my opinion is easier to
+use.  It's called GCC and you will find it in
+<strong>\DJGPP\BIN\</strong>.  One difference between them two that
+bothered me at first, is that GCC doesn't provide the help screens.
+However, determination got me thru it.  It's quite simple.</p>
+
+<h4>Compile Only</h4>
+
+<p>With WCL386 you can type in: <tt>'WCL386 /c file1.c file2.c
+file3.c'</tt> to just compile and assemble the source code.  This will
+get you object files that you may wish to distribute.  With DJGPP it's
+quite the same.  Just type <tt>'GCC -c file1.c file2.c file3.c'</tt>
+to get the resulting object files.  You should note that with DJGPP
+objects files are in COFF format and have the <strong>.O</strong> file
+name extension.</p>
+
+<h4>Linking libraries</h4>
+
+<p>With WCL386 you can type
+in <tt>'WCL386 file1.c file2.lib'</tt> to compile, assemble and link
+file1.c with file2.lib.  In GCC it gets a little more complicated.  In
+DJGPP library files have a <strong>.A</strong> file name extension.
+Now the way you link in libraries is dependant on one thing.  If the
+library is in your <strong>\DJGPP\LIB</strong> directory, the library
+must have <strong>LIB</strong> as the first three letters of the
+filename.  I.e test2.lib would be called <strong>libtest2.a</strong>.
+Now to compile/link it, type <tt>'GCC test1.c -ltest2 -o
+test1.exe'</tt> I just introduced something else, the
+<strong>-o</strong> switch.  (Note: make sure you use a small letter
+o, otherwise it will toggle the optimizer).  This will make it produce
+test1.exe instead of the default <strong>A.EXE</strong>.  Now if the
+library is in your current directory.  You <strong>don't</strong> need
+to append the letters LIB to the filename.  And to compile/link type
+<tt>'GCC test1.c test2.a -o test1.exe'</tt>
+
+<h4>Making libraries</h4>
+
+<p>To make a library with
+WATCOM you would type <tt>'WLIB mylib.lib +test.obj +test2.obj'</tt>
+and in DJGPP it's just as simple.  Just type <tt>'AR RS mylib.a test.o
+test2.o'</tt> and you have library called <strong>mylib.a</strong> for
+your use.  If you want to put this library in
+<strong>\DJGPP\LIB</strong> thne you should append
+<strong>LIB</strong> to the beginning of the filename.  For example:
+<tt>'AR RS LIBMYLIB.A test.o test2.o'.</tt></p>
+
+<h4>MAKE vs WMAKE</h4>
+
+<p>With WATCOM you have WMAKE, to process <tt>makefile</tt>s.  In
+DJGPP the program is the same, only it's called <strong>MAKE</strong>.
+However sometimes WATCOM makefiles will not port to DJGPP because they
+use WATCOM extenstions.</p>
+
+<h4>Optimizer Switches</h4>
+
+<p>hmmm....</p>
+
+<p>This concludes my section on Watcom.  If you have any other ideas,
+questions, comments, queries, or problems, just email me.
+
+<h2>LCC-WIN32</h2>
+
+<h3>Runtime Differences</h3>
+
+<p>Well LCC-WIN32 is not a dos compiler so there are a few
+differences.  :) </p>
+
+<ol>
+    <li> No DPMI
+    <li> No INT (can't call realmode ones, and can't set one up)
+</ol>
+
+<p>Basically when you program for LCC-WIN32 in console mode, or want
+to program portably, you must stick to the standard.  That is what LCC
+(LCC- WIN32 is based on) was designed for.  It follows the ANSI C
+standard closer in more repsects to GCC, but has no addons.  LCC-WIN32
+is a port of LCC to make Win32 code (which you must already know :) ).
+</p>
+
+<p>Although there is no INT support (IRQ handler, or call real mode
+int) there is always a work around.  Say you wanted to hook a INT to
+tell when to play music, well in LCC-WIN32 you just use Windows Media
+Functions.  </p>
+
+<p>Other then that, porting console mode (text mode) applications to
+LCC-WIN32 is really quite simple.  In fact, most GNU software will
+port to LCC- WIN32 quite quickly.  </p>
+
+<h3>Compiler Tools</h3>
+
+<h4>Compiling</h4>
+
+<p>In LCC-WIN32 you would type
+<tt>'LCC -c test.c'</tt> to compile test.c to an object.  In DJGPP
+it's just as easy.  <tt>'GCC -c test.c'</tt> is all you need.</p>
+
+<h4>Linking Libraries</h4>
+
+<p>In LCC-WIN32 to link in a
+library you would type <tt>'LCCLNK test.obj test2.lib'</tt> And that
+would like <tt>test.obj</tt> and <tt>test2.lib</tt> together (along
+with the standard c lib) to make a program.  In DJGPP it's quite
+similar.  However there is slight difference.  (Read the watcom
+section to understand).  </p>
+
+<h4>Making Libs</h4>
+
+<p>Please read the watcom section.</p>
+
+<h4>Optimization</h4>
+
+<p>in LCC-WIN32 you would type <tt>'LCC -O test.c'</tt> to compile and
+optimize test.c.  Probably the closest match is <tt>'GCC -O2
+test.c'</tt> however DJGPP optimizes a lot better then LCC-WIN32, the
+<tt>-O2</tt> generally doesn't make the code any bigger, and in fact
+makes it smaller most of the time.</p>
+
+
+<p>This sums up this chapter.  I wish to make ammenmants to this
+section, such as better code snipets, and more detailed explanations.
+If you have questions about any area presented here please email
+me. </p>
+
+<p>This section was provided by Tom St Denis</p>
+
+<p>Email questions or comments to: <a 
+href="mailto:tomstdenis@goplay.com">
+tomstdenis@goplay.com</a> </p>
+
+
+
+
+
+
+<br clear=both></p>
+<a href="bulktrap.html"></a><table width=100% border=0 cellspacing=0 cellpadding=3><tr>
+<td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/users/dj/" target="_top">webmaster</a> &nbsp;
+<a href="/donations.html" target="_top">donations</a> &nbsp;
+<a href="/store/books/" target="_top">bookstore</a> &nbsp;
+</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/" target="_top">delorie software</a> &nbsp;
+<a href="/privacy.html" target="_top">privacy</a> &nbsp;
+</b></font></small></td>
+</tr><tr><td align=left valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+<a href="/copyright.html" target="_top">Copyright © 1998</a> &nbsp;
+<a href="/users/dj/" target="_top">by DJ Delorie</a> &nbsp;
+</b></font></small></td>
+<td align=right valign=top bgcolor="#ffcc99"><small><font face="itc avant garde gothic,helvetica,arial"><b> &nbsp;
+Updated Sep 1998 &nbsp;
+</b></font></small></td>
+</tr></table>
+<center><iframe
+ SRC="http://www.burstnet.com/cgi-bin/ads/ba1954a.cgi/RETURN-CODE/if/6847/"
+ scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"
+ width="468" height="60"><A target="_top"
+ HREF="http://www.burstnet.com/ads/ba1954a-map.cgi/6847"><IMG SRC="http://www.burstnet.com/cgi-bin/ads/ba1954a.cgi/6847"
+ border="0" width="468" height="60" alt="Please support our sponsor."></A></iframe><br><small><i>Please take a moment to fill out
+this <a href="http://survey.burstmedia.com/cgi-win/client.exe?Burst,welcome,ad1954a,2000">visitor survey</a></i></small>
+<br><small><i>You can help support this site by
+visiting the advertisers that sponsor it! (only once each, though)</i></small>
+</center>
+</body></html>
+
+

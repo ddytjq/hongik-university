@@ -1,0 +1,456 @@
+ID=G0634
+URL=http://aa.usno.navy.mil/data/docs/RS_OneDay.html
+SIZE=15187
+DATE=09/07/2002
+TIME=16:19:34
+DATASET=Astronomy
+HTML=<html>
+<head>
+<title>Complete Sun and Moon Data for One Day</title>
+<meta name="description" content="" >
+<meta name="keywords" content="">
+<meta name="owner" content="
+    George Kaplan
+    Astronomical Applications Dept.
+    U.S. Naval Observatory
+    3450 Massachusetts Ave, NW
+    Washington, DC  20392-5420
+
+    Revised: 31 Aug 1998
+              8 Jan 1999  WKH
+             18 Jul 1999  OP
+              3 Jan 2000  GHK
+             11 Oct 2001  NAO
+             22 Oct 2001  BJT
+">
+<base href="http://aa.usno.navy.mil/">
+<link rel="stylesheet" href="http://aa.usno.navy.mil/css/default.css" type="text/css">
+<script language="JavaScript">
+<!-----------------------------------------------------------------------------
+var	month = new Array("January","February","March","April","May","June","July",
+					  "August","September","October","November","December");
+function ModifiedDate() {
+	updated = new Date(document.lastModified);
+	Month   = month[updated.getMonth()];
+	Day     = updated.getDate();
+	Year    = updated.getYear();
+	Hour    = updated.getHours();
+	Min     = updated.getMinutes();
+    if( Year < 2000 ) Year += 1900;
+    if( Year < 2000 ) Year += 100;  //Netscape 3 and IE 4.7 return 0 instead of 100 for 2000
+	if( Hour < 10 )  Hour = "0" + Hour;
+	if( Min  < 10 )  Min  = "0" + Min;
+	document.write("Last modified " + Month + " " + Day +  ", " + Year + " at " + Hour + ":" + Min);
+}
+function create_date_fields() {
+    var today = new Date();
+    document.write("<b>Year:</b> <input type=\"text\" name=\"xxy\" size=\"4\" maxlength=\"4\"");
+    var year = today.getYear();
+    if( year < 2000 ) year += 1900;
+    if( year < 2000 ) year += 100;  //Netscape 3 and IE 4.7 return 0 instead of 100 for 2000
+    document.write("value=\"" + year + "\">");
+    document.write("&nbsp;&nbsp;<b>Month:</b> <select name=\"xxm\">");
+    for( var k=0; k < 12; ++k ) {
+        if( k == today.getMonth() )
+            document.write("<option selected value=\"" + (k+1) + "\">" + month[k] + "</option>");
+        else
+            document.write("<option value=\"" + (k+1) + "\">" + month[k] + "</option>");
+    }
+    document.write("</select>");
+    document.write("&nbsp;&nbsp;<b>Day:</b>");
+    document.write("<input type=\"text\" name=\"xxd\" size=\"2\" maxlength=\"2\"");
+    document.write(" value=\"" + today.getDate() + "\">");
+}
+//---------------------------------------------------------------------------->
+</script>
+</head>
+<body bgcolor="#eeeeee" text=black link=navy vlink=maroon alink=red>
+
+<!-------------------------------------------------->
+<!--------------------- header --------------------->
+<!-------------------------------------------------->
+<table width="100%"><tr>
+    <td align="left" class="large">U.S. Naval Observatory</td>
+    <td align="right" class="large">Astronomical Applications Department</td>
+</tr></table>
+<table width="100%"><tr>
+    <td width="10%">
+        <table border=1 cellpadding=1 cellspacing=0 align=center bgcolor=black>
+			<tr><td><a href="http://aa.usno.navy.mil/" target="_top"><img src="graphics/AALogoSmall.jpg" width=201 height=108 alt="AA Home" border=0></a></td></tr>
+		    <!--<tr><td width=201><img src="./graphics/sunset1.jpg" alt="Sunset" width="201" height="108"></td>-->
+		</table>
+	</td>
+    <td width=10></td>
+	<td align="center"><h1>Complete Sun and Moon Data for One Day</h1></td>
+</tr></table>
+<br>
+<center><img src="graphics/bar.gif" alt="bar" width=640 height=5 border=0></center>
+<br>
+
+<!-------------------------------------------------->
+<!--------------------- content -------------------->
+<!-------------------------------------------------->
+<div class="med">
+
+<p>You can obtain the times of sunrise, sunset, moonrise, moonset,
+transits of the Sun and Moon, and the beginning and end of civil
+twilight, along with information on the Moon's phase by specifying the
+date and location in one of the two forms below and clicking on the
+"Get data" button at the end of the form.</p>
+
+<p>Use <a href="./data/docs/RS_OneDay.html#forma">Form A</a> for
+cities or towns in the U.S. or its territories. &nbsp; Use
+<a href="./data/docs/RS_OneDay.html#formb">Form B</a> for all
+other locations.  Both forms are immediately below.</p>
+
+<p>Be sure to check <a href="./data/docs/RS_OneDay.html#notes">Notes
+section</a>, located after the two forms.</p>
+
+<div class="med">
+<br>
+<a name="forma">
+<hr>
+<h3><font color="red">Form A - U.S. Cities or Towns</font></h3>
+
+<form method="post" target="_parent" action="http://mach.usno.navy.mil/cgi-bin/aa_pap.pl">
+
+<input type="hidden" name="FFX" value="1">
+
+<input type="hidden" name="ID" value="AA">
+
+<!-- NOTE ABOUT ABOVE LINE: If you plan to write your own form to access
+     the cgi script for sunrise/sunset calculations (not recommended),
+     please use the above line in your form but substitute in the value
+     field an identifier of your own choosing, up to 8 characters.  For
+     example, <input type="hidden" name="ID", value="UCLA"> .  If you
+     are setting this up for an institution, please e-mail us (at
+     help@aa.usno.navy.mil) and let us know what identifier you
+     are using and who you are.  Thanks... this allows us to keep track
+     of all our users, even those who bypass our normal web usage log,
+     and helps us justify our work on the web.  (Nothing in this note
+     should be construed as encouragement to set up your own form, as we
+     do not guarantee that either our form or the program called by the
+     cgi script will not change.)                                        -->
+
+<p>
+
+<!-- For those with JavaScript enabled, show the current date as default  -->
+<script language="JavaScript">
+    <!--------------------
+    create_date_fields();
+    //------------------->
+</script>
+
+<!-- For those without JavaScript enabled  -->
+<noscript>
+    <b>Year:</b> <input type="text" name="xxy" size="4" maxlength="4" value="2001"> &nbsp;
+    <b>Month:</b> <select name="xxm">
+    <option value="1">January
+    <option value="2">February
+    <option value="3">March
+    <option value="4">April
+    <option value="5">May
+    <option value="6">June
+    <option value="7">July
+    <option value="8">August
+    <option value="9">September
+    <option value="10">October
+    <option value="11">November
+    <option value="12">December
+    </select> &nbsp;
+    <b>Day:</b>
+    <input type="text" name="xxd" size="2" maxlength="2" value="1">
+</noscript>
+
+<p><b>State or Territory:</b> <select name="st">
+<option value="AL">Alabama
+<option value="AK">Alaska
+<option value="AS">American Samoa
+<option value="AZ">Arizona
+<option value="AR">Arkansas
+<option value="CA">California
+<option value="CO">Colorado
+<option value="CT">Connecticut
+<option value="DE">Delaware
+<option selected value="DC">D.C.
+<option value="FL">Florida
+<option value="GA">Georgia
+<option value="GU">Guam
+<option value="HI">Hawaii
+<option value="ID">Idaho
+<option value="IL">Illinois
+<option value="IN">Indiana
+<option value="IA">Iowa
+<option value="KS">Kansas
+<option value="KY">Kentucky
+<option value="LA">Louisiana
+<option value="ME">Maine
+<option value="MD">Maryland
+<option value="MA">Massachusetts
+<option value="MI">Michigan
+<option value="MN">Minnesota
+<option value="MS">Mississippi
+<option value="MO">Missouri
+<option value="MT">Montana
+<option value="NE">Nebraska
+<option value="NV">Nevada
+<option value="NH">New Hampshire
+<option value="NJ">New Jersey
+<option value="NM">New Mexico
+<option value="NY">New York
+<option value="NC">North Carolina
+<option value="ND">North Dakota
+<option value="MP">N. Mariana Islands
+<option value="OH">Ohio
+<option value="OK">Oklahoma
+<option value="OR">Oregon
+<option value="PA">Pennsylvania
+<option value="PR">Puerto Rico
+<option value="RI">Rhode Island
+<option value="SC">South Carolina
+<option value="SD">South Dakota
+<option value="TN">Tennessee
+<option value="TX">Texas
+<option value="UT">Utah
+<option value="VT">Vermont
+<option value="VI">Virgin Islands
+<option value="VA">Virginia
+<option value="WA">Washington
+<option value="WV">West Virginia
+<option value="WI">Wisconsin
+<option value="WY">Wyoming
+</select>
+
+<p><b>City or Town Name:</b>
+<input type="text" name="place" size="32" maxlength="32"></p>
+
+<p>The place name you enter above must be a city or town in the U.S.
+The place's location will be retrieved from a file with over 22,000
+places listed.  Either upper- or lower-case letters or a combination can
+be used.  Spell out place name prefixes, as in "East Orange", "Fort
+Lauderdale", "Mount Vernon", etc.  The only exception is "St.", which is
+entered as an abbreviation with a period, as in "St.  Louis".  You need
+only enter as many characters as will unambiguously identify the
+place.</p>
+
+<input type="hidden" name="ZZZ" value="END">
+
+<p><input type="submit" value=" &nbsp; &nbsp; Get data &nbsp; &nbsp; "></p>
+
+</form>
+</div>
+
+<div class="med">
+<br>
+<a name="formb">
+<hr>
+<h3><font color="red">Form B - Locations Worldwide</font></h3>
+
+<form method="post" target="_parent" action="http://mach.usno.navy.mil/cgi-bin/aa_pap.pl">
+
+<input type="hidden" name="FFX" value="2">
+
+<input type="hidden" name="ID" value="AA">
+
+<!-- NOTE ABOUT ABOVE LINE: If you plan to write your own form to access
+     the cgi script for sunrise/sunset calculations (not recommended),
+     please use the above line in your form but substitute in the value
+     field an identifier of your own choosing, up to 8 characters.  For
+     example, <input type="hidden" name="ID", value="UCLA"> .  If you
+     are setting this up for an institution, please e-mail us (at
+     ) and let us know what identifier you
+     are using and who you are.  Thanks... this allows us to keep track
+     of all our users, even those who bypass our normal web usage log,
+     and helps us justify our work on the web.  (Nothing in this note
+     should be construed as encouragement to set up your own form, as we
+     do not guarantee that either our form or the program called by the
+     cgi script will not change.)                                        -->
+
+<p>
+
+<!-- For those with JavaScript enabled, show the current date as default  -->
+<script language="JavaScript">
+    <!--------------------
+    create_date_fields();
+    //------------------->
+</script>
+
+<!-- For those without JavaScript enabled  -->
+<noscript>
+    <b>Year:</b> <input type="text" name="xxy" size="4" maxlength="4" value="2001"> &nbsp;
+    <b>Month:</b> <select name="xxm">
+    <option value="1">January
+    <option value="2">February
+    <option value="3">March
+    <option value="4">April
+    <option value="5">May
+    <option value="6">June
+    <option value="7">July
+    <option value="8">August
+    <option value="9">September
+    <option value="10">October
+    <option value="11">November
+    <option value="12">December
+    </select> &nbsp;
+    <b>Day:</b>
+    <input type="text" name="xxd" size="2" maxlength="2" value="1">
+</noscript>
+
+<p><b>Longitude:</b> &nbsp; &nbsp;
+<input type="radio" name="xx0" value="1"> east &nbsp;
+<input type="radio" name="xx0" checked value="-1"> west &nbsp;
+<input type="text" name="xx1" size="3" maxlength="3"> degrees &nbsp;
+<input type="text" name="xx2" size="2" maxlength="2"> minutes </p>
+
+<p><b>Latitude:</b> &nbsp; &nbsp;
+<input type="radio" name="yy0" checked value="1"> north &nbsp;
+<input type="radio" name="yy0" value="-1"> south &nbsp;
+<input type="text" name="yy1" size="2" maxlength="2"> degrees &nbsp;
+<input type="text" name="yy2" size="2" maxlength="2"> minutes </p>
+
+</div>
+<div class="med">
+<p><b>Time Zone:</b> &nbsp; &nbsp;
+<input type="text" name="zz1" size="2" maxlength="5"> hours &nbsp;
+<input type="radio" name="zz0" value="1"> east of Greenwich &nbsp;
+<input type="radio" name="zz0" checked value="-1"> west of Greenwich </p>
+
+</div>
+<div class="med">
+<p><b>Place Name:</b> &nbsp; &nbsp;
+<input type="text" name="place" size="32" maxlength="32"></p>
+
+<div class="med">
+<p>The place name you enter above is used only in the table header;
+you can enter any identifier, or none (avoid using punctuation
+characters).</p>
+
+<p>Need coordinates?&nbsp; Try NIMA's
+<a href="http://www.nima.mil/gns/html/" target="_top">GEOnet
+Names Server</a>.<br>
+Need a time zone?&nbsp; Try the
+<a href="./faq/docs/world_tzones.html">time zone map</a>.</p>
+
+<input type="hidden" name="ZZZ" value="END">
+
+<p><input type="submit" value=" &nbsp; &nbsp; Get data &nbsp; &nbsp; "></p>
+
+</form>
+</div>
+
+<br>
+<hr>
+
+<div class="med">
+<a name="notes"></a>
+<table width="100%">
+  <tr>
+    <td align="left" class="large"><h3>Notes</h3></td>
+    <td align="right" class="large"><IMG SRC="./graphics/sunset1.jpg" ALT="Sunset" ALIGN=RIGHT></td>
+  </tr>
+</table>
+
+<p>For information on the definitions of terms used, see
+<a href="./faq/docs/RST_defs.html#top">Rise, Set, and Twilight Definitions</a> or
+<a href="./faq/docs/moon_phases.html#top">Phases of the Moon and Percent of the
+Moon Illuminated</a> in <b>FAQ</b>.</p>
+
+<p>If you need rise/set or twilight times for a series of dates for a
+U.S. location, use our <a href="./data/docs/RS_OneYear.html">rise/set
+table program</a>, which computes a one-page table covering an entire
+year.</p>
+
+<p>For U.S. cities or towns (Form A), the output times will be
+on a 12-hour clock (with "a.m." or "p.m." listed);  for worldwide
+locations (Form B) the output times will be on a 24-hour clock.</p>
+
+<p>For U.S. cities or towns (Form A), the times of the phenomena are
+presented in the standard time of the place requested, using the
+<em>current</em> time zone of the place.  Standard time in
+<a href="./faq/docs/us_tzones.html">time zones</a> was introduced in the
+U.S. in 1883, but the time zone boundaries have evolved considerably
+since then, with places shifting from one zone to another.  There is
+no attempt here to track such changes.</p>
+
+<p><a href="./faq/docs/daylight_time.html">Daylight time</a> is implemented only
+for U.S. cities or towns (Form A) and only for years 1967 and later, in
+accordance with the Uniform Time Act of 1966 and subsequent legislation.
+Daylight time is not used for places currently exempt from it.</p>
+
+<p>At the bottom of the output page for U.S. cities or towns there is a
+link to the <a href="http://tiger.census.gov/" target="_top">map-generating
+service of the U.S. Census Bureau</a>.  Clicking on
+this link will provide a map of the area surrounding the location
+for which astronomical data have been given.  The large red dot in the
+middle of the map indicates the location for which the data were
+computed.  The width of the map is 0.25 degrees of longitude, equivalent
+to 1&nbsp;minute of time in rise/set phenomena.  Except for some critical
+cases in Alaska, the map roughly indicates the area within which the
+computed astronomical data are valid.</p>
+
+<p>For worldwide locations (Form B) that require it, the time zone
+can be entered in hours and a fraction.  For example, for locations
+in India, the time zone may be entered as 5.5 hours east of Greenwich.
+The time zone field can accommodate up to five characters.</p>
+
+<p>If you are having trouble seeing the date fields on this page,
+<a HREF="data/docs/RS_OneDay_noJS.html">click here</a> for a version of this
+page without JavaScript.
+
+<p>Sunset photo by Lu Rarogiewicz from Mt. Wilson, California.
+
+<p>Need other kinds of astronomical information?  Start
+at our <a href="http://aa.usno.navy.mil/" target="_top">home page</a>.</p>
+
+<p><b>Back to . . .
+&nbsp; &nbsp; <a href="./data/docs/RS_OneDay.html">top</a>
+&nbsp; &nbsp; <a href="./data/docs/RS_OneDay.html#forma">Form A</a>
+&nbsp; &nbsp; <a href="./data/docs/RS_OneDay.html#formb">Form B</a>
+</b></p>
+</div>
+
+</div>
+
+<!--------------------------------------------------------------------------------->
+<!------------------------------- Navigation Footer ------------------------------->
+<!--------------------------------------------------------------------------------->
+<p>
+<center><img src="graphics/bar.gif" alt="bar" width=640 height=5 border=0></center>
+<br>
+<!-- Text Navigation Links -->
+<font size="-1" face="Trebuchet MS, Verdana, Arial, sans-serif"><center>
+[<a href="publications/">Publications</a> | <a href="data/">Data Services</a> |
+ <a href="software/">Software</a> | <a href="faq/">FAQ</a> | <a href="research/">Research</a> |
+ <a href="about/">About AA</a>]
+<br>
+[<a href="news.html">News</a> | <a href="AAmap.html">Site Map</a> |
+ <a href="finder/finder.html">Index</a> |
+ <a href="http://aa.usno.navy.mil/" target="_top">Home</a>]
+</center></font>
+
+<br>
+<center><img src="graphics/bar.gif" alt="bar" width=640 height=5 border=0></center>
+
+<div style="margin-top:10px;">
+<table width="100%">
+<tr>
+	<td><div class="xsmall" style="font-family:verdana,arial,sans-serif;">
+		<a href="WebMaster.html">Need help?</a>
+		</div>
+	</td>
+	<td align="right">
+		<div class="xsmall" style="font-family:verdana,arial,sans-serif;">
+		<script language="JavaScript">
+		<!----------------------------
+            ModifiedDate()
+		//---------------------------->
+		</script>
+		</div>
+	</td>
+</tr>
+</table>
+</div>
+
+</body>
+</html>
+

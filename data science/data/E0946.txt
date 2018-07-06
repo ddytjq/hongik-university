@@ -1,0 +1,205 @@
+ID=E0946
+URL=http://www.bcbdev.com/faqs/faq59.htm
+SIZE=9810
+DATE=12/07/02
+TIME=19:26:01
+DATASET=C
+HTML=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>BCBDEV.COM: FAQs</TITLE>
+   <META NAME="Author" CONTENT="Harold Howe">
+</HEAD>
+<BODY BGCOLOR="WHITE">
+
+<CENTER>
+<TABLE  BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH="640">
+<TR>
+<TD WIDTH="240" NOWRAP ROWSPAN=2 VALIGN="CENTER">
+<IMG SRC="../images/faq.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+<TD WIDTH="400" NOWRAP COLSPAN=6 VALIGN="BOTTOM">
+<IMG SRC="../images/bcbdev.gif" BORDER=0 ALIGN="CENTER" HSPACE="0">
+</TD>
+</TR>
+<TR>
+<TD WIDTH="70" VALIGN="TOP"><A href="http://www.bcbdev.com"> <IMG SRC="../images/home.gif"     ALT="Home"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="75" VALIGN="TOP"><A href="../articles.htm">       <IMG SRC="../images/articles.gif" ALT="Articles"  BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../books.htm">          <IMG SRC="../images/books.gif"    ALT="Books"     BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="90" VALIGN="TOP"><A href="../download.htm">       <IMG SRC="../images/download.gif" ALT="Downloads" BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../faqs.htm">           <IMG SRC="../images/faqs.gif"     ALT="FAQs"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+<TD WIDTH="55" VALIGN="TOP"><A href="../idetips.htm">        <IMG SRC="../images/tips.gif"     ALT="Tips"      BORDER=0 HSPACE="0" ALIGN="CENTER" VALIGN="TOP"></A></TD>
+</TR>
+<TR>
+<TD COLSPAN=7>
+<HR>
+
+
+<H3>
+Q: Create an MDI child in the maximized state
+</H3>
+<BR>
+<H3>Answer:</H3>
+<P>
+If you try to set the <TT>WindowState</TT> of an MDI child form to <TT>wsMaximized</TT>, you
+may notice that the form doesn't initially draw itself in the maximized state. The form first
+appears in a non-maximized state before resizing to the maximized state. To the user, this
+behavior may look odd.
+</P>
+<UL>
+<LI><A HREF="#explanation">Background Information</A>
+<LI><A HREF="#solution"   >Solution</A>
+</UL>
+<BR>
+<A NAME="explanation">
+<H4>Background Information:</H4>
+<P>
+The problem is caused by VCL code that runs as a result of the <TT>AfterConstruction</TT>
+method of <TT>TCustomForm</TT>. <TT>AfterConstruction</TT> contains an <TT>if</TT> statement
+that sets the <TT>Visible</TT> property of the form to <TT>true</TT>.
+</P>
+<pre>
+<b>void</b> <b>__fastcall</b> TCustomForm<b>:</b><b>:</b>AfterConstruction<b>(</b><b>)</b>
+<b>{</b>
+    <b>...</b>
+    <b>...</b>
+    <b>if</b> <b>(</b>FFormState<b>.</b>Contains<b>(</b>fsVisible<b>)</b><b>)</b>
+        Visible <b>=</b> <b>true</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+<TT>Visible</TT> is set based on the contents of the form's private <TT>FFormState</TT> set
+variable. For MDI child forms, the VCL ensures that <TT>FFormState</TT> will always contain
+<TT>fsVisible</TT>, irregardless of how you maniplulate the <TT>Visible</TT> property of the
+form in code (the IDE will not let you set <TT>Visible</TT> to false for an MDI child).
+</P>
+<P>
+The assignment to <TT>Visible</TT> eventually posts a user message to the form called
+<TT>CM_VISIBLECHANGING</TT>. This message is handled by <TT>TWinControl</TT>, which
+responds by calling the <TT>UpdateControlState</TT> function, and <TT>UpdateControlState</TT>
+in turn calls <TT>UpdateShowing</TT>. <TT>TWinControl::UpdateShowing</TT> performs another user message called
+<TT>CM_SHOWINGCHANGED</TT>. <TT>TCustomForm</TT> catches this user message, and at this
+point, things begin to make sense.
+</P>
+<pre>
+<b>void</b> <b>__fastcall</b> TCustomForm<b>:</b><b>:</b>CMShowingChanged<b>(</b>TMessage <b>&</b>Message<b>)</b>
+<b>{</b>
+    <b>...</b>
+    <b>...</b>
+        <b>if</b> <b>(</b>FormStyle <b>==</b> fsMDIChild<b>)</b>
+        <b>{</b>
+            <font color="navy">// {Fake a size message to get MDI to behave }</font>
+            <b>if</b> <b>(</b>FWindowState <b>==</b> wsMaximized<b>)</b>
+            <b>{</b>
+                SendMessage<b>(</b>Application<b>.</b>MainForm<b>.</b>ClientHandle<b>,</b>
+                            WM_MDIRESTORE<b>,</b> Handle<b>,</b> <font color="blue">0</font><b>)</b><b>;</b>
+                ShowWindow<b>(</b>Handle<b>,</b> SW_SHOWMAXIMIZED<b>)</b><b>;</b>
+            <b>}</b>
+        <b>...</b>
+<b>}</b>
+</pre>
+<P>
+The <TT>SendMessage</TT> statement turns out to be the culprit. Sending <TT>WM_MDIRESTORE</TT> to
+the MDI client paints the MDI child in a non-maximized state on the screen. When the MDI
+client receives the message, it sends other messages back to the MDI child form. These
+messages include non-client painting messages and the <TT>WM_MDIACTIVATE</TT> message. The
+painting messages combine to produce one annoying result: the MDI child is completely drawn
+in the non-maximized state.
+</P>
+<A NAME="solution">
+<H4>Solution:</H4>
+<P>
+Altering what the VCL does inside <TT>CMShowingChanged</TT> would be difficult, but we can
+tell Windows not to repaint the MDI client area while <TT>TCustomForm</TT> is sending the
+troublesome <TT>WM_MDIRESTORE</TT> message. We can force the MDI client window to suppress
+all drawing until we give the OK. The API function <TT>LockWindowUpdate</TT> allows us to prevent the
+MDI client from being painted until after the form's constructor has returned. Here is a
+code example that suppresses painting of the MDI client until after the goofy
+<TT>SendMessage</TT>'s have taken their effect. As a result, the intermediate painting of
+the MDI window in the non-maximized state never makes it to the screen.
+</P>
+<pre>
+<font color="navy">// set WindowState to wsMaximized at design time.</font>
+LockWindowUpdate<b>(</b>Application<b>-></b>MainForm<b>-></b>ClientHandle<b>)</b><b>;</b>
+TMDIChild <b>*</b>child <b>=</b> <b>new</b> TMDIChild<b>(</b>Application<b>)</b><b>;</b>
+child<b>-></b>Caption <b>=</b> <font color="blue">"Maximized MDI"</font><b>;</b>
+LockWindowUpdate<b>(</b>NULL<b>)</b><b>;</b>
+</pre>
+<BR>
+<P>
+<B>Note:</B> Only one window can be locked at a time. The <TT>HWND</TT> argument to
+<TT>LockWindowUpdate</TT> determines which window we want to suppress. Passing <TT>NULL</TT>
+to <TT>LockWindowUpdate</TT> deactivates the locking scheme.
+</P>
+<P>
+<B>Note:</B> Notice that we lock the MDI client window and not the mainform of the program.
+MDI child windows are children of the MDI client window, not the mainform. The
+<TT>ClientHandle</TT> property of <TT>TForm</TT> returns the <TT>HWND</TT> of the MDI
+client window. The <TT>ClientHandle</TT> property is only valid for forms that have
+<TT>FormStyle</TT> set to <TT>fsMDIForm</TT>.
+</P>
+<P>
+<B>Note:</B> If you create your MDI child windows from within the MDI parent, you can omit
+the <TT>Application-&gt;Mainform</TT> prefix to <TT>ClientHandle</TT>. In other words, you
+can call <TT>LockWindowUpdate</TT> like this:
+</P>
+<pre>
+LockWindowUpdate<b>(</b>ClientHandle<b>)</b><b>;</b>
+</pre>
+<P>
+<B>Note:</B> When the MDI form is initially drawn in the non-maximized state, the window is
+not sized based on the <TT>Width</TT> and <TT>Height</TT> properties that you specified at
+design time. The operating system sizes the window itself. If you step through
+<TT>TCustomForm::CreateHandle</TT>, you will see that the size and position members of the
+<TT>TMDICreateStruct</TT> structure are initialized to <TT>CW_USEDEFAULT</TT>. This tells
+Windows to size the form however it sees fit. In fact, the <TT>Width</TT>, <TT>Height</TT>,
+<TT>Left</TT>, and <TT>Top</TT> properties of the MDI child form are re-calculated
+after the <TT>WM_MDICREATE</TT> message has been sent. The default values are leftovers from the
+<TT>CreateParams</TT> function. You should be able to override <TT>CreateParams</TT> if you
+need to alter the initial width, height, or position of the form.
+</P>
+<P>
+<B>Note:</B> A couple of other functions play a role in why an MDI child is initially drawn
+in the non-maximized state. The functions execute in response to the <TT>WM_MDIRESTORE</TT>
+message that is sent from <TT>TCustomForm::CMShowingChanged</TT>. These functions include
+<TT>WMMDIActivate</TT>, <TT>SetActive</TT>, and <TT>MergeMenu</TT> (all methods of
+<TT>TCustomForm</TT>. The <TT>WM_MDIRESTORE</TT> message triggers a </TT>WM_MDIACTIVATE</TT>
+message. The <TT>WMMDIActivate</TT> handler function calls <TT>SetActive</TT>.
+<TT>SetActive</TT> calls <TT>MergeMenu</TT>, and <TT>MergeMenu</TT> does this:
+</P>
+<pre>
+<font color="navy">// assume MergeState is true</font>
+<b>int</b> Size<b>;</b>
+<b>if</b><b>(</b>MergeState <b>&&</b> <b>(</b>FormStyle <b>==</b> fsMDIChild<b>)</b> <b>&&</b> <b>(</b>WindowState <b>=</b> wsMaximized<b>)</b>
+<b>{</b>
+    <font color="navy">// { Force MDI to put back the system menu of a maximized child }</font>
+    Size <b>=</b> ClientWidth <b>+</b> <b>(</b><b>int</b><b>(</b>ClientHeight<b>)</b> <b><<</b> <font color="blue">16</font><b>)</b><b>;</b>
+    SendMessage<b>(</b>Handle<b>,</b> WM_SIZE<b>,</b> SIZE_RESTORED<b>,</b> Size<b>)</b><b>;</b>
+    SendMessage<b>(</b>Handle<b>,</b> WM_SIZE<b>,</b> SIZE_MAXIMIZED<b>,</b> Size<b>)</b><b>;</b>
+<b>}</b>
+</pre>
+<P>
+When this code runs, the MDI child is still in the non-maximized state. The first
+<TT>WM_SIZE</TT> message causes the MDI child to finish painting itself in the non-maximized
+state. All of this code executes from within the very first <TT>SendMessage</TT> call in
+<TT>CMShowingChanged</TT>.
+</P>
+
+
+</TD> </TR>
+<TR>  <TD COLSPAN=7>
+<BR><HR>
+<CENTER>
+<FONT size="-1">
+<I>
+Copyright &copy; 1997-2000 by <A HREF="mailto:hhowe@bcbdev.com">Harold Howe</A>.<BR>
+All rights reserved.
+</I>
+</FONT>
+</CENTER>
+</TD> </TR>
+</TABLE>
+</CENTER>
+</BODY>
+</HTML>
+

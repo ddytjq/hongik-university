@@ -1,0 +1,716 @@
+ID=D0606
+URL=http://www.javaworld.com/javaworld/jw-07-2002/jw-0712-jdbcdriver3_p.html
+SIZE=46878
+DATE=16/07/02
+TIME=14:52:48
+DATASET=Java
+HTML=<!doctype html public "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <head>
+        <title> Create your own type 3 JDBC driver, Part 3</title>
+        <meta http-equiv="content-type" content="text/html; charset=windows-1252">
+        <meta name="keywords" content=" JDBC, JDBC Driver, Driver Manager, Type 3 Driver, JDBC Connection, JDBC Statement, Connection Pooling">
+        <meta name="description" content="
+
+In Parts 1 and 2 of this three-part series, you created a type 3 JDBC (Java Database Connectivity) driver, deployed it, and used it in a sample application. Beyond that, you can make the custom JWDriver more robust and improve its diagnostic capabilities by adding extra features such as SQL statement logging, connection pooling, and Predefined Data Sets (PDS). (1,800 words; July 12, 2002)
+
+">
+        <basefont face="verdana, arial, helvetica" size="2" />
+        <style type="text/css">
+            code {font: 110%;}
+            pre {font: 100%;}
+            td {font: 90%;}
+        </style>
+        <script language="JavaScript">
+            <!--
+            function openBrWindow() {
+                win=window.open("http://www.javaworld.com/channel_content/jw-story-feedback.shtml",'Feedback','width=600,height=330,toolbar=no,location=no,directories=no,menubar=no,scrollbars=yes,resizable=yes');
+            }
+            -->
+        </script>
+    </head>
+    <body bgcolor="#ffffff" text="#000000" link="#990033" vlink="#990033" alink="#990033" topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" marginheight="0" marginwidth="0">
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td colspan="2" width="186" bgcolor="#006699"><a href="http://www.javaworld.com"><img height=81 src="http://www.idg.net/microsites/javaworld/images/top_jwlogo.gif" width=186 border=0 ></a></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- START TOP 468x60 BANNER -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=820009?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=820009?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=top;sz=468x60;tile=1;ord=820009?" border="0" height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer1" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- END TOP 468x60 BANNER --></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160"><img height=8 src="http://www.idg.net/microsites/javaworld/images/spacer.gif" width=160 border=0 ></td>
+                <td width="26" valign="top" align="left" bgcolor="#ffffff"><img height=8 src="http://www.idg.net/microsites/javaworld/images/c_whtbottom.gif" width=8 border=0 ></td>
+                <td width="100%"><img height=1 src="http://www.idg.net/microsites/javaworld/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td bgcolor="#006699" width="160" align="middle" valign="center" nowrap><nobr><font face="Verdana, Arial, Sans-serif" color="#ffffff" size="1">July 2002</font></nobr><img height=1 src="http://www.idg.net/microsites/javaworld/images/spacer.gif" width=160 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.idg.net/microsites/javaworld/images/spacer.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="8" valign="top"><img height=8 src="http://www.idg.net/microsites/javaworld/images/c_bltlft.gif" width=8 border=0 ></td>
+                <td bgcolor="#006699" width="100%" align="middle" valign="center">    <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">HOME</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/features/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FEATURED TUTORIALS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/columns/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">COLUMNS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/news-reviews/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">NEWS & REVIEWS</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://forums.idg.net/webx?13@@.ee6b802"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">FORUM</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/resources/index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">JW RESOURCES</font></a></td>
+            <td align="middle" bgcolor="#006699"><a href="http://www.javaworld.com/info/jw-about-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">ABOUT JW</font></a></td>
+        </tr>
+    </table></td>
+                <td bgcolor="#006699" width="8" align="right" valign="top"><img height=8 src="http://www.idg.net/microsites/javaworld/images/c_bltrt.gif" width=8 border=0 ></td>
+                <td width="8"><img height=1 src="http://www.idg.net/microsites/javaworld/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+<!--        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr valign="top">
+                <td bgcolor="#006699" width="160" align="middle" valign="top">
+                    <table width="160" border="0" cellspacing="0" cellpadding="0" bgcolor="#006699" summary=""> -->
+                        <!-- #include snippets/jw-search-snippet.txt -->
+                   <!--     <tr>
+                            <td width="8"><img height=1 alt="" src="http://www.idg.net/microsites/javaworld/images/spacer.gif" width=8 ></td>
+                            <td><img height=1 alt="" src="http://www.idg.net/microsites/javaworld/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff"><strong>ARCHIVE</strong></font><br>
+                                <img height=1 alt="" src="http://www.idg.net/microsites/javaworld/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <strong><a href="http://www.idg.net/microsites/javaworld/channel_content/jw-topical-index.shtml"><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">TOPICAL INDEX</font></a></strong></font><br>--><!-- #include snippets/jw-topical-generic.txt -->
+       <!--                         <img height=1 alt="" src="http://www.idg.net/microsites/javaworld/images/rule_ltblue.gif" width=144 vspace=2 ><br>
+                                <font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff"><strong>FREE JAVAWORLD NEWSLETTERS</strong></font><br>
+                                 <img height=1 alt="" src="images/rule_ltblue.gif" width=144 vspace=2 ><br></td>
+                            <td width="8"><img height=1 alt="" src="http://www.idg.net/microsites/javaworld/images/spacer.gif" width=8 ></td>
+                        </tr>
+                        <tr valign="bottom">
+                            <td width="8"><img height=1 alt="" src="http://www.idg.net/microsites/javaworld/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.idg.net/microsites/javaworld/images/c_gryblbottom.gif" width=8 ></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr>
+                       <td width="8" bgcolor="#cccccc"><img height=1 alt="" src="http://www.idg.net/microsites/javaworld/images/spacer.gif" width=8 ></td>
+                           <td align="middle" bgcolor="#cccccc">  -->  <!-- #include snippets/jw-articles-left-ad.txt -->    <!--      </td>
+                       <td width="8" bgcolor="#cccccc"><img height=8 alt="" src="http://www.idg.net/microsites/javaworld/images/spacer.gif" width=8></td>
+                        </tr>
+                        <tr>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                            <td bgcolor="#cccccc"> </td>
+                            <td width="8" bgcolor="#cccccc"> </td>
+                        </tr>
+                        <tr valign="top">
+                            <td width="8"><img height=1 alt="" src="http://www.idg.net/microsites/javaworld/images/spacer.gif" width=8 ></td>
+                            <td> </td>
+                            <td width="8"><img height=8 alt="" src="http://www.idg.net/microsites/javaworld/images/c_grybltop.gif" width=8 ></td>
+                        </tr>
+                    </table> -->
+                    <img height=8 src="http://www.idg.net/microsites/javaworld/images/spacer.gif" width=160 border=0 ></td>
+					<td width="8"><img height=1 alt="" src="http://www.idg.net/microsites/javaworld/images/spacer.gif" width=8 ></td>
+                <td width="100%">
+				    <!-- ## MAIN CONTENT STARTS HERE ### -->
+                    <font face="verdana, arial, helvetica" size="2">
+                       <P> <strong></strong></p>
+                        <p>
+                            <h1 align="CENTER"> Create your own type 3 JDBC driver, Part 3</h1>
+                            <h3 align="CENTER"> Enhance the custom JWDriver with advanced logging, connection pooling, and Predefined Data Sets</h3>
+                        </p>
+                        <!--<BLOCKQUOTE><STRONG>Summary</STRONG><BR>-->
+                        <BLOCKQUOTE>
+<STRONG>Summary</STRONG><BR>
+
+
+In Parts 1 and 2 of this three-part series, you created a type 3 JDBC (Java Database Connectivity) driver, deployed it, and used it in a sample application. Beyond that, you can make the custom JWDriver more robust and improve its diagnostic capabilities by adding extra features such as SQL statement logging, connection pooling, and Predefined Data Sets (PDS). (<em>1,800 words;</em> <strong>July 12, 2002</strong>)
+
+</BLOCKQUOTE>
+                        <!--</BLOCKQUOTE>-->
+                        <STRONG>By  Sunil Kumar and Nitin Nanda</STRONG>
+                        <p><img src="http://www.idg.net/microsites/javaworld/images/rule_ltblue.gif" width="100%" height="2"></p>
+
+                        <p><br /></p>
+                        <!-- #include snippets/jw-articles-336x280.txt -->
+                        <p><P>
+<img align="left" width="30" height="28" src="/javaworld/abcs/A.gif" alt="A">rchitecturally, type 3 JDBC (Java Database Connectivity) drivers prove flexible enough that you can easily add enhancements. In Parts 1 and 2 of this three-part series, you learned how to create a custom type 3 JDBC driver, named JWDriver, that employed RMI (Remote Method Invocation) to communicate with the middle tier. In this article, the last of the series, we demonstrate how to enhance JWDriver's functionality with three new features: <P>
+<ul> <li>SQL statement logging for diagnosis</li> <li>Database connection pooling for faster connection retrieval</li> <li>Predefined Data Sets (PDS) for improved network latency</li> </ul> <P>
+Read the whole "Create Your Own Type 3 JDBC Driver" series: <ul> <li><a href="/javaworld/jw-05-2002/jw-0517-jdbcdriver.html">Part 1: Connect your Java applications to databases&#8212;the easy way</a></li> <li><a href="/javaworld/jw-06-2002/jw-0614-jdbcdriver2.html">Part 2: Compile, deploy, and access data using your custom-built JDBC driver</a></li> <li><a href="/javaworld/jw-07-2002/jw-0712-jdbcdriver3.html">Part 3: Enhance the custom JWDriver with advanced logging, connection pooling, and Predefined Data Sets</a></li> </ul> <P>
+Let's examine each new feature in turn. <P>
+<strong>Note:</strong> You can download this article's source code from <a href="#resources">Resources</a>. <P><FONT SIZE="+1"><STRONG> Feature 1: SQL statement logging for diagnosis </STRONG></FONT><BR>
+Business applications typically contain numerous SQL data-manipulation and data-retrieval statements to implement various business features. You sometimes may wish to log for later analysis such SQL statements as they execute on the database server. Other uses for logging SQL statements include finding, during the development life cycle, performance bottlenecks from slow SQL statements, or tracking hard-to-find bugs in a complex business transaction containing multiple SQL statements. <P>
+To add SQL statement logging capability to JWDriver, begin by adding a new class, <code>DriverLog</code>, in the driver's middle tier. That class provides the interface to write SQL statements to a predefined file. Each executed SQL statement passes through the remote statement class's <code>executeQuery()</code> and <code>executeUpdate()</code> methods in the middle tier, so the two methods contain the call to the <code>DriverLog</code> methods to log the SQL statements.
+<P>
+Let's now see <code>DriverLog</code>'s implementation and its use in the driver's remote statement class. <P><STRONG> The DriverLog class </STRONG><BR>
+The SQL statement logging occurs in the Web server, where the driver's middle tier is deployed. Create <code>DriverLog</code> under the middle tier's  <code>com.jw.server</code> package. To handle concurrent clients, <code>DriverLog</code> employs the Singleton pattern by making its <code>constructor</code> private to ensure only one instance. The <code>getInstance()</code> method returns the <code>DriverLog</code> reference. The public <code>logQuery()</code> method actually logs the SQL statements into the log file. <P>
+The <code>DriverLog</code> constructor opens the <code>C:\TEMP\JWDriver.log</code> disk file for logging SQL statements. The constructor uses the <code>PrintWriter</code> and <code>FileWriter</code> classes to access the <code>JWDriver.log</code> file. The constructor also opens <code>JWDriver.log</code> in append mode. Here's the constructor's code: <P>
+<CODE><P>
+<BR>
+
+private DriverLog()<BR>
+
+{<BR>
+
+&nbsp;&nbsp; try<BR>
+
+&nbsp;&nbsp; {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;logFileWriter = new FileWriter(logFile,true);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;logPrintWriter = new PrintWriter(logFileWriter,true);<BR>
+
+&nbsp;&nbsp; }<BR>
+
+&nbsp;&nbsp; catch(Exception ex)<BR>
+
+&nbsp;&nbsp; {<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;logFileWriter = null;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;logPrintWriter = null;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex.printStackTrace();<BR>
+
+&nbsp;&nbsp; }<BR>
+
+}<BR>
+</CODE><P>
+Since we've marked the <code>DriverLog</code> class constructor as private, the class is accessed via a public <code>getInstance()</code> method.  The <code>getInstance()</code> method always returns the same <code>DriverLog</code> class reference. The single <code>DriverLog</code> instance is maintained in a static class variable <code>singleLogInstance</code> and created only once as soon as the <code>getInstance()</code> method is first accessed: <P>
+<CODE><P>
+<BR>
+
+public static DriverLog getInstance(){<BR>
+
+&nbsp;&nbsp; if(singleLogInstance == null)<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;singleLogInstance = new DriverLog();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+
+&nbsp;&nbsp; return singleLogInstance;<BR>
+
+}<BR>
+</CODE><P>
+The remote statement calls the public <code>logQuery()</code> method to log SQL statements into the file. The <code>logQuery()</code> method, which logs the SQL statements with the current date and time, includes a synchronized block that ensures the concurrent clients access the log file one at a time. <code>logQuery()</code> logs SQL statements only if you've switched the logging on, which you'll see in the next section. Here's the code: <P>
+<CODE><P>
+<BR>
+
+public void logQuery(String query){<BR>
+
+&nbsp;&nbsp; try{<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(RemoteDriverImpl.queryLog == 1){<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(logPrintWriter != null){&nbsp;&nbsp; <BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;synchronized(logPrintWriter){&nbsp;&nbsp; <BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date theDate = new Date();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String fullMsg = "Logged at:" + theDate.toString();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;logPrintWriter.println("----------------------------------<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--------------------------------------------------------");<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; logPrintWriter.println(fullMsg);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; logPrintWriter.println(query);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp; <BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp; <BR>
+
+&nbsp;&nbsp; }<BR>
+
+&nbsp;&nbsp; catch(Exception ex){}<BR>
+
+}<BR>
+</CODE><P><STRONG> Log SQL statements in the server </STRONG><BR>
+The SQL statements get logged in the driver middle-tier machine in a <code>JWDriver.log</code> file. Switch on SQL statement logging by setting <code>QueryLog</code> to 1 in the <code>DriverSettings.properties</code> file. (You can switch logging back off by setting <code>QueryLog</code> to 0.) <P>
+The driver client tier passes the SQL statement to the middle tier via <code>IRemoteStatement</code> for execution in the database server. The  <code>executeQuery()</code> and <code>executeUpdate()</code> methods in <code>RemoteStatementImpl</code> then call the <code>logQuery()</code> method to log the SQL statements before execution: <P>
+<CODE><P>
+<BR>
+
+public IRemoteResultSet executeQuery(String Query) throws RemoteException,SQLException{<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Log the SQL statement<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DriverLog.getInstance().logQuery(Query);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ResultSet rs = sqlStatment.executeQuery(Query);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RemoteResultSetImpl remoteRs = new RemoteResultSetImpl(rs);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return (IRemoteResultSet)remoteRs;<BR>
+
+}<BR>
+
+<BR>
+
+public int executeUpdate(String Query) throws RemoteException,SQLException{<BR>
+
+// Log the SQL statement<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DriverLog.getInstance().logQuery(Query);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return sqlStatment.executeUpdate(Query);<BR>
+
+}<BR>
+</CODE><P>
+<!-- break --><P><FONT SIZE="+1"><STRONG> Feature 2: Database connection pooling for faster connection retrieval </STRONG></FONT><BR>
+Establishing a database connection to execute a SQL statement always takes time. To increase an application's performance, you can cache database connections, a feature you can easily implement in JWDriver. Whenever a connection request to the database server comes from the middle tier to serve the client application request, the connection returns from the pool. When the client application closes a connection, the connection in the middle tier returns to the pool so that it could serve other client requests. All that happens with the client unaware whether connection pooling is implemented in the middle tier. <P>
+We will cover the following topics to discuss JWDriver's connection-pooling support: <P>
+<ul> <li>The connection pool</li> <li>Initializing the connection pool</li> <li>Retrieving the connection from the pool</li> <li>Returning the connection to the pool</li> </ul> <P><STRONG> The connection pool </STRONG><BR>
+The <code>ConnectionPool</code> class, created in the driver middle tier under the <code>com.jw.server</code> package, implements the connection pool.  <code>ConnectionPool</code> employs the Singleton pattern to handle the concurrent clients by making its constructor private to ensure only one instance. The <code>getInstance()</code> method returns a <code>ConnectionPool</code> reference. <code>ConnectionPool</code> provides the <code>addConnection()</code> method for adding the connections to the pool during the server's launch. The included <code>getConnection()</code> method gets the connection from the pool. <P>
+The constructor creates the empty stack that will hold the connections as: <P>
+<CODE><P>
+<BR>
+
+private ConnectionPool()<BR>
+
+{<BR>
+
+&nbsp;&nbsp; connectionPool = new Vector();<BR>
+
+}<BR>
+</CODE><P>
+<code>ConnectionPool</code> is accessed via the public <code>getInstance()</code> method, which always returns the same reference of the <code>ConnectionPool</code> class. The single <code>ConnectionPool</code> instance is maintained in a static class variable <code>connectionPoolInstance</code>. The single <code>connectionPoolInstance</code> instance is created only once when the <code>getInstance()</code> method is first accessed. The code for the <code>getInstance()</code> method is given below:<P>
+<CODE><P>
+<BR>
+
+public static ConnectionPool getInstance()<BR>
+
+{<BR>
+
+&nbsp;&nbsp; if(connectionPoolInstance == null)<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connectionPoolInstance = new ConnectionPool();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+
+&nbsp;&nbsp; return connectionPoolInstance;<BR>
+
+}<BR>
+</CODE><P>
+The <code>ConnectionPool</code> class keeps the pooled database connections in a stack implemented by the <code>Vector</code> object. <code>ConnectionPool</code> provides two methods&#8212;<code>addConnection()</code> and <code>getConnection()</code>&#8212;to access the connection pool stack. These methods push and pop the connection from the stack, respectively: <P>
+<CODE><P>
+<BR>
+
+public synchronized void addConnection(Connection con){<BR>
+
+&nbsp;&nbsp; // Add the JDBC-ODBC bridge connection to the pool<BR>
+
+connectionPool.addElement(con);<BR>
+
+}<BR>
+
+&nbsp;&nbsp; <BR>
+
+public synchronized Connection getConnection(){<BR>
+
+&nbsp;&nbsp; Connection con = null;<BR>
+
+&nbsp;&nbsp; <BR>
+
+&nbsp;&nbsp; if(connectionPool.size() &gt; 0){&nbsp;&nbsp; <BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;con = (Connection)connectionPool.lastElement();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connectionPool.removeElementAt(connectionPool.size() - 1);<BR>
+
+&nbsp;&nbsp; }<BR>
+
+&nbsp;&nbsp; <BR>
+
+&nbsp;&nbsp; return con;<BR>
+
+}<BR>
+</CODE><P><STRONG> Initialize the connection pool </STRONG><BR>
+The connection pool initializes when JWDriver's RMI server starts up. The <code>RemoteDriverImpl</code> class creates the JDBC-ODBC (Open Database Connectivity) bridge connections and adds them into the pool: <P>
+<CODE><P>
+<BR>
+
+private void initializeConnectionPool(){<BR>
+
+String URL="jdbc:odbc:"+DSN;<BR>
+
+for(int i = 0; i &lt; connectionPoolSize; i++){<BR>
+
+Connection sqlCon = DriverManager.getConnection(URL,dsUser,dsPassword);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ConnectionPool.getInstance().addConnection(sqlCon);<BR>
+
+}<BR>
+
+}<BR>
+</CODE><P>
+You can configure the connection pool's size and change it by setting the <code>ConnectionPoolSize</code> value in the <code>DriverSettings.properties</code> file. The setting below specifies the connection pool size as 5: <P>
+<CODE><P>
+<BR>
+
+ConnectionPoolSize=5<BR>
+</CODE><P><STRONG> Retrieve the connection from the pool </STRONG><BR>
+Whenever a client program requests a connection, JWDriver's client tier delegates the request to the middle tier. The <code>RemoteDriverImpl</code>'s <code>getConnection()</code> method then gets the connection from the connection pool. If the connection pool has no free connection, an exception throws: <P>
+<CODE><P>
+<BR>
+
+public IRemoteConnection getConnection() throws RemoteException,SQLException{<BR>
+
+&nbsp;&nbsp; Connection con = ConnectionPool.getInstance().getConnection();<BR>
+
+&nbsp;&nbsp; if(con == null)<BR>
+
+throw new SQLException("All connections in the driver Connection Pool are in use.");<BR>
+
+&nbsp;&nbsp; <BR>
+
+&nbsp;&nbsp; RemoteConnectionImpl ConnectionInstance = new RemoteConnectionImpl(con);<BR>
+
+&nbsp;&nbsp; return (IRemoteConnection)ConnectionInstance;<BR>
+
+}<BR>
+</CODE><P>
+Figure 1 shows the sequence diagram for retrieving the connection from the pool. <P>
+
+<TABLE ALIGN="CENTER" CELLPADDING="5" BORDER="0"><TR><TD><P>
+<CENTER><P>
+<A HREF="http://www.idg.net/microsites/javaworld/legacy/jw-07-2002/images/jw-0712-jdbcdriver3f1.gif" TARGET="new_window"><IMG VSPACE="3" WIDTH="400" HEIGHT="255" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-07-2002/images/jw-0712-jdbcdriver3f1-th.gif"></A><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+Figure 1. Get a connection from the connection pool. Click on thumbnail to view full-size image.  </STRONG></FONT></CENTER><P>
+</TD></TR></TABLE><P>
+<P><STRONG> Return the connection to the pool 
+</STRONG><BR>
+The database connection returns to the pool whenever the client program closes the connection. JWDriver's client tier delegates the close connection request to the middle tier through the <code>IRemoteConnection</code> class. <code>RemoteConnectionImpl</code> then returns the database connection to the pool as: <P>
+<CODE><P>
+<BR>
+
+public void closeConnection() throws RemoteException,SQLException{<BR>
+
+&nbsp;&nbsp; ConnectionPool.getInstance().addConnection(sqlConnection);<BR>
+
+}<BR>
+</CODE><P><FONT SIZE="+1"><STRONG> Feature 3: PDS setting for improved network latency </STRONG></FONT><BR>
+You can use JWDriver in intranet applications. Client programs such as applets run in client machine browsers while the middle tier runs in the Web server. After a SQL statement executes, the result-set data passes from the middle tier to the client tier via RMI. The client tier, provided in <a href="/javaworld/jw-06-2002/jw-0614-jdbcdriver2.html">Part 2</a>, gets the data for each result-set row from the middle tier, causing expensive network calls to retrieve each result row between the client and middle tiers. Excessive network calls can slow performance, especially with large result sets.
+<P>
+To reduce such network calls, we've created the PDS. The set of result-set rows pack into an array in the middle tier and return to the client tier. The client tier returns the data from the array for each row instead of going to the server every time. This approach reduces the network calls per result set by: <P>
+<blockquote> <em>Network calls saved =  <code>ResultSet</code> row count - <code>ResultSet</code> row count / size of PDS</em> </blockquote> <P>
+JWDriver's <code>ResultSetChunk</code> class implements the PDS. The <code>ResultSetChunk</code> instance containing the result-set rows inside an array passes from the middle tier to the client tier. Let's now detail the <code>ResultSetChunk</code> class. <P><STRONG> The ResultSetChunk class </STRONG><BR>
+The <code>ResultSetChunk</code> class, included under the <code>com.jw.server</code> package, sends the data to the client tier from the middle tier. The <code>ResultSetChunk</code> class also implements the JDK <code>Serializable</code> interface so its instances can pass to the client tier via RMI. <code>ResultSetChunk</code> also provides the interface to set the result-set data rows in its <code>constructor</code>, and then get each row one by one in the <code>getNextRow()</code> method. <P>
+The middle tier extracts the rows from the JDBC result set and populates them into a <code>ResultSetChunk</code> instance. <code>ResultSetChunk</code> class contains the set of rows in a <code>Vector</code> object. Each row is further an array of <code>Objects</code>. The <code>ResultSetChunk</code> constructor accepts the row set as arguments: <P>
+<CODE><P>
+<BR>
+
+public ResultSetChunk(Vector rows){<BR>
+
+&nbsp;&nbsp; rsRows = rows;<BR>
+
+}<BR>
+</CODE><P>
+We cover <code>getNextRow()</code> in more detail in the "Fetch Data from the PDS" section. <P><STRONG> Prepare the PDS </STRONG><BR>
+The client program executes a query and then calls the <code>next()</code> method in the client tier's <code>JWResultSet</code>. For the <code>next()</code> call, the client tier delegates the call to the middle tier's <code>getNextChunk()</code> method through <code>IRemoteResultSet</code> to get the PDS. The <code>getNextChunk()</code> method prepares the PDS with a 50-result-set-row maximum by iterating over the JDBC <code>ResultSet</code>. Each row is packed into an <code>Object</code> array. A  <code>ResultSetChunk</code> instance containing the data row set is then prepared and returned to client tier. If the JDBC <code>Resultset</code> has no more rows to iterate, null returns to the client tier: <P>
+<CODE><P>
+<BR>
+
+public ResultSetChunk getNextChunk() throws RemoteException,SQLException{<BR>
+
+&nbsp;&nbsp; Vector rsDataChunk = new Vector();<BR>
+
+&nbsp;&nbsp; for(int curRowIndex = 0; curRowIndex &lt; CHUNK_SIZE; curRowIndex++){&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(sqlRs.next() == false)<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Prepare the data row in an array of Objects<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Object []row = new Object[colNum];<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for(int i = 1; i &lt;= colNum; i++){<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; row[i-1] = sqlRs.getString(i);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rsDataChunk.addElement(row);<BR>
+
+&nbsp;&nbsp; }<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+
+&nbsp;&nbsp; // If no more data is left, return null<BR>
+
+&nbsp;&nbsp; if(rsDataChunk.size() == 0)<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return null;<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+
+&nbsp;&nbsp; ResultSetChunk rsChunk = new ResultSetChunk(rsDataChunk);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+
+&nbsp;&nbsp; return rsChunk;<BR>
+
+}<BR>
+</CODE><P><STRONG> Fetch data from the PDS </STRONG><BR>
+Once the client tier's <code>JWResultSet</code> has a PDS <code>ResultSetChunk</code> instance, the data is fetched from this PDS for each <code>next()</code> method call. Figure 2's sequence diagram depicts how to fetch data from the PDS. <P>
+
+<TABLE ALIGN="CENTER" CELLPADDING="5" BORDER="0"><TR><TD><P>
+<CENTER><P>
+<A HREF="http://www.idg.net/microsites/javaworld/legacy/jw-07-2002/images/jw-0712-jdbcdriver3f2.gif" TARGET="new_window"><IMG VSPACE="3" WIDTH="400" HEIGHT="365" SRC="http://www.idg.net/microsites/javaworld//legacy/jw-07-2002/images/jw-0712-jdbcdriver3f2-th.gif"></A><P>
+<BR><FONT SIZE="-1"><STRONG><P>
+Figure 2. Fetch data from the PDS. Click on thumbnail to view full-size image.  </STRONG></FONT></CENTER><P>
+</TD></TR></TABLE><P>
+The <code>next()</code> method gets the PDS from the server if the PDS was not obtained earlier or if all rows in the current PDS have already iterated. Once the PDS has been retrieved from the middle tier, the <code>getNextRow()</code> method obtains the next data row from the PDS. Below you'll find the code for the <code>JWResultSet</code>'s <code>next()</code> method: <P>
+<CODE><P>
+<BR>
+
+public boolean next() throws SQLException{<BR>
+
+try{<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Get the chunk data first time<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(rsChunkData == null)<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rsChunkData = remoteResultSet.getNextChunk();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(rsChunkData != null){<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Check if data row can be obtained from the local chunk first <BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; row = rsChunkData. getNextRow();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(row == null){&nbsp;&nbsp; <BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rsChunkData = remoteResultSet.getNextChunk();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// If event-remote result set is not over<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(rsChunkData != null){<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; row = rsChunkData.getNextRow();<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp; <BR>
+
+&nbsp;&nbsp; }<BR>
+
+&nbsp;&nbsp; catch(Exception ex){<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new SQLException(ex.getMessage());<BR>
+
+&nbsp;&nbsp; }&nbsp;&nbsp; <BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+
+&nbsp;&nbsp; if(row == null){<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return false;<BR>
+
+&nbsp;&nbsp; }<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
+
+&nbsp;&nbsp; return true;<BR>
+
+}<BR>
+</CODE><P>
+The PDS <code>ResultSetChunk</code> internally iterates through the data rows it encapsulates. The  <code>ResultSetChunk</code> remembers the current row position internally in a <code>curIndex</code> variable and returns <code>null</code> once all the rows have iterated. Here's the code for the <code>ResultSetChunk</code>'s <code>getNextRow()</code> method: <P>
+<CODE><P>
+<BR>
+
+public Object[]getNextRow () {<BR>
+
+&nbsp;&nbsp; Object []row = null;<BR>
+
+&nbsp;&nbsp; if(curIndex &lt; rsRows.size()){<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;row = (Object[])rsRows.elementAt(curIndex);<BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;curIndex++;<BR>
+
+&nbsp;&nbsp; }<BR>
+
+&nbsp;&nbsp; <BR>
+
+&nbsp;&nbsp; return row;<BR>
+
+}<BR>
+</CODE><P><FONT SIZE="+1"><STRONG> JWDriver lives </STRONG></FONT><BR>
+In this article, you've seen how to augment your custom JWDriver type 3 JDBC driver with advanced logging, connection pooling, and PDS features. By logging SQL statements, you can analyze the queries to make them faster. With connection pooling, your system can serve numerous concurrent users efficiently. Finally, by retrieving data in PDS, you can reduce expensive network calls. Together, these features improve JWDriver's performance and robustness, especially in large applications in which you must support numerous concurrent users. <P>
+In this series, we completely covered custom type 3 JDBC drivers, including their architecture, internals, deployment, use, and optimizations. Type 3 JDBC drivers represent a solid choice for large Java applications in which performance and scalability prove critical. 
+<IMG HEIGHT="12" WIDTH="22" SRC="http://www.idg.net/microsites/javaworld/javaworld/icons/jw-dingbat.gif"><P><br /></p>
+                        <p><STRONG>About the author</STRONG><BR>
+
+<a href="/feedback" target="_blank">Nitin Nanda</a> is the associate project manager in Quark's research and development center based in Chandigarh, India. He manages the front office suite of components for a CRM (customer relationship management) product. Nitin's writing credits include: <a href="http://www.amazon.com/exec/obidos/ASIN/1861004109/javaworld" target="_blank"><em>Professional Java Data</em></a> (2001; ISBN: 1861004109) and <a href="http://www.amazon.com/exec/obidos/ASIN/1861004370/qid=1024007893/javaworld"  target="_blank"><em>Beginning Java Databases</em></a> (2001; ISBN: 1861004370), both from Wrox Press. He worked with Cadence Design Systems prior to joining Quark.<p>
+
+<a href="http://www.javaworld.com/feedback" target="_blank">Sunil Kumar</a> is associate team lead at Quark's research and development center based in Chandigarh, India. He designs and develops the various components for  a CRM product being engineered in VJ++/ASP/COM+/SQL Server. He worked with RAMCO Systems, developing generic ERP (enterprise resource planning) software, prior to joining Quark.
+
+<br /></p>
+                        <p><ul><A NAME="resources"></a><STRONG>Resources</STRONG>
+<BR>
+
+<LI>To download this article's example driver code, go to: <BR><A HREF="http://www.javaworld.com/javaworld/jw-07-2002/jdbcdriver3/DriverCode.zip">http://www.javaworld.com/javaworld/jw-07-2002/jdbcdriver3/DriverCode.zip
+</A><BR>
+
+
+<LI>For this article's deployment source code, download: <BR><A HREF="http://www.javaworld.com/javaworld/jw-07-2002/jdbcdriver3/Deployment.zip">http://www.javaworld.com/javaworld/jw-07-2002/jdbcdriver3/Deployment.zip
+</A><BR>
+
+
+<LI>Nitin Nanda and Sunil Kumar's "Create Your Own Type 3 JDBC Driver" series (<em>JavaWorld</em>):
+
+<ul>
+<li><a href="/javaworld/jw-05-2002/jw-0517-jdbcdriver.html">Part 1: Connect your Java applications to databases&#8212;the easy way</a> (May 2002)</li>
+<li><a href="/javaworld/jw-06-2002/jw-0614-jdbcdriver2.html">Part 2: Compile, deploy, and access data using your custom-built JDBC driver</a> (June 2002)</li>
+<li><a href="/javaworld/jw-07-2002/jw-0712-jdbcdriver3.html">Part 3: Enhance the custom JWDriver with advanced logging, connection pooling, and Predefined Data Sets</a> (July 2002)</li>
+</ul>
+
+<LI>Nitin Nanda's "JDBC Drivers in the Wild" (<em>JavaWorld,</em> July 2000) explains the four JDBC driver types: <BR><A HREF="http://javaworld.com/javaworld/jw-07-2000/jw-0707-jdbc.html">http://javaworld.com/javaworld/jw-07-2000/jw-0707-jdbc.html
+</A><BR>
+
+
+<LI>See Sun Microsystems' JDBC page: <BR><A HREF="http://java.sun.com/products/jdbc">http://java.sun.com/products/jdbc
+</A><BR>
+
+
+<LI>For a description on RMI, see: <BR><A HREF="http://java.sun.com/products/jdk/rmi/">http://java.sun.com/products/jdk/rmi/
+</A><BR>
+
+
+<LI>Siva Visveswaran explains how to manage access to shared, server-side resources for high performance in "Dive Into Connection Pooling with J2EE" (<em>JavaWorld,</em> October 2000): <BR><A HREF="http://www.javaworld.com/javaworld/jw-10-2000/jw-1027-pool.html">http://www.javaworld.com/javaworld/jw-10-2000/jw-1027-pool.html
+</A><BR>
+
+
+<LI><strong>Java Q&A</strong> expert Tony Sintes's Java/Microsoft Excel series (<em>JavaWorld</em>) employs JDBC to read and write from Microsoft Excel files:
+
+<ul>
+<li>"<a href=/javaworld/javaqa/2001-06/04-qa-0629-excel.html>It's Excel-lent</a>" (June 2001)</li>
+<li>"<a href=/javaworld/javaqa/2001-08/02-qa-0824-excel2.html>The Java-Excel Solution Revisited</a>" (August 2001)</li>
+<li>"<a href="/javaworld/javaqa/2002-05/01-qa-0503-excel3.html">It's POI-fect</a>" (May 2002)</li>
+</ul>
+
+<LI>For more JDBC stories, visit the <strong>Java Database Connectivity (JDBC)</strong> section of <em>JavaWorld</em>'s Topical Index: <BR><A HREF="http://www.javaworld.com/channel_content/jw-jdbc-index.shtml">http://www.javaworld.com/channel_content/jw-jdbc-index.shtml
+</A><BR>
+
+
+<LI>Sunil Kumar and Nitin Nanda also wrote "Log It or Lose It" (<em>JavaWorld,</em> September 2001), which shows how to log events to the Windows NT Event Log with JNI (Java Native Interface): <BR><A HREF="http://www.javaworld.com/javaworld/jw-09-2001/jw-0928-ntmessages.html">http://www.javaworld.com/javaworld/jw-09-2001/jw-0928-ntmessages.html
+</A><BR>
+
+
+<LI>Talk about JDBC in our <strong>Enterprise Java</strong> discussion: <BR><A HREF="http://forums.idg.net/webx?50@0@.ee6b80a">http://forums.idg.net/webx?50@0@.ee6b80a
+</A><BR>
+
+
+<LI>Sign up for <em>JavaWorld</em>'s free weekly <em>Enterprise Java</em> email newsletter: <BR><A HREF="http://www.javaworld.com/subscribe">http://www.javaworld.com/subscribe
+</A><BR>
+
+
+<li>You'll find a wealth of IT-related articles from our sister publications at <a href="http://www.idg.net/jump?id=1100">IDG.net</a>
+
+</ul><br /></p>
+                        <!-- REPLACE SIDEBAR -->
+                    </font>
+                    <!-- ## MAIN CONTENT ENDS HERE ### -->
+                </td>
+                <td width="8"><img height=1 src="http://www.idg.net/microsites/javaworld/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="186" bgcolor="#006699" align="middle"><nobr><font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1"></font></nobr><a href="http://www.javaworld.com"><img height=81 src="http://www.idg.net/microsites/javaworld/images/top_jwlogo.gif" width=186 border=0></a></td>
+                <td bgcolor="#cccccc" width="8" valign="bottom"><img height=8 src="http://www.idg.net/microsites/javaworld/images/c_blgrylftbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#cccccc" width="100%" align="middle" valign="center"><!-- BOTTOM 468x60 AD STARTS HERE -->
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
+<TR>
+<TD>
+<FONT COLOR="#000000" SIZE="-2" FACE="Arial,Helvetica,Sans-serif">
+Advertisement: Support JavaWorld, click here!</FONT><BR>
+<NOLAYER>
+<IFRAME SRC="http://ad.doubleclick.net/adi/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=820009?" width="468" height="60" frameborder="no" border="0" MARGINWIDTH="0" MARGINHEIGHT="0" SCROLLING="no">
+<A HREF="http://ad.doubleclick.net/jump/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=820009?"><IMG SRC="http://ad.doubleclick.net/ad/idg.us.idgnet.javaworld/articles;abr=!ie;pos=bottom;sz=468x60;tile=4;ord=820009?" border=0 height="60" width="468"></A>
+</IFRAME>
+</NOLAYER>
+<ILAYER id="layer4" visibility="hidden" width=468 height=60></ILAYER>
+</TD>
+</TR>
+</TABLE>
+<!-- BOTTOM 468x60 AD ENDS HERE -->
+</td>
+                <td width="8"><img height=8 src="http://www.idg.net/microsites/javaworld/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <table bgcolor="#006699" align="center" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td width="100%" align="middle" valign="center">    <font face="Verdana,Geneva,Arial,Helvetica,sans-serif" size="1" color="#ffffff">
+        <p>
+            <br />
+            <a href="http://www.javaworld.com"><font color="#ffffff">HOME</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/features/index.shtml"><font color="#ffffff">FEATURED TUTORIALS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/columns/index.shtml"><font color="#ffffff">COLUMNS</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/news-reviews/index.shtml"><font color="#ffffff">NEWS & REVIEWS</font></a>&nbsp;|&nbsp;
+            <a href="http://forums.idg.net/webx?13@@.ee6b802"><font color="#ffffff">FORUM</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/resources/index.shtml"><font color="#ffffff">JW RESOURCES</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/info/jw-about-index.shtml"><font color="#ffffff">ABOUT JW</font></a>&nbsp;|&nbsp;
+            <a href="http://www.javaworld.com/feedback"><font color="#ffffff">FEEDBACK</font></a>
+        </p>
+        <p>
+
+            <a href="http://www.javaworld.com/javaworld/common/jw-copyright.html"><font color="#ffffff">Copyright © 2002</font></a> JavaWorld.com, an IDG Communications company
+        </p>
+    </font>
+</td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.idg.net/microsites/javaworld/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+            <tr>
+                <td width="100%" align="right" valign="top"><img height=8 src="http://www.idg.net/microsites/javaworld/images/c_blrtbottom.gif" width=8 border=0 ></td>
+                <td bgcolor="#ffffff" width="8"><img height=8 src="http://www.idg.net/microsites/javaworld/images/spacer.gif" width=8 border=0 ></td>
+            </tr>
+        </table>
+        <!-- USA JavaWorld.com Pixel -->
+        <a href="http://ad.doubleclick.net/jump/idg.pixel.usa.jw/5.31.01usajw;sz=1x1;ord=820009?"><img src="http://ad.doubleclick.net/ad/idg.pixel.usa.jw/5.31.01usajw;sz=1x1;ord=820009?" border=0 height="1" width="1"></a>
+        <!--TOP_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=top;sz=468x60;tile=1;ord=820009?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer1.pageX,layer1.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--125x125-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=med;sz=125x125;tile=2;ord=820009?" width=125 height=125 visibility="hidden" onLoad="moveToAbsolute(layer2.pageX,layer2.pageY);clip.height=125;clip.width=125;visibility='show';">
+</LAYER>
+
+<!--SKYSCRAPER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=skyscraper;sz=120x600;tile=3;ord=820009?" width=120 height=600 visibility="hidden" onLoad="moveToAbsolute(layer3.pageX,layer3.pageY);clip.height=600;clip.width=120;visibility='show';">
+</LAYER>
+
+<!--BOTTOM_BANNER-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=bottom;sz=468x60;tile=4;ord=820009?" width=468 height=60 visibility="hidden" onLoad="moveToAbsolute(layer4.pageX,layer4.pageY);clip.height=60;clip.width=468;visibility='show';">
+</LAYER>
+
+<!--Big AD-->
+<LAYER SRC="http://ad.doubleclick.net/adl/idg.us.idgnet.javaworld/articles;pos=rectangle;sz=336x280;tile=5;ord=820009" width=336 height=280 visibility="hidden" onLoad="moveToAbsolute(layer5.pageX,layer5.pageY);clip.height=280;clip.width=336;visibility='show';">
+</LAYER>
+    </body>
+<!-- stories1 -->
+<!-- DOCID 886891 -->
+</html>
+

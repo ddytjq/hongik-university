@@ -1,0 +1,113 @@
+ID=F0149
+URL=http://www.geog.leeds.ac.uk/people/m.blake/magis/geog5080/lt3-2.htm
+SIZE=3387
+DATE=09/07/2002
+TIME=13:15:33
+DATASET=Visual Basic
+HTML=<HTML>
+
+<HEAD>
+<TITLE>Visual Basic Section 3: Loading an ARC/INFO Ungenerate File</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF">
+<H2><A HREF="customgis.htm"><IMG SRC="icons/msvb.gif" ALT="Visual Basic Icon" ALIGN=middle BORDER=0></A>Loading an ARC/INFO Ungenerate File</H2>
+
+<H3>The Algorithm</H3>
+
+<OL>
+<LI>Opens the file
+<LI>Start a loop for each polygon
+<LI>Read all the data items for a polygon
+<LI>Leave the procedure if two &quot;END&quot; are found at then end of the polygon (two &quot;END&quot;s represent the end of a ungenerate file) 
+<LI>Allocate the data items to their correct variables
+<LI>Update the screen messages
+<LI>and loop back to 2 to read the next polygon
+</OL>
+
+
+<H3>The Data Structures</H3>
+The approach that here is to read the whole file into a series of user defined data structures.
+<H3>The Code</H3>
+<PRE>
+<FONT COLOR="#0000FF">Sub Load_GEN ()
+'#########################################################
+<FONT COLOR="#008000">' Loads an ARC/INFO ungenerate file</FONT>
+
+
+Static temp1(2000) As Variant <FONT COLOR="#00FF00">' temp variant storage array</FONT>
+
+Dim <FONT COLOR="#000000">i</FONT> As Integer, <FONT COLOR="#000000">j</FONT> As Integer
+
+
+<FONT COLOR="#008000">' Set the mousepointer</FONT>
+<FONT COLOR="#000000">screen.MousePointer = 11</FONT>
+
+<FONT COLOR="#008000">' Open the input file</FONT>
+Open <FONT COLOR="#000000">File</FONT> For Input As #<FONT COLOR="#000000">1</FONT>
+  
+<FONT COLOR="#008000">' Loop through each polygon</FONT>
+
+Do
+
+<FONT COLOR="#008000">' Count the number of Polygons</FONT>
+    PolyNum = PolyNum + 1
+
+    ItemNum = 0
+    Do
+        ItemNum = ItemNum + 1
+        Input #1, temp1(ItemNum)
+    Loop Until temp1(ItemNum) = "END" <FONT COLOR="#008000">'loops until an END is read</FONT>
+
+<FONT COLOR="#008000">' checks for the END END of the ungenerate file</FONT>
+<FONT COLOR="#008000">    ' leaves the loop</FONT>
+    If temp1(1) = "END" Then
+        Close #1
+        <FONT COLOR="#008000">'Scale & Transform the coordinates</FONT>
+        Call Scaling
+        <FONT COLOR="#008000">' Reset the mousepointer</FONT>
+        screen.MousePointer = 0
+        Exit Sub
+    End If
+
+    <FONT COLOR="#008000">' Sets the polygon ID and polygon centroid variables</FONT>
+    ID(PolyNum) = temp1(1)
+    XCentroid(PolyNum) = temp1(2)
+    YCentroid(PolyNum) = temp1(3)
+
+    <FONT COLOR="#008000">' Calculates the number of coordinates</FONT>
+    CoordNum(PolyNum) = (ItemNum - 4) / 2
+        
+    <FONT COLOR="#008000">' Allocate the coordinates to a data array</FONT> 
+    i = 1
+    For j = 4 To ItemNum - 1 Step 2
+        Poly(PolyNum).X(i) = temp1(j)
+        Poly(PolyNum).Y(i) = temp1(j + 1)
+        i = i + 1
+    Next j
+
+<FONT COLOR="#008000">' Update screen messages</FONT>
+    msg = "Loading Polygon...." & PolyNum & ", ID Number...." & ID(PolyNum)
+    frmUPP.lblCaption.Caption = msg
+    DoEvents
+Loop
+</FONT>
+</PRE>
+<HR>
+Forward: <A HREF="lt1-2.htm" >BASIC &amp; Visual Basic</A>
+<BR>
+Back: <A HREF="cust-gis.htm" target=display >Custom GIS</A>
+<P>
+<FONT SIZE="2">
+<I>Author: <A HREF="http://www.geog.leeds.ac.uk/staff/m.blake/m.blake.html" >Marcus Blake  
+</A>(marcus@geog.leeds.ac.uk)</I>
+<br>
+<I>Webmaster: Ian Turton (ian@geog.leeds.ac.uk)</I>
+<P>
+<I>Last Updated: 19 February 1996 07:39:23</I>
+</FONT>
+
+
+
+</BODY>
+

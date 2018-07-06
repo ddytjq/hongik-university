@@ -1,0 +1,254 @@
+ID=E0134
+URL=http://www.intap.net/~drw/cpp/cpp03_03.htm
+SIZE=9352
+DATE=12/07/02
+TIME=19:17:49
+DATASET=C
+HTML=
+<html>
+<head> 
+<title>
+online C++ tutorial: Casting of Variables
+</title>
+</head>
+
+<body bgcolor="#ffffff"
+       link = "#ff0000"
+      alink = "#00ff00"
+      vlink = "#660000" >
+
+
+<table width="100%" border=0>
+<tr>
+<td align=left>
+<a href="cpp03_01.htm"><img border=0 src="pictures/buttons/prevs.gif" width=51 height=34 alt="&lt;&lt;=="></a>
+<a href="cpp03_02.htm"><img border=0 src="pictures/buttons/prevp.gif" width=37 height=34 alt="&lt;="></a>
+</td>
+<td align=center>
+<a href="index.htm">
+<img border=0 width=122 height=34 src="pictures/buttons/toc.gif"
+    alt="[table of contents]"></a>
+<a href="/cgi-bin/drw/cpp/search.cgi">
+<img border=0 width=46 height=34 src="pictures/buttons/search.gif"
+    alt="[search]"></a>
+<a href="glossary.htm">
+<img border=0 width=61 height=34 src="pictures/buttons/glossary.gif"
+    alt="[glossary]"></a>
+<a href="feedback.htm">
+<img border=0 width=65 height=34 src="pictures/buttons/feedback.gif"
+    alt="[feedback]"></a>
+</td>
+<td align=right>
+
+<a href="cpp03_04.htm"><img border=0 src="pictures/buttons/nextp.gif" width=37 height=34 alt="=&gt;"></a>
+<a href="cpp04_01.htm"><img border=0 src="pictures/buttons/nexts.gif" width=51 height=34 alt="==&gt;&gt;"></a>
+</td>
+</tr>
+</table>
+<hr>
+<table width="100%"><tr><td align=left><img src="pictures/buttons/cppsm.gif" width=143 height=37 alt="[online C++ tutorial]"></td><td align=right><b>Section 3: Variables, Types, and Operators</b></td></tr></table>
+<center><h2>Section 3.3: Casting of Variables</h2></center>
+<h3>How Do Computers Store Variables?</h3>
+
+<p>
+In any programming language, and especially in C++, it's important
+to have at least a cursory understanding of what the computer
+is doing "behind the scenes".  Since we're talking about
+variables in this chapter, it's important to understand
+how a computer stores the information in variables.
+</p>
+
+
+<h3>More Variable Types</h3>
+
+<p>
+For reasons not explained here, variables can only store finite
+numbers.  Suppose that the size of a particular data type, that we'll
+call a <i>gorb</i>, is 1 <a href="glossary.htm#byte">byte</a>.  That
+means that gorbs can only represent 2<sup>8*1</sup> = 2<sup>8</sup> =
+256 distinct values.  So, gorbs might be able to store only the
+numbers between 0 and 255 (inclusive).  Any number that you tried to
+store in a gorb which was smaller than 0, or larger than 255, would
+not be stored correctly; it would be stored as one of the values
+between 0 and 255.  However, maybe you want to be able to store
+positive and negative numbers in gorbs, in which case you'd only
+be able to store 128 negative numbers and 128 positive numbers.
+Since we need to be able to store 0 also, you might decide that
+the range of values for a gorb is -128 to 127.
+</p>
+
+
+<p>
+We've already learned about two different data types (not 
+including "gorbs"!): <code>int</code> and <code>float</code>.
+What are the sizes of these data types, and what are the limits
+on the kinds of values that they can store?  We just saw that
+a data type whose size is 1 byte can store 256 distinct values.
+Data types of size 2 bytes can store 2<sup>8*2</sup> = 2<sup>16</sup>
+= 65536 different values.  Using the same formula, we determine that
+data types of size 4 bytes can store 2<sup>8*4</sup> = 2<sup>32</sup>
+= 4,294,967,296.
+</p>
+
+<p>
+Unfortunately, the size of data types like <code>int</code> and
+<code>float</code> are not standard across all systems.  The
+size of an <code>int</code> depends on your operating system
+and your hardware.  Here are some typical values for <code>int</code>s
+and <code>float</code>s, along with some other important data types.
+
+<center>
+<table width="80%">
+<tr>
+<th align=left>type</th>  <th align=left>typical size</th>  <th align=left>description</th>
+</tr>
+
+<tr><td colspan=3><hr></td></tr>
+
+<tr>
+<td><code>short</code>  <td>2 bytes</td>  <td>stores a short (i.e., small) integer</td>
+</tr>
+
+<tr>
+<td><code>int</code>  <td>4 bytes</td>  <td>stores an integer</td>
+</tr>
+
+<tr>
+<td><code>long</code>  <td>4 bytes</td>  <td>stores a long (i.e., large) integer</td>
+</tr>
+
+<tr>
+<td><code>float</code>  <td>4 bytes</td>  <td>stores a floating-point number</td>
+</tr>
+
+<tr>
+<td><code>double</code>  <td>8 bytes</td>  <td>stores a "double-precision" floating-point number</td>
+</tr>
+
+</table>
+</center>
+
+A more complete listing of variable types can be found in
+<a href="cppab_01.htm">Appendix B</a>.
+
+</p>
+<h3>When to Cast</h3>
+
+
+
+<p>
+<a href="glossary.htm#casting">Casting</a> a variable is a complicated
+name for a simple concept.  When you cast a variable from one type to
+another, all you are doing is telling the computer to use a different
+type to store the variable.  Why would you need (or want) to do this?
+Let's say you declared a variable of type <code>short</code>.  In most
+cases, that would mean that the largest positive value you could store
+would be 32,767.  But somewhere in your program, you realize that
+you're going to have to do a calculation which could increase the
+value over this maximum.  Perhaps you are computing very large
+Pythagorean triplets.  To calculate the value of <i>c</i> (the
+hypotenuse), you need to take the square root of the quantity
+a<sup>2</sup> + b<sup>2</sup>.  But what if <i>a</i> or <i>b</i> is
+very large?  Then squaring that number will make it much, much larger
+-- and if the value becomes bigger than 32,767 your values will not be
+what you expected (if you had used a <code>short</code> to store
+<i>a</i> or <i>b</i>.  Remember, a <code>short</code> can only store
+the values between -32,768 and +32,767, so if you try to store a
+number out of this range, your data will be incorrect!
+
+
+</p>
+
+<p>
+So, the solution is to cast.  We can <i>cast</i> the numbers to a
+larger data type, such as an <code>int</code> or a <code>long</code>,
+for the purposes of the calculation -- and then we can <i>cast</i>
+them back to a <code>short</code> when we are done, since the final
+value for <i>c</i> will probably be small enough to be stored in a
+<code>short</code>.
+</p>
+
+<p>
+This is a somewhat trivial example, since in this case you could store
+the numbers in <code>int</code>s or <code>long</code>s from the
+beginning and not worry about it!  A more useful example might be if
+you have a number which represents an average.  You'll probably
+want to represent the number with a floating-point type like
+a <code>float</code> or a <code>double</code> so that it is
+accurate while you are computing it (otherwise you'd only be able
+to store a value like "26" instead of "26.3141885").  Let's say that
+you want to display the value in a table, yet the table would look
+cluttered if you displayed "26.3141885", so you decide to simply
+display the integer portion, 26.  You can <i>cast</i> the 
+<code>float</code> to an <code>int</code> and then display the
+<code>int</code> in the table -- since <code>int</code>s can't
+store floating-point numbers, the decimal portion of "26.3141885"
+will be truncated and you will be left with "26".
+
+</p>
+
+<h3>How to Cast</h3>
+
+<p>
+Casting in C++ is easy.  Let's say that you have a <code>float</code>
+storing a number like "26.3141885", and you want to have
+an <code>int</code> storing the integer portion instead.  Here's
+how to do it:
+
+<pre>
+int GetAverage() {
+
+// assume that regularAverage and specialAverage store two floats
+  float totalAverage = regularAverage + specialAverage;
+
+// cast totalAverage to an int
+  int truncatedAverage = (int) totalAverage;
+
+// return the truncated value
+  return truncatedAverage;
+}
+</pre>
+
+There's a little bit of syntax that you haven't seen before, but
+the key part to notice is the line of code that reads
+<code>int truncatedAverage = (int) totalAverage</code>.  What
+we're doing here is taking a <code>float</code>, <code>totalAverage</code>,
+which stores some kind of decimal number (like 82.41832), and
+getting rid of the ".41832" part by casting it to an <code>int</code>.
+That works because the <code>int</code> is only capable of storing
+integers, so it simply stores the integer portion of
+<code>totalAverage</code>.
+
+
+</p>
+<hr>
+<table width="100%" border=0>
+<tr>
+<td align=left>
+<a href="cpp03_01.htm"><img border=0 src="pictures/buttons/prevs.gif" width=51 height=34 alt="&lt;&lt;=="></a>
+<a href="cpp03_02.htm"><img border=0 src="pictures/buttons/prevp.gif" width=37 height=34 alt="&lt;="></a>
+</td>
+<td align=center>
+<a href="index.htm">
+<img border=0 width=122 height=34 src="pictures/buttons/toc.gif"
+    alt="[table of contents]"></a>
+<a href="/cgi-bin/drw/cpp/search.cgi">
+<img border=0 width=46 height=34 src="pictures/buttons/search.gif"
+    alt="[search]"></a>
+<a href="glossary.htm">
+<img border=0 width=61 height=34 src="pictures/buttons/glossary.gif"
+    alt="[glossary]"></a>
+<a href="feedback.htm">
+<img border=0 width=65 height=34 src="pictures/buttons/feedback.gif"
+    alt="[feedback]"></a>
+</td>
+<td align=right>
+
+<a href="cpp03_04.htm"><img border=0 src="pictures/buttons/nextp.gif" width=37 height=34 alt="=&gt;"></a>
+<a href="cpp04_01.htm"><img border=0 src="pictures/buttons/nexts.gif" width=51 height=34 alt="==&gt;&gt;"></a>
+</td>
+</tr>
+</table>
+</body>
+</html>
+

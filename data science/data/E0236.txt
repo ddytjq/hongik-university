@@ -1,0 +1,235 @@
+ID=E0236
+URL=http://www.intap.net/~drw/cpp/cpp06_02.htm
+SIZE=7878
+DATE=12/07/02
+TIME=19:18:57
+DATASET=C
+HTML=
+<html>
+<head> 
+<title>
+online C++ tutorial: Object Design
+</title>
+</head>
+
+<body bgcolor="#ffffff"
+       link = "#ff0000"
+      alink = "#00ff00"
+      vlink = "#660000" >
+
+
+<table width="100%" border=0>
+<tr>
+<td align=left>
+<a href="cpp06_01.htm"><img border=0 src="pictures/buttons/prevs.gif" width=51 height=34 alt="&lt;&lt;=="></a>
+<a href="cpp06_01.htm"><img border=0 src="pictures/buttons/prevp.gif" width=37 height=34 alt="&lt;="></a>
+</td>
+<td align=center>
+<a href="index.htm">
+<img border=0 width=122 height=34 src="pictures/buttons/toc.gif"
+    alt="[table of contents]"></a>
+<a href="/cgi-bin/drw/cpp/search.cgi">
+<img border=0 width=46 height=34 src="pictures/buttons/search.gif"
+    alt="[search]"></a>
+<a href="glossary.htm">
+<img border=0 width=61 height=34 src="pictures/buttons/glossary.gif"
+    alt="[glossary]"></a>
+<a href="feedback.htm">
+<img border=0 width=65 height=34 src="pictures/buttons/feedback.gif"
+    alt="[feedback]"></a>
+</td>
+<td align=right>
+
+<img border=0 src="pictures/buttons/nextpg.gif" width=37 height=34 alt="=&gt;"><a href="cpp07_01.htm"><img border=0 src="pictures/buttons/nexts.gif" width=51 height=34 alt="==&gt;&gt;"></a>
+</td>
+</tr>
+</table>
+<hr>
+<table width="100%"><tr><td align=left><img src="pictures/buttons/cppsm.gif" width=143 height=37 alt="[online C++ tutorial]"></td><td align=right><b>Section 6: Introduction to Objects </b></td></tr></table>
+<center><h2>Section 6.2: Object Design</h2></center>
+
+<p>
+There are entire books and long college courses
+that discuss Object design, I will go through
+the basics. As discussed in the previous section,
+An object (synonymous with a class in C++) has data
+that it remembers and actions that it can perform.
+So once it has been determined how an object fits 
+into a program, it's member data and member functions
+can be determined. The question becomes how to 
+determine what role within a program an
+object is will play.
+
+<p>
+The role that an object plays within a program should
+be able to be defined in one to three short sentences.
+If it takes more than this to define (generally) an
+object's role, then there should be more than one object.
+For instance, good concise role's for an object would be:
+
+<p>
+<ul>
+<li>Manages all requests into a data structure<br>
+<center><b> OR </b></center>
+<li>Arbitrates turns in a multi-user game<br>
+<center><b> OR </b></center>
+<li>does all data type conversions within program<br>
+<center><b> OR </b></center>
+<li>easy interface to reading, writing, and parsing files.
+</ul>
+
+<p>
+Drawing pictures that describe the functionality of
+objects can be a big help when designing a program.
+Pictures can often describe the relationship between 
+objects better than a paragraph of words. Objects relate
+to each other in the following ways: ownership (contains), 
+contained-by, knows-about, doesn't-know-about.
+
+<p>
+Here's a picture of how some of the objects in the 
+text-based medieval video game relate to each other:
+<center>
+<img src="pictures/pic06_02fig1.gif" alt="Figure 1">
+</center>
+
+<p>
+Players and Monsters need to be able to fight each
+other. Otherwise it wouldn't be a very exciting game.
+When the Player and a Monster are Battling they battle
+through a third object, the BattleMgr. The BattleMgr 
+decides which Battler acts first, and eventually,
+which battler wins. So the Player object and the monster
+object need to know about the BattleMgr, and the 
+BattleMgr needs to know about both the Player and the 
+Monster.
+
+<p> 
+We have already decided on the attributes of a Battler,
+so let's add these to the picture.
+<center>
+<img src="pictures/pic06_02fig2.gif" alt="Figure 2">
+</center>
+
+<p> 
+Remember our pseudo-code for a battler:
+<pre>
+Player Object:
+data:
+    health
+    strength
+    agility
+    type of weapon
+    type of armor
+actions:    
+    move    
+    attack monster    
+    get treasure
+END
+</pre>
+
+Notice that the actions are not listed in the picture,
+Just the attributes (data). Weapons and Armor are their
+own type of objects so players/monsters must know about
+one of each of these types of objects. The reason that
+health, strength, and agility are treated differently
+will become clear later. For now, understand what we 
+are trying to accomplish by drawing a picture: we want 
+to first of all understand the relationships between 
+objects. Secondly we want to talk our way through the
+program with this picture and make sure that we aren't
+leaving something out. 
+
+<p>
+Let's move to a more complex example. In our game, a 
+player can move through a maze encountering Monsters
+to battle, and weapons and treasure to pick up.
+
+<p> 
+We still have Players, Monsters, and a BattleMgr. We 
+also have a GameDatabase (GameDB) which keeps track 
+of all the rooms in the maze and what is in them. 
+We also have a RoomManager (RoomMgr) that keeps track
+of the current room where the player is and interfaces
+with the GameDB when the player moves to see where the
+player ends up.
+
+<p>
+Here is the diagram:
+<center>
+<img src="pictures/pic06_02fig3.gif" alt="Figure 3">
+</center>
+
+<p>
+So let's go through some parts of the game.
+The player starts the game and decides to go
+east: so the Player object tells the RoomMgr 
+that the player is going east. The RoomMgr 
+checks that the move is valid and then asks
+the GameDB for the next room.
+
+<p>
+We already have a few problems. The RoomMgr needs
+an instance variable to keep track of the
+current room. How does the RoomMgr know if "east"
+is a valid move? Well, each room will have to have
+4 instance variables: east, west, north, and south.
+Their values will be 1 if that is a valid direction
+and 0 if it is not a valid direction. What about 
+the contents of the room. What can rooms contain?
+We'll have to create a Treasure object and rooms 
+will have to keep a list of what Treasure they contain
+and also what Monsters reside in that room.
+
+<p>
+How will we keep a list of an arbitrary number of
+items? We will use what is called a linked list.
+This will be a good example of reusing pieces of
+code.
+
+<p>
+So where do we go from here? In the next section, we
+will try and pseudo-code out our program. We will
+determine how we want everything to work and 
+then write it down in pseduo-code.
+
+<p>
+Before going into the next section take a shot at
+re-drawing the previous picture and figure out how
+you would organize the objects and what instance
+variables and member functions they would contain.
+Your picture will no doubt be different from ours.
+Not that that means you are right or wrong. One of
+the interesting things about programming is that
+there are often many different ways to solve the same
+problem.
+<hr>
+<table width="100%" border=0>
+<tr>
+<td align=left>
+<a href="cpp06_01.htm"><img border=0 src="pictures/buttons/prevs.gif" width=51 height=34 alt="&lt;&lt;=="></a>
+<a href="cpp06_01.htm"><img border=0 src="pictures/buttons/prevp.gif" width=37 height=34 alt="&lt;="></a>
+</td>
+<td align=center>
+<a href="index.htm">
+<img border=0 width=122 height=34 src="pictures/buttons/toc.gif"
+    alt="[table of contents]"></a>
+<a href="/cgi-bin/drw/cpp/search.cgi">
+<img border=0 width=46 height=34 src="pictures/buttons/search.gif"
+    alt="[search]"></a>
+<a href="glossary.htm">
+<img border=0 width=61 height=34 src="pictures/buttons/glossary.gif"
+    alt="[glossary]"></a>
+<a href="feedback.htm">
+<img border=0 width=65 height=34 src="pictures/buttons/feedback.gif"
+    alt="[feedback]"></a>
+</td>
+<td align=right>
+
+<img border=0 src="pictures/buttons/nextpg.gif" width=37 height=34 alt="=&gt;"><a href="cpp07_01.htm"><img border=0 src="pictures/buttons/nexts.gif" width=51 height=34 alt="==&gt;&gt;"></a>
+</td>
+</tr>
+</table>
+</body>
+</html>
+

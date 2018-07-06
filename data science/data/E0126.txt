@@ -1,0 +1,803 @@
+ID=E0126
+URL=http://www.gotw.ca/gotw/072.htm
+SIZE=48623
+DATE=12/07/02
+TIME=19:17:48
+DATASET=C
+HTML=
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+
+
+<title>GotW #72: Data Formats and Efficiency</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<link rel="stylesheet" type="text/css" href="../gotw.css">
+<meta name="Microsoft Theme" content="gotw 111, default">
+<meta name="Microsoft Border" content="tlb, default">
+</head>
+
+<body background="../_themes/gotw/glabkgnd.jpg" bgcolor="#CCFFFF" text="#000000" link="#008080" vlink="#008080" alink="#0000FF"  ><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><table border="0" cellspacing="0" width="100%">
+  <tr>
+    <td colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="6"><strong>
+    GotW #72</strong></font> <!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+
+
+
+<p align="left" style="margin-top: 0; margin-bottom: 0">
+
+<script language="JavaScript"><!--
+MSFPhover = 
+  (((navigator.appName == "Netscape") && 
+  (parseInt(navigator.appVersion) >= 3 )) || 
+  ((navigator.appName == "Microsoft Internet Explorer") && 
+  (parseInt(navigator.appVersion) >= 4 ))); 
+function MSFPpreload(img) 
+{
+  var a=new Image(); a.src=img; return a; 
+}
+// --></script><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav1n=MSFPpreload("../_derived/home_cmp_gotw110_hbtn.gif"); MSFPnav1h=MSFPpreload("../_derived/home_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1h.src" onmouseout="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1n.src"><img src="../_derived/home_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Home" align="middle" name="MSFPnav1"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav2n=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn.gif"); MSFPnav2h=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../news.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2h.src" onmouseout="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2n.src"><img src="../_derived/news.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="News &amp; Events" align="middle" name="MSFPnav2"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav3n=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav3h=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../resources/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3h.src" onmouseout="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3n.src"><img src="../resources/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Community Resources" align="middle" name="MSFPnav3"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav4n=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn.gif"); MSFPnav4h=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../consulting.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4h.src" onmouseout="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4n.src"><img src="../_derived/consulting.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Consulting Services" align="middle" name="MSFPnav4"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav5n=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn.gif"); MSFPnav5h=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../presentations.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5h.src" onmouseout="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5n.src"><img src="../_derived/presentations.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Presentations" align="middle" name="MSFPnav5"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav6n=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav6h=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../publications/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6h.src" onmouseout="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6n.src"><img src="../publications/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Publications" align="middle" name="MSFPnav6"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav7n=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav7h=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7h.src" onmouseout="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7n.src"><img src="_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Guru of the Week" align="middle" name="MSFPnav7"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav8n=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav8h=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../conv/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8h.src" onmouseout="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8n.src"><img src="../conv/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Conversations" align="middle" name="MSFPnav8"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav9n=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn.gif"); MSFPnav9h=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../search.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9h.src" onmouseout="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9n.src"><img src="../_derived/search.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Search GotW.ca" align="middle" name="MSFPnav9"></a>
+</p>
+
+
+
+
+    <!--mstheme--></font></td>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 0">
+      <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav10n=MSFPpreload("../_derived/back_cmp_gotw110_back.gif"); MSFPnav10h=MSFPpreload("../_derived/back_cmp_gotw110_back_a.gif"); }
+// --></script><a href="071.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10h.src" onmouseout="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10n.src"><img src="../_derived/back_cmp_gotw110_back.gif" width="100" height="20" border="0" alt="Prev" name="MSFPnav10"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav11n=MSFPpreload("../_derived/up_cmp_gotw110_up.gif"); MSFPnav11h=MSFPpreload("../_derived/up_cmp_gotw110_up_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11h.src" onmouseout="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11n.src"><img src="../_derived/up_cmp_gotw110_up.gif" width="100" height="20" border="0" alt="Up" name="MSFPnav11"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav12n=MSFPpreload("../_derived/next_cmp_gotw110_next.gif"); MSFPnav12h=MSFPpreload("../_derived/next_cmp_gotw110_next_a.gif"); }
+// --></script><a href="073.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12h.src" onmouseout="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12n.src"><img src="../_derived/next_cmp_gotw110_next.gif" width="100" height="20" border="0" alt="Next" name="MSFPnav12"></a><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td height="5" background="../images/bar.gif" colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td></tr><!--msnavigation--></table><!--msnavigation--><table dir="ltr" border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td valign="top" width="1%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<!--mstheme--></font><table border="0" cellspacing="0" bgcolor="#000000" cellpadding="0">
+  <tr>
+    <td><!--mstheme--><font face="Arial, Arial, Helvetica">
+    <!--mstheme--></font><table border="0" cellpadding="2" cellspacing="1" width="100%" height="483">
+        <tr>
+          <td align="center" bgcolor="#000000" colspan="2" height="16"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-top: 0; margin-bottom: 0"><a href="../news.htm"><b><font color="#FFFF00">News</font></b></a><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <font size="1" color="#0000FF">J<br>
+          U<br>
+          L<br>
+          Y</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-left: 3; margin-right: 3; margin-top: 0" align="center"><font size="1" color="#0000FF">
+            Print articles newly available online</font><!--mstheme--></font><table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%" id="AutoNumber1" bgcolor="#FFFFCC" bordercolordark="#006666" bordercolorlight="#99CCCC">
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill20.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 1&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000" bgcolor="#FFFFCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mxc++-item-4.htm">
+                <font color="#0000FF">Excerpt from MXC++, &quot;Extensible Templates: 
+                Via Inheritance or Traits?&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mcd_review.htm"><font color="#0000FF">
+                Book Review: Modern C++ Design</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill21.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 2: Namespaceops and 
+                Library Versioning&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+            </table><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;A Pragmatic Look at Exception Specifications&quot;<br>
+            </font><font size="1" color="#000080">The usefulness, or lack 
+            thereof, of exception specifications, and how results can vary 
+            across real-world compilers</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <a target="_blank" href="http://www.cuj.com/experts/2007/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;Getting to the Point&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">The Boost library has five 
+            smart pointers that provide a rich array [sic] of useful behaviors.</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font color="#0000FF" size="1">A<br>
+            U<br>
+          G<br>
+          U<br>
+          S<br>
+          T</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin:0 3; ">
+            <a target="_blank" href="http://www.cuj.com/experts/2008/sutter.htm"><i><b><font size="1" color="#0000FF">The New C++</font></b></i> <font size="1" color="#0000FF">
+            column, &quot;Smart(er) Pointers&quot;</font></a><font size="1" color="#000080"><br>
+            A closer look at one of the proposed new standard C++ library 
+            features -- smart pointers, particularly those in Boost and Loki, 
+            and a sneak peek at the usefulness of the proposed typedef templates</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin:0 3; ">
+          <a target="_blank" href="http://www.cuj.com/experts/2008/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;A Midsummer Night's Madness&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">A brew that mixes pointers, 
+          typedefs, and const</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin-top: 0; margin-bottom: 0">
+          <font size="1" color="#0000FF">S<br>
+          E<br>
+          P<br>
+          T<br>
+          E<br>
+          M<br>
+          B<br>
+          E<br>
+          R</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <font size="1" color="#0000FF">&quot;Standard C++ Meets Managed C++&quot;<br>
+            </font><font size="1" color="#000080">A survey of the main (in)compatibilities 
+            between Standard C++ and Microsoft’s managed extensions for C++, and 
+            how the two could converge</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;Export Restrictions, Part 1&quot;<br>
+            </font><font size="1" color="#000080">The scoop on export -- what 
+            some people think it does, what it actually does, and why it’s the 
+            most widely-ignored feature in the C++ standard</font><!--mstheme--></font></td>
+        </tr>
+      </table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p style="margin-top: 0; margin-bottom: 0">
+<img border="0" src="../images/140.gif" width="140" height="1"></p>
+
+<!--mstheme--></font></td><td valign="top" width="24"></td><!--msnavigation--><td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <h2><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Data Formats and Efficiency&nbsp;<font size="3"><br>
+      Difficulty: 8 / 10</font><!--mstheme--></font></h2>
+<p><i>How good are you at choosing highly compact and memory-efficient data
+formats? How good are you at writing bit-twiddling code? This GotW gives you
+ample opportunity to exercise both skills, as we consider efficient
+representations of chess games and a <code>BitBuffer</code> to hold them.</i></p>
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+
+<p>Background: I assume you know the basics of chess.</p>
+
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Problem<!--mstheme--></font></h3>
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">JG Question<!--mstheme--></font></h4>
+<p><b><font size="4">1.</font></b>   Which standard container uses the least
+memory to store the same number of objects of the same type T: deque, list, set,
+or vector? Explain.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Guru Questions<!--mstheme--></font></h4>
+<p><b><font size="4">2.</font></b>   You are creating a worldwide chess server
+that stores all games ever played on it. Because the database can get very
+large, you want to represent each game using as few bytes as possible. For this
+problem, consider only the actual game moves and ignore extra information such
+as the players' names and comments.</p>
+<p>For each of the following data sizes, demonstrate a format for representing a
+chess game that requires the indicated amount of data to store each half-move (a
+half-move is one move played by one side). For this question, assume 1 byte == 8
+bits.</p>
+<blockquote>
+  <p>a) 128 bytes per half-move</p>
+  <p>b) 32 bytes per half-move</p>
+  <p>c) minimum 4 bytes and maximum 8 bytes per half-move</p>
+  <p>d) minimum 2 bytes and maximum 4 bytes per half-move</p>
+  <p>e) 12 bits per half-move</p>
+</blockquote>
+<p><b><font size="4">3.</font></b> To implement solution 2(e), you decide to
+create the following class that manages a buffer of bits. Implement it portably,
+so that it will work correctly on all conforming C++ compilers regardless of
+platform.</p>
+<blockquote>
+  <p><code><font face="Courier New">class BitBuffer<br>
+  {<br>
+  public:<br>
+  &nbsp; // ... add other functions as needed ...<br>
+  <br>
+  &nbsp; // Append num bits starting with the first bit of p.<br>
+  &nbsp; //<br>
+  &nbsp; void Append( unsigned char* p, size_t num );<br>
+  <br>
+  &nbsp; // Query #bits in use (initially zero).<br>
+  &nbsp; //<br>
+  &nbsp; size_t Size() const;<br>
+  <br>
+  &nbsp; // Get num bits starting with the start-th bit,<br>
+  &nbsp; // and store the result starting with the first<br>
+  &nbsp; // bit of p.<br>
+  &nbsp; //<br>
+  &nbsp; void Get( size_t start, size_t num, unsigned char* dest ) const;<br>
+  <br>
+  private:<br>
+  &nbsp; // ... add details here ...<br>
+  };</font></code></p>
+</blockquote>
+<p><b><font size="4">4.</font></b> Is it possible to store a chess game using
+fewer than 12 bits per half-move? If so, demonstrate how. If not, why not?</p>
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a name="Solution"></a>Solution<!--mstheme--></font></h3>
+
+<p><font color="#999933"><b><font size="4">1.</font></b>   Which standard
+container uses the least memory to store the same number of objects of the same
+type T: deque, list, set, or vector? Explain.</font></p>
+<p>Each kind of container chooses a different space/performance tradeoff:</p>
+<blockquote>
+  <p>a) A vector&lt;T&gt; internally stores a contiguous array of T objects, and
+  so has no per-element overhead at all.</p>
+  <p>b) A deque&lt;T&gt; can be thought of as a vector&lt;T&gt; whose internal
+  storage is broken up into chunks. A deque&lt;T&gt; stores chunks, or
+  &quot;pages,&quot; of objects. This requires storing one extra pointer of
+  management information per page, which usually works out to a fraction of a
+  bit per element. There's no other per-element overhead because deque&lt;T&gt;
+  doesn't store any extra pointers or other information for individual T
+  objects.</p>
+  <p>c) A list&lt;T&gt; is a doubly-linked list of nodes that hold T elements.
+  This means that for each T element, list&lt;T&gt; also stores two pointers,
+  which point to the previous and next nodes in the list. Every time we insert a
+  new T element, we also create two more pointers, so a list&lt;T&gt; requires
+  two pointers' worth of overhead per element.</p>
+  <p>d) Finally, a set&lt;T&gt; (and, for that matter, a multiset&lt;T&gt;,
+  map&lt;Key,T&gt;, or multimap&lt;Key,T&gt;) also stores nodes that hold T (or
+  pair&lt;const Key,T&gt;) elements. The usual implementation of a set is as a
+  tree with three extra pointers per node. Often people see this and think, 'why
+  three pointers? isn't two enough, one for the left child and one for the right
+  child?' Because it must be possible to efficiently iterate over the set, we
+  also need an &quot;up&quot; pointer to the parent node, otherwise determining
+  the 'next' element starting from some arbitrary iterator can't be done
+  efficiently. (Besides trees, other internal implementations of set are
+  possible; for example, an alternating skip list can be used, although this
+  still requires at least three pointers per element in the set.<b><sup><a href="#1">[1]</a></sup></b>)</p>
+</blockquote>
+<p>Part of choosing an efficient in-memory representation of data is choosing
+the right (read: most space- and time-efficient) container that supports the
+functionality you need. But that's not the end of it by any means: Another big
+part of choosing an efficient in-memory representation of data is determining
+how to represent the data that will be put into those containers. This question
+brings us to the meat of this issue of GotW.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Different Ways To Represent Data<!--mstheme--></font></h4>
+<p>The point of Question 2 is to demonstrate that there can be a plethora of
+ways to represent the same information:</p>
+<p><font color="#999933"><b><font size="4">2.</font></b>   You are creating a
+worldwide chess server that stores all games ever played on it. Because the
+database can get very large, you want to represent each game using as few bytes
+as possible. For this problem, consider only the actual game moves and ignore
+extra information such as the players' names and comments.</font></p>
+<p>The rest of this article uses the following terms and abbreviations:</p>
+<div align="center">
+  <center>
+  <!--mstheme--></font><table border="0" cellpadding="6" cellspacing="0">
+    <tr>
+      <td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="2">K</font><!--mstheme--></font></td>
+      <td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="2">King</font><!--mstheme--></font></td>
+    </tr>
+    <tr>
+      <td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="2">Q</font><!--mstheme--></font></td>
+      <td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="2">Queen</font><!--mstheme--></font></td>
+    </tr>
+    <tr>
+      <td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="2">R</font><!--mstheme--></font></td>
+      <td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="2">Rook</font><!--mstheme--></font></td>
+    </tr>
+    <tr>
+      <td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="2">B</font><!--mstheme--></font></td>
+      <td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="2">Bishop</font><!--mstheme--></font></td>
+    </tr>
+    <tr>
+      <td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="2">N</font><!--mstheme--></font></td>
+      <td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="2">Knight</font><!--mstheme--></font></td>
+    </tr>
+    <tr>
+      <td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="2">P</font><!--mstheme--></font></td>
+      <td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="2">Pawn</font><!--mstheme--></font></td>
+    </tr>
+    <tr>
+      <td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="2">rank</font><!--mstheme--></font></td>
+      <td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="2">row on the chessboard, typically numbered
+        1 (White's home row)<br>
+        to 8 (Black's home row)</font><!--mstheme--></font></td>
+    </tr>
+    <tr>
+      <td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="2">file</font><!--mstheme--></font></td>
+      <td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="2">column on the chessboard, typically
+        numbered a (left) to h<br>
+        (right)</font><!--mstheme--></font></td>
+    </tr>
+  </table><!--mstheme--><font face="Arial, Arial, Helvetica">
+  </center>
+</div>
+<p><font color="#999933">For each of the following data sizes, demonstrate a
+format for representing a chess game that requires the indicated amount of data
+to store each half-move (a half-move is one move played by one side). For this
+question, assume 1 byte == 8 bits.</font></p>
+<blockquote>
+  <p><font color="#999933">a) 128 bytes per half-move</font></p>
+</blockquote>
+<p>One representation that would take this amount of space would be to assume
+that the program already knows the current board position (which it can deduce
+from the previous moves) and store the entire new board position using two bytes
+per square. In this case, we are mimicking one of the standard online notations,
+which uses a 'W' or 'B' or '.' to designate the side that owns the piece in the
+given square, and a 'K', 'Q', 'R', 'B', 'N', 'P', or '.' to designate the type
+of piece in the given square.</p>
+<p>Using this scheme, and storing the board from rank 1 to rank 8, and file a to
+file h within each rank, one possible half-move representation might be:</p>
+<!--mstheme--></font><pre>  WRWNWBWQWKWBWNWRWPWPWP..WPWPWPWP......WP........................\
+  ................................BPBPBPBPBPBPBPBPBRBNBBBQBKBBBNBR</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>If this is the first move, it represents &quot;1. d4&quot; (or, &quot;1.
+P-Q4&quot;), my usual opening move.</p>
+
+<blockquote>
+  <p><font color="#999933"><br>
+  b) 32 bytes per half-move</font></p>
+</blockquote>
+<p>The representation in (a) seems a little wasteful, since it's in ASCII text
+that humans can read, but we really only need a machine-readable format. After
+all, the software running in front of the chess database is going to take care
+of displaying positions to the user.</p>
+<p>We can get down to 32 bytes per half-move by keeping the basic strategy above
+of storing the entire new board position, but this time storing only 4 bits for
+each square: we need 3 bits to store the piece type (e.g., 0 for K, 1 for Q, 2
+for R, 3 for B, 4 for N, 5 for P, or 6 for none), and 1 bit to store the color
+(which can be ignored if there is no piece on the square).</p>
+<p>Using this scheme, and storing the board from rank 1 to rank 8, and file a to
+file h within each rank, one possible half-move representation might consume
+this many bytes:</p>
+<!--mstheme--></font><pre>  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<blockquote>
+  <p><font color="#999933"><br>
+  c) minimum 4 bytes and maximum 8 bytes per half-move</font></p>
+</blockquote>
+<p>We can achieve this by storing the half-move as text in old-style chess
+notation.</p>
+<p>Old-style &quot;descriptive&quot; chess notation identifies squares used
+variable-length tags like K3 and QN8, instead of using two-character tags like
+e3 and b8. To write down a half-move this way requires at least 4 characters
+(e.g., P-Q4) and possibly as much as 8 characters (e.g., RKN1-KB1, P-KB8(Q)).
+Note that no extra trailing null or other delimiter is needed because the move
+format can be decoded unambiguously.</p>
+<p>Using this scheme, one possible half-move representation might be:</p>
+<!--mstheme--></font><pre>  P-KB8(Q)</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<blockquote>
+  <p><font color="#999933"><br>
+  d) minimum 2 bytes and maximum 4 bytes per half-move</font></p>
+</blockquote>
+<p>We can achieve this by storing the half-move as text in modern chess
+notation.</p>
+<p>Modern &quot;algebraic&quot; chess notation is more compact, and any
+half-move can be written using at least 2 characters (e.g., d4) and at most 4
+characters (e.g., Rgf1, gh=Q). Again, no special move delimiter is needed
+because the format can be decoded unambiguously.</p>
+<p>Using this scheme, one possible half-move representation might be:</p>
+<!--mstheme--></font><pre>  gh=Q</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>(Incidentally, a major advantage of this representation outside the computing
+world is that it can be written down quickly on paper by a human, even under
+time pressure. The reduction from a maximum of 8 characters to a maximum of 4
+characters, coupled with some improved conceptual simplicity, turns out to make
+a big difference to users -- also known as players.)</p>
+
+<blockquote>
+  <p><font color="#999933"><br>
+  e) 12 bits per half-move</font></p>
+</blockquote>
+<p>We can get more compact still by taking a different approach: What if we were
+to store just the moving piece's origin and destination squares? To encode one
+square location requires 6 bits because there are 64 possibilities; so to encode
+two square locations to allow for both the origin and the destination to be
+recorded requires 12 bits. That suffices for usual moves, but in the case of a
+pawn promotion, however, this scheme will need more than 12 bits.</p>
+<p>That's already a lot better than the earlier attempts. Let's stop here for a
+moment, though, and consider how we might create auxiliary data structures to
+store such bits of information that won't play nice and fall on even byte
+boundaries.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">BitBuffer, the Binary Slayer<!--mstheme--></font></h4>
+<p><font color="#999933"><b><font size="4">3.</font></b> To implement solution
+2(e), you decide to create the following class that manages a buffer of bits.
+Implement it portably, so that it will work correctly on all conforming C++
+compilers regardless of platform.</font></p>
+<p>First, note that the directive &quot;assume that 1 byte == 8 bits&quot;
+applied only to Question #2 -- it does <i>not</i> apply here. We need a solution
+that will compile and run correctly on any conforming C++ implementation, no
+matter what kind of underlying platform it's running on.</p>
+<p>The required interface boiled down to:</p>
+<blockquote>
+  <p><code><font face="Courier New" color="#999933">class BitBuffer<br>
+  {<br>
+  public:<br>
+  &nbsp; void Append( unsigned char* p, size_t num );<br>
+  &nbsp; size_t Size() const;<br>
+  &nbsp; void Get( size_t start, size_t num, unsigned char* dest ) const;<br>
+  &nbsp; // ...<br>
+  };</font></code></p>
+</blockquote>
+
+<p>You might wonder why the BitBuffer interface was specified in terms of
+pointers to unsigned char. First off, there's no such thing as a pointer to a
+bit in standard C++, so that's out. Second, the C++ standard guarantees that
+operations on unsigned types (including unsigned char, unsigned short, unsigned
+int, and unsigned long) won't run afoul of &quot;hey, you didn't initialize that
+byte!&quot; or &quot;hey, that's not a valid value!&quot; messages from your
+compiler. As Bjarne Stroustrup writes:<b><sup><a href="#2">[2]</a></sup></b></p>
+
+<blockquote>
+
+<p><i>  The unsigned integer types are ideal for uses that treat storage as a bit array.</i></p>
+
+</blockquote>
+<p>So compilers are required to treat unsigned char (and the other unsigned
+integer types) as raw bits of storage -- which is just what we want. There are
+other approaches, but this is a reasonable one that lets us exercise our
+bit-fiddling coding skills, which happens to be a major goal of this GotW.</p>
+<p>The main question in implementing BitBuffer is: What internal representation
+should we use? I'll consider two major alternatives.</p>
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Attempt #1: Bit-Fiddling Into an unsigned char Buffer<!--mstheme--></font></h4>
+
+<p>The first idea is to implement the BitBuffer via an internal big block of
+unsigned chars, and fiddle the bits ourselves when we put them in and take them
+out. We could let BitBuffer have a member of type unsigned char* that points to
+the buffer, but let's at least use a vector&lt;unsigned char&gt; so that we
+don't have to worry as much about basic memory management.</p>
+<p>Do you think the above sounds pretty easy? If you do, and you haven't yet
+tried to implement (and test!) it, take an hour or three and try it now. I bet
+you'll find it's not as simple as one might think.</p>
+<p>I'm not entirely ashamed to report that this version took me quite a bit of
+effort to write. Just drafting the initial version of the code took me more
+programming effort than I expected, and then it took a lot of debugging effort
+to find and fix all the bugs. I didn't keep track of the development effort, but
+in retrospect I estimate it took me several score compiles, including several to
+add reporting cout's to analyze intermediate values and see where things were
+going wrong, plus half a dozen sessions in the debugger stepping through code,
+to determine and fix all the problems.</p>
+<p>Here's the result. I don't claim it's perfect, but it passed the unit tests I
+threw at it, including single- and multi-byte appends and boundary cases. (You
+always write unit test harnesses for your code, right? And make sure your code
+passes them all, before you check the code in?) Note that this version of the
+code operates on chunks of bytes at a time -- for example, if we're using 8-bit
+bytes and have an offset of 3 bits, then we'll copy the first three bits as a
+unit and copy the last 5 bits as a unit, for two operations per byte. For
+simplicity, I also require the user to provide buffers that are a byte bigger
+than might otherwise be necessary, just so that I can simplify my own code by
+allowing a little running off the end.</p>
+<blockquote>
+  <p align="left"><code><font face="Courier New">// Example 3(a): BitBuffer
+  implemented in terms of<br>
+  // vector&lt;unsigned char&gt;. Hard work. Ugh.<br>
+  //<br>
+  class BitBuffer<br>
+  {<br>
+  public:<br>
+  &nbsp; BitBuffer() : buf_(0), size_(0) { }<br>
+  <br>
+  </font></code><font face="Courier New"><code>&nbsp; // Append num bits
+  starting with the first bit of p.<br>
+  &nbsp; //<br>
+  &nbsp; void Append( unsigned char* p, size_t num )<br>
+  &nbsp; {<br>
+  &nbsp;&nbsp;&nbsp; int bits = numeric_limits&lt;unsigned char&gt;::digits;<br>
+  <br>
+  &nbsp;&nbsp;&nbsp; // first destination byte &amp; bit offset<br>
+  &nbsp;&nbsp;&nbsp; int dst = size_ / bits;<br>
+  &nbsp;&nbsp;&nbsp; int off = size_ % bits;<br>
+  <br>
+  &nbsp;&nbsp;&nbsp; while( buf_.size() &lt; (size_+num) / bits + 1 )<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; buf_.push_back( 0 );<br>
+  <br>
+  </code></font><code><font face="Courier New">&nbsp;&nbsp;&nbsp; for( int i =
+  0; i &lt; (num+bits-1)/bits; ++i )<br>
+  &nbsp;&nbsp;&nbsp; {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned char mask = FirstBits(num - bits*i);<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; buf_[dst+i] |= (*(p+i) &amp; mask) &gt;&gt;
+  off;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if( off &gt; 0 )<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; buf_[dst+i+1] = (*(p+i) &amp; mask)
+  &lt;&lt; (bits - off);<br>
+  &nbsp;&nbsp;&nbsp; }</font></code></p>
+  <p align="left"><code><font face="Courier New">&nbsp;&nbsp;&nbsp; size_ +=
+  num;<br>
+  &nbsp; }</font></code></p>
+  <p align="left"><code><font face="Courier New">&nbsp; // Query #bits in use
+  (initially zero).<br>
+  &nbsp; //<br>
+  &nbsp; size_t Size() const<br>
+  &nbsp; {<br>
+  &nbsp;&nbsp;&nbsp; return size_;<br>
+  &nbsp; }<br>
+  <br>
+  &nbsp; // Get num bits starting with the start-th bit<br>
+  &nbsp; // (0-based), and store the result starting with<br>
+  &nbsp; // the first bit of dst. The buffer pointed at<br>
+  &nbsp; // by dst should be at least one byte bigger<br>
+  &nbsp; // than the minimum needed to hold num bits.<br>
+  &nbsp; //<br>
+  &nbsp; void Get( size_t start, size_t num, unsigned char* dst ) const<br>
+  &nbsp; {<br>
+  &nbsp;&nbsp;&nbsp; int bits = numeric_limits&lt;unsigned char&gt;::digits;<br>
+  </font></code><font face="Courier New"><code><br>
+  &nbsp;&nbsp;&nbsp; // first source byte &amp; bit offset<br>
+  </code></font><code><font face="Courier New">&nbsp;&nbsp;&nbsp; int src =
+  start / bits;<br>
+  &nbsp;&nbsp;&nbsp; int off = start % bits;<br>
+  <br>
+  &nbsp;&nbsp;&nbsp; for( int i = 0; i &lt; (num+bits-1)/bits; ++i )<br>
+  &nbsp;&nbsp;&nbsp; {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *(dst+i) = buf_[src+i] &lt;&lt; off;<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if( off &gt; 0 )<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *(dst+i) |= buf_[src+i+1] &gt;&gt;
+  (bits - off);<br>
+  &nbsp;&nbsp;&nbsp; }<br>
+  &nbsp; }</font></code></p>
+  <p align="left"><code><font face="Courier New">private:<br>
+  &nbsp; vector&lt;unsigned char&gt; buf_;<br>
+  &nbsp; size_t size_; // in bits</font></code></p>
+  <p align="left"><code><font face="Courier New">&nbsp; // Build a mask where
+  the first n bits are 1 and<br>
+  &nbsp; // the rest are 0.<br>
+  &nbsp; //<br>
+  &nbsp; unsigned char FirstBits( size_t n )<br>
+  &nbsp; {<br>
+  &nbsp;&nbsp;&nbsp; int num = min( n, numeric_limits&lt;unsigned
+  char&gt;::digits );<br>
+  &nbsp;&nbsp;&nbsp; unsigned char b = 0;<br>
+  &nbsp;&nbsp;&nbsp; while( num-- &gt; 0 )<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b = (b &gt;&gt; 1) | (1 &lt;&lt;
+  (numeric_limits&lt;unsigned char&gt;::digits-1));<br>
+  &nbsp;&nbsp;&nbsp; return b;<br>
+  &nbsp; }<br>
+  };</font></code></p>
+</blockquote>
+
+<p>The above code is nontrivial. Take some time to read it and to convince
+yourself that it's doing the right thing. (If you think you've found a bug,
+first write a test harness that attempts to demonstrate the bug; once the bug
+has been confirmed, please do go ahead and send me both the bug report and the
+test harness that tickles the problem behavior.)</p>
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Attempt #2: Reusing a Standard Bit-Packed Containers<!--mstheme--></font></h4>
+
+<p>The second idea is to note that the standard library already includes two
+containers that store bits: bitset and vector&lt;bool&gt;. Now, bitset is a bad
+choice simply because bitset&lt;N&gt; has fixed length N and we'll be encoding
+variable-length bitstreams. No dice. Here vector&lt;bool&gt;, for all its other
+faults, is a tempting choice and in this case turns out to be just what the
+doctor ordered.</p>
+<p>The most important thing I can say about the following code is this:</p>
+<p align="center">The Example 3(b) code was essentially correct on first
+writing.</p>
+<p>Yes, really. Between my first compile and the final code, all I did was fix a
+few syntax typos like a missing semicolon (these are, after all, things the
+compiler is supposed to find for you) and add parentheses in two places where
+I'd forgotten that % has higher precedence than +. That's it.</p>
+<blockquote>
+  <p><code><font face="Courier New">// Example 3(b): BitBuffer implemented in
+  terms of<br>
+  // vector&lt;bool&gt;.<br>
+  //<br>
+  class BitBuffer<br>
+  {<br>
+  public:<br>
+  &nbsp; // Append num bits starting with the first bit of p.<br>
+  &nbsp; //<br>
+  &nbsp; void Append( unsigned char* p, size_t num )<br>
+  &nbsp; {<br>
+  &nbsp;&nbsp;&nbsp; int bits = numeric_limits&lt;unsigned char&gt;::digits;</font></code></p>
+  <p><font face="Courier New"><code>&nbsp;&nbsp;&nbsp; for( int i = 0; i &lt;
+  num; ++i )<br>
+  &nbsp;&nbsp;&nbsp; {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; buf_.push_back( *p &amp; (1 &lt;&lt; (bits-1 -
+  i%bits)) );<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if( (i+1) % bits == 0 )<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ++p;<br>
+  &nbsp;&nbsp;&nbsp; }<br>
+  &nbsp; }<br>
+  <br>
+  &nbsp; // Query #bits in use (initially zero).<br>
+  &nbsp; //<br>
+  &nbsp; size_t Size() const<br>
+  &nbsp; {<br>
+  &nbsp;&nbsp;&nbsp; return buf_.size();<br>
+  &nbsp; }<br>
+  <br>
+  &nbsp; // Get num bits starting with the start-th bit<br>
+  &nbsp; // (0-based), and store the result starting<br>
+  &nbsp; // with the first bit of dst.<br>
+  &nbsp; //<br>
+  &nbsp; void Get( size_t start, size_t num, unsigned char* dst ) const<br>
+  &nbsp; {<br>
+  &nbsp;&nbsp;&nbsp; int bits = numeric_limits&lt;unsigned char&gt;::digits;<br>
+  <br>
+  </code></font><code><font face="Courier New">&nbsp;&nbsp;&nbsp; *dst = 0;<br>
+  &nbsp;&nbsp;&nbsp; for( int i = 0; i &lt; num; ++i )<br>
+  &nbsp;&nbsp;&nbsp; {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *dst |= unsigned char(buf_[start+i]) &lt;&lt;
+  (bits-1 - i%bits);<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if( (i+1) % bits == 0 )<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *++dst = 0;<br>
+  &nbsp;&nbsp;&nbsp; }<br>
+  &nbsp; }<br>
+  <br>
+  private:<br>
+  &nbsp; vector&lt;bool&gt; buf_;<br>
+  };</font></code></p>
+</blockquote>
+<p>That writing this version was so much easier than writing Example 2(a)
+shouldn't be surprising. This version reuses existing bit-fiddling code instead
+of writing its own, it uses about 50% fewer lines of code -- and it's <i>dis</i>proportionately
+less buggy as a result! This time I didn't even have to ask the user to supply a
+bit of extra output space just to make my Get() code simpler, as I did in the
+first version.</p>
+<p>I suspect that both solutions, especially the first, could probably be
+further improved -- there may be bugs I didn't detect, and maybe the code could
+be simplified a bit in ways I didn't see -- but I think they're pretty close to
+optimal in terms of both correctness and style.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">The Big Squeeze<!--mstheme--></font></h4>
+
+<p>Let's take one final look at the compressed representation and see if there's
+anything more we can do to squeeze it down.</p>
+
+<p><font color="#999933"><b><font size="4">4.</font></b> Is it possible to store
+a chess game using fewer than 12 bits per half-move? If so, demonstrate how. If
+not, why not?</font></p>
+<p>Yes. For example, here are three ways:</p>
+<p>We can get down to 10 bits per half-move by encoding the destination square
+and the piece that moved there. Encoding a square requires 6 bits, as above.
+Encoding which piece moved there can be done by simply identifying the number of
+the piece, assigning an arbitrary ordering to the squares, say from rank 1 to
+rank 8 and file a to file h within each rank, and numbering the pieces in the
+order their current squares appear in that ordering. There can only be 16 pieces
+on the board, so the piece can be identified using 4 bits, for a total of 10
+bits.</p>
+<p>Could we do better still? Let's reason it through: We can encode all possible
+squares as destination, but usually only a minority of squares could actually be
+moved to with a legal move, so there must be some redundancy left in that part
+of our encoding. Similarly, we can represent all pieces moving to the given
+square, even though almost certainly not all pieces could move to that square --
+indeed, some pieces may not even have a legal move at all to any square --, so
+somehow we're probably encoding more than we need to encode. For example, we
+could compress the second part further by storing from 0 to 4 bits to identify
+the piece that moved: there are 1 to 16 possibilities, and if there is only one
+piece that could move to the square then we don't need to encode any bits at
+all. On decoding, we know how many possible pieces could have moved to the
+square, and so we know how many bits to pull from the input format for that
+half-move.</p>
+<p>We can get down to an encoding that uses at least 0 and at most 8 bits per
+half-move as follows: First, invent an ordering of legal moves; for example, we
+could order the pieces according to their squares as above, and for each piece
+order its possible moves as possible destination squares according to the same
+square ordering. Then, store the number of the actual move made using the
+minimum number of bits required; for example, the opening position has 20 legal
+moves, and to store them as a plain binary number requires ceiling(log<sub>2</sub>(20))
+= 5 bits.</p>
+<p>The result is that we need a minimum of 0 bits to represent each half-move.
+Zero bits are needed if there is only one possibility, a forced move. But how
+many bits could be needed in the worst case? This corresponds directly to the
+question: How many moves could there be in a legal chess position? At <a href="http://www.drb.insel.de/~heiner/Chess/README_LONG">http://www.drb.insel.de/~heiner/Chess/README_LONG</a>,
+the author writes: &quot;The current known maximum is 218 (Dickins 1968):
+3Q4/1Q4Q1/4Q3/2Q4R/ Q4Q2/3Q4/1Q4Rp/1K1BBNNk w - - 0 1.&quot; The board looks
+like this:<b><sup><a href="#3">[3]</a></sup></b></p>
+<!--mstheme--></font><pre>  - - - Q - - - -   3Q4
+  - Q - - - - Q -   1Q4Q1
+  - - - - Q - - -   4Q3
+  - - Q - - - - R   2Q4R
+  Q - - - - Q - -   Q4Q2
+  - - - Q - - - -   3Q4
+  - Q - - - - R p   1Q4Rp
+  - K - B B N N k   1K1BBNNk</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>In this worst case, 8 bits are needed to encode the move as a plain binary
+number. On average, probably 5 bits will be required to store a typical move;
+the opening position has 20 moves, and a typical endgame with the side to move
+having, say, K+R+2P on an open board can yield about 30 legal moves if the Pawns
+are getting ready to promote, both of which cases require 5 bits to store using
+this method.</p>
+<p>Thinking about this briefly should convince us that this encoding ought to be
+pretty close to optimal, because it is representing directly and exactly the
+answer to the question at hand: &quot;Which legal move was made?&quot; We are
+using the minimum number bits to represent the possibilities for any given move
+as a plain binary number, with full knowledge of what has gone before.</p>
+<p>Can we do better still? Yes, although now we'll start to see diminishing
+returns as the further gains become incremental. This is because further gains
+rely on having more knowledge and/or saving only partial bits. To illustrate how
+we could do a bit better still, consider that the opening position has 20 moves,
+which we under the above scheme we would store using ceiling(log<sub>2</sub>(20))
+= 5 bits -- yet really that choice of first move theoretically holds only log<sub>2</sub>(20)
+= 4.3 bits of actual information, even assuming that all moves are equally
+likely, and on average we should require even fewer bits because the two most
+popular opening moves for White account for the majority of all chess games. In
+brief, if we can additionally gain knowledge about the relative probabilities of
+each move (for example, by building into the compression engine a deterministic
+chess-playing program that can guess which moves are better or more likely than
+others for any given position), then we could use variable-length encodings such
+as Huffman and arithmetic compression that use fewer bits to store the more
+likely moves. This trades off computing time using domain-specific knowledge in
+return for better compression.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Conclusion<!--mstheme--></font></h4>
+<p>This GotW shows how domain-specific knowledge can be applied to make a
+significant difference in the solution of a given problem.</p>
+<p>In summary, even without any knowledge of which moves are more likely in any
+given position, a typical 40-move (80-half-move) game can be stored in about 50
+bytes. To get a sense of how tight a representation that really is, consider:</p>
+<p>This concluding sentence is exactly 50 bytes long.</p>
+<p>&nbsp;</p>
+
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Notes<!--mstheme--></font></h4>
+<p><a name="1"></a>1. L. Marrie. <b>&quot;Alternating Skip Lists&quot;</b> (Dr.
+Dobb's Journal, 25(8), August 2000).</p>
+<p><a name="2"></a>2. B. Stroustrup. <b>The C++ Programming Language, Special
+Edition</b> (Addison-Wesley, 2000)</p>
+<p><a name="3"></a>3. I believe it should be straightforward to show that this
+is a legally reachable position: Black moved last, and the only legal move could
+have been to move the P on h3 to h2 (the P on h2 it could not have come from g3
+because there's no White piece it could have captured). Note that, sometime in
+the past, all white Ps Queened, and the easiest way to let them do that with
+minimal captures is to have every 2nd black P be captured by a white P, where
+each captured black P allows two white Ps (the capturing P and the P on the
+capturee's file) to advance to the 8th rank with no further captures. Therefore
+White's move before that could have been to capture any of Black's 10 other
+pieces on any of the 16 squares White now controls, etc. If we just say that
+White's last 10 moves were each to capture a Black piece that had itself just
+moved to the target square, and we've accounted for the last 21 half-moves
+leading to the position shown.</p>
+<!--mstheme--></font><!--msnavigation--></td></tr><!--msnavigation--></table><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><h4 align="right"><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a href="../copyright.htm"><font size="2">Copyright ©
+2002 Herb Sutter</font></a><!--mstheme--></font></h4>
+
+<!--mstheme--></font></td></tr><!--msnavigation--></table></body>
+</html>
+

@@ -1,0 +1,167 @@
+ID=D0046
+URL=http://www.ejbtut.com/EntityUse.jsp
+SIZE=7399
+DATE=16/07/02
+TIME=14:35:46
+DATASET=Java
+HTML=<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.75 [en] (Win98; U) [Netscape]">
+   <meta name="Description" content="EJB Tutorial">
+   <meta name="Keywords" content="JSP Tutorial">
+   <meta name="KeyWords" content="EJB Tutorial">
+   <title>EJB Tutorial</title>
+</head>
+<body>
+&nbsp;
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0 COLS=1 WIDTH="100%" >
+<tr>
+<td>
+<center><b><font size=+3>EJB Tutorial</font></b>
+<br><img SRC="ejbtut.gif" ></center>
+</td>
+</tr>
+
+<tr>
+<td><i><font size=-1><a href="/">Tutorial Index Page</a></font></i>
+<h2>
+Using the Entity Bean</h2>
+Look in the "<tt>Props.java</tt>" file created by the wizard.&nbsp; This
+is your "<tt>remote</tt>" interface.&nbsp; Recall that the "<tt>remote</tt>"
+interface is the way how anybody interacts with the entity bean.
+<p>Of course, before interacting with the entity bean, one must find it
+first!&nbsp; Unless one is creating a new entity bean.&nbsp; The interface
+that allows clients to create and find entity beans, is in <tt>PropsHome.java</tt>.&nbsp;
+Take a look in this file to see what this "<tt>home</tt>" interface looks
+like.
+<h3>
+Getting the home interface</h3>
+The first step in using an entity bean is to get a reference to the home
+object.&nbsp; This is done via JNDI, as shown:
+<pre>import javax.naming.*;
+import javax.ejb.*;
+import javax.rmi.*;
+import java.util.*;
+import props.*;
+
+// ...
+&nbsp;&nbsp;&nbsp; Properties env = new Properties();
+&nbsp;&nbsp;&nbsp; env.put( "java.naming.factory.initial",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "desisoft.ejb.client.JRMPFactory" );
+&nbsp;&nbsp;&nbsp; env.put( "desisoft.ejb.nameServer1",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "localhost:2050" );
+&nbsp;&nbsp;&nbsp; Context ctx = new InitialContext( env );
+&nbsp;&nbsp;&nbsp; <tt>PropsHome</tt> home =
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<tt>PropsHome</tt>) ctx.lookup( "Props" );</pre>
+Notes:
+<ul>
+<li>
+If you are doing this in a JSP page or a servlet in Blazix, you do not
+need to pass an "env" to the InitialContext constructor, because the default
+environment is already initialized.&nbsp; Instead, in a JSP page or a servlet,
+add the prefix "java:comp/env/ejb/" when doing the lookup, e.g.</li>
+
+<br><tt>PropsHome home = (PropsHome)</tt>
+<br><tt>&nbsp;&nbsp; ctx.lookup("java:comp/env/ejb/Props");</tt>
+<li>
+The "localhost:2050" should be replaced by the actual hostname and port
+number of the EJB server.</li>
+
+<li>
+The last line is show above for simplicity of explanation.&nbsp; Due to
+implementation reasons, the correct Java way to do the casting is as follows:</li>
+
+<br><tt>Propshome home = (PropsHome)</tt>
+<br><tt>&nbsp; PortableRemoteObject.narrow(</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ctx.lookup( "Props"
+),</tt>
+<br><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropsHome.class );</tt>
+<br>To keep the code portable, always use PortableRemoteObject for casting
+the home interfaces.&nbsp; (But if you are using JDK 1.2, <tt>PortableRemoteObject</tt>
+will not be available, so you must do direct casting without <tt>PortableRemoteObject</tt>
+as shown in the example.&nbsp; You can also download and install IIOP separately,
+which will make <tt>PortableRemoteObject</tt> available.)
+<li>
+Note that <tt>desisoft.ejb.client.JRMPFactory</tt> and <tt>desisoft.ejb.nameServer1</tt>
+are Blazix specific strings.&nbsp; Each EJB container will have its own
+way of getting the initial context and its own method of locating the EJB
+server (unless the container requires that the EJB server run bundled with
+a web-server.)&nbsp; These properties can be kept in a JNDI properties
+file for keeping the code container-independent -- JNDI documentation explains
+how to do this.</li>
+</ul>
+
+<h3>
+Using the entity bean</h3>
+Once you have a home interface, creating or finding a bean is simple, just
+call the appropriate create or find method from the home interface.
+<p>When you create or find a bean, you get the bean's "remote" interface
+back.
+<p>To use the bean, now just call methods in the bean's remote interface.
+<h3>
+The client code</h3>
+There is a sample file included here to show how to put all this together.&nbsp;
+There are two versions of the file, <a href="java12/EntityClientSample.java">EntityClientSample.java
+for JDK 1.2</a> and <a href="java13/EntityClientSample.java">EntityClientSample.java
+for JDK 1.3</a>.&nbsp; The only difference between these two versions is
+that the JDK 1.2 version does not use <tt>PortableRemoteObjec</tt>t.
+<p>To compile and use this file, you need to add the EJB jar file C:\Ejbtut\PropsEjb.jar
+in your classpath.&nbsp; (Do not place the client code in C:\Ejbtut to
+avoid confusion with the existing classes there!)
+<p>Usage of this class is shown below:
+<pre>java EntityClientSample put name myname
+java EntityClientSample get name
+java EntityClientSample put name anotherName
+java EntityClientSample get name</pre>
+(The EJB server must be running when you try these commands.)
+<p>The first command above puts the value "myname" on the property "name".&nbsp;
+The second command retrieves the value on the property "name".&nbsp; The
+third command changes the property, and the fourth command retrieves the
+new property.
+<p>You can put a property on one machine, and then access it from another
+machine!&nbsp; And once you put the property, even when you stop the program
+and turn your machine off the property will stay that way, so when you
+restart the program and lookup the property you will get the same value
+back.&nbsp; You can even stop and restart the server, and entity bean object
+will be there when the server is restarted.
+<h3>
+Concepts</h3>
+The entity bean created has two fields, "<tt>key</tt>" and "<tt>value</tt>".&nbsp;
+The EJB framework guarantees that the fields of any given bean will be
+persistent, and will stay the same until changed.
+<p>This sample provides a very simple entity bean where the fields are
+returned un-changed to the client of the bean, and the only bean methods
+are getters and setters.&nbsp; But entity beans can provide any other methods
+besides getters and setters.&nbsp; While the underlying fields will be
+persistent, any necessary computation can be performed on the fields before
+returning a result to the client.
+<p><i>Exercise:&nbsp;&nbsp; </i>Write a client program for the employees
+EJB you have created.&nbsp; This program should be able to (a) add new
+employees, given their SSN and other information (b) retrieve and print
+information about an employee, given the SSN, (c) change the information
+for an employee, given the SSN and the new information (restrict "c" to
+only one field, e.g. salary, the idea is just to make sure you are familiar
+with the capabilities.)
+<p><a href="TroubleShooting.jsp#EntityUse">Troubleshooting Tips</a></td>
+</tr>
+
+<tr>
+<td>
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0 WIDTH="100%" >
+<tr>
+<td><a href="EntityFinders.jsp">Next tutorial: Finder Methods</a></td>
+
+<td>
+<div align=right><font size=-1><a href="Index.html#contents">Contents</a></font></div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+
+</body>
+</html>
+

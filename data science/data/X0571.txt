@@ -1,0 +1,1169 @@
+ID=X0571
+URL=http://tennisfame.org/
+SIZE=27610
+DATE=12/07/2002
+TIME=17:35:32
+DATASET=Sport
+HTML=
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<HTML>
+
+<HEAD>
+
+
+
+<script language="JavaScript1.2">
+/*
+// CREDITS:
+
+// Simple OneLineScroller by Urs Dudli and Peter Gehrig 
+
+// Copyright (c) 2000 Peter Gehrig and Urs Dudli. All rights reserved.
+
+// Permission given to use the script provided that this notice remains as is.
+
+// Additional scripts can be found at http://www.24fun.com.
+
+// info@24fun.ch
+
+// 6/6/2000
+
+
+
+// IMPORTANT: 
+
+// If you add this script to a script-library or script-archive 
+
+// you have to add a hyperlink to http://www.24fun.com on the webpage 
+
+// where this script will be running.
+
+
+
+// INSTALLATION:
+
+// 	1.	Download 
+
+// 		'http://www.24fun.com/downloadcenter/textonelinescroller/textonelinescroller_e.html' 
+
+// 		and save it as HTML-file.
+
+// 	2.	Configure the messages inside the head section of the script like this:
+
+//		message[indexnumber]="text of title|text of copy|URL of link"
+
+//	3.	Configure the variables inside the head section of the script: 
+
+//		font-family, font-size, background-color, scrollerwidth and so on.
+
+
+
+var message= new Array()
+
+
+
+// Configure each message below like this:
+
+// message[indexnumber]="text of title|text of copy|URL of link"
+
+// You may add as many messages as you like.
+
+
+
+message[0]="Click|for a virtual tour of the Hall of Fame Museum|http://www.tennisfame.com/museum.html"
+
+
+
+message[1]="Click|to see who's in the Hall of Fame|http://www.tennisfame.com/enshrinees_home.html"
+
+
+
+message[2]="Click|to play tennis on our historic grass courts|http://www.tennisfame.com/lawn_racquet/lawn/grasscourts.html"
+
+
+
+message[3]="Click|for 2002 Calendar of Events |http://www.tennisfame.com/calendar.html"
+
+
+
+message[4]="Click|to join the Tennis Hall of Fame|http://www.tennisfame.com/membership.html"
+
+
+
+message[5]="Click|to our Newport Visitor's Guide |http://www.tennisfame.com/newport_guide.html"
+
+
+
+// height of the scrollerbox (pixels)
+
+var scrollerheight=18
+
+
+
+// width of the titlezone (pixels)
+
+var titlezonewidth=30
+
+
+
+// width of the copyzone (pixels)
+
+var copyzonewidth=345
+
+
+
+// horizonal position: distance to the top border of the window (pixels)
+
+var scrollertop=60
+
+
+
+// vertical position: distance to the left border of the window (pixels)
+
+var scrollerleft=0
+
+
+
+// borderwidth of the scroller
+
+var scrollerborder=0
+
+
+
+// backgroundcolor for the titlezone
+
+var titlezonebg="#66FF00"
+
+
+
+// backgroundcolor for the copyzone
+
+var copyzonebg="FFFFFF"
+
+
+
+// backgroundcolor for the scroller
+
+var scrollbg="FFFFFF"
+
+
+
+// The target of your links
+
+// possible values are '_blank', '_self', '_top', '_parent' or the name of
+
+// the target window for instance 'main'
+
+var targetlink="_blank"
+
+
+
+// font attributes of the title
+
+var font_titleface="arial,helvetica"
+
+var font_titlecolor="000000"
+
+var font_titlesize=2
+
+
+
+// font attributes of the copytext
+
+var font_copyface="arial,helvetica"
+
+var font_copycolor="000000"
+
+var font_copysize=2
+
+
+
+// set 1 for bold title, set 0 for normal title
+
+var titlebold=0
+
+
+
+// set 1 for bold copy, set 0 for normal copy
+
+var copybold=0
+
+
+
+// set 'right', 'left' or 'center' to align the title
+
+var titlealign="right"
+
+
+
+// set 'right', 'left' or 'center' to align the copy
+
+var copyalign="left"
+
+
+
+// standstill between the messages (milliseconds)
+
+var standstill=1000
+
+
+
+// Do not edit below this line
+
+var pre_titlebold
+
+var after_titlebold
+
+var pre_copybold
+
+var after_copybold
+
+
+
+var cliptop=0
+
+var clipbottom=0
+
+var clipleft=0
+
+var clipright=titlezonewidth+copyzonewidth
+
+
+
+var i_message=0
+
+var mes_joined
+
+var mes_split
+
+var contenttext
+
+var contentbg=""
+
+
+
+var step=1
+
+var pause=10
+
+
+
+if (titlebold==1) {
+
+	pre_titlebold="<b>"
+
+	after_titlebold="</b>"
+
+}
+
+else if (titlebold==0) {
+
+	pre_titlebold=""
+
+	after_titlebold=""
+
+}
+
+
+
+if (copybold==1) {
+
+	pre_copybold="<b>"
+
+	after_copybold="</b>"
+
+}
+
+else if (copybold==0) {
+
+	pre_copybold=""
+
+	after_copybold=""
+
+}
+
+
+
+function initiate() {
+
+		mes_joined=message[i_message]
+
+		mes_split=mes_joined.split("|")
+
+		
+
+		contenttext="<table cellpadding=4 cellspacing=0 border=0>"
+
+		contenttext+="<tr valign='top'>"
+
+		contenttext+="<td align="+titlealign+" width="+titlezonewidth+" height='"+scrollerheight+"' bgcolor='"+titlezonebg+"'>"
+
+		contenttext+="<a href='"+mes_split[2]+"' target='"+targetlink+"'>"
+
+		contenttext+="<font face='"+font_titleface+"' color='"+font_titlecolor+"' size='"+font_titlesize+"'>"
+
+		contenttext+=pre_titlebold
+
+		contenttext+=mes_split[0]
+
+		contenttext+=after_titlebold
+
+		contenttext+="</font></a></td>"
+
+		contenttext+="<td align="+copyalign+" width="+copyzonewidth+" height='"+scrollerheight+"' bgcolor='"+copyzonebg+"'>"
+
+		contenttext+="<font face='"+font_copyface+"' color='"+font_copycolor+"' size='"+font_copysize+"'>"
+
+		contenttext+=pre_copybold
+
+		contenttext+=mes_split[1]
+
+		contenttext+=after_copybold
+
+		contenttext+="</font></td></tr>"
+
+		contenttext+="</table>"
+
+		
+
+		var bg_width=titlezonewidth+copyzonewidth+2*scrollerborder
+
+		var bg_height=scrollerheight+2*scrollerborder
+
+		
+
+		contentbg="<table width="+bg_width+" height='"+bg_height+"' cellpadding=0 cellspacing=0 border='"+scrollerborder+"'><tr><td bgcolor='"+scrollbg+"'>&nbsp;</td></tr></table>"
+
+	
+
+	if (document.all) {
+
+		scrollertext.innerHTML=contenttext
+
+		scrollerbg.innerHTML=contentbg
+
+		document.all.scrollertext.style.posTop=scrollertop+scrollerheight
+
+		document.all.scrollertext.style.posLeft=scrollerleft
+
+		document.all.scrollerbg.style.posTop=scrollertop-scrollerborder
+
+		document.all.scrollerbg.style.posLeft=scrollerleft-scrollerborder
+
+		document.all.scrollertext.style.clip="rect("+cliptop+" "+clipright+" "+clipbottom+" "+clipleft+")"
+
+		scrollin()
+
+	}
+
+	if (document.layers) {
+
+		document.scrollertext.document.write(contenttext)
+
+		document.scrollertext.document.close()
+
+		document.scrollerbg.document.write(contentbg)
+
+		document.scrollerbg.document.close()
+
+		document.scrollertext.top=scrollertop+scrollerheight
+
+		document.scrollertext.left=scrollerleft
+
+		document.scrollerbg.top=scrollertop-scrollerborder
+
+		document.scrollerbg.left=scrollerleft-scrollerborder
+
+		document.scrollertext.clip.left=clipleft
+
+        document.scrollertext.clip.right=clipright
+
+        document.scrollertext.clip.top=cliptop
+
+        document.scrollertext.clip.bottom=clipbottom
+
+		scrollin()
+
+	}
+
+}
+
+
+
+function scrollin(){
+
+	if (document.all){
+
+		if (document.all.scrollertext.style.posTop>scrollertop) {
+
+			clipbottom+=step
+
+			document.all.scrollertext.style.clip="rect("+cliptop+" "+clipright+" "+clipbottom+" "+clipleft+")"
+
+			document.all.scrollertext.style.posTop-=step
+
+			var timer=setTimeout("scrollin()",pause)
+
+		}
+
+		else {
+
+			clearTimeout(timer)
+
+			var timer=setTimeout("scrollout()",standstill)
+
+		}
+
+	}
+
+	if (document.layers){
+
+		if (document.scrollertext.top>scrollertop) {
+
+			clipbottom+=step
+
+			document.scrollertext.clip.left=clipleft
+
+        	document.scrollertext.clip.right=clipright
+
+        	document.scrollertext.clip.top=cliptop
+
+        	document.scrollertext.clip.bottom=clipbottom
+
+			document.scrollertext.top-=step
+
+			var timer=setTimeout("scrollin()",pause)
+
+		}
+
+		else {
+
+			clearTimeout(timer)
+
+			var timer=setTimeout("scrollout()",standstill)
+
+		}
+
+	}
+
+}
+
+
+
+function scrollout(){
+
+	if (document.all){
+
+		if (document.all.scrollertext.style.posTop>(scrollertop-scrollerheight)) {
+
+			cliptop+=step
+
+			document.all.scrollertext.style.clip="rect("+cliptop+" "+clipright+" "+clipbottom+" "+clipleft+")"
+
+			document.all.scrollertext.style.posTop-=step
+
+			var timer=setTimeout("scrollout()",pause)
+
+		}
+
+		else {
+
+			clearTimeout(timer)
+
+			changemessage()
+
+		}
+
+	}
+
+	if (document.layers){
+
+		if (document.scrollertext.top>(scrollertop-scrollerheight)) {
+
+			cliptop+=step
+
+			document.scrollertext.clip.left=clipleft
+
+        	document.scrollertext.clip.right=clipright
+
+        	document.scrollertext.clip.top=cliptop
+
+        	document.scrollertext.clip.bottom=clipbottom
+
+			document.scrollertext.top-=step
+
+			var timer=setTimeout("scrollout()",pause)
+
+		}
+
+		else {
+
+			clearTimeout(timer)
+
+
+
+			changemessage()
+
+		}
+
+	}
+
+}
+
+
+
+function changemessage(){
+
+		i_message++
+
+		if (i_message>message.length-1) {i_message=0}
+
+		mes_joined=message[i_message]
+
+		mes_split=mes_joined.split("|")
+
+		cliptop=0
+
+		clipbottom=0
+
+		
+
+		contenttext="<table cellpadding=4 cellspacing=0 border=0>"
+
+		contenttext+="<tr valign='top'>"
+
+		contenttext+="<td align="+titlealign+" width="+titlezonewidth+" height='"+scrollerheight+"' bgcolor='"+titlezonebg+"'>"
+
+		contenttext+="<a href='"+mes_split[2]+"' target='"+targetlink+"'>"
+
+		contenttext+="<font face='"+font_titleface+"' color='"+font_titlecolor+"' size='"+font_titlesize+"'>"
+
+		contenttext+=pre_titlebold
+
+		contenttext+=mes_split[0]
+
+		contenttext+=after_titlebold
+
+		contenttext+="</font></a></td>"
+
+		contenttext+="<td align="+copyalign+" width="+copyzonewidth+" height='"+scrollerheight+"' bgcolor='"+copyzonebg+"'>"
+
+		contenttext+="<font face='"+font_copyface+"' color='"+font_copycolor+"' size='"+font_copysize+"'>"
+
+		contenttext+=pre_copybold
+
+		contenttext+=mes_split[1]
+
+		contenttext+=after_copybold
+
+		contenttext+="</font></td></tr>"
+
+		contenttext+="</table>"
+
+	
+
+	if (document.all) {
+
+		scrollertext.innerHTML=contenttext
+
+		document.all.scrollertext.style.posTop=scrollertop+scrollerheight
+
+		document.all.scrollertext.style.posLeft=scrollerleft
+
+		document.all.scrollertext.style.clip="rect("+cliptop+" "+clipright+" "+clipbottom+" "+clipleft+")"
+
+		scrollin()
+
+	}
+
+	if (document.layers) {
+
+		document.scrollertext.document.write(contenttext)
+
+		document.scrollertext.document.close()
+
+		document.scrollertext.top=scrollertop+scrollerheight
+
+		document.scrollertext.left=scrollerleft
+
+		document.scrollertext.clip.left=clipleft
+
+        document.scrollertext.clip.right=clipright
+
+        document.scrollertext.clip.top=cliptop
+
+        document.scrollertext.clip.bottom=clipbottom
+
+		scrollin()
+
+	}
+
+}
+
+*/
+
+</script>
+
+
+
+	<META NAME="keywords" CONTENT="International Tennis Hall of Fame, Newport, Rhode Island, tennis, US Open Gallery Exhibit, Enshrinees, Martina Navratilova, calendar of events, museum galleries, professional tournaments, memberships, newport visitors guide, facility use, Newport New York Gala, Silent Auction, tennis gear, photos, biographical sketches, playing records tennis greats">
+
+</HEAD>
+
+<TITLE>International Tennis Hall of Fame, Newport, RI</TITLE>
+
+<BODY bgcolor=ffffff link="#003300" alink="#CC0000" vlink="#660000" topmargin=0 leftmargin=0 marginwidth=0 marginheight=0 >
+
+
+
+<div id="scrollerbg" style="position:absolute;top:-1000px">&nbsp;</div>
+
+<div id="scrollertext" style="position:absolute;top:-1000px">&nbsp;</div>
+
+<!-- Header img -->
+
+<table cellpadding=0 cellspacing=0 border=0 width=650>
+	<tr>
+		<td>
+
+			<table cellpadding=0 cellspacing=0 border=0>
+				<tr>
+					<td valign=top colspan=3><IMG SRC="images/header.gif" ALT="" WIDTH="610" HEIGHT="60"></td>
+				</tr>
+			</table>
+
+			<!-- Drop down menu -- Complete SIte index-->
+			
+			<table cellpadding=0 cellspacing=0 border=0 width=610 bgcolor="#FFFFFF">
+				<tr>
+					<td valign=top  BGCOLOR="#FFFFFF" ALIGN=right>
+			
+						<table cellspacing=0 cellpadding=0 border=0>
+							<tr>
+			
+								<FORM NAME="URLJump">
+								
+								<TD ALIGN=right valign=top  BGCOLOR=ffffff>
+									
+									<SELECT NAME="URLS" onChange="location = this.options[this.selectedIndex].value">
+										<OPTION VALUE="VOID">Complete Site Index
+										<OPTION VALUE="index.html">Home
+										<OPTION VALUE="aboutus.html">About Us
+										<OPTION VALUE="enshrinees_home.html">Enshrinees 
+										<OPTION VALUE="calendar.html">Calendar of Events 
+										<OPTION VALUE="museum.html">Museum 
+										<OPTION VALUE="membership.html">Membership
+										<OPTION VALUE="presscenter.html">Press Center
+										<OPTION VALUE="http://www.tennisfame.com/Championship">Tournament 2002
+										<OPTION VALUE="facility_use.html">Facility Use
+										<OPTION VALUE="lawn_racquet/lawn/index.html">Lawn Tennis Club
+										<OPTION VALUE="lawn_racquet/racquet/index.html">Indoor Tennis Club
+										<OPTION VALUE="lawn_racquet/instruction.html">Professional Instruction
+										<OPTION VALUE="architecture/architecture.html">Architectural History
+										<OPTION VALUE="researchCENTER/research.html">Information Research Center
+										<OPTION VALUE="awards/awards.html">Hall of Fame Awards
+										<OPTION VALUE="casino.html">The Newport Casino
+										<OPTION VALUE="Bookstore/index.html">Tennis Bookstore
+										<OPTION VALUE="tennislinks.html">Tennis Links
+										<OPTION VALUE="contact.html">Contact Information
+										<OPTION VALUE="directions.html">Directions
+								
+								<!--   taken out 5/16/02 
+														<OPTION VALUE="newsletter/index.html">Newsletter
+														<OPTION VALUE="shop.html">Tennis Store & Gift Shop 
+														<OPTION VALUE="newport_guide.html">Newport Visitor's Guide
+														
+														-->
+											</SELECT>
+									</TD>
+								</form>
+							</TR>
+						</TABLE>
+								
+					</td>
+				</tr>
+			</table>
+
+
+
+			<table cellpadding=0 cellspacing=0 border=0>
+				<tr>
+					<td valign=top>
+			
+						<table cellpadding=0 cellspacing=0 border=0>
+							<tr>
+								<td valign=top WIDTH="359"><A HREF="membership.html"><img src="images/casinotopper.jpg" alt="The Historic Newport Casino" width="359" height="155" border="0"></A></TD>
+			
+								<TD width=251 bgcolor=ffffff valign=top><IMG SRC="images/mission.gif" ALT="Mission Statement" WIDTH="231" HEIGHT="144" vspace=5 hspace=5></TD>
+							</TR>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td valign=top colspan=2 bgcolor=ffffff><img src="images/bars.gif" alt="Tennis Hall of Fame" width="359" height="12" border="0"></td>
+				</tr>
+			</table>
+
+<!-- Navigation Left------------------------------------------------------------------------------------ -->
+<FORM action="tennisnews.cgi" method="POST">
+<TABLE cellpadding=0 cellspacing=0 border=0 width=122 width=122>
+
+	<TR>
+		<TD valign=top WIDTH=122 bgcolor="#CCCC99">
+			<TABLE cellpadding=0 cellspacing=0 border=0 width=122>
+				<TR>
+					<TD valign=top bgcolor=ffffff>
+						<IMG SRC="images/122_green.gif" ALT="Tennis Hall of Fame" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				<TR>
+					<TD valign=top bgcolor=ffffff><FONT face=arial,helvetica size=1>
+						<A href="index.html"><IMG SRC="images/yellowball.jpg" ALT="" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Home</A></FONT></TD>
+				</TR>
+				<TR>
+					<TD valign=top bgcolor=ffffff>
+						<IMG SRC="images/122_green.gif" ALT="Tennis Hall of Fame" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				<TR>
+					<TD valign=top bgcolor=ffffff><FONT face=arial,helvetica size=1>
+						<A href="aboutus.html"><IMG SRC="images/yellowball.jpg" ALT="" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">About Us</A></FONT></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff>
+						<IMG SRC="images/122_green.gif" ALT="" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><FONT face=arial,helvetica size=1>
+						<A href="enshrinees_home.html"><IMG SRC="images/yellowball.jpg" ALT="" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Enshrinees</A></FONT></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><IMG SRC="images/122_green.gif" ALT="" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><FONT face=arial,helvetica size=1>
+						<A href="calendar.html"><IMG SRC="images/yellowball.jpg" ALT="" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Calendar of Events</A></FONT></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><IMG SRC="images/122_green.gif" ALT="Tennis Hall of Fame" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><FONT face=arial,helvetica size=1>
+						<A href="museum.html"><IMG SRC="images/yellowball.jpg" ALT="Tennis Hall of Fame" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Museum</A></FONT></TD></TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff>
+						<IMG SRC="images/122_green.gif" ALT="Tennis Hall of Fame" WIDTH="122" HEIGHT="1" vspace=1></TD></TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><FONT face=arial,helvetica size=1><A href="membership.html">
+						<IMG SRC="images/yellowball.jpg" ALT="Tennis Hall of Fame" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Membership</A></FONT></TD>
+				</TR>
+				
+				<TR><TD valign=top bgcolor=ffffff>
+					<IMG SRC="images/122_green.gif" ALT="Tennis Hall of Fame" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><FONT face=arial,helvetica size=1>
+						<A href="presscenter.html"><IMG SRC="images/yellowball.jpg" ALT="Tennis Hall of Fame" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Press Center</A></FONT></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff>
+						<IMG SRC="images/122_green.gif" ALT="Tennis Hall of Fame" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><FONT face=arial,helvetica size=1>
+						<A href="Championship"><IMG SRC="images/yellowball.jpg" ALT="Tennis Hall of Fame" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Tournament 2002</A></FONT></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><IMG SRC="images/122_green.gif" ALT="Tennis Hall of Fame" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><FONT face=arial,helvetica size=1>
+						<A href="facility_use.html"><IMG SRC="images/yellowball.jpg" ALT="Tennis Hall of Fame" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Facility Use</A></FONT></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><IMG SRC="images/122_green.gif" ALT="Tennis Hall of Fame" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				
+				<TR><TD valign=top bgcolor=ffffff><FONT face=arial,helvetica size=1>
+					<A href="lawn_racquet/lawn/index.html"><IMG SRC="images/yellowball.jpg" ALT="Tennis Hall of Fame" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Lawn Tennis Club</A></FONT></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><IMG SRC="images/122_green.gif" ALT="Tennis Hall of Fame" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><FONT face=arial,helvetica size=1>
+						<A href="lawn_racquet/racquet/index.html"><IMG SRC="images/yellowball.jpg" ALT="Tennis Hall of Fame" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Indoor Tennis Club</A></FONT></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><IMG SRC="images/122_green.gif" ALT="Tennis Hall of Fame" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><FONT face=arial,helvetica size=1><A href="lawn_racquet/instruction.html"><IMG SRC="images/yellowball.jpg" ALT="Tennis Hall of Fame" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Professional <div align=center>Instruction</div></A></FONT></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><IMG SRC="images/122_green.gif" ALT="Tennis Hall of Fame" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><FONT face=arial,helvetica size=1><A href="architecture/architecture.html"><IMG SRC="images/yellowball.jpg" ALT="Tennis Hall of Fame" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Architectural History</A></FONT></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><IMG SRC="images/122_green.gif" ALT="Tennis Hall of Fame" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><FONT face=arial,helvetica size=1><A href="researchCENTER/research.html"><IMG SRC="images/yellowball.jpg" ALT="Tennis Hall of Fame" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Information Research <div align=center>Center</A></div></FONT></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><IMG SRC="images/122_green.gif" ALT="" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><FONT face=arial,helvetica size=1><A href="awards/awards.html"><IMG SRC="images/yellowball.jpg" ALT="Tennis Hall of Fame" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Hall of Fame Awards</A></FONT></TD>
+				</TR>
+				<TR>
+					<TD valign=top bgcolor=ffffff><IMG SRC="images/122_green.gif" ALT="" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				<TR>
+					<TD valign=top bgcolor=ffffff>
+						<FONT face=arial,helvetica size=1><A href="casino.html"><IMG SRC="images/yellowball.jpg" ALT="Tennis Hall of Fame" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Newport Casino</A></FONT>
+					</TD>
+				</TR>
+				<TR>
+					<TD valign=top bgcolor=ffffff><IMG SRC="images/122_green.gif" ALT="" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				<TR>
+					<TD valign=top bgcolor=ffffff>
+						<FONT face=arial,helvetica size=1><A href="Bookstore/index.html"><IMG SRC="images/yellowball.jpg" ALT="Tennis Hall of Fame" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Tennis Bookstore</A></FONT>
+					</TD>
+				</TR>
+				<TR>
+					<TD valign=top bgcolor=ffffff><IMG SRC="images/122_green.gif" ALT="" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				<TR>
+					<TD valign=top bgcolor=ffffff>
+						<FONT face=arial,helvetica size=1><A href="tennislinks.html"><IMG SRC="images/yellowball.jpg" ALT="Tennis Hall of Fame" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Tennis Links</A></FONT>
+					</TD>
+				</TR>
+				<TR>
+					<TD valign=top bgcolor=ffffff><IMG SRC="images/122_green.gif" ALT="" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				<TR>
+					<TD valign=top bgcolor=ffffff>
+						<FONT face=arial,helvetica size=1><A href="contact.html"><IMG SRC="images/yellowball.jpg" ALT="Tennis Hall of Fame" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Contact Information</A></FONT>
+					</TD>
+				</TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><IMG SRC="images/122_green.gif" ALT="" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+				<TR><TD valign=top bgcolor=ffffff>
+					<FONT face=arial,helvetica size=1><A href="directions.html"><IMG SRC="images/yellowball.jpg" ALT="Tennis Hall of Fame" WIDTH="11" HEIGHT="8" HSPACE="3" BORDER="0" VALIGN="top">Directions</A></FONT></TD></TR>
+				
+				<TR>
+					<TD valign=top bgcolor=ffffff><IMG SRC="images/122_green.gif" ALT="Tennis Hall of Fame" WIDTH="122" HEIGHT="1" vspace=1></TD>
+				</TR>
+
+
+<!-- END Navigation Left------------------------------------------------------------------------------------ -->						
+				
+				
+				<TR>
+					<TD valign=top bgcolor=CCCC99><IMG SRC="images/clear.gif" ALT="Tennis Hall of Fame" WIDTH="122" HEIGHT="10" vspace=1></TD>
+				</TR>
+
+				<TR>
+					<TD valign=top align=center bgcolor="#CCCC99">
+						<TABLE cellpadding=0 cellspacing=0 border=0>
+							<TR>
+								<TD valign="top" background="home/images/newsletterBALL.gif" width=120>
+								<br><br><br>
+											&nbsp;&nbsp;&nbsp;&nbsp;<INPUT type="input" name="email" value="your email" align="MIDDLE" size="10" maxlength="35"><BR>
+											&nbsp;&nbsp;&nbsp;&nbsp;<input type="image"  src="home/images/butSUBMIT.jpg" value="submit">
+								
+								<!-- side adds ------------------------------------------------------------- -->
+								
+								</FORM></TD>
+							</TR>
+							<tr>	
+								<td>
+									<A HREF="discount_coupon.html"><img src="home/images/disountCOUPON.jpg" alt="Discount Coupon" width="120" height="28" hspace="0" vspace="4" border="0"></a></td>
+							</tr>
+							<tr>	
+								<td>
+									<A HREF="tennisnews.html" target=new><img src="home/images/tennisHEADLINES.gif" alt="" width="120" height="32" hspace="0" vspace="0" border="0"></a></td>
+							</tr>
+							<tr>	
+								<td>
+									<A HREF="servlets/Main" target=new><img src="home/images/hofQUIZ.jpg" alt="" width="120" height="28" hspace="0" vspace="0" border="0"></a></td>
+							</tr>
+							<tr>	
+								<td>
+									<A HREF="newport_guide.html"><img src="home/images/butNEWPORT.jpg" alt="Newport Visitor's Guide" width="120" height="28" vspace="6" border="0"></a><br></td>
+							</tr>
+						
+					
+						</TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+
+		</TD>
+
+<!--CENTER COLUMN COPY/CONTENT-->
+		
+		<TD WIDTH=488  valign=top>
+		
+			<TABLE cellpadding=0 cellspacing=0 border=0 width=488>
+		
+				<TR>
+					<TD valign=top colspan=3 width=488 ><img src="images/centercourt.gif" alt="On Center Court" width="404" height="56" border="0"></TD>
+				</TR>
+		
+				<TR>
+					<TD valign=top width=488>
+		
+						<TABLE cellpadding=0 cellspacing=0 border=0 width=488>
+		
+							<TR>
+								<TD valign=top width=25><IMG SRC="images/clear.gif" ALT="Tennis Hall of Fame" WIDTH="25" HEIGHT="5"></TD>
+								<TD valign=top colspan=3  bgcolor="#CCCC99">
+									<TABLE cellpadding=4 cellspacing=0 border=0>
+										<tr>
+											<TD><FONT face=arial,helvetica size=4 color="#330000">&nbsp;at the International Tennis Hall of Fame  </font></TD>
+										</tr>
+									</TABLE>
+							
+								</TD>
+							</TR>
+						</TABLE> 
+						
+						<TABLE cellpadding=0 cellspacing=0 border=0>
+							<TR>
+								<TD valign=top width=448>
+									<TABLE cellpadding=5 cellspacing=0 border=0>
+							
+										<TR>
+											<TD valign=top width=25 ><IMG SRC="images/clear.gif" ALT="" WIDTH="25" HEIGHT="5"></TD>
+							
+											<TD valign=top width=315>
+												<TABLE cellpadding=5 cellspacing=0 border=0>
+													<TR>
+														<TD valign=top width=305><FONT face=arial,helvetica size=2>
+												
+												<!--WHATS NEW CONTENTS-->
+												
+															<table cellpadding=0 cellspacing=0 border=0>
+																<tr>
+																	<td COLSPAN=2 valign=top><IMG SRC="images/WHATSNEW_TEXT.gif" ALT="What's New" WIDTH="100" HEIGHT="18" VSPACE="0" BORDER="0"><BR><IMG SRC="images/clear.gif" ALT="" WIDTH="10" HEIGHT="3"></TD>
+																</TR>
+															</table>
+				
+															<table cellpadding=0 cellspacing=0 border=0>
+																<tr> 
+																	<td valign=top><img src="images/yellowball.jpg" alt="Tennis Hall of Fame" width="11" height="8" hspace="3" border="0" align="top"></td>
+				
+				                                 	 				<td><a href="PressCenter/prince.html"><FONT face=arial,helvetica size=2><B>
+															Prince Tennis partners with Hall of Fame to offer Free Museum Admission to Juniors </B></font></a><br>
+															<IMG SRC="images/clear.gif" ALT="" WIDTH="10" HEIGHT="3"></TD>
+												</TR>
+												<tr> 
+													 <td valign=top><img src="images/yellowball.jpg" alt="Tennis Hall of Fame" width="11" height="8" hspace="3" border="0" align="top"></td>
+				
+				                                 	 <td><a href="PressCenter/enshrinement_011602.html"><FONT face=arial,helvetica size=2><B>
+															Shriver, Wilander to be inducted into<br>Tennis Hall of Fame this July</B></font></a><br><br>
+															</TD>
+												</TR>
+										</table>
+										<table cellpadding=0 cellspacing=0 border=0>
+
+          <!-- center image ads -->                      
+		  									<tr> 
+												<td  valign=bottom> <a href="Championship"><IMG SRC="images/logo2002sm.jpg" ALT="" WIDTH="100" HEIGHT="108" VSPACE="0" BORDER="0"></a><br><br></td>
+												<td  valign=bottom bgcolor="#FFFFFF" width=110><a href="http://quiz.tennisfame.com/membership.html"><img src="home/images/membership_special.jpg" alt="Membership Special" width="112" height="100" vspace="0" border="0"></a><br><br></td>
+												<td  valign=top bgcolor="#FFFFFF"><a href="http://tennisfame.com/lawn_racquet/lawn/grasscourts.html"><img src="images/grassCourts.jpg" width="100" height="108" border="0"></a><br><br></td>
+											</tr>
+										</table>
+										
+										<table cellpadding=0 cellspacing=0 border=0>
+											<tr>
+												<td valign=top><img src="images/champs_but1.jpg" alt="Grand Slam Champions" width="124" height="39" border="0" VALIGN="top"></td>
+												<td valign=top><a href="http://www.tennisfame.com/servlets/event_champ"><IMG SRC="images/champs_eventbut.jpg" ALT="Events" WIDTH="89" HEIGHT="39" BORDER="0"></a><a href="http://www.tennisfame.com/servlets/player_championship"><IMG SRC="images/champs_playerbut.jpg" ALT="Players" WIDTH="89" HEIGHT="39" BORDER="0"></a></td>
+											</tr>
+										</table>
+										<table cellpadding=0 cellspacing=0 border=0>
+											<tr>
+												<td>
+												
+												<br>
+													<FONT face=arial,helvetica size=2>
+													<IMG SRC="images/sm_lite.jpg" ALT="Miller Lite Championship" WIDTH="44" HEIGHT="35" BORDER="0" ALIGN="left" HSPACE="4"><FONT face=arial,helvetica size=2><B>
+													<a href="Championship">Newport Tennis Week</a> set for July 8-14, 2002.<br>Tickets Are On Sale Now!&nbsp;
+													<a href="Championship/ticket_orderform.html">Buy Yours Online!</a></b></font><br><br>
+				
+				
+				
+													<a href="enshrinees_home.html"><IMG SRC="images/collins_book.jpg" ALT="Hall of Famers" WIDTH="95" HEIGHT="71" ALIGN="right" BORDER="0"></a><FONT size=2 face=arial,helvetica color="#660000"><a href="enshrinees_home.html"><B>Hall of Famer Bios </B></a></FONT><br>
+
+													All inductees biographies have been expanded and updated using text from Hall of Famer Bud Collins' Tennis Encyclopedia.<br> <a href="enshrinees_home.html">Chronological List</a>&nbsp;|&nbsp;<a href="enshrinees_atoz.html">A to Z List</a> 
+													
+													<br><IMG SRC="images/clear.gif" ALT="Tennis Hall of Fame" WIDTH="10" HEIGHT="12"><br>
+													<li><a href="tennisnews.html">Headline Sports: Tennis</a> <br>
+													<li><a href="presscenter.html">Tennisfame.com Press Center</a><br>
+													<li><A href="museum.html">Tour The Tennis Hall of Fame Museum </a><BR><br>
+												</td>
+											</tr>
+										</table>
+													
+													
+									</TD>
+								</tr>
+																<!-- Hidden links -->	
+																
+								<tr>
+									<td>
+					<a href="http://www.silver-light.com" style="color:ffffff; text-decoration: none; font-size:8"><font color=ffffff>.</font></a>
+					<a href="http://www.slpnet.com" style="color:ffffff; text-decoration: none; font-size:8"><font color=ffffff>.</a>
+					<a href="http://www.slpstock.com" style="color:ffffff; text-decoration: none; font-size:8"><font color=ffffff>.</a>
+					<a href="http://www.silverlightproductions.net" style="color:ffffff; text-decoration: none; font-size:8"><font color=ffffff>.</a>
+					<a href="http://www.newportrestoration.com" style="color:ffffff; text-decoration: none; font-size:8"><font color=ffffff>.</a>
+					<a href="http://www.cosmedgroup.com" style="color:ffffff; text-decoration: none; font-size:8"><font color=ffffff>.</a>
+					<a href="http://www.flitesound.com" style="color:ffffff; text-decoration: none; font-size:8"><font color=ffffff>.</a>
+					<a href="http://www.clarkeflowers.com" style="color:ffffff; text-decoration: none; font-size:8"><font color=ffffff>.</a>
+					<a href="http://www.zarrelladevelopment.com" style="color:ffffff; text-decoration: none; font-size:8"><font color=ffffff>.</a>
+					<a href="http://www.sturms.com" style="color:ffffff; text-decoration: none; font-size:8"><font color=ffffff>.</a>
+							
+								   
+								</td>
+							</tr>
+						</table>
+					</TD>
+					<td valign=top>
+				<!-- right side banners  _----------------------------------------------          -->
+				
+						<table cellspacing=2 cellpadding=0 border=0><tr><td bgcolor="ffffff" valign=top>
+							<tr>	
+								<td>
+									<a href="http://www.wilsonsports.com/tennis" target=blank><img src="home/images/Wilson_banner.gif" alt="" width="120" height="60" border="0"></a></td>
+							</tr>
+							<tr>	
+								<td>
+									<A HREF="http://www.tennis-warehouse.com/?from=ithf" target=new><img src="home/images/butWAREHOUSE.gif" alt="Tennis Warehouse" width="120" height="75" hspace="0" vspace="0" border="0"></a></td>
+							</tr>
+							<tr>	
+								<td>
+									<A HREF="http://www.tennisweek.com" target=new><IMG SRC="images/tennisweek_2.gif_1" WIDTH="120" HEIGHT="60" HSPACE="0" VSPACE="0" BORDER="0"></a></td>
+							</tr>
+							<!--<tr>	
+								<td>
+									<img src="home/images/buttSTORE.jpg" alt="Newport Visitor's Guide" width="120" height="60" vspace="6" border="0"><br></td>
+							</tr>-->
+							<tr>	
+								<td>
+									<table cellpadding=0 cellspacing=0 border=0>	
+										<tr>
+											<td colspan=2><img src="home/images/butUSTAtop.jpg" alt="" width="120" height="46" border="0"></td>
+										</tr>
+										<tr>
+											<td><a href="http://www.usta.com/adultsseniors/fullstory.sps?iNewsid=14937&itype=948&icategoryid=168" target=body><img src="home/images/butUSTAmd.jpg" alt="" width="62" height="34" border="0"></a></td>
+											<td><a href="http://www.usta.com/adultsseniors/fullstory.sps?iNewsid=14944&itype=948&icategoryid=168" target=body><img src="home/images/butUSTAopen.jpg" alt="" width="58" height="34" border="0"></a></td>
+										</tr>
+									</table></td>
+							</tr>
+							<tr>	
+								<td>
+									<a href="http://www.tennis-warehouse.com/catthumbs.html?CCODE=ITHF&from=ITHF" target=body><img src="home/images/butSHOP.gif" alt="Hall of Fame Gear" width="120" height="60" vspace="6" border="0"></a><br></td>
+							</tr>
+							
+						</table>
+					</td>
+				</table>
+			</td>
+		</TR>
+	</TABLE>
+</TD>
+</TR>
+</TABLE></TD>
+</TR>
+</TABLE>
+<TABLE cellpadding=0 cellspacing=0 border=0 width=610>
+	<TR>
+		<TD valign=top bgcolor="#003300"><img src="images/clear.gif" alt="Tennis Hall of Fame" width="19" height="5" border="0"></TD>
+	</TR>
+</TABLE>
+
+<TABLE cellpadding=6 cellspacing=0 border=0 width=610>
+	<TR>
+		<TD valign=top bgcolor=ffffff align=center><FONT face=arial,helvetica size=1>© 2002 International Tennis Hall of Fame&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Web Design & Development by <a href="http://www.unicamultimedia.com" target=new>Unica Multimedia</a></font></TD></TR></TABLE>
+				<a href="http://www.tennisfame.com/famoustennisplayersLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/historytennisLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/juniortennisLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/menstennisLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/playingtennisLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/professionaltennisplayersLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/tennishistoryLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/tennisplayersLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/tennistournamentsLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/tennishallfameLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/tennisprosLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/tenniseventsLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/tennisracquetsLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/tennisresultsLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/tennisclubsLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/tennisticketsLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/tennismuseumLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/tennischampionshipsLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/womantennisplayersLha.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				
+				<a href="http://www.tennisfame.com/womenstennisLha.html"><img src="transbg.gif" alt="" width="1" height="1" border="0"></a>
+				
+				<a href="http://www.xtremewebworks.com/ourfriends.html"><img src="transbg.gif" width=1 height=1 border="0"></a>
+				</td>
+			</tr>
+	
+	</table></td></tr></table></BODY>
+
+</HTML>
+
+
+
+

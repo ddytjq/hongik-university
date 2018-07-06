@@ -1,0 +1,597 @@
+ID=E0500
+URL=http://www.gotw.ca/gotw/044.htm
+SIZE=32128
+DATE=12/07/02
+TIME=19:21:35
+DATASET=C
+HTML=
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+
+
+<title>GotW #44: Reference Counting - Part II</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<link rel="stylesheet" type="text/css" href="../gotw.css">
+<meta name="Microsoft Theme" content="gotw 111, default">
+<meta name="Microsoft Border" content="tlb, default">
+</head>
+
+<body background="../_themes/gotw/glabkgnd.jpg" bgcolor="#CCFFFF" text="#000000" link="#008080" vlink="#008080" alink="#0000FF"  ><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><table border="0" cellspacing="0" width="100%">
+  <tr>
+    <td colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font size="6"><strong>
+    GotW #44</strong></font> <!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+
+
+
+<p align="left" style="margin-top: 0; margin-bottom: 0">
+
+<script language="JavaScript"><!--
+MSFPhover = 
+  (((navigator.appName == "Netscape") && 
+  (parseInt(navigator.appVersion) >= 3 )) || 
+  ((navigator.appName == "Microsoft Internet Explorer") && 
+  (parseInt(navigator.appVersion) >= 4 ))); 
+function MSFPpreload(img) 
+{
+  var a=new Image(); a.src=img; return a; 
+}
+// --></script><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav1n=MSFPpreload("../_derived/home_cmp_gotw110_hbtn.gif"); MSFPnav1h=MSFPpreload("../_derived/home_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1h.src" onmouseout="if(MSFPhover) document['MSFPnav1'].src=MSFPnav1n.src"><img src="../_derived/home_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Home" align="middle" name="MSFPnav1"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav2n=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn.gif"); MSFPnav2h=MSFPpreload("../_derived/news.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../news.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2h.src" onmouseout="if(MSFPhover) document['MSFPnav2'].src=MSFPnav2n.src"><img src="../_derived/news.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="News &amp; Events" align="middle" name="MSFPnav2"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav3n=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav3h=MSFPpreload("../resources/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../resources/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3h.src" onmouseout="if(MSFPhover) document['MSFPnav3'].src=MSFPnav3n.src"><img src="../resources/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Community Resources" align="middle" name="MSFPnav3"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav4n=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn.gif"); MSFPnav4h=MSFPpreload("../_derived/consulting.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../consulting.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4h.src" onmouseout="if(MSFPhover) document['MSFPnav4'].src=MSFPnav4n.src"><img src="../_derived/consulting.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Consulting Services" align="middle" name="MSFPnav4"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav5n=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn.gif"); MSFPnav5h=MSFPpreload("../_derived/presentations.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../presentations.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5h.src" onmouseout="if(MSFPhover) document['MSFPnav5'].src=MSFPnav5n.src"><img src="../_derived/presentations.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Presentations" align="middle" name="MSFPnav5"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav6n=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav6h=MSFPpreload("../publications/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../publications/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6h.src" onmouseout="if(MSFPhover) document['MSFPnav6'].src=MSFPnav6n.src"><img src="../publications/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Publications" align="middle" name="MSFPnav6"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav7n=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav7h=MSFPpreload("_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7h.src" onmouseout="if(MSFPhover) document['MSFPnav7'].src=MSFPnav7n.src"><img src="_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Guru of the Week" align="middle" name="MSFPnav7"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav8n=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn.gif"); MSFPnav8h=MSFPpreload("../conv/_derived/index.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../conv/index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8h.src" onmouseout="if(MSFPhover) document['MSFPnav8'].src=MSFPnav8n.src"><img src="../conv/_derived/index.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Conversations" align="middle" name="MSFPnav8"></a> <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav9n=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn.gif"); MSFPnav9h=MSFPpreload("../_derived/search.htm_cmp_gotw110_hbtn_a.gif"); }
+// --></script><a href="../search.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9h.src" onmouseout="if(MSFPhover) document['MSFPnav9'].src=MSFPnav9n.src"><img src="../_derived/search.htm_cmp_gotw110_hbtn.gif" width="140" height="40" border="0" alt="Search GotW.ca" align="middle" name="MSFPnav9"></a>
+</p>
+
+
+
+
+    <!--mstheme--></font></td>
+    <td valign="middle"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p style="margin-top: 0; margin-bottom: 0">
+      <script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav10n=MSFPpreload("../_derived/back_cmp_gotw110_back.gif"); MSFPnav10h=MSFPpreload("../_derived/back_cmp_gotw110_back_a.gif"); }
+// --></script><a href="043.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10h.src" onmouseout="if(MSFPhover) document['MSFPnav10'].src=MSFPnav10n.src"><img src="../_derived/back_cmp_gotw110_back.gif" width="100" height="20" border="0" alt="Prev" name="MSFPnav10"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav11n=MSFPpreload("../_derived/up_cmp_gotw110_up.gif"); MSFPnav11h=MSFPpreload("../_derived/up_cmp_gotw110_up_a.gif"); }
+// --></script><a href="index.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11h.src" onmouseout="if(MSFPhover) document['MSFPnav11'].src=MSFPnav11n.src"><img src="../_derived/up_cmp_gotw110_up.gif" width="100" height="20" border="0" alt="Up" name="MSFPnav11"></a><br><script language="JavaScript"><!--
+if(MSFPhover) { MSFPnav12n=MSFPpreload("../_derived/next_cmp_gotw110_next.gif"); MSFPnav12h=MSFPpreload("../_derived/next_cmp_gotw110_next_a.gif"); }
+// --></script><a href="045.htm" language="JavaScript" onmouseover="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12h.src" onmouseout="if(MSFPhover) document['MSFPnav12'].src=MSFPnav12n.src"><img src="../_derived/next_cmp_gotw110_next.gif" width="100" height="20" border="0" alt="Next" name="MSFPnav12"></a><!--mstheme--></font></td>
+  </tr>
+  <tr>
+    <td height="5" background="../images/bar.gif" colspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica">&nbsp;<!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td></tr><!--msnavigation--></table><!--msnavigation--><table dir="ltr" border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td valign="top" width="1%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<!--mstheme--></font><table border="0" cellspacing="0" bgcolor="#000000" cellpadding="0">
+  <tr>
+    <td><!--mstheme--><font face="Arial, Arial, Helvetica">
+    <!--mstheme--></font><table border="0" cellpadding="2" cellspacing="1" width="100%" height="483">
+        <tr>
+          <td align="center" bgcolor="#000000" colspan="2" height="16"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-top: 0; margin-bottom: 0"><a href="../news.htm"><b><font color="#FFFF00">News</font></b></a><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <font size="1" color="#0000FF">J<br>
+          U<br>
+          L<br>
+          Y</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin-left: 3; margin-right: 3; margin-top: 0" align="center"><font size="1" color="#0000FF">
+            Print articles newly available online</font><!--mstheme--></font><table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%" id="AutoNumber1" bgcolor="#FFFFCC" bordercolordark="#006666" bordercolorlight="#99CCCC">
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill20.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 1&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000" bgcolor="#FFFFCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mxc++-item-4.htm">
+                <font color="#0000FF">Excerpt from MXC++, &quot;Extensible Templates: 
+                Via Inheritance or Traits?&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mcd_review.htm"><font color="#0000FF">
+                Book Review: Modern C++ Design</font></a></font><!--mstheme--></font></td>
+              </tr>
+              <tr>
+                <td width="100%" bordercolor="#808000"><!--mstheme--><font face="Arial, Arial, Helvetica">
+                <p style="margin: 3"><font size="1" color="#0000FF">
+                <a href="../publications/mill21.htm"><b><i>
+                <font color="#0000FF">Sutter's Mill</font></i></b><font color="#0000FF"> 
+                column, &quot;Toward a Standard C++ Library, Part 2: Namespaceops and 
+                Library Versioning&quot;</font></a></font><!--mstheme--></font></td>
+              </tr>
+            </table><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;A Pragmatic Look at Exception Specifications&quot;<br>
+            </font><font size="1" color="#000080">The usefulness, or lack 
+            thereof, of exception specifications, and how results can vary 
+            across real-world compilers</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <a target="_blank" href="http://www.cuj.com/experts/2007/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;Getting to the Point&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">The Boost library has five 
+            smart pointers that provide a rich array [sic] of useful behaviors.</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="2"><!--mstheme--><font face="Arial, Arial, Helvetica"><font color="#0000FF" size="1">A<br>
+            U<br>
+          G<br>
+          U<br>
+          S<br>
+          T</font><!--mstheme--></font></td>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin:0 3; ">
+            <a target="_blank" href="http://www.cuj.com/experts/2008/sutter.htm"><i><b><font size="1" color="#0000FF">The New C++</font></b></i> <font size="1" color="#0000FF">
+            column, &quot;Smart(er) Pointers&quot;</font></a><font size="1" color="#000080"><br>
+            A closer look at one of the proposed new standard C++ library 
+            features -- smart pointers, particularly those in Boost and Loki, 
+            and a sneak peek at the usefulness of the proposed typedef templates</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin:0 3; ">
+          <a target="_blank" href="http://www.cuj.com/experts/2008/hyslop.htm"><font size="1" color="#0000FF"><i><b>Conversations</b></i> column,
+            &quot;A Midsummer Night's Madness&quot;</font></a><font color="#0000FF" size="1"><br>
+            </font><font size="1" color="#000080">A brew that mixes pointers, 
+          typedefs, and const</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="center" bgcolor="#CCCCCC" bordercolor="#CCCCCC" rowspan="3"><!--mstheme--><font face="Arial, Arial, Helvetica">
+          <p style="margin-top: 0; margin-bottom: 0">
+          <font size="1" color="#0000FF">S<br>
+          E<br>
+          P<br>
+          T<br>
+          E<br>
+          M<br>
+          B<br>
+          E<br>
+          R</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3">
+            <font size="1" color="#0000FF">&quot;Standard C++ Meets Managed C++&quot;<br>
+            </font><font size="1" color="#000080">A survey of the main (in)compatibilities 
+            between Standard C++ and Microsoft’s managed extensions for C++, and 
+            how the two could converge</font><!--mstheme--></font></td>
+        </tr>
+        <tr>
+          <td align="left" bgcolor="#FFFF99" bordercolor="#CCCCCC"><!--mstheme--><font face="Arial, Arial, Helvetica">
+            <p style="margin: 0 3"><font size="1" color="#0000FF"><b><i>Sutter's 
+            Mill</i></b> column,
+            &quot;Export Restrictions, Part 1&quot;<br>
+            </font><font size="1" color="#000080">The scoop on export -- what 
+            some people think it does, what it actually does, and why it’s the 
+            most widely-ignored feature in the C++ standard</font><!--mstheme--></font></td>
+        </tr>
+      </table><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p style="margin-top: 0; margin-bottom: 0">
+<img border="0" src="../images/140.gif" width="140" height="1"></p>
+
+<!--mstheme--></font></td><td valign="top" width="24"></td><!--msnavigation--><td valign="top"><!--mstheme--><font face="Arial, Arial, Helvetica">
+<!--mstheme--></font><table border="1" cellpadding="6" cellspacing="0" width="100%" bgcolor="#CCCCFF" bordercolordark="#006666" bordercolorlight="#99CCCC">
+  <tr>
+    <td width="100%"><!--mstheme--><font face="Arial, Arial, Helvetica">
+      <p align="center">This is the original GotW problem and solution
+      substantially as posted to Usenet. See the book <i><a href="../publications/mxc++.htm"><b>More
+      Exceptional C++</b></a></i> (Addison-Wesley, 2002) for the most current
+      solution to this GotW issue. The solutions in the book have been revised
+      and expanded since their initial appearance in GotW. The book versions
+      also incorporate corrections, new material, and conformance to the final
+      ANSI/ISO C++ standard.</p>
+    <!--mstheme--></font></td>
+  </tr>
+</table><!--mstheme--><font face="Arial, Arial, Helvetica">
+<h2><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Reference Counting - Part II<font size="3"><br>
+      Difficulty: 6 / 10</font><!--mstheme--></font></h2>
+<p><i>In the second of this three-part miniseries, we examine the effect of
+references and iterators into a reference-counted string. Can you spot the
+issues?</i></p>
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Problem<!--mstheme--></font></h3>
+
+<p>Consider the reference-counted Optimized::String class from <a href="043.htm">GotW
+#43</a>, but with two new functions: Length() and operator[].</p>
+<!--mstheme--></font><pre>  namespace Optimized {
+    struct StringBuf {
+        StringBuf();              // start off empty
+       ~StringBuf();              // delete the buffer
+        void Reserve( size_t n ); // ensure len &gt;= n
+
+        char*    buf;             // allocated buffer
+        size_t   len;             // length of buffer
+        size_t   used;            // # chars actually used
+        unsigned refs;            // reference count
+    };
+
+    class String {
+    public:
+        String();                 // start off empty
+       ~String();                 // decrement reference count
+                                  //  (delete buffer if refs==0)
+        String( const String&amp; );  // point at same buffer and
+                                  //  increment reference count
+        void   Append( char );    // append one character
+        size_t Length() const;    // string length
+        char&amp;  operator[](size_t);// element access
+    private:
+        void AboutToModify( size_t n );
+                                  // lazy copy, ensure len&gt;=n
+        StringBuf* data_;
+    };
+  }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>This allows code like the following:</p>
+<!--mstheme--></font><pre>  if( s.Length() &gt; 0 ) {
+    cout &lt;&lt; s[0];
+    s[0] = 'a';
+  }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Guru Questions<!--mstheme--></font></h4>
+<p><b><font size="4">1.</font></b>   Implement the new members of
+Optimized::String.</p>
+<p><b><font size="4">2.</font></b>   Do any of the other members need to be
+changed because of the new member functions? Explain.</p>
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+<h3><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a name="Solution"></a>Solution<!--mstheme--></font></h3>
+
+<p><font color="#999933">Consider the reference-counted Optimized::String class
+from <a href="043.htm">GotW #43</a>, but with two new functions: Length() and
+operator[].</font></p>
+<p>The point of this GotW is to demonstrate why adding operator[] changes
+Optimized::String's semantics enough to impact other parts of the class. But,
+first things first:</p>
+
+<p><font color="#999933"><b><font size="4">1.</font></b>   Implement the new
+members of Optimized::String.</font></p>
+
+<p>The Length() function is simple:</p>
+
+<!--mstheme--></font><pre>  namespace Optimized {
+
+    size_t String::Length() const {
+      return data_-&gt;used;
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>There's more to operator[], however, than meets the casual eye. In the
+following, what I want you to notice is that what operator[] does (it returns a
+reference into the string) is really no different from what begin() and end() do
+for standard strings (they return iterators that &quot;point into&quot; the
+string). Any copy-on-write implementation of std::basic_string will run into the
+same considerations that we do below.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Writing operator[] for Shareable Strings<!--mstheme--></font></h4>
+<p>Here's a naive first attempt:</p>
+<!--mstheme--></font><pre>    //  BAD: Naive attempt #1 at operator[]
+    //
+    char&amp; String::operator[]( size_t n ) {
+      return *(data_-&gt;buf+n);
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>This isn't good enough by a long shot. Consider:</p>
+
+<!--mstheme--></font><pre>    //  Example 1a: Why attempt #1 doesn't work
+    //
+    void f( Optimized::String&amp; s ) {
+      Optimized::String s2( s ); // take a copy of the string
+      s[0] = 'x';                // oops: also modifies s2!
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>You might be thinking that the poor programmer of Example 1a might be a
+little unhappy about this side effect. You would be right.</p>
+<p>So, at the very least, we'd better make sure that the string isn't being
+shared, else the caller might inadvertently be modifying what look to him like
+two unrelated strings. &quot;Aha,&quot; thinks the once-naive programmer,
+&quot;I'll call AboutToModify() to ensure I'm using an unshared
+representation:&quot;</p>
+<!--mstheme--></font><pre>    //  BAD: Inadequate attempt #2 at operator[]
+    //
+    char&amp; String::operator[]( size_t n ) {
+      AboutToModify( data_-&gt;len );
+      return *(data_-&gt;buf+n);
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>This looks good, but it's still not enough. The problem is that we only need
+to rearrange the Example 1a problem code slightly to get back into the same
+situation as before:</p>
+
+<!--mstheme--></font><pre>    //  Example 2a: Why attempt #2 doesn't work either
+    //
+    void f( Optimized::String&amp; s ) {
+      char&amp; rc = s[0];  // take a reference to the first char
+      Optimized::String s2( s ); // take a copy of the string
+      rc = 'x';                  // oops: also modifies s2!
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>You might be thinking that the poor programmer of Example 2a might be a
+little perturbed about this surprise, too. You would be right, but as of this
+writing certain popular implementations of basic_string have precisely this
+copy-on-write-related bug.</p>
+<p>The problem is that the reference was taken while the original string was
+unshared, but then the string became shared and the single update through the
+reference modified both String objects' visible state.</p>
+<h4><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666">Key Notion: An &quot;Unshareable&quot; String<!--mstheme--></font></h4>
+<p>When operator[] is called, besides taking an unshared copy of the StringBuf,
+what also need to mark the string &quot;unshareable,&quot; just in case the user
+remembers the reference (and later tries to use it).</p>
+<p>Now, marking the string &quot;unshareable for all time&quot; will work, but
+that's actually a little excessive: It turns out that all we really need to do
+is mark the string &quot;unshareable for a while.&quot; To see what I mean,
+consider that it's already true that references returned by operator[] into the
+string must be considered invalid after the next mutating operation. That is,
+code like this:</p>
+<!--mstheme--></font><pre>    //  Example 3: Why references are invalidated
+    //             by mutating operations
+    //
+    void f( Optimized::String&amp; s ) {
+      char&amp; rc = s[0];
+      s.Append( 'i' );
+      rc = 'x';   // error: oops, buffer may have moved
+    }             //        if s did a reallocation</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>should already be documented as invalid, whether or not the string uses
+copy-on-write. In short, calling a mutator clearly invalidates references into
+the string because you never know if the underlying memory may move (invisibly,
+from the point of view of the calling code).</p>
+<p>Given that fact, in Example 2a, rc would be invalidated anyway by the next
+mutating operation on s. So, instead of marking s as &quot;unshareable for all
+time&quot; just because someone might have remembered a reference into it, we
+could just mark it &quot;unshareable until after the next mutating
+operation,&quot; when any such remembered reference would be invalidated anyway.
+To the user, the documented behaviour is the same.</p>
+<p><font color="#999933"><b><font size="4">2.</font></b>   Do any of the other
+members need to be changed because of the new member functions? Explain.</font></p>
+<p>As we can now see, the answer is: Yes.</p>
+<p>First, we need to be able to remember whether a given string is currently
+unshareable (so that we won't use reference counting when copying it). We could
+throw in a bool flag, but to avoid even that overhead let's just encode the
+&quot;unshareable&quot; state directly in the refs count by agreeing that
+&quot;refs == the biggest unsigned int there can possibly be&quot; means
+&quot;unshareable.&quot; We'll also add a flag to AboutToModify() that says
+whether to mark the string unshareable.</p>
+<!--mstheme--></font><pre>    //  GOOD: Correct attempt #3 at operator[]
+    //
+    //  Add a new static member for convenience, and
+    //  change AboutToModify appropriately. Because now
+    //  we'll need to clone a StringBuf in more than
+    //  one function (see the String copy constructor,
+    //  below), we'll also move that logic into a
+    //  single function... it was time for StringBuf to
+    //  have its own copy constructor, anyway.
+    //
+    size_t String::Unshareable = numeric_limits&lt;unsigned&gt;::max();
+
+    StringBuf::StringBuf( const StringBuf&amp; other, size_t n )
+      : buf(0), len(0), used(0), refs(1)
+    {
+        Reserve( max( other.len, n ) );
+        copy( other.buf, other.buf+other.used, buf );
+        used = other.used;
+    }
+
+    void String::AboutToModify(
+      size_t n,
+      bool   bMarkUnshareable /* = false */
+    ) {
+      if( data_-&gt;refs &gt; 1 &amp;&amp; data_-&gt;refs != Unshareable ) {
+        StringBuf* newdata = new StringBuf( *data_, n );
+        --data_-&gt;refs;   // now all the real work is
+        data_ = newdata; //  done, so take ownership
+      } else {
+        data_-&gt;Reserve( n );
+      }
+      data_-&gt;refs = bMarkUnshareable ? Unshareable : 1;
+    }
+
+    char&amp; String::operator[]( size_t n ) {
+      AboutToModify( data_-&gt;len, true );
+      return *(data_-&gt;buf+n);
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>Note that all of the other calls to AboutToModify() continue to work as
+originally written.</p>
+<p>Now all we need to do is make String's copy constructor respect the
+unshareable state, if it's set:</p>
+<!--mstheme--></font><pre>    String::String( const String&amp; other )
+    {
+      //  If possible, use copy-on-write.
+      //  Otherwise, take a deep copy immediately.
+      //
+      if( other.data_-&gt;refs != Unshareable ) {
+        data_ = other.data_;
+        ++data_-&gt;refs;
+      } else {
+        data_ = new StringBuf( *other.data_ );
+      }
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>The destructor needs a small tweak:</p>
+
+<!--mstheme--></font><pre>    String::~String() {
+      if( data_-&gt;refs == Unshareable || --data_-&gt;refs &lt; 1 ) {
+        delete data_;
+      }
+    }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+
+<p>All other functions (both of them!) work as originally written:</p>
+
+<!--mstheme--></font><pre>    String::String() : data_(new StringBuf) { }
+
+    void String::Append( char c ) {
+      AboutToModify( data_-&gt;used+1 );
+      data_-&gt;buf[data_-&gt;used++] = c;
+    }
+
+  }</pre><!--mstheme--><font face="Arial, Arial, Helvetica">
+<p>And that's all(!) there is to it. In the final GotW of this
+reference-counting miniseries, we'll consider how multithreading affects our
+reference-counted string. See <a href="045.htm"> GotW #45</a> for the juicy details.</p>
+<p align="center"><img border="0" src="../images/h-line.gif" width="248" height="2"></p>
+<p>Here's all the code together.</p>
+<p>Note that I've also taken this opportunity to implement a slight change to
+StringBuf::Reserve(). It now rounds up the chosen &quot;new buffer size&quot; to
+the next multiple of four, in order to ensure that the size of the memory buffer
+size is always a multiple of four bytes.</p>
+<p>This is in the name of efficiency: Many popular operating systems don't
+allocate memory in chunks smaller than this, anyway, and this code is faster
+than the original one particularly for small strings. (The original code would
+allocate a 1-byte buffer, then a 2-byte buffer, then a 3-byte buffer, then a
+4-byte buffer, and then a 6-byte buffer before the exponential-growth strategy
+would really kick in. The code below goes straight to a 4-byte buffer, then an
+8-byte buffer, and so on.)</p>
+<!--mstheme--></font><pre>  namespace Optimized {
+
+    struct StringBuf {
+        StringBuf();              // start off empty
+       ~StringBuf();              // delete the buffer
+        StringBuf( const StringBuf&amp; other, size_t n = 0 );
+                                  // initialize to copy of other,
+                                  //  and ensure len &gt;= n
+
+        void Reserve( size_t n ); // ensure len &gt;= n
+
+        char*    buf;             // allocated buffer
+        size_t   len;             // length of buffer
+        size_t   used;            // # chars actually used
+        unsigned refs;            // reference count
+    };
+
+    class String {
+    public:
+        String();                 // start off empty
+       ~String();                 // decrement reference count
+                                  //  (delete buffer if refs==0)
+        String( const String&amp; );  // point at same buffer and
+                                  //  increment reference count
+        void   Append( char );    // append one character
+        size_t Length() const;    // string length
+        char&amp;  operator[](size_t);// element access
+    private:
+        void AboutToModify( size_t n, bool bUnshareable = false );
+                                  // lazy copy, ensure len&gt;=n
+                                  //  and mark if unshareable
+        static size_t Unshareable;// ref-count flag for &quot;unshareable&quot;
+        StringBuf* data_;
+    };
+
+
+    StringBuf::StringBuf() : buf(0), len(0), used(0), refs(1) { }
+
+    StringBuf::~StringBuf() { delete[] buf; }
+
+    StringBuf::StringBuf( const StringBuf&amp; other, size_t n )
+      : buf(0), len(0), used(0), refs(1)
+    {
+        Reserve( max( other.len, n ) );
+        copy( other.buf, other.buf+other.used, buf );
+        used = other.used;
+    }
+
+    void StringBuf::Reserve( size_t n ) {
+      if( len &lt; n ) {
+        //  Same growth code as in <a href="043.htm">GotW #43</a>, except now we round
+        //  the new size up to the nearest multiple of 4 bytes.
+        size_t needed = max&lt;size_t&gt;( len*1.5, n );
+        size_t newlen = needed ? 4 * ((needed-1)/4 + 1) : 0;
+        char*  newbuf = newlen ? new char[ newlen ] : 0;
+        if( buf ) {
+          copy( buf, buf+used, newbuf );
+        }
+
+        delete[] buf;   // now all the real work is
+        buf = newbuf;   //  done, so take ownership
+        len = newlen;
+      }
+    }
+
+
+    size_t String::Unshareable = numeric_limits&lt;unsigned&gt;::max();
+
+    String::String() : data_(new StringBuf) { }
+
+    String::~String() {
+      if( data_-&gt;refs == Unshareable || --data_-&gt;refs &lt; 1 ) {
+        delete data_;
+      }
+    }
+
+    String::String( const String&amp; other )
+    {
+      //  If possible, use copy-on-write.
+      //  Otherwise, take a deep copy immediately.
+      //
+      if( other.data_-&gt;refs != Unshareable ) {
+        data_ = other.data_;
+        ++data_-&gt;refs;
+      } else {
+        data_ = new StringBuf( *other.data_ );
+      }
+    }
+
+    void String::AboutToModify(
+      size_t n,
+      bool   bMarkUnshareable /* = false */
+    ) {
+      if( data_-&gt;refs &gt; 1 &amp;&amp; data_-&gt;refs != Unshareable ) {
+        StringBuf* newdata = new StringBuf( *data_, n );
+        --data_-&gt;refs;   // now all the real work is
+        data_ = newdata; //  done, so take ownership
+      } else {
+        data_-&gt;Reserve( n );
+      }
+      data_-&gt;refs = bMarkUnshareable ? Unshareable : 1;
+    }
+
+    void String::Append( char c ) {
+      AboutToModify( data_-&gt;used+1 );
+      data_-&gt;buf[data_-&gt;used++] = c;
+    }
+
+    size_t String::Length() const {
+      return data_-&gt;used;
+    }
+
+    char&amp; String::operator[]( size_t n ) {
+      AboutToModify( data_-&gt;len, true );
+      return *(data_-&gt;buf+n);
+    }
+
+  }</pre><!--mstheme--><font face="Arial, Arial, Helvetica"><!--mstheme--></font><!--msnavigation--></td></tr><!--msnavigation--></table><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td><!--mstheme--><font face="Arial, Arial, Helvetica"><h4 align="right"><!--mstheme--><font face="Verdana, Arial, Helvetica" color="#006666"><a href="../copyright.htm"><font size="2">Copyright ©
+2002 Herb Sutter</font></a><!--mstheme--></font></h4>
+
+<!--mstheme--></font></td></tr><!--msnavigation--></table></body>
+</html>
+

@@ -1,0 +1,205 @@
+ID=E0411
+URL=http://www.intap.net/~drw/cpp/cpp07_03.htm
+SIZE=6217
+DATE=12/07/02
+TIME=19:20:42
+DATASET=C
+HTML=
+<html>
+<head> 
+<title>
+online C++ tutorial: Constructors and Destructors
+</title>
+</head>
+
+<body bgcolor="#ffffff"
+       link = "#ff0000"
+      alink = "#00ff00"
+      vlink = "#660000" >
+
+
+<table width="100%" border=0>
+<tr>
+<td align=left>
+<a href="cpp07_01.htm"><img border=0 src="pictures/buttons/prevs.gif" width=51 height=34 alt="&lt;&lt;=="></a>
+<a href="cpp07_02.htm"><img border=0 src="pictures/buttons/prevp.gif" width=37 height=34 alt="&lt;="></a>
+</td>
+<td align=center>
+<a href="index.htm">
+<img border=0 width=122 height=34 src="pictures/buttons/toc.gif"
+    alt="[table of contents]"></a>
+<a href="/cgi-bin/drw/cpp/search.cgi">
+<img border=0 width=46 height=34 src="pictures/buttons/search.gif"
+    alt="[search]"></a>
+<a href="glossary.htm">
+<img border=0 width=61 height=34 src="pictures/buttons/glossary.gif"
+    alt="[glossary]"></a>
+<a href="feedback.htm">
+<img border=0 width=65 height=34 src="pictures/buttons/feedback.gif"
+    alt="[feedback]"></a>
+</td>
+<td align=right>
+
+<a href="cpp07_04.htm"><img border=0 src="pictures/buttons/nextp.gif" width=37 height=34 alt="=&gt;"></a>
+<a href="cpp08_01.htm"><img border=0 src="pictures/buttons/nexts.gif" width=51 height=34 alt="==&gt;&gt;"></a>
+</td>
+</tr>
+</table>
+<hr>
+<table width="100%"><tr><td align=left><img src="pictures/buttons/cppsm.gif" width=143 height=37 alt="[online C++ tutorial]"></td><td align=right><b>Section 7: Class Declarations </b></td></tr></table>
+<center><h2>Section 7.3: Constructors and Destructors</h2></center>
+<p>
+
+In addition to all of the member functions you'll create for your
+objects, there are two special kinds of functions that you should
+create for every object.  They are called <i>constructors</i> and
+<i>destructors</i>.  Constructors are called every time you create an
+object, and destructors are called every time you destroy an object.
+</p>
+
+<h3> Constructors </h3>
+
+<p>
+
+The constructor's job is to set up the object so that it can be used.
+Remember in Chapter 3.2, when we first declared a variable?  Before we
+initialized the variable, it stored a garbage value.  We needed to
+initialize the variable to 0 or to some other useful value before
+using it.  The same is true of objects.  The difference is that with
+an object, you can't just assign it a value.  You can't say:
+
+<pre>
+Player greenHat = 0;
+</pre>
+
+because that doesn't make sense.  A player is not a number, so you
+can't just set it to 0.  The way object initialization happens in C++
+is that a special function, the constructor, is called when you
+instantiate an object.  The constructor is a function whose name is
+the same as the object, with no return type (not even void).  For our
+video game, we'll probably want to initialize our Players' attributes
+so that they don't contain garbage values.  We might decide to write
+the constructor like this:
+
+<pre>
+Player::Player() {
+  strength = 10;
+  agility = 10;
+  health = 10;
+}
+</pre>
+
+We would also have to change the class declaration so that it looks like this:
+<pre>
+class Player {
+  int health;
+  int strength;
+  int agility;
+
+  Player();  // constructor - no return type
+  void move();
+  void attackMonster();
+  void getTreasure();
+};
+</pre>
+
+</p>
+
+<p>
+
+One problem with this constructor is that all of the players will be
+initialized to have strength=10, agility=10, and health=10.  We might
+want to create players with different values for strength and agility
+to make our game more interesting.  So, we can add a second
+constructor, which has parameters for strength and agility.  Our class
+declaration would now look like this:
+
+<pre>
+class Player {
+  int health;
+  int strength;
+  int agility;
+
+  Player();              // constructor - no return type
+  Player(int s, int a);  // alternate constructor takes two parameters
+  void move();
+  void attackMonster();
+  void getTreasure();
+};
+</pre>
+
+and we would add a function definition for the alternate constructor,
+which looks like this:
+
+<pre>
+Player::Player(int s, int a) {
+  strength = s;
+  agility = a;
+  health = 10;
+}
+</pre>
+
+Now, when we want to instantiate the <code>Player</code> object four
+times, we can do the following:
+<pre>
+Player redHat;  		// default constructor
+Player blueHat(14, 7);		// alternate constructor
+Player greenHat(6, 12); 	// alternate constructor
+Player yellowHat(10, 10); 	// alternate constructor
+
+</pre>
+</p>
+
+<h3> Destructors </h3>
+
+<p>
+Destructors are less complicated than constructors.  You don't call
+them explicitly (they are called automatically for you), and there's
+only one destructor for each object.  The name of the destructor is
+the name of the class, preceeded by a tilde (~).  Here's an example of
+a destructor:
+
+<pre>
+Player::~Player() {
+  strength = 0;
+  agility = 0;
+  health = 0;
+}
+
+</pre>
+
+Since a destructor is called after an object is used for the last
+time, you're probably wondering why they exist at all.  Right now,
+they aren't very useful, but you'll see why they're important in
+Section 8.3.  </p>
+<hr>
+<table width="100%" border=0>
+<tr>
+<td align=left>
+<a href="cpp07_01.htm"><img border=0 src="pictures/buttons/prevs.gif" width=51 height=34 alt="&lt;&lt;=="></a>
+<a href="cpp07_02.htm"><img border=0 src="pictures/buttons/prevp.gif" width=37 height=34 alt="&lt;="></a>
+</td>
+<td align=center>
+<a href="index.htm">
+<img border=0 width=122 height=34 src="pictures/buttons/toc.gif"
+    alt="[table of contents]"></a>
+<a href="/cgi-bin/drw/cpp/search.cgi">
+<img border=0 width=46 height=34 src="pictures/buttons/search.gif"
+    alt="[search]"></a>
+<a href="glossary.htm">
+<img border=0 width=61 height=34 src="pictures/buttons/glossary.gif"
+    alt="[glossary]"></a>
+<a href="feedback.htm">
+<img border=0 width=65 height=34 src="pictures/buttons/feedback.gif"
+    alt="[feedback]"></a>
+</td>
+<td align=right>
+
+<a href="cpp07_04.htm"><img border=0 src="pictures/buttons/nextp.gif" width=37 height=34 alt="=&gt;"></a>
+<a href="cpp08_01.htm"><img border=0 src="pictures/buttons/nexts.gif" width=51 height=34 alt="==&gt;&gt;"></a>
+</td>
+</tr>
+</table>
+</body>
+</html>
+

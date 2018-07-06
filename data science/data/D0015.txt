@@ -1,0 +1,992 @@
+ID=D0015
+URL=http://www.freejavahelp.com/tutorial/exceptions/gesamt.html
+SIZE=39543
+DATE=16/07/02
+TIME=14:34:48
+DATASET=Java
+HTML=<HTML>
+<HEAD>
+<TITLE>
+Houston we have a problem!  The need for error-handling!
+<META>Java-Tutorial on Exception- and Error-handling, OOP-basics</META>
+</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff" LINK = #609080 VLINK = #ff6060>    
+
+<UL>
+<I>
+<LI><A HREF = "#Houston we have a problem">Houston we have a problem</A><BR>
+<LI><A HREF = "#usualOOP">Just the usual OOP</A><BR>
+<LI><A HREF = "#catcher in the rye">The catcher in the rye</A><BR>
+<LI><A HREF = "#throw junk away">Throw that junk away!</A><BR>
+<LI><A HREF = "#more OOP">A little more OOP</A><BR>
+<LI><A HREF = "#more than one mistake">More than one mistake!</A><BR>
+<LI><A HREF = "#Exception-object">The Exception-object</A><BR>
+<LI><A HREF = "#Create your own Exceptions">Create your own Exceptions</A><BR>
+<LI><A HREF = "#Finally">Finally - wrapping things up</A><BR>
+</UL>
+<BR>
+<A HREF = "#Download Zip-file">Download Zip-file</A></I><BR>
+
+
+<P>
+<H2>A beginner's guide to Java Exceptions and Errors</H2>
+</P>
+
+<A NAME = "Houston we have a problem"></A>
+<P>
+<H3>Houston we have a problem!  The need for error-handling!</H3>
+</P>
+
+<P>
+As you read this, you probably just started out learning Java and maybe even started
+programming as such.  Every beginner pretty soon realizes that programming is an error-prone
+job and sometimes can become frustrating.
+</P>
+
+<P>
+While frustration is something most people can handle to some extent, I am sure
+that you wouldn't want to fly on a plane that uses software that would not run properly. 
+As the Apollo 11 crew  was orbiting the earth they were glad that most of their (about) 
+300,000 lines of code (LOC) were working correctly. With today's operating systems 
+tending to have more than 3-million LOC and hundred's of people (including salesmen!)
+working on it or having an impact on it you can be sure that there are errors somewhere.
+</P>
+
+<P>
+Sure, you could always blame the user, but that is in no way satisfying.  What you 
+would want to do is writing robust code.  And in order to do that you'll have to take
+a couple of precautions.  The one precaution we're going to talk about in the course
+of this tutorial is that you have to <STRONG>analyze the unspoken ideas</STRONG> that 
+lie implicitely underneath the cover of the programming task.  Does
+that sound weird?  Well, this is pretty much all what Error- and 
+Exception-handling is about.<A HREF = #footnote1><SUP>1</SUP></A><A Name = "backFN1"></A>
+</P>
+
+<P>
+The following example will make it clearer:  Let's say that your 
+programming task is writing a calculator-program.  You have to implement methods for
+addition ("+"), subtraction("-"), multiplication("*"), and division("/").  You might start
+writing a method like this:
+</P>
+
+<HR>
+
+<P><PRE><CODE>
+ 1. <STRONG>public double</STRONG>  mathRoutines (String operator) {
+ 2. <STRONG>if</STRONG>  (operator == "+") {
+ 3.     result = leftValue + rightValue;
+ 4.   } <STRONG>else if</STRONG>  (operator == "-") {
+ 5.     result = leftValue - rightValue;
+ 6.   } <STRONG>else if</STRONG>  (operator == "*") {
+ 7.     result = leftValue * rightValue;
+ 8.   } <STRONG>else if</STRONG> (operator == "/") {
+ 9.     result = leftValue + rightValue;
+10.  } 
+11.   <STRONG>return</STRONG> result;
+12. }
+</CODE></PRE></P>
+
+<HR>
+
+<P>
+This does look inviting at first but as the user starts playing with your 
+calculator he/she will sooner or later try this: 
+</P>
+
+<P align = "center">
+<STRONG>someValue / 0</STRONG>
+</P>
+
+<P>
+Now what's gonna happen?  Would you say that this is a user-error? No man in 
+the world is able to calculate this, do you think computers are?  Well, 
+certainly not.  This leads us back to the assumptions that are implicitely made: 
+You assumed that your user would know that he must not try to divide any number
+by zero (you have to admit that you assumed that the user would act according to
+that knowledge, too).  To get things straight:  The only assumption you should
+make is that no matter how good a program you come up with, there'll always be 
+a user who will find errors!  If this assumption turns out to be wrong, nobody
+will blame you for it.  If you divide anyNumber by 0 in your plane's 
+steering-software (imagine the pilot inputting a 0 by simply doing his job 
+steering the plane) you'll be in great danger since everybody will blame you 
+if not only the system crashes but the plane crashes, too!
+</P>
+
+<HR>
+
+<P>
+<H2>I object!  Error-handling when errors occur!</H2>
+</P>
+<A NAME = "usualOOP"></A>
+
+<P>
+<H3>Just the usual OOP</H3>
+</P>
+
+<P>
+As you are learning Java I'm sure it is not the first time that you run across
+the object-oriented-programming-paradigm (OOP).  While this is not the place
+to cover OOP as such, we will have to mention a couple of OOP-ideas first in
+order to fully understand the way Java handles errors.
+</P>
+
+<P>
+Have you ever been standing in a forest and you couldn't see the forest for 
+all of the trees?  I did - but it took me quite some time to realize that
+this little saying expresses the major advantage of OOP over other 
+programming-paradigms - it has to do with the way we look at things.
+</P>
+
+<P>
+If I told you, we were having a field-day and we would visit a place where 
+we found a great number of brown stems with green ends, flying animals, little
+brown animals with six feet that are busy building little hills and it will
+be darker than in the open field, you'd sit there and wonder:  is he talking
+about a forest, or what!?!  If instead I told you, we were having a field-day 
+in a forest, you'd exactly know what I was talking about and pretty much knew 
+what to expect (trees, birds, leafs, needles, ants, darkness, plants...).
+</P>
+
+<P>
+An average person can handle up to 7 pieces of information simultaneously.  If 
+you started out describing your forest by explicitly naming every single thing 
+you might encounter (little kids often do this!), anybody who doesn't know that 
+you are talking about a forest will run into problems once you reached the 7th 
+piece of information (they simply run out of memory!). By naming the object 
+(it's a forest) most people will grasp the idea more easily than by describing 
+every single thing that's got to do with it (maybe Nanook sitting in his igloo
+won't).  
+</P>
+
+<P>
+Your computer doesn't care about all this, it doesn't know what abstraction is.  
+On the other hand human beings very heavily depend on abstraction and use
+it every day (in pretty much every sentence they say).  Just one more example to 
+make this clear:  Try to follow this question:  Could you please use about half 
+a liter of the chemical substance H<SUB>2</SUB>O, heat it until it's boiling, while heating 
+the chemical substance H<SUB>2</SUB>O grind some of these dark brown dried fruits we got at 
+the supermarket, put three to four tea-spoons of the ground fruit into the 
+boiling chemical substance H<SUB>2</SUB>O, wait for two or three minutes, fill the 
+resulting liquid into a jar made of ... Add the rest yourself, try asking 
+your friend/husband/wife this question and find out if he/she will bring you 
+a cup of java.<A HREF="#footnote2"><SUP>2</SUP></A><A Name = "backFN2"></A>
+</P>
+
+<P>
+In Java you have to create <CITE>classes</CITE> in order to get a <cite>template</cite> 
+(you might call it a <CITE>pattern</CITE>, too) for your objects.  Using 
+this <CITE>template</CITE> (the class) you can create as many alike objects 
+as you want. Imagine a dress-pattern.  If you have a nice dress-pattern, you 
+can taylor the same dress many times.  Once you have more than one, you might 
+start dressing beautiful looking models send them to a fashion parade and
+sell them (not the models, the dresses!) - you <STRONG>really</STRONG> can 
+do something with the dresses.  Same with Java.  The class is your pattern 
+but it's pretty much of no use until you created an <EM>instance</EM> of your class 
+(this is usually called the <CITE>object</CITE> in OOP-literature).
+</P>
+
+<P>
+If you had a faulty template you'd run out of business just as fast as you
+started it.  This is where Exceptions come in. Let's assume you are a 
+successful fashion-designer and you have your own little boutique.  In
+comes the user - male, long messy hair, greasy hands, in one of his hands:
+his bicycle!  Things like that happen and you have to be prepared for this.
+So what would you do?  You would take care that he doesn't touch a thing and
+try to talk him into leaving your boutique.
+</P>
+
+<P>
+With that in mind we return to our calculator-example and take a first look at 
+the Java-syntax for Exception-handling.  
+</P>
+
+<HR>
+
+<TABLE>
+<TR><TD><IMG SRC = "rockingCondy.jpg"></TD>
+<TD>
+<P>
+<CODE><PRE>
+ 1. <FONT Color = #00ff30>// initialize the value</FONT>
+ 2. <STRONG>double</STRONG> myDoubleValue = 0d;
+ 3. <FONT Color = #00ff30>// the method-call</FONT>
+ 4. inverseValue(myDoubleValue);
+ 5. <FONT Color = #00ff30>// the method</FONT>
+ 6. public double inverseValue(double aValue);
+ 7.   <STRONG>try</STRONG> {
+ 8.     <STRONG>return</STRONG> 1/aValue;
+ 9.   } <STRONG>catch</STRONG> (Exception e) {
+10.     System.out.println("You 
+11.     cannot divide by zero and 
+12.     I can't do this either!");
+13.  }
+14. }
+</P></PRE>
+</CODE>
+</TD>
+</TR>
+</TABLE>
+
+<HR>
+
+<P>  
+The parts of the code that are of interest are the <CODE><STRONG>try</STRONG>
+{...}</CODE> and the <CODE><STRONG>catch</STRONG>{...}</CODE>-blocks.  Once
+you found out that dividing anyValue by 0 is a no-no, you would usually try 
+to avoid the error in the first place (remember the greasy and long-haired 
+bike-rider - it would obviously be best if you kept him from entering your 
+boutique).  This is not what Java does.  Java lets the program run into the 
+error without turning a hair!  Now what?  Why would Java want to do that?
+</P>
+
+<P> 
+Well, Java takes an OOP-approach:  It assumes that most of the time your code
+will be working correctly and that there is no need to check if your divisor
+is a 0 or not.  So instead of using a time-consuming <CODE>if</CODE>-statement 
+every time your method is called, trying to prevent the 0 from entering it, 
+you let each and every value that comes along enter right into your method 
+and watch what happens.  This is exactly what <CODE>try</CODE> indicates - try
+out everything that's surrounded by the braces <CODE>{}</CODE> and see if it 
+works.  If not, you have to do something about it - and this is called
+<STRONG>error-handling</STRONG>.<A HREF=#footnote3><SUP>3</SUP></A><A NAME="backFN3"></A>
+</P>
+
+<P>
+<A Name ="catcher in the rye"></A>
+<H3>The catcher in the rye</H3>
+</P>
+
+<P>
+Error-handling in Java is built on throwing Errors and Exceptions.  You can 
+compare it with the owner of the boutique:  The moment our biker enters the
+boutique, he throws him out.  While throwing someone or something out might 
+sound like fun we will cover the throws later and take a look at the counterpart 
+first: the <STRONG>catch</STRONG>.  
+</P>
+
+<P>
+Our biker will land back out on the streets (hopefully softly) but not before
+you gave him some information such as:  <CITE>Yes, certainly we are open to the 
+public, but please leave your bike outside, and wash your hands before you
+come in.</CITE><A HREF = "#footnote4"><SUP>4</SUP></A><A NAME = "backFN4"></A>
+This is pretty much the way Java handles it.  The Error- or Exception-object is 
+thrown and instead of letting it fall on the ground you catch it in a
+<CODE><STRONG>catch</STRONG></CODE>-clause.  The syntax is 
+</P>
+
+<HR>
+
+<CODE>
+<PRE>
+1. <STRONG>catch</STRONG>(ThrowableObject fancyName) {
+2. <FONT COLOR = #00ff30>// your error-handling code here</FONT>
+3. }
+</PRE>
+</CODE> 
+</OL>
+
+<HR>
+
+<P>
+The first line is like a method's signature where <CODE><STRONG>catch</STRONG></CODE>
+is the method's name and the method gets a <CITE>Throwable</CITE>-object as
+parameter which you can name anyway you
+want.<A HREF = "#footnote5"><SUP>5</SUP></A><A NAME = "backFN5"></A>
+
+The second line is where your coding-task starts.  Usually you would want your
+user to know that something was going wrong and ask him if he might want 
+to reconsider his input.  Maybe you just want to exit your program with a loud 
+bang and then again maybe...  It's up to you.
+
+The third line simply ends the <CODE><STRONG>catch</STRONG></CODE>-clause
+and indicates that your done.
+</P>
+
+<P>
+<A Name ="throw junk away"></A>
+<H3>Throw that junk away!</H3>
+</P>
+
+<P>
+While there are many useful methods in Java that automatically throw some
+kind of Exception, there will be times when you have to throw the junk your 
+method cannot handle away with the help of Java's
+<CODE><STRONG>throw</STRONG></CODE>-keyword in order to provide some
+error-handling of your own.
+</P>
+
+<P>
+The way to do that is easy, you simply have to include something like the 
+following in your method:
+</P>
+
+<P></P>
+<HR>
+
+<CODE>
+<PRE>
+1. <STRONG>if</STRONG> (greasyBikerComesIn == true) {
+2.   <STRONG>throw new</STRONG> Exception("Yes, certainly we are open
+3.     to the public, but please leave your bike outside, 
+4.     and wash your hands before you come in.")
+5. }
+</PRE>
+</CODE>
+
+<HR>
+
+<P>
+The moment a certain error-condition is met you create a new instance of the 
+Exception-class. Usually you would want the Exception-object to hold a message 
+that gives you a clue about what happened.  So instead of using the 
+Exception()-constructor you use the Exception(String message)-constructor of 
+the Exception-class to create your object and enter a String that is more 
+meaningful than "OOPS!" as a message - actually the example is ok for
+teaching-purposes but not for the real (?) programming-world.
+</P>
+
+<P>
+As you were following the course of the tutorial closely, you will be a little
+disappointed by now.  The first LOC includes error-checking just the way you 
+always did it:  <CODE><STRONG>if</STRONG></CODE>-statements.  This is the
+reason why you do not use any <CODE><STRONG>if</STRONG></CODE>-statements
+in your <CODE><STRONG>try</STRONG></CODE>-blocks - you do not want to
+double-check each and everything.  
+</P>
+
+<P>
+While there are many reasons to follow the OOP-dream trying to model the
+real world by making use of objects that are pretty much self-responsible for
+what they are doing we have to admit that there still are differences between
+the real world and the
+Java-world.<A HREF = "#footnote6"><SUP>6</SUP></A><A NAME = "backFN6"></A> 
+So by now you probably realized that you create your <CITE>classes</CITE>
+by means of procedural or structured programming.  In order to get as close
+to the OOP-dream as possible, you hide everything other classes don't have 
+to know from them and let the instances of your class (the <CITE>objects</CITE>)
+simply act as if they were real-world objects.  Once again, it's the idea
+of not seeing the forest for all of the trees.  In order to implement your own
+<CITE>classes</CITE> you have to view inside and find out what makes the thing
+tick.  Once you have your classes up and your objects running, you'll be glad
+to take the outside view and simply look at a forest.
+</P>
+
+<P>
+In order to stick to OOP your object has to create an Error- or
+Exception-object.  The fun thing about creating a new Exception-object is
+that you can pass it around and get some information about what happend by
+using the object's methods.  This will be covered
+<A HREF="#object-methods">later</A>.  But first:
+</P>
+
+<P>
+<A NAME = "more OOP"></A>
+<H3>A little more OOP</H3>
+</P>
+
+<P>
+At this point I still owe you the explanation for the ThrowableObject.  By now 
+you already know that Java throws instances of the <EM>Exception</EM>- or 
+<EM>Error</EM>-classes.  Both are objects.  Their classes (the templates) 
+are <CITE>subclasses</CITE> of the <EM>Throwable</EM>-class.
+</P>
+
+<P>
+Simply-speaking <EM>subclassing</EM> is a means of saving you the time to copy code
+when you have related tasks to do in one program.  If you designed a program
+for a matchmaker you'd have to design male- and female objects.  With both
+kinds of objects you would want to gather information about the customers
+so you would add methods like 
+</P>
+
+<HR>
+
+<CODE>
+<PRE>
+1. <STRONG>void</STRONG> setWeight <STRONG>double</STRONG>  aWeight) { this.weight = aWeight; }
+2. <STRONG>void</STRONG> setSize (<STRONG>double</STRONG> aSize) { this.size = aSize; }
+3. <STRONG>boolean</STRONG>  isFat () { <STRONG>return</STRONG>  ((weight/size/size) &gt 30d); }
+4. <FONT Color = #00ff30>//wildcard for many more methods like the ones above</FONT>
+5. <STRONG>void</STRONG> setBeard (<STRONG>boolean</STRONG> hasBeard) { this.beard = hasBeard; }
+6. <STRONG>boolean</STRONG> isBearded () { <STRONG>return</STRONG> this.beard; }
+7. <STRONG>boolean</STRONG> isPregnant () { <STRONG>return</STRONG> this.sheIsGettingABaby; }
+</PRE>
+</CODE>
+
+<HR>
+
+<P>
+<A NAME = "backFN7"></A>
+While there are women around who have beards, so far there haven't been any
+male-pregnancies.<A HREF = "#footnote7"><SUP>7</SUP></A>  So you are not coding
+males and females but rather some androgynous creatures instead.  In order
+to avoid male-pregnancies (especially if they're underaged) you would code 
+a <EM>superclass</EM> HumanBeing that holds all the information both male 
+and female have in common (there are some I've been told...).  Then you copy
+all the code of the HumanBeing-class into a <EM>subclass</EM> you might 
+call male and into another one that you might call female.  In OOP this 
+copying is done by <CITE>inheritance</CITE>.  In Java you just use the simple
+keyword <CODE><STRONG>extends</STRONG></CODE> like this:
+</P>
+
+<HR>
+
+<CODE>
+<PRE>
+1. <STRONG>class</STRONG> male <STRONG>extends</STRONG> HumanBeing {}
+</PRE>
+</CODE>
+
+<HR>
+
+<P>
+... and everybody knows that a male is a HumanBeing.  
+</P>
+
+<P>
+With Errors and Exceptions it's just the same.  You can throw either one as 
+both of them are of the <EM>Throwable</EM>-class.  The following section will
+show you, how useful <EM>subclassing</EM> can be.
+</P>
+
+<A NAME = "more than one mistake"></A>
+<P>
+<H3>More than one mistake!</H3>
+</P>
+
+<P>
+Errors and Exceptions are thrown immediately when they occur so you break out
+of any loops and hop out of the <CODE><STRONG>try</CODE></STRONG>-block right
+away.  Sometimes bad things happen to good people and more than one Exception
+is likely to occur within a single <CODE><STRONG>try</CODE></STRONG>-block.
+With Java it is easy to handle that.  Let us assume you would hand two 
+String-parameters to your calculate-method - the first one being the operator
+and the second one being the String in your TextField (the display).  If you 
+didn't initialize your display with a defaultValue (0 works usually best for
+calculators) you pass an empty String.  Trying to parse the double-value of 
+the empty String you'll get an Exception-object in return.  Have a look at the
+code:
+</P>
+
+<P>
+<HR>
+<CODE>
+<PRE>
+1. <STRONG>public double</STRONG> calculate (String operator, String rightValue) {
+2.   <STRONG>if</STRONG> (operator == "/") {
+3.   <FONT COLOR = #00ff30>// this assumes that you already have a dividend-variable leftValue</FONT>
+4.   <STRONG>return</STRONG> (leftValue/Double.parseDouble(rightValue));
+5.   }
+6. }
+</PRE>
+</CODE>
+<HR>
+</P>
+
+<P>
+You then could run into the danger of dividing anyValue by 0 plus the threat
+of an empty String that cannot be parsed.  The latter throws an instance of the
+<EM>NumberFormatException-class</EM> (an object) the first one throws an
+instance of the <EM>ArithmeticException-class</EM> (another object)!
+</P>
+
+<P>
+In order to catch more than one Exception, you use the <CODE>catch</CODE>-clause
+simply more than once like this:
+</P>
+
+<P>
+<HR>
+<CODE>
+<PRE>
+ 1. <STRONG>public double</STRONG> calculate (String operator, String rightValue) {
+ 2.   <STRONG>if</STRONG> (operator == "/") {
+ 3.     <STRONG>try</STRONG> {
+ 4.       <STRONG>return</STRONG> (leftValue/Double.parseDouble(rightValue));
+ 5.     } <STRONG>catch</STRONG> (ArithmeticException ae) {
+ 6.       System.out.println("You tried to divide by 0");
+ 7.     } <STRONG>catch</STRONG> (NumberFormatException nfe) {
+ 8.       System.out.println("Did you try to divide nothing by something?");
+ 9.     }
+10.   }
+11. }
+</PRE>
+</CODE>
+<HR>
+</P>
+
+<P>
+As both Exception-objects are instances of subclasses of the Exception-class it
+is just as easy to catch all exceptions at once like this:
+</P>
+
+<P>
+<HR>
+<CODE>
+<PRE>
+1. <STRONG>public double</STRONG> calculate (String operator, String rightValue) {
+2.   <STRONG>if</STRONG> (operator == "/") {
+3.     <STRONG>try</STRONG> {
+4.       <STRONG>return</STRONG> (leftValue/Double.parseDouble(rightValue));
+5.     } <STRONG>catch</STRONG> (Exception e) {
+6.       System.out.println("Please check your input!");
+7.     }
+8.   }
+9. }
+</PRE>
+</CODE>
+<HR>
+</P>
+
+<P>
+Here you have two objects of the same kind, as the NumberFormatException (which
+I previously assigned to the variable nfe) and the ArithmeticException (which
+I previously assigned to the variable ae) both are Exceptions.  So no matter
+what kind of Exception you have, you can always catch any kind by simply
+catching an instance of the Exception-superclass.
+</P>
+
+<P>
+This is real OOP-power as real-life objects work just the same!  Compare it
+to the dresses:  There are many kinds like fancy dresses or shabby dresses. 
+In order to go out into the public you better get dressed. Nowadays it doesn't
+matter all that much what kind of dress it is you are wearing as long as it
+(I love the English language for this:) suits you.
+</P>
+
+<P>
+You have to be careful, though.  As there are some occasions where it does
+matter what kind of dress you're wearing, there will be occasions where it
+does matter what kind of Exception is thrown.  It's up to you, to make sense
+of your error-handling.  Imagine a password-check that includes a user-name and
+a password.  Both the user-name and the password could be checked within one
+try-block and each of them might throw its own Exception.  You would not want
+a hacker to know where he was going wrong, you would simply catch both
+Exceptions and tell the hacker: <CITE>No way Hosé!</CITE>  On the other hand
+in the calculator example it would be better to return a 0-value when there was
+nothing in the display to divide and to return a warning when someone was
+trying to divide by 0 like this:
+</P>
+
+<P>
+<HR>
+<CODE>
+<PRE>
+ 1. <STRONG>public double</STRONG> calculate (String operator, String rightValue) {
+ 2.   <STRONG>if</STRONG> (operator == "/") {
+ 3.     <STRONG>try</STRONG> {
+ 4.       <STRONG>return</STRONG> (leftValue/Double.parseDouble(rightValue));
+ 5.     } <STRONG>catch</STRONG> (ArithmeticException ae) {
+ 6.       System.out.println("You tried to divide by 0, you cannot do this");
+ 7.     } <STRONG>catch</STRONG> (NumberFormatException nfe) {
+ 8.       <STRONG>return</STRONG> 0d;
+ 9.     }
+10.   }
+11. }
+</PRE>
+</CODE>
+<HR>
+</P>
+
+<P>
+There is another warning to include here:  If you wanted to make sure your
+program at least handled all the Exceptions that are thrown and you knew
+that there were two exceptions to be expected, an ArithmeticException and
+another one that you didn't know by name, you could easily combine catch one
+and catch the rest like this:
+</P>
+
+<P>
+<HR>
+<CODE>
+<PRE>
+ 1. <STRONG>public double</STRONG> calculate (String operator, String rightValue) {
+ 2.   <STRONG>if</STRONG> (operator == "/") {
+ 3.     <STRONG>try</STRONG> {
+ 4.       <STRONG>return</STRONG> (leftValue/Double.parseDouble(rightValue));
+ 5.     } <STRONG>catch</STRONG> (ArithmeticException ae) {
+ 6.       System.out.println("You tried to divide by 0, you cannot do this");
+ 7.     } <STRONG>catch</STRONG> (Exception e) {
+ 8.       <STRONG>return</STRONG> 0d;
+ 9.     }
+10.   }
+11. }
+</PRE>
+</CODE>
+<HR>
+</P>
+
+<P>
+If you exchanged the order of the LOC in a way that lines 7 and 8 would precede 
+lines 5 and 6 you would never be able to reach your warning-message.  Why?  
+Well, once an Exception is thrown, Java goes through the
+<CODE>catch</CODE>-clauses one after the other  until it finds the first match.  
+Once Java found at least something it will not proceed any further trying to find
+the best match. As catching the superclass (Exception) will always match this
+has to be the last resort for Exception-handling and follow after the
+specialized Exceptions.
+</P>
+
+<P>
+Once again we can compare it to the dresses:  Catching the superclass is like 
+offering a unisex one-size-fits-all dress - there just isn't any need for 
+further action once you're dressed even though it would be nicer to have
+a special dress of your own.  
+</P>
+
+<P></P>
+<P>
+<A NAME = "Exception-object">
+<H3>The Exception-object</H3>
+</P>
+
+<P>
+As I mentioned before, both the <CITE>Error</CITE>- and the
+<CITE>Exception</CITE>-class are <CITE>subclasses</CITE> of the
+<CITE>Throwable</CITE>-class.  As a matter of fact the <CITE>subclasses</CITE>
+do not add any new methods, new attributes or new constructors to the
+<CITE>superclass</CITE>.<A HREF = "#footnote8"><SUP>8</SUP></A><A NAME = "backFN8"></A>
+</P>
+
+<P>
+Now, what would that be good for?  Obviously, the <CITE>superclass</CITE> offers
+the functionality for the <CITE>subclasses</CITE> while the <CITE>subclasses</CITE>
+simply copy the functionality and that's it!  Well, that's only half of the
+truth.  While subclassing does save the tedious task of copying code you have
+to remember that OOP means object-talk:  So you also create new templates
+(<CITE>classes</CITE>) for different tasks.
+</P>
+
+<P>
+This enables the Java-programmer to easily distinguish between two different
+kinds of errors. The first kind is used for fatal errors and simply called
+<STRONG><CITE>Error</CITE></STRONG>.  A fatal error would be one that no
+program would try to catch in the sense that your program flow will not be
+stopped - imagine the check-up-software of a car:  Once it found out that the
+brakes don't work, it wouldn't want anyone to successfully turn the
+ignition-key.  It would rather leave you standing there right in the 
+middle of nowhere with a simple warning-message (this is what my
+operating-system loves doing to me, too - I guess you get the idea!).
+</P>
+
+<P>
+The second kind of error is called <STRONG><CITE>Exception</CITE></STRONG>.
+This kind is used for the kind of error-handling everyone expects:  If you were
+running low on gas, you would certainly appreciate a warning-message but you
+would also want to drive up to the next gas-station.  If you wanted to open
+a file on your disk that doesn't exist and your program got stuck, you'd be
+upset.  If instead the program asked you if you wanted to create a new file
+by that name you'd live happily everafter.  In other words:  Not handling
+Exceptions is a bummer for every user.
+</P>
+
+
+<P><A NAME = "object-methods">
+The moment a <CITE>Throwable</CITE>-object (likewise an object of the subclasses)
+is thrown the newly created object takes a snapshot of the execution stack of
+its thread.  It usually contains a message with a short description of the
+error.  The more important methods to obtain information about the
+<CITE>Throwable</CITE>-object are implemented in the following LOC that
+will help you to understand what kind of information is offered:
+</P>
+
+<P>
+<HR>
+<CODE>
+<PRE>
+ 1. <STRONG>public class</STRONG> ExceptionalMethods {
+ 2.
+ 3.   <STRONG>public static void</STRONG> main (String[] args) {
+ 4.     <STRONG>int</STRONG> a = 5;
+ 5.     <STRONG>int</STRONG> b = 0;
+ 6.     <STRONG>int</STRONG> noValue = 0;
+ 7.     <STRONG>try</STRONG> {
+ 8.       System.out.println(noValue = a/b);
+ 9.     } <STRONG>catch</STRONG> (ArithmeticException ae) {
+10.       System.out.println("You got a message: " + ae.getMessage());
+11.       System.out.println("This is your object calling: " + ae.toString());
+12.       System.out.println("I guess you're stuck: ");
+13.       ae.printStackTrace();
+14.     }
+15.   }    
+16. } 
+</PRE>
+</CODE>
+<HR>
+</P>
+
+<P>
+In the <CODE>catch</CODE>-clause we named the newly created instance of the
+<CITE>ArithmeticException</CITE> "ae".  In the following block we simply
+accessed the object's methods by <CITE>ae.aMethod()</CITE>.  The above
+program can easily be used to get information about Exceptions you do not
+exactly know:  Just substitute <CITE>ArithmeticException</CITE> by
+<CITE>Exception</CITE> and you'll receive information about any unknown
+Exception.  Try that now, it's
+OOP!<A HREF = "#footnote9"><SUP>9</SUP></A><A NAME = "backFN9"></A>
+</P>
+
+<P></P>
+
+<P><A NAME = "Create your own Exceptions"></A>
+<H3>Be creative!  How to code your own Exceptions</H3>
+</P>
+
+<P>
+Usually it will suffice to use the <CITE>Exception</CITE>-class in order to
+do the error-handling you need.  While subclassing the <CITE>Error</CITE>-class
+is a no-no simply because you don't throw Errors just for fun and excitement
+but rather for serious reasons that will usually lead to the termination of
+the program it might be useful to extend the <CITE>Exception</CITE>-class. 
+The following example shows you, how to implement a <CITE>BeepingException</CITE>
+that doesn't only give you a message but also draws the users attention to your
+program by beeping.
+</P>
+
+<P>
+<HR>
+<CODE>
+<PRE>
+ 1. <STRONG>public class</STRONG> BeepingException <STRONG>extends</STRONG> Exception {
+ 2.   <STRONG>private</STRONG> java.awt.Toolkit beeper = java.awt.Toolkit.getDefaultToolkit();
+ 3.   <FONT COLOR = #00ff30>//parameterless constructor</FONT>
+ 4.   <STRONG>public</STRONG> BeepingException() {
+ 5.     <STRONG>super</STRONG>();
+ 6.     beeper.beep();
+ 7.   }
+ 8.   <FONT COLOR = #00ff30>//constructor with message-String</FONT>
+ 9.   <STRONG>public</STRONG> BeepingException(String s) {
+10.     <STRONG>super</STRONG>(s);
+11.     beeper.beep();
+12.   }
+13. } 
+14. 
+15. <STRONG>public class</STRONG> TryTheBeeper {
+16.   <STRONG>public static void</STRONG> main (String[] args) <STRONG>throws</STRONG> BeepingException {
+17.     <STRONG>throw new</STRONG> BeepingException("this wasn't it!");
+18.   } 
+19. }    
+</PRE>
+</CODE>
+<HR>
+</P>
+
+<P>
+In lines 1 through 13 we created a new class <CITE>BeepingException</CITE> by
+extending the <CITE>Exception</CITE>-class.  The two constructors use the
+constructors of the superclass (this is easily done with the keyword
+<CITE>super</CITE>) to create a new instance of the class (actually the
+<CITE>Exception</CITE>-class simply passes the buck to the
+<CITE>Throwable</CITE>-class and let the latter do the work).  The new class
+inherits all the fancy features that the <CITE>Exception</CITE>-class has to
+offer and simply adds an attribute (line 2) and two method-calls (lines 6 and
+11) to it.
+</P>
+
+<P>
+The <CITE>attribute</CITE> is simply a connection to your system's resources
+that we assigned to the variable <CITE>beeper</CITE>.  Since most systems
+provide for somekind of beep, we can simply call the <CITE>beep</CITE>-method
+that is provided in the <CITE>Toolkit</CITE>-class.  Inserting the method-call
+in both constructors let's the user hear a beep when the
+<CITE>BeepingException</CITE>-object is created or in other words: when the
+Exception is thrown.
+</P>
+
+<P>
+Lines 15 through 19 add a class with a main-method to test the newly created
+class.<A HREF = "#footnote10"><SUP>10</SUP></A><A NAME = "backFN10"></A>  It
+includes a new keyword that wasn't mentioned so far: 
+<STRONG><CODE>throws</CODE></STRONG>.  Browsing through the code you
+might have realized that we didn't catch anything.  This is where
+<CODE>throws</CODE> comes in.  It's simply putting your cards on the table:  If
+you do not offer a solution for the Error-handling within your method you have
+to admit it right away so that everyone else can see what will happen.
+</P>
+
+<P>
+While in the above example <CODE>throws</CODE> is used in a dirty way since I
+didn't provide any Error-handling at all, the keyword is your way to writing
+robust code that can be used more than once.  The concept behind it is once
+again OOP.  If you have objects that know what might go wrong, they are easily
+reusable in a totally different context.  So instead of forging a certain
+way to handle an Error once and for all that might not be a perfect fit every
+time, you let the programmer decide what he wants his program to do when an
+Error occurs.  Just remember what we did with the
+<CITE>NumberFormatException</CITE> in our calculator-example:  We simply
+returned the value of 0 which is ok for a calculator.  Talking about the
+plane's steering-software it just might not be ok...
+</P>
+
+<P><A NAME = "Finally"></A>
+<H3>Finally - wrapping things up!</H3>
+</P>
+
+<P>
+One last example:  Imagine a password-check that throws an <CITE>Exception</CITE>
+in case the password was wrong.  Wouldn't it be nice to be able to log all attempts
+to access your system no matter if they were successful or not?  I sure think
+so and the Java-developers thought so, too.
+</P>
+
+<P>
+Actually, the programming task could be achieved quite easily by writing a
+log-method that was called from within the <CODE>try</CODE>-block and from
+within each and every <CODE>catch</CODE>-block, too.  Once again that sounds
+like tedious work so Java provides a simple means for handling these situations:
+The <CODE>finally</CODE>-block.  Everything that's coded within the
+<CODE>finally</CODE>-block will be executed no matter if an Exception was
+thrown or not.  The following LOC shows the idea.  Don't be disappointed as I
+didn't include any code for the methods - Java security is a different ballgame.
+</P>
+<P></P>
+
+<HR>
+<CODE>
+<PRE>
+ 1. <STRONG>try</STRONG> {
+ 2.   checkUserName(userName);
+ 3.   checkPassword(password);
+ 4. } <STRONG>catch</STRONG> (Exception e) {
+ 5.   attempts++;
+ 6.   System.out.println("That's not right");
+ 7.   <STRONG>if</STRONG> ((attempts % 3) == 0) {
+ 8.     System.out.println("This was it!");
+ 9.     callThePolice();
+10.   }
+11. } <STRONG>finally</STRONG> {
+12.   logAttempt(userName, password);
+13. }
+</PRE>
+</CODE>
+
+<HR>
+
+<P>
+The program checks the password and the username and assumes that both
+throw an Exception of their own.  Either one of these Exceptions is caught
+in the <CODE>catch</CODE>-block that tells the user that he didn't enter
+the right userName <STRONG>or</STRONG> password.  An integer-variable is
+counting the number of attempts.  You should have found out that you only
+have three attempts!<A HREF = "#footnote11"><SUP>11</SUP></A><A NAME = "backFN11"></A>  
+If the third one was wrong, too, the program calls the police and logs the
+third attempt.
+</P>
+
+<P>
+There is just a single case when this does not work:  If you included a line
+like <CODE>System.exit(-1);</CODE> in one of your <CODE>catch</CODE>-blocks
+and this block was executed you're forcing your program to exit and it will
+obey - the <CODE>finally</CODE>-block will then never be executed.  
+</P>
+
+<P>
+Well, this pretty much wraps it up.  By now I hope you have a decent understanding of
+the whys and hows of error-handling and Java's object-oriented approach to it. 
+Once you start writing larger programs there will still be a couple things left
+to discover (e.g. nesting <CODE>try</CODE>-blocks, program-flow, ...) but as I
+realize that this tutorial already exceeds a 10-minutes read I do not want to
+overdo it - so go ahead and make some errors of your own ...
+</P>
+
+<P ALIGN = CENTER>
+<A NAME = "Download Zip-file"></A>
+<A HREF = "ExceptionalTutorial.zip">
+<img src="packedCondy.jpg" ALT="Get the packed version!">
+</A>
+</P>
+
+
+<HR>
+
+<OL>
+<Font size = -1>
+
+<A NAME = "footnote1"></A>
+<LI>The Error- and Exception-class both are subclasses of the Throwable-class.
+We will cover the superclass and the subclasses later on in the tutorial and use
+the words <EM>Error</EM> and <EM>Exception</EM> interchangeably at first.
+<A HREF = "#backFN1"> (back) </A>
+
+<A NAME = "footnote2"></A>
+<LI>Don't blame me for any break-ups or divorces when you start talking that way...
+<A HREF = "#backFN2"> (back) </A>
+
+<A NAME = "footnote3"></A>
+<LI>We will discover later that this is the OOP-dream:  Let every object handle
+    exceptions <STRONG>when</STRONG> they occur and not have any 
+    <CODE><STRONG>if</STRONG></CODE>-statements waste precious time.
+    As it comes down to programming the <CITE>classes</CITE> in Java we will
+    soon realize that this dream has not yet come true.
+<A HREF = "#backFN3"> (back) </A>
+
+<A NAME = "footnote4"></A>
+<LI>Remember, the American way of posting a sign in front of your boutique that
+says <CITE>No shirt? No shoes? No service!</CITE> is not the way Java handles
+exceptions.  This is simply because such a sign cannot prevent an illiterate 
+from entering a shop.
+<A HREF = "#backFN4">(back)</A>
+
+<A NAME = "footnote5"></A>
+<LI>Well almost anyway you want, Java's naming conventions are still valid. 
+<A HREF = "#backFN5">(back)</A>
+
+<A NAME = "footnote6"></A>
+<LI>While you might want to model a life-form by means of a <CITE>process</CITE>
+you cannot simply throw two processes into a cage and see what happens as you
+might do with mice...  
+<A HREF = "#backFN6">(back)</A>
+
+<A NAME = "footnote7"></A>
+<LI>I'm sorry to disappoint you - Schwarzenegger's pregnancy was a fake!
+<A HREF = "#backFN7">(back)</A>
+
+<A NAME = "footnote8"></A>
+<LI>You might want to take a look at the source yourself.  The source is
+usually distributed with the JDK.  You'll have to find out for yourself or
+ask a friend if you cannot find it, I will not answer any e-mails concerning
+this.
+<A HREF = "#backFN8">(back)</A>
+
+<A NAME = "footnote9"></A>
+<LI>Actually you should change the variable's name from <CITE>ae</CITE> to
+<CITE>e</CITE> in order to follow the mnemonic naming idea.
+<A HREF = "#backFN9">(back)</A>
+
+<A NAME = "footnote10"></A>
+<LI>If you don't yet know how to get two classes to work, simply include lines
+16 through 18 in the <CITE>BeepingException</CITE>-class right after line 12,
+delete lines 15 and 19 and run the <CITE>BeepingException</CITE>-class.
+<A HREF = "#backFN10">(back)</A>
+
+<A NAME = "footnote11"></A>
+<LI>Actually you wouldn't have any more than one attempt as the program does not
+jump back to the beginning of the <CODE>try</CODE>-block by itself.  You would
+have to control the program flow (e.g. with a loop and a <CODE>break</CODE> out
+of the loop).
+<A HREF = #backFN11>(back)</A>
+
+</FONT>
+
+<P ALIGN = CENTER>
+<img src="byeCondy.jpg" ALT="Bye!">
+</P>
+
+<FONT SIZE = -2>
+<P>
+&copy 1994 by Mini Richter as far as the drawings are concerned, you can use
+them as you like, but they remain mine.  The rest was written in 2001 A.D. and
+is free.<BR>
+If you have any comments or suggestions please holler:
+<A HREF="mailto:Mini@chameleonharmonists.de">Mini@chameleonharmonists.de</A>
+</P>
+<P>
+This tutorial was written with the best tools I got: My hands on my arms.
+</P>
+</FONT>
+
+</BODY>
+</HTML>
+
+

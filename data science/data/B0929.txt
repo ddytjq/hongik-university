@@ -1,0 +1,153 @@
+ID=B0929
+URL=http://www.holmesdale.org.uk/mortgagecalculator.htm
+SIZE=4682
+DATE=28/06/2002
+TIME=12:54:23
+DATASET=Building Societies
+HTML=<html>
+
+<head>
+<title>Mortgage Calculator</title>
+</head>
+
+<body bgproperties="fixed">
+
+<form name="calculator">
+  <table border="0" width="100%" height="130">
+    <tr>
+      <td width="100%" height="44"><div align="center"><center><p><font color="#0000FF" face="Arial"><big><big>Mortgage Repayment Calculator</big></big><br>
+      </font></td>
+    </tr>
+    <tr align="center">
+      <td width="100%" align="center" height="78"><div align="center"><center><p><font color="#FF0000" face="Arial"><strong>* Please note: The calculated repayments should only
+      be used as a guideline. Please contact us for an accurate written quotation.</strong></font></p>
+      </center></div><div align="center"><center><p><font face="Arial" color="#000000"><strong>Enter
+      the mortgage figures and then click on the calculator.</strong></font></td>
+    </tr>
+  </table>
+  <div align="center"><center><table border="1" width="100%" cellpadding="2" cellspacing="0" height="173">
+    <tr>
+      <td valign="middle" align="left" bgcolor="#185EFE" height="47" width="207"><b><font color="#FFFFFF" face="Arial" size="-1">Mortgage required<br>
+      (</font><font size="-2" color="#FFFFFF" face="Arial">please omit commas)<br>
+      </font></b></td>
+      <td valign="middle" align="left" bgcolor="#185EFE" height="47" width="19"><div align="center"><center><p><strong><small><font face="Arial" color="#FFFFFF">£</font></small></strong></td>
+      <td valign="middle" bgcolor="#185EFE" align="center" width="199" height="47"><div align="left"><p><font face="Arial" color="#FFFFFF"><input type="text" size="7" maxlength="8" name="A" tabindex="1"> </font></td>
+      <td valign="middle" align="center" bgcolor="#C0C0C0" height="167" rowspan="4" width="89"><div align="center"><center><p><img src="images/btncalcpicture.gif" width="65" height="72" alt="Calculate Repayments" onClick="calculate()" onKeyPress="calculate()" tabindex="4"></p>
+      </center></div><div align="center"><center><p><img src="images/btnclear.gif" alt="Clear Figures" onClick="ClearFigures()" onKeyPress="ClearFigures()" tabindex="5" WIDTH="69" HEIGHT="53"></td>
+      <td valign="middle" align="center" bgcolor="#C0C0C0" height="80" width="195" rowspan="2"><div align="left"><p><font size="-1" color="#000000" face="Arial"><b>Monthly payment</b></font></td>
+      <td valign="middle" align="center" width="209" bgcolor="#C0C0C0" height="80" rowspan="2"><div align="left"><p><font face="Arial"><strong><small>£</small></strong> <input type="text" size="10" maxlength="12" name="Cm"> </font></td>
+    </tr>
+    <tr align="center">
+      <td valign="middle" align="left" bgcolor="#185EFE" height="33" width="207"><font color="#FFFFFF" face="Arial" size="-1"><b>Repayment period<br>
+      </b></font></td>
+      <td valign="middle" align="left" bgcolor="#185EFE" height="33" width="19"><font face="Arial" color="#FFFFFF">&nbsp; </font></td>
+      <td valign="middle" bgcolor="#185EFE" align="left" width="199" height="33"><div align="left"><p><font face="Arial" color="#FFFFFF"><input type="text" size="3" maxlength="3" name="T" tabindex="2"> </font><font color="#FFFFFF" face="Arial" size="-1"><b>years</b></font></td>
+    </tr>
+    <tr align="center">
+      <td valign="middle" align="left" bgcolor="#185EFE" height="43" width="207"><font color="#FFFFFF" face="Arial" size="-1"><b>Interest rate<br>
+      </b></font></td>
+      <td valign="middle" align="left" bgcolor="#185EFE" height="43" width="19"><font face="Arial" color="#FFFFFF">&nbsp; </font></td>
+      <td valign="middle" bgcolor="#185EFE" align="left" width="199" height="43"><div align="left"><p><font face="Arial" color="#FFFFFF"><input type="text" size="3" maxlength="4" name="R" tabindex="3"> </font><font color="#FFFFFF" face="Arial" size="-1"><b>%
+      </b></font></td>
+      <td valign="middle" align="left" bgcolor="#C0C0C0" height="59" width="195" rowspan="2"><font size="-2" color="#000000" face="Arial"><b>(interest only)</b></font></td>
+      <td valign="middle" bgcolor="#C0C0C0" align="left" width="209" height="59" rowspan="2"><div align="left"><p><font face="Arial"><strong><small>£</small></strong> <input type="text" size="10" maxlength="12" name="CI"> </font></td>
+    </tr>
+    <tr align="center">
+      <td width="207" bgcolor="#185EFE" height="26"></td>
+      <td width="19" bgcolor="#185EFE" height="26"></td>
+      <td width="199" bgcolor="#185EFE" height="26"></td>
+    </tr>
+  </table>
+  </center></div><div align="center"><center><p><font size="-2" face="Arial">This calculator
+  requires a javascript enabled browser</font></p>
+  </center></div>
+</form>
+</body>
+<script LANGUAGE="JAVASCRIPT">
+<!--
+	function checkNumber(input, min, max, msg) {
+
+		msg = msg + " field has invalid data: " + input.value;
+
+		//this makes sure that the number is a number
+		var str = input.value;
+		for (var i = 0; i < str.length; i++) {
+			var ch = str.substring( i, i + 1)
+			if ((ch < "0" || "9" < ch) && ch != '.') {
+				alert(msg);
+				return false;
+			}
+		}
+
+		var num = 0 + str
+		if (num < min || max < num) {
+			alert(msg + " not in range [" + min + ".." + max + "]");
+			return false;
+		}
+		input.value = str;
+		return true;
+	}
+
+	function computeField(input) {
+		if (input.value != null && input.value.length != 0)
+		{
+			input.value = "" + eval(input.value);
+		}
+		computeForm(input.form);
+	}
+
+	function calculate() {
+		var A=calculator.A.value;
+		var T=calculator.T.value;
+		var R=calculator.R.value;
+
+		if ((A == null || A.length == 0) ||
+			(R == null || R.length == 0)) 
+		{
+			//alert('Please complete all fields.');
+			return;
+		}
+
+		if (!checkNumber(calculator.A, 1, 999999, "Amount") ||
+			!checkNumber(calculator.R, .001, 1000, "Interest Rate") ||
+			!checkNumber(calculator.T, 5, 25, "Period")) 
+		{
+			calculator.Cm.value = "Invalid";
+			return;
+		}
+
+		R = R / 100;
+		var P = ((A*R)/12) * (1/(1-(Math.pow(1/(1+R),T))));
+		calculator.Cm.value = poundsPence( P );
+		P = (A*R)/12;
+		calculator.CI.value = poundsPence( P );
+		}
+
+	function poundsPence( N ) {
+		// don't try this with ie3 because it's rubbish
+		if ((navigator.appName.indexOf('Microsoft')>-1)
+			&& (navigator.appVersion.indexOf('3.0')>-1) )
+		{
+			return N;
+		}
+		S = new String( N );
+		var i = S.indexOf('.');
+		if (i != -1) {
+			S = S.substr( 0, i+3 );
+			if (S.length-i < 3)
+				S = S + '0';
+		}
+		return S;
+	}
+
+	function ClearFigures() {
+		calculator.A.value = "";
+		calculator.T.value = "";
+		calculator.R.value = "";
+	}
+
+//-->
+</script>
+
+</html>
+
