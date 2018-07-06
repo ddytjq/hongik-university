@@ -5,6 +5,7 @@
 * ONOS로 Flow Rule을 추가하여 흐름 변화 확인
 * POX Controller 를 이용해 SDN을 Control
 * POX로 Firewall Rule을 추가하여 흐름 변화 확인
+* Python GUI를 통한 동작 Control
 
 ### Environment
 * Linux Ubuntu 14.04
