@@ -8,7 +8,7 @@
 
 ### SDN - ONOS Controller Execution
 
-//ONOS Controller Connect
+1. ONOS Controller Connect
 
 export ONOS_ROOT=~/onos
 
@@ -21,7 +21,7 @@ export ONOS_APPS=drivers,openflow,proxyarp,mobility,fwd
 ok clean
 
 
-// ONOS Controller UI execution
+2. ONOS Controller UI execution
 
 http://127.0.0.1:8181/onos/ui/login.html
 
@@ -30,22 +30,22 @@ id : karaf
 pw : karaf
 
 
-// MININET execution
+3. MININET execution
 
 sudo python tree.py
 
 
-// Ping Test
+4. Ping Test
 
 pingall
 
 
-// Flow rule 
+5. Flow rule add
 
 ./flow_rule.sh
 
 
-// Ping Test
+6. Ping Test
 
 pingall
 
