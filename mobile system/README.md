@@ -6,6 +6,10 @@
 * POX Controller 를 이용해 SDN을 Control
 * POX로 Firewall Rule을 추가하여 흐름 변화 확인
 
+### Environment
+* Linux Ubuntu 14.04
+* Python 2
+
 ### SDN - ONOS Controller Execution
 
 ##### ONOS Controller Connect
