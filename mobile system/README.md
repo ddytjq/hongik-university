@@ -8,7 +8,7 @@
 
 ### SDN - ONOS Controller Execution
 
-1. ONOS Controller Connect
+***** ONOS Controller Connect
 
 export ONOS_ROOT=~/onos
 
@@ -20,8 +20,7 @@ export ONOS_APPS=drivers,openflow,proxyarp,mobility,fwd
 
 ok clean
 
-
-2. ONOS Controller UI execution
+***** ONOS Controller UI execution
 
 http://127.0.0.1:8181/onos/ui/login.html
 
@@ -29,51 +28,55 @@ id : karaf
 
 pw : karaf
 
-
-3. MININET execution
+***** MININET execution
 
 sudo python tree.py
 
-
-4. Ping Test
+***** Ping Test
 
 pingall
 
-
-5. Flow rule add
+***** Flow rule add
 
 ./flow_rule.sh
 
 
-6. Ping Test
+***** Ping Test
 
 pingall
 
 
 ### SDN - POX Controller Execution
 
-// POX Controller Connect ( not rule )
-./pox/pox.py log.level --DEBUG openflow.of_01 
-forwarding.l2_learning
+***** POX Controller Connect ( not rule )
 
-// MININET execution
+./pox/pox.py log.level --DEBUG openflow.of_01 forwarding.l2_learning
+
+***** MININET execution
+
 sudo python tree.py
 
-// Ping Test
+***** Ping Test
+
 pingall
 
-// POX Controller redo ( rule enrollment )
-./pox/pox.py log.level --DEBUG openflow.of_01 
-forwarding.l2_learning misc.firewall
+***** POX Controller redo ( add rule )
 
-// MININET redo
+./pox/pox.py log.level --DEBUG openflow.of_01 forwarding.l2_learning misc.firewall
+
+***** MININET redo
+
 sudo python tree.py
 
-// Ping Test
+***** Ping Test
+
 ping all
 
+
 ### Video
+
 * SDN - ONOS Control : https://youtu.be/-csGH1HJ79g
+
 * SDN - POX Control : https://youtu.be/XnyvhnT98KM
 
 
