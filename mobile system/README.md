@@ -1,23 +1,68 @@
-## All my projects at Hongik University
+### SDN Control with two controllers (onos, pox)
 
-### compuer security
-* Analyze and defend XSS attack pattern
+* Mininet을 이용한 SDN 구성
+* ONOS Controller 를 이용해 SDN을 Control 
+* ONOS로 Flow Rule을 추가하여 흐름 변화 확인
+* POX Controller 를 이용해 SDN을 Control
+* POX로 Firewall Rule을 추가하여 흐름 변화 확인
 
-### data science
-* Find the classifier model to classify 11000 files and evaluate the accuracy
+### SDN - ONOS Controller Execution
 
-### database
-* Link shopping mall homepage & database
+// ONOS Controller Connect
+export ONOS_ROOT=~/onos
+source $ONOS_ROOT/tools/dev/bash_profile
+export ONOS_IP=127.0.0.1
+export ONOS_APPS=drivers,openflow,proxyarp,mobility,fwd
+ok clean
 
-### mobile system
-* SDN Control with two controllers (onos, pox)
+// ONOS Controller UI execution
+http://127.0.0.1:8181/onos/ui/login.html
+id : karaf
+pw : karaf
 
-### network experiment
-* Verify operation according to network topology
+// MININET execution
+sudo python tree.py
 
-### opensource software
-* student card management system
+// Ping Test
+pingall
 
-### operating system
-* See how different performance numbers vary depending on the CPU scheduling algorithm
+// Flow rule 
+./flow_rule.sh
+
+// Ping Test
+pingall
+
+### SDN - POX Controller Execution
+
+// POX Controller Connect ( not rule )
+./pox/pox.py log.level --DEBUG openflow.of_01 
+forwarding.l2_learning
+
+// MININET execution
+sudo python tree.py
+
+// Ping Test
+pingall
+
+// POX Controller redo ( rule enrollment )
+./pox/pox.py log.level --DEBUG openflow.of_01 
+forwarding.l2_learning misc.firewall
+
+// MININET redo
+sudo python tree.py
+
+// Ping Test
+ping all
+
+### Video
+* SDN - ONOS Control : https://youtu.be/-csGH1HJ79g
+* SDN - POX Control : https://youtu.be/XnyvhnT98KM
+
+
+
+
+
+
+
+
 
