@@ -1,23 +1,6 @@
-## All my projects at Hongik University
+### Link shopping mall homepage & database
 
-### compuer security
-* Analyze and defend XSS attack pattern
-
-### data science
-* Find the classifier model to classify 11000 files and evaluate the accuracy
-
-### database
-* Link shopping mall homepage & database
-
-### mobile system
-* SDN Control with two controllers (onos, pox)
-
-### network experiment
-* Verify operation according to network topology
-
-### opensource software
-* student card management system
-
-### operating system
-* See how different performance numbers vary depending on the CPU scheduling algorithm
-
+* language : html & php
+* database : oracle
+* 실제 쇼핑몰에서 사용 가능한 홈페이지를 제작
+* 데이터베이스 연동 후 쇼핑몰 직원이 사용자에 대해 관리
