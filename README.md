@@ -1,6 +1,6 @@
 ## All my projects at Hongik University
 
-### compuer security
+### computer security
 * Analyze and defend XSS attack pattern
 
 ### data science
