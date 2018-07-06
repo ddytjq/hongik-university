@@ -1,19 +1,23 @@
 ## All my projects at Hongik University
 
-#### language
-* java 9.0.4
-* android 3.1.2
-* processing 3.3.7 - api 26
-* python 3.6.5
+#### compuer security
+##### Analyze and defend XSS attack pattern
 
-#### Each function
-* mindwave : eeg data extraction (delta, theta, alpha, SMR, low beta, high beta, gamma)
-* processing : eeg graph (10 second)
-* deep learning : tensorflow-slim lib & eeg graph matching
-* android : eeg measurement through mindwave & application gui
-* java, python : detailed function
+#### data science
+##### Find the classifier model to classify 11000 files and evaluate the accuracy
 
-#### Reference
-* eeg data set : https://www.kaggle.com/wanghaohan/confused-eeg
-* deep learning : AWS Virtual gpu computer - p2.xlarge
-* database : google firebase
+#### database
+##### Link shopping mall homepage & database
+
+#### mobile system
+##### SDN Control with two controllers (onos, pox)
+
+#### network experiment
+##### Verify operation according to network topology
+
+#### opensource software
+##### student card management system
+
+#### operating system
+##### See how different performance numbers vary depending on the CPU scheduling algorithm
+
