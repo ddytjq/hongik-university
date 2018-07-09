@@ -8,8 +8,8 @@
 * Python GUI를 통한 동작 Control
 
 ### Environment
-* Linux Ubuntu 14.04
-* Python 2
+* language : python 2.7.10
+* os : Linux Ubuntu 14.04
 
 ### SDN - ONOS Controller Execution
 
