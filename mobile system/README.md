@@ -78,7 +78,7 @@ sudo python tree.py
 ping all
 
 
-### Video
+### Demo
 
 * SDN - ONOS Control : https://youtu.be/-csGH1HJ79g
 * SDN - POX Control : https://youtu.be/XnyvhnT98KM
