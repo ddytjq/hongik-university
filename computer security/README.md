@@ -2,7 +2,7 @@
 
 #### Environment
 * language : html & php
-* environment : Linux Ubuntu 14.04
+* OS : Linux Ubuntu 14.04
 
 #### XSS 공격 패턴 분석 및 방어
 * XSS 공격을 막기 위해 홈페이지를 구축할 때 패턴 매칭 기법을 추가하여 XSS 공격을 차단시킨다. 
