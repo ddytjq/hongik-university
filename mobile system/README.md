@@ -1,4 +1,4 @@
-## Mobile system convergence and practic
+## Mobile system convergence and practice
 
 #### Environment
 * language : python 2.7.10
