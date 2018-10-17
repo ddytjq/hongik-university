@@ -1,5 +1,6 @@
-### Find the classifier model to classify 11000 files and evaluate the accuracy
+## Data science
 
+#### Find the classifier model to classify 11000 files and evaluate the accuracy
 * language : R programming
 * 11000개의 .txt 파일의 URL 읽어와 데이터 추출 및 분류
 * a, p, script, span 태그를 불러와 각 태그 별 개수 파악
