@@ -1,4 +1,4 @@
-## Database and practic
+## Database and practice
 
 #### Environment
 * language : html & php
