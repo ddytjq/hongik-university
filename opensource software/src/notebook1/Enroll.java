@@ -228,7 +228,7 @@ public class Enroll extends JFrame implements ActionListener {
 			// found jdbc driver for mysql
 			Class.forName("com.mysql.jdbc.Driver");
 			// create connection to mysql
-			String url = "jdbc:mysql://localhost:3306/", uname = "root", upass = "0813"; // mysql password
+			String url = "jdbc:mysql://localhost:3306/", uname = "yosub", upass = "0813"; // mysql password
 
 			mysqlCon = DriverManager.getConnection(url, uname, upass);
 			

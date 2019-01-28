@@ -219,7 +219,7 @@ public class Form extends JFrame implements ActionListener {
 
 	}
 
-	private boolean isEmpty2() { // °Ë»ö¹Ú½º
+	private boolean isEmpty2() { // ï¿½Ë»ï¿½ï¿½Ú½ï¿½
 		boolean emptysearch = searchtext.getText().equals("");
 
 		return (emptysearch);
@@ -230,7 +230,7 @@ public class Form extends JFrame implements ActionListener {
 			// found jdbc driver for mysql
 			Class.forName("com.mysql.jdbc.Driver");
 			// create connection to mysql
-			String url = "jdbc:mysql://localhost:3306/", uname = "root", upass = "0813"; // mysql password
+			String url = "jdbc:mysql://localhost:3306/", uname = "yosub", upass = "0813"; // mysql password
 
 			mysqlCon = DriverManager.getConnection(url, uname, upass);
 

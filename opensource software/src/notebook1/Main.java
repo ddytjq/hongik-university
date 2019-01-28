@@ -27,7 +27,7 @@ public class Main extends JFrame implements ActionListener {
 	private JButton button3;
 	private JButton button4;
 	private JPanel p1;
-	private Font font = new Font("±√º≠", Font.PLAIN, 22);
+	private Font font = new Font("ÔøΩ√ºÔøΩ", Font.PLAIN, 22);
 	private JLabel lblNewLabel;
 	private Connection mysqlCon = null;
 	private final String database = "notebook";
@@ -74,13 +74,13 @@ public class Main extends JFrame implements ActionListener {
 		JLabel label1 = new JLabel();
 		JLabel label2 = new JLabel();
 		JLabel label3 = new JLabel();
-		Image img1 = new ImageIcon(this.getClass().getResource("/notebook1/picture/¥ŸøÓ∑ŒµÂ.jpg")).getImage();
+		Image img1 = new ImageIcon(this.getClass().getResource("/notebook1/picture/Îã§Ïö¥Î°úÎìú.jpg")).getImage();
 		Image change1 = img1.getScaledInstance(110, 110, Image.SCALE_SMOOTH);
 		label1.setIcon(new ImageIcon(change1));
-		Image img2 = new ImageIcon(this.getClass().getResource("/notebook1/picture/¥ı«œ±‚.jpg")).getImage();
+		Image img2 = new ImageIcon(this.getClass().getResource("/notebook1/picture/ÎçîÌïòÍ∏∞.jpg")).getImage();
 		Image change2 = img2.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 		label2.setIcon(new ImageIcon(change2));
-		Image img3 = new ImageIcon(this.getClass().getResource("/notebook1/picture/«–ª˝¡ı.jpg")).getImage();
+		Image img3 = new ImageIcon(this.getClass().getResource("/notebook1/picture/ÌïôÏÉùÏ¶ù.jpg")).getImage();
 		Image change3 = img3.getScaledInstance(80, 70, Image.SCALE_SMOOTH);
 		label3.setIcon(new ImageIcon(change3));
 		p1.add(label1);
@@ -136,7 +136,7 @@ public class Main extends JFrame implements ActionListener {
 			// found jdbc driver for mysql
 			Class.forName("com.mysql.jdbc.Driver");
 			// create connection to mysql
-			String url = "jdbc:mysql://localhost:3306/", uname = "root", upass = "0813"; // mysql password
+			String url = "jdbc:mysql://localhost:3306/", uname = "yosub", upass = "0813"; // mysql password
 
 			mysqlCon = DriverManager.getConnection(url, uname, upass);
 

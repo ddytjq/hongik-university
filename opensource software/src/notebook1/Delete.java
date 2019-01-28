@@ -148,7 +148,7 @@ public class Delete extends JFrame implements ActionListener {
 		return (result > 0);
 	}
 
-	// Áßº¹°Ë»ç
+	// ï¿½ßºï¿½ï¿½Ë»ï¿½
 	private boolean isEmpty() {
 		boolean emptyname = nametext.getText().equals("");
 		boolean emptyid = idtext.getText().equals("");
@@ -156,13 +156,13 @@ public class Delete extends JFrame implements ActionListener {
 		return (emptyid || emptyname);
 	}
 
-	// db¿¬µ¿
+	// dbï¿½ï¿½ï¿½ï¿½
 	private void load() {
 		try {
 			// found jdbc driver for mysql
 			Class.forName("com.mysql.jdbc.Driver");
 			// create connection to mysql
-			String url = "jdbc:mysql://localhost:3306/", uname = "root", upass = "0813"; // mysql password
+			String url = "jdbc:mysql://localhost:3306/", uname = "yosub", upass = "0813"; // mysql password
 
 			mysqlCon = DriverManager.getConnection(url, uname, upass);
 
