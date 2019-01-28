@@ -1,7 +1,14 @@
-## Network experiment
+# 네트워크 토폴리지에 따른 동작 확인
 
-#### Verify operation according to network topology
-* Cisco packet tracer 를 이용해 네트워크 토폴리지 구성 및 제어
-* RIP, EIGRP, OSPF, 로드밸런싱, BGP, VLAN, Access Control List, NAT, DHCP, Default Routing Control
-* Ping Test & traceroute 를 통해 확인
-* report : Project recode
+## 1. 환경설정
+* Emulator : Cisco Packet Tracer
+
+## 2. 시나리오
+![image](./reference/image.jpg)
+각 설정 후 ping, traceroute 를 이용하여 패킷 흐름 확인 
+1. RIP, EIGRP, OSPF 라우팅 프로토콜 동작 확인
+2. Load Balancing 동작 확인
+3. VLAN 동작 확인
+4. External BGP, Default Routing 동작 확인
+5. Access Control List 동작 확인
+6. NAT, DHCP 동작 확인
