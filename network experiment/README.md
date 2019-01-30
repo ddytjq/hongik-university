@@ -14,5 +14,5 @@
 6. NAT, DHCP 동작 확인
 
 ## 3. 결과
-file : ./reference/report.pdf <p>
+* [Results report](./reference/report.pdf)
 ![image](./reference/result.jpg)<p>
