@@ -10,3 +10,6 @@
 3. 한 파일 내에 각 태그의 개수가 20개 이상이면 1, 아니면 0 으로 분류
 4. 각 값이 1인 것들을 training data, 그 외의 것들을 test data
 5. Linear regression, logistic regression 을 이용하여 정화도 평가
+
+## 3. 결과 
+* [Results report](./reference/report.pdf)
